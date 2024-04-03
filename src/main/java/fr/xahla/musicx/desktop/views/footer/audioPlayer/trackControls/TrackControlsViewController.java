@@ -1,0 +1,169 @@
+package fr.xahla.musicx.desktop.views.footer.audioPlayer.trackControls;
+
+import fr.xahla.musicx.desktop.helper.DurationHelper;
+import fr.xahla.musicx.desktop.model.SongViewModel;
+import fr.xahla.musicx.desktop.views.ViewControllerInterface;
+import fr.xahla.musicx.desktop.views.ViewControllerProps;
+import fr.xahla.musicx.desktop.views.footer.audioPlayer.AudioPlayerViewController;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
+import javafx.util.Duration;
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class TrackControlsViewController implements ViewControllerInterface {
+
+    public record Props(
+        SongViewModel currentSong
+    ) implements ViewControllerProps {}
+
+    @FXML public Button playButton;
+    @FXML public Slider volumeSlider;
+    @FXML public Slider songTimeSlider;
+    @FXML public Label currentTimeLabel;
+    @FXML public Label totalTimeLabel;
+    @FXML public Label volumeLabel;
+    @FXML public Button volumeButton;
+    @FXML private MediaView currentTrack;
+
+    private MediaPlayer mediaPlayer;
+
+    private FontIcon volumeMuteIcon, volumeOffIcon, volumeDownIcon, volumeUpIcon;
+    private FontIcon playIcon, pauseIcon;
+
+    private AudioPlayerViewController parent;
+    private TrackControlsViewController.Props props;
+
+    @Override public void initialize(ViewControllerInterface viewController, ViewControllerProps viewControllerProps) {
+        this.parent = (AudioPlayerViewController) viewController;
+        this.props = (TrackControlsViewController.Props) viewControllerProps;
+
+        this.props.currentSong().filePathProperty().addListener((observableValue, oldValue, newValue)
+            -> setCurrentSong(newValue));
+
+        this.volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (null != mediaPlayer) {
+                mediaPlayer.setVolume((Double) newValue);
+            }
+
+            volumeButton.setGraphic(this.getVolumeStateIcon());
+            volumeLabel.setText("" + (int) ((double) newValue * 100.0));
+        });
+
+        this.songTimeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (null != mediaPlayer) {
+                if (songTimeSlider.isValueChanging()) {
+                    this.mediaPlayer.seek(new Duration(songTimeSlider.getValue()));
+                }
+            }
+        });
+
+        this.volumeMuteIcon = new FontIcon();
+        volumeMuteIcon.setIconLiteral("fas-volume-mute");
+        volumeMuteIcon.setIconSize(64);
+
+        this.volumeOffIcon = new FontIcon();
+        volumeOffIcon.setIconLiteral("fas-volume-off");
+        volumeOffIcon.setIconSize(64);
+
+        this.volumeDownIcon = new FontIcon();
+        volumeDownIcon.setIconLiteral("fas-volume-down");
+        volumeDownIcon.setIconSize(64);
+
+        this.volumeUpIcon = new FontIcon();
+        volumeUpIcon.setIconLiteral("fas-volume-up");
+        volumeUpIcon.setIconSize(64);
+
+        this.playIcon = new FontIcon();
+        playIcon.setIconLiteral("fas-play");
+        playIcon.setIconSize(64);
+
+        this.pauseIcon = new FontIcon();
+        pauseIcon.setIconLiteral("fas-pause");
+        pauseIcon.setIconSize(64);
+    }
+
+    @Override public AudioPlayerViewController getParent() {
+        return this.parent;
+    }
+
+    public void togglePlaying() {
+        if (this.mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+            this.mediaPlayer.pause();
+            this.playButton.setGraphic(this.playIcon);
+        } else {
+            this.mediaPlayer.play();
+            this.playButton.setGraphic(this.pauseIcon);
+        }
+    }
+
+    public void stop() {
+        this.mediaPlayer.stop();
+        this.playButton.setGraphic(this.playIcon);
+    }
+
+    public void setCurrentSong(String filePath) {
+        if (null != this.mediaPlayer) {
+            this.mediaPlayer.stop();
+        }
+
+        var audioFile = new File(filePath);
+        var media = new Media(audioFile.toURI().toString());
+
+        this.mediaPlayer = new MediaPlayer(media);
+        this.mediaPlayer.setVolume(volumeSlider.getValue());
+        this.currentTrack.setMediaPlayer(mediaPlayer);
+
+        this.mediaPlayer.currentTimeProperty().addListener(ov -> {
+            var total = mediaPlayer.getTotalDuration().toMillis();
+            var current = mediaPlayer.getCurrentTime().toMillis();
+
+            songTimeSlider.setMax(total);
+            songTimeSlider.setValue(current);
+            currentTimeLabel.setText(DurationHelper.getTimeString(current));
+            totalTimeLabel.setText(DurationHelper.getTimeString(total));
+        });
+
+        this.mediaPlayer.play();
+        this.playButton.setGraphic(this.pauseIcon);
+    }
+
+    public void mute() {
+        if (null != this.mediaPlayer) {
+            this.mediaPlayer.setMute(!this.mediaPlayer.isMute());
+
+            if (this.mediaPlayer.isMute()) {
+                this.volumeButton.setGraphic(this.volumeMuteIcon);
+            } else {
+                this.volumeButton.setGraphic(this.getVolumeStateIcon());
+            }
+        }
+    }
+
+    private FontIcon getVolumeStateIcon() {
+        var volume = (Double) this.volumeSlider.getValue();
+
+        if (0.5 <= volume) {
+            return this.volumeUpIcon;
+        } else if (0.05 <= volume) {
+            return this.volumeDownIcon;
+        }
+
+        return this.volumeOffIcon;
+    }
+
+    @Override public void makeTranslations() {
+
+    }
+}

@@ -1,0 +1,25 @@
+{
+  "file": {
+    "name": "File",
+
+    "library": {
+      "name": "Library",
+      "importFromFolder": "Import From Folder",
+      "scanFolderForNewFile": "Scan Folders for New Files",
+      "scanFolderDialog": {
+        "title": "Folder Scan Progress",
+        "label": "Scanning Files..."
+      }
+    },
+
+    "showConsole": "Show Console",
+    "exit": "Quit Musicx"
+  },
+  "controls": {
+    "name": "Controls",
+
+    "player": {
+      "playPause": "Play / Pause"
+    }
+  }
+}

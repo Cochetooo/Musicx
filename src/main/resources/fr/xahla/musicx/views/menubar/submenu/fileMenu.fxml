@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+
+<?import javafx.scene.control.SeparatorMenuItem?>
+<Menu fx:id="fileMenu" text="file.name" xmlns:fx="http://javafx.com/fxml" fx:controller="fr.xahla.musicx.desktop.views.menubar.submenu.file.FileMenuViewController">
+    <Menu text="file.library.name">
+        <MenuItem text="file.library.importFromFolder" onAction="#importFromFolder" fx:id="importFromFolder" />
+        <MenuItem text="file.library.scanFolderForNewFile" onAction="#scanFolderForNewFile" disable="true" fx:id="scanFolderForNewFileItem" />
+    </Menu>
+    <SeparatorMenuItem />
+    <MenuItem text="file.showConsole" onAction="#showConsole" fx:id="showConsole" />
+    <SeparatorMenuItem />
+    <MenuItem text="file.exit" onAction="#exit" />
+</Menu>

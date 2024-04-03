@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+
+<Menu fx:id="controlsMenu" text="controls.name" xmlns:fx="http://javafx.com/fxml" fx:controller="fr.xahla.musicx.desktop.views.menubar.submenu.controls.ControlsMenuViewController">
+    <MenuItem fx:id="playPause" text="controls.player.playPause" onAction="#playPause" />
+</Menu>

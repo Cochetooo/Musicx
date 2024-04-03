@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="75.0" prefWidth="Infinity"
+            fx:controller="fr.xahla.musicx.desktop.views.footer.audioPlayer.AudioPlayerViewController"
+            style="
+            -fx-background-color: -color-base-9;
+            -fx-padding: 10 25 10 25
+            "
+            HBox.hgrow="ALWAYS">
+    <left>
+        <fx:include fx:id="trackInfoView" source="audioPlayer/trackInfo.fxml" />
+    </left>
+    <center>
+        <fx:include fx:id="trackControlsView" source="audioPlayer/trackControls.fxml" />
+    </center>
+</BorderPane>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Label?>
+<BorderPane
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.footer.appInfo.AppInfoViewController"
+        prefWidth="Infinity"
+        style="
+        -fx-padding: 5 5 5 5;
+        -fx-background-color: -color-base-8;
+        "
+>
+    <left>
+        <HBox spacing="15" fx:id="footerLeftBox" />
+    </left>
+    <right>
+        <HBox spacing="15" fx:id="footerRightBox">
+            <Label fx:id="footerLibrarySumLabel" />
+        </HBox>
+    </right>
+</BorderPane>

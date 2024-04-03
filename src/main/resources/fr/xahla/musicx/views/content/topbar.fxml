@@ -1,0 +1,57 @@
+<?import javafx.scene.layout.HBox?>
+<?import atlantafx.base.controls.CustomTextField?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.Button?>
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.content.topbar.TopBarViewController"
+      style="
+      -fx-padding: 20px;
+      -fx-background-color: -color-base-7;
+      -fx-background-radius: 10px;
+      -fx-border-radius: 10px;
+      "
+      spacing="20">
+
+    <!-- Search Bar -->
+    <CustomTextField promptText="searchTextField"
+                     fx:id="searchTextField"
+                     onInputMethodTextChanged="#onInput"
+                     prefWidth="1300"
+                     style="-fx-border-radius: 10px; -fx-background-radius: 10px;">
+        <right>
+            <FontIcon iconLiteral="fas-search" />
+        </right>
+    </CustomTextField>
+
+    <!-- Action Button -->
+    <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+        <graphic>
+            <FontIcon iconLiteral="fas-chart-area" />
+        </graphic>
+    </Button>
+
+    <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+        <graphic>
+            <FontIcon iconLiteral="fas-user-friends" />
+        </graphic>
+    </Button>
+
+    <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+        <graphic>
+            <FontIcon iconLiteral="fas-list" />
+        </graphic>
+    </Button>
+
+    <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+        <graphic>
+            <FontIcon iconLiteral="fas-user-friends" />
+        </graphic>
+    </Button>
+
+    <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+        <graphic>
+            <FontIcon iconLiteral="fas-cog" />
+        </graphic>
+    </Button>
+</HBox>

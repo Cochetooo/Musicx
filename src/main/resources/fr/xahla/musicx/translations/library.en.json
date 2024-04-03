@@ -1,0 +1,21 @@
+{
+  "import": {
+    "folderChooserTitle": "Select a folder"
+  },
+  "trackList": {
+    "title": "Track List",
+    "trackBitRate": "Bit Rate",
+    "trackDuration": "Duration",
+    "trackNumber": "#",
+    "trackSampleRate": "Sample Rate",
+    "artistName": "Artist",
+    "albumName": "Album",
+    "albumYear": "Year",
+    "trackId": "ID",
+    "trackTitle": "Title",
+    "trackExtension": "Format",
+    "error": {
+      "formatNotSupported": "This format is currently unsupported."
+    }
+  }
+}

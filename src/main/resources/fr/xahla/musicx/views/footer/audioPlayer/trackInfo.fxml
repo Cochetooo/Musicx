@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Label?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.footer.audioPlayer.trackInfo.TrackInfoViewController"
+      spacing="10" prefWidth="300">
+    <Label fx:id="displayTrackName" styleClass="title-3" text="-" />
+    <Label fx:id="displayArtistName" styleClass="text-caption" textFill="gray" text="-" />
+</VBox>
