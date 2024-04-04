@@ -6,6 +6,10 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.MenuItem?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.trackList.TrackListViewController"
@@ -20,6 +24,36 @@
 >
     <Label text="trackList.title" fx:id="titleLabel" styleClass="title-1" />
     <TableView fx:id="trackList" VBox.vgrow="ALWAYS" onMouseClicked="#tableClick">
+        <contextMenu>
+            <ContextMenu fx:id="trackListContextMenu">
+                <items>
+                    <MenuItem
+                            text="trackList.contextMenu.playNow"
+                            accelerator="Alt+Enter"
+                            onAction="#playNow">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-play" />
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem
+                            text="trackList.contextMenu.queueNext"
+                            accelerator="Shortcut+Shift+Enter"
+                            onAction="#queueNext">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-plus" />
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem
+                            text="trackList.contextMenu.queueLast"
+                            accelerator="Shortcut+Enter"
+                            onAction="#queueLast">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-plus-circle" />
+                        </graphic>
+                    </MenuItem>
+                </items>
+            </ContextMenu>
+        </contextMenu>
         <columns>
             <!-- Number -->
             <TableColumn text="trackList.trackNumber" prefWidth="50" fx:id="trackListNumberColumn" />

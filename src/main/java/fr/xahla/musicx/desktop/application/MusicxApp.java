@@ -21,14 +21,14 @@ public class MusicxApp {
     private PrintStream printStream;
 
     public MusicxApp() {
-        this.hibernateLoader = new HibernateLoader();
-
         this.logger = Logger.getLogger(MusicxApp.class.getName());
         this.setupLogger();
+
+        this.hibernateLoader = new HibernateLoader();
     }
 
     private void setupLogger() {
-        try (var inputStream = Objects.requireNonNull(this.getClass().getResource("config/logger.properties")).openStream()) {
+        try (var inputStream = Objects.requireNonNull(Musicx.class.getResource("config/logger.properties")).openStream()) {
             LogManager.getLogManager().readConfiguration(inputStream);
         } catch (SecurityException | IOException | NullPointerException exception) {
             exception.printStackTrace();

@@ -1,6 +1,9 @@
 package fr.xahla.musicx.desktop.views.footer.audioPlayer.trackControls;
 
+import fr.xahla.musicx.api.data.PlayerInterface;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
+import fr.xahla.musicx.desktop.manager.PlayerViewManager;
+import fr.xahla.musicx.desktop.model.QueueViewModel;
 import fr.xahla.musicx.desktop.model.SongViewModel;
 import fr.xahla.musicx.desktop.views.ViewControllerInterface;
 import fr.xahla.musicx.desktop.views.ViewControllerProps;
@@ -22,10 +25,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TrackControlsViewController implements ViewControllerInterface {
+public class TrackControlsViewController implements ViewControllerInterface, PlayerInterface {
 
     public record Props(
-        SongViewModel currentSong
+        PlayerViewManager playerManager
     ) implements ViewControllerProps {}
 
     @FXML public Button playButton;
@@ -37,8 +40,6 @@ public class TrackControlsViewController implements ViewControllerInterface {
     @FXML public Button volumeButton;
     @FXML private MediaView currentTrack;
 
-    private MediaPlayer mediaPlayer;
-
     private FontIcon volumeMuteIcon, volumeOffIcon, volumeDownIcon, volumeUpIcon;
     private FontIcon playIcon, pauseIcon;
 
@@ -49,12 +50,9 @@ public class TrackControlsViewController implements ViewControllerInterface {
         this.parent = (AudioPlayerViewController) viewController;
         this.props = (TrackControlsViewController.Props) viewControllerProps;
 
-        this.props.currentSong().filePathProperty().addListener((observableValue, oldValue, newValue)
-            -> setCurrentSong(newValue));
-
         this.volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (null != mediaPlayer) {
-                mediaPlayer.setVolume((Double) newValue);
+            if (null != props.playerManager().getMediaPlayer()) {
+                props.playerManager().getPlayer().setVolume((Double) newValue);
             }
 
             volumeButton.setGraphic(this.getVolumeStateIcon());
@@ -62,9 +60,9 @@ public class TrackControlsViewController implements ViewControllerInterface {
         });
 
         this.songTimeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (null != mediaPlayer) {
+            if (null != props.playerManager().getMediaPlayer()) {
                 if (songTimeSlider.isValueChanging()) {
-                    this.mediaPlayer.seek(new Duration(songTimeSlider.getValue()));
+                    props.playerManager().seek(songTimeSlider.getValue());
                 }
             }
         });
@@ -98,34 +96,12 @@ public class TrackControlsViewController implements ViewControllerInterface {
         return this.parent;
     }
 
-    public void togglePlaying() {
-        if (this.mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-            this.mediaPlayer.pause();
-            this.playButton.setGraphic(this.playIcon);
-        } else {
-            this.mediaPlayer.play();
-            this.playButton.setGraphic(this.pauseIcon);
-        }
-    }
+    @Override public void play() {
+        var mediaPlayer = this.props.playerManager().getMediaPlayer();
 
-    public void stop() {
-        this.mediaPlayer.stop();
-        this.playButton.setGraphic(this.playIcon);
-    }
-
-    public void setCurrentSong(String filePath) {
-        if (null != this.mediaPlayer) {
-            this.mediaPlayer.stop();
-        }
-
-        var audioFile = new File(filePath);
-        var media = new Media(audioFile.toURI().toString());
-
-        this.mediaPlayer = new MediaPlayer(media);
-        this.mediaPlayer.setVolume(volumeSlider.getValue());
         this.currentTrack.setMediaPlayer(mediaPlayer);
 
-        this.mediaPlayer.currentTimeProperty().addListener(ov -> {
+        this.props.playerManager().getMediaPlayer().currentTimeProperty().addListener(ov -> {
             var total = mediaPlayer.getTotalDuration().toMillis();
             var current = mediaPlayer.getCurrentTime().toMillis();
 
@@ -135,20 +111,48 @@ public class TrackControlsViewController implements ViewControllerInterface {
             totalTimeLabel.setText(DurationHelper.getTimeString(total));
         });
 
-        this.mediaPlayer.play();
         this.playButton.setGraphic(this.pauseIcon);
     }
 
-    public void mute() {
-        if (null != this.mediaPlayer) {
-            this.mediaPlayer.setMute(!this.mediaPlayer.isMute());
+    @Override
+    public void previous() {
+        this.props.playerManager().previous();
+    }
 
-            if (this.mediaPlayer.isMute()) {
-                this.volumeButton.setGraphic(this.volumeMuteIcon);
-            } else {
-                this.volumeButton.setGraphic(this.getVolumeStateIcon());
-            }
+    @FXML public boolean togglePlaying() {
+        var playing = this.props.playerManager().togglePlaying();
+
+        if (playing) {
+            this.playButton.setGraphic(this.pauseIcon);
+        } else {
+            this.playButton.setGraphic(this.playIcon);
         }
+
+        return playing;
+    }
+
+    @FXML public void stop() {
+        this.props.playerManager().stop();
+
+        this.playButton.setGraphic(this.playIcon);
+    }
+
+    @FXML public void next() {
+        this.props.playerManager().next();
+    }
+
+    @FXML public void mute() {
+        this.props.playerManager().mute();
+
+        if (this.props.playerManager().getMediaPlayer().isMute()) {
+            this.volumeButton.setGraphic(this.volumeMuteIcon);
+        } else {
+            this.volumeButton.setGraphic(this.getVolumeStateIcon());
+        }
+    }
+
+    @Override public void seek(Double seconds) {
+
     }
 
     private FontIcon getVolumeStateIcon() {

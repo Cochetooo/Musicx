@@ -1,6 +1,9 @@
 package fr.xahla.musicx.desktop.views.content.trackList;
 
+import fr.xahla.musicx.desktop.manager.LibraryViewManager;
+import fr.xahla.musicx.desktop.manager.PlayerViewManager;
 import fr.xahla.musicx.desktop.model.LibraryViewModel;
+import fr.xahla.musicx.desktop.model.QueueViewModel;
 import fr.xahla.musicx.desktop.model.SongViewModel;
 import fr.xahla.musicx.desktop.views.ViewControllerInterface;
 import fr.xahla.musicx.Musicx;
@@ -13,9 +16,14 @@ import fr.xahla.musicx.api.data.SongInterface;
 import fr.xahla.musicx.infrastructure.persistence.repository.LibraryRepository;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -23,7 +31,8 @@ import java.util.ArrayList;
 public class TrackListViewController implements ViewControllerInterface {
 
     public record Props(
-        LibraryViewModel library
+        LibraryViewManager libraryManager,
+        PlayerViewManager playerManager
     ) implements ViewControllerProps {}
 
     @FXML private TableView<SongViewModel> trackList;
@@ -34,6 +43,8 @@ public class TrackListViewController implements ViewControllerInterface {
     @FXML private TableColumn<SongViewModel, String> trackListArtistNameColumn;
     @FXML private TableColumn<SongViewModel, String> trackListAlbumNameColumn;
     @FXML private TableColumn<SongViewModel, Integer> trackListAlbumYearColumn;
+
+    @FXML private ContextMenu trackListContextMenu;
 
     @FXML public Label titleLabel;
 
@@ -49,38 +60,47 @@ public class TrackListViewController implements ViewControllerInterface {
         this.parent = (MusicxViewController) viewController;
         this.props = (TrackListViewController.Props) props;
 
-        trackList.setItems(this.props.library().getSongs());
+        trackList.setItems(this.props.libraryManager().getLibrary().getSongs());
 
         this.formatNotSupported = new Tooltip("library.error.formatNotSupported");
 
-        this.makeNumberColumn();
-        this.makeArtistColumns();
-        this.makeDurationColumn();
-        this.makeExtensionColumn();
+        this.makeTableColumns();
+
+        this.trackList.setRowFactory(songViewModelTableView -> {
+                var row = new TableRow<SongViewModel>();
+                row.contextMenuProperty().bind(
+                    Bindings.when(row.emptyProperty())
+                        .then((ContextMenu) null)
+                        .otherwise(trackListContextMenu)
+                );
+
+                return row;
+        });
 
         this.translator = new Translator("library");
         this.makeTranslations();
     }
 
-    private void makeNumberColumn() {
+    private void makeTableColumns() {
+        // Number Column
         this.trackListNumberColumn.setCellValueFactory(cellData -> {
             var rowIndex = trackList.getItems().indexOf(cellData.getValue()) + 1;
             return Bindings.createObjectBinding(() -> rowIndex);
         });
-    }
 
-    private void makeArtistColumns() {
+        // Artist Name Column
         this.trackListArtistNameColumn.setCellValueFactory((cellData) ->
             cellData.getValue().getArtist().nameProperty());
 
+        // Album Name Column
         this.trackListAlbumNameColumn.setCellValueFactory((cellData) ->
             cellData.getValue().getAlbum().nameProperty());
 
+        // Album Year Column
         this.trackListAlbumYearColumn.setCellValueFactory((cellData) ->
             cellData.getValue().getAlbum().releaseYearProperty().asObject());
-    }
 
-    private void makeDurationColumn() {
+        // Duration Column
         this.trackListDurationColumn.setCellFactory(songDurationTableColumn -> new TableCell<>(){
             @Override
             protected void updateItem(Integer duration, boolean empty) {
@@ -91,9 +111,8 @@ public class TrackListViewController implements ViewControllerInterface {
                 }
             }
         });
-    }
 
-    private void makeExtensionColumn() {
+        // Extension Column
         this.trackListExtensionColumn.setCellFactory(songExtensionTableColumn -> new TableCell<>(){
             @Override
             protected void updateItem(String filePath, boolean empty) {
@@ -128,28 +147,53 @@ public class TrackListViewController implements ViewControllerInterface {
         this.formatNotSupported.setText(
             this.translator.translate(this.formatNotSupported.getText())
         );
+
+        // Context Menu
+        this.trackListContextMenu.getItems().forEach((contextItem) ->
+            contextItem.setText(translator.translate(contextItem.getText())));
     }
 
     public void saveLibrary() {
-        // Make in a proper use case
-        var libraryManager = new LibraryRepository(Musicx.getInstance().getApp().getSessionFactory());
-        libraryManager.save(this.props.library());
+        this.props.libraryManager.save();
     }
 
     public void tableClick(MouseEvent mouseEvent) {
         // Double click handling
-        if (2 == mouseEvent.getClickCount()) {
+        if (2 == mouseEvent.getClickCount() && MouseButton.PRIMARY == mouseEvent.getButton()) {
             var song = this.trackList.getSelectionModel().getSelectedItem();
 
-            this.parent.getAudioPlayerViewController().setCurrentPlayingSong(song);
+            this.playFromLibrary(song);
         }
+    }
+
+    @FXML public void playNow() {
+        var song = this.trackList.getSelectionModel().getSelectedItem();
+
+        this.playFromLibrary(song);
+    }
+
+    @FXML public void queueNext() {
+        var song = this.trackList.getSelectionModel().getSelectedItem();
+
+        this.props.playerManager().getQueue().queueNext(song);
+    }
+
+    @FXML public void queueLast() {
+        var song = this.trackList.getSelectionModel().getSelectedItem();
+
+        this.props.playerManager().getQueue().queueLast(song);
+    }
+
+    private void playFromLibrary(final SongViewModel song) {
+        this.props.playerManager().setQueue(
+            this.props.libraryManager().getLibrary().getSongs().subList(
+                this.props.libraryManager().getLibrary().getSongs().indexOf(song),
+                this.props.libraryManager().getLibrary().getSongs().size()
+            )
+        );
     }
 
     @Override public MusicxViewController getParent() {
         return this.parent;
-    }
-
-    public TableView<SongViewModel> getTrackList() {
-        return this.trackList;
     }
 }

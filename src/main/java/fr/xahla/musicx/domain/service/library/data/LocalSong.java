@@ -83,6 +83,8 @@ public class LocalSong {
     private Integer year;
     private String version;
 
+    private boolean hasFailed;
+
     public LocalSong(
         final AudioFile audioFile,
         final Logger logger
@@ -91,6 +93,11 @@ public class LocalSong {
         this.tag = audioFile.getTag();
         this.header = audioFile.getAudioHeader();
         this.logger = logger;
+
+        if (null == this.tag || null == this.header) {
+            this.hasFailed = true;
+            return;
+        }
 
         this
             .setAlbumName()
@@ -1218,6 +1225,10 @@ public class LocalSong {
 
     public Integer getSampleRate() {
         return sampleRate;
+    }
+
+    public boolean hasFailed() {
+        return this.hasFailed;
     }
 
     private void notFound(final String key) {

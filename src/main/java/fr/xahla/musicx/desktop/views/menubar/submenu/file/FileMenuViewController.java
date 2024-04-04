@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.views.menubar.submenu.file;
 
+import fr.xahla.musicx.desktop.manager.LibraryViewManager;
 import fr.xahla.musicx.desktop.model.LibraryViewModel;
 import fr.xahla.musicx.desktop.views.ViewControllerInterface;
 import fr.xahla.musicx.Musicx;
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
 public class FileMenuViewController implements ViewControllerInterface {
     public record Props(
         Logger logger,
-        LibraryViewModel library
+        LibraryViewManager libraryManager
     ) implements ViewControllerProps {}
 
     @FXML private Menu fileMenu;
@@ -71,11 +72,11 @@ public class FileMenuViewController implements ViewControllerInterface {
         }
     }
 
-    public void importFromFolder(ActionEvent actionEvent) {
+    @FXML public void importFromFolder() {
         var folderPath = new ScanLibraryFolderChooserViewController().promptLibraryFolderChooser();
 
         if (null != folderPath) {
-            this.props.library().setFolderPaths(folderPath);
+            this.props.libraryManager().getLibrary().setFolderPaths(folderPath);
         }
 
         this.scanFolderForNewFile(null);
@@ -91,10 +92,10 @@ public class FileMenuViewController implements ViewControllerInterface {
                 );
 
                 var songs = scanLibraryFolder.execute(
-                    new ScanFolderAsLibraryService.Request(props.library)
+                    new ScanFolderAsLibraryService.Request(props.libraryManager().getLibrary())
                 );
 
-                props.library().setSongs(songs);
+                props.libraryManager().getLibrary().setSongs(songs);
 
                 parent.getParent().getTrackListViewController().saveLibrary();
 

@@ -45,7 +45,7 @@
 
     <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
         <graphic>
-            <FontIcon iconLiteral="fas-user-friends" />
+            <FontIcon iconLiteral="fas-user" />
         </graphic>
     </Button>
 

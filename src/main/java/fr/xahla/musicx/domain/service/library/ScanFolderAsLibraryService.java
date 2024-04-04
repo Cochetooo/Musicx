@@ -94,10 +94,10 @@ public class ScanFolderAsLibraryService {
 
                     if (null != song) {
                         songs.add(song);
-
-                        count.getAndIncrement();
-                        progressListener.updateProgress(count.get(), fileNumbers);
                     }
+
+                    count.getAndIncrement();
+                    progressListener.updateProgress(count.get(), fileNumbers);
                 });
 
                 executor.shutdown();
@@ -122,6 +122,10 @@ public class ScanFolderAsLibraryService {
         try {
             var audioFile = AudioFileIO.read(filepath.toFile());
             var localSong = new LocalSong(audioFile, logger);
+
+            if (localSong.hasFailed()) {
+                return null;
+            }
 
             var artist = new Artist()
                 .setId(null)

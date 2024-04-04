@@ -43,7 +43,7 @@ there is enough to reason to do so.
 These classes should only serve as dialog between Java code and FXML views, therefore
 only controlled elements will be added here, as well as the parent ViewController and
 the children.<br>
-It should implement `FXControllerInterface`. Children's parent as well as props property will be initialized on the `initialize()` method, make sure to make your setup logic just after setting the parent controller and the props.<br>
+It should implement `ViewControllerInterface`. Children's parent as well as props property will be initialized on the `initialize()` method, make sure to make your setup logic just after setting the parent controller and the props.<br>
 Children properties must be `private` and **read-only**.
 
 *By Alexis Cochet*

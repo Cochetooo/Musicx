@@ -1,15 +1,17 @@
 package fr.xahla.musicx.desktop.views;
 
 import fr.xahla.musicx.Musicx;
+import fr.xahla.musicx.desktop.manager.LibraryViewManager;
+import fr.xahla.musicx.desktop.manager.PlayerViewManager;
 import fr.xahla.musicx.desktop.model.LibraryViewModel;
-import fr.xahla.musicx.desktop.presentation.library.ShowLibraryPresenter;
+import fr.xahla.musicx.desktop.model.QueueViewModel;
 import fr.xahla.musicx.desktop.views.content.topbar.TopBarViewController;
 import fr.xahla.musicx.desktop.views.content.trackList.TrackListViewController;
 import fr.xahla.musicx.desktop.views.footer.appInfo.AppInfoViewController;
 import fr.xahla.musicx.desktop.views.menubar.MenuBarViewController;
 import fr.xahla.musicx.desktop.views.footer.audioPlayer.AudioPlayerViewController;
 import fr.xahla.musicx.desktop.views.settings.ConsoleViewController;
-import fr.xahla.musicx.infrastructure.action.library.ShowLibrary;
+import fr.xahla.musicx.infrastructure.persistence.repository.LibraryRepository;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -27,35 +29,51 @@ public class MusicxViewController implements ViewControllerInterface, Initializa
 
     private ConsoleViewController consoleViewController;
 
-    private LibraryViewModel library;
+    private LibraryViewManager libraryManager;
+    private PlayerViewManager playerManager;
+
     private Logger logger;
 
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.library = new LibraryViewModel();
-        this.logger = Musicx.getInstance().getApp().getLogger();
+        this.libraryManager = new LibraryViewManager(
+            new LibraryRepository(
+                Musicx.getInstance().getApp().getSessionFactory()
+            ),
+            new LibraryViewModel()
+        );
 
-        this.library = (LibraryViewModel) new ShowLibrary(new ShowLibraryPresenter())
-            .invoke(new ShowLibrary.Request("MyLibrary"));
+        this.libraryManager.findOneByName("MyLibrary");
+
+        this.playerManager = new PlayerViewManager(
+            new QueueViewModel(),
+            this.audioPlayerViewController.getTrackControlsViewController()
+        );
+
+        this.logger = Musicx.getInstance().getApp().getLogger();
 
         this.topBarViewController.initialize(this, null);
 
         this.trackListViewController.initialize(this,
             new TrackListViewController.Props(
-                this.library
+                this.libraryManager,
+                this.playerManager
             ));
 
         this.appInfoViewController.initialize(this,
             new AppInfoViewController.Props(
-                this.library
+                this.libraryManager
             ));
 
         this.menuBarViewController.initialize(this,
             new MenuBarViewController.Props(
                 this.logger,
-                this.library
+                this.libraryManager
             ));
 
-        this.audioPlayerViewController.initialize(this, null);
+        this.audioPlayerViewController.initialize(this,
+            new AudioPlayerViewController.Props(
+                this.playerManager
+            ));
 
         this.consoleViewController = new ConsoleViewController();
     }

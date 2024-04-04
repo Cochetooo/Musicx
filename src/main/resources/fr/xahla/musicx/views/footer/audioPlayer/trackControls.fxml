@@ -32,6 +32,11 @@
                             <FontIcon iconLiteral="fas-stop" iconSize="64" />
                         </graphic>
                     </Button>
+                    <Button onAction="#next" style="-fx-background-color: transparent">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-forward" iconSize="64" />
+                        </graphic>
+                    </Button>
                 </HBox>
             </center>
 

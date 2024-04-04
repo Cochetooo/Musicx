@@ -3,6 +3,11 @@
     "folderChooserTitle": "Select a folder"
   },
   "trackList": {
+    "contextMenu": {
+      "playNow": "Play Now",
+      "queueLast": "Queue Last",
+      "queueNext": "Queue Next"
+    },
     "title": "Track List",
     "trackBitRate": "Bit Rate",
     "trackDuration": "Duration",

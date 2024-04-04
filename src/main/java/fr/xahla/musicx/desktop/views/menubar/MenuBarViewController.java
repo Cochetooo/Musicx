@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.views.menubar;
 
+import fr.xahla.musicx.desktop.manager.LibraryViewManager;
 import fr.xahla.musicx.desktop.model.LibraryViewModel;
 import fr.xahla.musicx.desktop.views.ViewControllerInterface;
 import fr.xahla.musicx.desktop.views.MusicxViewController;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 public class MenuBarViewController implements ViewControllerInterface {
     public record Props(
         Logger logger,
-        LibraryViewModel library
+        LibraryViewManager libraryManager
     ) implements ViewControllerProps {}
 
     @FXML private FileMenuViewController fileMenuViewController;
@@ -31,7 +32,7 @@ public class MenuBarViewController implements ViewControllerInterface {
         this.fileMenuViewController.initialize(this,
             new FileMenuViewController.Props(
                 this.props.logger(),
-                this.props.library()
+                this.props.libraryManager()
             ));
         this.controlsMenuViewController.initialize(this, null);
     }
