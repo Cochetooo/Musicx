@@ -1,0 +1,143 @@
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.layout.VBox?>
+<?import atlantafx.base.controls.CustomTextField?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.come/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.content.Content"
+      style="
+        -fx-padding: 20px;
+        -fx-background-color: -color-base-7;
+        -fx-background-radius: 10px;
+        -fx-border-radius: 10px;"
+      spacing="15" HBox.hgrow="ALWAYS" prefHeight="1200">
+
+    <!-- Top Navigation -->
+    <HBox spacing="20">
+        <!-- Search Bar -->
+        <CustomTextField promptText="%content.searchTextField"
+                         fx:id="searchTextField"
+                         prefWidth="1600"
+                         prefHeight="40"
+                         style="-fx-border-radius: 10px; -fx-background-radius: 10px;">
+            <right>
+                <FontIcon iconLiteral="fltfmz-search-28" />
+            </right>
+        </CustomTextField>
+
+        <!-- Action Buttons -->
+
+        <!-- Rating / Reviews -->
+        <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+            <graphic>
+                <FontIcon iconLiteral="fltfal-data-bar-vertical-24" />
+            </graphic>
+        </Button>
+
+        <!-- Friends -->
+        <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+            <graphic>
+                <FontIcon iconLiteral="fltfmz-people-community-28" />
+            </graphic>
+        </Button>
+
+        <!-- Queue -->
+        <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+            <graphic>
+                <FontIcon iconLiteral="fltfmz-text-bullet-list-24" />
+            </graphic>
+        </Button>
+
+        <!-- User Profile -->
+        <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+            <graphic>
+                <FontIcon iconLiteral="fltfmz-person-28" />
+            </graphic>
+        </Button>
+
+        <!-- Settings -->
+        <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+            <graphic>
+                <FontIcon iconLiteral="fltfmz-settings-28" />
+            </graphic>
+        </Button>
+    </HBox>
+
+    <Label text="%content.trackListLabel" styleClass="title-2" />
+    <TableView
+        fx:id="tracksTableView"
+        VBox.vgrow="ALWAYS"
+        onMouseClicked="#tracksTableClick"
+        style="-fx-border-radius: 10px; -fx-background-radius: 10px;"
+    >
+        <columns>
+            <!-- Artist -->
+            <TableColumn text="%tracksTable.artistName" prefWidth="200" fx:id="tracksTableArtistCol" />
+
+            <!-- Album -->
+            <TableColumn text="%tracksTable.albumName" prefWidth="300" fx:id="tracksTableAlbumCol" />
+
+            <!-- Title -->
+            <TableColumn text="%tracksTable.songTitle" prefWidth="600" fx:id="tracksTableTitleCol" />
+
+            <!-- Year -->
+            <TableColumn text="%tracksTable.albumYear" prefWidth="60" fx:id="tracksTableYearCol" />
+
+            <!-- Duration -->
+            <TableColumn prefWidth="60" fx:id="tracksTableDurationCol" style="-fx-alignment: center;">
+                <cellValueFactory>
+                    <PropertyValueFactory property="duration" />
+                </cellValueFactory>
+                <graphic>
+                    <FontIcon iconLiteral="fltfal-clock-28" />
+                </graphic>
+            </TableColumn>
+        </columns>
+
+        <contextMenu>
+            <ContextMenu fx:id="tracksTableContextMenu">
+                <items>
+                    <!-- Play Track Now -->
+                    <MenuItem
+                        text="%content.trackListContextMenu.playNow"
+                        accelerator="Alt+Enter"
+                        onAction="#tracksTablePlayNow">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-play-24" />
+                        </graphic>
+                    </MenuItem>
+
+                    <!-- Queue Next -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.queueNext"
+                            accelerator="Shortcut+Shift+Enter"
+                            onAction="#tracksTableQueueNext">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
+                        </graphic>
+                    </MenuItem>
+
+                    <!-- Queue Last -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.queueLast"
+                            accelerator="Shortcut+Enter"
+                            onAction="#tracksTableQueueLast">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
+                        </graphic>
+                    </MenuItem>
+                </items>
+            </ContextMenu>
+        </contextMenu>
+    </TableView>
+
+</VBox>

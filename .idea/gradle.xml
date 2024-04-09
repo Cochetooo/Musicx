@@ -5,9 +5,13 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="openjdk-21" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/musicx-api" />
+            <option value="$PROJECT_DIR$/musicx-core" />
+            <option value="$PROJECT_DIR$/musicx-desktop" />
           </set>
         </option>
       </GradleProjectSettings>

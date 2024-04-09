@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+
+<VBox
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.Application"
+        style="-fx-background-color: -color-base-9"
+        prefHeight="Infinity"
+        prefWidth="Infinity"
+        fx:id="applicationBox"
+>
+    <!-- Menu Bar -->
+    <fx:include source="menuBar/menuBar.fxml" />
+</VBox>

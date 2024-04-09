@@ -20,13 +20,13 @@
                 <!-- Group Selector -->
                 <fx:include
                         fx:id="groupSelectorView"
-                        source="navbar/groupSelector.fxml"
+                        source="../../../../../../../musicx-desktop/src/main/resources/fr/xahla/musicx/desktop/views/content/navigation/groupSelector.fxml"
                 />
 
                 <!-- Selector List -->
                 <fx:include
                         fx:id="selectorListView"
-                        source="navbar/selectorList.fxml"
+                        source="../../../../../../../musicx-desktop/src/main/resources/fr/xahla/musicx/desktop/views/content/navigation/selectorList.fxml"
                 />
             </VBox>
         </left>
@@ -56,7 +56,7 @@
         <!-- Footer App Info Row -->
         <fx:include
                 fx:id="appInfoView"
-                source="footer/appInfo.fxml"
+                source="../../../../../../../musicx-desktop/src/main/resources/fr/xahla/musicx/desktop/views/content/appInfo.fxml"
         />
 
         <!-- Audio Player -->

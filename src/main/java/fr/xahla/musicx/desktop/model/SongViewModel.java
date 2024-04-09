@@ -4,7 +4,6 @@ import fr.xahla.musicx.api.data.AlbumInterface;
 import fr.xahla.musicx.api.data.ArtistInterface;
 import fr.xahla.musicx.api.data.SongInterface;
 import fr.xahla.musicx.infrastructure.presentation.ViewModelInterface;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import javafx.beans.property.*;
 
 public class SongViewModel implements ViewModelInterface, SongInterface {

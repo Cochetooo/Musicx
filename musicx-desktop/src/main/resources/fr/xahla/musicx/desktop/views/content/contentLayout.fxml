@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<VBox
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.content.ContentLayout">
+    <BorderPane
+            VBox.vgrow="ALWAYS"
+            style="-fx-padding: 10px;">
+        <left>
+            <VBox prefWidth="320" spacing="15" style="-fx-padding: 0 10px 0 0;">
+                <!-- Group Selector -->
+                <fx:include source="navigation/groupSelector.fxml" />
+
+                <!-- Selector List -->
+                <fx:include source="navigation/selectorList.fxml" />
+            </VBox>
+        </left>
+        <center>
+            <VBox prefWidth="1600" spacing="15" style="-fx-padding: 0 10px 0 0;">
+                <fx:include source="content.fxml" />
+            </VBox>
+        </center>
+        <right>
+
+        </right>
+    </BorderPane>
+
+    <!-- App Info Row -->
+    <fx:include source="appInfo.fxml" />
+
+    <!-- Audio Player -->
+    <fx:include source="player.fxml" />
+</VBox>

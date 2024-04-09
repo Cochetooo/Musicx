@@ -3,27 +3,15 @@ package fr.xahla.musicx.desktop.views.footer.audioPlayer.trackControls;
 import fr.xahla.musicx.api.data.PlayerInterface;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.manager.PlayerViewManager;
-import fr.xahla.musicx.desktop.model.QueueViewModel;
-import fr.xahla.musicx.desktop.model.SongViewModel;
 import fr.xahla.musicx.desktop.views.ViewControllerInterface;
 import fr.xahla.musicx.desktop.views.ViewControllerProps;
 import fr.xahla.musicx.desktop.views.footer.audioPlayer.AudioPlayerViewController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
-import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
-
-import java.io.File;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class TrackControlsViewController implements ViewControllerInterface, PlayerInterface {
 

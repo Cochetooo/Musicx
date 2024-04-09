@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Label?>
+<?import org.controlsfx.control.CheckListView?>
+<?import javafx.scene.control.Button?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<VBox     xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="fr.xahla.musicx.desktop.views.modal.ImportFolders"
+          alignment="CENTER"
+          prefWidth="600" prefHeight="600"
+          spacing="5"
+          style="-fx-padding: 10 10 10 10">
+    <Label text="%importFolders.selectedFolders" />
+    <CheckListView fx:id="folderPathsCheckListView" />
+
+    <HBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS" spacing="15">
+        <Button text="%importFolders.clearLibrary" onAction="#clear" fx:id="clearButton">
+            <graphic>
+                <FontIcon iconLiteral="fltfal-channel-dismiss-24" />
+            </graphic>
+        </Button>
+
+        <Button text="%importFolders.addFolder" onAction="#addFolder">
+            <graphic>
+                <FontIcon iconLiteral="fltfal-folder-open-24" />
+            </graphic>
+        </Button>
+
+        <Button text="%importFolders.scanFolders" onAction="#scanFolders" fx:id="scanFoldersButton">
+            <graphic>
+                <FontIcon iconLiteral="fltfal-arrow-clockwise-24" />
+            </graphic>
+        </Button>
+    </HBox>
+</VBox>

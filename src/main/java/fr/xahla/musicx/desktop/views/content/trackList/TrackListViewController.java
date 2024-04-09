@@ -2,31 +2,20 @@ package fr.xahla.musicx.desktop.views.content.trackList;
 
 import fr.xahla.musicx.desktop.manager.LibraryViewManager;
 import fr.xahla.musicx.desktop.manager.PlayerViewManager;
-import fr.xahla.musicx.desktop.model.LibraryViewModel;
-import fr.xahla.musicx.desktop.model.QueueViewModel;
 import fr.xahla.musicx.desktop.model.SongViewModel;
 import fr.xahla.musicx.desktop.views.ViewControllerInterface;
-import fr.xahla.musicx.Musicx;
 import fr.xahla.musicx.desktop.views.MusicxViewController;
 import fr.xahla.musicx.config.internationalization.Translator;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.views.ViewControllerProps;
-import fr.xahla.musicx.domain.model.Song;
 import fr.xahla.musicx.api.data.SongInterface;
-import fr.xahla.musicx.infrastructure.persistence.repository.LibraryRepository;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Callback;
 
 import java.time.Duration;
-import java.util.ArrayList;
 
 public class TrackListViewController implements ViewControllerInterface {
 

@@ -6,7 +6,6 @@ import fr.xahla.musicx.desktop.model.QueueViewModel;
 import fr.xahla.musicx.desktop.model.SongViewModel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.util.Duration;
 
 import java.io.File;

@@ -1,0 +1,81 @@
+package fr.xahla.musicx.core.model.entity;
+
+import fr.xahla.musicx.api.model.AlbumInterface;
+import fr.xahla.musicx.api.model.ArtistInterface;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="albums")
+public class Album implements AlbumInterface {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="album_id")
+    private Long id;
+
+    private String name;
+    private Integer releaseYear;
+
+    @ManyToOne
+    @JoinColumn(name="artist_id")
+    private Artist artist;
+
+    // *********************** //
+    // *  GETTERS / SETTERS  * //
+    // *********************** //
+
+    @Override public Long getId() {
+        return this.id;
+    }
+
+    @Override public Album setId(final Long id) {
+        this.id = id;
+        return this;
+    }
+
+    @Override public Artist getArtist() {
+        return this.artist;
+    }
+
+    @Override public Album setArtist(final ArtistInterface artistInterface) {
+        this.artist = new Artist().set(artistInterface);
+        return this;
+    }
+
+    @Override public String getName() {
+        return this.name;
+    }
+
+    @Override public Album setName(final String name) {
+        this.name = name;
+        return this;
+    }
+
+    @Override public Integer getReleaseYear() {
+        return this.releaseYear;
+    }
+
+    @Override public Album setReleaseYear(final Integer year) {
+        this.releaseYear = year;
+        return this;
+    }
+
+    public Album set(final AlbumInterface albumInterface) {
+        if (null != albumInterface.getId() && 0 != albumInterface.getId()) {
+            this.setId(albumInterface.getId());
+        }
+
+        if (null != albumInterface.getName()) {
+            this.setName(albumInterface.getName());
+        }
+
+        if (null != albumInterface.getReleaseYear()) {
+            this.setReleaseYear(albumInterface.getReleaseYear());
+        }
+
+        if (null != albumInterface.getArtist()) {
+            this.setArtist(albumInterface.getArtist());
+        }
+
+        return this;
+    }
+}

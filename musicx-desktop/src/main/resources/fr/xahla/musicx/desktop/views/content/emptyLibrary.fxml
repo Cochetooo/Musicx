@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<VBox
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.content.EmptyLibrary"
+        alignment="CENTER"
+        spacing="10"
+        VBox.vgrow="ALWAYS">
+    <Label text="%emptyLibrary.label" styleClass="title-2" />
+    <Button text="%emptyLibrary.importFolders" onAction="#importFolders">
+        <graphic>
+            <FontIcon iconLiteral="fltfal-folder-add-48" />
+        </graphic>
+    </Button>
+</VBox>
