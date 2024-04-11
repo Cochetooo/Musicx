@@ -18,7 +18,7 @@ import static fr.xahla.musicx.desktop.DesktopContext.library;
 
 public class ArtistManager {
 
-    private ListProperty<Artist> artists;
+    private final ListProperty<Artist> artists;
     private Thread getArtistListThread;
 
     public ArtistManager() {
