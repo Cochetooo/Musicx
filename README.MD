@@ -23,6 +23,11 @@ music lovers:<br>
 
 ## Patch Log
 
+### Release 0.2.1 *(2024-04-11)*
+
+> #### Fixes
+> - `Audio Player: Backward 30s & Forward 30s` now working properly
+
 ### Release 0.2.0 *(2024-04-09)*
 
 > #### New Features

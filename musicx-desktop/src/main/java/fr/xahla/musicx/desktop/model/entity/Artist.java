@@ -6,6 +6,16 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+/** <b>Class that defines the Artist Model for desktop view usage.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class Artist implements ArtistInterface {
 
     private LongProperty id;

@@ -3,6 +3,16 @@ package fr.xahla.musicx.core.model.entity;
 import fr.xahla.musicx.api.model.ArtistInterface;
 import jakarta.persistence.*;
 
+/** <b>Class that defines the Artist Model.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 @Entity
 @Table(name="artists")
 public class Artist implements ArtistInterface {

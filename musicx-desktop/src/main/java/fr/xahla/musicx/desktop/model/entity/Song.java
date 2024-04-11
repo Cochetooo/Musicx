@@ -5,6 +5,16 @@ import fr.xahla.musicx.api.model.ArtistInterface;
 import fr.xahla.musicx.api.model.SongInterface;
 import javafx.beans.property.*;
 
+/** <b>Class that defines the Song Model for desktop view usage.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class Song implements SongInterface {
 
     private final LongProperty id;

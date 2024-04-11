@@ -6,6 +6,17 @@ import java.time.Duration;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
+/** <b>Utility class for durations.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ * @see javafx.util.Duration
+ */
 public final class DurationHelper {
 
     public static boolean benchmark = true;

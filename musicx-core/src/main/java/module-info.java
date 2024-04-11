@@ -1,3 +1,13 @@
+/** <b>Core Module for Musicx, should be accessible for anyone that develops its own Musicx application.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 module fr.xahla.musicx.core {
 
     // --- Musicx ---

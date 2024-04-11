@@ -1,12 +1,10 @@
 package fr.xahla.musicx.desktop.helper;
 
-
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.views.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -15,6 +13,16 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
+/** <b>Utility class for FXML components.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class FXMLHelper {
 
     public static Parent getComponent(final String fxmlSource, final ResourceBundle resourceBundle) {

@@ -1,3 +1,13 @@
+/** <b>Desktop Module for Musicx, defining the Desktop Application.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 module fr.xahla.musicx.desktop {
 
     // --- Musicx ---

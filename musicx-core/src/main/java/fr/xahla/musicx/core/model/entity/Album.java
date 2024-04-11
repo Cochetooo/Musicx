@@ -4,6 +4,16 @@ import fr.xahla.musicx.api.model.AlbumInterface;
 import fr.xahla.musicx.api.model.ArtistInterface;
 import jakarta.persistence.*;
 
+/** <b>Class that defines the Album Model.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 @Entity
 @Table(name="albums")
 public class Album implements AlbumInterface {

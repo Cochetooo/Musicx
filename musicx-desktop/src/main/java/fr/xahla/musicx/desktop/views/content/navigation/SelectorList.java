@@ -17,12 +17,22 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.*;
 
+/** <b>View for the selected category sorting list panel</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class SelectorList implements Initializable {
 
     @FXML private ListView<Artist> selectorListView;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        this.selectorListView.setItems(artist().getArtists());
+        this.selectorListView.setItems(FXCollections.observableList(artist().getArtists()));
 
         this.selectorListView.setCellFactory(list -> {
             final var cell = new ListCell<Artist>() {

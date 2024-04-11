@@ -8,6 +8,16 @@ import org.hibernate.Transaction;
 import static fr.xahla.musicx.core.config.HibernateLoader.openSession;
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
+/** <b>Class that defines the repository for the Library model.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class LibraryRepository implements LibraryRepositoryInterface {
 
     private final SongRepository songRepository;

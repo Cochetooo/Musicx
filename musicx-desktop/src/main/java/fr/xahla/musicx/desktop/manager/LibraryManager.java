@@ -23,6 +23,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
+/** <b>Class that allow views to use Library model, while keeping a protection layer to its usage.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class LibraryManager {
 
     private final LibraryRepository libraryRepository;

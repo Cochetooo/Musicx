@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.media.MediaView;
+import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
@@ -17,6 +18,16 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 
+/** <b>View for the audio player with its controls.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class Player implements Initializable {
 
     @FXML private MediaView trackMediaView;
@@ -55,16 +66,42 @@ public class Player implements Initializable {
         });
 
         this.trackTimeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (!player().isPlayerInactive()) {
-                if (this.trackTimeSlider.isValueChanging()) {
-                    player().seek(trackTimeSlider.getValue());
-                }
+            if (player().isPlayerInactive()) {
+                return;
             }
+
+            if (null == newValue || newValue.equals(oldValue)) {
+                return;
+            }
+
+            if (!this.trackTimeSlider.isValueChanging()) {
+                return;
+            }
+
+            player().seek(newValue.doubleValue());
+        });
+
+        player().onCurrentTimeChange((observable, oldValue, newValue) -> {
+            if (null == newValue || newValue.equals(oldValue)) {
+                return;
+            }
+
+            final var current = player().getCurrentTime().toMillis();
+
+            if (!trackTimeSlider.isValueChanging()) {
+                this.trackTimeSlider.setValue(current);
+            }
+
+            this.trackTimeLabel.setText(DurationHelper.getTimeString(current));
         });
 
         player().onSongChange((song) -> {
             this.artistNameLabel.setText(song.getArtist().getName());
             this.trackNameLabel.setText(song.getTitle());
+
+            final var total = Duration.seconds(song.getDuration()).toMillis();
+            this.trackTimeSlider.setMax(total);
+            this.trackTotalTimeLabel.setText(DurationHelper.getTimeString(total));
         });
 
         player().onMute((observable) -> {
@@ -73,16 +110,6 @@ public class Player implements Initializable {
             } else {
                 this.volumeButton.setGraphic(this.getVolumeStateIcon());
             }
-        });
-
-        player().onCurrentTimeChange((observable) -> {
-            final var total = player().getTotalDuration().toMillis();
-            final var current = player().getCurrentTime().toMillis();
-
-            this.trackTimeSlider.setMax(total);
-            this.trackTimeSlider.setValue(current);
-            this.trackTimeLabel.setText(DurationHelper.getTimeString(current));
-            this.trackTotalTimeLabel.setText(DurationHelper.getTimeString(total));
         });
 
         player().onPlay(() -> togglePlayingButton.setGraphic(pauseIcon));
@@ -128,7 +155,7 @@ public class Player implements Initializable {
     }
 
     @FXML public void backward() {
-        player().seek(player().getPlayingTime() - 30);
+        player().seek(player().getPlayingTime() - Duration.seconds(30).toMillis());
     }
 
     @FXML public void togglePlaying() {
@@ -140,7 +167,7 @@ public class Player implements Initializable {
     }
 
     @FXML public void forward() {
-        player().seek(player().getPlayingTime() + 30);
+        player().seek(player().getPlayingTime() + Duration.seconds(30).toMillis());
     }
 
     @FXML public void next() {

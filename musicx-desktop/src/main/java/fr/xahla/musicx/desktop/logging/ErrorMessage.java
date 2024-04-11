@@ -2,6 +2,16 @@ package fr.xahla.musicx.desktop.logging;
 
 import java.text.MessageFormat;
 
+/** <b>Enum containing common error messages for the desktop application.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public enum ErrorMessage {
 
     BENCHMARK("Benchmark execution time for {0} : {1}ms."),

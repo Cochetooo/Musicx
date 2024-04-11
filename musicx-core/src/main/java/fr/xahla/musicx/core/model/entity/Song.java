@@ -5,6 +5,16 @@ import fr.xahla.musicx.api.model.ArtistInterface;
 import fr.xahla.musicx.api.model.SongInterface;
 import jakarta.persistence.*;
 
+/** <b>Class that defines the Song Model.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 @Entity
 @Table(name="songs")
 public class Song implements SongInterface {

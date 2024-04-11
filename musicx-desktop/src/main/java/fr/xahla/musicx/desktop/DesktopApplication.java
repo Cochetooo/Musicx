@@ -3,7 +3,9 @@ package fr.xahla.musicx.desktop;
 import atlantafx.base.theme.PrimerDark;
 import fr.xahla.musicx.core.config.AppInterface;
 import fr.xahla.musicx.core.config.HibernateLoader;
+import fr.xahla.musicx.core.config.ProjectInfo;
 import fr.xahla.musicx.core.logging.SimpleLogger;
+import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.logging.DesktopStream;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +23,16 @@ import java.util.logging.*;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
+/** <b>Main class for the desktop application.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public final class DesktopApplication extends Application implements AppInterface {
 
     private static DesktopApplication appInstance;
@@ -75,10 +87,10 @@ public final class DesktopApplication extends Application implements AppInterfac
             );
 
             this.mainStage.setMaximized(true);
-            this.mainStage.setTitle("Musicx 0.2.0");
+            this.mainStage.setTitle(ProjectInfo.APP_NAME.getInfo() + " " + ProjectInfo.APP_VERSION.getInfo());
             this.mainStage.setScene(scene);
 
-            logger().config("Initialization time: " + (System.currentTimeMillis() - startTime) + "ms.");
+            DurationHelper.benchmarkFrom("Program Initialization", startTime);
 
             this.mainStage.show();
         } catch (IOException e) {

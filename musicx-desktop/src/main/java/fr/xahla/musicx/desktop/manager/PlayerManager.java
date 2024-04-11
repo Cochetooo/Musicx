@@ -16,6 +16,16 @@ import java.util.List;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
+/** <b>Class that allow views to use Player model, while keeping a protection layer to its usage.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class PlayerManager {
 
     private final QueueManager queueManager;
@@ -164,7 +174,7 @@ public class PlayerManager {
     }
 
     public void seek(final Double seconds) {
-        this.mediaPlayer.seek(new Duration(seconds));
+        this.mediaPlayer.seek(Duration.millis(seconds));
     }
 
     public void stop() {
@@ -218,7 +228,7 @@ public class PlayerManager {
             return -1;
         }
 
-        return this.mediaPlayer.getCurrentTime().toSeconds();
+        return this.mediaPlayer.getCurrentTime().toMillis();
     }
 
     public void setVolume(final Double volume) {

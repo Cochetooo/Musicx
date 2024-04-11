@@ -15,6 +15,16 @@ import java.util.ResourceBundle;
 import static fr.xahla.musicx.desktop.DesktopContext.library;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 
+/** <b>View for the top menu bar and all its sub-menus.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class MenuBar implements Initializable {
 
     @FXML public MenuItem fileScanFoldersMenuItem;

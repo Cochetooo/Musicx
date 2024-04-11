@@ -19,6 +19,16 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.library;
 
+/** <b>View for the library folder imports management modal.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ */
 public class ImportFolders implements Initializable {
 
     @FXML private CheckListView<String> folderPathsCheckListView;

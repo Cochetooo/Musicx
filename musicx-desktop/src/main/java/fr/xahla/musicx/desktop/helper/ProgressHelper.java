@@ -1,5 +1,16 @@
 package fr.xahla.musicx.desktop.helper;
 
+/** <b>Utility class for progress displaying.</b>
+ * <p>
+ * Copyright (C) Xahla - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
+ * </p>
+ *
+ * @author Cochetooo
+ * @see javafx.scene.control.ProgressBar
+ */
 public final class ProgressHelper {
 
     public static double getPercentageFromDouble(
