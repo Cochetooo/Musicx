@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'fr.xahla'
-version '0.2.1'
+version '0.2.2'
 
 repositories {
   mavenCentral()
@@ -49,6 +49,8 @@ dependencies {
     implementation('eu.hansolo:tilesfx:11.48') {
       exclude(group: 'org.openjfx')
     }
+
+    implementation('org.rationalityfrontline.workaround:jfoenix:21.0.0')
 
     implementation('net.jthink:jaudiotagger:3.0.1')
     implementation('org.json:json:20240303')

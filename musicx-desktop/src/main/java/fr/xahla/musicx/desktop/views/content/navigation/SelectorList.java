@@ -10,6 +10,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -32,7 +33,10 @@ public class SelectorList implements Initializable {
     @FXML private ListView<Artist> selectorListView;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        this.selectorListView.setItems(FXCollections.observableList(artist().getArtists()));
+        final var artistList = FXCollections.observableList(artist().getArtists());
+        artistList.addFirst(null);
+
+        this.selectorListView.setItems(FXCollections.observableArrayList(artistList));
 
         this.selectorListView.setCellFactory(list -> {
             final var cell = new ListCell<Artist>() {
@@ -40,8 +44,10 @@ public class SelectorList implements Initializable {
                     super.updateItem(artist, empty);
 
                     if (empty || null == artist) {
-                        setText("");
+                        setTextFill(Color.WHITE);
+                        setText("All Artists");
                     } else {
+                        setTextFill(Color.LIGHTGRAY);
                         setText(artist.getName());
                     }
                 }
@@ -59,6 +65,11 @@ public class SelectorList implements Initializable {
         final var artist = this.selectorListView.getSelectionModel().getSelectedItem();
 
         if (MouseButton.PRIMARY == event.getButton()) {
+            if (null == artist) {
+                trackList().setQueue(library().getSongs(), 0);
+                return;
+            }
+
             trackList().setQueue(
                 artist().getSongsFromArtist(library().getSongs(), artist),
                 0

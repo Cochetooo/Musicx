@@ -23,6 +23,13 @@ music lovers:<br>
 
 ## Patch Log
 
+### Release 0.2.2
+
+> #### Changes
+> - Track List has been changed, list header has been hidden.
+> - Track Time Slider is now disabled when no song is playing.
+> - Sliders fill colors are now more intuitive.
+
 ### Release 0.2.1 *(2024-04-11)*
 
 > #### Fixes

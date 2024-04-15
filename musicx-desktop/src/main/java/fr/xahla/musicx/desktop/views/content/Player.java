@@ -96,6 +96,8 @@ public class Player implements Initializable {
         });
 
         player().onSongChange((song) -> {
+            this.trackTimeSlider.setDisable(false);
+
             this.artistNameLabel.setText(song.getArtist().getName());
             this.trackNameLabel.setText(song.getTitle());
 

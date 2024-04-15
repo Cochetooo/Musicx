@@ -78,22 +78,21 @@
         VBox.vgrow="ALWAYS"
         onMouseClicked="#tracksTableClick"
         style="-fx-border-radius: 10px; -fx-background-radius: 10px;"
+        styleClass="noTableHeader"
     >
         <columns>
-            <!-- Artist -->
-            <TableColumn text="%tracksTable.artistName" prefWidth="200" fx:id="tracksTableArtistCol" />
-
-            <!-- Album -->
-            <TableColumn text="%tracksTable.albumName" prefWidth="300" fx:id="tracksTableAlbumCol" />
-
             <!-- Title -->
-            <TableColumn text="%tracksTable.songTitle" prefWidth="600" fx:id="tracksTableTitleCol" />
+            <TableColumn text="%tracksTable.songTitle" fx:id="tracksTableTitleCol">
+                <cellValueFactory>
+                    <PropertyValueFactory property="song" />
+                </cellValueFactory>
+            </TableColumn>
 
             <!-- Year -->
-            <TableColumn text="%tracksTable.albumYear" prefWidth="60" fx:id="tracksTableYearCol" />
+            <TableColumn text="%tracksTable.albumYear" prefWidth="8" fx:id="tracksTableYearCol" />
 
             <!-- Duration -->
-            <TableColumn prefWidth="60" fx:id="tracksTableDurationCol" style="-fx-alignment: center;">
+            <TableColumn fx:id="tracksTableDurationCol" prefWidth="6" style="-fx-alignment: center;">
                 <cellValueFactory>
                     <PropertyValueFactory property="duration" />
                 </cellValueFactory>

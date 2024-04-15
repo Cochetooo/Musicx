@@ -12,7 +12,7 @@
         "
         prefHeight="900">
     <ListView fx:id="selectorListView" prefWidth="320" prefHeight="900"
-        style="-fx-background-color: transparent"
+        style="-fx-background-color: transparent;"
         onMouseClicked="#onListClick"
     />
 </GridPane>

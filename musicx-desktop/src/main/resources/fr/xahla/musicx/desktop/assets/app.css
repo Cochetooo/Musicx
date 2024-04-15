@@ -1,3 +1,18 @@
 .root {
     -fx-font-family: "Space Grotesk";
+    -fx-custom-color: #04d4ae;
+}
+
+/* Table No Header */
+.noTableHeader .column-header-background {
+    -fx-max-height: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+}
+
+/* JFX Slider */
+.jfx-slider > .thumb,
+.jfx-slider > .animated-thumb,
+.jfx-slider > .colored-track {
+    -fx-background-color: -fx-custom-color;
 }

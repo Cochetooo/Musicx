@@ -7,6 +7,8 @@
 <?import javafx.scene.control.Button?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import javafx.scene.control.Slider?>
+
+<?import com.jfoenix.controls.JFXSlider?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="fr.xahla.musicx.desktop.views.content.Player"
@@ -79,9 +81,11 @@
 
                 <HBox alignment="CENTER" spacing="15">
                     <Label fx:id="trackTimeLabel" text="--:--:--" />
-                    <Slider
+                    <JFXSlider
                         prefWidth="1000"
+                        max="1"
                         fx:id="trackTimeSlider"
+                        disable="true"
                     />
                     <Label fx:id="trackTotalTimeLabel" text="--:--:--" />
                 </HBox>
@@ -93,7 +97,7 @@
                         <FontIcon iconLiteral="fltfmz-speaker-48" iconSize="64" />
                     </graphic>
                 </Button>
-                <Slider
+                <JFXSlider
                     fx:id="volumeSlider"
                     max="1"
                     blockIncrement="0.01"

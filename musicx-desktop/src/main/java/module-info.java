@@ -42,6 +42,9 @@ module fr.xahla.musicx.desktop {
     // --- AtlantaFX ---
     requires atlantafx.base;
 
+    // --- JFoenix ---
+    requires com.jfoenix;
+
     // --- JAudioTagger ---
     requires jaudiotagger;
 

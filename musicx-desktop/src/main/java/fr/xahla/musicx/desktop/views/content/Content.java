@@ -14,6 +14,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.time.Duration;
@@ -39,8 +45,6 @@ public class Content implements Initializable {
 
     @FXML private TableView<Song> tracksTableView;
 
-    @FXML private TableColumn<Song, String> tracksTableArtistCol;
-    @FXML private TableColumn<Song, String> tracksTableAlbumCol;
     @FXML private TableColumn<Song, String> tracksTableTitleCol;
     @FXML private TableColumn<Song, Integer> tracksTableYearCol;
     @FXML private TableColumn<Song, Integer> tracksTableDurationCol;
@@ -59,15 +63,34 @@ public class Content implements Initializable {
         ));
 
         this.tracksTableView.setItems(filteredList);
+        this.tracksTableView.setTableMenuButtonVisible(false);
+        this.tracksTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
-        this.tracksTableView.setRowFactory(row -> new TableRow<>(){
-
-        });
-
-        this.tracksTableArtistCol.setCellValueFactory(song -> song.getValue().getArtist().nameProperty());
-        this.tracksTableAlbumCol.setCellValueFactory(song -> song.getValue().getAlbum().nameProperty());
-        this.tracksTableTitleCol.setCellValueFactory(song -> song.getValue().titleProperty());
         this.tracksTableYearCol.setCellValueFactory(song -> song.getValue().getAlbum().releaseYearProperty().asObject());
+
+        this.tracksTableTitleCol.setCellFactory(songStringTableColumn -> new TableCell<>() {
+            @Override protected void updateItem(final String value, final boolean empty) {
+                super.updateItem(value, empty);
+
+                final var song = this.getTableRow().getItem();
+
+                if (null == song || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    final var titleText = new Text(song.getTitle());
+                    titleText.setFont(Font.font("Space Grotesk", FontWeight.BOLD, 15));
+                    titleText.setFill(Color.WHITE);
+
+                    final var artistText = new Text(song.getArtist().getName() + " - " + song.getAlbum().getName());
+                    artistText.setFont(Font.font(12));
+                    artistText.setFill(Color.GRAY);
+
+                    final var vBox = new VBox(titleText, artistText);
+                    this.setGraphic(vBox);
+                }
+            }
+        });
 
         this.tracksTableDurationCol.setCellFactory(songDurationTableCol -> new TableCell<>(){
             @Override protected void updateItem(final Integer duration, final boolean empty) {

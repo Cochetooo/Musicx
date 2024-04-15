@@ -13,7 +13,7 @@ package fr.xahla.musicx.core.config;
 public enum ProjectInfo {
 
     APP_NAME("Musicx"),
-    APP_VERSION("0.2.1");
+    APP_VERSION("0.2.2");
 
     private String info;
 
