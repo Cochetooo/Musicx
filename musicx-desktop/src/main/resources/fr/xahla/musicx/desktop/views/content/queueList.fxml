@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.MenuItem?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.content.QueueList"
+      prefHeight="1200.0" prefWidth="400.0"
+      style="
+        -fx-padding: 20px;
+        -fx-background-color: -color-base-7;
+        -fx-background-radius: 10px;
+        -fx-border-radius: 10px;"
+      spacing="15">
+
+    <Label text="%queueList.title" styleClass="title-2" />
+    <ListView fx:id="queueListView" style="-fx-background: transparent" onMouseClicked="#play" prefHeight="1200">
+        <contextMenu>
+            <ContextMenu>
+                <items>
+                    <!-- Remove -->
+                    <MenuItem
+                        text="%queueList.contextMenu.remove"
+                        accelerator="Delete"
+                        onAction="#remove">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-delete-48" />
+                        </graphic>
+                    </MenuItem>
+                </items>
+            </ContextMenu>
+        </contextMenu>
+    </ListView>
+</VBox>

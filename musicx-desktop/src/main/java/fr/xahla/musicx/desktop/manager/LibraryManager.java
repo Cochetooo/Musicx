@@ -4,6 +4,7 @@ import fr.xahla.musicx.core.repository.LibraryRepository;
 import fr.xahla.musicx.core.repository.SongRepository;
 import fr.xahla.musicx.desktop.listener.ProgressListener;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
+import fr.xahla.musicx.desktop.model.TaskProgress;
 import fr.xahla.musicx.desktop.model.data.LocalSong;
 import fr.xahla.musicx.desktop.model.entity.Library;
 import fr.xahla.musicx.desktop.model.entity.Song;
@@ -22,6 +23,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.desktop.DesktopContext.taskProgress;
 
 /** <b>Class that allow views to use Library model, while keeping a protection layer to its usage.</b>
  * <p>
@@ -65,6 +67,10 @@ public class LibraryManager {
                 return null;
             }
         };
+
+        taskProgress().setTaskProgress(
+            new TaskProgress(scanFolderTask, "library.scanFolderProgress")
+        );
 
         new Thread(scanFolderTask).start();
     }
@@ -134,6 +140,8 @@ public class LibraryManager {
 
             // When all is done, hydrate library with the songs collected
             this.library.setSongs(songs);
+
+            progressListener.updateProgress(1, 1);
 
             logger().info("Library scan made in " + (System.currentTimeMillis() - startTime) + "ms.");
         }

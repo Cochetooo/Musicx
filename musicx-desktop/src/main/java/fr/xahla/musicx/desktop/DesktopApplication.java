@@ -6,13 +6,15 @@ import fr.xahla.musicx.core.config.HibernateLoader;
 import fr.xahla.musicx.core.config.ProjectInfo;
 import fr.xahla.musicx.core.logging.SimpleLogger;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
-import fr.xahla.musicx.desktop.logging.DesktopStream;
+import fr.xahla.musicx.desktop.manager.LoggerManager;
 import javafx.application.Application;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Locale;
@@ -34,19 +36,14 @@ import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
  */
 public final class DesktopApplication extends Application implements AppInterface {
 
-    private static DesktopApplication appInstance;
-
-    private PrintStream printStream;
-
     private Stage mainStage;
+    private LoggerManager loggerManager;
 
     public static void main(final String[] args) {
         launch();
     }
 
     @Override public void start(final Stage stage) {
-        appInstance = this;
-
         this.setupLogger();
         this.setupDatabase();
 
@@ -58,7 +55,7 @@ public final class DesktopApplication extends Application implements AppInterfac
     @Override public void setupApp() {
         final var startTime = System.currentTimeMillis();
 
-        DesktopContext.createContext();
+        DesktopContext.createContext(this.loggerManager);
 
         Locale.setDefault(Locale.ENGLISH);
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
@@ -109,15 +106,7 @@ public final class DesktopApplication extends Application implements AppInterfac
 
         logger().setLevel(Level.ALL);
 
-        try (var desktopStream = new DesktopStream()) {
-            this.printStream = new PrintStream(desktopStream, true);
-            System.setOut(this.printStream);
-            System.setErr(this.printStream);
-
-            logger().addHandler(new StreamHandler(this.printStream, new SimpleFormatter()));
-        } catch (IOException exception) {
-            logger().severe(exception.getLocalizedMessage());
-        }
+        this.loggerManager = new LoggerManager();
     }
 
     @Override public void setupDatabase() {

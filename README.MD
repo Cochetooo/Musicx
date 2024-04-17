@@ -25,10 +25,19 @@ music lovers:<br>
 
 ### Release 0.2.2
 
+> #### New Features
+> - `Settings` modal
+> - `Console Output` modal
+> - `Queue` navigation list
+> - `Queue : Remove Track`
 > #### Changes
-> - Track List has been changed, list header has been hidden.
-> - Track Time Slider is now disabled when no song is playing.
-> - Sliders fill colors are now more intuitive.
+> - `Track List` has been changed, list header has been hidden and columns now take 100% width.
+> - `Track Time Slider` is now disabled when no song is playing.
+> - `Sliders` fill colors are now more intuitive.
+> - `Stop Button` removed
+> #### Fixes
+> - `Track Time Slider` is now clickable everywhere in addition to drag click.
+> - `Scan Folders` Menu Item now properly enables if library not empty at start.
 
 ### Release 0.2.1 *(2024-04-11)*
 
@@ -63,6 +72,5 @@ music lovers:<br>
 
 > - **New Features**: Library Folder Import & Scan, Track List, Audio Player, 
 > Local Database Persistence, Song title, duration & format display
-> - **Known Bugs**: 
 
 *By Alexis Cochet.*

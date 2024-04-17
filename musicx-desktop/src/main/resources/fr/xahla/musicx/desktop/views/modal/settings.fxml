@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.modal.Settings"
+      prefHeight="600.0" prefWidth="600.0"
+      alignment="TOP_CENTER"
+      spacing="10"
+      style="-fx-padding: 20 20 20 20;">
+    <Label text="%settings.title" styleClass="title-2" />
+    <TabPane tabClosingPolicy="UNAVAILABLE">
+        <Tab text="%settings.tabTrackList">
+
+        </Tab>
+    </TabPane>
+</VBox>

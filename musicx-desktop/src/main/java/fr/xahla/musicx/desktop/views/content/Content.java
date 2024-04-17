@@ -2,11 +2,14 @@ package fr.xahla.musicx.desktop.views.content;
 
 import atlantafx.base.controls.CustomTextField;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
+import fr.xahla.musicx.desktop.helper.FXMLHelper;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -51,7 +54,17 @@ public class Content implements Initializable {
 
     @FXML private CustomTextField searchTextField;
 
+    private ResourceBundle resourceBundle;
+
+    // Right Nav Content
+    private Parent queueListView;
+
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
+
+        // Right Nav Content
+        this.queueListView = FXMLHelper.getComponent("content/queueList.fxml", resourceBundle);
+
         this.filteredList = new FilteredList<>(trackList().getSongs());
 
         // Update search filters
@@ -141,5 +154,18 @@ public class Content implements Initializable {
 
     @FXML public void tracksTableQueueLast() {
         player().queueLast(tracksTableView.getSelectionModel().getSelectedItem());
+    }
+
+    @FXML public void actionSettings() {
+        FXMLHelper.showModal("settings.fxml", this.resourceBundle, resourceBundle.getString("settings.title"));
+    }
+
+    @FXML public void actionQueueList() {
+        if (null != rightNavContent().get() && rightNavContent().get().equals(queueListView)) {
+            rightNavContent().set(null);
+            return;
+        }
+
+        rightNavContent().set(queueListView);
     }
 }

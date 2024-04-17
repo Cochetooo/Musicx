@@ -7,7 +7,8 @@
         fx:controller="fr.xahla.musicx.desktop.views.content.ContentLayout">
     <BorderPane
             VBox.vgrow="ALWAYS"
-            style="-fx-padding: 10px;">
+            style="-fx-padding: 10px;"
+            fx:id="contentPane">
         <left>
             <VBox prefWidth="320" spacing="15" style="-fx-padding: 0 10px 0 0;">
                 <!-- Group Selector -->
@@ -23,7 +24,7 @@
             </VBox>
         </center>
         <right>
-
+            <VBox fx:id="rightNavContainer" />
         </right>
     </BorderPane>
 

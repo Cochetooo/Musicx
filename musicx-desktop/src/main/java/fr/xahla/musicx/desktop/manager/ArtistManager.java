@@ -46,7 +46,6 @@ public class ArtistManager {
                 this.getArtistListThread.interrupt();
             }
 
-
             final var getArtistListTask = new Task<>() {
                 @Override protected Void call() {
                     @SuppressWarnings("unchecked")

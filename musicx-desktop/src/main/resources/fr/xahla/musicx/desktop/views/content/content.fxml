@@ -11,6 +11,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.Tooltip?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.come/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.Content"
@@ -51,10 +52,14 @@
         </Button>
 
         <!-- Queue -->
-        <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+        <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;"
+            onAction="#actionQueueList">
             <graphic>
                 <FontIcon iconLiteral="fltfmz-text-bullet-list-24" />
             </graphic>
+            <tooltip>
+                <Tooltip text="%content.actionQueueList" />
+            </tooltip>
         </Button>
 
         <!-- User Profile -->
@@ -65,10 +70,14 @@
         </Button>
 
         <!-- Settings -->
-        <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+        <Button style="-fx-background-color: -color-base-6; -fx-border-radius: 10px; -fx-background-radius: 10px;"
+            onAction="#actionSettings">
             <graphic>
                 <FontIcon iconLiteral="fltfmz-settings-28" />
             </graphic>
+            <tooltip>
+                <Tooltip text="%content.actionSettings" />
+            </tooltip>
         </Button>
     </HBox>
 
@@ -103,7 +112,7 @@
         </columns>
 
         <contextMenu>
-            <ContextMenu fx:id="tracksTableContextMenu">
+            <ContextMenu>
                 <items>
                     <!-- Play Track Now -->
                     <MenuItem

@@ -16,6 +16,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 
 /** <b>View for the audio player with its controls.</b>
@@ -38,7 +39,6 @@ public class Player implements Initializable {
     @FXML private Button previousButton;
     @FXML private Button backwardButton;
     @FXML private Button togglePlayingButton;
-    @FXML private Button stopButton;
     @FXML private Button forwardButton;
     @FXML private Button nextButton;
 
@@ -65,20 +65,13 @@ public class Player implements Initializable {
             this.volumeLabel.setText("" + (int) ((double) newValue * 100.0));
         });
 
-        this.trackTimeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (player().isPlayerInactive()) {
-                return;
-            }
+        this.trackTimeSlider.setOnMouseClicked(event -> {
+            final var mouseX = event.getX();
+            final var width = trackTimeSlider.getWidth();
+            final var totalDuration = player().getTotalDuration().toMillis();
+            final var seekTime = (mouseX / width) * totalDuration;
 
-            if (null == newValue || newValue.equals(oldValue)) {
-                return;
-            }
-
-            if (!this.trackTimeSlider.isValueChanging()) {
-                return;
-            }
-
-            player().seek(newValue.doubleValue());
+            player().seek(seekTime);
         });
 
         player().onCurrentTimeChange((observable, oldValue, newValue) -> {
@@ -162,10 +155,6 @@ public class Player implements Initializable {
 
     @FXML public void togglePlaying() {
         player().togglePlaying();
-    }
-
-    @FXML public void stop() {
-        player().stop();
     }
 
     @FXML public void forward() {

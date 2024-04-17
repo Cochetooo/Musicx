@@ -9,6 +9,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -81,6 +82,10 @@ public class QueueManager {
 
     public void queueLast(final Song song) {
         this.queue.getSongs().add(song);
+    }
+
+    public void shuffle() {
+        Collections.shuffle(this.queue.getSongs());
     }
 
     public Song getSongAt(final int index) {

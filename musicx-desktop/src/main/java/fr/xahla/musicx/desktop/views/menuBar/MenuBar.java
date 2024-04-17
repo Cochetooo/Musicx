@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.views.menuBar;
 
+import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.FXMLHelper;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -12,6 +13,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.library;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 
@@ -34,9 +36,10 @@ public class MenuBar implements Initializable {
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
 
-        library().onFolderPathsChange(change -> {
-            Platform.runLater(() -> fileScanFoldersMenuItem.setDisable(change.getList().isEmpty()));
-        });
+        this.fileScanFoldersMenuItem.setDisable(library().isEmpty());
+
+        library().onFolderPathsChange(change
+            -> Platform.runLater(() -> fileScanFoldersMenuItem.setDisable(change.getList().isEmpty())));
     }
 
     /* --------------------------- FILE --------------------------- */
@@ -49,8 +52,12 @@ public class MenuBar implements Initializable {
         library().launchScanFoldersTask();
     }
 
-    @FXML public void fileShowConsole() {
+    @FXML public void fileSettings() {
+        FXMLHelper.showModal("settings.fxml", this.resourceBundle, resourceBundle.getString("settings.title"));
+    }
 
+    @FXML public void fileShowConsole() {
+        FXMLHelper.showModal("console.fxml", this.resourceBundle, resourceBundle.getString("console.title"));
     }
 
     @FXML public void fileExit() {
@@ -60,10 +67,6 @@ public class MenuBar implements Initializable {
     /* --------------------------- PLAYER --------------------------- */
     @FXML public void playerTogglePlaying() {
         player().togglePlaying();
-    }
-
-    @FXML public void playerStop() {
-        player().stop();
     }
 
     @FXML public void playerPrevious() {

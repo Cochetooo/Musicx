@@ -4,6 +4,7 @@ import fr.xahla.musicx.desktop.listener.mediaPlayer.*;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Player;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -164,6 +165,10 @@ public class PlayerManager {
         this.queueManager.movePrevious();
     }
 
+    public void remove(final int position) {
+        this.queueManager.remove(position);
+    }
+
     public void resume() {
         if (this.isPlayerInactive()) {
             logger().warning(ErrorMessage.MEDIA_PLAYER_NOT_CREATED.getMsg());
@@ -201,6 +206,10 @@ public class PlayerManager {
     }
 
     // --- Accessors / Modifiers ---
+
+    public ObservableList<Song> getSongs() {
+        return this.queueManager.getSongs();
+    }
 
     public boolean isMuted() {
         return this.mediaPlayer.isMute();

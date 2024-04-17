@@ -55,13 +55,6 @@
                                 </graphic>
                             </Button>
 
-                            <!-- Stop Button -->
-                            <Button onAction="#stop" fx:id="stopButton" style="-fx-background-color: transparent">
-                                <graphic>
-                                    <FontIcon iconLiteral="fltfmz-stop-24" iconSize="64" />
-                                </graphic>
-                            </Button>
-
                             <!-- Forward 30s Button -->
                             <Button onAction="#forward" fx:id="forwardButton" style="-fx-background-color: transparent">
                                 <graphic>

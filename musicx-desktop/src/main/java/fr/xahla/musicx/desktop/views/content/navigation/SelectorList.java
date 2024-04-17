@@ -10,7 +10,11 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -38,22 +42,28 @@ public class SelectorList implements Initializable {
 
         this.selectorListView.setItems(FXCollections.observableArrayList(artistList));
 
-        this.selectorListView.setCellFactory(list -> {
-            final var cell = new ListCell<Artist>() {
-                @Override public void updateItem(final Artist artist, final boolean empty) {
-                    super.updateItem(artist, empty);
+        this.selectorListView.setCellFactory(list -> new ListCell<>() {
+            @Override public void updateItem(final Artist artist, final boolean empty) {
+                super.updateItem(artist, empty);
 
-                    if (empty || null == artist) {
-                        setTextFill(Color.WHITE);
-                        setText("All Artists");
-                    } else {
-                        setTextFill(Color.LIGHTGRAY);
-                        setText(artist.getName());
-                    }
+                if (empty || null == artist) {
+                    this.setTextFill(Color.WHITE);
+                    this.setText("All Artists");
+                    this.setGraphic(null);
+                } else {
+                    final var artistName = new Text(artist.getName());
+                    artistName.setFont(Font.font("Space Grotesk", FontWeight.BOLD, 15));
+                    artistName.setFill(Color.LIGHTGRAY);
+
+                    final var songCount = new Text(artist().getSongsFromArtist(library().getSongs(), artist).size() + " tracks");
+                    songCount.setFont(Font.font(12));
+                    songCount.setFill(Color.GRAY);
+
+                    final var vBox = new VBox(artistName, songCount);
+                    this.setGraphic(vBox);
+                    this.setText(null);
                 }
-            };
-
-            return cell;
+            }
         });
 
         this.selectorListView.setStyle(

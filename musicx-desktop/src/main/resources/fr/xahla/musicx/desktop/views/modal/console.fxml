@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Label?>
+<VBox xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="fr.xahla.musicx.desktop.views.modal.Console"
+            spacing="5"
+            prefHeight="800.0" prefWidth="800.0"
+            alignment="TOP_CENTER"
+            style="-fx-padding: 20 20 20 20">
+
+    <Label text="%console.consoleLabel" styleClass="title-2" />
+
+    <!-- Console Output -->
+    <TextArea fx:id="consoleOutputTextArea" prefRowCount="40" prefColumnCount="120" editable="false" />
+</VBox>
