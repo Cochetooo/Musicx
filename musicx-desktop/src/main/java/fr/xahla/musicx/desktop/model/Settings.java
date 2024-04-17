@@ -15,10 +15,13 @@ public class Settings {
     private final ListProperty<String> scanLibraryAudioFormats;
 
     // Player
+    private final BooleanProperty artworkShadow;
     private final BooleanProperty smoothFadeStop;
 
     public Settings() {
         this.scanLibraryAudioFormats = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+
+        this.artworkShadow = new SimpleBooleanProperty();
         this.smoothFadeStop = new SimpleBooleanProperty();
     }
 
@@ -32,6 +35,19 @@ public class Settings {
 
     public Settings setScanLibraryAudioFormats(final ObservableList<String> scanLibraryAudioFormats) {
         this.scanLibraryAudioFormats.set(scanLibraryAudioFormats);
+        return this;
+    }
+
+    public boolean isArtworkShadow() {
+        return artworkShadow.get();
+    }
+
+    public BooleanProperty artworkShadowProperty() {
+        return artworkShadow;
+    }
+
+    public Settings setArtworkShadow(final boolean artworkShadow) {
+        this.artworkShadow.set(artworkShadow);
         return this;
     }
 

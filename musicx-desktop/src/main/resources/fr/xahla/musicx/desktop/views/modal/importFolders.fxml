@@ -15,13 +15,17 @@
       prefWidth="600" prefHeight="600"
       spacing="5"
       style="-fx-padding: 10 10 10 10">
-    <Label text="%importFolders.selectedFolders" />
+    <Label text="%importFolders.selectedFolders" styleClass="title-2">
+        <graphic>
+            <FontIcon iconLiteral="fltfmz-multiselect-24" iconSize="92" />
+        </graphic>
+    </Label>
     <CheckListView fx:id="folderPathsCheckListView" />
 
-    <HBox VBox.vgrow="ALWAYS" spacing="15">
+    <HBox VBox.vgrow="ALWAYS" spacing="15" alignment="CENTER_LEFT">
         <Label text="%importFolders.formats" />
 
-        <ToggleButton text="MP3" fx:id="formatMp3Button" />
+        <ToggleButton text="MP3" fx:id="formatMp3Button" selected="true" />
         <ToggleButton text="FLAC" fx:id="formatFlacButton" disable="true" />
         <ToggleButton text="OGG" fx:id="formatOggButton" />
         <ToggleButton text="WAV" fx:id="formatWavButton" />

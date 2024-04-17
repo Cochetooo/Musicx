@@ -1,23 +1,34 @@
 package fr.xahla.musicx.desktop.views.content;
 
+import fr.xahla.musicx.core.service.GetArtworkFromiTunes;
+import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
+import static fr.xahla.musicx.desktop.DesktopContext.settings;
 
 /** <b>View for the audio player with its controls.</b>
  * <p>
@@ -32,6 +43,9 @@ import static fr.xahla.musicx.desktop.DesktopContext.player;
 public class Player implements Initializable {
 
     @FXML private MediaView trackMediaView;
+
+    @FXML private DropShadow albumThumbnailShadow;
+    @FXML private ImageView albumThumbnail;
 
     @FXML private Label artistNameLabel;
     @FXML private Label trackNameLabel;
@@ -50,11 +64,56 @@ public class Player implements Initializable {
     @FXML private Label volumeLabel;
     @FXML private Button volumeButton;
 
+    private String albumThumbnailPlaceholderImageURL;
+
     private FontIcon pauseIcon, playIcon;
     private FontIcon volumeMuteIcon, volumeOffIcon, volumeDownIcon, volumeIcon, volumeUpIcon;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.setControlIcons();
+
+        try {
+            this.albumThumbnailPlaceholderImageURL =
+                Objects.requireNonNull(DesktopApplication.class.getResource("assets/images/thumbnail-placeholder.png"))
+                    .toURI()
+                    .toString();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        albumThumbnail.setImage(new Image(albumThumbnailPlaceholderImageURL));
+
+        settings().artworkShadowProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                albumThumbnailShadow.setRadius(10);
+            } else {
+                albumThumbnailShadow.setRadius(0);
+            }
+        });
+
+        player().onSongChange(change -> {
+            final var getArtworkFromITunesTask = new Task<>() {
+                @Override protected Void call() {
+                    final var artwork = new GetArtworkFromiTunes().execute(
+                        change.getArtist().getName() + " " + change.getAlbum().getName()
+                    );
+
+                    logger().fine("Artwork: " + artwork);
+
+                    Platform.runLater(() -> albumThumbnail.setImage(
+                        null == artwork || artwork.isEmpty()
+                        ? new Image(albumThumbnailPlaceholderImageURL)
+                        : new Image(artwork)
+                    ));
+
+                    return null;
+                }
+            };
+
+            new Thread(getArtworkFromITunesTask).start();
+        });
+
+        player().setVolume(this.volumeSlider.getValue());
 
         this.volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!player().isPlayerInactive()) {

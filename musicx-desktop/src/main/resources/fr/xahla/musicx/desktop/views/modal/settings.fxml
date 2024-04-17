@@ -23,6 +23,13 @@
     <TabPane tabClosingPolicy="UNAVAILABLE">
         <Tab text="%settings.tabPlayer">
             <VBox style="-fx-padding: 10" spacing="5">
+                <!-- Artwork Shadow -->
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <ToggleSwitch fx:id="playerArtworkShadow" selected="true" />
+                    <Label text="%settings.tabPlayer.artworkShadow" />
+                </HBox>
+
+                <!-- Smooth Fading -->
                 <HBox spacing="5" alignment="CENTER_LEFT">
                     <ToggleSwitch fx:id="playerSmoothFadingStop" />
                     <Label text="%settings.tabPlayer.smoothFadingStop" />

@@ -21,9 +21,11 @@ import static fr.xahla.musicx.desktop.DesktopContext.settings;
  */
 public class Settings implements Initializable {
 
+    @FXML private ToggleSwitch playerArtworkShadow;
     @FXML private ToggleSwitch playerSmoothFadingStop;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
+        settings().artworkShadowProperty().bind(playerArtworkShadow.selectedProperty());
         settings().smoothFadeStopProperty().bind(playerSmoothFadingStop.selectedProperty());
     }
 }

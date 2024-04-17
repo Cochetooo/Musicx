@@ -9,17 +9,27 @@
 <?import javafx.scene.control.Slider?>
 
 <?import com.jfoenix.controls.JFXSlider?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.effect.DropShadow?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="fr.xahla.musicx.desktop.views.content.Player"
-            prefHeight="75" prefWidth="Infinity"
+            prefHeight="80" prefWidth="Infinity"
             style="-fx-background-color: -color-base-9; -fx-padding: 10 25 10 25"
             HBox.hgrow="ALWAYS">
     <left>
-        <VBox spacing="10" prefWidth="320">
-            <Label fx:id="trackNameLabel" styleClass="title-3" />
-            <Label fx:id="artistNameLabel" styleClass="text-caption" textFill="gray" />
-        </VBox>
+        <HBox spacing="20">
+            <ImageView fx:id="albumThumbnail" fitWidth="80" fitHeight="80">
+                <effect>
+                    <DropShadow fx:id="albumThumbnailShadow" spread="0.4" color="darkslategray" />
+                </effect>
+            </ImageView>
+
+            <VBox spacing="10" prefWidth="320" alignment="CENTER_LEFT">
+                <Label fx:id="trackNameLabel" styleClass="title-3" />
+                <Label fx:id="artistNameLabel" styleClass="text-caption" textFill="gray" />
+            </VBox>
+        </HBox>
     </left>
 
     <center>

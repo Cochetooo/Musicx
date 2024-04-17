@@ -23,7 +23,15 @@ music lovers:<br>
 
 ## Patch Log
 
-### Release 0.2.2
+### Release 0.2.3
+
+> #### New Features
+> - `Album Artwork` now displayed bottom left, using iTunes API
+> - `Album Artwork Shadow` displayed, can be toggled in settings
+> #### Changes
+> - `Track List` is now sorted by year and albums
+
+### Release 0.2.2 *(2024-04-17)*
 
 > #### New Features
 > - `Formats` selection for library scan

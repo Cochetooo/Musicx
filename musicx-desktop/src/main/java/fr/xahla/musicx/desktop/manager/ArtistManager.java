@@ -2,6 +2,7 @@ package fr.xahla.musicx.desktop.manager;
 
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
+import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Artist;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.ListProperty;
@@ -99,6 +100,11 @@ public class ArtistManager {
                 songList.add(song);
             }
         });
+
+        final Comparator<Song> comparatorYear = Comparator.comparingInt(song -> song.getAlbum().getReleaseYear());
+        final Comparator<Song> comparatorAlbum = Comparator.comparing(song -> song.getAlbum().getName());
+
+        songList.sort(comparatorYear.thenComparing(comparatorAlbum));
 
         return songList;
     }

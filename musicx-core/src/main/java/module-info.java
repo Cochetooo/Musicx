@@ -16,6 +16,9 @@ module fr.xahla.musicx.core {
     // --- Logger ---
     requires java.logging;
 
+    // --- HTTP Client ---
+    requires java.net.http;
+
     // --- Hibernate ---
     requires org.jboss.logging;
     requires jakarta.cdi;
@@ -42,5 +45,6 @@ module fr.xahla.musicx.core {
     exports fr.xahla.musicx.core.repository;
     exports fr.xahla.musicx.core.config;
     exports fr.xahla.musicx.core.model.data;
+    exports fr.xahla.musicx.core.service;
 
 }
