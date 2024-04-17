@@ -1,9 +1,12 @@
 package fr.xahla.musicx.desktop.manager;
 
+import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.listener.mediaPlayer.*;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Player;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.desktop.DesktopContext.settings;
 
 /** <b>Class that allow views to use Player model, while keeping a protection layer to its usage.</b>
  * <p>
@@ -153,7 +157,24 @@ public class PlayerManager {
             return;
         }
 
-        this.mediaPlayer.pause();
+        if (settings().isSmoothFadeStop()) {
+            final var startVolume = this.getVolume();
+
+            DurationHelper.fade(
+                Duration.seconds(0.25),
+                startVolume,
+                0.0,
+                16,
+                this::setVolume,
+                this::getVolume,
+                () -> {
+                    this.mediaPlayer.pause();
+                    this.setVolume(startVolume);
+                }
+            );
+        } else {
+            this.mediaPlayer.pause();
+        }
     }
 
     public void previous() {

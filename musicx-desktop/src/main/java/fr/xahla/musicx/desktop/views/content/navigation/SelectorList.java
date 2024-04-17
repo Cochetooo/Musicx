@@ -47,8 +47,13 @@ public class SelectorList implements Initializable {
                 super.updateItem(artist, empty);
 
                 if (empty || null == artist) {
-                    this.setTextFill(Color.WHITE);
-                    this.setText("All Artists");
+                    if (0 == this.getIndex()) {
+                        this.setTextFill(Color.WHITE);
+                        this.setText("All Artists");
+                    } else {
+                        this.setText(null);
+                    }
+
                     this.setGraphic(null);
                 } else {
                     final var artistName = new Text(artist.getName());

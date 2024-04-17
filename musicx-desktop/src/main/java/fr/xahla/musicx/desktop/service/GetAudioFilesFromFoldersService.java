@@ -26,7 +26,7 @@ public final class GetAudioFilesFromFoldersService {
 
     public static List<Path> execute(
         final List<String> paths,
-        final String[] acceptedFormats
+        final List<String> acceptedFormats
     ) {
         final var audioFiles = new ArrayList<Path>();
 

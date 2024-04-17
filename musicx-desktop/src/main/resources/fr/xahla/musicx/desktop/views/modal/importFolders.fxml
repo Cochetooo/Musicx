@@ -3,18 +3,30 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import org.controlsfx.control.CheckListView?>
 <?import javafx.scene.control.Button?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<VBox     xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="fr.xahla.musicx.desktop.views.modal.ImportFolders"
-          alignment="CENTER"
-          prefWidth="600" prefHeight="600"
-          spacing="5"
-          style="-fx-padding: 10 10 10 10">
+<?import javafx.scene.control.ToggleButton?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.modal.ImportFolders"
+      alignment="CENTER"
+      prefWidth="600" prefHeight="600"
+      spacing="5"
+      style="-fx-padding: 10 10 10 10">
     <Label text="%importFolders.selectedFolders" />
     <CheckListView fx:id="folderPathsCheckListView" />
+
+    <HBox VBox.vgrow="ALWAYS" spacing="15">
+        <Label text="%importFolders.formats" />
+
+        <ToggleButton text="MP3" fx:id="formatMp3Button" />
+        <ToggleButton text="FLAC" fx:id="formatFlacButton" disable="true" />
+        <ToggleButton text="OGG" fx:id="formatOggButton" />
+        <ToggleButton text="WAV" fx:id="formatWavButton" />
+        <ToggleButton text="M4A" fx:id="formatM4aButton" />
+    </HBox>
 
     <HBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS" spacing="15">
         <Button text="%importFolders.clearLibrary" onAction="#clear" fx:id="clearButton">

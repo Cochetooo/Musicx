@@ -7,17 +7,20 @@ import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import org.controlsfx.control.CheckListView;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.library;
+import static fr.xahla.musicx.desktop.DesktopContext.settings;
 
 /** <b>View for the library folder imports management modal.</b>
  * <p>
@@ -35,6 +38,14 @@ public class ImportFolders implements Initializable {
     @FXML private Button clearButton;
     @FXML private Button scanFoldersButton;
 
+    @FXML private ToggleButton formatMp3Button;
+    @FXML private ToggleButton formatFlacButton;
+    @FXML private ToggleButton formatOggButton;
+    @FXML private ToggleButton formatWavButton;
+    @FXML private ToggleButton formatM4aButton;
+
+    private List<ToggleButton> formatButtons;
+
     private ResourceBundle resourceBundle;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
@@ -42,6 +53,16 @@ public class ImportFolders implements Initializable {
 
         this.clearButton.setDisable(library().isEmpty());
         this.scanFoldersButton.setDisable(library().isEmpty());
+
+        this.formatButtons = new ArrayList<>(List.of(
+            formatMp3Button, formatFlacButton, formatOggButton, formatWavButton, formatM4aButton
+        ));
+
+        this.formatButtons.forEach(toggle
+            -> toggle.selectedProperty().addListener(change -> {
+                settings().getScanLibraryAudioFormats().setAll(this.getSelectedFormats());
+            }
+        ));
 
         this.folderPathsCheckListView.setItems(FXCollections.observableList(
             new ArrayList<>(library().getFolderPaths())
@@ -83,5 +104,12 @@ public class ImportFolders implements Initializable {
         if (response.get() == ButtonType.OK) {
             library().clear();
         }
+    }
+
+    private List<String> getSelectedFormats() {
+        return this.formatButtons.stream()
+            .filter(ToggleButton::isSelected)
+            .map(ToggleButton::getText)
+            .collect(Collectors.toList());
     }
 }

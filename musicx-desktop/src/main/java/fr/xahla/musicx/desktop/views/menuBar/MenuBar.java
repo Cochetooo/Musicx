@@ -11,6 +11,8 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;

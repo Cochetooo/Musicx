@@ -17,12 +17,14 @@ import org.jaudiotagger.audio.AudioFileIO;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.desktop.DesktopContext.settings;
 import static fr.xahla.musicx.desktop.DesktopContext.taskProgress;
 
 /** <b>Class that allow views to use Library model, while keeping a protection layer to its usage.</b>
@@ -58,7 +60,7 @@ public class LibraryManager {
         final var scanFolderTask = new Task<>() {
             @Override public Void call() {
                 scanFoldersForLibrary(
-                    new String[]{"mp3"},
+                    settings().getScanLibraryAudioFormats(),
                     this::updateProgress
                 );
 
@@ -83,7 +85,7 @@ public class LibraryManager {
      * @param progressListener A listener interface to get the current progress.
      */
     public void scanFoldersForLibrary(
-        final String[] acceptedFormats,
+        final List<String> acceptedFormats,
         final ProgressListener progressListener
     ) {
         final var startTime = System.currentTimeMillis();

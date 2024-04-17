@@ -91,11 +91,7 @@
     >
         <columns>
             <!-- Title -->
-            <TableColumn text="%tracksTable.songTitle" fx:id="tracksTableTitleCol">
-                <cellValueFactory>
-                    <PropertyValueFactory property="song" />
-                </cellValueFactory>
-            </TableColumn>
+            <TableColumn text="%tracksTable.songTitle" fx:id="tracksTableTitleCol" />
 
             <!-- Year -->
             <TableColumn text="%tracksTable.albumYear" prefWidth="8" fx:id="tracksTableYearCol" />

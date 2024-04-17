@@ -26,7 +26,9 @@ music lovers:<br>
 ### Release 0.2.2
 
 > #### New Features
+> - `Formats` selection for library scan
 > - `Settings` modal
+> - `Settings` Player : Smooth Fade when pausing/stopping song
 > - `Console Output` modal
 > - `Queue` navigation list
 > - `Queue : Remove Track`
@@ -38,6 +40,8 @@ music lovers:<br>
 > #### Fixes
 > - `Track Time Slider` is now clickable everywhere in addition to drag click.
 > - `Scan Folders` Menu Item now properly enables if library not empty at start.
+> - `Artist List` "All Artists" is no longer duplicated for each empty rows.
+> - `Track List` Fixed warning of a redundant property for the track column
 
 ### Release 0.2.1 *(2024-04-11)*
 

@@ -1,6 +1,8 @@
 package fr.xahla.musicx.desktop.helper;
 
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 
 import java.time.Duration;
 
@@ -60,6 +62,46 @@ public final class DurationHelper {
         }
 
         logger().fine(ErrorMessage.BENCHMARK.getMsg(context, System.currentTimeMillis() - startTime));
+    }
+
+    public interface FadeAnimationSet {
+        void set(double val);
+    }
+
+    public interface FadeAnimationGet {
+        double get();
+    }
+
+    public interface FadeAnimationCallback {
+        void done();
+    }
+
+    public static void fade(
+        final javafx.util.Duration duration,
+        final double startValue,
+        final double endValue,
+        final int timeStep,
+        final FadeAnimationSet set,
+        final FadeAnimationGet get,
+        final FadeAnimationCallback callback
+    ) {
+        final var numFrames = (int) (duration.toMillis() / timeStep);
+        final var valueStep = (startValue - endValue) / numFrames;
+
+        final var timeline = new Timeline(
+            new KeyFrame(javafx.util.Duration.millis(timeStep), event -> {
+                final var newValue = get.get() - valueStep;
+                if (newValue <= endValue) {
+                    set.set(endValue);
+                    callback.done();
+                } else {
+                    set.set(newValue);
+                }
+            })
+        );
+
+        timeline.setCycleCount(numFrames + 1);
+        timeline.play();
     }
 
 }

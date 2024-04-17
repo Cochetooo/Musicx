@@ -1,9 +1,13 @@
 package fr.xahla.musicx.desktop.views.modal;
 
+import atlantafx.base.controls.ToggleSwitch;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static fr.xahla.musicx.desktop.DesktopContext.settings;
 
 /** <b>Modal for the app settings.</b>
  * <p>
@@ -16,7 +20,10 @@ import java.util.ResourceBundle;
  * @author Cochetooo
  */
 public class Settings implements Initializable {
-    @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
 
+    @FXML private ToggleSwitch playerSmoothFadingStop;
+
+    @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
+        settings().smoothFadeStopProperty().bind(playerSmoothFadingStop.selectedProperty());
     }
 }

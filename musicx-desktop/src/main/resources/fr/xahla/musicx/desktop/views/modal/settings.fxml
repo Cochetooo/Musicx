@@ -6,6 +6,7 @@
 
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import atlantafx.base.controls.ToggleSwitch?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.modal.Settings"
@@ -15,6 +16,14 @@
       style="-fx-padding: 20 20 20 20;">
     <Label text="%settings.title" styleClass="title-2" />
     <TabPane tabClosingPolicy="UNAVAILABLE">
+        <Tab text="%settings.tabPlayer">
+            <VBox style="-fx-padding: 10" spacing="5">
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <ToggleSwitch fx:id="playerSmoothFadingStop" />
+                    <Label text="%settings.tabPlayer.smoothFadingStop" />
+                </HBox>
+            </VBox>
+        </Tab>
         <Tab text="%settings.tabTrackList">
 
         </Tab>

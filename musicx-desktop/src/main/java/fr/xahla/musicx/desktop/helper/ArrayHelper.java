@@ -1,5 +1,7 @@
 package fr.xahla.musicx.desktop.helper;
 
+import java.util.List;
+
 /** <b>Utility class for arrays.</b>
  * <p>
  * Copyright (C) Xahla - All Rights Reserved
@@ -36,7 +38,7 @@ public class ArrayHelper {
      * @param haystack The array.
      * @return <b>true</b> if needle is found in the array, <b>false</b> otherwise.
      */
-    public static boolean inArrayStringIgnoreCase(final String needle, final String[] haystack) {
+    public static boolean inArrayStringIgnoreCase(final String needle, final List<String> haystack) {
         for (final var string : haystack) {
             if (string.equalsIgnoreCase(needle)) {
                 return true;
