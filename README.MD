@@ -37,10 +37,13 @@ music lovers:<br>
 > - `Track Time Slider` is now disabled when no song is playing.
 > - `Sliders` fill colors are now more intuitive.
 > - `Stop Button` removed
+> - `Volume Slider` change volume icon state according to volume
 > #### Fixes
+> - `Library Clear` Track list, queue list and artist list now get cleared as well.
 > - `Track Time Slider` is now clickable everywhere in addition to drag click.
 > - `Scan Folders` Menu Item now properly enables if library not empty at start.
 > - `Artist List` "All Artists" is no longer duplicated for each empty rows.
+> - `Artist List` No Longer duplicates artists with different letter cases.
 > - `Track List` Fixed warning of a redundant property for the track column
 
 ### Release 0.2.1 *(2024-04-11)*

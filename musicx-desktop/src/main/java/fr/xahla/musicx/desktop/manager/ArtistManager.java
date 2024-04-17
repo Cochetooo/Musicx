@@ -62,7 +62,6 @@ public class ArtistManager {
     }
 
     public void getArtistList(final List<Song> songs) {
-        final var startTime = System.currentTimeMillis();
         final var artistList = new ArrayList<Artist>();
 
         songs.forEach((song) -> {
@@ -70,7 +69,11 @@ public class ArtistManager {
                 return;
             }
 
-            if (artistList.stream().map(Artist::getName).toList().contains(song.getArtist().getName())) {
+            if (artistList.stream()
+                .map(Artist::getName)
+                .map(String::toLowerCase)
+                .toList()
+                .contains(song.getArtist().getName().toLowerCase())) {
                 return;
             }
 
@@ -79,15 +82,12 @@ public class ArtistManager {
 
         artistList.sort(Comparator.comparing(Artist::getName, String.CASE_INSENSITIVE_ORDER));
         this.artists.setAll(artistList);
-
-        DurationHelper.benchmarkFrom("getArtistList", startTime);
     }
 
     public List<Song> getSongsFromArtist(
         final List<Song> songs,
         final Artist artist
     ) {
-        final var startTime = System.currentTimeMillis();
         final var songList = new ArrayList<Song>();
 
         songs.forEach((song) -> {
@@ -95,12 +95,11 @@ public class ArtistManager {
                 return;
             }
 
-            if (song.getArtist().getName().equals(artist.getName())) {
+            if (song.getArtist().getName().equalsIgnoreCase(artist.getName())) {
                 songList.add(song);
             }
         });
 
-        DurationHelper.benchmarkFrom("getSongsFromArtist", startTime);
         return songList;
     }
 

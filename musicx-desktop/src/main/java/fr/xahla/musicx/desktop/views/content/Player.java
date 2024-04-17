@@ -174,11 +174,11 @@ public class Player implements Initializable {
     private FontIcon getVolumeStateIcon() {
         final var volume = (Double) this.volumeSlider.getValue();
 
-        if (0.65 <= volume) {
+        if (0.5 <= volume) {
             return this.volumeUpIcon;
-        } else if (0.3 <= volume) {
+        } else if (0.2 <= volume) {
             return this.volumeIcon;
-        } else if (0.05 <= volume) {
+        } else if (0.01 <= volume) {
             return this.volumeDownIcon;
         }
 

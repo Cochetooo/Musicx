@@ -19,8 +19,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
-import static fr.xahla.musicx.desktop.DesktopContext.library;
-import static fr.xahla.musicx.desktop.DesktopContext.settings;
+import static fr.xahla.musicx.desktop.DesktopContext.*;
 
 /** <b>View for the library folder imports management modal.</b>
  * <p>
@@ -103,6 +102,9 @@ public class ImportFolders implements Initializable {
 
         if (response.get() == ButtonType.OK) {
             library().clear();
+            trackList().clear();
+            player().clearQueue();
+            artist().getArtists().clear();
         }
     }
 

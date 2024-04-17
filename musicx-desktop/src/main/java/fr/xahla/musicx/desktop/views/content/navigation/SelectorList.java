@@ -40,7 +40,14 @@ public class SelectorList implements Initializable {
         final var artistList = FXCollections.observableList(artist().getArtists());
         artistList.addFirst(null);
 
-        this.selectorListView.setItems(FXCollections.observableArrayList(artistList));
+        this.selectorListView.setItems(artistList);
+
+        artist().onArtistsChange(change -> {
+            final var updateArtistList = FXCollections.observableList(artist().getArtists());
+            updateArtistList.addFirst(null);
+
+            this.selectorListView.setItems(updateArtistList);
+        });
 
         this.selectorListView.setCellFactory(list -> new ListCell<>() {
             @Override public void updateItem(final Artist artist, final boolean empty) {
