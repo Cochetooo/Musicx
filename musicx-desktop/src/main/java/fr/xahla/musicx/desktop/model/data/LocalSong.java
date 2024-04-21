@@ -6,6 +6,15 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagField;
+import org.jaudiotagger.tag.id3.AbstractID3v2Frame;
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+import org.jaudiotagger.tag.mp4.Mp4Tag;
+import org.jaudiotagger.tag.mp4.field.Mp4TagReverseDnsField;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
@@ -25,6 +34,7 @@ public class LocalSong implements LocalSongInterface {
     private final AudioFile audioFile;
     private final Tag tag;
     private final AudioHeader header;
+    private final List<TagField> customTags;
 
     private String albumName;
     private String albumArtist;
@@ -52,7 +62,8 @@ public class LocalSong implements LocalSongInterface {
     private String engineerName;
     private String ensemble;
     private String format;
-    private String genreName;
+    private List<String> genresPrimaryName;
+    private List<String> genresSecondaryName;
     private String key;
     private String language;
     private String lyricist;
@@ -102,11 +113,26 @@ public class LocalSong implements LocalSongInterface {
         this.audioFile = audioFile;
         this.tag = audioFile.getTag();
         this.header = audioFile.getAudioHeader();
+        this.customTags = new ArrayList<>();
 
         if (null == this.tag || null == this.header) {
             this.title = audioFile.getFile().getAbsolutePath();
             this.hasFailed = true;
             return;
+        }
+
+        switch (tag) {
+            case AbstractID3v2Tag mp3Tag -> this.customTags.addAll(mp3Tag.getFrame("TXXX"));
+            case Mp4Tag mp4Tag -> {
+                if (mp4Tag.hasField("----:com.apple.iTunes:Primary Track Genres")) {
+                    this.customTags.addAll(mp4Tag.getFields("----:com.apple.iTunes:Primary Track Genres"));
+                }
+
+                if (mp4Tag.hasField("----:com.apple.iTunes:Secondary Track Genres")) {
+                    this.customTags.addAll(mp4Tag.getFields("----:com.apple.iTunes:Secondary Track Genres"));
+                }
+            }
+            default -> {}
         }
 
         this
@@ -136,7 +162,8 @@ public class LocalSong implements LocalSongInterface {
             .setEngineerName()
             .setEnsemble()
             .setFormat()
-            .setGenreName()
+            .setGenresPrimaryName()
+            .setGenresSecondaryName()
             .setKey()
             .setLanguage()
             .setLyricist()
@@ -481,11 +508,57 @@ public class LocalSong implements LocalSongInterface {
         return this;
     }
 
-    private LocalSong setGenreName() {
+    private LocalSong setGenresPrimaryName() {
+        final var fieldKey = "PRIMARY TRACK GENRES";
+
+        this.genresPrimaryName = new ArrayList<>();
+
         try {
-            this.genreName = tag.getFirst(FieldKey.GENRE);
-        } catch (KeyNotFoundException exception) {
-            this.notFound("GENRE");
+            this.customTags.forEach(tagField -> {
+                switch (tagField) {
+                    case AbstractID3v2Frame mp3TagField -> {
+                        if (mp3TagField.getBody().getObjectValue("Description").equals(fieldKey)) {
+                            this.genresPrimaryName = Arrays.asList(mp3TagField.getBody().getObjectValue("Text").toString().split("\0"));
+                        }
+                    }
+                    case Mp4TagReverseDnsField mp4TagField -> {
+                        if (mp4TagField.getDescriptor().equalsIgnoreCase(fieldKey)) {
+                            this.genresPrimaryName.add(mp4TagField.getContent());
+                        }
+                    }
+                    default -> this.genresPrimaryName = Arrays.asList(tag.getFirst(FieldKey.GENRE).split("\0"));
+                }
+            });
+        } catch (Exception exception) {
+            this.notFound("GENRES_PRIMARY");
+        }
+
+        return this;
+    }
+
+    private LocalSong setGenresSecondaryName() {
+        final var fieldKey = "SECONDARY TRACK GENRES";
+
+        this.genresSecondaryName = new ArrayList<>();
+
+        try {
+            this.customTags.forEach(tagField -> {
+                switch (tagField) {
+                    case AbstractID3v2Frame mp3TagField -> {
+                        if (mp3TagField.getBody().getObjectValue("Description").equals(fieldKey)) {
+                            this.genresSecondaryName = Arrays.asList(mp3TagField.getBody().getObjectValue("Text").toString().split("\0"));
+                        }
+                    }
+                    case Mp4TagReverseDnsField mp4TagField -> {
+                        if (mp4TagField.getDescriptor().equalsIgnoreCase(fieldKey)) {
+                            this.genresSecondaryName.add(mp4TagField.getContent());
+                        }
+                    }
+                    default -> {}
+                }
+            });
+        } catch (Exception exception) {
+            this.notFound("GENRES_SECONDARY");
         }
 
         return this;
@@ -1061,8 +1134,12 @@ public class LocalSong implements LocalSongInterface {
         return ensemble;
     }
 
-    public String getGenreName() {
-        return genreName;
+    public List<String> getGenresPrimary() {
+        return genresPrimaryName;
+    }
+
+    public List<String> getGenresSecondary() {
+        return genresSecondaryName;
     }
 
     public String getKey() {

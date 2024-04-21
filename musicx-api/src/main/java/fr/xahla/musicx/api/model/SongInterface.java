@@ -1,5 +1,7 @@
 package fr.xahla.musicx.api.model;
 
+import java.util.List;
+
 /** <b>(API) Interface for Song Model contracts.</b>
  * <p>
  * Copyright (C) Xahla - All Rights Reserved
@@ -56,6 +58,26 @@ public interface SongInterface {
 
     Integer getSampleRate();
     SongInterface setSampleRate(final Integer sampleRate);
+
+    /* @var Short trackNumber */
+
+    Short getTrackNumber();
+    SongInterface setTrackNumber(final Short trackNumber);
+
+    /* @var Short discNumber */
+
+    Short getDiscNumber();
+    SongInterface setDiscNumber(final Short discNumber);
+
+    /* @var GenreInterface[] primaryGenres */
+
+    List<String> getPrimaryGenres();
+    SongInterface setPrimaryGenres(final List<String> primaryGenres);
+
+    /* @var GenreInterface[] secondaryGenres */
+
+    List<String> getSecondaryGenres();
+    SongInterface setSecondaryGenres(final List<String> secondaryGenres);
 
     /* Hydrate data from another Song */
 

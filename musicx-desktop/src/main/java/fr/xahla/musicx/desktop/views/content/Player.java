@@ -1,13 +1,15 @@
 package fr.xahla.musicx.desktop.views.content;
 
+import fr.xahla.musicx.core.service.GetArtworkFromLastFm;
 import fr.xahla.musicx.core.service.GetArtworkFromiTunes;
 import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
+import fr.xahla.musicx.desktop.model.entity.Song;
+import fr.xahla.musicx.desktop.model.enums.RepeatMode;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -16,11 +18,11 @@ import javafx.scene.control.Slider;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.MediaView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
@@ -42,78 +44,62 @@ import static fr.xahla.musicx.desktop.DesktopContext.settings;
  */
 public class Player implements Initializable {
 
-    @FXML private MediaView trackMediaView;
+    // Album Artwork
+    @FXML private DropShadow albumArtworkShadow;
+    @FXML private ImageView albumArtwork;
+    private String albumThumbnailPlaceholderImageURL;
 
-    @FXML private DropShadow albumThumbnailShadow;
-    @FXML private ImageView albumThumbnail;
-
+    // Current Track Info
     @FXML private Label artistNameLabel;
     @FXML private Label trackNameLabel;
 
-    @FXML private Button previousButton;
-    @FXML private Button backwardButton;
+    // Player Action Buttons
     @FXML private Button togglePlayingButton;
-    @FXML private Button forwardButton;
-    @FXML private Button nextButton;
+    @FXML private Button toggleRepeatButton;
+    @FXML private StackPane songRepeatBadge;
 
+    // Current Track Time
     @FXML private Label trackTimeLabel;
     @FXML private Slider trackTimeSlider;
     @FXML private Label trackTotalTimeLabel;
 
+    // Volume
     @FXML private Slider volumeSlider;
     @FXML private Label volumeLabel;
     @FXML private Button volumeButton;
 
-    private String albumThumbnailPlaceholderImageURL;
-
+    // Additional Icons
     private FontIcon pauseIcon, playIcon;
     private FontIcon volumeMuteIcon, volumeOffIcon, volumeDownIcon, volumeIcon, volumeUpIcon;
+    private FontIcon noRepeatIcon, repeatIcon;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.setControlIcons();
+
+        // Default values
+
+        player().setVolume(this.volumeSlider.getValue());
 
         try {
             this.albumThumbnailPlaceholderImageURL =
                 Objects.requireNonNull(DesktopApplication.class.getResource("assets/images/thumbnail-placeholder.png"))
                     .toURI()
                     .toString();
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
-        albumThumbnail.setImage(new Image(albumThumbnailPlaceholderImageURL));
+        albumArtwork.setImage(new Image(albumThumbnailPlaceholderImageURL));
 
-        settings().artworkShadowProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                albumThumbnailShadow.setRadius(10);
-            } else {
-                albumThumbnailShadow.setRadius(0);
-            }
-        });
+        // Listeners
 
-        player().onSongChange(change -> {
-            final var getArtworkFromITunesTask = new Task<>() {
-                @Override protected Void call() {
-                    final var artwork = new GetArtworkFromiTunes().execute(
-                        change.getArtist().getName() + " " + change.getAlbum().getName()
-                    );
+        settings().artworkShadowProperty().addListener(this::settingsOnArtworkShadowChange);
 
-                    logger().fine("Artwork: " + artwork);
-
-                    Platform.runLater(() -> albumThumbnail.setImage(
-                        null == artwork || artwork.isEmpty()
-                        ? new Image(albumThumbnailPlaceholderImageURL)
-                        : new Image(artwork)
-                    ));
-
-                    return null;
-                }
-            };
-
-            new Thread(getArtworkFromITunesTask).start();
-        });
-
-        player().setVolume(this.volumeSlider.getValue());
+        player().onCurrentTimeChange(this::playerOnCurrentTimeChange);
+        player().onSongChange(this::playerOnSongChange);
+        player().onMute(this::playerOnMute);
+        player().onPlay(() -> togglePlayingButton.setGraphic(pauseIcon));
+        player().onPause(() -> togglePlayingButton.setGraphic(playIcon));
 
         this.volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!player().isPlayerInactive()) {
@@ -123,51 +109,6 @@ public class Player implements Initializable {
             this.volumeButton.setGraphic(this.getVolumeStateIcon());
             this.volumeLabel.setText("" + (int) ((double) newValue * 100.0));
         });
-
-        this.trackTimeSlider.setOnMouseClicked(event -> {
-            final var mouseX = event.getX();
-            final var width = trackTimeSlider.getWidth();
-            final var totalDuration = player().getTotalDuration().toMillis();
-            final var seekTime = (mouseX / width) * totalDuration;
-
-            player().seek(seekTime);
-        });
-
-        player().onCurrentTimeChange((observable, oldValue, newValue) -> {
-            if (null == newValue || newValue.equals(oldValue)) {
-                return;
-            }
-
-            final var current = player().getCurrentTime().toMillis();
-
-            if (!trackTimeSlider.isValueChanging()) {
-                this.trackTimeSlider.setValue(current);
-            }
-
-            this.trackTimeLabel.setText(DurationHelper.getTimeString(current));
-        });
-
-        player().onSongChange((song) -> {
-            this.trackTimeSlider.setDisable(false);
-
-            this.artistNameLabel.setText(song.getArtist().getName());
-            this.trackNameLabel.setText(song.getTitle());
-
-            final var total = Duration.seconds(song.getDuration()).toMillis();
-            this.trackTimeSlider.setMax(total);
-            this.trackTotalTimeLabel.setText(DurationHelper.getTimeString(total));
-        });
-
-        player().onMute((observable) -> {
-            if (player().isMuted()) {
-                this.volumeButton.setGraphic(volumeMuteIcon);
-            } else {
-                this.volumeButton.setGraphic(this.getVolumeStateIcon());
-            }
-        });
-
-        player().onPlay(() -> togglePlayingButton.setGraphic(pauseIcon));
-        player().onPause(() -> togglePlayingButton.setGraphic(playIcon));
     }
 
     private void setControlIcons() {
@@ -200,9 +141,22 @@ public class Player implements Initializable {
         this.volumeUpIcon = new FontIcon();
         this.volumeUpIcon.setIconLiteral("fltfmz-speaker-48");
         this.volumeUpIcon.setIconSize(64);
+
+        // Repeat Mode
+        this.noRepeatIcon = new FontIcon();
+        this.noRepeatIcon.setIconLiteral("fltfal-arrow-repeat-all-off-24");
+        this.noRepeatIcon.setIconSize(64);
+
+        this.repeatIcon = new FontIcon();
+        this.repeatIcon.setIconLiteral("fltfal-arrow-repeat-all-24");
+        this.repeatIcon.setIconSize(64);
     }
 
     // --- Controls ---
+
+    @FXML public void toggleShuffle() {
+        player().shuffle();
+    }
 
     @FXML public void previous() {
         player().previous();
@@ -224,14 +178,111 @@ public class Player implements Initializable {
         player().next();
     }
 
+    @FXML public void toggleRepeat() {
+        player().toggleRepeat();
+
+        this.toggleRepeatButton.setGraphic(player().getRepeatMode() == RepeatMode.NO_REPEAT ? this.noRepeatIcon : this.repeatIcon);
+        this.songRepeatBadge.setVisible(player().getRepeatMode() == RepeatMode.SONG_REPEAT);
+    }
+
     @FXML public void mute() {
         player().mute();
+    }
+
+    // --- Listeners ---
+
+    private void playerOnCurrentTimeChange(
+        final ObservableValue<? extends Duration> observable,
+        final Duration oldValue,
+        final Duration newValue
+    ) {
+        if (null == newValue || newValue.equals(oldValue)) {
+            return;
+        }
+
+        final var current = player().getCurrentTime().toMillis();
+
+        if (!trackTimeSlider.isValueChanging()) {
+            this.trackTimeSlider.setValue(current);
+        }
+
+        this.trackTimeLabel.setText(DurationHelper.getTimeString(current));
+    }
+
+    private void playerOnMute(final Observable observable) {
+        if (player().isMuted()) {
+            this.volumeButton.setGraphic(volumeMuteIcon);
+        } else {
+            this.volumeButton.setGraphic(this.getVolumeStateIcon());
+        }
+    }
+
+    private void playerOnSongChange(final Song song) {
+        this.trackTimeSlider.setDisable(false);
+
+        this.artistNameLabel.setText(song.getArtist().getName());
+        this.trackNameLabel.setText(song.getTitle());
+
+        final var total = Duration.seconds(song.getDuration()).toMillis();
+        this.trackTimeSlider.setMax(total);
+        this.trackTotalTimeLabel.setText(DurationHelper.getTimeString(total));
+
+        // Get Artwork from iTunes
+
+        final var getArtworkFromITunesTask = new Task<>() {
+            @Override protected Void call() {
+                // We try to get the artwork from LastFM then from iTunes if not found
+                var artwork = new GetArtworkFromLastFm().execute(
+                    song
+                );
+
+                if (artwork.isEmpty()) {
+                    artwork = new GetArtworkFromiTunes().execute(
+                        song
+                    );
+                }
+
+                final String finalArtwork = artwork;
+                logger().fine("Artwork: " + finalArtwork);
+
+                Platform.runLater(() -> albumArtwork.setImage(
+                    null == finalArtwork || finalArtwork.isEmpty()
+                        ? new Image(albumThumbnailPlaceholderImageURL)
+                        : new Image(finalArtwork)
+                ));
+
+                return null;
+            }
+        };
+
+        new Thread(getArtworkFromITunesTask).start();
+    }
+
+    private void settingsOnArtworkShadowChange(
+        final ObservableValue<? extends Boolean> observable,
+        final Boolean oldValue,
+        final Boolean newValue
+    ) {
+        if (newValue) {
+            albumArtworkShadow.setRadius(10);
+        } else {
+            albumArtworkShadow.setRadius(0);
+        }
+    }
+
+    @FXML public void trackTimeSliderClick(final MouseEvent event) {
+        final var mouseX = event.getX();
+        final var width = trackTimeSlider.getWidth();
+        final var totalDuration = player().getTotalDuration().toMillis();
+        final var seekTime = (mouseX / width) * totalDuration;
+
+        player().seek(seekTime);
     }
 
     // --- Helpers ---
 
     private FontIcon getVolumeStateIcon() {
-        final var volume = (Double) this.volumeSlider.getValue();
+        final var volume = this.volumeSlider.getValue();
 
         if (0.5 <= volume) {
             return this.volumeUpIcon;

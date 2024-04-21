@@ -53,7 +53,9 @@ public class SongRepository implements SongRepositoryInterface {
         var album = new Album()
             .setId(null)
             .setName(localSong.getAlbumName())
-            .setReleaseYear(localSong.getYear());
+            .setReleaseYear(localSong.getYear())
+            .setDiscTotal(localSong.getDiscTotal())
+            .setTrackTotal(localSong.getTrackTotal());
 
         if (localSong.getAlbumArtist().equals(artist.getName())) {
             album.setArtist(artist);
@@ -73,6 +75,10 @@ public class SongRepository implements SongRepositoryInterface {
             .setBitRate(localSong.getBitRate())
             .setDuration(localSong.getDuration())
             .setSampleRate(localSong.getSampleRate())
+            .setTrackNumber(localSong.getTrackNumber())
+            .setDiscNumber(localSong.getDiscNumber())
+            .setPrimaryGenres(localSong.getGenresPrimary())
+            .setSecondaryGenres(localSong.getGenresSecondary())
             .setTitle(localSong.getTitle());
 
         return song;

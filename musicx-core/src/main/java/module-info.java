@@ -19,6 +19,9 @@ module fr.xahla.musicx.core {
     // --- HTTP Client ---
     requires java.net.http;
 
+    // --- JSON ---
+    requires org.json;
+
     // --- Hibernate ---
     requires org.jboss.logging;
     requires jakarta.cdi;

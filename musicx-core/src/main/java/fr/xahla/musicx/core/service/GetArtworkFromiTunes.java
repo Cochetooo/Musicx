@@ -1,5 +1,7 @@
 package fr.xahla.musicx.core.service;
 
+import fr.xahla.musicx.api.model.SongInterface;
+
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -12,8 +14,10 @@ import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
 public class GetArtworkFromiTunes {
 
-    public String execute(final String searchTerm) {
+    public String execute(final SongInterface song) {
         try (final var httpClient = HttpClient.newHttpClient()) {
+            final var searchTerm = song.getArtist().getName() + " " + song.getAlbum().getName();
+
             final var url = "https://itunes.apple.com/search?term=" + URLEncoder.encode(searchTerm, StandardCharsets.UTF_8) + "&media=music";
 
             final var request = HttpRequest.newBuilder()

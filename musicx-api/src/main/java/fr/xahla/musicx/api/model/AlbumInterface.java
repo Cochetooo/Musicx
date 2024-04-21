@@ -27,10 +27,20 @@ public interface AlbumInterface {
     String getName();
     AlbumInterface setName(final String name);
 
-    /* @var Integer Year */
+    /* @var Integer releaseYear */
 
     Integer getReleaseYear();
     AlbumInterface setReleaseYear(final Integer year);
+
+    /* @var Short trackTotal */
+
+    Short getTrackTotal();
+    AlbumInterface setTrackTotal(final Short trackTotal);
+
+    /* @var Short discTotal */
+
+    Short getDiscTotal();
+    AlbumInterface setDiscTotal(final Short discTotal);
 
     /* Hydrate data from another Album */
 

@@ -1,8 +1,6 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
-import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Artist;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.ListProperty;
@@ -12,7 +10,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.library;

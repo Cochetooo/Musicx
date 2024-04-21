@@ -5,8 +5,10 @@ import fr.xahla.musicx.desktop.listener.mediaPlayer.*;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Player;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import fr.xahla.musicx.desktop.model.enums.RepeatMode;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -55,7 +57,7 @@ public class PlayerManager {
         this.changeListeners = new ArrayList<>();
 
         this.queueManager.onChangePosition((change, oldValue, newValue) -> {
-            this.player.setSong(this.queueManager.getSongAt(newValue.intValue()));
+            this.player.setSong(this.queueManager.getSongAt(newValue));
             this.updateSong();
             this.changeListeners.forEach((listener) -> listener.onChange(this.player.getSong()));
         });
@@ -93,6 +95,10 @@ public class PlayerManager {
 
     public void setQueue(final List<Song> songs, int position) {
         this.queueManager.setQueue(songs, position);
+    }
+
+    public Duration getTotalQueueDuration() {
+        return Duration.seconds(this.queueManager.getTotalDuration());
     }
 
     /**
@@ -148,7 +154,17 @@ public class PlayerManager {
             return;
         }
 
-        this.queueManager.moveNext();
+        switch (this.getRepeatMode()) {
+            case NO_REPEAT -> this.queueManager.moveNext();
+            case QUEUE_REPEAT -> {
+                if (this.queueManager.isLastSong()) {
+                    this.queueManager.setPosition(0);
+                } else {
+                    this.queueManager.moveNext();
+                }
+            }
+            case SONG_REPEAT -> this.queueManager.repeatSong();
+        }
     }
 
     public void pause() {
@@ -203,6 +219,10 @@ public class PlayerManager {
         this.mediaPlayer.seek(Duration.millis(seconds));
     }
 
+    public void shuffle() {
+        this.queueManager.shuffle();
+    }
+
     public void stop() {
         if (!this.isPlayerInactive()) {
             logger().info(ErrorMessage.MEDIA_PLAYER_NOT_CREATED_STOP.getMsg());
@@ -226,10 +246,22 @@ public class PlayerManager {
         this.resume();
     }
 
+    public void toggleRepeat() {
+        switch (this.player.getRepeatMode()) {
+            case NO_REPEAT -> this.player.setRepeatMode(RepeatMode.QUEUE_REPEAT);
+            case QUEUE_REPEAT -> this.player.setRepeatMode(RepeatMode.SONG_REPEAT);
+            case SONG_REPEAT -> this.player.setRepeatMode(RepeatMode.NO_REPEAT);
+        }
+    }
+
     // --- Accessors / Modifiers ---
 
     public ObservableList<Song> getSongs() {
         return this.queueManager.getSongs();
+    }
+
+    public RepeatMode getRepeatMode() {
+        return this.player.getRepeatMode();
     }
 
     public boolean isMuted() {
@@ -278,6 +310,10 @@ public class PlayerManager {
     }
 
     // --- Event / Listeners ---
+
+    public void onQueueChange(final ListChangeListener<Song> change) {
+        this.getSongs().addListener(change);
+    }
 
     public void onSongChange(final MediaChangeListener changeListener) {
         this.changeListeners.add(changeListener);

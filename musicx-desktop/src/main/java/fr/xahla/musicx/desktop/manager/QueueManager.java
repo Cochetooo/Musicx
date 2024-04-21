@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.manager;
 
+import fr.xahla.musicx.desktop.listener.ValueListener;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Queue;
 import fr.xahla.musicx.desktop.model.entity.Song;
@@ -84,6 +85,10 @@ public class QueueManager {
         this.queue.getSongs().add(song);
     }
 
+    public void repeatSong() {
+        this.queue.setPosition(this.queue.getPosition());
+    }
+
     public void shuffle() {
         Collections.shuffle(this.queue.getSongs());
     }
@@ -101,7 +106,15 @@ public class QueueManager {
         return this.queue.getSongs();
     }
 
-    public void onChangePosition(final ChangeListener<Number> change) {
-        this.queue.positionProperty().addListener(change);
+    public long getTotalDuration() {
+        return this.queue.getDuration();
+    }
+
+    public boolean isLastSong() {
+        return this.queue.getPosition() == this.getSongs().size();
+    }
+
+    public void onChangePosition(final ValueListener<Integer> change) {
+        this.queue.addPositionListener(change);
     }
 }

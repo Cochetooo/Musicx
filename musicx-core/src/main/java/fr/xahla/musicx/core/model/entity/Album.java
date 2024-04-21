@@ -25,6 +25,9 @@ public class Album implements AlbumInterface {
     private String name;
     private Integer releaseYear;
 
+    private Short trackTotal;
+    private Short discTotal;
+
     @ManyToOne
     @JoinColumn(name="artist_id")
     private Artist artist;
@@ -69,6 +72,24 @@ public class Album implements AlbumInterface {
         return this;
     }
 
+    @Override public Short getTrackTotal() {
+        return trackTotal;
+    }
+
+    @Override public Album setTrackTotal(final Short trackTotal) {
+        this.trackTotal = trackTotal;
+        return this;
+    }
+
+    @Override public Short getDiscTotal() {
+        return discTotal;
+    }
+
+    @Override public Album setDiscTotal(final Short discTotal) {
+        this.discTotal = discTotal;
+        return this;
+    }
+
     public Album set(final AlbumInterface albumInterface) {
         if (null != albumInterface.getId() && 0 != albumInterface.getId()) {
             this.setId(albumInterface.getId());
@@ -80,6 +101,14 @@ public class Album implements AlbumInterface {
 
         if (null != albumInterface.getReleaseYear()) {
             this.setReleaseYear(albumInterface.getReleaseYear());
+        }
+
+        if (null != albumInterface.getTrackTotal()) {
+            this.setTrackTotal(albumInterface.getTrackTotal());
+        }
+
+        if (null != albumInterface.getDiscTotal()) {
+            this.setDiscTotal(albumInterface.getDiscTotal());
         }
 
         if (null != albumInterface.getArtist()) {

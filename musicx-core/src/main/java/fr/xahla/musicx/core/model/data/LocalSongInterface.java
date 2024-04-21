@@ -1,5 +1,7 @@
 package fr.xahla.musicx.core.model.data;
 
+import java.util.List;
+
 /** <b>Interface defining the abstract raw metadata of an audio file.</b>
  * <p>
  * Copyright (C) Xahla - All Rights Reserved
@@ -30,7 +32,8 @@ public interface LocalSongInterface {
     Short getDiscTotal();
     Integer getDuration();
     String getFormat();
-    String getGenreName();
+    List<String> getGenresPrimary();
+    List<String> getGenresSecondary();
     String getLanguage();
     String getLyrics();
     Short getRating();

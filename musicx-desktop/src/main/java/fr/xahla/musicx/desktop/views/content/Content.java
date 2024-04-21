@@ -1,33 +1,28 @@
 package fr.xahla.musicx.desktop.views.content;
 
 import atlantafx.base.controls.CustomTextField;
+import fr.xahla.musicx.core.config.ProjectInfo;
+import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.FXMLHelper;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.net.URL;
-import java.time.Duration;
 import java.util.ResourceBundle;
-import java.util.function.Predicate;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.*;
@@ -49,6 +44,7 @@ public class Content implements Initializable {
     @FXML private TableView<Song> tracksTableView;
 
     @FXML private TableColumn<Song, String> tracksTableTitleCol;
+    @FXML private TableColumn<Song, String> tracksTableGenresCol;
     @FXML private TableColumn<Song, Integer> tracksTableYearCol;
     @FXML private TableColumn<Song, Integer> tracksTableDurationCol;
 
@@ -92,14 +88,55 @@ public class Content implements Initializable {
                     setGraphic(null);
                 } else {
                     final var titleText = new Text(song.getTitle());
-                    titleText.setFont(Font.font("Space Grotesk", FontWeight.BOLD, 15));
-                    titleText.setFill(Color.WHITE);
+                    titleText.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 15));
+                    titleText.setFill(ColorHelper.PRIMARY);
 
                     final var artistText = new Text(song.getArtist().getName() + " - " + song.getAlbum().getName());
-                    artistText.setFont(Font.font(12));
-                    artistText.setFill(Color.GRAY);
+                    artistText.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.LIGHT, 12));
+                    artistText.setFill(ColorHelper.GRAY);
 
                     final var vBox = new VBox(titleText, artistText);
+                    this.setGraphic(vBox);
+                }
+            }
+        });
+
+        this.tracksTableGenresCol.setCellFactory(songStringTableColumn -> new TableCell<>() {
+            @Override protected void updateItem(final String value, final boolean empty) {
+                super.updateItem(value, empty);
+
+                final var song = this.getTableRow().getItem();
+
+                if (null == song || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    final String[] genresText = {"", ""};
+                    song.getPrimaryGenres().forEach(primaryGenre -> {
+                        genresText[0] += primaryGenre + ", ";
+                    });
+
+                    if (genresText[0].length() > 2) {
+                        genresText[0] = genresText[0].substring(0, genresText[0].length()-2);
+                    }
+
+                    final var primaryGenres = new Text(genresText[0]);
+                    primaryGenres.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 13));
+                    primaryGenres.setFill(ColorHelper.ALTERNATIVE);
+
+                    song.getSecondaryGenres().forEach(secondaryGenre -> {
+                        genresText[1] += secondaryGenre + ", ";
+                    });
+
+                    if (genresText[1].length() > 2) {
+                        genresText[1] = genresText[1].substring(0, genresText[1].length()-2);
+                    }
+
+                    final var secondaryGenres = new Text(genresText[1]);
+                    secondaryGenres.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.LIGHT, 12));
+                    secondaryGenres.setFill(ColorHelper.TERNARY);
+
+                    final var vBox = new VBox(primaryGenres, secondaryGenres);
                     this.setGraphic(vBox);
                 }
             }
@@ -110,7 +147,7 @@ public class Content implements Initializable {
                 if (empty || null == duration) {
                     setText(null);
                 } else {
-                    setText(DurationHelper.getDurationFormatted(Duration.ofSeconds(duration)));
+                    setText(DurationHelper.getTimeString(Duration.seconds(duration)));
                 }
             }
         });

@@ -19,12 +19,16 @@ public class Album implements AlbumInterface {
     private final LongProperty id;
     private final StringProperty name;
     private final IntegerProperty releaseYear;
+    private final IntegerProperty trackTotal;
+    private final IntegerProperty discTotal;
     private final ObjectProperty<Artist> artist;
 
     public Album() {
         this.id = new SimpleLongProperty();
         this.name = new SimpleStringProperty();
         this.releaseYear = new SimpleIntegerProperty();
+        this.trackTotal = new SimpleIntegerProperty();
+        this.discTotal = new SimpleIntegerProperty();
         this.artist = new SimpleObjectProperty<>(new Artist());
     }
 
@@ -68,6 +72,32 @@ public class Album implements AlbumInterface {
         return this;
     }
 
+    @Override public Short getTrackTotal() {
+        return (short) trackTotal.get();
+    }
+
+    public IntegerProperty trackTotalProperty() {
+        return trackTotal;
+    }
+
+    public Album setTrackTotal(final Short trackTotal) {
+        this.trackTotal.set(trackTotal);
+        return this;
+    }
+
+    @Override public Short getDiscTotal() {
+        return (short) discTotal.get();
+    }
+
+    public IntegerProperty discTotalProperty() {
+        return discTotal;
+    }
+
+    public Album setDiscTotal(final Short discTotal) {
+        this.discTotal.set(discTotal);
+        return this;
+    }
+
     @Override public Artist getArtist() {
         return artist.get();
     }
@@ -92,6 +122,14 @@ public class Album implements AlbumInterface {
 
         if (null != albumInterface.getReleaseYear()) {
             this.setReleaseYear(albumInterface.getReleaseYear());
+        }
+
+        if (null != albumInterface.getTrackTotal()) {
+            this.setTrackTotal(albumInterface.getTrackTotal());
+        }
+
+        if (null != albumInterface.getDiscTotal()) {
+            this.setDiscTotal(albumInterface.getDiscTotal());
         }
 
         if (null != albumInterface.getArtist()) {

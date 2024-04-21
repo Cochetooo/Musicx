@@ -57,6 +57,8 @@ public class ImportFolders implements Initializable {
             formatMp3Button, formatFlacButton, formatOggButton, formatWavButton, formatM4aButton
         ));
 
+        settings().getScanLibraryAudioFormats().setAll(this.getSelectedFormats());
+
         this.formatButtons.forEach(toggle
             -> toggle.selectedProperty().addListener(change -> {
                 settings().getScanLibraryAudioFormats().setAll(this.getSelectedFormats());

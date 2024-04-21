@@ -5,6 +5,8 @@ import fr.xahla.musicx.api.model.ArtistInterface;
 import fr.xahla.musicx.api.model.SongInterface;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 /** <b>Class that defines the Song Model.</b>
  * <p>
  * Copyright (C) Xahla - All Rights Reserved
@@ -30,6 +32,9 @@ public class Song implements SongInterface {
     private Integer duration;
     private Integer sampleRate;
 
+    private Short trackNumber;
+    private Short discNumber;
+
     private Boolean available;
 
     @ManyToOne
@@ -39,6 +44,12 @@ public class Song implements SongInterface {
     @ManyToOne
     @JoinColumn(name="artist_id")
     private Artist artist;
+
+    @ElementCollection(fetch=FetchType.EAGER)
+    private List<String> primaryGenres;
+
+    @ElementCollection(fetch=FetchType.EAGER)
+    private List<String> secondaryGenres;
 
     // *********************** //
     // *  GETTERS / SETTERS  * //
@@ -117,12 +128,52 @@ public class Song implements SongInterface {
         return this;
     }
 
+    @Override public Short getTrackNumber() {
+        return trackNumber;
+    }
+
+    @Override public Song setTrackNumber(final Short trackNumber) {
+        this.trackNumber = trackNumber;
+        return this;
+    }
+
+    @Override public Short getDiscNumber() {
+        return discNumber;
+    }
+
+    @Override public Song setDiscNumber(final Short discNumber) {
+        this.discNumber = discNumber;
+        return this;
+    }
+
     @Override public Boolean isAvailable() {
         return available;
     }
 
     @Override public Song setAvailable(Boolean available) {
         this.available = available;
+        return this;
+    }
+
+    @Override
+    public List<String> getPrimaryGenres() {
+        return primaryGenres;
+    }
+
+    @Override
+    public Song setPrimaryGenres(final List<String> primaryGenres) {
+        this.primaryGenres = primaryGenres;
+        return this;
+    }
+
+    @Override
+    public List<String> getSecondaryGenres() {
+        return secondaryGenres;
+    }
+
+    @Override
+    public Song setSecondaryGenres(final List<String> secondaryGenres) {
+        this.secondaryGenres = secondaryGenres;
         return this;
     }
 
@@ -143,6 +194,14 @@ public class Song implements SongInterface {
             this.setSampleRate(songInterface.getSampleRate());
         }
 
+        if (null != songInterface.getTrackNumber()) {
+            this.setTrackNumber(songInterface.getTrackNumber());
+        }
+
+        if (null != songInterface.getDiscNumber()) {
+            this.setDiscNumber(songInterface.getDiscNumber());
+        }
+
         if (null != songInterface.getTitle()) {
             this.setTitle(songInterface.getTitle());
         }
@@ -161,6 +220,14 @@ public class Song implements SongInterface {
 
         if (null != songInterface.getAlbum()) {
             this.setAlbum(songInterface.getAlbum());
+        }
+
+        if (null != songInterface.getPrimaryGenres()) {
+            this.setPrimaryGenres(songInterface.getPrimaryGenres());
+        }
+
+        if (null != songInterface.getSecondaryGenres()) {
+            this.setSecondaryGenres(songInterface.getSecondaryGenres());
         }
 
         return this;

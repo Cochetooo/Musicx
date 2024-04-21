@@ -4,7 +4,7 @@ import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 
-import java.time.Duration;
+import javafx.util.Duration;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
@@ -23,7 +23,7 @@ public final class DurationHelper {
 
     public static boolean benchmark = true;
 
-    public static String getDurationFormatted(final Duration duration) {
+    public static String getTimeString(final java.time.Duration duration) {
         var hours = duration.toHours();
         var minutes = duration.toMinutesPart();
         var seconds = duration.toSecondsPart();
@@ -33,6 +33,10 @@ public final class DurationHelper {
         } else {
             return String.format("%02d:%02d", minutes, seconds);
         }
+    }
+
+    public static String getTimeString(final Duration duration) {
+        return getTimeString(java.time.Duration.ofMillis((long) duration.toMillis()));
     }
 
     public static String getTimeString(double millis) {

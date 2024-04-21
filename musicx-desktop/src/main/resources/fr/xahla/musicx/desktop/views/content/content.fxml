@@ -90,8 +90,18 @@
         styleClass="noTableHeader"
     >
         <columns>
+            <!-- Track No -->
+            <TableColumn text="%tracksTable.trackNumber" prefWidth="1" fx:id="tracksTableNumberCol">
+                <cellValueFactory>
+                    <PropertyValueFactory property="trackNumber" />
+                </cellValueFactory>
+            </TableColumn>
+
             <!-- Title -->
             <TableColumn text="%tracksTable.songTitle" fx:id="tracksTableTitleCol" />
+
+            <!-- Genres -->
+            <TableColumn text="%tracksTable.genres" fx:id="tracksTableGenresCol" />
 
             <!-- Year -->
             <TableColumn text="%tracksTable.albumYear" prefWidth="8" fx:id="tracksTableYearCol" />

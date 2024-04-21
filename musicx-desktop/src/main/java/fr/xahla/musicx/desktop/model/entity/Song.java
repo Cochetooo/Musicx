@@ -4,6 +4,11 @@ import fr.xahla.musicx.api.model.AlbumInterface;
 import fr.xahla.musicx.api.model.ArtistInterface;
 import fr.xahla.musicx.api.model.SongInterface;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** <b>Class that defines the Song Model for desktop view usage.</b>
  * <p>
@@ -21,10 +26,15 @@ public class Song implements SongInterface {
     private final IntegerProperty duration;
     private final IntegerProperty bitRate;
     private final IntegerProperty sampleRate;
+    private final IntegerProperty trackNumber;
+    private final IntegerProperty discNumber;
     private final StringProperty title;
     private final StringProperty filePath;
     private final BooleanProperty available;
     private final StringProperty format;
+
+    private final ListProperty<String> primaryGenres;
+    private final ListProperty<String> secondaryGenres;
 
     private final ObjectProperty<Album> album;
     private final ObjectProperty<Artist> artist;
@@ -34,10 +44,16 @@ public class Song implements SongInterface {
         this.duration = new SimpleIntegerProperty();
         this.bitRate = new SimpleIntegerProperty();
         this.sampleRate = new SimpleIntegerProperty();
+        this.trackNumber = new SimpleIntegerProperty();
+        this.discNumber = new SimpleIntegerProperty();
         this.title = new SimpleStringProperty();
         this.filePath = new SimpleStringProperty();
         this.available = new SimpleBooleanProperty();
         this.format = new SimpleStringProperty();
+
+        this.primaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+        this.secondaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+
         this.album = new SimpleObjectProperty<>(new Album());
         this.artist = new SimpleObjectProperty<>(new Artist());
     }
@@ -63,6 +79,14 @@ public class Song implements SongInterface {
             this.setSampleRate(song.getSampleRate());
         }
 
+        if (null != song.getTrackNumber()) {
+            this.setTrackNumber(song.getTrackNumber());
+        }
+
+        if (null != song.getDiscNumber()) {
+            this.setDiscNumber(song.getDiscNumber());
+        }
+
         if (null != song.getAlbum()) {
             this.setAlbum(song.getAlbum());
         }
@@ -81,6 +105,14 @@ public class Song implements SongInterface {
 
         if (null != song.isAvailable()) {
             this.setAvailable(song.isAvailable());
+        }
+
+        if (null != song.getPrimaryGenres()) {
+            this.setPrimaryGenres(song.getPrimaryGenres());
+        }
+
+        if (null != song.getSecondaryGenres()) {
+            this.setSecondaryGenres(song.getSecondaryGenres());
         }
 
         return this;
@@ -218,4 +250,57 @@ public class Song implements SongInterface {
         return this;
     }
 
+    @Override public Short getTrackNumber() {
+        return (short) trackNumber.get();
+    }
+
+    public IntegerProperty trackNumberProperty() {
+        return trackNumber;
+    }
+
+    @Override public Song setTrackNumber(final Short trackNumber) {
+        this.trackNumber.set(trackNumber);
+        return this;
+    }
+
+    @Override public Short getDiscNumber() {
+        return (short) discNumber.get();
+    }
+
+    public IntegerProperty discNumberProperty() {
+        return discNumber;
+    }
+
+    @Override public Song setDiscNumber(final Short discNumber) {
+        this.discNumber.set(discNumber);
+        return this;
+    }
+
+    @Override
+    public ObservableList<String> getPrimaryGenres() {
+        return primaryGenres.get();
+    }
+
+    public ListProperty<String> primaryGenresProperty() {
+        return primaryGenres;
+    }
+
+    public Song setPrimaryGenres(final List<String> primaryGenres) {
+        this.getPrimaryGenres().setAll(primaryGenres);
+        return this;
+    }
+
+    @Override
+    public ObservableList<String> getSecondaryGenres() {
+        return secondaryGenres.get();
+    }
+
+    public ListProperty<String> secondaryGenresProperty() {
+        return secondaryGenres;
+    }
+
+    public Song setSecondaryGenres(final List<String> secondaryGenres) {
+        this.getSecondaryGenres().setAll(secondaryGenres);
+        return this;
+    }
 }

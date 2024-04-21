@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.views.content.navigation;
 
+import fr.xahla.musicx.core.config.ProjectInfo;
 import fr.xahla.musicx.desktop.model.entity.Artist;
 import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
@@ -64,7 +65,7 @@ public class SelectorList implements Initializable {
                     this.setGraphic(null);
                 } else {
                     final var artistName = new Text(artist.getName());
-                    artistName.setFont(Font.font("Space Grotesk", FontWeight.BOLD, 15));
+                    artistName.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 15));
                     artistName.setFill(Color.LIGHTGRAY);
 
                     final var songCount = new Text(artist().getSongsFromArtist(library().getSongs(), artist).size() + " tracks");
@@ -96,6 +97,10 @@ public class SelectorList implements Initializable {
                 artist().getSongsFromArtist(library().getSongs(), artist),
                 0
             );
+
+            if (2 == event.getClickCount()) {
+                player().setQueue(trackList().getSongs(), 0);
+            }
         }
     }
 }

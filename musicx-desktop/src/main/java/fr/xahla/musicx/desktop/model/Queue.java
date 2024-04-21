@@ -1,12 +1,16 @@
 package fr.xahla.musicx.desktop.model;
 
+import fr.xahla.musicx.desktop.listener.ValueListener;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 
@@ -27,11 +31,15 @@ public class Queue {
     private final IntegerProperty songCount;
     private final IntegerProperty position;
 
+    private final List<ValueListener<Integer>> positionListeners;
+
     public Queue() {
         this.songs = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
         this.duration = new SimpleLongProperty();
         this.songCount = new SimpleIntegerProperty();
         this.position = new SimpleIntegerProperty();
+
+        this.positionListeners = new ArrayList<>();
     }
 
     public ObservableList<Song> getSongs() {
@@ -51,10 +59,6 @@ public class Queue {
         return duration.get();
     }
 
-    public LongProperty durationProperty() {
-        return duration;
-    }
-
     public Queue setDuration(final Long duration) {
         this.duration.set(duration);
         return this;
@@ -64,10 +68,6 @@ public class Queue {
         return songCount.get();
     }
 
-    public IntegerProperty songCountProperty() {
-        return songCount;
-    }
-
     public Queue setSongCount(final Integer songCount) {
         this.songCount.set(songCount);
         return this;
@@ -75,10 +75,6 @@ public class Queue {
 
     public Integer getPosition() {
         return position.get();
-    }
-
-    public IntegerProperty positionProperty() {
-        return position;
     }
 
     public Queue setPosition(final Integer position) {
@@ -92,7 +88,14 @@ public class Queue {
             return this;
         }
 
+        this.positionListeners.forEach((listener) -> listener.changed(this.position.asObject(), this.getPosition(), position));
+
         this.position.set(position);
+
         return this;
+    }
+
+    public void addPositionListener(final ValueListener<Integer> change) {
+        this.positionListeners.add(change);
     }
 }

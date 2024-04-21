@@ -23,13 +23,27 @@ music lovers:<br>
 
 ## Patch Log
 
-### Release 0.2.3
+### Release 0.2.4
 
 > #### New Features
-> - `Album Artwork` now displayed bottom left, using iTunes API
+> - `Artist List` Double click now plays artist discography
+
+### Release 0.2.3 *(2024-04-20)*
+
+> #### New Features
+> - `Album Artwork` now displayed bottom left, using LastFm & iTunes API
 > - `Album Artwork Shadow` displayed, can be toggled in settings
+> - `Queue` Now displays number of tracks and total duration of the queue
+> - `Repeat Mode` with queue repeat and song repeat
+> - `Shuffle` not available as a mode right now but shuffle queue
+> - `Track Genres` with primary/secondary
 > #### Changes
 > - `Track List` is now sorted by year and albums
+> - `Track List` color changes to fit app color theme
+> #### Fixes
+> - `Player` now changes correctly when a song of the same position as the current is requested
+> - `Support for M4A` custom tags now works correctly
+> - `Scan Formats` now properly selects on start-up
 
 ### Release 0.2.2 *(2024-04-17)*
 

@@ -36,4 +36,6 @@
             </ContextMenu>
         </contextMenu>
     </ListView>
+
+    <Label fx:id="queueInfoLabel" />
 </VBox>

@@ -2,18 +2,15 @@ package fr.xahla.musicx.desktop.views.content;
 
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.ProgressHelper;
-import fr.xahla.musicx.desktop.model.TaskProgress;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 
 import java.net.URL;
-import java.time.Duration;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -95,7 +92,7 @@ public class AppInfo implements Initializable {
         this.footerLibrarySumLabel.setText(
             library().getName() + " - "
             + library().getSongs().size() + " " + this.resourceBundle.getString("appInfo.librarySum")
-            + " " + DurationHelper.getDurationFormatted(Duration.ofSeconds(totalDuration.get()))
+            + " " + DurationHelper.getTimeString(java.time.Duration.ofSeconds(totalDuration.get()))
         );
     }
 }

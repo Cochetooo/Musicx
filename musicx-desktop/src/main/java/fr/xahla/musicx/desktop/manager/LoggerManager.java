@@ -18,9 +18,6 @@ public class LoggerManager {
         this.outputStream = new SimpleObjectProperty<>(new ByteArrayOutputStream());
         final var printStream = new PrintStream(outputStream.get());
 
-        //System.setOut(printStream);
-        //System.setErr(printStream);
-
         logger().addHandler(new StreamHandler(printStream, new SimpleFormatter()));
     }
 

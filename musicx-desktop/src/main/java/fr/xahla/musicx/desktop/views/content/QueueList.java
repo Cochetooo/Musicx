@@ -1,9 +1,11 @@
 package fr.xahla.musicx.desktop.views.content;
 
+import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
@@ -17,9 +19,15 @@ import static fr.xahla.musicx.desktop.DesktopContext.player;
 public class QueueList implements Initializable {
 
     @FXML private ListView<Song> queueListView;
+    @FXML private Label queueInfoLabel;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.queueListView.setItems(player().getSongs());
+
+        player().onQueueChange(change
+            -> queueInfoLabel.setText(player().getSongs().size() + " " + resourceBundle.getString("queueList.infoLabel")
+            + " - " + DurationHelper.getTimeString(player().getTotalQueueDuration()))
+        );
 
         this.queueListView.setCellFactory(list -> new ListCell<>() {
             @Override public void updateItem(final Song song, final boolean empty) {

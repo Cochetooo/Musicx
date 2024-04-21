@@ -27,9 +27,9 @@
 
         <ToggleButton text="MP3" fx:id="formatMp3Button" selected="true" />
         <ToggleButton text="FLAC" fx:id="formatFlacButton" disable="true" />
-        <ToggleButton text="OGG" fx:id="formatOggButton" />
-        <ToggleButton text="WAV" fx:id="formatWavButton" />
-        <ToggleButton text="M4A" fx:id="formatM4aButton" />
+        <ToggleButton text="OGG" fx:id="formatOggButton" disable="true" />
+        <ToggleButton text="WAV" fx:id="formatWavButton" disable="true" />
+        <ToggleButton text="M4A" fx:id="formatM4aButton" selected="true" />
     </HBox>
 
     <HBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS" spacing="15">

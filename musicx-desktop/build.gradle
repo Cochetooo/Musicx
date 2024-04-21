@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'fr.xahla'
-version '0.2.3'
+version '0.2.4'
 
 repositories {
   mavenCentral()
@@ -95,5 +95,8 @@ extraJavaModuleInfo {
 
     exports("org.jaudiotagger.audio")
     exports("org.jaudiotagger.tag")
+    exports("org.jaudiotagger.tag.id3")
+    exports("org.jaudiotagger.tag.mp4")
+    exports("org.jaudiotagger.tag.mp4.field")
   }
 }
