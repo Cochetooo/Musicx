@@ -12,7 +12,7 @@ module fr.xahla.musicx.desktop {
 
     // --- Musicx ---
     requires fr.xahla.musicx.api;
-    requires fr.xahla.musicx.core;
+    requires fr.xahla.musicx.infrastructure;
 
     // --- Logging ---
     requires java.logging;

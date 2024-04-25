@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.library;
 
 /** <b>Class that allow views to use Artist model, while keeping a protection layer to its usage.</b>

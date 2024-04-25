@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.model.data;
 
-import fr.xahla.musicx.core.model.data.LocalSongInterface;
+import fr.xahla.musicx.infrastructure.model.data.AudioDataInterface;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 
 /** <b>Class retrieving all metadata from an audio file using JAudioTagger.</b>
  * <p>
@@ -29,7 +29,7 @@ import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
  * @author Cochetooo
  * @see AudioFile
  */
-public class LocalSong implements LocalSongInterface {
+public class LocalSong implements AudioDataInterface {
 
     private final AudioFile audioFile;
     private final Tag tag;

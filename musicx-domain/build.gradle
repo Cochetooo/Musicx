@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+group 'fr.xahla'
+version '0.3.0'
+
+repositories {
+    mavenCentral()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    implementation project(":musicx-api")
+}

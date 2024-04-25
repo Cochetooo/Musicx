@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.core.repository.LibraryRepository;
-import fr.xahla.musicx.core.repository.SongRepository;
+import fr.xahla.musicx.infrastructure.repository.LibraryRepository;
+import fr.xahla.musicx.infrastructure.repository.SongRepository;
 import fr.xahla.musicx.desktop.listener.ProgressListener;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.TaskProgress;
@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
 import static fr.xahla.musicx.desktop.DesktopContext.taskProgress;
 

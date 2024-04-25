@@ -25,8 +25,14 @@
             <VBox style="-fx-padding: 10" spacing="5">
                 <!-- Artwork Shadow -->
                 <HBox spacing="5" alignment="CENTER_LEFT">
-                    <ToggleSwitch fx:id="playerArtworkShadow" selected="true" />
+                    <ToggleSwitch fx:id="playerArtworkShadow" />
                     <Label text="%settings.tabPlayer.artworkShadow" />
+                </HBox>
+
+                <!-- Background Artwork Bind -->
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <ToggleSwitch fx:id="playerBackgroundArtworkBind" />
+                    <Label text="%settings.tabPlayer.backgroundArtworkBind" />
                 </HBox>
 
                 <!-- Smooth Fading -->

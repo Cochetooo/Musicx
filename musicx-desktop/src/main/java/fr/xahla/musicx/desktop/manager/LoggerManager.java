@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 
 public class LoggerManager {
 

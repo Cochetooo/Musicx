@@ -5,6 +5,7 @@ plugins {
 rootProject.name = "Musicx"
 
 include 'musicx-api'
-include 'musicx-core'
 include 'musicx-desktop'
+include 'musicx-infrastructure'
+include 'musicx-domain'
 

@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 
 /** <b>Utility class to get a list of filepath for each audio files found in a directory and its subdirectories.</b>
  * <p>

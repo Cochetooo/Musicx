@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.media.MediaView?>
-<?import javafx.scene.control.Button?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
-
-<?import com.jfoenix.controls.JFXSlider?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.text.Text?>
 <?import com.jfoenix.controls.JFXBadge?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.MediaView?>
+<?import org.kordamp.ikonli.javafx.*?>
+
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="fr.xahla.musicx.desktop.views.content.Player"
+            fx:id="playerContainer"
             prefHeight="80" prefWidth="Infinity"
             style="-fx-background-color: -color-base-9; -fx-padding: 10 25 10 25"
             HBox.hgrow="ALWAYS">

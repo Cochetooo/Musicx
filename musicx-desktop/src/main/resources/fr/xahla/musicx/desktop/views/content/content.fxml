@@ -12,6 +12,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.come/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.Content"
@@ -147,6 +148,18 @@
                             onAction="#tracksTableQueueLast">
                         <graphic>
                             <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
+                        </graphic>
+                    </MenuItem>
+
+                    <SeparatorMenuItem />
+
+                    <!-- Edit Song -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.editSong"
+                            accelerator="Shift+Enter"
+                            onAction="#actionSongEdit">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-edit-32" />
                         </graphic>
                     </MenuItem>
                 </items>

@@ -1,11 +1,13 @@
 package fr.xahla.musicx.desktop.views.content;
 
-import fr.xahla.musicx.core.service.GetArtworkFromLastFm;
-import fr.xahla.musicx.core.service.GetArtworkFromiTunes;
+import fr.xahla.musicx.infrastructure.service.albumArtwork.GetArtworkFromLastFm;
+import fr.xahla.musicx.infrastructure.service.albumArtwork.GetArtworkFromiTunes;
 import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
+import fr.xahla.musicx.desktop.helper.ImageHelper;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.model.enums.RepeatMode;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
@@ -19,7 +21,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -28,7 +30,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
 
@@ -43,6 +45,9 @@ import static fr.xahla.musicx.desktop.DesktopContext.settings;
  * @author Cochetooo
  */
 public class Player implements Initializable {
+
+    // Container
+    @FXML private BorderPane playerContainer;
 
     // Album Artwork
     @FXML private DropShadow albumArtworkShadow;
@@ -227,35 +232,63 @@ public class Player implements Initializable {
         this.trackTimeSlider.setMax(total);
         this.trackTotalTimeLabel.setText(DurationHelper.getTimeString(total));
 
-        // Get Artwork from iTunes
-
-        final var getArtworkFromITunesTask = new Task<>() {
+        final var getArtworkTask = new Task<>() {
             @Override protected Void call() {
                 // We try to get the artwork from LastFM then from iTunes if not found
-                var artwork = new GetArtworkFromLastFm().execute(
+                var artwork = GetArtworkFromLastFm.execute(
                     song
                 );
 
                 if (artwork.isEmpty()) {
-                    artwork = new GetArtworkFromiTunes().execute(
+                    artwork = GetArtworkFromiTunes.execute(
                         song
                     );
                 }
 
-                final String finalArtwork = artwork;
+                final var finalArtwork = artwork;
                 logger().fine("Artwork: " + finalArtwork);
 
-                Platform.runLater(() -> albumArtwork.setImage(
-                    null == finalArtwork || finalArtwork.isEmpty()
-                        ? new Image(albumThumbnailPlaceholderImageURL)
-                        : new Image(finalArtwork)
-                ));
+                final var image = (null == finalArtwork || finalArtwork.isEmpty())
+                    ? new Image(albumThumbnailPlaceholderImageURL)
+                    : new Image(finalArtwork);
+
+                Platform.runLater(() -> {
+                    // Set artwork thumbnail
+                    albumArtwork.setImage(image);
+
+                    final var imageColor = ImageHelper.calculateAverageColor(image);
+
+                    // Set background color
+                    if (settings().isBackgroundArtworkBind()) {
+                        final var fadeTransition = new FadeTransition(Duration.seconds(0.5), playerContainer);
+                        fadeTransition.setFromValue(0);
+                        fadeTransition.setToValue(1);
+
+                        fadeTransition.setOnFinished(event -> {
+                            final var newBackground = new Background(new BackgroundFill(
+                                imageColor.darker(),
+                                CornerRadii.EMPTY,
+                                null
+                            ));
+                            playerContainer.setBackground(newBackground);
+                        });
+
+                        fadeTransition.play();
+                    } else {
+                        playerContainer.setBackground(Background.EMPTY);
+                    }
+
+                    // Set shadow artwork
+                    if (settings().isArtworkShadow()) {
+                        albumArtworkShadow.setColor(imageColor.brighter());
+                    }
+                });
 
                 return null;
             }
         };
 
-        new Thread(getArtworkFromITunesTask).start();
+        new Thread(getArtworkTask).start();
     }
 
     private void settingsOnArtworkShadowChange(

@@ -58,7 +58,7 @@ public class Song implements SongInterface {
         this.artist = new SimpleObjectProperty<>(new Artist());
     }
 
-    public Song set(SongInterface song) {
+    public Song set(final SongInterface song) {
         if (null != song.getId()) {
             this.setId(song.getId());
         }

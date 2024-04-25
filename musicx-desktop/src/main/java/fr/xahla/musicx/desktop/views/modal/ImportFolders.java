@@ -1,10 +1,7 @@
 package fr.xahla.musicx.desktop.views.modal;
 
 import javafx.application.Platform;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -13,12 +10,10 @@ import org.controlsfx.control.CheckListView;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.*;
 
 /** <b>View for the library folder imports management modal.</b>

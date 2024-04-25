@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.model.entity;
 
-import fr.xahla.musicx.api.model.LibraryInterface;
+import fr.xahla.musicx.infrastructure.model.data.LibraryInterface;
 import fr.xahla.musicx.api.model.SongInterface;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;

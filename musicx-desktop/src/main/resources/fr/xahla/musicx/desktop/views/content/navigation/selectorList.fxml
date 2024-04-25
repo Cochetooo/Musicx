@@ -1,5 +1,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.MenuItem?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <GridPane
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
@@ -14,5 +17,29 @@
     <ListView fx:id="selectorListView" prefWidth="320" prefHeight="900"
         style="-fx-background-color: transparent;"
         onMouseClicked="#onListClick"
-    />
+    >
+        <contextMenu>
+            <ContextMenu>
+                <items>
+                    <!-- Play now -->
+                    <MenuItem
+                        text="%selectorList.playNow"
+                        onAction="#playNow">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-play-48" />
+                        </graphic>
+                    </MenuItem>
+
+                    <!-- Play shuffled -->
+                    <MenuItem
+                        text="%selectorList.playShuffled"
+                        onAction="#playShuffled">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-play-48" />
+                        </graphic>
+                    </MenuItem>
+                </items>
+            </ContextMenu>
+        </contextMenu>
+    </ListView>
 </GridPane>

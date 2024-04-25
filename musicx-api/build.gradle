@@ -3,28 +3,16 @@ plugins {
 }
 
 group 'fr.xahla'
-version '0.2.4'
+version '0.3.0'
 
 repositories {
     mavenCentral()
 }
-
-ext {
-    junitVersion = '5.10.0'
-}
-
-sourceCompatibility = '21'
-targetCompatibility = '21'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-}
 
-test {
-    useJUnitPlatform()
 }

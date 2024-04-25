@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.views.content;
 
 import atlantafx.base.controls.CustomTextField;
-import fr.xahla.musicx.core.config.ProjectInfo;
+import fr.xahla.musicx.infrastructure.model.data.enums.SoftwareInfo;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.FXMLHelper;
@@ -24,7 +24,7 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.*;
 
 /** <b>View for the main center content with the track list and the search bar.</b>
@@ -54,6 +54,7 @@ public class Content implements Initializable {
 
     // Right Nav Content
     private Parent queueListView;
+    private Parent songEditView;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
@@ -88,11 +89,11 @@ public class Content implements Initializable {
                     setGraphic(null);
                 } else {
                     final var titleText = new Text(song.getTitle());
-                    titleText.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 15));
+                    titleText.setFont(Font.font(SoftwareInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 15));
                     titleText.setFill(ColorHelper.PRIMARY);
 
                     final var artistText = new Text(song.getArtist().getName() + " - " + song.getAlbum().getName());
-                    artistText.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.LIGHT, 12));
+                    artistText.setFont(Font.font(SoftwareInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.LIGHT, 12));
                     artistText.setFill(ColorHelper.GRAY);
 
                     final var vBox = new VBox(titleText, artistText);
@@ -121,7 +122,7 @@ public class Content implements Initializable {
                     }
 
                     final var primaryGenres = new Text(genresText[0]);
-                    primaryGenres.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 13));
+                    primaryGenres.setFont(Font.font(SoftwareInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 13));
                     primaryGenres.setFill(ColorHelper.ALTERNATIVE);
 
                     song.getSecondaryGenres().forEach(secondaryGenre -> {
@@ -133,7 +134,7 @@ public class Content implements Initializable {
                     }
 
                     final var secondaryGenres = new Text(genresText[1]);
-                    secondaryGenres.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.LIGHT, 12));
+                    secondaryGenres.setFont(Font.font(SoftwareInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.LIGHT, 12));
                     secondaryGenres.setFill(ColorHelper.TERNARY);
 
                     final var vBox = new VBox(primaryGenres, secondaryGenres);
@@ -204,5 +205,16 @@ public class Content implements Initializable {
         }
 
         rightNavContent().set(queueListView);
+    }
+
+    @FXML public void actionSongEdit() {
+        if (null != rightNavContent().get() && rightNavContent().get().equals(songEditView)) {
+            rightNavContent().set(null);
+            return;
+        }
+
+        this.songEditView = FXMLHelper.getComponent("content/songEdit.fxml", resourceBundle);
+
+        rightNavContent().set(songEditView);
     }
 }

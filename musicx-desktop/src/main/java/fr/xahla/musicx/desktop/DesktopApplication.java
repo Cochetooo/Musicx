@@ -1,29 +1,26 @@
 package fr.xahla.musicx.desktop;
 
 import atlantafx.base.theme.PrimerDark;
-import fr.xahla.musicx.core.config.AppInterface;
-import fr.xahla.musicx.core.config.HibernateLoader;
-import fr.xahla.musicx.core.config.ProjectInfo;
-import fr.xahla.musicx.core.logging.SimpleLogger;
+import fr.xahla.musicx.infrastructure.model.data.AppInterface;
+import fr.xahla.musicx.infrastructure.config.HibernateLoader;
+import fr.xahla.musicx.infrastructure.model.data.enums.SoftwareInfo;
+import fr.xahla.musicx.infrastructure.model.SimpleLogger;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.manager.LoggerManager;
 import javafx.application.Application;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.*;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 
 /** <b>Main class for the desktop application.</b>
  * <p>
@@ -84,7 +81,7 @@ public final class DesktopApplication extends Application implements AppInterfac
             );
 
             this.mainStage.setMaximized(true);
-            this.mainStage.setTitle(ProjectInfo.APP_NAME.getInfo() + " " + ProjectInfo.APP_VERSION.getInfo());
+            this.mainStage.setTitle(SoftwareInfo.APP_NAME.getInfo() + " " + SoftwareInfo.APP_VERSION.getInfo());
             this.mainStage.initStyle(StageStyle.DECORATED);
             this.mainStage.setScene(scene);
 

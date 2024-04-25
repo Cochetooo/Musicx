@@ -1,21 +1,14 @@
 package fr.xahla.musicx.desktop.views.menuBar;
 
-import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.FXMLHelper;
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
-import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.library;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 

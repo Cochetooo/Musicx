@@ -1,9 +1,7 @@
 package fr.xahla.musicx.desktop.views.content.navigation;
 
-import fr.xahla.musicx.core.config.ProjectInfo;
+import fr.xahla.musicx.infrastructure.model.data.enums.SoftwareInfo;
 import fr.xahla.musicx.desktop.model.entity.Artist;
-import javafx.application.Platform;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -65,7 +62,7 @@ public class SelectorList implements Initializable {
                     this.setGraphic(null);
                 } else {
                     final var artistName = new Text(artist.getName());
-                    artistName.setFont(Font.font(ProjectInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 15));
+                    artistName.setFont(Font.font(SoftwareInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 15));
                     artistName.setFill(Color.LIGHTGRAY);
 
                     final var songCount = new Text(artist().getSongsFromArtist(library().getSongs(), artist).size() + " tracks");
@@ -90,17 +87,36 @@ public class SelectorList implements Initializable {
         if (MouseButton.PRIMARY == event.getButton()) {
             if (null == artist) {
                 trackList().setQueue(library().getSongs(), 0);
-                return;
+            } else {
+                trackList().setQueue(
+                    artist().getSongsFromArtist(library().getSongs(), artist),
+                    0
+                );
             }
-
-            trackList().setQueue(
-                artist().getSongsFromArtist(library().getSongs(), artist),
-                0
-            );
 
             if (2 == event.getClickCount()) {
                 player().setQueue(trackList().getSongs(), 0);
             }
         }
+    }
+
+    @FXML public void playNow() {
+        final var artist = this.selectorListView.getSelectionModel().getSelectedItem();
+
+        if (null == artist) {
+            trackList().setQueue(library().getSongs(), 0);
+        } else {
+            trackList().setQueue(
+                artist().getSongsFromArtist(library().getSongs(), artist),
+                0
+            );
+        }
+
+        player().setQueue(trackList().getSongs(), 0);
+    }
+
+    @FXML public void playShuffled() {
+        this.playNow();
+        player().shuffle();
     }
 }

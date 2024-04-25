@@ -10,8 +10,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/musicx-api" />
-            <option value="$PROJECT_DIR$/musicx-core" />
             <option value="$PROJECT_DIR$/musicx-desktop" />
+            <option value="$PROJECT_DIR$/musicx-domain" />
+            <option value="$PROJECT_DIR$/musicx-infrastructure" />
           </set>
         </option>
       </GradleProjectSettings>

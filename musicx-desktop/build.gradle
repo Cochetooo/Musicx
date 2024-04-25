@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'fr.xahla'
-version '0.2.4'
+version '0.3.0'
 
 repositories {
   mavenCentral()
@@ -49,7 +49,7 @@ javafx {
 
 dependencies {
     implementation project(":musicx-api")
-    implementation project(":musicx-core")
+    implementation project(":musicx-infrastructure")
 
     implementation('org.controlsfx:controlsfx:11.1.2')
     implementation('com.dlsc.formsfx:formsfx-core:11.6.0') {

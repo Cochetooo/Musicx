@@ -6,8 +6,6 @@ import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Player;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.model.enums.RepeatMode;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
@@ -20,7 +18,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
 
 /** <b>Class that allow views to use Player model, while keeping a protection layer to its usage.</b>
@@ -307,6 +305,10 @@ public class PlayerManager {
 
     public Duration getCurrentTime() {
         return this.mediaPlayer.getCurrentTime();
+    }
+
+    public Song getCurrentSong() {
+        return this.player.getSong();
     }
 
     // --- Event / Listeners ---

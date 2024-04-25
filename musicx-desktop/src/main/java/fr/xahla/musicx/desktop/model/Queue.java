@@ -4,15 +4,13 @@ import fr.xahla.musicx.desktop.listener.ValueListener;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.*;
-import javafx.beans.value.ObservableValue;
-import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.core.logging.SimpleLogger.logger;
+import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 
 /** <b>Class that defines the Queue model for a desktop app usage.</b>
  * <p>

@@ -27,6 +27,12 @@ music lovers:<br>
 
 > #### New Features
 > - `Artist List` Double click now plays artist discography
+> - `Artist List` Play Now & Play shuffled context menu
+> #### Changes
+> - `Player` background now changes according to album artwork, can be changed in settings
+> #### Fixes
+> - `Artwork` Loading caused player to freeze
+> - `Settings` resetting everytime settings modal was opened, and not binding correctly
 
 ### Release 0.2.3 *(2024-04-20)*
 
