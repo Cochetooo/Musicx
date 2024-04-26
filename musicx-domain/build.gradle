@@ -15,4 +15,10 @@ tasks.withType(JavaCompile).configureEach {
 
 dependencies {
     implementation project(":musicx-api")
+
+    // JSON
+    implementation('org.json:json:20240303')
+
+    // Dotenv
+    implementation('io.github.cdimascio:dotenv-java:3.0.0')
 }

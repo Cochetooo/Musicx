@@ -36,6 +36,7 @@ module fr.xahla.musicx.infrastructure {
 
     // --- H2 Database ---
     requires com.h2database;
+    requires fr.xahla.musicx.domain;
 
     // --- Opens ---
 

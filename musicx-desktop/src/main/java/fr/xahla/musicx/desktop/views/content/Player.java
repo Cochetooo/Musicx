@@ -1,6 +1,5 @@
 package fr.xahla.musicx.desktop.views.content;
 
-import fr.xahla.musicx.infrastructure.service.albumArtwork.GetArtworkFromLastFm;
 import fr.xahla.musicx.infrastructure.service.albumArtwork.GetArtworkFromiTunes;
 import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
@@ -30,7 +29,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.lastFm;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
 
@@ -235,22 +234,17 @@ public class Player implements Initializable {
         final var getArtworkTask = new Task<>() {
             @Override protected Void call() {
                 // We try to get the artwork from LastFM then from iTunes if not found
-                var artwork = GetArtworkFromLastFm.execute(
-                    song
-                );
+                lastFm().fetchAlbumData(song.getAlbum(), false);
 
-                if (artwork.isEmpty()) {
+                if (song.getAlbum().getArtworkUrl().isEmpty()) {
                     artwork = GetArtworkFromiTunes.execute(
                         song
                     );
                 }
 
-                final var finalArtwork = artwork;
-                logger().fine("Artwork: " + finalArtwork);
-
-                final var image = (null == finalArtwork || finalArtwork.isEmpty())
+                final var image = (null == song.getAlbum().getArtworkUrl() || song.getAlbum().getArtworkUrl().isEmpty())
                     ? new Image(albumThumbnailPlaceholderImageURL)
-                    : new Image(finalArtwork);
+                    : new Image(song.getAlbum().getArtworkUrl());
 
                 Platform.runLater(() -> {
                     // Set artwork thumbnail

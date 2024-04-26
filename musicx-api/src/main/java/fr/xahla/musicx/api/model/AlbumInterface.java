@@ -1,5 +1,8 @@
 package fr.xahla.musicx.api.model;
 
+import java.time.LocalDate;
+import java.util.List;
+
 /** <b>(API) Interface for Album Model contracts.</b>
  * <p>
  * Copyright (C) Xahla - All Rights Reserved
@@ -27,10 +30,20 @@ public interface AlbumInterface {
     String getName();
     AlbumInterface setName(final String name);
 
-    /* @var Integer releaseYear */
+    /* @var LocalDate releaseYear */
 
-    Integer getReleaseYear();
-    AlbumInterface setReleaseYear(final Integer year);
+    LocalDate getReleaseDate();
+    AlbumInterface setReleaseDate(final LocalDate year);
+
+    /* @var Genre[] primaryGenres */
+
+    List<GenreInterface> getPrimaryGenres();
+    AlbumInterface setPrimaryGenres(final List<GenreInterface> genres);
+
+    /* @var Genre[] secondaryGenres */
+
+    List<GenreInterface> getSecondaryGenres();
+    AlbumInterface setSecondaryGenres(final List<GenreInterface> genres);
 
     /* @var Short trackTotal */
 
@@ -41,6 +54,11 @@ public interface AlbumInterface {
 
     Short getDiscTotal();
     AlbumInterface setDiscTotal(final Short discTotal);
+
+    /* @var String artworkUrl */
+
+    String getArtworkUrl();
+    AlbumInterface setArtworkUrl(final String artworkUrl);
 
     /* Hydrate data from another Album */
 

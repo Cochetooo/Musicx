@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.views.content.navigation;
 
-import fr.xahla.musicx.infrastructure.model.data.enums.SoftwareInfo;
+import fr.xahla.musicx.domain.helper.FontTheme;
 import fr.xahla.musicx.desktop.model.entity.Artist;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -62,7 +62,7 @@ public class SelectorList implements Initializable {
                     this.setGraphic(null);
                 } else {
                     final var artistName = new Text(artist.getName());
-                    artistName.setFont(Font.font(SoftwareInfo.APP_PRIMARY_FONT.getInfo(), FontWeight.BOLD, 15));
+                    artistName.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.BOLD, 15));
                     artistName.setFill(Color.LIGHTGRAY);
 
                     final var songCount = new Text(artist().getSongsFromArtist(library().getSongs(), artist).size() + " tracks");

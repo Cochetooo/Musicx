@@ -27,6 +27,11 @@ public interface ArtistInterface {
     String getCountry();
     ArtistInterface setCountry(final String country);
 
+    /* @var String artworkURL */
+
+    String getArtworkUrl();
+    ArtistInterface setArtworkUrl(final String artworkUrl);
+
     /* Hydrate data from another Artist */
 
     ArtistInterface set(final ArtistInterface artistInterface);

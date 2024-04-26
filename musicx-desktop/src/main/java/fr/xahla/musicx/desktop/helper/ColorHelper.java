@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.helper;
 
-import fr.xahla.musicx.infrastructure.model.data.enums.ColorTheme;
+import fr.xahla.musicx.domain.helper.ColorTheme;
 import javafx.scene.paint.Color;
 
 public class ColorHelper {

@@ -49,6 +49,7 @@ javafx {
 
 dependencies {
     implementation project(":musicx-api")
+    implementation project(":musicx-domain")
     implementation project(":musicx-infrastructure")
 
     implementation('org.controlsfx:controlsfx:11.1.2')

@@ -10,11 +10,31 @@
  * @author Cochetooo
  */
 module fr.xahla.musicx.domain {
-    requires java.logging;
 
+    // ------------- [REQUIRE] -------------
+
+    // Musicx -> API
+    requires fr.xahla.musicx.api;
+
+    // Java -> Logging
+    requires java.logging;
+    // Java -> Net
+    requires java.net.http;
+
+    // Lib -> Dotenv
+    requires io.github.cdimascio.dotenv.java;
+
+    // Lib -> JSON
+    requires org.json;
+
+    // ------------- [EXPORT] -------------
     exports fr.xahla.musicx.domain.application;
+    exports fr.xahla.musicx.domain.helper;
     exports fr.xahla.musicx.domain.manager;
     exports fr.xahla.musicx.domain.model;
+    exports fr.xahla.musicx.domain.model.enums;
     exports fr.xahla.musicx.domain.repository;
+    exports fr.xahla.musicx.domain.model.data;
+    exports fr.xahla.musicx.domain.repository.data;
 
 }

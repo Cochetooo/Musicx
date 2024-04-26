@@ -2,7 +2,7 @@ package fr.xahla.musicx.infrastructure.repository;
 
 import fr.xahla.musicx.api.model.SongInterface;
 import fr.xahla.musicx.api.repository.SongRepositoryInterface;
-import fr.xahla.musicx.infrastructure.model.data.enums.ErrorMessage;
+import fr.xahla.musicx.infrastructure.model.data.enums.InfrastructureErrorMessage;
 import fr.xahla.musicx.infrastructure.model.data.AudioDataInterface;
 import fr.xahla.musicx.infrastructure.model.entity.Album;
 import fr.xahla.musicx.infrastructure.model.entity.Artist;
@@ -39,7 +39,7 @@ public class SongRepository implements SongRepositoryInterface {
      */
     public SongInterface getFromLocalSong(final AudioDataInterface localSong) {
         if (localSong.hasFailed()) {
-            logger().warning(ErrorMessage.LOCAL_SONG_HAS_FAILED.getMsg(localSong.getTitle()));
+            logger().warning(InfrastructureErrorMessage.LOCAL_SONG_HAS_FAILED.getMsg(localSong.getTitle()));
         }
 
         var artist = new Artist()

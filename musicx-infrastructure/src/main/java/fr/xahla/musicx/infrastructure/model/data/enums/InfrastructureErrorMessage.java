@@ -12,13 +12,13 @@ import java.text.MessageFormat;
  *
  * @author Cochetooo
  */
-public enum ErrorMessage {
+public enum InfrastructureErrorMessage {
 
     LOCAL_SONG_HAS_FAILED("Local Song {0} has failed while importing.");
 
     String msg;
 
-    private ErrorMessage(String msg) {
+    InfrastructureErrorMessage(final String msg) {
         this.msg = msg;
     }
 

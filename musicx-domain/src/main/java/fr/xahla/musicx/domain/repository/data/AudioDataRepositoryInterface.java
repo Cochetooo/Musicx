@@ -1,4 +1,4 @@
-package fr.xahla.musicx.domain.repository;
+package fr.xahla.musicx.domain.repository.data;
 
 public interface AudioDataRepositoryInterface {
 }

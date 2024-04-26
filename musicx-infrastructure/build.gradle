@@ -22,6 +22,7 @@ tasks.withType(JavaCompile).configureEach {
 
 dependencies {
     implementation project(':musicx-api')
+    implementation project(':musicx-domain')
 
     /* --- Hibernate --- */
     implementation(platform("org.hibernate.orm:hibernate-platform:6.4.4.Final"))
