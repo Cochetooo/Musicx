@@ -24,9 +24,4 @@ public interface LabelInterface {
     List<GenreInterface> getGenres();
     LabelInterface setGenres(List<GenreInterface> genres);
 
-    /* @var AlbumInterface[] releases */
-
-    List<AlbumInterface> getReleases();
-    LabelInterface setReleases(List<AlbumInterface> releases);
-
 }

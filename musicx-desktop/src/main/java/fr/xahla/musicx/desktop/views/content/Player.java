@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.lastFm;
+import static fr.xahla.musicx.domain.application.AbstractContext.lastFmApi;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
 
@@ -234,7 +234,7 @@ public class Player implements Initializable {
         final var getArtworkTask = new Task<>() {
             @Override protected Void call() {
                 // We try to get the artwork from LastFM then from iTunes if not found
-                lastFm().fetchAlbumData(song.getAlbum(), false);
+                lastFmApi().fetchAlbumData(song.getAlbum(), false);
 
                 if (song.getAlbum().getArtworkUrl().isEmpty()) {
                     artwork = GetArtworkFromiTunes.execute(

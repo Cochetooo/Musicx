@@ -1,32 +1,26 @@
-package fr.xahla.musicx.domain.repository;
+package fr.xahla.musicx.domain.service.externalApi;
 
 import fr.xahla.musicx.api.model.AlbumInterface;
-import fr.xahla.musicx.domain.service.fetch.FetchAlbumInterface;
-import org.json.JSONObject;
+import fr.xahla.musicx.domain.repository.ExternalFetchRepositoryInterface;
 
-import java.net.URI;
 import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.env;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
-public class ItunesRepository
-    implements FetchAlbumInterface
+public class ItunesApiHandler
+    extends ExternalApiHandler
+    implements ExternalFetchRepositoryInterface.AlbumFetcher
 {
 
-    private static final String API_URL;
-
-    static {
-        API_URL = env("ITUNES_API_URL");
+    public ItunesApiHandler() {
+        super(env("ITUNES_API_URL"));
     }
 
     /**
@@ -41,12 +35,12 @@ public class ItunesRepository
      * @param album The album source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchAlbumData(final AlbumInterface album, final boolean overwrite) {
+    @Override public void fetchAlbumFromExternal(final AlbumInterface album, final boolean overwrite) {
         final var methodSignature = "search";
 
         final var searchTerm = album.getArtist().getName() + " " + album.getName();
 
-        final var jsonResponse = this.sendRequest(
+        final var requestUrl = this.makeURL(
             methodSignature,
             Map.of(
                 "term", searchTerm,
@@ -55,6 +49,8 @@ public class ItunesRepository
                 "limit", "1"
             )
         );
+
+        final var jsonResponse = this.sendRequest(requestUrl);
 
         if (!jsonResponse.has("results") || jsonResponse.getJSONArray("results").isEmpty()) {
             logger().warning("No results found for searchTerm: " + searchTerm);
@@ -72,35 +68,19 @@ public class ItunesRepository
         if (!overwrite || null == album.getReleaseDate()) {
             album.setReleaseDate(ZonedDateTime.parse(
                 albumJson.getString("releaseDate"),
-                DateTimeFormatter.ISO_INSTANT
+                DateTimeFormatter.ISO_DATE_TIME
             ).toLocalDate());
         }
 
         // Primary Genre placeholder
         if (!overwrite || null == album.getPrimaryGenres() || album.getPrimaryGenres().isEmpty()) {
-            album.setPrimaryGenres(List.of(
-
-            ));
+            //album.setPrimaryGenres(new ArrayList<>()); @TODO
         }
     }
 
-    private JSONObject sendRequest(
-        final String method,
-        final Map<String, String> parameters
-    ) {
-        try (final var httpClient = HttpClient.newHttpClient()) {
-            final var requestUrl = API_URL + method + "?" + parameters.entrySet().stream()
-                .map(entry -> "&" + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
-                .collect(Collectors.joining("&"));
-
-            final var request = HttpRequest.newBuilder()
-                .uri(URI.create(requestUrl))
-                .build();
-
-            final var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            return new JSONObject(response.body());
-        } catch (final Exception exception) {
-            throw new RuntimeException(exception);
-        }
+    @Override protected String makeURL(final String method, final Map<String, String> parameters) {
+        return this.apiUrl + method + "?" + parameters.entrySet().stream()
+            .map(entry -> "&" + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
+            .collect(Collectors.joining("&"));
     }
 }

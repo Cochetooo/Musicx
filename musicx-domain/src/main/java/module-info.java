@@ -34,7 +34,5 @@ module fr.xahla.musicx.domain {
     exports fr.xahla.musicx.domain.model;
     exports fr.xahla.musicx.domain.model.enums;
     exports fr.xahla.musicx.domain.repository;
-    exports fr.xahla.musicx.domain.model.data;
-    exports fr.xahla.musicx.domain.repository.data;
 
 }

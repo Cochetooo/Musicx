@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.listener.mediaPlayer;
 
+import fr.xahla.musicx.desktop.manager.AudioPlayerManager;
 import fr.xahla.musicx.desktop.model.entity.Song;
 
 /** <b>Listener invoked when Audio Player's media is renewed.</b>
@@ -11,7 +12,7 @@ import fr.xahla.musicx.desktop.model.entity.Song;
  * </p>
  *
  * @author Cochetooo
- * @see fr.xahla.musicx.desktop.manager.PlayerManager
+ * @see AudioPlayerManager
  * @see javafx.scene.media.MediaPlayer
  */
 public interface MediaChangeListener {

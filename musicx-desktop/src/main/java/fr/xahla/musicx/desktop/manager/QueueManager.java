@@ -4,6 +4,7 @@ import fr.xahla.musicx.desktop.listener.ValueListener;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Queue;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import fr.xahla.musicx.domain.manager.AudioQueueManagerInterface;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
@@ -23,7 +24,7 @@ import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
  *
  * @author Cochetooo
  */
-public class QueueManager {
+public class QueueManager implements AudioQueueManagerInterface {
 
     private final Queue queue;
 

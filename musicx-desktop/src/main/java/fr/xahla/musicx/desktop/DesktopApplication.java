@@ -2,9 +2,7 @@ package fr.xahla.musicx.desktop;
 
 import atlantafx.base.theme.PrimerDark;
 import fr.xahla.musicx.domain.helper.ApplicationInfo;
-import fr.xahla.musicx.infrastructure.model.data.AppInterface;
 import fr.xahla.musicx.infrastructure.config.HibernateLoader;
-import fr.xahla.musicx.infrastructure.model.SimpleLogger;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.manager.LoggerManager;
 import javafx.application.Application;
@@ -18,7 +16,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.logging.*;
+import java.util.logging.Level;
 
 import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 
@@ -32,17 +30,15 @@ import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
  *
  * @author Cochetooo
  */
-public final class DesktopApplication extends Application implements AppInterface {
+public final class DesktopApplication extends Application {
 
     private Stage mainStage;
-    private LoggerManager loggerManager;
 
     public static void main(final String[] args) {
         launch();
     }
 
     @Override public void start(final Stage stage) {
-        this.setupLogger();
         this.setupDatabase();
 
         this.mainStage = stage;
@@ -50,10 +46,10 @@ public final class DesktopApplication extends Application implements AppInterfac
         this.setupApp();
     }
 
-    @Override public void setupApp() {
+    public void setupApp() {
         final var startTime = System.currentTimeMillis();
 
-        DesktopContext.createContext(this.loggerManager);
+        DesktopContext.createContext();
 
         Locale.setDefault(Locale.ENGLISH);
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
@@ -88,27 +84,12 @@ public final class DesktopApplication extends Application implements AppInterfac
             DurationHelper.benchmarkFrom("Program Initialization", startTime);
 
             this.mainStage.show();
-        } catch (IOException e) {
-            logger().severe(e.getLocalizedMessage());
-            e.printStackTrace();
+        } catch (final IOException exception) {
+            logger().log(Level.SEVERE, "Something went wrong during JavaFX initialization.", exception);
         }
     }
 
-    @Override public void setupLogger() {
-        SimpleLogger.setLogger(Logger.getLogger(DesktopApplication.class.getName()));
-
-        try (var inputStream = Objects.requireNonNull(DesktopApplication.class.getResource("config/logger.properties")).openStream()) {
-            LogManager.getLogManager().readConfiguration(inputStream);
-        } catch (SecurityException | IOException | NullPointerException exception) {
-            logger().severe(exception.getLocalizedMessage());
-        }
-
-        logger().setLevel(Level.ALL);
-
-        this.loggerManager = new LoggerManager();
-    }
-
-    @Override public void setupDatabase() {
+    public void setupDatabase() {
         HibernateLoader.setHibernateLoader(new HibernateLoader());
     }
 

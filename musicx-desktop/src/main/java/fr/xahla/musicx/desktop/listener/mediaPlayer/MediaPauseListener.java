@@ -1,5 +1,7 @@
 package fr.xahla.musicx.desktop.listener.mediaPlayer;
 
+import fr.xahla.musicx.desktop.manager.AudioPlayerManager;
+
 /** <b>Listener invoked when Audio Player's media has been paused.</b>
  * <p>
  * Copyright (C) Xahla - All Rights Reserved
@@ -9,7 +11,7 @@ package fr.xahla.musicx.desktop.listener.mediaPlayer;
  * </p>
  *
  * @author Cochetooo
- * @see fr.xahla.musicx.desktop.manager.PlayerManager
+ * @see AudioPlayerManager
  * @see javafx.scene.media.MediaPlayer
  */
 public interface MediaPauseListener {

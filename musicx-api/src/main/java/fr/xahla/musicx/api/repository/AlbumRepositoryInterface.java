@@ -2,6 +2,9 @@ package fr.xahla.musicx.api.repository;
 
 import fr.xahla.musicx.api.model.AlbumInterface;
 import fr.xahla.musicx.api.model.ArtistInterface;
+import fr.xahla.musicx.api.model.GenreInterface;
+import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriterias;
 
 import java.util.List;
 
@@ -17,9 +20,15 @@ import java.util.List;
  */
 public interface AlbumRepositoryInterface {
 
-    void save(final AlbumInterface album);
+    List<SongInterface> getSongs();
 
-    List<AlbumInterface> findByArtist(final ArtistInterface artistInterface);
-    List<AlbumInterface> findByYear(final Integer year);
+    List<AlbumInterface> findByCriterias(final AlbumSearchCriterias ... criterias);
+    List<AlbumInterface> findAll();
+
+    List<AlbumInterface> fromSongs(final List<SongInterface> songs);
+    List<AlbumInterface> fromArtist(final ArtistInterface artist);
+    List<AlbumInterface> fromGenre(final GenreInterface genre, final int mode);
+
+    void save(final AlbumInterface album);
 
 }

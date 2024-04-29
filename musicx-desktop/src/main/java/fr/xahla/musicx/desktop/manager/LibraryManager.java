@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.manager;
 
+import fr.xahla.musicx.domain.manager.LibraryManagerInterface;
 import fr.xahla.musicx.infrastructure.repository.LibraryRepository;
 import fr.xahla.musicx.infrastructure.repository.SongRepository;
 import fr.xahla.musicx.desktop.listener.ProgressListener;
@@ -37,7 +38,7 @@ import static fr.xahla.musicx.desktop.DesktopContext.taskProgress;
  *
  * @author Cochetooo
  */
-public class LibraryManager {
+public class LibraryManager implements LibraryManagerInterface {
 
     private final LibraryRepository libraryRepository;
     private final SongRepository songRepository;

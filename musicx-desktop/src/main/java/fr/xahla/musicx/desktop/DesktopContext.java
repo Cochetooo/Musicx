@@ -2,9 +2,19 @@ package fr.xahla.musicx.desktop;
 
 import fr.xahla.musicx.desktop.manager.*;
 import fr.xahla.musicx.desktop.model.Settings;
+import fr.xahla.musicx.domain.application.AbstractContext;
+import fr.xahla.musicx.domain.application.SettingsInterface;
+import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
+import fr.xahla.musicx.domain.manager.LibraryManagerInterface;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Parent;
+
+import java.io.IOException;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /** <b>Global context for the desktop application.</b>
  * <p>
@@ -16,58 +26,65 @@ import javafx.scene.Parent;
  *
  * @author Cochetooo
  */
-public class DesktopContext {
+public class DesktopContext extends AbstractContext {
 
-    private static DesktopContext context;
-
-    private ArtistManager artistManager;
-    private LibraryManager libraryManager;
+    private ArtistListManager artistManager;
     private LoggerManager loggerManager;
-    private PlayerManager playerManager;
     private QueueManager trackListManager;
     private TaskProgressManager taskProgressManager;
 
-    private Settings settings;
     private ObjectProperty<Parent> rightNavContent;
 
-    public static void createContext(
-        final LoggerManager loggerManager
-    ) {
-        context = new DesktopContext();
+    private static DesktopContext context;
 
-        context.loggerManager = loggerManager;
-        context.settings = new Settings();
+    protected DesktopContext(final Logger logger, final SettingsInterface settings, final AudioPlayerManagerInterface audioPlayer, final LibraryManagerInterface library) {
+        super(logger, settings, audioPlayer, library);
+    }
+
+    public static void createContext() {
+        context = new DesktopContext(
+            Logger.getLogger(DesktopApplication.class.getName()),
+            new Settings(),
+            new AudioPlayerManager(),
+            new LibraryManager()
+        );
+
+        try (var inputStream = Objects.requireNonNull(DesktopApplication.class.getResource("config/logger.properties")).openStream()) {
+            LogManager.getLogManager().readConfiguration(inputStream);
+        } catch (SecurityException | IOException | NullPointerException exception) {
+            logger().severe(exception.getLocalizedMessage());
+        }
+
+        logger().setLevel(Level.ALL);
+
+        context.loggerManager = new LoggerManager();
         context.taskProgressManager = new TaskProgressManager();
-
-        context.libraryManager = new LibraryManager();
-        context.playerManager = new PlayerManager();
         context.trackListManager = new QueueManager();
-
         context.rightNavContent = new SimpleObjectProperty<>();
 
         // Requires library manager
-        context.artistManager = new ArtistManager();
+        context.artistManager = new ArtistListManager();
         context.trackListManager.setQueue(library().getSongs(), 0);
     }
 
-    public static ArtistManager artist() {
+    public static ArtistListManager artist() {
         return context.artistManager;
     }
 
     public static LibraryManager library() {
-        return context.libraryManager;
+        return (LibraryManager) context.libraryManager;
     }
 
     public static LoggerManager loggerManager() {
         return context.loggerManager;
     }
 
-    public static PlayerManager player() {
-        return context.playerManager;
+    public static AudioPlayerManager player() {
+        return (AudioPlayerManager) context.audioPlayerManager;
     }
 
     public static Settings settings() {
-        return context.settings;
+        return (Settings) context.settings;
     }
 
     public static TaskProgressManager taskProgress() {

@@ -3,6 +3,7 @@ package fr.xahla.musicx.desktop.manager;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.entity.Artist;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import fr.xahla.musicx.domain.manager.ArtistListManagerInterface;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -27,12 +28,12 @@ import static fr.xahla.musicx.desktop.DesktopContext.library;
  *
  * @author Cochetooo
  */
-public class ArtistManager {
+public class ArtistListManager implements ArtistListManagerInterface {
 
     private final ListProperty<Artist> artists;
     private Thread getArtistListThread;
 
-    public ArtistManager() {
+    public ArtistListManager() {
         if (null == library()) {
             logger().severe(ErrorMessage.LIBRARY_NOT_INITIALIZED.getMsg("ArtistManager"));
             throw new RuntimeException();

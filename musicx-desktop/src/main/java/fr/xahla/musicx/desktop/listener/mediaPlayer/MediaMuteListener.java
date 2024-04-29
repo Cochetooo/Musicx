@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.listener.mediaPlayer;
 
+import fr.xahla.musicx.desktop.manager.AudioPlayerManager;
 import javafx.beans.Observable;
 
 /** <b>Listener invoked when Audio Player's media has been un/muted.</b>
@@ -11,7 +12,7 @@ import javafx.beans.Observable;
  * </p>
  *
  * @author Cochetooo
- * @see fr.xahla.musicx.desktop.manager.PlayerManager
+ * @see AudioPlayerManager
  * @see javafx.scene.media.MediaPlayer
  */
 public interface MediaMuteListener {

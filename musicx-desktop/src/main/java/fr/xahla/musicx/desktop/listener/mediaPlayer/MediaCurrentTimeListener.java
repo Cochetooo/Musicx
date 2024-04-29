@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.listener.mediaPlayer;
 
+import fr.xahla.musicx.desktop.manager.AudioPlayerManager;
 import javafx.beans.value.ObservableValue;
 import javafx.util.Duration;
 
@@ -12,7 +13,7 @@ import javafx.util.Duration;
  * </p>
  *
  * @author Cochetooo
- * @see fr.xahla.musicx.desktop.manager.PlayerManager
+ * @see AudioPlayerManager
  * @see javafx.scene.media.MediaPlayer
  */
 public interface MediaCurrentTimeListener {

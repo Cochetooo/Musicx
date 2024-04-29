@@ -6,6 +6,7 @@ import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Player;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.model.enums.RepeatMode;
+import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
@@ -31,7 +32,7 @@ import static fr.xahla.musicx.desktop.DesktopContext.settings;
  *
  * @author Cochetooo
  */
-public class PlayerManager {
+public class AudioPlayerManager implements AudioPlayerManagerInterface {
 
     private final QueueManager queueManager;
     private final Player player;
@@ -44,7 +45,7 @@ public class PlayerManager {
 
     private MediaPlayer mediaPlayer;
 
-    public PlayerManager() {
+    public AudioPlayerManager() {
         this.queueManager = new QueueManager();
         this.player = new Player();
 

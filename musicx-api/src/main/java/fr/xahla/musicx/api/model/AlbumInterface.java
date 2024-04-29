@@ -33,7 +33,7 @@ public interface AlbumInterface {
     /* @var LocalDate releaseYear */
 
     LocalDate getReleaseDate();
-    AlbumInterface setReleaseDate(final LocalDate year);
+    AlbumInterface setReleaseDate(final LocalDate date);
 
     /* @var Genre[] primaryGenres */
 
@@ -59,6 +59,11 @@ public interface AlbumInterface {
 
     String getArtworkUrl();
     AlbumInterface setArtworkUrl(final String artworkUrl);
+
+    /* @var Label label */
+
+    LabelInterface getLabel();
+    AlbumInterface setLabel(final LabelInterface label);
 
     /* Hydrate data from another Album */
 

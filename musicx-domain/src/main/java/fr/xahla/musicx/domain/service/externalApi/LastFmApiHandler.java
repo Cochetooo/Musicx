@@ -1,18 +1,11 @@
-package fr.xahla.musicx.domain.repository;
+package fr.xahla.musicx.domain.service.externalApi;
 
 import fr.xahla.musicx.api.model.AlbumInterface;
 import fr.xahla.musicx.api.model.ArtistInterface;
 import fr.xahla.musicx.api.model.SongInterface;
-import fr.xahla.musicx.domain.service.fetch.FetchAlbumInterface;
-import fr.xahla.musicx.domain.service.fetch.FetchArtistInterface;
-import fr.xahla.musicx.domain.service.fetch.FetchSongInterface;
-import org.json.JSONObject;
+import fr.xahla.musicx.domain.repository.ExternalFetchRepositoryInterface;
 
-import java.net.URI;
 import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,16 +13,15 @@ import java.util.stream.Collectors;
 import static fr.xahla.musicx.domain.application.AbstractContext.env;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
-public class LastFmRepository
-    implements FetchArtistInterface, FetchAlbumInterface, FetchSongInterface
+public class LastFmApiHandler
+    extends ExternalApiHandler
+    implements ExternalFetchRepositoryInterface.ArtistFetcher, ExternalFetchRepositoryInterface.SongFetcher, ExternalFetchRepositoryInterface.AlbumFetcher
 {
+    private final String apiKey;
 
-    private static final String API_KEY;
-    private static final String API_URL;
-
-    static {
-        API_KEY = env("LASTFM_API_KEY");
-        API_URL = env("LASTFM_API_URL");
+    public LastFmApiHandler() {
+        super(env("LASTFM_API_URL"));
+        this.apiKey = env("LASTFM_API_KEY");
     }
 
     /**
@@ -42,16 +34,18 @@ public class LastFmRepository
      * @param artist The artist source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchArtistData(final ArtistInterface artist, final boolean overwrite) {
+    @Override public void fetchArtistFromExternal(final ArtistInterface artist, final boolean overwrite) {
         final var methodSignature = "artist.getinfo";
 
-        final var jsonResponse = this.sendRequest(
+        final var requestUrl = this.makeURL(
             methodSignature,
             Map.of(
-                "api_key", API_KEY,
-                "artist", URLEncoder.encode(artist.getName(), StandardCharsets.UTF_8)
+                "api_key", this.apiKey,
+                "artist", artist.getName()
             )
         );
+
+        final var jsonResponse = this.sendRequest(requestUrl);
 
         if (!jsonResponse.has("artist")) {
             logger().warning("No Last.FM artist has been found for artist: " + artist.getName());
@@ -80,17 +74,19 @@ public class LastFmRepository
      * @param album The album source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchAlbumData(final AlbumInterface album, final boolean overwrite) {
+    @Override public void fetchAlbumFromExternal(final AlbumInterface album, final boolean overwrite) {
         final var methodSignature = "album.getinfo";
 
-        final var jsonResponse = this.sendRequest(
+        final var requestUrl = this.makeURL(
             methodSignature,
             Map.of(
-                "api_key", API_KEY,
-                "artist", URLEncoder.encode(album.getArtist().getName(), StandardCharsets.UTF_8),
-                "album", URLEncoder.encode(album.getName(), StandardCharsets.UTF_8)
+                "api_key", this.apiKey,
+                "artist", album.getArtist().getName(),
+                "album", album.getName()
             )
         );
+
+        final var jsonResponse = this.sendRequest(requestUrl);
 
         if (!jsonResponse.has("album")) {
             logger().warning("No Last.FM album has been found for album: " +
@@ -120,17 +116,19 @@ public class LastFmRepository
      * @param song The song source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchSongData(final SongInterface song, final boolean overwrite) {
+    @Override public void fetchSongFromExternal(final SongInterface song, final boolean overwrite) {
         final var methodSignature = "track.getinfo";
 
-        final var jsonResponse = this.sendRequest(
+        final var requestUrl = this.makeURL(
             methodSignature,
             Map.of(
-                "api_key", API_KEY,
-                "artist", URLEncoder.encode(song.getArtist().getName(), StandardCharsets.UTF_8),
-                "track", URLEncoder.encode(song.getTitle(), StandardCharsets.UTF_8)
+                "api_key", this.apiKey,
+                "artist", song.getArtist().getName(),
+                "track", song.getTitle()
             )
         );
+
+        final var jsonResponse = this.sendRequest(requestUrl);
 
         if (!jsonResponse.has("track")) {
             logger().warning("No Last.FM song has been found for song: " +
@@ -143,23 +141,9 @@ public class LastFmRepository
         // @TODO
     }
 
-    private JSONObject sendRequest(
-        final String method,
-        final Map<String, String> parameters
-    ) {
-        final var requestUrl = API_URL + "method=" + method + "&format=json&" + parameters.entrySet().stream()
+    @Override protected String makeURL(final String method, final Map<String, String> parameters) {
+        return this.apiUrl + "method=" + method + "&format=json&" + parameters.entrySet().stream()
             .map(entry -> "&" + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
             .collect(Collectors.joining("&"));
-
-        final var request = HttpRequest.newBuilder()
-            .uri(URI.create(requestUrl))
-            .build();
-
-        try (final var httpClient = HttpClient.newHttpClient()) {
-            final var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            return new JSONObject(response.body());
-        } catch (final Exception exception) {
-            throw new RuntimeException(exception);
-        }
     }
 }
