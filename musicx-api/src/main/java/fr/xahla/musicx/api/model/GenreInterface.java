@@ -1,5 +1,7 @@
 package fr.xahla.musicx.api.model;
 
+import java.util.List;
+
 /** <b>(API) Interface for Genre Model contracts.</b>
  * <p>
  * Copyright (C) Xahla - All Rights Reserved
@@ -12,19 +14,17 @@ package fr.xahla.musicx.api.model;
  */
 public interface GenreInterface {
 
-    /* @var Long id */
-
-    Long getId();
-    GenreInterface setId(Long id);
-
     /* @var String name */
 
     String getName();
-    GenreInterface setName(String name);
+    GenreInterface setName(final String name);
 
-    /* @var GenreInterface parent */
+    /* @var GenreInterface[] parents */
 
-    GenreInterface getParent();
-    GenreInterface setParent(GenreInterface genre);
+    List<? extends GenreInterface> getParents();
+    GenreInterface setParents(final List<? extends GenreInterface> genre);
+
+    /* GLOBAL SETTER */
+    GenreInterface set(final GenreInterface genre);
 
 }

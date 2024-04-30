@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface GenreRepositoryInterface {
 
-    List<GenreInterface> findByCriterias(final GenreSearchCriterias ... criterias);
-    List<GenreInterface> findAll();
+    List<? extends GenreInterface> findByCriterias(final GenreSearchCriterias ... criterias);
+    List<? extends GenreInterface> findAll();
 
-    List<GenreInterface> fromSongs(final List<SongInterface> songs);
+    List<? extends GenreInterface> fromSongs(final List<? extends SongInterface> songs);
 
     void save(final GenreInterface genre);
 

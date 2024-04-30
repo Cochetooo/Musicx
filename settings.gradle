@@ -8,4 +8,6 @@ include 'musicx-api'
 include 'musicx-desktop'
 include 'musicx-infrastructure'
 include 'musicx-domain'
+include 'musicx-infrastructure-local-persistence'
+include 'musicx-infrastructure-external'
 
