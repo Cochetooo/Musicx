@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group = 'fr.xahla'
+version = '0.3.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(":musicx-api")
+    implementation project(":musicx-domain")
+
+    // JSON
+    implementation('org.json:json:20240303')
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
