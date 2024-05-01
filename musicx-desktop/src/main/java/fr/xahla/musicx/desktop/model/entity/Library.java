@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.model.entity;
 
 import fr.xahla.musicx.infrastructure.model.data.LibraryInterface;
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.SongDto;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,7 +33,7 @@ public class Library implements LibraryInterface {
         this.folderPaths = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
     }
 
-    private ObservableList<Song> convertFromSongs(List<? extends SongInterface> songs) {
+    private ObservableList<Song> convertFromSongs(List<? extends SongDto> songs) {
         var songViewModels = FXCollections.observableList(new ArrayList<Song>());
         songs.forEach((song) -> songViewModels.add(new Song().set(song)));
         return songViewModels;
@@ -80,7 +80,7 @@ public class Library implements LibraryInterface {
         return songs;
     }
 
-    public Library setSongs(List<? extends SongInterface> songs) {
+    public Library setSongs(List<? extends SongDto> songs) {
         this.getSongs().setAll(this.convertFromSongs(songs));
         return this;
     }

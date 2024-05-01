@@ -1,6 +1,6 @@
 package fr.xahla.musicx.infrastructure.service.albumArtwork;
 
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.SongDto;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -24,7 +24,7 @@ import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
  */
 public class GetArtworkFromiTunes {
 
-    public static String execute(final SongInterface song) {
+    public static String execute(final SongDto song) {
         try (final var httpClient = HttpClient.newHttpClient()) {
             final var searchTerm = song.getArtist().getName() + " " + song.getAlbum().getName();
 

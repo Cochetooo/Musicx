@@ -1,6 +1,10 @@
 package fr.xahla.musicx.api.repository;
 
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.SongDto;
+import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriterias;
+
+import java.util.List;
+import java.util.Map;
 
 /** <b>(API) Interface for Song Repository contracts.</b>
  * <p>
@@ -14,6 +18,9 @@ import fr.xahla.musicx.api.model.SongInterface;
  */
 public interface SongRepositoryInterface {
 
-    void save(SongInterface song);
+    List<SongDto> findAll();
+    List<SongDto> findByCriteria(final Map<SongSearchCriterias, Object> criteria);
+
+    void create(final SongDto song);
 
 }

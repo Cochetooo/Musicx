@@ -1,8 +1,8 @@
 package fr.xahla.musicx.desktop.model.entity;
 
-import fr.xahla.musicx.api.model.AlbumInterface;
-import fr.xahla.musicx.api.model.ArtistInterface;
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.AlbumDto;
+import fr.xahla.musicx.api.model.ArtistDto;
+import fr.xahla.musicx.api.model.SongDto;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author Cochetooo
  */
-public class Song implements SongInterface {
+public class Song implements SongDto {
 
     private final LongProperty id;
     private final IntegerProperty duration;
@@ -58,7 +58,7 @@ public class Song implements SongInterface {
         this.artist = new SimpleObjectProperty<>(new Artist());
     }
 
-    public Song set(final SongInterface song) {
+    public Song set(final SongDto song) {
         if (null != song.getId()) {
             this.setId(song.getId());
         }
@@ -140,7 +140,7 @@ public class Song implements SongInterface {
         return album;
     }
 
-    @Override public Song setAlbum(final AlbumInterface album) {
+    @Override public Song setAlbum(final AlbumDto album) {
         this.getAlbum().set(album);
         return this;
     }
@@ -219,7 +219,7 @@ public class Song implements SongInterface {
         return artist;
     }
 
-    public Song setArtist(final ArtistInterface artist) {
+    public Song setArtist(final ArtistDto artist) {
         this.getArtist().set(artist);
         return this;
     }

@@ -1,12 +1,13 @@
 package fr.xahla.musicx.api.repository;
 
-import fr.xahla.musicx.api.model.AlbumInterface;
-import fr.xahla.musicx.api.model.ArtistInterface;
-import fr.xahla.musicx.api.model.GenreInterface;
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.AlbumDto;
+import fr.xahla.musicx.api.model.ArtistDto;
+import fr.xahla.musicx.api.model.GenreDto;
+import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.api.repository.searchCriterias.ArtistSearchCriterias;
 
 import java.util.List;
+import java.util.Map;
 
 /** <b>(API) Interface for Artist Repository contracts.</b>
  * <p>
@@ -20,16 +21,16 @@ import java.util.List;
  */
 public interface ArtistRepositoryInterface {
 
-    List<AlbumInterface> getAlbums();
-    List<SongInterface> getSongs();
+    List<AlbumDto> getAlbums();
+    List<SongDto> getSongs();
 
-    List<ArtistInterface> findAll();
-    List<ArtistInterface> findByCriterias(final ArtistSearchCriterias ... criterias);
+    List<ArtistDto> findAll();
+    List<ArtistDto> findByCriteria(final Map<ArtistSearchCriterias, Object> criteria);
 
-    List<ArtistInterface> fromSongs(final List<SongInterface> songs);
-    List<ArtistInterface> fromAlbums(final List<AlbumInterface> albums);
-    List<ArtistInterface> fromGenre(final GenreInterface genre, final int mode);
+    List<ArtistDto> fromSongs(final List<SongDto> songs);
+    List<ArtistDto> fromAlbums(final List<AlbumDto> albums);
+    List<ArtistDto> fromGenre(final GenreDto genre, final int mode);
 
-    void save(final ArtistInterface artist);
+    void create(final ArtistDto artist);
 
 }

@@ -1,8 +1,7 @@
 package fr.xahla.musicx.infrastructure.model.entity;
 
-import fr.xahla.musicx.api.model.AlbumInterface;
-import fr.xahla.musicx.api.model.ArtistInterface;
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.AlbumDto;
+import fr.xahla.musicx.api.model.ArtistDto;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
  */
 @Entity
 @Table(name="songs")
-public class Song implements SongInterface {
+public class SongDto implements fr.xahla.musicx.api.model.SongDto {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="song_id")
@@ -39,11 +38,11 @@ public class Song implements SongInterface {
 
     @ManyToOne
     @JoinColumn(name="album_id")
-    private Album album;
+    private fr.xahla.musicx.infrastructure.model.entity.AlbumDto album;
 
     @ManyToOne
     @JoinColumn(name="artist_id")
-    private Artist artist;
+    private fr.xahla.musicx.infrastructure.model.entity.ArtistDto artist;
 
     @ElementCollection(fetch=FetchType.EAGER)
     private List<String> primaryGenres;
@@ -59,26 +58,26 @@ public class Song implements SongInterface {
         return id;
     }
 
-    @Override public Song setId(final Long id) {
+    @Override public SongDto setId(final Long id) {
         this.id = id;
         return this;
     }
 
-    @Override public Artist getArtist() {
+    @Override public fr.xahla.musicx.infrastructure.model.entity.ArtistDto getArtist() {
         return this.artist;
     }
 
-    @Override public Song setArtist(final ArtistInterface artistInterface) {
-        this.artist = new Artist().set(artistInterface);
+    @Override public SongDto setArtist(final ArtistDto artistDto) {
+        this.artist = new fr.xahla.musicx.infrastructure.model.entity.ArtistDto().set(artistDto);
         return this;
     }
 
-    @Override public Album getAlbum() {
+    @Override public fr.xahla.musicx.infrastructure.model.entity.AlbumDto getAlbum() {
         return this.album;
     }
 
-    @Override public Song setAlbum(final AlbumInterface albumInterface) {
-        this.album = new Album().set(albumInterface);
+    @Override public SongDto setAlbum(final AlbumDto albumDto) {
+        this.album = new fr.xahla.musicx.infrastructure.model.entity.AlbumDto().set(albumDto);
         return this;
     }
 
@@ -86,7 +85,7 @@ public class Song implements SongInterface {
         return title;
     }
 
-    @Override public Song setTitle(final String title) {
+    @Override public SongDto setTitle(final String title) {
         this.title = title;
         return this;
     }
@@ -95,7 +94,7 @@ public class Song implements SongInterface {
         return duration;
     }
 
-    @Override public Song setDuration(final Integer duration) {
+    @Override public SongDto setDuration(final Integer duration) {
         this.duration = duration;
         return this;
     }
@@ -105,7 +104,7 @@ public class Song implements SongInterface {
         return this.filePath;
     }
 
-    @Override public Song setFilePath(final String filePath) {
+    @Override public SongDto setFilePath(final String filePath) {
         this.filePath = filePath;
         return this;
     }
@@ -114,7 +113,7 @@ public class Song implements SongInterface {
         return this.bitRate;
     }
 
-    @Override public Song setBitRate(final Integer bitRate) {
+    @Override public SongDto setBitRate(final Integer bitRate) {
         this.bitRate = bitRate;
         return this;
     }
@@ -123,7 +122,7 @@ public class Song implements SongInterface {
         return this.sampleRate;
     }
 
-    @Override public Song setSampleRate(final Integer sampleRate) {
+    @Override public SongDto setSampleRate(final Integer sampleRate) {
         this.sampleRate = sampleRate;
         return this;
     }
@@ -132,7 +131,7 @@ public class Song implements SongInterface {
         return trackNumber;
     }
 
-    @Override public Song setTrackNumber(final Short trackNumber) {
+    @Override public SongDto setTrackNumber(final Short trackNumber) {
         this.trackNumber = trackNumber;
         return this;
     }
@@ -141,7 +140,7 @@ public class Song implements SongInterface {
         return discNumber;
     }
 
-    @Override public Song setDiscNumber(final Short discNumber) {
+    @Override public SongDto setDiscNumber(final Short discNumber) {
         this.discNumber = discNumber;
         return this;
     }
@@ -150,7 +149,7 @@ public class Song implements SongInterface {
         return available;
     }
 
-    @Override public Song setAvailable(Boolean available) {
+    @Override public SongDto setAvailable(Boolean available) {
         this.available = available;
         return this;
     }
@@ -161,7 +160,7 @@ public class Song implements SongInterface {
     }
 
     @Override
-    public Song setPrimaryGenres(final List<String> primaryGenres) {
+    public SongDto setPrimaryGenres(final List<String> primaryGenres) {
         this.primaryGenres = primaryGenres;
         return this;
     }
@@ -172,62 +171,62 @@ public class Song implements SongInterface {
     }
 
     @Override
-    public Song setSecondaryGenres(final List<String> secondaryGenres) {
+    public SongDto setSecondaryGenres(final List<String> secondaryGenres) {
         this.secondaryGenres = secondaryGenres;
         return this;
     }
 
-    @Override public Song set(final SongInterface songInterface) {
-        if (null != songInterface.getId() && 0 != songInterface.getId()) {
-            this.setId(songInterface.getId());
+    @Override public SongDto set(final fr.xahla.musicx.api.model.SongDto songDto) {
+        if (null != songDto.getId() && 0 != songDto.getId()) {
+            this.setId(songDto.getId());
         }
 
-        if (null != songInterface.getDuration()) {
-            this.setDuration(songInterface.getDuration());
+        if (null != songDto.getDuration()) {
+            this.setDuration(songDto.getDuration());
         }
 
-        if (null != songInterface.getBitRate()) {
-            this.setBitRate(songInterface.getBitRate());
+        if (null != songDto.getBitRate()) {
+            this.setBitRate(songDto.getBitRate());
         }
 
-        if (null != songInterface.getSampleRate()) {
-            this.setSampleRate(songInterface.getSampleRate());
+        if (null != songDto.getSampleRate()) {
+            this.setSampleRate(songDto.getSampleRate());
         }
 
-        if (null != songInterface.getTrackNumber()) {
-            this.setTrackNumber(songInterface.getTrackNumber());
+        if (null != songDto.getTrackNumber()) {
+            this.setTrackNumber(songDto.getTrackNumber());
         }
 
-        if (null != songInterface.getDiscNumber()) {
-            this.setDiscNumber(songInterface.getDiscNumber());
+        if (null != songDto.getDiscNumber()) {
+            this.setDiscNumber(songDto.getDiscNumber());
         }
 
-        if (null != songInterface.getTitle()) {
-            this.setTitle(songInterface.getTitle());
+        if (null != songDto.getTitle()) {
+            this.setTitle(songDto.getTitle());
         }
 
-        if (null != songInterface.getFilePath()) {
-            this.setFilePath(songInterface.getFilePath());
+        if (null != songDto.getFilePath()) {
+            this.setFilePath(songDto.getFilePath());
         }
 
-        if (null != songInterface.isAvailable()) {
-            this.setAvailable(songInterface.isAvailable());
+        if (null != songDto.isAvailable()) {
+            this.setAvailable(songDto.isAvailable());
         }
 
-        if (null != songInterface.getArtist()) {
-            this.setArtist(songInterface.getArtist());
+        if (null != songDto.getArtist()) {
+            this.setArtist(songDto.getArtist());
         }
 
-        if (null != songInterface.getAlbum()) {
-            this.setAlbum(songInterface.getAlbum());
+        if (null != songDto.getAlbum()) {
+            this.setAlbum(songDto.getAlbum());
         }
 
-        if (null != songInterface.getPrimaryGenres()) {
-            this.setPrimaryGenres(songInterface.getPrimaryGenres());
+        if (null != songDto.getPrimaryGenres()) {
+            this.setPrimaryGenres(songDto.getPrimaryGenres());
         }
 
-        if (null != songInterface.getSecondaryGenres()) {
-            this.setSecondaryGenres(songInterface.getSecondaryGenres());
+        if (null != songDto.getSecondaryGenres()) {
+            this.setSecondaryGenres(songDto.getSecondaryGenres());
         }
 
         return this;

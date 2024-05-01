@@ -1,8 +1,8 @@
-package fr.xahla.musicx.domain.service.externalApi;
+package fr.xahla.musicx.infrastructure.external.repository;
 
-import fr.xahla.musicx.api.model.AlbumInterface;
-import fr.xahla.musicx.api.model.ArtistInterface;
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.AlbumDto;
+import fr.xahla.musicx.api.model.ArtistDto;
+import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.domain.repository.ExternalFetchRepositoryInterface;
 
 import java.net.URLEncoder;
@@ -34,7 +34,7 @@ public class LastFmApiHandler
      * @param artist The artist source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchArtistFromExternal(final ArtistInterface artist, final boolean overwrite) {
+    @Override public void fetchArtistFromExternal(final ArtistDto artist, final boolean overwrite) {
         final var methodSignature = "artist.getinfo";
 
         final var requestUrl = this.makeURL(
@@ -74,7 +74,7 @@ public class LastFmApiHandler
      * @param album The album source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchAlbumFromExternal(final AlbumInterface album, final boolean overwrite) {
+    @Override public void fetchAlbumFromExternal(final AlbumDto album, final boolean overwrite) {
         final var methodSignature = "album.getinfo";
 
         final var requestUrl = this.makeURL(
@@ -116,7 +116,7 @@ public class LastFmApiHandler
      * @param song The song source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchSongFromExternal(final SongInterface song, final boolean overwrite) {
+    @Override public void fetchSongFromExternal(final SongDto song, final boolean overwrite) {
         final var methodSignature = "track.getinfo";
 
         final var requestUrl = this.makeURL(

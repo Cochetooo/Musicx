@@ -1,6 +1,6 @@
 package fr.xahla.musicx.domain.manager;
 
-import fr.xahla.musicx.api.model.GenreInterface;
+import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.repository.GenreRepositoryInterface;
 
 import java.util.List;
@@ -11,9 +11,9 @@ public interface GenreListManagerInterface {
     int SECONDARY_GENRE = 0x1;
     int BOTH_GENRES = 0x2;
 
-    List<? extends GenreInterface> get();
+    List<? extends GenreDto> get();
     GenreRepositoryInterface getRepository();
 
-    void set(final List<? extends GenreInterface> genres);
+    void set(final List<? extends GenreDto> genres);
 
 }

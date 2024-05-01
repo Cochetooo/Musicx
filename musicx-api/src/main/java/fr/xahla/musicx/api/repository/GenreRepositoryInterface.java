@@ -1,18 +1,19 @@
 package fr.xahla.musicx.api.repository;
 
-import fr.xahla.musicx.api.model.GenreInterface;
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.GenreDto;
+import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriterias;
 
 import java.util.List;
+import java.util.Map;
 
 public interface GenreRepositoryInterface {
 
-    List<? extends GenreInterface> findByCriterias(final GenreSearchCriterias ... criterias);
-    List<? extends GenreInterface> findAll();
+    List<GenreDto> findByCriteria(final Map<GenreSearchCriterias, Object> criteria);
+    List<GenreDto> findAll();
 
-    List<? extends GenreInterface> fromSongs(final List<? extends SongInterface> songs);
+    List<GenreDto> fromSongs(final List<SongDto> songs);
 
-    void save(final GenreInterface genre);
+    void create(final GenreDto genre);
 
 }

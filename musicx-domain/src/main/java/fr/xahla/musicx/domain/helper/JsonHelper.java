@@ -41,4 +41,12 @@ public final class JsonHelper {
         }
     }
 
+    public static void saveJsonToFile(final String filename, final JSONObject jsonObject) {
+        try {
+            Files.writeString(Paths.get(filename), jsonObject.toString());
+        } catch (final IOException exception) {
+            logger().log(Level.SEVERE, "Cannot save file " + filename, exception);
+        }
+    }
+
 }

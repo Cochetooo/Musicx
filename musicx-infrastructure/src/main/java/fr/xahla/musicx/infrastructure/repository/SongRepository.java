@@ -1,12 +1,11 @@
 package fr.xahla.musicx.infrastructure.repository;
 
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.api.repository.SongRepositoryInterface;
 import fr.xahla.musicx.infrastructure.model.data.enums.InfrastructureErrorMessage;
 import fr.xahla.musicx.infrastructure.model.data.AudioDataInterface;
-import fr.xahla.musicx.infrastructure.model.entity.Album;
-import fr.xahla.musicx.infrastructure.model.entity.Artist;
-import fr.xahla.musicx.infrastructure.model.entity.Song;
+import fr.xahla.musicx.infrastructure.model.entity.AlbumDto;
+import fr.xahla.musicx.infrastructure.model.entity.ArtistDto;
 import org.hibernate.Transaction;
 
 import static fr.xahla.musicx.infrastructure.config.HibernateLoader.openSession;
@@ -37,17 +36,17 @@ public class SongRepository implements SongRepositoryInterface {
      * following the <i>LocalSongInterface</i> scheme.
      * @see AudioDataInterface
      */
-    public SongInterface getFromLocalSong(final AudioDataInterface localSong) {
+    public SongDto getFromLocalSong(final AudioDataInterface localSong) {
         if (localSong.hasFailed()) {
             logger().warning(InfrastructureErrorMessage.LOCAL_SONG_HAS_FAILED.getMsg(localSong.getTitle()));
         }
 
-        var artist = new Artist()
+        var artist = new ArtistDto()
             .setId(null)
             .setCountry(localSong.getArtistCountry())
             .setName(localSong.getArtistName());
 
-        var album = new Album()
+        var album = new AlbumDto()
             .setId(null)
             .setName(localSong.getAlbumName())
             .setReleaseYear(localSong.getYear())
@@ -57,14 +56,14 @@ public class SongRepository implements SongRepositoryInterface {
         if (localSong.getAlbumArtist().equals(artist.getName())) {
             album.setArtist(artist);
         } else {
-            var albumArtist = new Artist()
+            var albumArtist = new ArtistDto()
                 .setId(null)
                 .setName(localSong.getAlbumArtist());
 
             album.setArtist(albumArtist);
         }
 
-        final var song = new Song()
+        final var song = new fr.xahla.musicx.infrastructure.model.entity.SongDto()
             .setId(null)
             .setAvailable(true)
             .setAlbum(album)
@@ -81,24 +80,24 @@ public class SongRepository implements SongRepositoryInterface {
         return song;
     }
 
-    @Override public void save(final SongInterface songInterface) {
-        this.artistRepository.save(songInterface.getArtist());
-        this.albumRepository.save(songInterface.getAlbum());
+    @Override public void save(final SongDto songDto) {
+        this.artistRepository.save(songDto.getArtist());
+        this.albumRepository.save(songDto.getAlbum());
 
         Transaction transaction = null;
 
         try (var session = openSession()) {
             transaction = session.beginTransaction();
 
-            Song song;
+            fr.xahla.musicx.infrastructure.model.entity.SongDto song;
 
-            if (null != songInterface.getId() && null != (song = session.get(Song.class, songInterface.getId()))) {
-                song.set(songInterface);
+            if (null != songDto.getId() && null != (song = session.get(fr.xahla.musicx.infrastructure.model.entity.SongDto.class, songDto.getId()))) {
+                song.set(songDto);
                 session.merge(song);
             } else {
-                song = new Song().set(songInterface);
+                song = new fr.xahla.musicx.infrastructure.model.entity.SongDto().set(songDto);
                 session.persist(song);
-                songInterface.setId(song.getId());
+                songDto.setId(song.getId());
             }
 
             transaction.commit();

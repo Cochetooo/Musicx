@@ -28,9 +28,9 @@
         <!-- Mapping files -->
 
         <mapping class="fr.xahla.musicx.infrastructure.model.entity.Library"/>
-        <mapping class="fr.xahla.musicx.infrastructure.model.entity.Song"/>
-        <mapping class="fr.xahla.musicx.infrastructure.model.entity.Artist" />
-        <mapping class="fr.xahla.musicx.infrastructure.model.entity.Album" />
+        <mapping class="fr.xahla.musicx.infrastructure.model.entity.SongDto"/>
+        <mapping class="fr.xahla.musicx.infrastructure.model.entity.ArtistDto" />
+        <mapping class="fr.xahla.musicx.infrastructure.model.entity.AlbumDto" />
 
     </session-factory>
 </hibernate-configuration>

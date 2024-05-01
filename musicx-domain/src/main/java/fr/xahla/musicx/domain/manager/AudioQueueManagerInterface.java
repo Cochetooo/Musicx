@@ -1,28 +1,28 @@
 package fr.xahla.musicx.domain.manager;
 
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.domain.model.AudioQueueInterface;
 
 import java.util.List;
 
 public interface AudioQueueManagerInterface {
 
-    void addLast(final SongInterface song);
-    void addNext(final SongInterface song);
+    void addLast(final SongDto song);
+    void addNext(final SongDto song);
 
     void clear();
 
     AudioQueueInterface get();
-    List<? extends SongInterface> getSongs();
+    List<? extends SongDto> getSongs();
     long getTotalDuration();
-    SongInterface getSongAt(final int index);
+    SongDto getSongAt(final int index);
 
     boolean isLastSong();
 
     void remove(final int position);
 
     void setPosition(final int position);
-    void setSongs(final List<? extends SongInterface> songs);
+    void setSongs(final List<? extends SongDto> songs);
 
     void shuffle();
 

@@ -1,8 +1,7 @@
 package fr.xahla.musicx.infrastructure.repository;
 
-import fr.xahla.musicx.api.model.AlbumInterface;
+import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.repository.AlbumRepositoryInterface;
-import fr.xahla.musicx.infrastructure.model.entity.Album;
 import org.hibernate.Transaction;
 
 import static fr.xahla.musicx.infrastructure.config.HibernateLoader.openSession;
@@ -26,23 +25,23 @@ public class AlbumRepository implements AlbumRepositoryInterface {
         this.artistRepository = new ArtistRepository();
     }
 
-    @Override public void save(final AlbumInterface albumInterface) {
-        this.artistRepository.save(albumInterface.getArtist());
+    @Override public void save(final AlbumDto albumDto) {
+        this.artistRepository.save(albumDto.getArtist());
 
         Transaction transaction = null;
 
         try (var session = openSession()) {
             transaction = session.beginTransaction();
 
-            Album album;
+            fr.xahla.musicx.infrastructure.model.entity.AlbumDto album;
 
-            if (null != albumInterface.getId() && null != (album = session.get(Album.class, albumInterface.getId()))) {
-                album.set(albumInterface);
+            if (null != albumDto.getId() && null != (album = session.get(fr.xahla.musicx.infrastructure.model.entity.AlbumDto.class, albumDto.getId()))) {
+                album.set(albumDto);
                 session.merge(album);
             } else {
-                album = new Album().set(albumInterface);
+                album = new fr.xahla.musicx.infrastructure.model.entity.AlbumDto().set(albumDto);
                 session.persist(album);
-                albumInterface.setId(album.getId());
+                albumDto.setId(album.getId());
             }
 
             transaction.commit();

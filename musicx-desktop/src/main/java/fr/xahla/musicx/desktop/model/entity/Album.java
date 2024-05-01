@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.model.entity;
 
-import fr.xahla.musicx.api.model.AlbumInterface;
-import fr.xahla.musicx.api.model.ArtistInterface;
+import fr.xahla.musicx.api.model.AlbumDto;
+import fr.xahla.musicx.api.model.ArtistDto;
 import javafx.beans.property.*;
 
 /** <b>Class that defines the Album Model for desktop view usage.</b>
@@ -14,7 +14,7 @@ import javafx.beans.property.*;
  *
  * @author Cochetooo
  */
-public class Album implements AlbumInterface {
+public class Album implements AlbumDto {
 
     private final LongProperty id;
     private final StringProperty name;
@@ -106,34 +106,34 @@ public class Album implements AlbumInterface {
         return artist;
     }
 
-    @Override public Album setArtist(ArtistInterface artist) {
+    @Override public Album setArtist(ArtistDto artist) {
         this.getArtist().set(artist);
         return this;
     }
 
-    @Override public Album set(AlbumInterface albumInterface) {
-        if (null != albumInterface.getId()) {
-            this.setId(albumInterface.getId());
+    @Override public Album set(AlbumDto albumDto) {
+        if (null != albumDto.getId()) {
+            this.setId(albumDto.getId());
         }
 
-        if (null != albumInterface.getName()) {
-            this.setName(albumInterface.getName());
+        if (null != albumDto.getName()) {
+            this.setName(albumDto.getName());
         }
 
-        if (null != albumInterface.getReleaseYear()) {
-            this.setReleaseYear(albumInterface.getReleaseYear());
+        if (null != albumDto.getReleaseYear()) {
+            this.setReleaseYear(albumDto.getReleaseYear());
         }
 
-        if (null != albumInterface.getTrackTotal()) {
-            this.setTrackTotal(albumInterface.getTrackTotal());
+        if (null != albumDto.getTrackTotal()) {
+            this.setTrackTotal(albumDto.getTrackTotal());
         }
 
-        if (null != albumInterface.getDiscTotal()) {
-            this.setDiscTotal(albumInterface.getDiscTotal());
+        if (null != albumDto.getDiscTotal()) {
+            this.setDiscTotal(albumDto.getDiscTotal());
         }
 
-        if (null != albumInterface.getArtist()) {
-            this.setArtist(albumInterface.getArtist());
+        if (null != albumDto.getArtist()) {
+            this.setArtist(albumDto.getArtist());
         }
 
         return this;

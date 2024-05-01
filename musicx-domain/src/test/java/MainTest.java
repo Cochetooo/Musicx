@@ -1,8 +1,7 @@
-import com.sun.tools.javac.Main;
-import fr.xahla.musicx.api.model.AlbumInterface;
-import fr.xahla.musicx.api.model.ArtistInterface;
-import fr.xahla.musicx.api.model.GenreInterface;
-import fr.xahla.musicx.api.model.LabelInterface;
+import fr.xahla.musicx.api.model.AlbumDto;
+import fr.xahla.musicx.api.model.ArtistDto;
+import fr.xahla.musicx.api.model.GenreDto;
+import fr.xahla.musicx.api.model.LabelDto;
 import fr.xahla.musicx.domain.application.AbstractContext;
 import fr.xahla.musicx.domain.application.SettingsInterface;
 import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
@@ -122,7 +121,7 @@ public class MainTest {
     public static void main(final String[] args) {
         final var context = new Context();
 
-        final var album = new AlbumInterface() {
+        final var album = new AlbumDto() {
             private String artworkUrl;
             private LocalDate releaseDate;
 
@@ -130,17 +129,17 @@ public class MainTest {
                 return 0L;
             }
 
-            @Override public AlbumInterface setId(final Long id) {
+            @Override public AlbumDto setId(final Long id) {
                 return null;
             }
 
-            @Override public ArtistInterface getArtist() {
-                return new ArtistInterface() {
+            @Override public ArtistDto getArtist() {
+                return new ArtistDto() {
                     @Override public Long getId() {
                         return 0L;
                     }
 
-                    @Override public ArtistInterface setId(final Long id) {
+                    @Override public ArtistDto setId(final Long id) {
                         return null;
                     }
 
@@ -148,7 +147,7 @@ public class MainTest {
                         return "Katatonia";
                     }
 
-                    @Override public ArtistInterface setName(final String name) {
+                    @Override public ArtistDto setName(final String name) {
                         return null;
                     }
 
@@ -156,7 +155,7 @@ public class MainTest {
                         return "";
                     }
 
-                    @Override public ArtistInterface setCountry(final String country) {
+                    @Override public ArtistDto setCountry(final String country) {
                         return null;
                     }
 
@@ -164,17 +163,17 @@ public class MainTest {
                         return "";
                     }
 
-                    @Override public ArtistInterface setArtworkUrl(final String artworkUrl) {
+                    @Override public ArtistDto setArtworkUrl(final String artworkUrl) {
                         return null;
                     }
 
-                    @Override public ArtistInterface set(final ArtistInterface artistInterface) {
+                    @Override public ArtistDto set(final ArtistDto artistInterface) {
                         return null;
                     }
                 };
             }
 
-            @Override public AlbumInterface setArtist(final ArtistInterface artistInterface) {
+            @Override public AlbumDto setArtist(final ArtistDto artistInterface) {
                 return null;
             }
 
@@ -182,7 +181,7 @@ public class MainTest {
                 return "Last Fair Deal Gone Down";
             }
 
-            @Override public AlbumInterface setName(final String name) {
+            @Override public AlbumDto setName(final String name) {
                 return null;
             }
 
@@ -190,24 +189,24 @@ public class MainTest {
                 return this.releaseDate;
             }
 
-            @Override public AlbumInterface setReleaseDate(final LocalDate date) {
+            @Override public AlbumDto setReleaseDate(final LocalDate date) {
                 this.releaseDate = date;
                 return this;
             }
 
-            @Override public List<GenreInterface> getPrimaryGenres() {
+            @Override public List<GenreDto> getPrimaryGenres() {
                 return List.of();
             }
 
-            @Override public AlbumInterface setPrimaryGenres(final List<GenreInterface> genres) {
+            @Override public AlbumDto setPrimaryGenres(final List<GenreDto> genres) {
                 return null;
             }
 
-            @Override public List<GenreInterface> getSecondaryGenres() {
+            @Override public List<GenreDto> getSecondaryGenres() {
                 return List.of();
             }
 
-            @Override public AlbumInterface setSecondaryGenres(final List<GenreInterface> genres) {
+            @Override public AlbumDto setSecondaryGenres(final List<GenreDto> genres) {
                 return null;
             }
 
@@ -215,7 +214,7 @@ public class MainTest {
                 return 0;
             }
 
-            @Override public AlbumInterface setTrackTotal(final Short trackTotal) {
+            @Override public AlbumDto setTrackTotal(final Short trackTotal) {
                 return null;
             }
 
@@ -223,7 +222,7 @@ public class MainTest {
                 return 0;
             }
 
-            @Override public AlbumInterface setDiscTotal(final Short discTotal) {
+            @Override public AlbumDto setDiscTotal(final Short discTotal) {
                 return null;
             }
 
@@ -231,20 +230,20 @@ public class MainTest {
                 return artworkUrl;
             }
 
-            @Override public AlbumInterface setArtworkUrl(final String artworkUrl) {
+            @Override public AlbumDto setArtworkUrl(final String artworkUrl) {
                 this.artworkUrl = artworkUrl;
                 return this;
             }
 
-            @Override public LabelInterface getLabel() {
+            @Override public LabelDto getLabel() {
                 return null;
             }
 
-            @Override public AlbumInterface setLabel(final LabelInterface label) {
+            @Override public AlbumDto setLabel(final LabelDto label) {
                 return null;
             }
 
-            @Override public AlbumInterface set(final AlbumInterface albumInterface) {
+            @Override public AlbumDto set(final AlbumDto albumInterface) {
                 return null;
             }
         };

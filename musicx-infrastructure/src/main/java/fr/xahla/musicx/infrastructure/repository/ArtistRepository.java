@@ -1,8 +1,7 @@
 package fr.xahla.musicx.infrastructure.repository;
 
-import fr.xahla.musicx.api.model.ArtistInterface;
+import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.repository.ArtistRepositoryInterface;
-import fr.xahla.musicx.infrastructure.model.entity.Artist;
 import org.hibernate.Transaction;
 
 import static fr.xahla.musicx.infrastructure.config.HibernateLoader.openSession;
@@ -20,17 +19,17 @@ import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
  */
 public class ArtistRepository implements ArtistRepositoryInterface {
 
-    @Override public Artist findById(final Integer id) {
-        Artist artist;
+    @Override public fr.xahla.musicx.infrastructure.model.entity.ArtistDto findById(final Integer id) {
+        fr.xahla.musicx.infrastructure.model.entity.ArtistDto artist;
 
         try (var session = openSession()) {
             final var hql =
                 """
-                FROM Artist a
+                FROM ArtistDto a
                 WHERE a.id = :id
                 """;
 
-            final var query = session.createQuery(hql, Artist.class);
+            final var query = session.createQuery(hql, fr.xahla.musicx.infrastructure.model.entity.ArtistDto.class);
             query.setParameter("id", id);
             artist = query.uniqueResult();
         }
@@ -38,21 +37,21 @@ public class ArtistRepository implements ArtistRepositoryInterface {
         return artist;
     }
 
-    @Override public void save(final ArtistInterface artistInterface) {
+    @Override public void save(final ArtistDto artistDto) {
         Transaction transaction = null;
 
         try (var session = openSession()) {
             transaction = session.beginTransaction();
 
-            Artist artist;
+            fr.xahla.musicx.infrastructure.model.entity.ArtistDto artist;
 
-            if (null != artistInterface.getId() && null != (artist = session.get(Artist.class, artistInterface.getId()))) {
-                artist.set(artistInterface);
+            if (null != artistDto.getId() && null != (artist = session.get(fr.xahla.musicx.infrastructure.model.entity.ArtistDto.class, artistDto.getId()))) {
+                artist.set(artistDto);
                 session.merge(artist);
             } else {
-                artist = new Artist().set(artistInterface);
+                artist = new fr.xahla.musicx.infrastructure.model.entity.ArtistDto().set(artistDto);
                 session.persist(artist);
-                artistInterface.setId(artist.getId());
+                artistDto.setId(artist.getId());
             }
 
             transaction.commit();

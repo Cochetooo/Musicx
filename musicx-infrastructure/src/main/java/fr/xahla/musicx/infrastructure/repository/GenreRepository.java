@@ -1,6 +1,6 @@
 package fr.xahla.musicx.infrastructure.repository;
 
-import fr.xahla.musicx.api.model.GenreInterface;
+import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.repository.GenreRepositoryInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +36,7 @@ public class GenreRepository implements GenreRepositoryInterface {
         }
     }
 
-    @Override public GenreInterface findByName(final String name) {
+    @Override public GenreDto findByName(final String name) {
         if (!genres.has(name)) {
             logger().info("Genre " + name + " not found");
             return null;
@@ -48,7 +48,7 @@ public class GenreRepository implements GenreRepositoryInterface {
         return null;
     }
 
-    @Override public List<GenreInterface> findAll() {
+    @Override public List<GenreDto> findAll() {
         return List.of();
     }
 

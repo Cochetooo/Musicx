@@ -1,13 +1,12 @@
-package fr.xahla.musicx.domain.service.externalApi;
+package fr.xahla.musicx.infrastructure.external.repository;
 
-import fr.xahla.musicx.api.model.AlbumInterface;
+import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.domain.repository.ExternalFetchRepositoryInterface;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -35,7 +34,7 @@ public class ItunesApiHandler
      * @param album The album source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchAlbumFromExternal(final AlbumInterface album, final boolean overwrite) {
+    @Override public void fetchAlbumFromExternal(final AlbumDto album, final boolean overwrite) {
         final var methodSignature = "search";
 
         final var searchTerm = album.getArtist().getName() + " " + album.getName();

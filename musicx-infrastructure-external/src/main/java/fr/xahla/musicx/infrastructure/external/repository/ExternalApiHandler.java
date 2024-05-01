@@ -1,4 +1,4 @@
-package fr.xahla.musicx.domain.service.externalApi;
+package fr.xahla.musicx.infrastructure.external.repository;
 
 import org.json.JSONObject;
 

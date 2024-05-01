@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.model.entity;
 
-import fr.xahla.musicx.api.model.ArtistInterface;
+import fr.xahla.musicx.api.model.ArtistDto;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,7 +16,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author Cochetooo
  */
-public class Artist implements ArtistInterface {
+public class Artist implements ArtistDto {
 
     private LongProperty id;
     private StringProperty name;
@@ -28,7 +28,7 @@ public class Artist implements ArtistInterface {
         this.country = new SimpleStringProperty();
     }
 
-    public Artist set(ArtistInterface artist) {
+    public Artist set(ArtistDto artist) {
         if (null != artist.getId()) {
             this.setId(artist.getId());
         }

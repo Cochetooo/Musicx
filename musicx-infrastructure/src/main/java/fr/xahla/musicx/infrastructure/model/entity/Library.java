@@ -1,6 +1,6 @@
 package fr.xahla.musicx.infrastructure.model.entity;
 
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.infrastructure.model.data.LibraryInterface;
 import jakarta.persistence.*;
 
@@ -31,7 +31,7 @@ public class Library implements LibraryInterface {
         joinColumns={@JoinColumn(name="library_id")},
         inverseJoinColumns={@JoinColumn(name="song_id")}
     )
-    private List<Song> songs;
+    private List<fr.xahla.musicx.infrastructure.model.entity.SongDto> songs;
 
     private String name;
 
@@ -51,14 +51,14 @@ public class Library implements LibraryInterface {
         return this;
     }
 
-    public List<Song> getSongs() {
+    public List<fr.xahla.musicx.infrastructure.model.entity.SongDto> getSongs() {
         return songs;
     }
 
-    public Library setSongs(final List<? extends SongInterface> songs) {
-        var songEntities = new ArrayList<Song>();
+    public Library setSongs(final List<? extends SongDto> songs) {
+        var songEntities = new ArrayList<fr.xahla.musicx.infrastructure.model.entity.SongDto>();
 
-        songs.forEach((song) -> songEntities.add(new Song().set(song)));
+        songs.forEach((song) -> songEntities.add(new fr.xahla.musicx.infrastructure.model.entity.SongDto().set(song)));
 
         this.songs = songEntities;
         return this;

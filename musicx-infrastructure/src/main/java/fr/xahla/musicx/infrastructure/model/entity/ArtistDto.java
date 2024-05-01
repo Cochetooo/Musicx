@@ -1,6 +1,5 @@
 package fr.xahla.musicx.infrastructure.model.entity;
 
-import fr.xahla.musicx.api.model.ArtistInterface;
 import jakarta.persistence.*;
 
 /** <b>Class that defines the Artist Model.</b>
@@ -15,7 +14,7 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name="artists")
-public class Artist implements ArtistInterface {
+public class ArtistDto implements fr.xahla.musicx.api.model.ArtistDto {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="artist_id")
@@ -29,7 +28,7 @@ public class Artist implements ArtistInterface {
         return this.id;
     }
 
-    @Override public Artist setId(final Long id) {
+    @Override public ArtistDto setId(final Long id) {
         this.id = id;
         return this;
     }
@@ -38,7 +37,7 @@ public class Artist implements ArtistInterface {
         return this.name;
     }
 
-    @Override public Artist setName(final String name) {
+    @Override public ArtistDto setName(final String name) {
         this.name = name;
         return this;
     }
@@ -47,22 +46,22 @@ public class Artist implements ArtistInterface {
         return country;
     }
 
-    @Override public Artist setCountry(String country) {
+    @Override public ArtistDto setCountry(String country) {
         this.country = country;
         return this;
     }
 
-    public Artist set(final ArtistInterface artistInterface) {
-        if (null != artistInterface.getId() && 0 != artistInterface.getId()) {
-            this.setId(artistInterface.getId());
+    public ArtistDto set(final fr.xahla.musicx.api.model.ArtistDto artistDto) {
+        if (null != artistDto.getId() && 0 != artistDto.getId()) {
+            this.setId(artistDto.getId());
         }
 
-        if (null != artistInterface.getName()) {
-            this.setName(artistInterface.getName());
+        if (null != artistDto.getName()) {
+            this.setName(artistDto.getName());
         }
 
-        if (null != artistInterface.getCountry()) {
-            this.setCountry(artistInterface.getCountry());
+        if (null != artistDto.getCountry()) {
+            this.setCountry(artistDto.getCountry());
         }
 
         return this;

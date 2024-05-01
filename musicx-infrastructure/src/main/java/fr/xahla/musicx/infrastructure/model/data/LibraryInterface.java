@@ -1,6 +1,6 @@
 package fr.xahla.musicx.infrastructure.model.data;
 
-import fr.xahla.musicx.api.model.SongInterface;
+import fr.xahla.musicx.api.model.SongDto;
 
 import java.util.List;
 
@@ -23,8 +23,8 @@ public interface LibraryInterface {
 
     /* @var List<SongInterface> songs */
 
-    List<? extends SongInterface> getSongs();
-    LibraryInterface setSongs(final List<? extends SongInterface> songs);
+    List<? extends SongDto> getSongs();
+    LibraryInterface setSongs(final List<? extends SongDto> songs);
 
     /* @var String name */
 
