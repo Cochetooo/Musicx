@@ -14,9 +14,10 @@ module fr.xahla.musicx.infrastructure.local {
 
     requires org.hibernate.commons.annotations;
     requires org.hibernate.orm.core;
+    requires org.hibernate.orm.community.dialects;
 
-    // --- H2 Database ---
-    requires com.h2database;
+    // --- SQLite Database ---
+    requires org.xerial.sqlitejdbc;
 
     // --- Opens ---
 

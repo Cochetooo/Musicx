@@ -21,15 +21,13 @@ import java.util.Map;
  */
 public interface AlbumRepositoryInterface {
 
-    List<SongDto> getSongs();
+    List<SongDto> getSongs(final AlbumDto album);
 
     List<AlbumDto> findByCriteria(final Map<AlbumSearchCriterias, Object> criteria);
     List<AlbumDto> findAll();
 
     List<AlbumDto> fromSongs(final List<SongDto> songs);
-    List<AlbumDto> fromArtist(final ArtistDto artist);
-    List<AlbumDto> fromGenre(final GenreDto genre, final int mode);
 
-    void create(final AlbumDto album);
+    void save(final AlbumDto album);
 
 }

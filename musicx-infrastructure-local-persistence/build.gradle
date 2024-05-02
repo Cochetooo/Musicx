@@ -18,6 +18,7 @@ dependencies {
 
     implementation("org.hibernate.orm:hibernate-core")
     implementation('org.hibernate.common:hibernate-commons-annotations:6.0.6.Final')
+    implementation 'org.hibernate.orm:hibernate-community-dialects:6.4.4.Final'
     implementation("jakarta.transaction:jakarta.transaction-api")
 
     implementation('jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1')
@@ -28,8 +29,8 @@ dependencies {
     implementation('net.bytebuddy:byte-buddy:1.14.12')
     /* ------------------ */
 
-    // H2 Database
-    implementation('com.h2database:h2:2.2.224')
+    // SQLite
+    implementation('org.xerial:sqlite-jdbc:3.45.3.0')
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

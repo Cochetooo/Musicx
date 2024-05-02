@@ -71,6 +71,22 @@ public class AlbumEntity {
             .setLabel(label.toDto());
     }
 
+    public AlbumEntity fromDto(final AlbumDto dto) {
+        this.setArtist()
+            .setName(album.getName())
+            .setCreditArtists()
+            .setArtworkUrl(album.getArtworkUrl())
+            .setCatalogNo(album.getCatalogNo())
+            .setDiscTotal(album.getDiscTotal())
+            .setTrackTotal(album.getTrackTotal())
+            .setLabel()
+            .setReleaseDate(album.getReleaseDate())
+            .setPrimaryGenres()
+            .setSecondaryGenres();
+
+        return this;
+    }
+
     public Long getId() {
         return id;
     }
