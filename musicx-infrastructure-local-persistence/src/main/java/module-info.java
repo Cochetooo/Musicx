@@ -23,4 +23,9 @@ module fr.xahla.musicx.infrastructure.local {
 
     opens fr.xahla.musicx.infrastructure.local.model to org.hibernate.orm.core;
 
+    // --- Exports ---
+    exports fr.xahla.musicx.infrastructure.local.database;
+    exports fr.xahla.musicx.infrastructure.local.model;
+    exports fr.xahla.musicx.infrastructure.local.repository;
+
 }

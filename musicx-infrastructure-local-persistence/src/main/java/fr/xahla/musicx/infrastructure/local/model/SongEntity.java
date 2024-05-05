@@ -1,54 +1,109 @@
 package fr.xahla.musicx.infrastructure.local.model;
 
 import fr.xahla.musicx.api.model.SongDto;
+import fr.xahla.musicx.api.model.data.AlbumInterface;
+import fr.xahla.musicx.api.model.data.ArtistInterface;
+import fr.xahla.musicx.api.model.data.GenreInterface;
+import fr.xahla.musicx.api.model.data.SongInterface;
+import fr.xahla.musicx.api.model.enums.AudioFormat;
 import jakarta.persistence.*;
+import org.hibernate.Hibernate;
 
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "song")
-public class SongEntity {
+public class SongEntity implements SongInterface {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "artist_id")
-    private ArtistEntity artist;
-
-    @ManyToOne
-    @JoinColumn(name = "album_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private AlbumEntity album;
 
-    private String title;
-    private String format;
-    private String lyrics;
-    private long duration;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ArtistEntity artist;
+
+    @ElementCollection
+    @CollectionTable(name = "song_lyrics", joinColumns = @JoinColumn(name = "song_id"))
+    @MapKeyColumn(name = "line_number")
+    @Column(name = "lyric")
+    private Map<Long, String> lyrics;
+
     private int bitRate;
-    private int sampleRate;
-    private short trackNumber;
     private short discNumber;
+    private long duration;
+    private AudioFormat format;
+    private int sampleRate;
+    private String title;
+    private short trackNumber;
 
     @ManyToMany
-    @JoinTable(name = "song_primary_genres",
+    @JoinTable(
+        name = "song_primary_genres",
         joinColumns = @JoinColumn(name = "song_id"),
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private List<GenreEntity> primaryGenres;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "song_secondary_genres",
         joinColumns = @JoinColumn(name = "song_id"),
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private List<GenreEntity> secondaryGenres;
 
+    // Casts
+
+    @Override public SongEntity fromDto(final SongDto songDto) {
+        this.setId(songDto.getId())
+            .setTitle(songDto.getTitle())
+            .setFormat(songDto.getFormat())
+            .setLyrics(songDto.getLyrics())
+            .setDuration(songDto.getDuration())
+            .setBitRate(songDto.getBitRate())
+            .setSampleRate(songDto.getSampleRate())
+            .setTrackNumber(songDto.getTrackNumber())
+            .setDiscNumber(songDto.getDiscNumber());
+
+        if (null != songDto.getArtistId()) {
+            Hibernate.initialize(artist);
+            this.getArtist().setId(songDto.getArtistId());
+        }
+
+        if (null != songDto.getAlbumId()) {
+            Hibernate.initialize(album);
+            this.getAlbum().setId(songDto.getAlbumId());
+        }
+
+        if (!songDto.getPrimaryGenreIds().isEmpty()) {
+            Hibernate.initialize(primaryGenres);
+            primaryGenres.clear();
+            songDto.getPrimaryGenreIds().forEach(genreId -> {
+                final var genre = new GenreEntity();
+                genre.setId(genreId);
+                this.getPrimaryGenres().add(genre);
+            });
+        }
+
+        if (!songDto.getSecondaryGenreIds().isEmpty()) {
+            Hibernate.initialize(secondaryGenres);
+            secondaryGenres.clear();
+            songDto.getSecondaryGenreIds().forEach(genreId -> {
+                final var genre = new GenreEntity();
+                genre.setId(genreId);
+                this.getSecondaryGenres().add(genre);
+            });
+        }
+
+        return this;
+    }
+
     public SongDto toDto() {
-        return new SongDto()
+        final var songDto = new SongDto()
             .setId(id)
-            .setArtist(artist.toDto())
-            .setAlbum(album.toDto())
             .setTitle(title)
             .setFormat(format)
             .setLyrics(lyrics)
@@ -57,6 +112,28 @@ public class SongEntity {
             .setSampleRate(sampleRate)
             .setTrackNumber(trackNumber)
             .setDiscNumber(discNumber);
+
+        if (null != artist) {
+            songDto.setArtistId(artist.getId());
+        }
+
+        if (null != album) {
+            songDto.setAlbumId(album.getId());
+        }
+
+        if (null != primaryGenres) {
+            songDto.setPrimaryGenreIds(primaryGenres.stream()
+                .map(GenreEntity::getId)
+                .toList());
+        }
+
+        if (null != secondaryGenres) {
+            songDto.setSecondaryGenreIds(secondaryGenres.stream()
+                .map(GenreEntity::getId)
+                .toList());
+        }
+
+        return songDto;
     }
 
     public Long getId() {
@@ -72,8 +149,8 @@ public class SongEntity {
         return artist;
     }
 
-    public SongEntity setArtist(final ArtistEntity artist) {
-        this.artist = artist;
+    public SongEntity setArtist(final ArtistInterface artist) {
+        this.artist = (ArtistEntity) artist;
         return this;
     }
 
@@ -81,8 +158,8 @@ public class SongEntity {
         return album;
     }
 
-    public SongEntity setAlbum(final AlbumEntity album) {
-        this.album = album;
+    public SongEntity setAlbum(final AlbumInterface album) {
+        this.album = (AlbumEntity) album;
         return this;
     }
 
@@ -95,20 +172,26 @@ public class SongEntity {
         return this;
     }
 
-    public String getFormat() {
+    public AudioFormat getFormat() {
         return format;
     }
 
-    public SongEntity setFormat(final String format) {
+    public SongEntity setFormat(final AudioFormat format) {
         this.format = format;
         return this;
     }
 
-    public String getLyrics() {
+    public Map<Long, String> getLyrics() {
         return lyrics;
     }
 
     public SongEntity setLyrics(final String lyrics) {
+        return this.setLyrics(
+            Map.of(0L, lyrics)
+        );
+    }
+
+    public SongEntity setLyrics(final Map<Long, String> lyrics) {
         this.lyrics = lyrics;
         return this;
     }
@@ -162,8 +245,12 @@ public class SongEntity {
         return primaryGenres;
     }
 
-    public SongEntity setPrimaryGenres(final List<GenreEntity> primaryGenres) {
-        this.primaryGenres = primaryGenres;
+    public SongEntity setPrimaryGenres(final List<? extends GenreInterface> primaryGenres) {
+        this.primaryGenres = primaryGenres.stream()
+            .filter(GenreEntity.class::isInstance)
+            .map(GenreEntity.class::cast)
+            .toList();
+
         return this;
     }
 
@@ -171,8 +258,12 @@ public class SongEntity {
         return secondaryGenres;
     }
 
-    public SongEntity setSecondaryGenres(final List<GenreEntity> secondaryGenres) {
-        this.secondaryGenres = secondaryGenres;
+    public SongEntity setSecondaryGenres(final List<? extends GenreInterface> secondaryGenres) {
+        this.secondaryGenres = secondaryGenres.stream()
+            .filter(GenreEntity.class::isInstance)
+            .map(GenreEntity.class::cast)
+            .toList();
+
         return this;
     }
 }

@@ -1,5 +1,7 @@
 package fr.xahla.musicx.api.model;
 
+import fr.xahla.musicx.api.model.data.ArtistInterface;
+
 import java.util.Locale;
 
 /** <b>(API) Interface for Artist Model contracts.</b>
@@ -12,7 +14,7 @@ import java.util.Locale;
  *
  * @author Cochetooo
  */
-public abstract class ArtistDto {
+public class ArtistDto {
 
     private Long id;
     private String name;

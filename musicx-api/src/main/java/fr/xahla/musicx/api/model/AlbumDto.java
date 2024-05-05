@@ -1,6 +1,7 @@
 package fr.xahla.musicx.api.model;
 
-import fr.xahla.musicx.api.model.enums.Role;
+import fr.xahla.musicx.api.model.enums.AlbumType;
+import fr.xahla.musicx.api.model.enums.ArtistRole;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,17 +20,20 @@ import java.util.Map;
 public class AlbumDto {
 
     private Long id;
-    private ArtistDto artist;
-    private Map<ArtistDto, Role> creditArtists;
-    private String name;
-    private String catalogNo;
-    private LocalDate releaseDate;
-    private List<GenreDto> primaryGenres;
-    private List<GenreDto> secondaryGenres;
-    private short trackTotal;
-    private short discTotal;
+
+    private Long artistId;
+    private Map<Long, ArtistRole> creditArtistIds;
+    private Long labelId;
+    private List<Long> primaryGenreIds;
+    private List<Long> secondaryGenreIds;
+
     private String artworkUrl;
-    private LabelDto label;
+    private String catalogNo;
+    private short discTotal;
+    private String name;
+    private LocalDate releaseDate;
+    private short trackTotal;
+    private AlbumType type;
 
     public Long getId() {
         return id;
@@ -40,21 +44,48 @@ public class AlbumDto {
         return this;
     }
 
-    public ArtistDto getArtist() {
-        return artist;
+    public Long getArtistId() {
+        return artistId;
     }
 
-    public AlbumDto setArtist(final ArtistDto artist) {
-        this.artist = artist;
+    public AlbumDto setArtistId(final Long artistId) {
+        this.artistId = artistId;
         return this;
     }
 
-    public Map<ArtistDto, Role> getCreditArtists() {
-        return creditArtists;
+    public Long getLabelId() {
+        return labelId;
     }
 
-    public AlbumDto setCreditArtists(final Map<ArtistDto, Role> creditArtists) {
-        this.creditArtists = creditArtists;
+    public AlbumDto setLabelId(final Long labelId) {
+        this.labelId = labelId;
+        return this;
+    }
+
+    public Map<Long, ArtistRole> getCreditArtistIds() {
+        return creditArtistIds;
+    }
+
+    public AlbumDto setCreditArtistIds(final Map<Long, ArtistRole> creditArtistIds) {
+        this.creditArtistIds = creditArtistIds;
+        return this;
+    }
+
+    public List<Long> getPrimaryGenreIds() {
+        return primaryGenreIds;
+    }
+
+    public AlbumDto setPrimaryGenreIds(final List<Long> primaryGenreIds) {
+        this.primaryGenreIds = primaryGenreIds;
+        return this;
+    }
+
+    public List<Long> getSecondaryGenreIds() {
+        return secondaryGenreIds;
+    }
+
+    public AlbumDto setSecondaryGenreIds(final List<Long> secondaryGenreIds) {
+        this.secondaryGenreIds = secondaryGenreIds;
         return this;
     }
 
@@ -80,26 +111,8 @@ public class AlbumDto {
         return releaseDate;
     }
 
-    public AlbumDto setReleaseDate(final LocalDate date) {
-        this.releaseDate = date;
-        return this;
-    }
-
-    public List<GenreDto> getPrimaryGenres() {
-        return primaryGenres;
-
-    }
-    public AlbumDto setPrimaryGenres(final List<GenreDto> genres) {
-        this.primaryGenres = genres;
-        return this;
-    }
-
-    public List<GenreDto> getSecondaryGenres() {
-        return secondaryGenres;
-    }
-
-    public AlbumDto setSecondaryGenres(final List<GenreDto> genres) {
-        this.secondaryGenres = genres;
+    public AlbumDto setReleaseDate(final LocalDate releaseDate) {
+        this.releaseDate = releaseDate;
         return this;
     }
 
@@ -107,7 +120,7 @@ public class AlbumDto {
         return trackTotal;
     }
 
-    public AlbumDto setTrackTotal(final Short trackTotal) {
+    public AlbumDto setTrackTotal(final short trackTotal) {
         this.trackTotal = trackTotal;
         return this;
     }
@@ -116,7 +129,7 @@ public class AlbumDto {
         return discTotal;
     }
 
-    public AlbumDto setDiscTotal(final Short discTotal) {
+    public AlbumDto setDiscTotal(final short discTotal) {
         this.discTotal = discTotal;
         return this;
     }
@@ -130,13 +143,12 @@ public class AlbumDto {
         return this;
     }
 
-    public LabelDto getLabel() {
-        return label;
+    public AlbumType getType() {
+        return type;
     }
 
-    public AlbumDto setLabel(final LabelDto label) {
-        this.label = label;
+    public AlbumDto setType(final AlbumType type) {
+        this.type = type;
         return this;
     }
-
 }

@@ -1,6 +1,9 @@
 package fr.xahla.musicx.api.model;
 
+import fr.xahla.musicx.api.model.enums.AudioFormat;
+
 import java.util.List;
+import java.util.Map;
 
 /** <b>(API) Interface for Song Model contracts.</b>
  * <p>
@@ -15,18 +18,20 @@ import java.util.List;
 public class SongDto {
 
     private Long id;
-    private ArtistDto artist;
-    private AlbumDto album;
-    private String title;
-    private String format;
-    private String lyrics;
-    private long duration;
+
+    private Long albumId;
+    private Long artistId;
+    private List<Long> primaryGenreIds;
+    private List<Long> secondaryGenreIds;
+
     private int bitRate;
-    private int sampleRate;
-    private short trackNumber;
     private short discNumber;
-    private List<GenreDto> primaryGenres;
-    private List<GenreDto> secondaryGenres;
+    private long duration;
+    private AudioFormat format;
+    private Map<Long, String> lyrics;
+    private int sampleRate;
+    private String title;
+    private short trackNumber;
 
     public Long getId() {
         return id;
@@ -37,57 +42,39 @@ public class SongDto {
         return this;
     }
 
-    public ArtistDto getArtist() {
-        return artist;
+    public Long getAlbumId() {
+        return albumId;
     }
 
-    public SongDto setArtist(final ArtistDto artistDto) {
-        this.artist = artistDto;
+    public SongDto setAlbumId(final Long albumId) {
+        this.albumId = albumId;
         return this;
     }
 
-    public AlbumDto getAlbum() {
-        return album;
+    public Long getArtistId() {
+        return artistId;
     }
 
-    public SongDto setAlbum(final AlbumDto album) {
-        this.album = album;
+    public SongDto setArtistId(final Long artistId) {
+        this.artistId = artistId;
         return this;
     }
 
-    public String getTitle() {
-        return title;
+    public List<Long> getPrimaryGenreIds() {
+        return primaryGenreIds;
     }
 
-    public SongDto setTitle(final String title) {
-        this.title = title;
+    public SongDto setPrimaryGenreIds(final List<Long> primaryGenreIds) {
+        this.primaryGenreIds = primaryGenreIds;
         return this;
     }
 
-    public String getFormat() {
-        return format;
+    public List<Long> getSecondaryGenreIds() {
+        return secondaryGenreIds;
     }
 
-    public SongDto setFormat(final String format) {
-        this.format = format;
-        return this;
-    }
-
-    public String getLyrics() {
-        return lyrics;
-    }
-
-    public SongDto setLyrics(final String lyrics) {
-        this.lyrics = lyrics;
-        return this;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public SongDto setDuration(final long duration) {
-        this.duration = duration;
+    public SongDto setSecondaryGenreIds(final List<Long> secondaryGenreIds) {
+        this.secondaryGenreIds = secondaryGenreIds;
         return this;
     }
 
@@ -100,12 +87,57 @@ public class SongDto {
         return this;
     }
 
+    public short getDiscNumber() {
+        return discNumber;
+    }
+
+    public SongDto setDiscNumber(final short discNumber) {
+        this.discNumber = discNumber;
+        return this;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public SongDto setDuration(final long duration) {
+        this.duration = duration;
+        return this;
+    }
+
+    public AudioFormat getFormat() {
+        return format;
+    }
+
+    public SongDto setFormat(final AudioFormat format) {
+        this.format = format;
+        return this;
+    }
+
+    public Map<Long, String> getLyrics() {
+        return lyrics;
+    }
+
+    public SongDto setLyrics(final Map<Long, String> lyrics) {
+        this.lyrics = lyrics;
+        return this;
+    }
+
     public int getSampleRate() {
         return sampleRate;
     }
 
     public SongDto setSampleRate(final int sampleRate) {
         this.sampleRate = sampleRate;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public SongDto setTitle(final String title) {
+        this.title = title;
         return this;
     }
 
@@ -117,32 +149,4 @@ public class SongDto {
         this.trackNumber = trackNumber;
         return this;
     }
-
-    public short getDiscNumber() {
-        return discNumber;
-    }
-
-    public SongDto setDiscNumber(final short discNumber) {
-        this.discNumber = discNumber;
-        return this;
-    }
-
-    public List<GenreDto> getPrimaryGenres() {
-        return primaryGenres;
-    }
-
-    public SongDto setPrimaryGenres(final List<GenreDto> primaryGenres) {
-        this.primaryGenres = primaryGenres;
-        return this;
-    }
-
-    public List<GenreDto> getSecondaryGenres() {
-        return secondaryGenres;
-    }
-
-    public SongDto setSecondaryGenres(final List<GenreDto> secondaryGenres) {
-        this.secondaryGenres = secondaryGenres;
-        return this;
-    }
-
 }

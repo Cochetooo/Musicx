@@ -14,6 +14,6 @@ public interface LabelRepositoryInterface {
     List<LabelDto> findAll();
     List<LabelDto> findByCriteria(final Map<LabelSearchCriterias, Object> criteria);
 
-    void create(final LabelDto label);
+    void save(final LabelDto label);
 
 }

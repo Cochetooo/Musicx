@@ -14,11 +14,13 @@
         <property name="hbm2ddl.auto">update</property>
 
         <!-- Mapping files -->
-        <mapping class="fr.xahla.musicx.infrastructure.local.model.SongEntity"/>
         <mapping class="fr.xahla.musicx.infrastructure.local.model.AlbumEntity" />
         <mapping class="fr.xahla.musicx.infrastructure.local.model.ArtistEntity" />
-        <mapping class="fr.xahla.musicx.infrastructure.local.model.LabelEntity" />
+        <mapping class="fr.xahla.musicx.infrastructure.local.model.BandArtistEntity" />
         <mapping class="fr.xahla.musicx.infrastructure.local.model.GenreEntity" />
+        <mapping class="fr.xahla.musicx.infrastructure.local.model.LabelEntity" />
+        <mapping class="fr.xahla.musicx.infrastructure.local.model.PersonArtistEntity" />
+        <mapping class="fr.xahla.musicx.infrastructure.local.model.SongEntity"/>
 
     </session-factory>
 </hibernate-configuration>

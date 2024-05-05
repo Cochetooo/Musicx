@@ -1,24 +1,32 @@
 package fr.xahla.musicx.infrastructure.local.model;
 
 import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.enums.Role;
+import fr.xahla.musicx.api.model.data.*;
+import fr.xahla.musicx.api.model.enums.AlbumType;
+import fr.xahla.musicx.api.model.enums.ArtistRole;
 import jakarta.persistence.*;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="albums")
-public class AlbumEntity {
+public class AlbumEntity implements AlbumInterface {
 
+    // Primary keys
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="artist_id")
+    // Relations columns
+    @ManyToOne(fetch = FetchType.LAZY)
     private ArtistEntity artist;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LabelEntity label;
 
     @ElementCollection
     @CollectionTable(
@@ -26,12 +34,9 @@ public class AlbumEntity {
         joinColumns = {@JoinColumn(name="album_id")}
     )
     @MapKeyJoinColumn(name = "artist_id")
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private Map<ArtistEntity, Role> creditArtists;
-
-    private String name;
-    private String catalogNo;
-    private LocalDate releaseDate;
+    private Map<ArtistEntity, ArtistRole> creditArtists;
 
     @ManyToMany
     @JoinTable(name = "album_primary_genres",
@@ -47,45 +52,115 @@ public class AlbumEntity {
     )
     private List<GenreEntity> secondaryGenres;
 
+    // Standard columns
+    private String name;
+    private String catalogNo;
+    private String artworkUrl;
+    private LocalDate releaseDate;
     private short trackTotal;
     private short discTotal;
-    private String artworkUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "label_name")
-    private LabelEntity label;
+    // Casts
 
-    public AlbumDto toDto() {
-        return new AlbumDto()
-            .setId(id)
-            .setArtist(artist.toDto())
-            .setCreditArtists(null)
-            .setName(name)
-            .setCatalogNo(catalogNo)
-            .setReleaseDate(releaseDate)
-            .setPrimaryGenres(primaryGenres.stream().map(GenreEntity::toDto).toList())
-            .setSecondaryGenres(secondaryGenres.stream().map(GenreEntity::toDto).toList())
-            .setTrackTotal(trackTotal)
-            .setDiscTotal(discTotal)
-            .setArtworkUrl(artworkUrl)
-            .setLabel(label.toDto());
-    }
+    @Override public AlbumEntity fromDto(final AlbumDto albumDto) {
+        this.setId(albumDto.getId())
+            .setName(albumDto.getName())
+            .setCatalogNo(albumDto.getCatalogNo())
+            .setArtworkUrl(albumDto.getArtworkUrl())
+            .setReleaseDate(albumDto.getReleaseDate())
+            .setTrackTotal(albumDto.getTrackTotal())
+            .setDiscTotal(albumDto.getDiscTotal());
 
-    public AlbumEntity fromDto(final AlbumDto dto) {
-        this.setArtist()
-            .setName(album.getName())
-            .setCreditArtists()
-            .setArtworkUrl(album.getArtworkUrl())
-            .setCatalogNo(album.getCatalogNo())
-            .setDiscTotal(album.getDiscTotal())
-            .setTrackTotal(album.getTrackTotal())
-            .setLabel()
-            .setReleaseDate(album.getReleaseDate())
-            .setPrimaryGenres()
-            .setSecondaryGenres();
+        if (null != albumDto.getArtistId()) {
+            Hibernate.initialize(this.getArtist());
+            this.getArtist().setId(albumDto.getArtistId());
+        }
+
+        if (null != albumDto.getLabelId()) {
+            Hibernate.initialize(this.getLabel());
+            this.getLabel().setId(albumDto.getLabelId());
+        }
+
+        if (!albumDto.getCreditArtistIds().isEmpty()) {
+            Hibernate.initialize(this.getCreditArtists());
+            this.getCreditArtists().clear();
+
+            albumDto.getCreditArtistIds().forEach((key, value) -> {
+                final var artist = new ArtistEntity();
+                artist.setId(key);
+                this.getCreditArtists().put(artist, value);
+            });
+        }
+
+        if (!albumDto.getPrimaryGenreIds().isEmpty()) {
+            Hibernate.initialize(this.getPrimaryGenres());
+            this.getPrimaryGenres().clear();
+
+            albumDto.getPrimaryGenreIds().forEach((genreId) -> {
+                final var genre = new GenreEntity();
+                genre.setId(genreId);
+                this.getPrimaryGenres().add(genre);
+            });
+        }
+
+        if (!albumDto.getSecondaryGenreIds().isEmpty()) {
+            Hibernate.initialize(this.getSecondaryGenres());
+            this.getSecondaryGenres().clear();
+
+            albumDto.getSecondaryGenreIds().forEach((genreId) -> {
+                final var genre = new GenreEntity();
+                genre.setId(genreId);
+                this.getSecondaryGenres().add(genre);
+            });
+        }
 
         return this;
     }
+
+    @Override public AlbumDto toDto() {
+        final var albumDto = new AlbumDto();
+
+        albumDto
+            .setId(id)
+            .setName(name)
+            .setCatalogNo(catalogNo)
+            .setArtworkUrl(artworkUrl)
+            .setReleaseDate(releaseDate)
+            .setTrackTotal(trackTotal)
+            .setDiscTotal(discTotal);
+
+        if (null != this.artist) {
+            albumDto.setArtistId(artist.getId());
+        }
+
+        if (null != this.label) {
+            albumDto.setLabelId(label.getId());
+        }
+
+        if (null != this.creditArtists) {
+            albumDto.setCreditArtistIds(creditArtists.entrySet().stream()
+                .collect(Collectors.toMap(
+                    entry -> entry.getKey().getId(),
+                    Map.Entry::getValue
+                )));
+        }
+
+        if (null != this.primaryGenres) {
+            albumDto.setPrimaryGenreIds(primaryGenres.stream()
+                .map(GenreEntity::getId)
+                .toList());
+        }
+
+        if (null != this.secondaryGenres) {
+            albumDto.setSecondaryGenreIds(secondaryGenres.stream()
+                .map(GenreEntity::getId)
+                .toList());
+        }
+
+        return albumDto;
+    }
+
+    // Getters - Setters
 
     public Long getId() {
         return id;
@@ -100,17 +175,22 @@ public class AlbumEntity {
         return artist;
     }
 
-    public AlbumEntity setArtist(final ArtistEntity artist) {
-        this.artist = artist;
+    public AlbumEntity setArtist(final ArtistInterface artist) {
+        this.artist = (ArtistEntity) artist;
         return this;
     }
 
-    public Map<ArtistEntity, Role> getCreditArtists() {
+    public Map<ArtistEntity, ArtistRole> getCreditArtists() {
         return creditArtists;
     }
 
-    public AlbumEntity setCreditArtists(final Map<ArtistEntity, Role> creditArtists) {
-        this.creditArtists = creditArtists;
+    public AlbumEntity setCreditArtists(final Map<? extends ArtistInterface, ArtistRole> creditArtists) {
+        this.creditArtists = creditArtists.entrySet().stream()
+            .collect(Collectors.toMap(
+                entry -> (ArtistEntity) entry.getKey(),
+                Map.Entry::getValue
+            ));
+
         return this;
     }
 
@@ -145,8 +225,12 @@ public class AlbumEntity {
         return primaryGenres;
     }
 
-    public AlbumEntity setPrimaryGenres(final List<GenreEntity> primaryGenres) {
-        this.primaryGenres = primaryGenres;
+    public AlbumEntity setPrimaryGenres(final List<? extends GenreInterface> primaryGenres) {
+        this.primaryGenres = primaryGenres.stream()
+            .filter(GenreEntity.class::isInstance)
+            .map(GenreEntity.class::cast)
+            .toList();
+
         return this;
     }
 
@@ -154,9 +238,21 @@ public class AlbumEntity {
         return secondaryGenres;
     }
 
-    public AlbumEntity setSecondaryGenres(final List<GenreEntity> secondaryGenres) {
-        this.secondaryGenres = secondaryGenres;
+    public AlbumEntity setSecondaryGenres(final List<? extends GenreInterface> secondaryGenres) {
+        this.secondaryGenres = secondaryGenres.stream()
+            .filter(GenreEntity.class::isInstance)
+            .map(GenreEntity.class::cast)
+            .toList();
+
         return this;
+    }
+
+    @Override public List<? extends SongInterface> getSongs() {
+        return List.of();
+    }
+
+    @Override public AlbumInterface setSongs(final List<? extends SongInterface> songs) {
+        return null;
     }
 
     public short getTrackTotal() {
@@ -166,6 +262,14 @@ public class AlbumEntity {
     public AlbumEntity setTrackTotal(final short trackTotal) {
         this.trackTotal = trackTotal;
         return this;
+    }
+
+    @Override public AlbumType getType() {
+        return null;
+    }
+
+    @Override public AlbumInterface setType(final AlbumType type) {
+        return null;
     }
 
     public short getDiscTotal() {
@@ -190,8 +294,10 @@ public class AlbumEntity {
         return label;
     }
 
-    public AlbumEntity setLabel(final LabelEntity label) {
-        this.label = label;
+    public AlbumEntity setLabel(final LabelInterface label) {
+        this.label = (LabelEntity) label;
         return this;
     }
+
+
 }

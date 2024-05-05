@@ -1,12 +1,12 @@
 package fr.xahla.musicx.infrastructure.local.repository;
 
 import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.ArtistDto;
-import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.api.repository.AlbumRepositoryInterface;
 import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriterias;
+import fr.xahla.musicx.infrastructure.local.helper.QueryHelper;
 import fr.xahla.musicx.infrastructure.local.model.AlbumEntity;
+import fr.xahla.musicx.infrastructure.local.model.ArtistEntity;
 import fr.xahla.musicx.infrastructure.local.model.SongEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
@@ -14,6 +14,7 @@ import org.hibernate.Transaction;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 import static fr.xahla.musicx.infrastructure.local.database.HibernateLoader.openSession;
@@ -35,40 +36,31 @@ public class AlbumRepository implements AlbumRepositoryInterface {
         }
     }
 
-    @Override public List<AlbumDto> findByCriteria(final Map<AlbumSearchCriterias, Object> criteriaMap) {
-        final var sql = new StringBuilder("FROM AlbumEntity");
-
-        final var conditions = criteriaMap.entrySet().stream()
-            .map(entry -> entry.getKey().getColumn() + " = '" + entry.getValue() + "'")
-            .toList();
-
-        if (!conditions.isEmpty()) {
-            sql.append(" WHERE ")
-                .append(String.join(" AND ", conditions));
-        }
-
-        return this.query(sql.toString());
-    }
-
     @Override public List<AlbumDto> findAll() {
-        return this.query("FROM AlbumEntity");
+        return this.toDtoList(
+            QueryHelper.findAll(AlbumEntity.class)
+        );
     }
 
-    @Override public List<AlbumDto> fromSongs(final List<SongDto> songs) {
-        return songs.stream()
-            .map(SongDto::getAlbum)
-            .distinct()
+    @Override public List<AlbumDto> findByCriteria(final Map<AlbumSearchCriterias, Object> criteria) {
+        return this.toDtoList(
+            QueryHelper.findByCriteria(
+                ArtistEntity.class,
+                criteria.entrySet().stream()
+                    .collect(Collectors.toMap(
+                        entry -> entry.getKey().getColumn(),
+                        Map.Entry::getValue
+                    ))
+            )
+        );
+    }
+
+    private List<AlbumDto> toDtoList(final List<?> resultQuery) {
+        return resultQuery.stream()
+            .filter(AlbumEntity.class::isInstance)
+            .map(AlbumEntity.class::cast)
+            .map(AlbumEntity::toDto)
             .toList();
-    }
-
-    private List<AlbumDto> query(final String query) {
-        try (final var session = openSession()){
-            final var result = session.createQuery(query, AlbumEntity.class);
-
-            return result.list().stream()
-                .map(AlbumEntity::toDto)
-                .toList();
-        }
     }
 
     @Override public void save(final AlbumDto album) {

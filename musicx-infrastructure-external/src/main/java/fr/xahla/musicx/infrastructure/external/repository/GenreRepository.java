@@ -76,7 +76,7 @@ public class GenreRepository implements GenreRepositoryInterface {
             .toList();
     }
 
-    @Override public void create(final GenreDto genre) {
+    @Override public void save(final GenreDto genre) {
         if (this.genreListCache.contains(genre)) {
             logger().warning("Genre " + genre.getName() + " already exists");
             return;

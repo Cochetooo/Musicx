@@ -8,7 +8,7 @@ public enum AlbumSearchCriterias {
     RELEASE_DATE("release_date"),
     SECONDARY_GENRE("");
 
-    private String column;
+    private final String column;
 
     AlbumSearchCriterias(final String column) {
         this.column = column;

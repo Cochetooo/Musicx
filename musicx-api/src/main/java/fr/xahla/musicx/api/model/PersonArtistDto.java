@@ -1,12 +1,24 @@
 package fr.xahla.musicx.api.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class PersonArtistDto extends ArtistDto {
+
+    private List<Long> bandIds;
 
     private String firstName;
     private LocalDate birthDate;
     private LocalDate deathDate;
+
+    public List<Long> getBandIds() {
+        return bandIds;
+    }
+
+    public PersonArtistDto setBandIds(final List<Long> bandIds) {
+        this.bandIds = bandIds;
+        return this;
+    }
 
     public String getFirstName() {
         return firstName;

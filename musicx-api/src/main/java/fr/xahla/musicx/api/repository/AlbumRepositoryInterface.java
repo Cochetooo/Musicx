@@ -26,8 +26,6 @@ public interface AlbumRepositoryInterface {
     List<AlbumDto> findByCriteria(final Map<AlbumSearchCriterias, Object> criteria);
     List<AlbumDto> findAll();
 
-    List<AlbumDto> fromSongs(final List<SongDto> songs);
-
     void save(final AlbumDto album);
 
 }

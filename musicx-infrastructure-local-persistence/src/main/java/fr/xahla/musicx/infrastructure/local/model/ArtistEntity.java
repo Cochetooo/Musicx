@@ -1,50 +1,39 @@
 package fr.xahla.musicx.infrastructure.local.model;
 
 import fr.xahla.musicx.api.model.ArtistDto;
-import fr.xahla.musicx.api.model.BandArtistDto;
-import fr.xahla.musicx.api.model.PersonArtistDto;
+import fr.xahla.musicx.api.model.data.AlbumInterface;
+import fr.xahla.musicx.api.model.data.ArtistInterface;
+import fr.xahla.musicx.api.model.data.SongInterface;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+    name = "artist_type",
+    discriminatorType = DiscriminatorType.STRING
+)
 @Table(name = "artist")
-public class ArtistEntity {
+public class ArtistEntity implements ArtistInterface {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @OneToMany(mappedBy = "artist")
+    private List<AlbumEntity> albums;
+
+    private String artworkUrl;
 
     @Basic(optional = false)
     private Locale country;
 
-    private String artworkUrl;
+    private String name;
 
-    private String firstName;
-    private LocalDate birthDate;
-    private LocalDate deathDate;
-
-    public ArtistDto toDto() {
-        if (null == firstName && null == birthDate && null == deathDate) {
-            return new BandArtistDto()
-                .setId(id)
-                .setName(name)
-                .setCountry(country)
-                .setArtworkUrl(artworkUrl);
-        } else {
-            return new PersonArtistDto()
-                .setFirstName(firstName)
-                .setBirthDate(birthDate)
-                .setDeathDate(deathDate)
-                .setId(id)
-                .setName(name)
-                .setCountry(country)
-                .setArtworkUrl(artworkUrl);
-        }
-    }
+    @OneToMany(mappedBy = "artist")
+    private List<SongEntity> songs;
 
     public Long getId() {
         return id;
@@ -53,6 +42,27 @@ public class ArtistEntity {
     public ArtistEntity setId(final Long id) {
         this.id = id;
         return this;
+    }
+
+    @Override public ArtistEntity fromDto(final ArtistDto artistDto) {
+        this.setId(artistDto.getId())
+            .setName(artistDto.getName())
+            .setCountry(artistDto.getCountry())
+            .setArtworkUrl(artistDto.getArtworkUrl());
+
+        return this;
+    }
+
+    @Override public ArtistDto toDto() {
+        final var artistDto = new ArtistDto();
+
+        artistDto
+            .setId(this.getId())
+            .setArtworkUrl(this.getArtworkUrl())
+            .setCountry(this.getCountry())
+            .setName(this.getName());
+
+        return artistDto;
     }
 
     public String getName() {
@@ -82,32 +92,30 @@ public class ArtistEntity {
         return this;
     }
 
-    // ---------- Person Artist ---------------
-
-    public String getFirstName() {
-        return firstName;
+    public List<AlbumEntity> getAlbums() {
+        return albums;
     }
 
-    public ArtistEntity setFirstName(final String firstName) {
-        this.firstName = firstName;
+    public ArtistEntity setAlbums(final List<? extends AlbumInterface> albums) {
+        this.albums = albums.stream()
+            .filter(AlbumEntity.class::isInstance)
+            .map(AlbumEntity.class::cast)
+            .toList();
+
         return this;
     }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
+    public List<SongEntity> getSongs() {
+        return songs;
     }
 
-    public ArtistEntity setBirthDate(final LocalDate birthDate) {
-        this.birthDate = birthDate;
+    public ArtistEntity setSongs(final List<? extends SongInterface> songs) {
+        this.songs = songs.stream()
+            .filter(SongEntity.class::isInstance)
+            .map(SongEntity.class::cast)
+            .toList();
+
         return this;
     }
 
-    public LocalDate getDeathDate() {
-        return deathDate;
-    }
-
-    public ArtistEntity setDeathDate(final LocalDate deathDate) {
-        this.deathDate = deathDate;
-        return this;
-    }
 }

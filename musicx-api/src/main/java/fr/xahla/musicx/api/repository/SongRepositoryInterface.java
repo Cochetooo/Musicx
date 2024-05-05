@@ -21,6 +21,6 @@ public interface SongRepositoryInterface {
     List<SongDto> findAll();
     List<SongDto> findByCriteria(final Map<SongSearchCriterias, Object> criteria);
 
-    void create(final SongDto song);
+    void save(final SongDto song);
 
 }

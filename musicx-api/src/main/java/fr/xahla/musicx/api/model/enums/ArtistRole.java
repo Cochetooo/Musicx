@@ -10,7 +10,7 @@ package fr.xahla.musicx.api.model.enums;
  *
  * @author Cochetooo
  */
-public enum Role {
+public enum ArtistRole {
 
     ALL("Made everything"),
 
@@ -44,7 +44,7 @@ public enum Role {
 
     private String description;
 
-    Role(final String description) {
+    ArtistRole(final String description) {
         this.description = description;
     }
 

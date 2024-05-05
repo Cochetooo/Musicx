@@ -14,8 +14,20 @@ import java.util.List;
  */
 public class LabelDto {
 
+    private Long id;
+
+    private List<Long> genreIds;
+
     private String name;
-    private List<GenreDto> genres;
+
+    public Long getId() {
+        return id;
+    }
+
+    public LabelDto setId(final Long id) {
+        this.id = id;
+        return this;
+    }
 
     public String getName() {
         return name;
@@ -26,13 +38,12 @@ public class LabelDto {
         return this;
     }
 
-    public List<GenreDto> getGenres() {
-        return genres;
+    public List<Long> getGenreIds() {
+        return genreIds;
     }
 
-    public LabelDto setGenres(final List<GenreDto> genres) {
-        this.genres = genres;
+    public LabelDto setGenreIds(final List<Long> genreIds) {
+        this.genreIds = genreIds;
         return this;
     }
-
 }
