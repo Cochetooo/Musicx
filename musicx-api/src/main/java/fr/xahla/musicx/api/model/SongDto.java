@@ -118,6 +118,10 @@ public class SongDto {
         return lyrics;
     }
 
+    public SongDto setLyrics(final String lyrics) {
+        return this.setLyrics(Map.of(0L, lyrics));
+    }
+
     public SongDto setLyrics(final Map<Long, String> lyrics) {
         this.lyrics = lyrics;
         return this;

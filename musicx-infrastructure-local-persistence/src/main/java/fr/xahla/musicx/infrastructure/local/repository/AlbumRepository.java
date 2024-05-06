@@ -51,7 +51,7 @@ public class AlbumRepository implements AlbumRepositoryInterface {
     @Override public List<AlbumDto> findByCriteria(final Map<AlbumSearchCriterias, Object> criteria) {
         return this.toDtoList(
             QueryHelper.findByCriteria(
-                ArtistEntity.class,
+                AlbumEntity.class,
                 criteria.entrySet().stream()
                     .collect(Collectors.toMap(
                         entry -> entry.getKey().getColumn(),
@@ -101,7 +101,7 @@ public class AlbumRepository implements AlbumRepositoryInterface {
             }
 
             transaction.commit();
-        } catch (final HibernateException exception) {
+        } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }

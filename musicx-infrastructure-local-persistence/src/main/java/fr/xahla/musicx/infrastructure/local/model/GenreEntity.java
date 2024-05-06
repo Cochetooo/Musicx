@@ -33,13 +33,8 @@ public class GenreEntity implements GenreInterface {
         this.setId(genreDto.getId())
             .setName(genreDto.getName());
 
-        if (null == parents) {
+        if (null != genreDto.getParentIds()) {
             parents = new ArrayList<>();
-        } else {
-            parents.clear();
-        }
-
-        if (!genreDto.getParentIds().isEmpty()) {
             Hibernate.initialize(parents);
             genreDto.getParentIds().forEach(genreId -> {
                 final var genre = new GenreEntity();
@@ -56,7 +51,7 @@ public class GenreEntity implements GenreInterface {
             .setId(id)
             .setName(name);
 
-        if (!parents.isEmpty()) {
+        if (null != parents && Hibernate.isInitialized(parents)) {
             genreDto.setParentIds(parents.stream()
                 .map(GenreEntity::getId)
                 .toList()

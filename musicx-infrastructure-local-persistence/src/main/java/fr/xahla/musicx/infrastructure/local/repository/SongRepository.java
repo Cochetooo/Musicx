@@ -59,7 +59,7 @@ public class SongRepository implements SongRepositoryInterface {
             }
 
             transaction.commit();
-        } catch (final HibernateException exception) {
+        } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }

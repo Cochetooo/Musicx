@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,14 +32,15 @@ public class PersonArtistEntity extends ArtistEntity implements PersonArtistInte
                 .setBirthDate(personArtistDto.getBirthDate())
                 .setDeathDate(personArtistDto.getDeathDate());
 
-            if (!personArtistDto.getBandIds().isEmpty()) {
-                Hibernate.initialize(this.getBands());
-                this.getBands().clear();
+            if (null != personArtistDto.getBandIds()) {
+                bands = new ArrayList<>();
+                Hibernate.initialize(bands);
+                bands.clear();
 
                 personArtistDto.getBandIds().forEach((artistId) -> {
                     final var artist = new BandArtistEntity();
                     artist.setId(artistId);
-                    this.getBands().add(artist);
+                    bands.add(artist);
                 });
             }
         }
@@ -58,7 +60,7 @@ public class PersonArtistEntity extends ArtistEntity implements PersonArtistInte
             .setArtworkUrl(this.getArtworkUrl())
             .setId(this.getId());
 
-        if (!bands.isEmpty()) {
+        if (null != bands && Hibernate.isInitialized(bands)) {
             personArtistDto.setBandIds(bands.stream()
                 .map(BandArtistEntity::getId)
                 .toList()

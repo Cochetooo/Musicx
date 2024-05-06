@@ -12,7 +12,7 @@
         <property name="hibernate.connection.characterEncoding">UTF-8</property>
         <property name="hibernate.connection.useUnicode">true</property>
 
-        <property name="connection.pool_size">1</property>
+        <property name="connection.pool_size">100</property>
 
         <!-- SQLite configuration -->
         <property name="hbm2ddl.auto">update</property>

@@ -7,6 +7,7 @@ import fr.xahla.musicx.api.model.data.AlbumInterface;
 import fr.xahla.musicx.api.model.data.ArtistInterface;
 import fr.xahla.musicx.api.model.data.SongInterface;
 import fr.xahla.musicx.domain.repository.ExternalFetchRepositoryInterface;
+import fr.xahla.musicx.infrastructure.local.model.AlbumEntity;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -67,6 +68,13 @@ public class LastFmApiHandler
                 .getString("#text")
             );
         }
+    }
+
+    @Override public void fetchAlbumFromExternal(final AlbumDto albumDto, final boolean overwrite) {
+        this.fetchAlbumFromExternal(
+            new AlbumEntity().fromDto(albumDto),
+            overwrite
+        );
     }
 
     /**

@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -72,18 +74,21 @@ public class AlbumEntity implements AlbumInterface {
             .setDiscTotal(albumDto.getDiscTotal());
 
         if (null != albumDto.getArtistId()) {
-            Hibernate.initialize(this.getArtist());
-            this.getArtist().setId(albumDto.getArtistId());
+            artist = new ArtistEntity();
+            Hibernate.initialize(artist);
+            artist.setId(albumDto.getArtistId());
         }
 
         if (null != albumDto.getLabelId()) {
-            Hibernate.initialize(this.getLabel());
-            this.getLabel().setId(albumDto.getLabelId());
+            label = new LabelEntity();
+            Hibernate.initialize(label);
+            label.setId(albumDto.getLabelId());
         }
 
-        if (!albumDto.getCreditArtistIds().isEmpty()) {
-            Hibernate.initialize(this.getCreditArtists());
-            this.getCreditArtists().clear();
+        if (null != albumDto.getCreditArtistIds()) {
+            creditArtists = new HashMap<>();
+            Hibernate.initialize(creditArtists);
+            creditArtists.clear();
 
             albumDto.getCreditArtistIds().forEach((key, value) -> {
                 final var artist = new ArtistEntity();
@@ -92,9 +97,10 @@ public class AlbumEntity implements AlbumInterface {
             });
         }
 
-        if (!albumDto.getPrimaryGenreIds().isEmpty()) {
-            Hibernate.initialize(this.getPrimaryGenres());
-            this.getPrimaryGenres().clear();
+        if (null != albumDto.getPrimaryGenreIds()) {
+            primaryGenres = new ArrayList<>();
+            Hibernate.initialize(primaryGenres);
+            primaryGenres.clear();
 
             albumDto.getPrimaryGenreIds().forEach((genreId) -> {
                 final var genre = new GenreEntity();
@@ -103,9 +109,10 @@ public class AlbumEntity implements AlbumInterface {
             });
         }
 
-        if (!albumDto.getSecondaryGenreIds().isEmpty()) {
-            Hibernate.initialize(this.getSecondaryGenres());
-            this.getSecondaryGenres().clear();
+        if (null != albumDto.getSecondaryGenreIds()) {
+            secondaryGenres = new ArrayList<>();
+            Hibernate.initialize(secondaryGenres);
+            secondaryGenres.clear();
 
             albumDto.getSecondaryGenreIds().forEach((genreId) -> {
                 final var genre = new GenreEntity();
@@ -129,15 +136,15 @@ public class AlbumEntity implements AlbumInterface {
             .setTrackTotal(trackTotal)
             .setDiscTotal(discTotal);
 
-        if (null != this.artist) {
+        if (null != this.artist && Hibernate.isInitialized(this.artist)) {
             albumDto.setArtistId(artist.getId());
         }
 
-        if (null != this.label) {
+        if (null != this.label && Hibernate.isInitialized(this.label)) {
             albumDto.setLabelId(label.getId());
         }
 
-        if (null != this.creditArtists) {
+        if (null != this.creditArtists && Hibernate.isInitialized(this.creditArtists)) {
             albumDto.setCreditArtistIds(creditArtists.entrySet().stream()
                 .collect(Collectors.toMap(
                     entry -> entry.getKey().getId(),
@@ -145,13 +152,13 @@ public class AlbumEntity implements AlbumInterface {
                 )));
         }
 
-        if (null != this.primaryGenres) {
+        if (null != this.primaryGenres && Hibernate.isInitialized(this.primaryGenres)) {
             albumDto.setPrimaryGenreIds(primaryGenres.stream()
                 .map(GenreEntity::getId)
                 .toList());
         }
 
-        if (null != this.secondaryGenres) {
+        if (null != this.secondaryGenres && Hibernate.isInitialized(this.secondaryGenres)) {
             albumDto.setSecondaryGenreIds(secondaryGenres.stream()
                 .map(GenreEntity::getId)
                 .toList());

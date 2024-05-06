@@ -7,6 +7,7 @@ import fr.xahla.musicx.api.model.data.LabelInterface;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,9 +36,11 @@ public class LabelEntity implements LabelInterface {
         this.setId(labelDto.getId())
             .setName(labelDto.getName());
 
-        if (!labelDto.getGenreIds().isEmpty()) {
+        if (null != labelDto.getGenreIds()) {
+            genres = new ArrayList<>();
             Hibernate.initialize(genres);
             genres.clear();
+
             labelDto.getGenreIds().forEach(genreId -> {
                 final var genre = new GenreEntity();
                 genre.setId(genreId);
@@ -53,7 +56,7 @@ public class LabelEntity implements LabelInterface {
             .setId(this.getId())
             .setName(this.getName());
 
-        if (!genres.isEmpty()) {
+        if (null != genres && Hibernate.isInitialized(genres)) {
             labelDto.setGenreIds(genres.stream()
                 .map(GenreEntity::getId)
                 .toList()

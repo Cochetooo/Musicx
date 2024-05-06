@@ -9,6 +9,7 @@ import fr.xahla.musicx.api.model.enums.AudioFormat;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,16 +70,19 @@ public class SongEntity implements SongInterface {
             .setDiscNumber(songDto.getDiscNumber());
 
         if (null != songDto.getArtistId()) {
+            artist = new ArtistEntity();
             Hibernate.initialize(artist);
             this.getArtist().setId(songDto.getArtistId());
         }
 
         if (null != songDto.getAlbumId()) {
+            album = new AlbumEntity();
             Hibernate.initialize(album);
             this.getAlbum().setId(songDto.getAlbumId());
         }
 
-        if (!songDto.getPrimaryGenreIds().isEmpty()) {
+        if (null != songDto.getPrimaryGenreIds()) {
+            primaryGenres = new ArrayList<>();
             Hibernate.initialize(primaryGenres);
             primaryGenres.clear();
             songDto.getPrimaryGenreIds().forEach(genreId -> {
@@ -88,7 +92,8 @@ public class SongEntity implements SongInterface {
             });
         }
 
-        if (!songDto.getSecondaryGenreIds().isEmpty()) {
+        if (null != songDto.getSecondaryGenreIds()) {
+            secondaryGenres = new ArrayList<>();
             Hibernate.initialize(secondaryGenres);
             secondaryGenres.clear();
             songDto.getSecondaryGenreIds().forEach(genreId -> {
@@ -113,21 +118,21 @@ public class SongEntity implements SongInterface {
             .setTrackNumber(trackNumber)
             .setDiscNumber(discNumber);
 
-        if (null != artist) {
+        if (null != artist && Hibernate.isInitialized(artist)) {
             songDto.setArtistId(artist.getId());
         }
 
-        if (null != album) {
+        if (null != album && Hibernate.isInitialized(album)) {
             songDto.setAlbumId(album.getId());
         }
 
-        if (null != primaryGenres) {
+        if (null != primaryGenres && Hibernate.isInitialized(primaryGenres)) {
             songDto.setPrimaryGenreIds(primaryGenres.stream()
                 .map(GenreEntity::getId)
                 .toList());
         }
 
-        if (null != secondaryGenres) {
+        if (null != secondaryGenres && Hibernate.isInitialized(secondaryGenres)) {
             songDto.setSecondaryGenreIds(secondaryGenres.stream()
                 .map(GenreEntity::getId)
                 .toList());

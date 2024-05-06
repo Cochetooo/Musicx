@@ -33,10 +33,11 @@ module fr.xahla.musicx.domain {
     // ------------- [EXPORT] -------------
     exports fr.xahla.musicx.domain.application;
     exports fr.xahla.musicx.domain.helper;
+    exports fr.xahla.musicx.domain.listener;
     exports fr.xahla.musicx.domain.manager;
     exports fr.xahla.musicx.domain.model;
     exports fr.xahla.musicx.domain.model.enums;
     exports fr.xahla.musicx.domain.repository;
-    exports fr.xahla.musicx.domain.listener;
+    exports fr.xahla.musicx.domain.service.localAudioFile;
 
 }

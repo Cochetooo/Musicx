@@ -62,7 +62,7 @@ public class LabelRepository implements LabelRepositoryInterface {
             }
 
             transaction.commit();
-        } catch (final HibernateException exception) {
+        } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }

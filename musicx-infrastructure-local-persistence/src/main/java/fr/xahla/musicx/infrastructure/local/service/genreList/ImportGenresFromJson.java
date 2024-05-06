@@ -26,7 +26,6 @@ import static fr.xahla.musicx.infrastructure.local.repository.GenreRepository.ge
 public final class ImportGenresFromJson {
 
     private int nbCreated;
-    private int nbUpdated;
 
     private JSONObject jsonContent;
 
@@ -78,8 +77,8 @@ public final class ImportGenresFromJson {
     }
 
     public static void main(final String[] args) {
-        final var context = new Context();
-        final var hibernateLoader = new HibernateLoader();
+        new Context();
+        new HibernateLoader();
 
         final var service = new ImportGenresFromJson();
         service.execute(env("GENRES_URL"));

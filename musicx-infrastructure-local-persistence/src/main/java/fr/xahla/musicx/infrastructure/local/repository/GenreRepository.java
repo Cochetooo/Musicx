@@ -80,7 +80,7 @@ public class GenreRepository implements GenreRepositoryInterface {
             }
 
             transaction.commit();
-        } catch (final HibernateException exception) {
+        } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }

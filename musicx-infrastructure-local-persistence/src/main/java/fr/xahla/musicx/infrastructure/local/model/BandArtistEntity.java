@@ -7,6 +7,7 @@ import fr.xahla.musicx.api.model.data.PersonArtistInterface;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,14 +26,15 @@ public class BandArtistEntity extends ArtistEntity implements BandArtistInterfac
         super.fromDto(artistDto);
 
         if (artistDto instanceof final BandArtistDto bandArtistDto) {
-            if (!bandArtistDto.getMemberIds().isEmpty()) {
-                Hibernate.initialize(this.getMembers());
-                this.getMembers().clear();
+            if (null != bandArtistDto.getMemberIds()) {
+                members = new ArrayList<>();
+                Hibernate.initialize(members);
+                members.clear();
 
                 bandArtistDto.getMemberIds().forEach((artistId) -> {
                     final var artist = new PersonArtistEntity();
                     artist.setId(artistId);
-                    this.getMembers().add(artist);
+                    members.add(artist);
                 });
             }
         }
@@ -49,7 +51,7 @@ public class BandArtistEntity extends ArtistEntity implements BandArtistInterfac
             .setCountry(this.getCountry())
             .setName(this.getName());
 
-        if (!members.isEmpty()) {
+        if (null != members && Hibernate.isInitialized(members)) {
             bandArtistDto.setMemberIds(members.stream()
                 .map(PersonArtistEntity::getId)
                 .toList()

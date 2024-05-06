@@ -10,6 +10,7 @@ import fr.xahla.musicx.api.model.data.SongInterface;
 public interface ExternalFetchRepositoryInterface {
 
     interface AlbumFetcher {
+        void fetchAlbumFromExternal(final AlbumDto albumDto, final boolean overwrite);
         void fetchAlbumFromExternal(final AlbumInterface album, final boolean overwrite);
     }
 

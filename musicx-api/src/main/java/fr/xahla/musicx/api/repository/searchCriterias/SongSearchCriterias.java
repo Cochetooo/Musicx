@@ -4,13 +4,14 @@ public enum SongSearchCriterias {
 
     ALBUM_NAME("album.name"),
     ARTIST_NAME("artist.name"),
-    BIT_RATE("bit_rate"),
+    BIT_RATE("bitRate"),
     DURATION("duration"),
     ID(""),
     PRIMARY_GENRE(""),
-    SAMPLE_RATE("sample_rate"),
+    SAMPLE_RATE("sampleRate"),
     SECONDARY_GENRE(""),
-    TITLE("title");
+    TITLE("title"),
+    TRACK_NUMBER("trackNumber");
 
     private final String column;
 

@@ -1,4 +1,3 @@
-import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.domain.application.AbstractContext;
 import fr.xahla.musicx.domain.application.SettingsInterface;
 import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
@@ -9,13 +8,9 @@ import fr.xahla.musicx.domain.model.enums.ShuffleMode;
 import fr.xahla.musicx.domain.repository.LibraryRepositoryInterface;
 import fr.xahla.musicx.infrastructure.local.database.HibernateLoader;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.logging.Logger;
 
-import static fr.xahla.musicx.infrastructure.local.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.infrastructure.local.repository.AlbumRepository.albumRepository;
 
 public class DBTest {
 
@@ -121,9 +116,19 @@ public class DBTest {
     public static void main(String[] args) {
         final var context = new Context();
         final var hibernateLoader = new HibernateLoader();
-        final var genres = new ArrayList<>(genreRepository().findAll());
-        genres.sort(Comparator.comparing(GenreDto::getName));
-        genres.forEach(genre -> System.out.println(genre.getName()));
+
+        /* new ImportSongsFromFolders()
+            .execute(List.of("U:\\Sort\\Musique\\Shared\\Katatonia"),
+                List.of("mp3"),
+                (progress, total) -> System.out.println("Progress: " + progress + " / " + total),
+                songRepository(),
+                albumRepository(),
+                genreRepository(),
+                artistRepository(),
+                labelRepository()
+            ); */
+
+        final var albums = albumRepository().findAll();
     }
 
 }

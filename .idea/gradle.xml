@@ -12,7 +12,6 @@
             <option value="$PROJECT_DIR$/musicx-api" />
             <option value="$PROJECT_DIR$/musicx-desktop" />
             <option value="$PROJECT_DIR$/musicx-domain" />
-            <option value="$PROJECT_DIR$/musicx-infrastructure" />
             <option value="$PROJECT_DIR$/musicx-infrastructure-external" />
             <option value="$PROJECT_DIR$/musicx-infrastructure-local-persistence" />
           </set>

@@ -57,7 +57,7 @@ public final class ImportSongsFromFolders {
         final var fileProgressCount = new AtomicInteger();
 
         // Generate a thread pool to allow multithreading for the song collection hydration.
-        try (final var threadExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())) {
+        try (final var threadExecutor = Executors.newFixedThreadPool(1)) {
             // Loop on each audio files
             audioFiles.forEach(filepath -> {
                 try {

@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 
 import static fr.xahla.musicx.infrastructure.external.repository.ItunesApiHandler.itunesApi;
 import static fr.xahla.musicx.infrastructure.external.repository.LastFmApiHandler.lastFmApi;
+import static fr.xahla.musicx.infrastructure.local.repository.AlbumRepository.albumRepository;
 import static fr.xahla.musicx.infrastructure.local.repository.GenreRepository.genreRepository;
 
 public class APITest {
@@ -124,17 +125,12 @@ public class APITest {
         final var context = new Context();
         final var hibernateLoader = new HibernateLoader();
 
-        final var artist = new BandArtistEntity()
-            .setName("Katatonia");
+        final var albums = albumRepository().findAll();
 
-        final var album = new AlbumEntity()
-            .setName("Last Fair Deal Gone Down")
-            .setArtist(artist);
-
-        itunesApi().fetchAlbumFromExternal(album, false);
-        lastFmApi().fetchArtistFromExternal(artist, false);
-
-        System.out.println("coubeh");
+        albums.forEach(album -> {
+            lastFmApi().fetchAlbumFromExternal(album, false);
+            albumRepository().save(album);
+        });
     }
 
 }

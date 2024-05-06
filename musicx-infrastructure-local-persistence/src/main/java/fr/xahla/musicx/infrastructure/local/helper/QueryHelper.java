@@ -1,7 +1,9 @@
 package fr.xahla.musicx.infrastructure.local.helper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
@@ -20,7 +22,13 @@ public final class QueryHelper {
         }
 
         sql.append(criteria.entrySet().stream()
-            .map(entry -> entry.getKey() + " = :" + entry.getKey())
+            .map(entry -> {
+                if (entry.getValue() instanceof CharSequence) {
+                    return entry.getKey() + " LIKE :" + entry.getKey();
+                } else {
+                    return entry.getKey() + " = :" + entry.getKey();
+                }
+            })
             .collect(Collectors.joining(" AND "))
         );
 
@@ -40,14 +48,15 @@ public final class QueryHelper {
         final String query,
         final Map<String, Object> parameters
     ) {
-        logger().info("SQL Request: " + query);
-
         try (final var session = openSession()){
             final var result = session.createQuery(query, clazz);
 
             parameters.forEach(result::setParameter);
 
             return result.list();
+        } catch (final Exception exception) {
+            logger().log(Level.SEVERE, "An exception has occured while trying to query: " + query, exception);
+            return new ArrayList<>();
         }
     }
 

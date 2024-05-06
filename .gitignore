@@ -6,6 +6,9 @@ build/
 
 /ext/
 
+### DB ###
+*.sqlite
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
