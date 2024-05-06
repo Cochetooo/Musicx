@@ -1,4 +1,0 @@
-Application name	Musicx
-API key	            f17c4b2c645d912c0f222eaa77f58751
-Shared secret	    5739637c5bed48bb46f054e9a6e68d21
-Registered to	    Cochetooo

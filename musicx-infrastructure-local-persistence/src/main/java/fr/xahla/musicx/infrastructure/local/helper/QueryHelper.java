@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 import static fr.xahla.musicx.infrastructure.local.database.HibernateLoader.openSession;
 
-public class QueryHelper {
+public final class QueryHelper {
 
     public static List<?> findByCriteria(
         final Class<?> clazz,
@@ -39,6 +40,8 @@ public class QueryHelper {
         final String query,
         final Map<String, Object> parameters
     ) {
+        logger().info("SQL Request: " + query);
+
         try (final var session = openSession()){
             final var result = session.createQuery(query, clazz);
 

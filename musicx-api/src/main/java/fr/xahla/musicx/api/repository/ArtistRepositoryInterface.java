@@ -26,6 +26,7 @@ public interface ArtistRepositoryInterface {
 
     List<ArtistDto> findAll();
     List<ArtistDto> findByCriteria(final Map<ArtistSearchCriterias, Object> criteria);
+    List<ArtistDto> findById(final Long id);
 
     void save(final ArtistDto artist);
 

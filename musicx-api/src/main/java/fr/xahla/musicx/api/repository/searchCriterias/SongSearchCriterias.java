@@ -6,6 +6,7 @@ public enum SongSearchCriterias {
     ARTIST_NAME("artist.name"),
     BIT_RATE("bit_rate"),
     DURATION("duration"),
+    ID(""),
     PRIMARY_GENRE(""),
     SAMPLE_RATE("sample_rate"),
     SECONDARY_GENRE(""),

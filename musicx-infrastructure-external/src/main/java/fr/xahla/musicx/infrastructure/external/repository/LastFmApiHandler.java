@@ -3,6 +3,9 @@ package fr.xahla.musicx.infrastructure.external.repository;
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.SongDto;
+import fr.xahla.musicx.api.model.data.AlbumInterface;
+import fr.xahla.musicx.api.model.data.ArtistInterface;
+import fr.xahla.musicx.api.model.data.SongInterface;
 import fr.xahla.musicx.domain.repository.ExternalFetchRepositoryInterface;
 
 import java.net.URLEncoder;
@@ -17,6 +20,8 @@ public class LastFmApiHandler
     extends ExternalApiHandler
     implements ExternalFetchRepositoryInterface.ArtistFetcher, ExternalFetchRepositoryInterface.SongFetcher, ExternalFetchRepositoryInterface.AlbumFetcher
 {
+    private static final LastFmApiHandler INSTANCE = new LastFmApiHandler();
+
     private final String apiKey;
 
     public LastFmApiHandler() {
@@ -34,7 +39,7 @@ public class LastFmApiHandler
      * @param artist The artist source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchArtistFromExternal(final ArtistDto artist, final boolean overwrite) {
+    @Override public void fetchArtistFromExternal(final ArtistInterface artist, final boolean overwrite) {
         final var methodSignature = "artist.getinfo";
 
         final var requestUrl = this.makeURL(
@@ -74,7 +79,7 @@ public class LastFmApiHandler
      * @param album The album source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchAlbumFromExternal(final AlbumDto album, final boolean overwrite) {
+    @Override public void fetchAlbumFromExternal(final AlbumInterface album, final boolean overwrite) {
         final var methodSignature = "album.getinfo";
 
         final var requestUrl = this.makeURL(
@@ -116,7 +121,7 @@ public class LastFmApiHandler
      * @param song The song source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchSongFromExternal(final SongDto song, final boolean overwrite) {
+    @Override public void fetchSongFromExternal(final SongInterface song, final boolean overwrite) {
         final var methodSignature = "track.getinfo";
 
         final var requestUrl = this.makeURL(
@@ -145,5 +150,9 @@ public class LastFmApiHandler
         return this.apiUrl + "method=" + method + "&format=json&" + parameters.entrySet().stream()
             .map(entry -> "&" + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
             .collect(Collectors.joining("&"));
+    }
+
+    public static LastFmApiHandler lastFmApi() {
+        return INSTANCE;
     }
 }

@@ -70,6 +70,10 @@ public class ArtistRepository implements ArtistRepositoryInterface {
         );
     }
 
+    @Override public List<ArtistDto> findById(final Long id) {
+        return this.findByCriteria(Map.of(ArtistSearchCriterias.ID, id));
+    }
+
     private List<ArtistDto> toDtoList(final List<?> resultQuery) {
         return resultQuery.stream()
             .filter(ArtistEntity.class::isInstance)

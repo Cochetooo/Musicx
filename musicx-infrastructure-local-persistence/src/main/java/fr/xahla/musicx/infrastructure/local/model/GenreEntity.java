@@ -5,6 +5,7 @@ import fr.xahla.musicx.api.model.data.GenreInterface;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ public class GenreEntity implements GenreInterface {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name="genre_parents",
         joinColumns = @JoinColumn(name = "genre_id"),
@@ -32,13 +33,18 @@ public class GenreEntity implements GenreInterface {
         this.setId(genreDto.getId())
             .setName(genreDto.getName());
 
+        if (null == parents) {
+            parents = new ArrayList<>();
+        } else {
+            parents.clear();
+        }
+
         if (!genreDto.getParentIds().isEmpty()) {
             Hibernate.initialize(parents);
-            parents.clear();
             genreDto.getParentIds().forEach(genreId -> {
                 final var genre = new GenreEntity();
                 genre.setId(genreId);
-                this.getParents().add(genre);
+                this.parents.add(genre);
             });
         }
 
@@ -47,8 +53,8 @@ public class GenreEntity implements GenreInterface {
 
     @Override public GenreDto toDto() {
         final var genreDto = new GenreDto()
-            .setId(this.getId())
-            .setName(this.getName());
+            .setId(id)
+            .setName(name);
 
         if (!parents.isEmpty()) {
             genreDto.setParentIds(parents.stream()

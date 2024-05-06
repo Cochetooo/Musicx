@@ -8,16 +8,18 @@ import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import fr.xahla.musicx.domain.model.enums.ShuffleMode;
 import fr.xahla.musicx.domain.repository.LibraryRepositoryInterface;
 import fr.xahla.musicx.infrastructure.local.database.HibernateLoader;
+import fr.xahla.musicx.infrastructure.local.model.AlbumEntity;
+import fr.xahla.musicx.infrastructure.local.model.BandArtistEntity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.logging.Logger;
 
+import static fr.xahla.musicx.infrastructure.external.repository.ItunesApiHandler.itunesApi;
+import static fr.xahla.musicx.infrastructure.external.repository.LastFmApiHandler.lastFmApi;
 import static fr.xahla.musicx.infrastructure.local.repository.GenreRepository.genreRepository;
 
-public class DBTest {
+public class APITest {
 
     static class Context extends AbstractContext {
         protected Context() {
@@ -121,9 +123,18 @@ public class DBTest {
     public static void main(String[] args) {
         final var context = new Context();
         final var hibernateLoader = new HibernateLoader();
-        final var genres = new ArrayList<>(genreRepository().findAll());
-        genres.sort(Comparator.comparing(GenreDto::getName));
-        genres.forEach(genre -> System.out.println(genre.getName()));
+
+        final var artist = new BandArtistEntity()
+            .setName("Katatonia");
+
+        final var album = new AlbumEntity()
+            .setName("Last Fair Deal Gone Down")
+            .setArtist(artist);
+
+        itunesApi().fetchAlbumFromExternal(album, false);
+        lastFmApi().fetchArtistFromExternal(artist, false);
+
+        System.out.println("coubeh");
     }
 
 }

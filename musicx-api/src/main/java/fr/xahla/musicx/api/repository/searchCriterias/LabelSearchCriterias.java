@@ -4,6 +4,7 @@ public enum LabelSearchCriterias {
 
     ALBUM_NAME(""),
     GENRE(""),
+    ID(""),
     NAME("name");
 
     private final String column;

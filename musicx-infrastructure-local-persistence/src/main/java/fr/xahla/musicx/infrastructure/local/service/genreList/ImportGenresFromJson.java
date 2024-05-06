@@ -1,6 +1,10 @@
+package fr.xahla.musicx.infrastructure.local.service.genreList;
+
 import fr.xahla.musicx.api.model.GenreDto;
+import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriterias;
 import fr.xahla.musicx.domain.application.AbstractContext;
 import fr.xahla.musicx.domain.application.SettingsInterface;
+import fr.xahla.musicx.domain.helper.JsonHelper;
 import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
 import fr.xahla.musicx.domain.manager.LibraryManagerInterface;
 import fr.xahla.musicx.domain.model.LibraryInterface;
@@ -8,16 +12,80 @@ import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import fr.xahla.musicx.domain.model.enums.ShuffleMode;
 import fr.xahla.musicx.domain.repository.LibraryRepositoryInterface;
 import fr.xahla.musicx.infrastructure.local.database.HibernateLoader;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import static fr.xahla.musicx.domain.application.AbstractContext.env;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 import static fr.xahla.musicx.infrastructure.local.repository.GenreRepository.genreRepository;
 
-public class DBTest {
+public final class ImportGenresFromJson {
+
+    private int nbCreated;
+    private int nbUpdated;
+
+    private JSONObject jsonContent;
+
+    public void execute(final String jsonPath) {
+        jsonContent = JsonHelper.loadJsonFromFile(jsonPath);
+
+        for (final var entry : jsonContent.toMap().entrySet()) {
+            if (entry.getValue() instanceof final List<?> array) {
+                saveGenre(entry.getKey(), array.stream().map(Object::toString).toList());
+            }
+        }
+    }
+
+    private Long saveGenre(final String name, final List<String> parents) {
+        final var parentIds = new ArrayList<Long>();
+
+        if (!genreRepository().findByCriteria(Map.of(
+            GenreSearchCriterias.NAME, name
+        )).isEmpty()) {
+            return 0L;
+        }
+
+        if (!parents.isEmpty()) {
+            parents.forEach(parentName -> {
+                final var exists = genreRepository().findByCriteria(Map.of(
+                    GenreSearchCriterias.NAME, parentName
+                ));
+
+                if (!exists.isEmpty()) {
+                    parentIds.add(exists.getFirst().getId());
+                } else {
+                    final var parentGenre = jsonContent.getJSONArray(parentName).toList().stream()
+                        .map(Object::toString).toList();
+
+                    parentIds.add(saveGenre(parentName, parentGenre));
+                }
+            });
+        }
+
+        final var genreDto = new GenreDto()
+            .setName(name)
+            .setParentIds(parentIds);
+
+        genreRepository().save(genreDto);
+
+        nbCreated++;
+
+        return genreDto.getId();
+    }
+
+    public static void main(final String[] args) {
+        final var context = new Context();
+        final var hibernateLoader = new HibernateLoader();
+
+        final var service = new ImportGenresFromJson();
+        service.execute(env("GENRES_URL"));
+
+        logger().info("Nb created: " + service.nbCreated);
+    }
 
     static class Context extends AbstractContext {
         protected Context() {
@@ -116,14 +184,6 @@ public class DBTest {
                 }
             });
         }
-    }
-
-    public static void main(String[] args) {
-        final var context = new Context();
-        final var hibernateLoader = new HibernateLoader();
-        final var genres = new ArrayList<>(genreRepository().findAll());
-        genres.sort(Comparator.comparing(GenreDto::getName));
-        genres.forEach(genre -> System.out.println(genre.getName()));
     }
 
 }

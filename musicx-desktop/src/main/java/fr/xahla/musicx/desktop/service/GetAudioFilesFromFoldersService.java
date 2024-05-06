@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.service;
 
-import fr.xahla.musicx.desktop.helper.ArrayHelper;
-import fr.xahla.musicx.desktop.helper.FileHelper;
+import fr.xahla.musicx.domain.helper.ArrayHelper;
+import fr.xahla.musicx.domain.helper.FileHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;

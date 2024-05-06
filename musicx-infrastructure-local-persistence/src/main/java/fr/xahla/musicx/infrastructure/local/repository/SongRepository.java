@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 import static fr.xahla.musicx.infrastructure.local.database.HibernateLoader.openSession;
+import static fr.xahla.musicx.infrastructure.local.repository.AlbumRepository.albumRepository;
 
 public class SongRepository implements SongRepositoryInterface {
 

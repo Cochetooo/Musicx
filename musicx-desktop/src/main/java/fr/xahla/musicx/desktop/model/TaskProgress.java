@@ -1,6 +1,5 @@
 package fr.xahla.musicx.desktop.model;
 
-import fr.xahla.musicx.desktop.listener.ProgressListener;
 import javafx.beans.property.*;
 import javafx.concurrent.Task;
 

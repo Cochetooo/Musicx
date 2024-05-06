@@ -12,6 +12,7 @@ repositories {
 dependencies {
     implementation project(":musicx-api")
     implementation project(":musicx-domain")
+    implementation project(":musicx-infrastructure-local-persistence")
 
     // JSON
     implementation('org.json:json:20240303')

@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'de.jjohannes.extra-java-module-info' version '0.11'
 }
 
 group 'fr.xahla'
@@ -21,4 +22,19 @@ dependencies {
 
     // Dotenv
     implementation('io.github.cdimascio:dotenv-java:3.0.0')
+
+    // JAudioTagger
+    implementation('net.jthink:jaudiotagger:3.0.1')
+}
+
+extraJavaModuleInfo {
+    module("jaudiotagger-3.0.1.jar", "jaudiotagger", "3.0.1") {
+        requires("java.logging")
+
+        exports("org.jaudiotagger.audio")
+        exports("org.jaudiotagger.tag")
+        exports("org.jaudiotagger.tag.id3")
+        exports("org.jaudiotagger.tag.mp4")
+        exports("org.jaudiotagger.tag.mp4.field")
+    }
 }

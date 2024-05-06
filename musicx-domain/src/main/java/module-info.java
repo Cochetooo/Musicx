@@ -24,6 +24,9 @@ module fr.xahla.musicx.domain {
     // Lib -> Dotenv
     requires io.github.cdimascio.dotenv.java;
 
+    // Lib -> JAudioTagger
+    requires jaudiotagger;
+
     // Lib -> JSON
     requires org.json;
 
@@ -34,5 +37,6 @@ module fr.xahla.musicx.domain {
     exports fr.xahla.musicx.domain.model;
     exports fr.xahla.musicx.domain.model.enums;
     exports fr.xahla.musicx.domain.repository;
+    exports fr.xahla.musicx.domain.listener;
 
 }

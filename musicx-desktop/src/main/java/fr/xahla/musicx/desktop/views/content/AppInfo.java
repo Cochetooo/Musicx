@@ -1,14 +1,13 @@
 package fr.xahla.musicx.desktop.views.content;
 
 import fr.xahla.musicx.desktop.helper.DurationHelper;
-import fr.xahla.musicx.desktop.helper.ProgressHelper;
+import fr.xahla.musicx.domain.helper.ProgressHelper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
-import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;

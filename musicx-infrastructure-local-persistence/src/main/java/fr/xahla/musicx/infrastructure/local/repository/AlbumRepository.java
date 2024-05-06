@@ -42,6 +42,12 @@ public class AlbumRepository implements AlbumRepositoryInterface {
         );
     }
 
+    public List<AlbumEntity> findAllStructured() {
+        return QueryHelper.findAll(AlbumEntity.class).stream()
+            .map(AlbumEntity.class::cast)
+            .toList();
+    }
+
     @Override public List<AlbumDto> findByCriteria(final Map<AlbumSearchCriterias, Object> criteria) {
         return this.toDtoList(
             QueryHelper.findByCriteria(
@@ -53,6 +59,19 @@ public class AlbumRepository implements AlbumRepositoryInterface {
                     ))
             )
         );
+    }
+
+    public List<AlbumEntity> findByCriteriaStructured(final Map<AlbumSearchCriterias, Object> criteria) {
+        return QueryHelper.findByCriteria(
+                ArtistEntity.class,
+                criteria.entrySet().stream()
+                    .collect(Collectors.toMap(
+                        entry -> entry.getKey().getColumn(),
+                        Map.Entry::getValue
+                    ))
+            ).stream()
+                .map(AlbumEntity.class::cast)
+                .toList();
     }
 
     private List<AlbumDto> toDtoList(final List<?> resultQuery) {

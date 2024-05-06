@@ -2,6 +2,7 @@ package fr.xahla.musicx.api.repository.searchCriterias;
 
 public enum GenreSearchCriterias {
 
+    ID("id"),
     NAME("name");
 
     private final String column;

@@ -19,6 +19,9 @@ module fr.xahla.musicx.infrastructure.local {
     // --- SQLite Database ---
     requires org.xerial.sqlitejdbc;
 
+    // JSON
+    requires org.json;
+
     // --- Opens ---
 
     opens fr.xahla.musicx.infrastructure.local.model to org.hibernate.orm.core;

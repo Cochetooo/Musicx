@@ -3,7 +3,7 @@ package fr.xahla.musicx.desktop.manager;
 import fr.xahla.musicx.domain.manager.LibraryManagerInterface;
 import fr.xahla.musicx.infrastructure.repository.LibraryRepository;
 import fr.xahla.musicx.infrastructure.repository.SongRepository;
-import fr.xahla.musicx.desktop.listener.ProgressListener;
+import fr.xahla.musicx.domain.listener.ProgressListener;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.TaskProgress;
 import fr.xahla.musicx.desktop.model.data.LocalSong;

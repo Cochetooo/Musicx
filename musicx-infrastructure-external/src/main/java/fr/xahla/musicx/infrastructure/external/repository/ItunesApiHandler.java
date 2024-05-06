@@ -1,22 +1,26 @@
 package fr.xahla.musicx.infrastructure.external.repository;
 
-import fr.xahla.musicx.api.model.AlbumDto;
+import fr.xahla.musicx.api.model.data.AlbumInterface;
+import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriterias;
 import fr.xahla.musicx.domain.repository.ExternalFetchRepositoryInterface;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.env;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.infrastructure.local.repository.GenreRepository.genreRepository;
 
 public class ItunesApiHandler
     extends ExternalApiHandler
     implements ExternalFetchRepositoryInterface.AlbumFetcher
 {
+    private static final ItunesApiHandler INSTANCE = new ItunesApiHandler();
 
     public ItunesApiHandler() {
         super(env("ITUNES_API_URL"));
@@ -34,10 +38,10 @@ public class ItunesApiHandler
      * @param album The album source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchAlbumFromExternal(final AlbumDto album, final boolean overwrite) {
+    @Override public void fetchAlbumFromExternal(final AlbumInterface album, final boolean overwrite) {
         final var methodSignature = "search";
 
-        final var searchTerm = album.getArtist().getName() + " " + album.getName();
+        var searchTerm = album.getArtist().getName() + " " + album.getName();
 
         final var requestUrl = this.makeURL(
             methodSignature,
@@ -63,6 +67,21 @@ public class ItunesApiHandler
             album.setArtworkUrl(albumJson.getString("artworkUrl100"));
         }
 
+        // Primary Genre placeholder
+        if (!overwrite || null == album.getPrimaryGenres() || album.getPrimaryGenres().isEmpty()) {
+            final var itunesGenreName = albumJson.getString("primaryGenreName");
+
+            final var genre = genreRepository().findByCriteriaStructured(Map.of(
+                GenreSearchCriterias.NAME, itunesGenreName
+            ));
+
+            if (!genre.isEmpty()) {
+                album.setPrimaryGenres(new ArrayList<>(genre));
+            } else {
+                logger().info("Invalid genre name from ITunes: " + itunesGenreName + " for album: " + album.getName());
+            }
+        }
+
         // Release Date
         if (!overwrite || null == album.getReleaseDate()) {
             album.setReleaseDate(ZonedDateTime.parse(
@@ -71,9 +90,9 @@ public class ItunesApiHandler
             ).toLocalDate());
         }
 
-        // Primary Genre placeholder
-        if (!overwrite || null == album.getPrimaryGenres() || album.getPrimaryGenres().isEmpty()) {
-            //album.setPrimaryGenres(new ArrayList<>()); @TODO
+        // Track Total
+        if (!overwrite || 0 == album.getTrackTotal()) {
+            album.setTrackTotal((short) albumJson.getInt("trackCount"));
         }
     }
 
@@ -81,5 +100,9 @@ public class ItunesApiHandler
         return this.apiUrl + method + "?" + parameters.entrySet().stream()
             .map(entry -> "&" + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
             .collect(Collectors.joining("&"));
+    }
+
+    public static ItunesApiHandler itunesApi() {
+        return INSTANCE;
     }
 }

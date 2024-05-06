@@ -2,8 +2,11 @@ package fr.xahla.musicx.infrastructure.local.repository;
 
 import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.repository.GenreRepositoryInterface;
+import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriterias;
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriterias;
 import fr.xahla.musicx.infrastructure.local.helper.QueryHelper;
+import fr.xahla.musicx.infrastructure.local.model.AlbumEntity;
+import fr.xahla.musicx.infrastructure.local.model.ArtistEntity;
 import fr.xahla.musicx.infrastructure.local.model.GenreEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
@@ -26,6 +29,12 @@ public class GenreRepository implements GenreRepositoryInterface {
         );
     }
 
+    public List<GenreEntity> findAllStructured() {
+        return QueryHelper.findAll(GenreEntity.class).stream()
+            .map(GenreEntity.class::cast)
+            .toList();
+    }
+
     @Override public List<GenreDto> findByCriteria(final Map<GenreSearchCriterias, Object> criteria) {
         return this.toDtoList(
             QueryHelper.findByCriteria(
@@ -37,6 +46,19 @@ public class GenreRepository implements GenreRepositoryInterface {
                     ))
             )
         );
+    }
+
+    public List<GenreEntity> findByCriteriaStructured(final Map<GenreSearchCriterias, Object> criteria) {
+        return QueryHelper.findByCriteria(
+                GenreEntity.class,
+                criteria.entrySet().stream()
+                    .collect(Collectors.toMap(
+                        entry -> entry.getKey().getColumn(),
+                        Map.Entry::getValue
+                    ))
+            ).stream()
+            .map(GenreEntity.class::cast)
+            .toList();
     }
 
     @Override public void save(final GenreDto genre) {
