@@ -1,5 +1,8 @@
 package fr.xahla.musicx.api.model;
 
+import lombok.Builder;
+import lombok.Data;
+
 import java.util.List;
 
 /** <b>(API) Interface for Genre Model contracts.</b>
@@ -12,6 +15,8 @@ import java.util.List;
  *
  * @author Cochetooo
  */
+@Data
+@Builder
 public class GenreDto {
 
     private Long id;
@@ -20,30 +25,4 @@ public class GenreDto {
 
     private String name;
 
-    public Long getId() {
-        return id;
-    }
-
-    public GenreDto setId(final Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public GenreDto setName(final String name) {
-        this.name = name;
-        return this;
-    }
-
-    public List<Long> getParentIds() {
-        return parentIds;
-    }
-
-    public GenreDto setParentIds(final List<Long> parentIds) {
-        this.parentIds = parentIds;
-        return this;
-    }
 }

@@ -6,11 +6,17 @@ import fr.xahla.musicx.domain.model.LibraryInterface;
 import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import fr.xahla.musicx.domain.model.enums.ShuffleMode;
 import fr.xahla.musicx.domain.repository.LibraryRepositoryInterface;
+import fr.xahla.musicx.domain.service.localAudioFile.ImportSongsFromFolders;
 import fr.xahla.musicx.infrastructure.local.database.HibernateLoader;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import static fr.xahla.musicx.infrastructure.local.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.infrastructure.local.repository.ArtistRepository.artistRepository;
+import static fr.xahla.musicx.infrastructure.local.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.infrastructure.local.repository.LabelRepository.labelRepository;
+import static fr.xahla.musicx.infrastructure.local.repository.SongRepository.songRepository;
 
 public class DBTest {
 
@@ -117,8 +123,8 @@ public class DBTest {
         final var context = new Context();
         final var hibernateLoader = new HibernateLoader();
 
-        /* new ImportSongsFromFolders()
-            .execute(List.of("U:\\Sort\\Musique\\Shared\\Katatonia"),
+        new ImportSongsFromFolders()
+            .execute(List.of("C:\\Users\\hinoubli\\Music\\Kina Siern playlist"),
                 List.of("mp3"),
                 (progress, total) -> System.out.println("Progress: " + progress + " / " + total),
                 songRepository(),
@@ -126,9 +132,7 @@ public class DBTest {
                 genreRepository(),
                 artistRepository(),
                 labelRepository()
-            ); */
-
-        final var albums = albumRepository().findAll();
+            );
     }
 
 }

@@ -77,10 +77,10 @@ public final class PersistAudioFileMetadata {
             song = new SongDto();
         }
 
-        song.setAlbumId(this.setAlbum());
-        song.setArtistId(this.setArtist());
-        song.setPrimaryGenreIds(this.setPrimaryGenres());
-        song.setSecondaryGenreIds(this.setSecondaryGenres());
+        song.setAlbumId(this.setAlbum())
+            .setArtistId(this.setArtist())
+            .setPrimaryGenreIds(this.setPrimaryGenres())
+            .setSecondaryGenreIds(this.setSecondaryGenres());
 
         song
             .setBitRate((int) audioHeader.getBitRateAsNumber())
@@ -112,15 +112,16 @@ public final class PersistAudioFileMetadata {
         if (!existingAlbum.isEmpty()) {
             album = existingAlbum.getFirst();
         } else {
-            album = new AlbumDto()
-                .setArtistId(this.setAlbumArtist())
-                .setArtworkUrl(tag.getFirst(FieldKey.COVER_ART))
-                .setCatalogNo(catalogNo)
-                .setDiscTotal(this.getShort(tag.getFirst(FieldKey.DISC_TOTAL)))
-                .setLabelId(this.setAlbumLabel())
-                .setName(name)
-                .setReleaseDate(this.getLocalDate(tag.getFirst(FieldKey.YEAR)))
-                .setTrackTotal(this.getShort(tag.getFirst(FieldKey.TRACK_TOTAL)));
+            album = AlbumDto.builder()
+                .artistId(this.setAlbumArtist())
+                .artworkUrl(tag.getFirst(FieldKey.COVER_ART))
+                .catalogNo(catalogNo)
+                .discTotal(this.getShort(tag.getFirst(FieldKey.DISC_TOTAL)))
+                .labelId(this.setAlbumLabel())
+                .name(name)
+                .releaseDate(this.getLocalDate(tag.getFirst(FieldKey.YEAR)))
+                .trackTotal(this.getShort(tag.getFirst(FieldKey.TRACK_TOTAL)))
+                .build();
         }
 
         albumRepository.save(album);

@@ -11,8 +11,6 @@
 module fr.xahla.musicx.desktop {
 
     // --- Musicx ---
-    requires fr.xahla.musicx.api;
-    requires fr.xahla.musicx.domain;
     requires fr.xahla.musicx.infrastructure.local;
     requires fr.xahla.musicx.infrastructure.external;
 
@@ -46,9 +44,6 @@ module fr.xahla.musicx.desktop {
 
     // --- JFoenix ---
     requires com.jfoenix;
-
-    // --- JAudioTagger ---
-    requires jaudiotagger;
 
     // -- Opens --
     opens fr.xahla.musicx.desktop to javafx.graphics, javafx.fxml;

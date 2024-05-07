@@ -14,5 +14,5 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
-
+    implementation 'org.projectlombok:lombok:1.18.32'
 }

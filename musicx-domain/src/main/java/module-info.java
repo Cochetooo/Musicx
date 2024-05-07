@@ -14,7 +14,7 @@ module fr.xahla.musicx.domain {
     // ------------- [REQUIRE] -------------
 
     // Musicx -> API
-    requires fr.xahla.musicx.api;
+    requires transitive fr.xahla.musicx.api;
 
     // Java -> Logging
     requires java.logging;

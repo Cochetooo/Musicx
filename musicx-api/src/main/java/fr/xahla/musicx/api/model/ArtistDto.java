@@ -1,6 +1,7 @@
 package fr.xahla.musicx.api.model;
 
 import fr.xahla.musicx.api.model.data.ArtistInterface;
+import lombok.*;
 
 import java.util.Locale;
 
@@ -14,47 +15,13 @@ import java.util.Locale;
  *
  * @author Cochetooo
  */
+@Data
+@Builder
 public class ArtistDto {
 
     private Long id;
     private String name;
     private Locale country;
     private String artworkUrl;
-
-    public Long getId() {
-        return id;
-    }
-
-    public ArtistDto setId(final Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ArtistDto setName(final String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Locale getCountry() {
-        return country;
-    }
-
-    public ArtistDto setCountry(final Locale country) {
-        this.country = country;
-        return this;
-    }
-
-    public String getArtworkUrl() {
-        return artworkUrl;
-    }
-
-    public ArtistDto setArtworkUrl(final String artworkUrl) {
-        this.artworkUrl = artworkUrl;
-        return this;
-    }
 
 }

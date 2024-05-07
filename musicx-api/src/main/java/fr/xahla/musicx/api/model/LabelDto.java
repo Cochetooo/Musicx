@@ -1,5 +1,8 @@
 package fr.xahla.musicx.api.model;
 
+import lombok.Builder;
+import lombok.Data;
+
 import java.util.List;
 
 /** <b>(API) Interface for Label Model contracts.</b>
@@ -12,6 +15,8 @@ import java.util.List;
  *
  * @author Cochetooo
  */
+@Data
+@Builder
 public class LabelDto {
 
     private Long id;
@@ -20,30 +25,4 @@ public class LabelDto {
 
     private String name;
 
-    public Long getId() {
-        return id;
-    }
-
-    public LabelDto setId(final Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LabelDto setName(final String name) {
-        this.name = name;
-        return this;
-    }
-
-    public List<Long> getGenreIds() {
-        return genreIds;
-    }
-
-    public LabelDto setGenreIds(final List<Long> genreIds) {
-        this.genreIds = genreIds;
-        return this;
-    }
 }

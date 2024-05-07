@@ -1,7 +1,6 @@
 module fr.xahla.musicx.infrastructure.local {
 
-    requires fr.xahla.musicx.api;
-    requires fr.xahla.musicx.domain;
+    requires transitive fr.xahla.musicx.domain;
 
     // --- Hibernate ---
     requires org.jboss.logging;

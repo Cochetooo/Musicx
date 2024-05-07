@@ -38,21 +38,21 @@ public class AlbumEntity implements AlbumInterface {
     @MapKeyJoinColumn(name = "artist_id")
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private Map<ArtistEntity, ArtistRole> creditArtists;
+    private Map<ArtistEntity, ArtistRole> creditArtists = new HashMap<>();
 
     @ManyToMany
     @JoinTable(name = "album_primary_genres",
         joinColumns = @JoinColumn(name = "album_id"),
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private List<GenreEntity> primaryGenres;
+    private List<GenreEntity> primaryGenres = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "album_secondary_genres",
         joinColumns = @JoinColumn(name = "album_id"),
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private List<GenreEntity> secondaryGenres;
+    private List<GenreEntity> secondaryGenres = new ArrayList<>();
 
     // Standard columns
     private String name;
@@ -86,7 +86,6 @@ public class AlbumEntity implements AlbumInterface {
         }
 
         if (null != albumDto.getCreditArtistIds()) {
-            creditArtists = new HashMap<>();
             Hibernate.initialize(creditArtists);
             creditArtists.clear();
 
@@ -98,7 +97,6 @@ public class AlbumEntity implements AlbumInterface {
         }
 
         if (null != albumDto.getPrimaryGenreIds()) {
-            primaryGenres = new ArrayList<>();
             Hibernate.initialize(primaryGenres);
             primaryGenres.clear();
 
@@ -110,7 +108,6 @@ public class AlbumEntity implements AlbumInterface {
         }
 
         if (null != albumDto.getSecondaryGenreIds()) {
-            secondaryGenres = new ArrayList<>();
             Hibernate.initialize(secondaryGenres);
             secondaryGenres.clear();
 

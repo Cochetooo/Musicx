@@ -1,17 +1,16 @@
 package fr.xahla.musicx.api.model;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Builder
 public class BandArtistDto extends ArtistDto {
 
     private List<Long> memberIds;
 
-    public List<Long> getMemberIds() {
-        return memberIds;
-    }
-
-    public BandArtistDto setMemberIds(final List<Long> memberIds) {
-        this.memberIds = memberIds;
-        return this;
-    }
 }
