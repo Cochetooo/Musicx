@@ -1,10 +1,9 @@
 package fr.xahla.musicx.desktop;
 
 import atlantafx.base.theme.PrimerDark;
-import fr.xahla.musicx.domain.helper.ApplicationInfo;
+import fr.xahla.musicx.domain.helper.enums.ApplicationInfo;
 import fr.xahla.musicx.infrastructure.config.HibernateLoader;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
-import fr.xahla.musicx.desktop.manager.LoggerManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

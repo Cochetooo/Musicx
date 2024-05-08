@@ -11,8 +11,7 @@
 module fr.xahla.musicx.desktop {
 
     // --- Musicx ---
-    requires fr.xahla.musicx.infrastructure.local;
-    requires fr.xahla.musicx.infrastructure.external;
+    requires fr.xahla.musicx.domain;
 
     // --- Logging ---
     requires java.logging;

@@ -1,7 +1,7 @@
 package fr.xahla.musicx.domain.manager;
 
-import fr.xahla.musicx.domain.model.LibraryInterface;
-import fr.xahla.musicx.domain.repository.LibraryRepositoryInterface;
+import fr.xahla.musicx.domain.model.data.LibraryInterface;
+import fr.xahla.musicx.domain.repository.data.LibraryRepositoryInterface;
 
 public interface LibraryManagerInterface {
 

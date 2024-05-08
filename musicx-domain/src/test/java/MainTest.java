@@ -6,10 +6,10 @@ import fr.xahla.musicx.domain.application.AbstractContext;
 import fr.xahla.musicx.domain.application.SettingsInterface;
 import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
 import fr.xahla.musicx.domain.manager.LibraryManagerInterface;
-import fr.xahla.musicx.domain.model.LibraryInterface;
+import fr.xahla.musicx.domain.model.data.LibraryInterface;
 import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import fr.xahla.musicx.domain.model.enums.ShuffleMode;
-import fr.xahla.musicx.domain.repository.LibraryRepositoryInterface;
+import fr.xahla.musicx.domain.repository.data.LibraryRepositoryInterface;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.views.content;
 
 import atlantafx.base.controls.CustomTextField;
-import fr.xahla.musicx.domain.helper.FontTheme;
+import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.FXMLHelper;

@@ -1,7 +1,7 @@
 package fr.xahla.musicx.domain.manager;
 
 import fr.xahla.musicx.api.model.SongDto;
-import fr.xahla.musicx.domain.model.AudioQueueInterface;
+import fr.xahla.musicx.domain.model.data.AudioQueueInterface;
 
 import java.util.List;
 

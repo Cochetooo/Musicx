@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.views.content.navigation;
 
-import fr.xahla.musicx.domain.helper.FontTheme;
+import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import fr.xahla.musicx.desktop.model.entity.Artist;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
