@@ -23,7 +23,13 @@ music lovers:<br>
 
 ## Patch Log
 
-### Release 0.2.4
+### Release 0.3.0 *(2024-05-12)*
+
+> #### Changes
+> - Rewritten database and models entirely
+> - Cleaned up code
+
+### Release 0.2.4 *(2024-04-25)*
 
 > #### New Features
 > - `Artist List` Double click now plays artist discography
