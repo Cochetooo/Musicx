@@ -6,6 +6,4 @@ rootProject.name = "Musicx"
 
 include 'musicx-api'
 include 'musicx-domain'
-include 'musicx-infrastructure-local-persistence'
-include 'musicx-infrastructure-external'
 include 'musicx-desktop'

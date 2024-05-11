@@ -2,8 +2,9 @@ package fr.xahla.musicx.domain.model.entity;
 
 import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.BandArtistDto;
-import fr.xahla.musicx.api.model.data.BandArtistInterface;
-import fr.xahla.musicx.api.model.data.PersonArtistInterface;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.ArrayList;
@@ -11,7 +12,9 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("BAND")
-public class BandArtistEntity extends ArtistEntity implements BandArtistInterface {
+@Getter
+@Setter
+public class BandArtistEntity extends ArtistEntity {
 
     @ManyToMany
     @JoinTable(
@@ -42,13 +45,7 @@ public class BandArtistEntity extends ArtistEntity implements BandArtistInterfac
     }
 
     @Override public BandArtistDto toDto() {
-        final var bandArtistDto = new BandArtistDto();
-
-        bandArtistDto
-            .setId(this.getId())
-            .setArtworkUrl(this.getArtworkUrl())
-            .setCountry(this.getCountry())
-            .setName(this.getName());
+        final var bandArtistDto = (BandArtistDto) super.toDto();
 
         if (null != members && Hibernate.isInitialized(members)) {
             bandArtistDto.setMemberIds(members.stream()
@@ -58,27 +55,6 @@ public class BandArtistEntity extends ArtistEntity implements BandArtistInterfac
         }
 
         return bandArtistDto;
-    }
-
-    @Override public List<PersonArtistEntity> getMembers() {
-        return members;
-    }
-
-    @Override public BandArtistEntity setMembers(final List<? extends PersonArtistInterface> artists) {
-        this.members = artists.stream()
-            .filter(PersonArtistEntity.class::isInstance)
-            .map(PersonArtistEntity.class::cast)
-            .toList();
-
-        return this;
-    }
-
-    @Override public List<BandArtistEntity> getRelatedBands() {
-        return List.of();
-    }
-
-    @Override public BandArtistEntity setRelatedBands(final List<? extends BandArtistInterface> relatedBands) {
-        return null;
     }
 
 }

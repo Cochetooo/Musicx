@@ -17,6 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public final class ImportSongsFromFolders {
 
@@ -27,17 +29,11 @@ public final class ImportSongsFromFolders {
      * @param folderPaths List of folder paths to search songs for
      * @param acceptedFormats An array of file extension as string
      * @param progressListener A listener interface to get the current progress.
-     * @param songRepository Repository that will save every new/updated songs in the database
      */
     public void execute(
         final List<String> folderPaths,
         final List<String> acceptedFormats,
-        final ProgressListener progressListener,
-        final SongRepositoryInterface songRepository,
-        final AlbumRepositoryInterface albumRepository,
-        final GenreRepositoryInterface genreRepository,
-        final ArtistRepositoryInterface artistRepository,
-        final LabelRepositoryInterface labelRepository
+        final ProgressListener progressListener
     ) {
         final var startTime = System.currentTimeMillis();
 
@@ -63,10 +59,7 @@ public final class ImportSongsFromFolders {
                 try {
                     final var audioFile = AudioFileIO.read(filepath.toFile());
                     // Create a response from a new thread that try to create a song and all its object members from the audio file.
-                    threadExecutor.submit(() -> new PersistAudioFileMetadata().execute(
-                        audioFile, songRepository, albumRepository,
-                        genreRepository, artistRepository, labelRepository
-                    ));
+                    threadExecutor.submit(() -> new PersistAudioFileMetadata().execute(audioFile));
                 } catch (final Exception exception) {
                     logger().log(Level.SEVERE, "Couldn't read audio file properly: " + filepath, exception);
                 }

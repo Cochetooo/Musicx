@@ -14,7 +14,7 @@ module fr.xahla.musicx.domain {
     // ------------- [REQUIRE] -------------
 
     // Musicx -> API
-    requires transitive fr.xahla.musicx.api;
+    requires fr.xahla.musicx.api;
 
     // Java -> Logging
     requires java.logging;
@@ -29,6 +29,9 @@ module fr.xahla.musicx.domain {
 
     // Lib -> JSON
     requires org.json;
+
+    // Lib -> Lombok
+    requires lombok;
 
     // --- Hibernate ---
     requires org.jboss.logging;
@@ -52,6 +55,7 @@ module fr.xahla.musicx.domain {
 
     // ------------- [EXPORT] -------------
     exports fr.xahla.musicx.domain.application;
+    exports fr.xahla.musicx.domain.database;
     exports fr.xahla.musicx.domain.helper;
     exports fr.xahla.musicx.domain.listener;
     exports fr.xahla.musicx.domain.manager;

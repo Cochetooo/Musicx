@@ -1,7 +1,9 @@
 package fr.xahla.musicx.domain.model.entity;
 
 import fr.xahla.musicx.api.model.GenreDto;
-import fr.xahla.musicx.api.model.data.GenreInterface;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.ArrayList;
@@ -9,7 +11,9 @@ import java.util.List;
 
 @Entity
 @Table(name="genre")
-public class GenreEntity implements GenreInterface {
+@Getter
+@Setter
+public class GenreEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +32,9 @@ public class GenreEntity implements GenreInterface {
 
     // Casts
 
-    @Override public GenreEntity fromDto(final GenreDto genreDto) {
-        this.setId(genreDto.getId())
-            .setName(genreDto.getName());
+    public GenreEntity fromDto(final GenreDto genreDto) {
+        this.setId(genreDto.getId());
+        this.setName(genreDto.getName());
 
         if (null != genreDto.getParentIds()) {
             parents = new ArrayList<>();
@@ -45,10 +49,11 @@ public class GenreEntity implements GenreInterface {
         return this;
     }
 
-    @Override public GenreDto toDto() {
-        final var genreDto = new GenreDto()
-            .setId(id)
-            .setName(name);
+    public GenreDto toDto() {
+        final var genreDto = GenreDto.builder()
+            .id(id)
+            .name(name)
+            .build();
 
         if (null != parents && Hibernate.isInitialized(parents)) {
             genreDto.setParentIds(parents.stream()
@@ -58,38 +63,5 @@ public class GenreEntity implements GenreInterface {
         }
 
         return genreDto;
-    }
-
-    // Getters - Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public GenreEntity setId(final Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public GenreEntity setName(final String name) {
-        this.name = name;
-        return this;
-    }
-
-    public List<GenreEntity> getParents() {
-        return parents;
-    }
-
-    public GenreEntity setParents(final List<? extends GenreInterface> parents) {
-        this.parents = parents.stream()
-            .filter(GenreEntity.class::isInstance)
-            .map(GenreEntity.class::cast)
-            .toList();
-
-        return this;
     }
 }

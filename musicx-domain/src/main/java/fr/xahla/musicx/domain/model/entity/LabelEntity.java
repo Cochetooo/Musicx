@@ -1,9 +1,9 @@
 package fr.xahla.musicx.domain.model.entity;
 
 import fr.xahla.musicx.api.model.LabelDto;
-import fr.xahla.musicx.api.model.data.AlbumInterface;
-import fr.xahla.musicx.api.model.data.GenreInterface;
-import fr.xahla.musicx.api.model.data.LabelInterface;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.ArrayList;
@@ -11,7 +11,9 @@ import java.util.List;
 
 @Entity
 @Table(name="label")
-public class LabelEntity implements LabelInterface {
+@Getter
+@Setter
+public class LabelEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,12 +30,9 @@ public class LabelEntity implements LabelInterface {
     )
     private List<GenreEntity> genres;
 
-    @OneToMany(mappedBy = "label")
-    private List<AlbumEntity> releases;
-
-    @Override public LabelEntity fromDto(final LabelDto labelDto) {
-        this.setId(labelDto.getId())
-            .setName(labelDto.getName());
+    public LabelEntity fromDto(final LabelDto labelDto) {
+        this.setId(labelDto.getId());
+        this.setName(labelDto.getName());
 
         if (null != labelDto.getGenreIds()) {
             genres = new ArrayList<>();
@@ -50,10 +49,11 @@ public class LabelEntity implements LabelInterface {
         return this;
     }
 
-    @Override public LabelDto toDto() {
-        final var labelDto = new LabelDto()
-            .setId(this.getId())
-            .setName(this.getName());
+    public LabelDto toDto() {
+        final var labelDto = LabelDto.builder()
+            .id(id)
+            .name(name)
+            .build();
 
         if (null != genres && Hibernate.isInitialized(genres)) {
             labelDto.setGenreIds(genres.stream()
@@ -63,51 +63,5 @@ public class LabelEntity implements LabelInterface {
         }
 
         return labelDto;
-    }
-
-    // Getters - Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public LabelEntity setId(final Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LabelEntity setName(final String name) {
-        this.name = name;
-        return this;
-    }
-
-    @Override public List<AlbumEntity> getReleases() {
-        return releases;
-    }
-
-    @Override public LabelEntity setReleases(final List<? extends AlbumInterface> releases) {
-        this.releases = releases.stream()
-            .filter(AlbumEntity.class::isInstance)
-            .map(AlbumEntity.class::cast)
-            .toList();
-
-        return this;
-    }
-
-    public List<GenreEntity> getGenres() {
-        return genres;
-    }
-
-    public LabelEntity setGenres(final List<? extends GenreInterface> genres) {
-        this.genres = genres.stream()
-            .filter(GenreEntity.class::isInstance)
-            .map(GenreEntity.class::cast)
-            .toList();
-
-        return this;
     }
 }

@@ -1,9 +1,6 @@
 package fr.xahla.musicx.api.repository;
 
-import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.ArtistDto;
-import fr.xahla.musicx.api.model.GenreDto;
-import fr.xahla.musicx.api.model.SongDto;
+import fr.xahla.musicx.api.model.*;
 import fr.xahla.musicx.api.repository.searchCriterias.ArtistSearchCriterias;
 
 import java.util.List;
@@ -21,12 +18,15 @@ import java.util.Map;
  */
 public interface ArtistRepositoryInterface {
 
+    List<PersonArtistDto> getMembers(final BandArtistDto artist);
+    List<BandArtistDto> getBands(final PersonArtistDto artist);
+
     List<AlbumDto> getAlbums(final ArtistDto artist);
     List<SongDto> getSongs(final ArtistDto artist);
 
+    ArtistDto find(final Long id);
     List<ArtistDto> findAll();
     List<ArtistDto> findByCriteria(final Map<ArtistSearchCriterias, Object> criteria);
-    List<ArtistDto> findById(final Long id);
 
     void save(final ArtistDto artist);
 

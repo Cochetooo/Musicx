@@ -2,14 +2,12 @@ package fr.xahla.musicx.api.repository.searchCriterias;
 
 public enum SongSearchCriterias {
 
-    ALBUM_NAME("album.name"),
-    ARTIST_NAME("artist.name"),
+    ALBUM("album_id"),
+    ARTIST("artist_id"),
     BIT_RATE("bitRate"),
     DURATION("duration"),
-    ID(""),
-    PRIMARY_GENRE(""),
+    ID("id"),
     SAMPLE_RATE("sampleRate"),
-    SECONDARY_GENRE(""),
     TITLE("title"),
     TRACK_NUMBER("trackNumber");
 

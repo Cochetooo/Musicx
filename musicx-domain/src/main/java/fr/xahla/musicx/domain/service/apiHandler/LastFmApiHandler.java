@@ -1,11 +1,9 @@
 package fr.xahla.musicx.domain.service.apiHandler;
 
 import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.data.AlbumInterface;
-import fr.xahla.musicx.api.model.data.ArtistInterface;
-import fr.xahla.musicx.api.model.data.SongInterface;
+import fr.xahla.musicx.api.model.ArtistDto;
+import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.domain.repository.data.ExternalFetchRepositoryInterface;
-import fr.xahla.musicx.infrastructure.local.model.AlbumEntity;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +12,8 @@ import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.env;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public class LastFmApiHandler
     extends ExternalApiHandler
@@ -38,7 +38,7 @@ public class LastFmApiHandler
      * @param artist The artist source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchArtistFromExternal(final ArtistInterface artist, final boolean overwrite) {
+    @Override public void fetchArtistFromExternal(final ArtistDto artist, final boolean overwrite) {
         final var methodSignature = "artist.getinfo";
 
         final var requestUrl = this.makeURL(
@@ -68,13 +68,6 @@ public class LastFmApiHandler
         }
     }
 
-    @Override public void fetchAlbumFromExternal(final AlbumDto albumDto, final boolean overwrite) {
-        this.fetchAlbumFromExternal(
-            new AlbumEntity().fromDto(albumDto),
-            overwrite
-        );
-    }
-
     /**
      * Fetch Info from an Album:
      * <ul>
@@ -85,14 +78,21 @@ public class LastFmApiHandler
      * @param album The album source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchAlbumFromExternal(final AlbumInterface album, final boolean overwrite) {
+    @Override public void fetchAlbumFromExternal(final AlbumDto album, final boolean overwrite) {
         final var methodSignature = "album.getinfo";
+
+        final var artist = albumRepository().getArtist(album);
+
+        if (null == artist) {
+            logger().warning("Album has no artist to fetch LastFm data: " + album.getName());
+            return;
+        }
 
         final var requestUrl = this.makeURL(
             methodSignature,
             Map.of(
                 "api_key", this.apiKey,
-                "artist", album.getArtist().getName(),
+                "artist", artist.getName(),
                 "album", album.getName()
             )
         );
@@ -101,7 +101,7 @@ public class LastFmApiHandler
 
         if (!jsonResponse.has("album")) {
             logger().warning("No Last.FM album has been found for album: " +
-                album.getArtist().getName() + " - " + album.getName());
+                artist.getName() + " - " + album.getName());
             return;
         }
 
@@ -127,14 +127,21 @@ public class LastFmApiHandler
      * @param song The song source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
      */
-    @Override public void fetchSongFromExternal(final SongInterface song, final boolean overwrite) {
+    @Override public void fetchSongFromExternal(final SongDto song, final boolean overwrite) {
         final var methodSignature = "track.getinfo";
+
+        final var artist = songRepository().getArtist(song);
+
+        if (null == artist) {
+            logger().warning("Song has no artist to fetch LastFm data: " + song.getTitle());
+            return;
+        }
 
         final var requestUrl = this.makeURL(
             methodSignature,
             Map.of(
                 "api_key", this.apiKey,
-                "artist", song.getArtist().getName(),
+                "artist", artist.getName(),
                 "track", song.getTitle()
             )
         );
@@ -143,7 +150,7 @@ public class LastFmApiHandler
 
         if (!jsonResponse.has("track")) {
             logger().warning("No Last.FM song has been found for song: " +
-                song.getArtist().getName() + " - " + song.getTitle());
+                artist.getName() + " - " + song.getTitle());
             return;
         }
 

@@ -20,14 +20,13 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
+import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.domain.repository.LabelRepository.labelRepository;
+import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public final class PersistAudioFileMetadata {
-
-    private SongRepositoryInterface songRepository;
-    private AlbumRepositoryInterface albumRepository;
-    private ArtistRepositoryInterface artistRepository;
-    private GenreRepositoryInterface genreRepository;
-    private LabelRepositoryInterface labelRepository;
 
     private Tag tag;
     private List<TagField> customTags;
@@ -35,19 +34,8 @@ public final class PersistAudioFileMetadata {
     private String filepath;
 
     public void execute(
-        final AudioFile audioFile,
-        final SongRepositoryInterface songRepository,
-        final AlbumRepositoryInterface albumRepository,
-        final GenreRepositoryInterface genreRepository,
-        final ArtistRepositoryInterface artistRepository,
-        final LabelRepositoryInterface labelRepository
+        final AudioFile audioFile
     ) {
-        this.songRepository = songRepository;
-        this.albumRepository = albumRepository;
-        this.artistRepository = artistRepository;
-        this.genreRepository = genreRepository;
-        this.labelRepository = labelRepository;
-
         this.tag = audioFile.getTag();
         this.audioHeader = audioFile.getAudioHeader();
         this.filepath = audioFile.getFile().getAbsolutePath();
@@ -63,7 +51,7 @@ public final class PersistAudioFileMetadata {
         final var title = tag.getFirst(FieldKey.TITLE);
         final var trackNumber = this.getShort(tag.getFirst(FieldKey.TRACK));
 
-        final var existingSong = songRepository.findByCriteria(Map.of(
+        final var existingSong = songRepository().findByCriteria(Map.of(
             SongSearchCriterias.DURATION, duration,
             SongSearchCriterias.TITLE, title,
             SongSearchCriterias.TRACK_NUMBER, trackNumber
@@ -74,25 +62,24 @@ public final class PersistAudioFileMetadata {
         if (!existingSong.isEmpty()) {
             song = existingSong.getFirst();
         } else {
-            song = new SongDto();
+            song = SongDto.builder().build();
         }
 
-        song.setAlbumId(this.setAlbum())
-            .setArtistId(this.setArtist())
-            .setPrimaryGenreIds(this.setPrimaryGenres())
-            .setSecondaryGenreIds(this.setSecondaryGenres());
+        song.setAlbumId(this.setAlbum());
+        song.setArtistId(this.setArtist());
+        song.setPrimaryGenreIds(this.setPrimaryGenres());
+        song.setSecondaryGenreIds(this.setSecondaryGenres());
 
-        song
-            .setBitRate((int) audioHeader.getBitRateAsNumber())
-            .setDiscNumber(this.getShort(tag.getFirst(FieldKey.DISC_NO)))
-            .setDuration(duration)
-            .setFormat(AudioFormat.valueOf(audioHeader.getFormat().toUpperCase()))
-            .setLyrics(tag.getFirst(FieldKey.LYRICS))
-            .setSampleRate(audioHeader.getSampleRateAsNumber())
-            .setTitle(title)
-            .setTrackNumber(trackNumber);
+        song.setBitRate((int) audioHeader.getBitRateAsNumber());
+        song.setDiscNumber(this.getShort(tag.getFirst(FieldKey.DISC_NO)));
+        song.setDuration(duration);
+        song.setFormat(AudioFormat.valueOf(audioHeader.getFormat().toUpperCase()));
+        song.setLyrics(tag.getFirst(FieldKey.LYRICS));
+        song.setSampleRate(audioHeader.getSampleRateAsNumber());
+        song.setTitle(title);
+        song.setTrackNumber(trackNumber);
 
-        songRepository.save(song);
+        songRepository().save(song);
     }
 
     private Long setAlbum() {
@@ -105,7 +92,7 @@ public final class PersistAudioFileMetadata {
             return null;
         }
 
-        final var existingAlbum = albumRepository.findByCriteria(Map.of(
+        final var existingAlbum = albumRepository().findByCriteria(Map.of(
             AlbumSearchCriterias.NAME, name
         ));
 
@@ -124,7 +111,7 @@ public final class PersistAudioFileMetadata {
                 .build();
         }
 
-        albumRepository.save(album);
+        albumRepository().save(album);
 
         return album.getId();
     }
@@ -140,19 +127,20 @@ public final class PersistAudioFileMetadata {
 
         final var country = this.getLocale(tag.getFirst(FieldKey.COUNTRY));
 
-        final var existingArtist = artistRepository.findByCriteria(Map.of(
+        final var existingArtist = artistRepository().findByCriteria(Map.of(
             ArtistSearchCriterias.NAME, name
         ));
 
         if (!existingArtist.isEmpty()) {
             albumArtist = existingArtist.getFirst();
         } else {
-            albumArtist = new ArtistDto()
-                .setCountry(country)
-                .setName(name);
+            albumArtist = ArtistDto.builder()
+                .country(country)
+                .name(name)
+                .build();
         }
 
-        artistRepository.save(albumArtist);
+        artistRepository().save(albumArtist);
 
         return albumArtist.getId();
     }
@@ -166,18 +154,19 @@ public final class PersistAudioFileMetadata {
             return null;
         }
 
-        final var existingLabel = labelRepository.findByCriteria(Map.of(
+        final var existingLabel = labelRepository().findByCriteria(Map.of(
             LabelSearchCriterias.NAME, name
         ));
 
         if (!existingLabel.isEmpty()) {
             albumLabel = existingLabel.getFirst();
         } else {
-            albumLabel = new LabelDto()
-                .setName(name);
+            albumLabel = LabelDto.builder()
+                .name(name)
+                .build();
         }
 
-        labelRepository.save(albumLabel);
+        labelRepository().save(albumLabel);
 
         return albumLabel.getId();
     }
@@ -192,19 +181,20 @@ public final class PersistAudioFileMetadata {
             return null;
         }
 
-        final var existingArtist = artistRepository.findByCriteria(Map.of(
+        final var existingArtist = artistRepository().findByCriteria(Map.of(
             ArtistSearchCriterias.NAME, name
         ));
 
         if (!existingArtist.isEmpty()) {
             artist = existingArtist.getFirst();
         } else {
-            artist = new ArtistDto()
-                .setCountry(country)
-                .setName(name);
+            artist = ArtistDto.builder()
+                .country(country)
+                .name(name)
+                .build();
         }
 
-        artistRepository.save(artist);
+        artistRepository().save(artist);
 
         return artist.getId();
     }
@@ -225,7 +215,7 @@ public final class PersistAudioFileMetadata {
         final var genres = new ArrayList<GenreDto>();
 
         genreNames.forEach(primaryGenreName -> {
-            final var existGenre = genreRepository.findByCriteria(Map.of(
+            final var existGenre = genreRepository().findByCriteria(Map.of(
                 GenreSearchCriterias.NAME, primaryGenreName
             ));
 

@@ -1,11 +1,10 @@
 package fr.xahla.musicx.domain.model.entity;
 
 import fr.xahla.musicx.api.model.SongDto;
-import fr.xahla.musicx.api.model.data.AlbumInterface;
-import fr.xahla.musicx.api.model.data.ArtistInterface;
-import fr.xahla.musicx.api.model.data.GenreInterface;
-import fr.xahla.musicx.api.model.data.SongInterface;
 import fr.xahla.musicx.api.model.enums.AudioFormat;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.ArrayList;
@@ -14,19 +13,21 @@ import java.util.Map;
 
 @Entity
 @Table(name = "song")
-public class SongEntity implements SongInterface {
+@Getter
+@Setter
+public class SongEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AlbumEntity album;
+    @Column(name = "album_id", insertable = false, updatable = false)
+    private Long albumId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ArtistEntity artist;
+    @Column(name = "artist_id", insertable = false, updatable = false)
+    private Long artistId;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "song_lyrics", joinColumns = @JoinColumn(name = "song_id"))
     @MapKeyColumn(name = "line_number")
     @Column(name = "lyric")
@@ -40,45 +41,35 @@ public class SongEntity implements SongInterface {
     private String title;
     private short trackNumber;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "song_primary_genres",
         joinColumns = @JoinColumn(name = "song_id"),
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private List<GenreEntity> primaryGenres;
+    private List<GenreEntity> primaryGenres = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "song_secondary_genres",
         joinColumns = @JoinColumn(name = "song_id"),
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private List<GenreEntity> secondaryGenres;
+    private List<GenreEntity> secondaryGenres = new ArrayList<>();
 
     // Casts
 
-    @Override public SongEntity fromDto(final SongDto songDto) {
-        this.setId(songDto.getId())
-            .setTitle(songDto.getTitle())
-            .setFormat(songDto.getFormat())
-            .setLyrics(songDto.getLyrics())
-            .setDuration(songDto.getDuration())
-            .setBitRate(songDto.getBitRate())
-            .setSampleRate(songDto.getSampleRate())
-            .setTrackNumber(songDto.getTrackNumber())
-            .setDiscNumber(songDto.getDiscNumber());
-
-        if (null != songDto.getArtistId()) {
-            artist = new ArtistEntity();
-            Hibernate.initialize(artist);
-            this.getArtist().setId(songDto.getArtistId());
-        }
-
-        if (null != songDto.getAlbumId()) {
-            album = new AlbumEntity();
-            Hibernate.initialize(album);
-            this.getAlbum().setId(songDto.getAlbumId());
-        }
+    public SongEntity fromDto(final SongDto songDto) {
+        this.setId(songDto.getId());
+        this.setAlbumId(songDto.getAlbumId());
+        this.setArtistId(songDto.getArtistId());
+        this.setTitle(songDto.getTitle());
+        this.setFormat(songDto.getFormat());
+        this.setLyrics(songDto.getLyrics());
+        this.setDuration(songDto.getDuration());
+        this.setBitRate(songDto.getBitRate());
+        this.setSampleRate(songDto.getSampleRate());
+        this.setTrackNumber(songDto.getTrackNumber());
+        this.setDiscNumber(songDto.getDiscNumber());
 
         if (null != songDto.getPrimaryGenreIds()) {
             primaryGenres = new ArrayList<>();
@@ -106,24 +97,19 @@ public class SongEntity implements SongInterface {
     }
 
     public SongDto toDto() {
-        final var songDto = new SongDto()
-            .setId(id)
-            .setTitle(title)
-            .setFormat(format)
-            .setLyrics(lyrics)
-            .setDuration(duration)
-            .setBitRate(bitRate)
-            .setSampleRate(sampleRate)
-            .setTrackNumber(trackNumber)
-            .setDiscNumber(discNumber);
-
-        if (null != artist && Hibernate.isInitialized(artist)) {
-            songDto.setArtistId(artist.getId());
-        }
-
-        if (null != album && Hibernate.isInitialized(album)) {
-            songDto.setAlbumId(album.getId());
-        }
+        final var songDto = SongDto.builder()
+            .id(id)
+            .albumId(albumId)
+            .artistId(artistId)
+            .title(title)
+            .format(format)
+            .lyrics(lyrics)
+            .duration(duration)
+            .bitRate(bitRate)
+            .sampleRate(sampleRate)
+            .trackNumber(trackNumber)
+            .discNumber(discNumber)
+            .build();
 
         if (null != primaryGenres && Hibernate.isInitialized(primaryGenres)) {
             songDto.setPrimaryGenreIds(primaryGenres.stream()
@@ -138,136 +124,5 @@ public class SongEntity implements SongInterface {
         }
 
         return songDto;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public SongEntity setId(final Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public ArtistEntity getArtist() {
-        return artist;
-    }
-
-    public SongEntity setArtist(final ArtistInterface artist) {
-        this.artist = (ArtistEntity) artist;
-        return this;
-    }
-
-    public AlbumEntity getAlbum() {
-        return album;
-    }
-
-    public SongEntity setAlbum(final AlbumInterface album) {
-        this.album = (AlbumEntity) album;
-        return this;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public SongEntity setTitle(final String title) {
-        this.title = title;
-        return this;
-    }
-
-    public AudioFormat getFormat() {
-        return format;
-    }
-
-    public SongEntity setFormat(final AudioFormat format) {
-        this.format = format;
-        return this;
-    }
-
-    public Map<Long, String> getLyrics() {
-        return lyrics;
-    }
-
-    public SongEntity setLyrics(final String lyrics) {
-        return this.setLyrics(
-            Map.of(0L, lyrics)
-        );
-    }
-
-    public SongEntity setLyrics(final Map<Long, String> lyrics) {
-        this.lyrics = lyrics;
-        return this;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public SongEntity setDuration(final long duration) {
-        this.duration = duration;
-        return this;
-    }
-
-    public int getBitRate() {
-        return bitRate;
-    }
-
-    public SongEntity setBitRate(final int bitRate) {
-        this.bitRate = bitRate;
-        return this;
-    }
-
-    public int getSampleRate() {
-        return sampleRate;
-    }
-
-    public SongEntity setSampleRate(final int sampleRate) {
-        this.sampleRate = sampleRate;
-        return this;
-    }
-
-    public short getTrackNumber() {
-        return trackNumber;
-    }
-
-    public SongEntity setTrackNumber(final short trackNumber) {
-        this.trackNumber = trackNumber;
-        return this;
-    }
-
-    public short getDiscNumber() {
-        return discNumber;
-    }
-
-    public SongEntity setDiscNumber(final short discNumber) {
-        this.discNumber = discNumber;
-        return this;
-    }
-
-    public List<GenreEntity> getPrimaryGenres() {
-        return primaryGenres;
-    }
-
-    public SongEntity setPrimaryGenres(final List<? extends GenreInterface> primaryGenres) {
-        this.primaryGenres = primaryGenres.stream()
-            .filter(GenreEntity.class::isInstance)
-            .map(GenreEntity.class::cast)
-            .toList();
-
-        return this;
-    }
-
-    public List<GenreEntity> getSecondaryGenres() {
-        return secondaryGenres;
-    }
-
-    public SongEntity setSecondaryGenres(final List<? extends GenreInterface> secondaryGenres) {
-        this.secondaryGenres = secondaryGenres.stream()
-            .filter(GenreEntity.class::isInstance)
-            .map(GenreEntity.class::cast)
-            .toList();
-
-        return this;
     }
 }

@@ -1,16 +1,17 @@
 package fr.xahla.musicx.api.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.List;
+import java.util.Locale;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@Builder
+@Getter
+@Setter
 public class BandArtistDto extends ArtistDto {
 
     private List<Long> memberIds;
 
+    public BandArtistDto(final Long id, final String name, final Locale country, final String artworkUrl) {
+        super(id, name, country, artworkUrl);
+    }
 }

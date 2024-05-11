@@ -37,4 +37,8 @@ public class SongDto {
     private String title;
     private short trackNumber;
 
+    public void setLyrics(final String lyrics) {
+        this.lyrics = Map.of(0L, lyrics);
+    }
+
 }

@@ -1,5 +1,8 @@
 package fr.xahla.musicx.api.repository;
 
+import fr.xahla.musicx.api.model.AlbumDto;
+import fr.xahla.musicx.api.model.ArtistDto;
+import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriterias;
 
@@ -18,6 +21,12 @@ import java.util.Map;
  */
 public interface SongRepositoryInterface {
 
+    AlbumDto getAlbum(final SongDto song);
+    ArtistDto getArtist(final SongDto song);
+    List<GenreDto> getPrimaryGenres(final SongDto song);
+    List<GenreDto> getSecondaryGenres(final SongDto song);
+
+    SongDto find(final Long id);
     List<SongDto> findAll();
     List<SongDto> findByCriteria(final Map<SongSearchCriterias, Object> criteria);
 

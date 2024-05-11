@@ -1,9 +1,11 @@
 package fr.xahla.musicx.domain.model.entity;
 
-import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.PersonArtistDto;
-import fr.xahla.musicx.api.model.data.BandArtistInterface;
-import fr.xahla.musicx.api.model.data.PersonArtistInterface;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.time.LocalDate;
@@ -12,7 +14,9 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("PERSON")
-public class PersonArtistEntity extends ArtistEntity implements PersonArtistInterface {
+@Getter
+@Setter
+public class PersonArtistEntity extends ArtistEntity {
 
     private String firstName;
 
@@ -23,13 +27,13 @@ public class PersonArtistEntity extends ArtistEntity implements PersonArtistInte
     @ManyToMany(mappedBy = "members")
     private List<BandArtistEntity> bands;
 
-    @Override public PersonArtistEntity fromDto(final ArtistDto artistDto) {
+    public PersonArtistEntity fromDto(final PersonArtistDto artistDto) {
         super.fromDto(artistDto);
 
         if (artistDto instanceof final PersonArtistDto personArtistDto) {
-            this.setFirstName(personArtistDto.getFirstName())
-                .setBirthDate(personArtistDto.getBirthDate())
-                .setDeathDate(personArtistDto.getDeathDate());
+            this.setFirstName(personArtistDto.getFirstName());
+            this.setBirthDate(personArtistDto.getBirthDate());
+            this.setDeathDate(personArtistDto.getDeathDate());
 
             if (null != personArtistDto.getBandIds()) {
                 bands = new ArrayList<>();
@@ -47,17 +51,12 @@ public class PersonArtistEntity extends ArtistEntity implements PersonArtistInte
         return this;
     }
 
-    @Override public PersonArtistDto toDto() {
-        final var personArtistDto = new PersonArtistDto();
+    public PersonArtistDto toDto() {
+        final var personArtistDto = (PersonArtistDto) super.toDto();
 
-        personArtistDto
-            .setFirstName(firstName)
-            .setBirthDate(birthDate)
-            .setDeathDate(deathDate)
-            .setName(this.getName())
-            .setCountry(this.getCountry())
-            .setArtworkUrl(this.getArtworkUrl())
-            .setId(this.getId());
+        personArtistDto.setFirstName(firstName);
+        personArtistDto.setBirthDate(birthDate);
+        personArtistDto.setDeathDate(deathDate);
 
         if (null != bands && Hibernate.isInitialized(bands)) {
             personArtistDto.setBandIds(bands.stream()
@@ -67,45 +66,5 @@ public class PersonArtistEntity extends ArtistEntity implements PersonArtistInte
         }
 
         return personArtistDto;
-    }
-
-    @Override public String getFirstName() {
-        return firstName;
-    }
-
-    @Override public PersonArtistEntity setFirstName(final String firstName) {
-        this.firstName = firstName;
-        return this;
-    }
-
-    @Override public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    @Override public PersonArtistEntity setBirthDate(final LocalDate birthDate) {
-        this.birthDate = birthDate;
-        return this;
-    }
-
-    @Override public LocalDate getDeathDate() {
-        return deathDate;
-    }
-
-    @Override public PersonArtistEntity setDeathDate(final LocalDate deathDate) {
-        this.deathDate = deathDate;
-        return this;
-    }
-
-    @Override public List<BandArtistEntity> getBands() {
-        return bands;
-    }
-
-    @Override public PersonArtistEntity setBands(final List<? extends BandArtistInterface> bands) {
-        this.bands = bands.stream()
-            .filter(BandArtistEntity.class::isInstance)
-            .map(BandArtistEntity.class::cast)
-            .toList();
-
-        return this;
     }
 }

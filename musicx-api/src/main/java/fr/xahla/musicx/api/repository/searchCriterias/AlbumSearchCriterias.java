@@ -2,13 +2,12 @@ package fr.xahla.musicx.api.repository.searchCriterias;
 
 public enum AlbumSearchCriterias {
 
-    ARTIST_NAME("artist.name"),
+    ARTIST("artist_id"),
     CATALOG_NO("catalogNo"),
     ID("id"),
+    LABEL("label_id"),
     NAME("name"),
-    PRIMARY_GENRE(""),
-    RELEASE_DATE("releaseDate"),
-    SECONDARY_GENRE("");
+    RELEASE_DATE("releaseDate");
 
     private final String column;
 

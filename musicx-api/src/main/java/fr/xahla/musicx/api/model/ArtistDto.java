@@ -1,6 +1,5 @@
 package fr.xahla.musicx.api.model;
 
-import fr.xahla.musicx.api.model.data.ArtistInterface;
 import lombok.*;
 
 import java.util.Locale;

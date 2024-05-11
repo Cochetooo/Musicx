@@ -4,18 +4,26 @@ import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.model.LabelDto;
 import fr.xahla.musicx.domain.application.AbstractContext;
 import fr.xahla.musicx.domain.application.SettingsInterface;
+import fr.xahla.musicx.domain.database.HibernateLoader;
 import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
 import fr.xahla.musicx.domain.manager.LibraryManagerInterface;
 import fr.xahla.musicx.domain.model.data.LibraryInterface;
 import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import fr.xahla.musicx.domain.model.enums.ShuffleMode;
 import fr.xahla.musicx.domain.repository.data.LibraryRepositoryInterface;
+import fr.xahla.musicx.domain.service.genreList.ImportGenresFromJson;
+import fr.xahla.musicx.domain.service.localAudioFile.ImportSongsFromFolders;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
+import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.domain.repository.LabelRepository.labelRepository;
+import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public class MainTest {
 
@@ -119,138 +127,17 @@ public class MainTest {
     }
 
     public static void main(final String[] args) {
-        final var context = new Context();
+        new Context();
+        new HibernateLoader();
 
-        final var album = new AlbumDto() {
-            private String artworkUrl;
-            private LocalDate releaseDate;
+       logger().info("Fetching all songs: ");
 
-            @Override public Long getId() {
-                return 0L;
-            }
+       final var time = System.currentTimeMillis();
 
-            @Override public AlbumDto setId(final Long id) {
-                return null;
-            }
+       final var songs = songRepository().findAll();
 
-            @Override public ArtistDto getArtist() {
-                return new ArtistDto() {
-                    @Override public Long getId() {
-                        return 0L;
-                    }
+       logger().info("Time loading all songs: " + (System.currentTimeMillis() - time) + " ms (" + songs.size() + " elements loaded).");
 
-                    @Override public ArtistDto setId(final Long id) {
-                        return null;
-                    }
-
-                    @Override public String getName() {
-                        return "Katatonia";
-                    }
-
-                    @Override public ArtistDto setName(final String name) {
-                        return null;
-                    }
-
-                    @Override public String getCountry() {
-                        return "";
-                    }
-
-                    @Override public ArtistDto setCountry(final String country) {
-                        return null;
-                    }
-
-                    @Override public String getArtworkUrl() {
-                        return "";
-                    }
-
-                    @Override public ArtistDto setArtworkUrl(final String artworkUrl) {
-                        return null;
-                    }
-
-                    @Override public ArtistDto set(final ArtistDto artistInterface) {
-                        return null;
-                    }
-                };
-            }
-
-            @Override public AlbumDto setArtist(final ArtistDto artistInterface) {
-                return null;
-            }
-
-            @Override public String getName() {
-                return "Last Fair Deal Gone Down";
-            }
-
-            @Override public AlbumDto setName(final String name) {
-                return null;
-            }
-
-            @Override public LocalDate getReleaseDate() {
-                return this.releaseDate;
-            }
-
-            @Override public AlbumDto setReleaseDate(final LocalDate date) {
-                this.releaseDate = date;
-                return this;
-            }
-
-            @Override public List<GenreDto> getPrimaryGenres() {
-                return List.of();
-            }
-
-            @Override public AlbumDto setPrimaryGenres(final List<GenreDto> genres) {
-                return null;
-            }
-
-            @Override public List<GenreDto> getSecondaryGenres() {
-                return List.of();
-            }
-
-            @Override public AlbumDto setSecondaryGenres(final List<GenreDto> genres) {
-                return null;
-            }
-
-            @Override public Short getTrackTotal() {
-                return 0;
-            }
-
-            @Override public AlbumDto setTrackTotal(final Short trackTotal) {
-                return null;
-            }
-
-            @Override public Short getDiscTotal() {
-                return 0;
-            }
-
-            @Override public AlbumDto setDiscTotal(final Short discTotal) {
-                return null;
-            }
-
-            @Override public String getArtworkUrl() {
-                return artworkUrl;
-            }
-
-            @Override public AlbumDto setArtworkUrl(final String artworkUrl) {
-                this.artworkUrl = artworkUrl;
-                return this;
-            }
-
-            @Override public LabelDto getLabel() {
-                return null;
-            }
-
-            @Override public AlbumDto setLabel(final LabelDto label) {
-                return null;
-            }
-
-            @Override public AlbumDto set(final AlbumDto albumInterface) {
-                return null;
-            }
-        };
-
-        iTunesApi().fetchAlbumFromExternal(album, true);
-
-        logger().info("Album artwork URL: " + album.getArtworkUrl());
     }
 
 }

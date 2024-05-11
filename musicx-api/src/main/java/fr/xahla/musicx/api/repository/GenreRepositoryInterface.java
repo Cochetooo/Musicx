@@ -8,6 +8,9 @@ import java.util.Map;
 
 public interface GenreRepositoryInterface {
 
+    List<GenreDto> getParents(final GenreDto genre);
+
+    GenreDto find(final Long id);
     List<GenreDto> findByCriteria(final Map<GenreSearchCriterias, Object> criteria);
     List<GenreDto> findAll();
 

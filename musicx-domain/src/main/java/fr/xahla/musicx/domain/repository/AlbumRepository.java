@@ -1,37 +1,99 @@
 package fr.xahla.musicx.domain.repository;
 
-import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.SongDto;
+import fr.xahla.musicx.api.model.*;
+import fr.xahla.musicx.api.model.enums.ArtistRole;
 import fr.xahla.musicx.api.repository.AlbumRepositoryInterface;
 import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriterias;
-import fr.xahla.musicx.infrastructure.local.helper.QueryHelper;
-import fr.xahla.musicx.infrastructure.local.model.AlbumEntity;
-import fr.xahla.musicx.infrastructure.local.model.ArtistEntity;
-import fr.xahla.musicx.infrastructure.local.model.SongEntity;
+import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriterias;
+import fr.xahla.musicx.domain.helper.QueryHelper;
+import fr.xahla.musicx.domain.model.entity.AlbumEntity;
+import fr.xahla.musicx.domain.model.entity.ArtistEntity;
+import fr.xahla.musicx.domain.model.entity.SongEntity;
+import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.infrastructure.local.database.HibernateLoader.openSession;
+import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
+import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
+import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.domain.repository.LabelRepository.labelRepository;
+import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public class AlbumRepository implements AlbumRepositoryInterface {
 
     private static final AlbumRepository INSTANCE = new AlbumRepository();
 
-    @Override public List<SongDto> getSongs(final AlbumDto album) {
-        final var sql = "FROM SongEntity s WHERE s.album.id = :album";
+    /* ------------ Relations --------------- */
+
+    @Override public ArtistDto getArtist(final AlbumDto album) {
+        return artistRepository().find(album.getArtistId());
+    }
+
+    @Override public Map<ArtistDto, ArtistRole> getCreditArtists(final AlbumDto album) {
+        final var creditArtists = new HashMap<ArtistDto, ArtistRole>();
 
         try (final var session = openSession()) {
-            final var query = session.createQuery(sql, SongEntity.class);
-            query.setParameter("album", album.getId());
+            final var results = session.createQuery(
+                "SELECT aca.artist_id, aca.role FROM Album_Credit_Artists aca WHERE aca.album_id = :albumId",
+                Object[].class
+            ).setParameter("albumId", album.getId()).list();
 
-            return query.list().stream()
-                .map(SongEntity::toDto)
-                .toList();
+            results.forEach((result) -> {
+                creditArtists.put(
+                    (ArtistDto) result[0],
+                    (ArtistRole) result[1]
+                );
+            });
+        }
+
+        return creditArtists;
+    }
+
+    @Override public LabelDto getLabel(final AlbumDto album) {
+        return labelRepository().find(album.getLabelId());
+    }
+
+    @Override public List<GenreDto> getPrimaryGenres(final AlbumDto album) {
+        final var genres = new ArrayList<GenreDto>();
+
+        album.getPrimaryGenreIds().forEach(id -> genres.add(
+            genreRepository().find(id)
+        ));
+
+        return genres;
+    }
+
+    @Override public List<GenreDto> getSecondaryGenres(final AlbumDto album) {
+        final var genres = new ArrayList<GenreDto>();
+
+        album.getSecondaryGenreIds().forEach(id -> genres.add(
+            genreRepository().find(id)
+        ));
+
+        return genres;
+    }
+
+    @Override public List<SongDto> getSongs(final AlbumDto album) {
+        return songRepository().findByCriteria(Map.of(
+            SongSearchCriterias.ALBUM, album.getId()
+        ));
+    }
+
+    /* ------------ Selectors --------------- */
+
+    @Override public AlbumDto find(final Long id) {
+        try (final var session = openSession()) {
+            return session.get(AlbumEntity.class, id).toDto();
+        } catch (final HibernateException e) {
+            logger().warning("Album not found with id: " + id);
+            return null;
         }
     }
 

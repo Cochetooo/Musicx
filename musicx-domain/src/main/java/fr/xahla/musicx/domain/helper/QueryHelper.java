@@ -1,5 +1,8 @@
 package fr.xahla.musicx.domain.helper;
 
+import fr.xahla.musicx.domain.database.QueryBuilder;
+import fr.xahla.musicx.domain.database.QueryResponse;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +60,19 @@ public final class QueryHelper {
         } catch (final Exception exception) {
             logger().log(Level.SEVERE, "An exception has occured while trying to query: " + query, exception);
             return new ArrayList<>();
+        }
+    }
+
+    public static QueryResponse query(final QueryBuilder.Query query) {
+        try (final var session = openSession()) {
+            final var result = session.createQuery(query.request(), query.clazz());
+            query.parameters().forEach(result::setParameter);
+
+            return new QueryResponse(result.list());
+        } catch (final Exception exception) {
+            logger().log(Level.SEVERE, "An exception has occured while trying to query: " + query, exception);
+
+            return new QueryResponse(List.of());
         }
     }
 

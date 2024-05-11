@@ -4,6 +4,7 @@ import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriterias;
 import fr.xahla.musicx.domain.application.AbstractContext;
 import fr.xahla.musicx.domain.application.SettingsInterface;
+import fr.xahla.musicx.domain.database.HibernateLoader;
 import fr.xahla.musicx.domain.helper.JsonHelper;
 import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
 import fr.xahla.musicx.domain.manager.LibraryManagerInterface;
@@ -11,12 +12,13 @@ import fr.xahla.musicx.domain.model.data.LibraryInterface;
 import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import fr.xahla.musicx.domain.model.enums.ShuffleMode;
 import fr.xahla.musicx.domain.repository.data.LibraryRepositoryInterface;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.json.JSONObject;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.env;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
@@ -64,7 +66,7 @@ public final class ImportGenresFromJson {
             });
         }
 
-        final var genreDto = new GenreDto().builder()
+        final var genreDto = GenreDto.builder()
             .name(name)
             .parentIds(parentIds)
             .build();

@@ -11,10 +11,9 @@
  */
 module fr.xahla.musicx.api {
 
-    requires transitive lombok;
+    requires lombok;
 
     exports fr.xahla.musicx.api.model;
-    exports fr.xahla.musicx.api.model.data;
     exports fr.xahla.musicx.api.model.enums;
     exports fr.xahla.musicx.api.repository;
     exports fr.xahla.musicx.api.repository.searchCriterias;

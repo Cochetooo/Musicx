@@ -1,51 +1,75 @@
 package fr.xahla.musicx.domain.repository;
 
-import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.ArtistDto;
-import fr.xahla.musicx.api.model.SongDto;
+import fr.xahla.musicx.api.model.*;
 import fr.xahla.musicx.api.repository.ArtistRepositoryInterface;
+import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriterias;
 import fr.xahla.musicx.api.repository.searchCriterias.ArtistSearchCriterias;
-import fr.xahla.musicx.infrastructure.local.helper.QueryHelper;
-import fr.xahla.musicx.infrastructure.local.model.AlbumEntity;
-import fr.xahla.musicx.infrastructure.local.model.ArtistEntity;
-import fr.xahla.musicx.infrastructure.local.model.SongEntity;
+import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriterias;
+import fr.xahla.musicx.domain.helper.QueryHelper;
+import fr.xahla.musicx.domain.model.entity.AlbumEntity;
+import fr.xahla.musicx.domain.model.entity.ArtistEntity;
+import fr.xahla.musicx.domain.model.entity.SongEntity;
+import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.infrastructure.local.database.HibernateLoader.openSession;
+import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
+import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public class ArtistRepository implements ArtistRepositoryInterface {
 
     private static final ArtistRepository INSTANCE = new ArtistRepository();
 
+    /* ------------ Relations --------------- */
+
+    @Override public List<PersonArtistDto> getMembers(final BandArtistDto artist) {
+        final var members = new ArrayList<PersonArtistDto>();
+
+        artist.getMemberIds().forEach(id -> members.add(
+            (PersonArtistDto) this.find(id)
+        ));
+
+        return members;
+    }
+
+    @Override public List<BandArtistDto> getBands(final PersonArtistDto artist) {
+        final var bands = new ArrayList<BandArtistDto>();
+
+        artist.getBandIds().forEach(id -> bands.add(
+            (BandArtistDto) this.find(id)
+        ));
+
+        return bands;
+    }
+
     @Override public List<AlbumDto> getAlbums(final ArtistDto artist) {
-        final var sql = "FROM AlbumEntity a WHERE a.artist.id = :artist";
-
-        try (final var session = openSession()) {
-            final var query = session.createQuery(sql, AlbumEntity.class);
-            query.setParameter("artist", artist.getId());
-
-            return query.list().stream()
-                .map(AlbumEntity::toDto)
-                .toList();
-        }
+        return albumRepository().findByCriteria(Map.of(
+            AlbumSearchCriterias.ARTIST, artist.getId()
+        ));
     }
 
     @Override public List<SongDto> getSongs(final ArtistDto artist) {
-        final var sql = "FROM SongEntity s WHERE s.artist.id = :artist";
+        return songRepository().findByCriteria(Map.of(
+            SongSearchCriterias.ARTIST, artist.getId()
+        ));
+    }
 
+    /* ------------ Selectors --------------- */
+
+    @Override public ArtistDto find(final Long id) {
         try (final var session = openSession()) {
-            final var query = session.createQuery(sql, SongEntity.class);
-            query.setParameter("artist", artist.getId());
-
-            return query.list().stream()
-                .map(SongEntity::toDto)
-                .toList();
+            return session.get(ArtistEntity.class, id).toDto();
+        } catch (final HibernateException e) {
+            logger().warning("Artist not found with id: " + id);
+            return null;
         }
     }
 
@@ -66,10 +90,6 @@ public class ArtistRepository implements ArtistRepositoryInterface {
                     ))
             )
         );
-    }
-
-    @Override public List<ArtistDto> findById(final Long id) {
-        return this.findByCriteria(Map.of(ArtistSearchCriterias.ID, id));
     }
 
     private List<ArtistDto> toDtoList(final List<?> resultQuery) {

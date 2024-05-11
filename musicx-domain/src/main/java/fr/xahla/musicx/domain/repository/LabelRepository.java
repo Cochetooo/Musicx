@@ -1,27 +1,58 @@
 package fr.xahla.musicx.domain.repository;
 
 import fr.xahla.musicx.api.model.AlbumDto;
+import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.model.LabelDto;
 import fr.xahla.musicx.api.repository.LabelRepositoryInterface;
+import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriterias;
 import fr.xahla.musicx.api.repository.searchCriterias.LabelSearchCriterias;
-import fr.xahla.musicx.infrastructure.local.helper.QueryHelper;
-import fr.xahla.musicx.infrastructure.local.model.LabelEntity;
+import fr.xahla.musicx.domain.helper.QueryHelper;
+import fr.xahla.musicx.domain.model.entity.LabelEntity;
+import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.infrastructure.local.database.HibernateLoader.openSession;
+import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
+import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
 
 public class LabelRepository implements LabelRepositoryInterface {
 
     private static final LabelRepository instance = new LabelRepository();
 
-    @Override public List<AlbumDto> getReleases() {
-        return List.of();
+    /* ------------ Relations --------------- */
+
+    @Override public List<GenreDto> getGenres(final LabelDto label) {
+        final var genres = new ArrayList<GenreDto>();
+
+        label.getGenreIds().forEach(id -> genres.add(
+            genreRepository().find(id)
+        ));
+
+        return genres;
+    }
+
+    @Override public List<AlbumDto> getReleases(final LabelDto label) {
+        return albumRepository().findByCriteria(Map.of(
+            AlbumSearchCriterias.LABEL, label.getId()
+        ));
+    }
+
+    /* ------------ Selectors --------------- */
+
+    @Override public LabelDto find(final Long id) {
+        try (final var session = openSession()) {
+            return session.get(LabelEntity.class, id).toDto();
+        } catch (final HibernateException e) {
+            logger().warning("Label not found with id: " + id);
+            return null;
+        }
     }
 
     @Override public List<LabelDto> findAll() {
