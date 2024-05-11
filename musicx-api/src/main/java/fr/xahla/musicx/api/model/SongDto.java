@@ -31,6 +31,7 @@ public class SongDto {
     private int bitRate;
     private short discNumber;
     private long duration;
+    private String filepath;
     private AudioFormat format;
     private Map<Long, String> lyrics;
     private int sampleRate;

@@ -91,7 +91,7 @@ public class AlbumRepository implements AlbumRepositoryInterface {
     @Override public AlbumDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(AlbumEntity.class, id).toDto();
-        } catch (final HibernateException e) {
+        } catch (final Exception e) {
             logger().warning("Album not found with id: " + id);
             return null;
         }

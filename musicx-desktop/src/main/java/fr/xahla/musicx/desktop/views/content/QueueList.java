@@ -38,11 +38,7 @@ public class QueueList implements Initializable {
                     return;
                 }
 
-                if (song.isAvailable()) {
-                    this.setTextFill(Color.WHITE);
-                } else {
-                    this.setTextFill(Color.RED);
-                }
+                this.setTextFill(Color.WHITE);
 
                 this.setText((this.getIndex() + 1) + ". " + song.getTitle());
             }

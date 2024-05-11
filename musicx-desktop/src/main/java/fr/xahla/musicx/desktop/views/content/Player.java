@@ -1,6 +1,5 @@
 package fr.xahla.musicx.desktop.views.content;
 
-import fr.xahla.musicx.infrastructure.service.albumArtwork.GetArtworkFromiTunes;
 import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
@@ -29,9 +28,11 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.lastFmApi;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
+import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.service.apiHandler.ItunesApiHandler.itunesApi;
+import static fr.xahla.musicx.domain.service.apiHandler.LastFmApiHandler.lastFmApi;
 
 /** <b>View for the audio player with its controls.</b>
  * <p>
@@ -227,24 +228,27 @@ public class Player implements Initializable {
         this.artistNameLabel.setText(song.getArtist().getName());
         this.trackNameLabel.setText(song.getTitle());
 
-        final var total = Duration.seconds(song.getDuration()).toMillis();
+        final var total = Duration.millis(song.getDuration()).toMillis();
         this.trackTimeSlider.setMax(total);
         this.trackTotalTimeLabel.setText(DurationHelper.getTimeString(total));
 
         final var getArtworkTask = new Task<>() {
             @Override protected Void call() {
                 // We try to get the artwork from LastFM then from iTunes if not found
-                lastFmApi().fetchAlbumData(song.getAlbum(), false);
+                final var dto = song.getAlbum().toDto();
+
+                lastFmApi().fetchAlbumFromExternal(dto, true);
 
                 if (song.getAlbum().getArtworkUrl().isEmpty()) {
-                    artwork = GetArtworkFromiTunes.execute(
-                        song
-                    );
+                    itunesApi().fetchAlbumFromExternal(dto, false);
                 }
+
+                albumRepository().save(dto);
+                // @TODO !!!!
 
                 final var image = (null == song.getAlbum().getArtworkUrl() || song.getAlbum().getArtworkUrl().isEmpty())
                     ? new Image(albumThumbnailPlaceholderImageURL)
-                    : new Image(song.getAlbum().getArtworkUrl());
+                    : new Image(dto.getArtworkUrl());
 
                 Platform.runLater(() -> {
                     // Set artwork thumbnail

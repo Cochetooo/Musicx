@@ -3,7 +3,6 @@ package fr.xahla.musicx.desktop.manager;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.entity.Artist;
 import fr.xahla.musicx.desktop.model.entity.Song;
-import fr.xahla.musicx.domain.manager.ArtistListManagerInterface;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -15,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.library;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /** <b>Class that allow views to use Artist model, while keeping a protection layer to its usage.</b>
  * <p>
@@ -28,7 +27,7 @@ import static fr.xahla.musicx.desktop.DesktopContext.library;
  *
  * @author Cochetooo
  */
-public class ArtistListManager implements ArtistListManagerInterface {
+public class ArtistListManager {
 
     private final ListProperty<Artist> artists;
     private Thread getArtistListThread;
@@ -102,10 +101,10 @@ public class ArtistListManager implements ArtistListManagerInterface {
             }
         });
 
-        final Comparator<Song> comparatorYear = Comparator.comparingInt(song -> song.getAlbum().getReleaseYear());
+        final Comparator<Song> comparatorDate = Comparator.comparing(song -> song.getAlbum().getReleaseDate());
         final Comparator<Song> comparatorAlbum = Comparator.comparing(song -> song.getAlbum().getName());
 
-        songList.sort(comparatorYear.thenComparing(comparatorAlbum));
+        songList.sort(comparatorDate.thenComparing(comparatorAlbum));
 
         return songList;
     }

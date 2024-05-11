@@ -73,6 +73,7 @@ public final class PersistAudioFileMetadata {
         song.setBitRate((int) audioHeader.getBitRateAsNumber());
         song.setDiscNumber(this.getShort(tag.getFirst(FieldKey.DISC_NO)));
         song.setDuration(duration);
+        song.setFilepath(filepath);
         song.setFormat(AudioFormat.valueOf(audioHeader.getFormat().toUpperCase()));
         song.setLyrics(tag.getFirst(FieldKey.LYRICS));
         song.setSampleRate(audioHeader.getSampleRateAsNumber());

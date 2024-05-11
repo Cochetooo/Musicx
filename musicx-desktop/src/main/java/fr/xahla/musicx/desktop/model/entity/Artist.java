@@ -1,10 +1,9 @@
 package fr.xahla.musicx.desktop.model.entity;
 
 import fr.xahla.musicx.api.model.ArtistDto;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+
+import java.util.Locale;
 
 /** <b>Class that defines the Artist Model for desktop view usage.</b>
  * <p>
@@ -16,35 +15,35 @@ import javafx.beans.property.StringProperty;
  *
  * @author Cochetooo
  */
-public class Artist implements ArtistDto {
+public class Artist {
 
-    private LongProperty id;
-    private StringProperty name;
-    private StringProperty country;
+    private final ArtistDto dto;
 
-    public Artist() {
-        this.id = new SimpleLongProperty();
-        this.name = new SimpleStringProperty();
-        this.country = new SimpleStringProperty();
+    private final LongProperty id;
+
+    private final StringProperty artworkUrl;
+    private final ObjectProperty<Locale> country;
+    private final StringProperty name;
+
+    public Artist(final ArtistDto artist) {
+        this.id = new SimpleLongProperty(artist.getId());
+
+        this.artworkUrl = new SimpleStringProperty(artist.getArtworkUrl());
+        this.country = new SimpleObjectProperty<>(artist.getCountry());
+        this.name = new SimpleStringProperty(artist.getName());
+
+        this.dto = artist;
     }
 
-    public Artist set(ArtistDto artist) {
-        if (null != artist.getId()) {
-            this.setId(artist.getId());
-        }
+    public ArtistDto toDto() {
+        dto.setArtworkUrl(getArtworkUrl());
+        dto.setCountry(getCountry());
+        dto.setName(getName());
 
-        if (null != artist.getName()) {
-            this.setName(artist.getName());
-        }
-
-        if (null != artist.getCountry()) {
-            this.setCountry(artist.getCountry());
-        }
-
-        return this;
+        return dto;
     }
 
-    @Override public Long getId() {
+    public Long getId() {
         return id.get();
     }
 
@@ -52,12 +51,23 @@ public class Artist implements ArtistDto {
         return id;
     }
 
-    @Override public Artist setId(Long id) {
+    public Artist setId(final Long id) {
         this.id.set(id);
         return this;
     }
 
-    @Override
+    public String getArtworkUrl() {
+        return artworkUrl.get();
+    }
+
+    public StringProperty artworkUrlProperty() {
+        return artworkUrl;
+    }
+
+    public void setArtworkUrl(final String artworkUrl) {
+        this.artworkUrl.set(artworkUrl);
+    }
+
     public String getName() {
         return name.get();
     }
@@ -66,20 +76,20 @@ public class Artist implements ArtistDto {
         return name;
     }
 
-    public Artist setName(String name) {
+    public Artist setName(final String name) {
         this.name.set(name);
         return this;
     }
 
-    @Override public String getCountry() {
+    public Locale getCountry() {
         return country.get();
     }
 
-    public StringProperty countryProperty() {
+    public ObjectProperty<Locale> countryProperty() {
         return country;
     }
 
-    @Override public Artist setCountry(String country) {
+    public Artist setCountry(final Locale country) {
         this.country.set(country);
         return this;
     }

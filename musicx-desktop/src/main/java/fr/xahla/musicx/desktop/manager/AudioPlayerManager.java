@@ -6,7 +6,6 @@ import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Player;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.model.enums.RepeatMode;
-import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
@@ -19,8 +18,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /** <b>Class that allow views to use Player model, while keeping a protection layer to its usage.</b>
  * <p>
@@ -32,7 +31,7 @@ import static fr.xahla.musicx.desktop.DesktopContext.settings;
  *
  * @author Cochetooo
  */
-public class AudioPlayerManager implements AudioPlayerManagerInterface {
+public class AudioPlayerManager {
 
     private final QueueManager queueManager;
     private final Player player;
@@ -104,7 +103,7 @@ public class AudioPlayerManager implements AudioPlayerManagerInterface {
      * Create media player, set up listeners and play the song
      */
     public void updateSong() {
-        final var filepath = this.player.getSong().getFilePath();
+        final var filepath = this.player.getSong().getFilepath();
 
         // Check if filepath exists
         final var existingFile = Files.exists(Paths.get(filepath));
@@ -119,7 +118,7 @@ public class AudioPlayerManager implements AudioPlayerManagerInterface {
             this.mediaPlayer.stop();
         }
 
-        final var audioFile = new File(this.player.getSong().getFilePath());
+        final var audioFile = new File(this.player.getSong().getFilepath());
         final var media = new Media(audioFile.toURI().toString());
 
         this.mediaPlayer = new MediaPlayer(media);

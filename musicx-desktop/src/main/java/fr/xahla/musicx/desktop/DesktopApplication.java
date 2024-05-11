@@ -2,7 +2,6 @@ package fr.xahla.musicx.desktop;
 
 import atlantafx.base.theme.PrimerDark;
 import fr.xahla.musicx.domain.helper.enums.ApplicationInfo;
-import fr.xahla.musicx.infrastructure.config.HibernateLoader;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +16,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
-import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /** <b>Main class for the desktop application.</b>
  * <p>
@@ -38,8 +37,6 @@ public final class DesktopApplication extends Application {
     }
 
     @Override public void start(final Stage stage) {
-        this.setupDatabase();
-
         this.mainStage = stage;
 
         this.setupApp();
@@ -86,10 +83,6 @@ public final class DesktopApplication extends Application {
         } catch (final IOException exception) {
             logger().log(Level.SEVERE, "Something went wrong during JavaFX initialization.", exception);
         }
-    }
-
-    public void setupDatabase() {
-        HibernateLoader.setHibernateLoader(new HibernateLoader());
     }
 
 }

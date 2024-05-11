@@ -10,7 +10,7 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /** <b>Class that defines the Queue model for a desktop app usage.</b>
  * <p>

@@ -1,6 +1,5 @@
 package fr.xahla.musicx.desktop.model;
 
-import fr.xahla.musicx.domain.application.SettingsInterface;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -10,7 +9,7 @@ import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 
-public class Settings implements SettingsInterface {
+public class Settings {
 
     // Library
     private final ListProperty<String> scanLibraryAudioFormats;

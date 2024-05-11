@@ -6,7 +6,7 @@ import javafx.animation.Timeline;
 
 import javafx.util.Duration;
 
-import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /** <b>Utility class for durations.</b>
  * <p>

@@ -64,7 +64,7 @@ public class SongRepository implements SongRepositoryInterface {
     @Override public SongDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(SongEntity.class, id).toDto();
-        } catch (final HibernateException e) {
+        } catch (final Exception e) {
             logger().warning("Song not found with id: " + id);
             return null;
         }

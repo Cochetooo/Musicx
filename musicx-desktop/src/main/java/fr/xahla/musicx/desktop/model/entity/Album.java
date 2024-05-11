@@ -2,7 +2,21 @@ package fr.xahla.musicx.desktop.model.entity;
 
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.ArtistDto;
+import fr.xahla.musicx.api.model.enums.AlbumType;
+import fr.xahla.musicx.api.model.enums.ArtistRole;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
 
 /** <b>Class that defines the Album Model for desktop view usage.</b>
  * <p>
@@ -14,26 +28,55 @@ import javafx.beans.property.*;
  *
  * @author Cochetooo
  */
-public class Album implements AlbumDto {
+public class Album {
+
+    private final AlbumDto dto;
 
     private final LongProperty id;
-    private final StringProperty name;
-    private final IntegerProperty releaseYear;
-    private final IntegerProperty trackTotal;
-    private final IntegerProperty discTotal;
-    private final ObjectProperty<Artist> artist;
 
-    public Album() {
-        this.id = new SimpleLongProperty();
-        this.name = new SimpleStringProperty();
-        this.releaseYear = new SimpleIntegerProperty();
-        this.trackTotal = new SimpleIntegerProperty();
-        this.discTotal = new SimpleIntegerProperty();
-        this.artist = new SimpleObjectProperty<>(new Artist());
+    private final StringProperty artworkUrl;
+    private final StringProperty catalogNo;
+    private final IntegerProperty discTotal;
+    private final StringProperty name;
+    private final ObjectProperty<LocalDate> releaseDate;
+    private final IntegerProperty trackTotal;
+    private final ObjectProperty<AlbumType> type;
+
+    private ObjectProperty<Artist> artist;
+    private MapProperty<Artist, ArtistRole> creditArtists;
+    private ObjectProperty<Label> label;
+    private ListProperty<Genre> primaryGenres;
+    private ListProperty<Genre> secondaryGenres;
+
+    public Album(final AlbumDto album) {
+        this.id = new SimpleLongProperty(album.getId());
+
+        this.artworkUrl = new SimpleStringProperty(album.getArtworkUrl());
+        this.catalogNo = new SimpleStringProperty(album.getCatalogNo());
+        this.discTotal = new SimpleIntegerProperty(album.getDiscTotal());
+        this.name = new SimpleStringProperty(album.getName());
+        this.releaseDate = new SimpleObjectProperty<>(album.getReleaseDate());
+        this.trackTotal = new SimpleIntegerProperty(album.getTrackTotal());
+        this.type = new SimpleObjectProperty<>(album.getType());
+
+        this.dto = album;
     }
 
-    @Override
-    public Long getId() {
+    public AlbumDto toDto() {
+        dto.setArtworkUrl(getArtworkUrl());
+        dto.setCatalogNo(getCatalogNo());
+        dto.setDiscTotal((short) getDiscTotal());
+        dto.setName(getName());
+        dto.setReleaseDate(getReleaseDate());
+        dto.setTrackTotal((short) getTrackTotal());
+        dto.setType(getType());
+
+        return dto;
+    }
+
+    // Getters - Setters
+
+    public long getId() {
         return id.get();
     }
 
@@ -41,12 +84,51 @@ public class Album implements AlbumDto {
         return id;
     }
 
-    @Override public Album setId(Long id) {
+    public Album setId(final long id) {
         this.id.set(id);
         return this;
     }
 
-    @Override public String getName() {
+    public String getArtworkUrl() {
+        return artworkUrl.get();
+    }
+
+    public StringProperty artworkUrlProperty() {
+        return artworkUrl;
+    }
+
+    public Album setArtworkUrl(final String artworkUrl) {
+        this.artworkUrl.set(artworkUrl);
+        return this;
+    }
+
+    public String getCatalogNo() {
+        return catalogNo.get();
+    }
+
+    public StringProperty catalogNoProperty() {
+        return catalogNo;
+    }
+
+    public Album setCatalogNo(final String catalogNo) {
+        this.catalogNo.set(catalogNo);
+        return this;
+    }
+
+    public int getDiscTotal() {
+        return discTotal.get();
+    }
+
+    public IntegerProperty discTotalProperty() {
+        return discTotal;
+    }
+
+    public Album setDiscTotal(final int discTotal) {
+        this.discTotal.set(discTotal);
+        return this;
+    }
+
+    public String getName() {
         return name.get();
     }
 
@@ -54,51 +136,56 @@ public class Album implements AlbumDto {
         return name;
     }
 
-    @Override public Album setName(String name) {
+    public Album setName(final String name) {
         this.name.set(name);
         return this;
     }
 
-    @Override public Integer getReleaseYear() {
-        return releaseYear.get();
+    public LocalDate getReleaseDate() {
+        return releaseDate.get();
     }
 
-    public IntegerProperty releaseYearProperty() {
-        return releaseYear;
+    public ObjectProperty<LocalDate> releaseDateProperty() {
+        return releaseDate;
     }
 
-    @Override public Album setReleaseYear(Integer year) {
-        this.releaseYear.set(year);
+    public Album setReleaseDate(final LocalDate releaseDate) {
+        this.releaseDate.set(releaseDate);
         return this;
     }
 
-    @Override public Short getTrackTotal() {
-        return (short) trackTotal.get();
+    public int getTrackTotal() {
+        return trackTotal.get();
     }
 
     public IntegerProperty trackTotalProperty() {
         return trackTotal;
     }
 
-    public Album setTrackTotal(final Short trackTotal) {
+    public Album setTrackTotal(final int trackTotal) {
         this.trackTotal.set(trackTotal);
         return this;
     }
 
-    @Override public Short getDiscTotal() {
-        return (short) discTotal.get();
+    public AlbumType getType() {
+        return type.get();
     }
 
-    public IntegerProperty discTotalProperty() {
-        return discTotal;
+    public ObjectProperty<AlbumType> typeProperty() {
+        return type;
     }
 
-    public Album setDiscTotal(final Short discTotal) {
-        this.discTotal.set(discTotal);
+    public Album setType(final AlbumType type) {
+        this.type.set(type);
         return this;
     }
 
-    @Override public Artist getArtist() {
+    public Artist getArtist() {
+        if (null == artist) {
+            artist = new SimpleObjectProperty<>();
+            artist.set(new Artist(albumRepository().getArtist(dto)));
+        }
+
         return artist.get();
     }
 
@@ -106,37 +193,114 @@ public class Album implements AlbumDto {
         return artist;
     }
 
-    @Override public Album setArtist(ArtistDto artist) {
-        this.getArtist().set(artist);
-        return this;
-    }
-
-    @Override public Album set(AlbumDto albumDto) {
-        if (null != albumDto.getId()) {
-            this.setId(albumDto.getId());
-        }
-
-        if (null != albumDto.getName()) {
-            this.setName(albumDto.getName());
-        }
-
-        if (null != albumDto.getReleaseYear()) {
-            this.setReleaseYear(albumDto.getReleaseYear());
-        }
-
-        if (null != albumDto.getTrackTotal()) {
-            this.setTrackTotal(albumDto.getTrackTotal());
-        }
-
-        if (null != albumDto.getDiscTotal()) {
-            this.setDiscTotal(albumDto.getDiscTotal());
-        }
-
-        if (null != albumDto.getArtist()) {
-            this.setArtist(albumDto.getArtist());
+    public Album setArtist(final Artist artist) {
+        if (null == this.artist) {
+            this.artist = new SimpleObjectProperty<>(artist);
+        } else {
+            this.artist.set(artist);
         }
 
         return this;
     }
 
+    public ObservableMap<Artist, ArtistRole> getCreditArtists() {
+        if (null == creditArtists) {
+            creditArtists = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
+
+            final var creditArtistsDto = albumRepository().getCreditArtists(dto);
+            creditArtistsDto.forEach((artist, role) -> creditArtists.put(
+                new Artist(artist),
+                role
+            ));
+        }
+
+        return creditArtists.get();
+    }
+
+    public MapProperty<Artist, ArtistRole> creditArtistsProperty() {
+        return creditArtists;
+    }
+
+    public Album setCreditArtists(final Map<Artist, ArtistRole> creditArtists) {
+        if (null == this.creditArtists) {
+            this.creditArtists = new SimpleMapProperty<>(FXCollections.observableMap(creditArtists));
+        } else {
+            this.creditArtists.putAll(creditArtists);
+        }
+
+        return this;
+    }
+
+    public Label getLabel() {
+        if (null == label) {
+            label = new SimpleObjectProperty<>();
+            label.set(new Label(albumRepository().getLabel(dto)));
+        }
+
+        return label.get();
+    }
+
+    public ObjectProperty<Label> labelProperty() {
+        return label;
+    }
+
+    public Album setLabel(final Label label) {
+        if (null == this.label) {
+            this.label = new SimpleObjectProperty<>(label);
+        } {
+            this.label.set(label);
+        }
+
+        return this;
+    }
+
+    public ObservableList<Genre> getPrimaryGenres() {
+        if (null == primaryGenres) {
+            primaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+
+            final var primaryGenresDto = albumRepository().getPrimaryGenres(dto);
+            primaryGenresDto.forEach(genre -> primaryGenres.add(new Genre(genre)));
+        }
+
+        return primaryGenres.get();
+    }
+
+    public ListProperty<Genre> primaryGenresProperty() {
+        return primaryGenres;
+    }
+
+    public Album setPrimaryGenres(final List<Genre> primaryGenres) {
+        if (null == this.primaryGenres) {
+            this.primaryGenres = new SimpleListProperty<>(FXCollections.observableList(primaryGenres));
+        } else {
+            this.primaryGenres.setAll(primaryGenres);
+        }
+
+        return this;
+    }
+
+    public ObservableList<Genre> getSecondaryGenres() {
+        if (null == secondaryGenres) {
+            secondaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+
+            final var secondaryGenresDto = albumRepository().getSecondaryGenres(dto);
+            secondaryGenresDto.forEach(genre -> secondaryGenres.add(new Genre(genre)));
+        }
+
+        return secondaryGenres.get();
+    }
+
+    public ListProperty<Genre> secondaryGenresProperty() {
+        return secondaryGenres;
+    }
+
+    public Album setSecondaryGenres(final List<Genre> secondaryGenres) {
+        if (null == this.secondaryGenres) {
+            this.secondaryGenres = new SimpleListProperty<>(FXCollections.observableList(secondaryGenres));
+        } else {
+            this.secondaryGenres.setAll(secondaryGenres);
+        }
+
+        return this;
+    }
 }

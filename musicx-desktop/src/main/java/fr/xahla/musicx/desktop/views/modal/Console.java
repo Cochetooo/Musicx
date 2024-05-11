@@ -7,8 +7,6 @@ import javafx.scene.control.TextArea;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.DesktopContext.loggerManager;
-
 /** <b>View for the console output.</b>
  * <p>
  * Copyright (C) Xahla - All Rights Reserved
@@ -24,10 +22,12 @@ public class Console implements Initializable {
     @FXML private TextArea consoleOutputTextArea;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        loggerManager().outputStreamProperty().addListener((observableValue, oldValue, newValue) -> {
+        throw new RuntimeException("TODO");
+
+        /* loggerManager().outputStreamProperty().addListener((observableValue, oldValue, newValue) -> {
             this.consoleOutputTextArea.setText(newValue.toString());
         });
 
-        this.consoleOutputTextArea.setText(loggerManager().outputStreamProperty().toString());
+        this.consoleOutputTextArea.setText(loggerManager().outputStreamProperty().toString()); */
     }
 }

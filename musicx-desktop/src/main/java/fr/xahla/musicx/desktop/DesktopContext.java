@@ -3,9 +3,6 @@ package fr.xahla.musicx.desktop;
 import fr.xahla.musicx.desktop.manager.*;
 import fr.xahla.musicx.desktop.model.Settings;
 import fr.xahla.musicx.domain.application.AbstractContext;
-import fr.xahla.musicx.domain.application.SettingsInterface;
-import fr.xahla.musicx.domain.manager.AudioPlayerManagerInterface;
-import fr.xahla.musicx.domain.manager.LibraryManagerInterface;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Parent;
@@ -29,24 +26,28 @@ import java.util.logging.Logger;
 public class DesktopContext extends AbstractContext {
 
     private ArtistListManager artistManager;
-    private LoggerManager loggerManager;
     private QueueManager trackListManager;
     private TaskProgressManager taskProgressManager;
+
+    private LibraryManager libraryManager;
+    private Settings settings;
+    private AudioPlayerManager audioPlayerManager;
 
     private ObjectProperty<Parent> rightNavContent;
 
     private static DesktopContext context;
 
-    protected DesktopContext(final Logger logger, final SettingsInterface settings, final AudioPlayerManagerInterface audioPlayer, final LibraryManagerInterface library) {
-        super(logger, settings, audioPlayer, library);
+    protected DesktopContext(final Logger logger) {
+        super(logger);
+
+        this.libraryManager = new LibraryManager();
+        this.settings = new Settings();
+        this.audioPlayerManager = new AudioPlayerManager();
     }
 
     public static void createContext() {
         context = new DesktopContext(
-            Logger.getLogger(DesktopApplication.class.getName()),
-            new Settings(),
-            new AudioPlayerManager(),
-            new LibraryManager()
+            Logger.getLogger(DesktopApplication.class.getName())
         );
 
         try (var inputStream = Objects.requireNonNull(DesktopApplication.class.getResource("config/logger.properties")).openStream()) {
@@ -57,7 +58,6 @@ public class DesktopContext extends AbstractContext {
 
         logger().setLevel(Level.ALL);
 
-        context.loggerManager = new LoggerManager();
         context.taskProgressManager = new TaskProgressManager();
         context.trackListManager = new QueueManager();
         context.rightNavContent = new SimpleObjectProperty<>();
@@ -72,19 +72,15 @@ public class DesktopContext extends AbstractContext {
     }
 
     public static LibraryManager library() {
-        return (LibraryManager) context.libraryManager;
-    }
-
-    public static LoggerManager loggerManager() {
-        return context.loggerManager;
+        return context.libraryManager;
     }
 
     public static AudioPlayerManager player() {
-        return (AudioPlayerManager) context.audioPlayerManager;
+        return context.audioPlayerManager;
     }
 
     public static Settings settings() {
-        return (Settings) context.settings;
+        return context.settings;
     }
 
     public static TaskProgressManager taskProgress() {

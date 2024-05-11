@@ -49,7 +49,7 @@ public class LabelRepository implements LabelRepositoryInterface {
     @Override public LabelDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(LabelEntity.class, id).toDto();
-        } catch (final HibernateException e) {
+        } catch (final Exception e) {
             logger().warning("Label not found with id: " + id);
             return null;
         }

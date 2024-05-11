@@ -4,6 +4,7 @@ plugins {
   id 'org.javamodularity.moduleplugin' version '1.8.12'
   id 'org.openjfx.javafxplugin' version '0.0.13'
   id 'org.beryx.jlink' version '2.25.0'
+  id 'de.jjohannes.extra-java-module-info' version "0.16"
 }
 
 group 'fr.xahla'
@@ -85,4 +86,20 @@ jlink {
 
 jlinkZip {
   group = 'distribution'
+}
+
+extraJavaModuleInfo {
+    module("jaudiotagger-3.0.1.jar", "jaudiotagger", "3.0.1") {
+        requires("java.logging")
+
+        exports("org.jaudiotagger.audio")
+        exports("org.jaudiotagger.tag")
+        exports("org.jaudiotagger.tag.id3")
+        exports("org.jaudiotagger.tag.mp4")
+        exports("org.jaudiotagger.tag.mp4.field")
+    }
+
+    module("javatuples-3.0.jar", "javatuples", "3.0") {
+        exports("org.javatuples")
+    }
 }

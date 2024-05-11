@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /** <b>Utility class for FXML components.</b>
  * <p>

@@ -57,14 +57,14 @@ module fr.xahla.musicx.domain {
     exports fr.xahla.musicx.domain.application;
     exports fr.xahla.musicx.domain.database;
     exports fr.xahla.musicx.domain.helper;
+    exports fr.xahla.musicx.domain.helper.enums;
     exports fr.xahla.musicx.domain.listener;
-    exports fr.xahla.musicx.domain.manager;
     exports fr.xahla.musicx.domain.model.data;
     exports fr.xahla.musicx.domain.model.entity;
     exports fr.xahla.musicx.domain.model.enums;
     exports fr.xahla.musicx.domain.repository;
-    exports fr.xahla.musicx.domain.service.localAudioFile;
     exports fr.xahla.musicx.domain.repository.data;
-    exports fr.xahla.musicx.domain.helper.enums;
+    exports fr.xahla.musicx.domain.service.apiHandler;
+    exports fr.xahla.musicx.domain.service.localAudioFile;
 
 }

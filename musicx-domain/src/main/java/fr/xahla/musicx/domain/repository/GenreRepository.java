@@ -37,7 +37,7 @@ public class GenreRepository implements GenreRepositoryInterface {
     @Override public GenreDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(GenreEntity.class, id).toDto();
-        } catch (final HibernateException e) {
+        } catch (final Exception e) {
             logger().warning("Genre not found with id: " + id);
             return null;
         }

@@ -1,14 +1,18 @@
 package fr.xahla.musicx.desktop.model.entity;
 
-import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.SongDto;
+import fr.xahla.musicx.api.model.enums.AudioFormat;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 /** <b>Class that defines the Song Model for desktop view usage.</b>
  * <p>
@@ -20,105 +24,60 @@ import java.util.List;
  *
  * @author Cochetooo
  */
-public class Song implements SongDto {
+public class Song {
+
+    private final SongDto dto;
 
     private final LongProperty id;
-    private final IntegerProperty duration;
+
     private final IntegerProperty bitRate;
-    private final IntegerProperty sampleRate;
-    private final IntegerProperty trackNumber;
     private final IntegerProperty discNumber;
+    private final LongProperty duration;
+    private final StringProperty filepath;
+    private final ObjectProperty<AudioFormat> format;
+    private final IntegerProperty sampleRate;
     private final StringProperty title;
-    private final StringProperty filePath;
-    private final BooleanProperty available;
-    private final StringProperty format;
+    private final IntegerProperty trackNumber;
 
-    private final ListProperty<String> primaryGenres;
-    private final ListProperty<String> secondaryGenres;
+    private ObjectProperty<Album> album;
+    private ObjectProperty<Artist> artist;
+    private MapProperty<Long, String> lyrics;
+    private ListProperty<Genre> primaryGenres;
+    private ListProperty<Genre> secondaryGenres;
 
-    private final ObjectProperty<Album> album;
-    private final ObjectProperty<Artist> artist;
+    public Song(final SongDto song) {
+        this.id = new SimpleLongProperty(song.getId());
 
-    public Song() {
-        this.id = new SimpleLongProperty();
-        this.duration = new SimpleIntegerProperty();
-        this.bitRate = new SimpleIntegerProperty();
-        this.sampleRate = new SimpleIntegerProperty();
-        this.trackNumber = new SimpleIntegerProperty();
-        this.discNumber = new SimpleIntegerProperty();
-        this.title = new SimpleStringProperty();
-        this.filePath = new SimpleStringProperty();
-        this.available = new SimpleBooleanProperty();
-        this.format = new SimpleStringProperty();
+        this.bitRate = new SimpleIntegerProperty(song.getBitRate());
+        this.discNumber = new SimpleIntegerProperty(song.getDiscNumber());
+        this.duration = new SimpleLongProperty(song.getDuration());
+        this.filepath = new SimpleStringProperty(song.getFilepath());
+        this.format = new SimpleObjectProperty<>(song.getFormat());
+        this.sampleRate = new SimpleIntegerProperty(song.getSampleRate());
+        this.title = new SimpleStringProperty(song.getTitle());
+        this.trackNumber = new SimpleIntegerProperty(song.getTrackNumber());
 
-        this.primaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
-        this.secondaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+        this.lyrics = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
 
-        this.album = new SimpleObjectProperty<>(new Album());
-        this.artist = new SimpleObjectProperty<>(new Artist());
+        this.dto = song;
     }
 
-    public Song set(final SongDto song) {
-        if (null != song.getId()) {
-            this.setId(song.getId());
-        }
+    public SongDto toDto() {
+        dto.setBitRate(getBitRate());
+        dto.setDiscNumber((short) getDiscNumber());
+        dto.setDuration(getDuration());
+        dto.setFilepath(getFilepath());
+        dto.setFormat(getFormat());
+        dto.setSampleRate(getSampleRate());
+        dto.setTitle(getTitle());
+        dto.setTrackNumber((short) getTrackNumber());
 
-        if (null != song.getTitle()) {
-            this.setTitle(song.getTitle());
-        }
-
-        if (null != song.getDuration()) {
-            this.setDuration(song.getDuration());
-        }
-
-        if (null != song.getBitRate()) {
-            this.setBitRate(song.getBitRate());
-        }
-
-        if (null != song.getSampleRate()) {
-            this.setSampleRate(song.getSampleRate());
-        }
-
-        if (null != song.getTrackNumber()) {
-            this.setTrackNumber(song.getTrackNumber());
-        }
-
-        if (null != song.getDiscNumber()) {
-            this.setDiscNumber(song.getDiscNumber());
-        }
-
-        if (null != song.getAlbum()) {
-            this.setAlbum(song.getAlbum());
-        }
-
-        if (null != song.getArtist()) {
-            this.setArtist(song.getArtist());
-        }
-
-        if (null != song.getFilePath()) {
-            this.setFilePath(song.getFilePath());
-
-            this.setFormat(
-                this.getFilePath().substring(this.getFilePath().lastIndexOf('.') + 1).toUpperCase()
-            );
-        }
-
-        if (null != song.isAvailable()) {
-            this.setAvailable(song.isAvailable());
-        }
-
-        if (null != song.getPrimaryGenres()) {
-            this.setPrimaryGenres(song.getPrimaryGenres());
-        }
-
-        if (null != song.getSecondaryGenres()) {
-            this.setSecondaryGenres(song.getSecondaryGenres());
-        }
-
-        return this;
+        return dto;
     }
 
-    public Long getId() {
+    // Getters - Setters
+
+    public long getId() {
         return id.get();
     }
 
@@ -126,35 +85,86 @@ public class Song implements SongDto {
         return id;
     }
 
-    public Song setId(final Long id) {
+    public Song setId(final long id) {
         this.id.set(id);
         return this;
     }
 
-    @Override
-    public Album getAlbum() {
-        return this.album.get();
+    public int getBitRate() {
+        return bitRate.get();
     }
 
-    public ObjectProperty<Album> albumProperty() {
-        return album;
+    public IntegerProperty bitRateProperty() {
+        return bitRate;
     }
 
-    @Override public Song setAlbum(final AlbumDto album) {
-        this.getAlbum().set(album);
+    public Song setBitRate(final int bitRate) {
+        this.bitRate.set(bitRate);
         return this;
     }
 
-    public Integer getDuration() {
+    public int getDiscNumber() {
+        return discNumber.get();
+    }
+
+    public IntegerProperty discNumberProperty() {
+        return discNumber;
+    }
+
+    public Song setDiscNumber(final int discNumber) {
+        this.discNumber.set(discNumber);
+        return this;
+    }
+
+    public long getDuration() {
         return duration.get();
     }
 
-    public IntegerProperty durationProperty() {
+    public LongProperty durationProperty() {
         return duration;
     }
 
-    public Song setDuration(final Integer duration) {
+    public Song setDuration(final long duration) {
         this.duration.set(duration);
+        return this;
+    }
+
+    public String getFilepath() {
+        return filepath.get();
+    }
+
+    public StringProperty filepathProperty() {
+        return filepath;
+    }
+
+    public Song setFilepath(final String filepath) {
+        this.filepath.set(filepath);
+        return this;
+    }
+
+    public AudioFormat getFormat() {
+        return format.get();
+    }
+
+    public ObjectProperty<AudioFormat> formatProperty() {
+        return format;
+    }
+
+    public Song setFormat(final AudioFormat format) {
+        this.format.set(format);
+        return this;
+    }
+
+    public int getSampleRate() {
+        return sampleRate.get();
+    }
+
+    public IntegerProperty sampleRateProperty() {
+        return sampleRate;
+    }
+
+    public Song setSampleRate(final int sampleRate) {
+        this.sampleRate.set(sampleRate);
         return this;
     }
 
@@ -171,47 +181,58 @@ public class Song implements SongDto {
         return this;
     }
 
-    public String getFilePath() {
-        return filePath.get();
+    public int getTrackNumber() {
+        return trackNumber.get();
     }
 
-    public StringProperty filePathProperty() {
-        return filePath;
+    public IntegerProperty trackNumberProperty() {
+        return trackNumber;
     }
 
-    public Song setFilePath(final String filePath) {
-        this.filePath.set(filePath);
+    public Song setTrackNumber(final int trackNumber) {
+        this.trackNumber.set(trackNumber);
         return this;
     }
 
-    @Override public Boolean isAvailable() {
-        return available.get();
+    public Album getAlbum() {
+        if (null == album) {
+            album = new SimpleObjectProperty<>();
+
+            final var albumRepos = songRepository().getAlbum(dto);
+
+            if (null != albumRepos) {
+                album.set(new Album(albumRepos));
+            }
+        }
+
+        return album.get();
     }
 
-    public BooleanProperty availableProperty() {
-        return available;
+    public ObjectProperty<Album> albumProperty() {
+        return album;
     }
 
-    public Song setAvailable(final Boolean available) {
-        this.available.set(available);
+    public Song setAlbum(final Album album) {
+        if (null == this.album) {
+            this.album = new SimpleObjectProperty<>(album);
+        } else {
+            this.album.set(album);
+        }
+
         return this;
     }
 
-    public String getFormat() {
-        return format.get();
-    }
-
-    public StringProperty formatProperty() {
-        return format;
-    }
-
-    public Song setFormat(final String format) {
-        this.format.set(format);
-        return this;
-    }
-
-    @Override
     public Artist getArtist() {
+        if (null == artist) {
+            artist = new SimpleObjectProperty<>();
+
+            final var artistRepos = songRepository().getArtist(dto);
+
+            if (null != artistRepos) {
+                artist.set(new Artist(artistRepos));
+            }
+        }
+
         return artist.get();
     }
 
@@ -219,88 +240,76 @@ public class Song implements SongDto {
         return artist;
     }
 
-    public Song setArtist(final ArtistDto artist) {
-        this.getArtist().set(artist);
+    public Song setArtist(final Artist artist) {
+        if (null == this.artist) {
+            this.artist = new SimpleObjectProperty<>(artist);
+        } else {
+            this.artist.set(artist);
+        }
+
         return this;
     }
 
-    @Override public Integer getBitRate() {
-        return bitRate.get();
+    public ObservableMap<Long, String> getLyrics() {
+        return lyrics.get();
     }
 
-    public IntegerProperty bitRateProperty() {
-        return bitRate;
+    public MapProperty<Long, String> lyricsProperty() {
+        return lyrics;
     }
 
-    @Override public Song setBitRate(final Integer bitRate) {
-        this.bitRate.set(bitRate);
+    public Song setLyrics(final ObservableMap<Long, String> lyrics) {
+        this.lyrics.set(lyrics);
         return this;
     }
 
-    @Override public Integer getSampleRate() {
-        return sampleRate.get();
-    }
+    public ObservableList<Genre> getPrimaryGenres() {
+        if (null == primaryGenres) {
+            primaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
 
-    public IntegerProperty sampleRateProperty() {
-        return sampleRate;
-    }
+            final var primaryGenresDto = songRepository().getPrimaryGenres(dto);
+            primaryGenresDto.forEach(genre -> primaryGenres.add(new Genre(genre)));
+        }
 
-    @Override public Song setSampleRate(final Integer sampleRate) {
-        this.sampleRate.set(sampleRate);
-        return this;
-    }
-
-    @Override public Short getTrackNumber() {
-        return (short) trackNumber.get();
-    }
-
-    public IntegerProperty trackNumberProperty() {
-        return trackNumber;
-    }
-
-    @Override public Song setTrackNumber(final Short trackNumber) {
-        this.trackNumber.set(trackNumber);
-        return this;
-    }
-
-    @Override public Short getDiscNumber() {
-        return (short) discNumber.get();
-    }
-
-    public IntegerProperty discNumberProperty() {
-        return discNumber;
-    }
-
-    @Override public Song setDiscNumber(final Short discNumber) {
-        this.discNumber.set(discNumber);
-        return this;
-    }
-
-    @Override
-    public ObservableList<String> getPrimaryGenres() {
         return primaryGenres.get();
     }
 
-    public ListProperty<String> primaryGenresProperty() {
+    public ListProperty<Genre> primaryGenresProperty() {
         return primaryGenres;
     }
 
-    public Song setPrimaryGenres(final List<String> primaryGenres) {
-        this.getPrimaryGenres().setAll(primaryGenres);
+    public Song setPrimaryGenres(final List<Genre> primaryGenres) {
+        if (null == this.primaryGenres) {
+            this.primaryGenres = new SimpleListProperty<>(FXCollections.observableList(primaryGenres));
+        } else {
+            this.primaryGenres.setAll(primaryGenres);
+        }
+
         return this;
     }
 
-    @Override
-    public ObservableList<String> getSecondaryGenres() {
+    public ObservableList<Genre> getSecondaryGenres() {
+        if (null == secondaryGenres) {
+            secondaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+
+            final var secondaryGenresDto = songRepository().getSecondaryGenres(dto);
+            secondaryGenresDto.forEach(genre -> secondaryGenres.add(new Genre(genre)));
+        }
+
         return secondaryGenres.get();
     }
 
-    public ListProperty<String> secondaryGenresProperty() {
+    public ListProperty<Genre> secondaryGenresProperty() {
         return secondaryGenres;
     }
 
-    public Song setSecondaryGenres(final List<String> secondaryGenres) {
-        this.getSecondaryGenres().setAll(secondaryGenres);
+    public Song setSecondaryGenres(final List<Genre> secondaryGenres) {
+        if (null == this.secondaryGenres) {
+            this.secondaryGenres = new SimpleListProperty<>(FXCollections.observableList(secondaryGenres));
+        } else {
+            this.secondaryGenres.setAll(secondaryGenres);
+        }
+
         return this;
     }
 }

@@ -4,7 +4,6 @@ import fr.xahla.musicx.desktop.listener.ValueListener;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Queue;
 import fr.xahla.musicx.desktop.model.entity.Song;
-import fr.xahla.musicx.domain.manager.AudioQueueManagerInterface;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
@@ -12,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /** <b>Class that allow views to use Queue model, while keeping a protection layer to its usage.</b>
  * <p>
@@ -24,7 +23,7 @@ import static fr.xahla.musicx.infrastructure.model.SimpleLogger.logger;
  *
  * @author Cochetooo
  */
-public class QueueManager implements AudioQueueManagerInterface {
+public class QueueManager {
 
     private final Queue queue;
 

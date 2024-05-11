@@ -21,10 +21,10 @@ public class SongEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "album_id", insertable = false, updatable = false)
+    @Column(name = "album_id")
     private Long albumId;
 
-    @Column(name = "artist_id", insertable = false, updatable = false)
+    @Column(name = "artist_id")
     private Long artistId;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -36,6 +36,7 @@ public class SongEntity {
     private int bitRate;
     private short discNumber;
     private long duration;
+    private String filepath;
     private AudioFormat format;
     private int sampleRate;
     private String title;
@@ -62,14 +63,15 @@ public class SongEntity {
         this.setId(songDto.getId());
         this.setAlbumId(songDto.getAlbumId());
         this.setArtistId(songDto.getArtistId());
-        this.setTitle(songDto.getTitle());
+        this.setBitRate(songDto.getBitRate());
+        this.setDiscNumber(songDto.getDiscNumber());
+        this.setDuration(songDto.getDuration());
+        this.setFilepath(songDto.getFilepath());
         this.setFormat(songDto.getFormat());
         this.setLyrics(songDto.getLyrics());
-        this.setDuration(songDto.getDuration());
-        this.setBitRate(songDto.getBitRate());
         this.setSampleRate(songDto.getSampleRate());
+        this.setTitle(songDto.getTitle());
         this.setTrackNumber(songDto.getTrackNumber());
-        this.setDiscNumber(songDto.getDiscNumber());
 
         if (null != songDto.getPrimaryGenreIds()) {
             primaryGenres = new ArrayList<>();
@@ -101,14 +103,15 @@ public class SongEntity {
             .id(id)
             .albumId(albumId)
             .artistId(artistId)
-            .title(title)
+            .bitRate(bitRate)
+            .discNumber(discNumber)
+            .duration(duration)
+            .filepath(filepath)
             .format(format)
             .lyrics(lyrics)
-            .duration(duration)
-            .bitRate(bitRate)
             .sampleRate(sampleRate)
+            .title(title)
             .trackNumber(trackNumber)
-            .discNumber(discNumber)
             .build();
 
         if (null != primaryGenres && Hibernate.isInitialized(primaryGenres)) {

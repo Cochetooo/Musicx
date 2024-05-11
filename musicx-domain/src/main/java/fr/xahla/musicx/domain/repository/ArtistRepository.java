@@ -67,7 +67,7 @@ public class ArtistRepository implements ArtistRepositoryInterface {
     @Override public ArtistDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(ArtistEntity.class, id).toDto();
-        } catch (final HibernateException e) {
+        } catch (final Exception e) {
             logger().warning("Artist not found with id: " + id);
             return null;
         }

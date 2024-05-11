@@ -26,10 +26,10 @@ public class AlbumEntity {
     private Long id;
 
     // Relations columns
-    @Column(name = "artist_id", insertable = false, updatable = false)
+    @Column(name = "artist_id")
     private Long artistId;
 
-    @Column(name = "label_id", insertable = false, updatable = false)
+    @Column(name = "label_id")
     private Long labelId;
 
     @ElementCollection
