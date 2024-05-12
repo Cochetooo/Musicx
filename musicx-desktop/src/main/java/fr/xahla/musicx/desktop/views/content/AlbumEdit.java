@@ -20,6 +20,8 @@ import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
 
 public class AlbumEdit implements Initializable {
 
+    @FXML private Button editButton;
+
     @FXML private Label artworkDimensionLabel;
     @FXML private TextField albumNameField;
 
@@ -37,15 +39,47 @@ public class AlbumEdit implements Initializable {
         final var album = player().getCurrentSong().getAlbum();
 
         this.albumNameField.setText(album.getName());
+        this.albumNameField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                change();
+            }
+        });
 
         this.catalogNoField.setText(album.getCatalogNo());
+        this.catalogNoField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                change();
+            }
+        });
+
         this.discTotalField.setText(String.valueOf(album.getDiscTotal()));
+        this.discTotalField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                change();
+            }
+        });
+
         this.trackTotalField.setText(String.valueOf(album.getTrackTotal()));
+        this.trackTotalField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                change();
+            }
+        });
 
         this.albumTypeComboBox.getItems().addAll(AlbumType.values());
         this.albumTypeComboBox.setValue(album.getType());
+        this.albumTypeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue != newValue) {
+                change();
+            }
+        });
 
         this.releaseDatePicker.setValue(album.getReleaseDate());
+        this.releaseDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue != newValue) {
+                change();
+            }
+        });
 
         this.artworkUrlField.setText(album.getArtworkUrl());
 
@@ -65,6 +99,10 @@ public class AlbumEdit implements Initializable {
 
     }
 
+    @FXML public void change() {
+        editButton.setDisable(false);
+    }
+
     @FXML public void chooseArtwork() {
         final var fileChooser = new FileChooser();
         final var imageFilter = new FileChooser.ExtensionFilter("Images",
@@ -77,6 +115,7 @@ public class AlbumEdit implements Initializable {
         if (null != selectedFile) {
             this.artworkUrlField.setText(selectedFile.getAbsolutePath());
             this.artworkView.setImage(new Image(artworkUrlField.getText()));
+            this.change();
         }
     }
 
@@ -93,5 +132,7 @@ public class AlbumEdit implements Initializable {
 
         albumRepository().save(album.getDto());
         new WriteMetadataToAudioFile().execute(album.getDto());
+
+        this.editButton.setDisable(true);
     }
 }

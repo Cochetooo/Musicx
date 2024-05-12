@@ -5,6 +5,7 @@ import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.localAudioFile.WriteMetadataToAudioFile;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
@@ -15,6 +16,8 @@ import static fr.xahla.musicx.desktop.DesktopContext.player;
 import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public class SongEdit implements Initializable {
+
+    @FXML private Button editButton;
 
     @FXML private TextField songNameField;
 
@@ -35,11 +38,28 @@ public class SongEdit implements Initializable {
         final var song = player().getCurrentSong();
 
         this.songNameField.setText(song.getTitle());
+        this.songNameField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                change();
+            }
+        });
 
         this.discNoField.setText(String.valueOf(song.getDiscNumber()));
+        this.discNoField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                change();
+            }
+        });
+
         this.discTotalField.setText(String.valueOf(song.getAlbum().getDiscTotal()));
 
         this.trackNoField.setText(String.valueOf(song.getTrackNumber()));
+        this.trackNoField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                change();
+            }
+        });
+
         this.trackTotalField.setText(String.valueOf(song.getAlbum().getTrackTotal()));
 
         this.durationField.setText(DurationHelper.getTimeString(Duration.millis(
@@ -53,6 +73,10 @@ public class SongEdit implements Initializable {
         this.filepathField.setText(song.getFilepath());
     }
 
+    @FXML public void change() {
+        editButton.setDisable(false);
+    }
+
     @FXML public void edit() {
         final var song = player().getCurrentSong();
 
@@ -62,6 +86,8 @@ public class SongEdit implements Initializable {
 
         songRepository().save(song.getDto());
         new WriteMetadataToAudioFile().execute(song.getDto());
+
+        editButton.setDisable(true);
     }
 
     @FXML public void editArtist() {

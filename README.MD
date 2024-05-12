@@ -27,6 +27,8 @@ music lovers:<br>
 
 > #### New Features
 > - `Edit` Songs & Albums
+> - `Save Audio Files` metadata
+> - `Console Tabs` for more clarity
 > #### Changes
 > - Changed pause fade-out from 0.25s to 0.35s
 

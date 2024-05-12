@@ -88,8 +88,10 @@
     <Separator />
 
     <Button
+            fx:id="editButton"
             text="%songEdit.edit"
-            onAction="#edit">
+            onAction="#edit"
+            disable="true">
         <graphic>
             <FontIcon iconLiteral="fltfmz-save-24" />
         </graphic>
