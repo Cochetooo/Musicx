@@ -119,6 +119,7 @@ public class ArtistRepository implements ArtistRepositoryInterface {
             }
 
             transaction.commit();
+            logger().fine("Artist saved successfully: " + artist.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();

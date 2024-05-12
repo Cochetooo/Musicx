@@ -13,8 +13,6 @@ import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepositor
 
 public class PersonArtist extends Artist {
 
-    private PersonArtistDto dto;
-
     private final StringProperty firstName;
     private final ObjectProperty<LocalDate> birthDate;
     private final ObjectProperty<LocalDate> deathDate;
@@ -28,16 +26,13 @@ public class PersonArtist extends Artist {
         this.birthDate = new SimpleObjectProperty<>(artist.getBirthDate());
         this.deathDate = new SimpleObjectProperty<>(artist.getDeathDate());
 
-        this.dto = artist;
+        this.getDto().setFirstName(this.getFirstName());
+        this.getDto().setBirthDate(this.getBirthDate());
+        this.getDto().setDeathDate(this.getDeathDate());
     }
 
-    public PersonArtistDto toDto() {
-        super.toDto();
-        dto.setFirstName(getFirstName());
-        dto.setBirthDate(getBirthDate());
-        dto.setDeathDate(getDeathDate());
-
-        return dto;
+    public PersonArtistDto getDto() {
+        return (PersonArtistDto) dto;
     }
 
     // Getters - Setters
@@ -51,6 +46,7 @@ public class PersonArtist extends Artist {
     }
 
     public PersonArtist setFirstName(final String firstName) {
+        this.getDto().setFirstName(firstName);
         this.firstName.set(firstName);
         return this;
     }
@@ -64,6 +60,7 @@ public class PersonArtist extends Artist {
     }
 
     public PersonArtist setBirthDate(final LocalDate birthDate) {
+        this.getDto().setBirthDate(birthDate);
         this.birthDate.set(birthDate);
         return this;
     }
@@ -77,6 +74,7 @@ public class PersonArtist extends Artist {
     }
 
     public PersonArtist setDeathDate(final LocalDate deathDate) {
+        this.getDto().setDeathDate(deathDate);
         this.deathDate.set(deathDate);
         return this;
     }
@@ -85,7 +83,7 @@ public class PersonArtist extends Artist {
         if (null == bands) {
             bands = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
 
-            final var bandsDto = artistRepository().getBands(dto);
+            final var bandsDto = artistRepository().getBands(this.getDto());
             bandsDto.forEach(band -> bands.add(new BandArtist(band)));
         }
 

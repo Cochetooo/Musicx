@@ -1,10 +1,11 @@
 package fr.xahla.musicx.domain.service.localAudioFile;
 
 import fr.xahla.musicx.api.model.*;
+import fr.xahla.musicx.api.model.enums.AlbumType;
 import fr.xahla.musicx.api.model.enums.AudioFormat;
-import fr.xahla.musicx.api.repository.*;
 import fr.xahla.musicx.api.repository.searchCriterias.*;
 import fr.xahla.musicx.domain.helper.AudioTaggerHelper;
+import fr.xahla.musicx.domain.model.enums.CustomFieldKey;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
@@ -47,167 +48,224 @@ public final class PersistAudioFileMetadata {
 
         this.customTags = AudioTaggerHelper.getCustomTags(tag);
 
-        final var duration = audioHeader.getTrackLength() * 1_000L;
-        final var title = tag.getFirst(FieldKey.TITLE);
-        final var trackNumber = this.getShort(tag.getFirst(FieldKey.TRACK));
+        final var song = this.readSong();
 
-        final var existingSong = songRepository().findByCriteria(Map.of(
-            SongSearchCriterias.DURATION, duration,
-            SongSearchCriterias.TITLE, title,
-            SongSearchCriterias.TRACK_NUMBER, trackNumber
-        ));
-
-        SongDto song;
-
-        if (!existingSong.isEmpty()) {
-            song = existingSong.getFirst();
-        } else {
-            song = SongDto.builder().build();
-        }
-
-        song.setAlbumId(this.setAlbum());
-        song.setArtistId(this.setArtist());
-        song.setPrimaryGenreIds(this.setPrimaryGenres());
-        song.setSecondaryGenreIds(this.setSecondaryGenres());
-
-        song.setBitRate((int) audioHeader.getBitRateAsNumber());
-        song.setDiscNumber(this.getShort(tag.getFirst(FieldKey.DISC_NO)));
-        song.setDuration(duration);
-        song.setFilepath(filepath);
-        song.setFormat(AudioFormat.valueOf(audioHeader.getFormat().toUpperCase()));
-        song.setLyrics(tag.getFirst(FieldKey.LYRICS));
-        song.setSampleRate(audioHeader.getSampleRateAsNumber());
-        song.setTitle(title);
-        song.setTrackNumber(trackNumber);
+        song.setAlbumId(this.readAlbum());
+        song.setArtistId(this.readArtist());
+        song.setPrimaryGenreIds(this.readSongPrimaryGenres());
+        song.setSecondaryGenreIds(this.readSongSecondaryGenres());
 
         songRepository().save(song);
     }
 
-    private Long setAlbum() {
-        AlbumDto album;
+    private SongDto readSong() {
+        try {
+            final var bitRate = (int) audioHeader.getBitRateAsNumber();
+            final var discNumber = this.getShort(tag.getFirst(FieldKey.DISC_NO));
+            final var duration = audioHeader.getTrackLength() * 1_000L;
+            final var format = AudioFormat.valueOf(audioHeader.getFormat().toUpperCase());
+            final var rawLyrics = tag.getFirst(FieldKey.LYRICS);
+            final var sampleRate = audioHeader.getSampleRateAsNumber();
+            final var title = tag.getFirst(FieldKey.TITLE);
+            final var trackNumber = this.getShort(tag.getFirst(FieldKey.TRACK));
 
-        final var catalogNo = tag.getFirst(FieldKey.CATALOG_NO);
-        final var name = tag.getFirst(FieldKey.ALBUM);
+            final var existingSong = songRepository().findByCriteria(Map.of(
+                SongSearchCriterias.DURATION, duration,
+                SongSearchCriterias.TITLE, title,
+                SongSearchCriterias.TRACK_NUMBER, trackNumber
+            ));
 
-        if (name.isBlank()) {
+            SongDto song;
+
+            if (!existingSong.isEmpty()) {
+                song = existingSong.getFirst();
+            } else {
+                song = SongDto.builder().build();
+            }
+
+            song.setBitRate(bitRate);
+            song.setDiscNumber(discNumber);
+            song.setDuration(duration);
+            song.setFilepath(filepath);
+            song.setFormat(format);
+            song.setRawLyrics(rawLyrics);
+            song.setSampleRate(sampleRate);
+            song.setTitle(title);
+            song.setTrackNumber(trackNumber);
+
+            return song;
+        } catch (final Exception exception) {
+            logger().log(Level.SEVERE, "Failed to read song for filepath: " + filepath, exception);
+
+            return SongDto.builder().title(filepath).build();
+        }
+    }
+
+    private Long readAlbum() {
+        try {
+            AlbumDto album;
+
+            final var artworkUrl = AudioTaggerHelper.getCustomTag(customTags, CustomFieldKey.ARTWORK_URL);
+            final var catalogNo = tag.getFirst(FieldKey.CATALOG_NO);
+            final var discTotal = this.getShort(tag.getFirst(FieldKey.DISC_TOTAL));
+            final var name = tag.getFirst(FieldKey.ALBUM);
+            final var releaseDate = this.getLocalDate(tag.getFirst(FieldKey.YEAR));
+            final var trackTotal = this.getShort(tag.getFirst(FieldKey.TRACK_TOTAL));
+            final var type = AlbumType.valueOf(
+                AudioTaggerHelper.getCustomTag(customTags, CustomFieldKey.ALBUM_TYPE).toUpperCase()
+            );
+
+            if (name.isBlank()) {
+                return null;
+            }
+
+            final var existingAlbum = albumRepository().findByCriteria(Map.of(
+                AlbumSearchCriterias.NAME, name
+            ));
+
+            if (!existingAlbum.isEmpty()) {
+                album = existingAlbum.getFirst();
+            } else {
+                album = AlbumDto.builder()
+                    .artistId(this.readAlbumArtist())
+                    .labelId(this.readAlbumLabel())
+                    .artworkUrl(artworkUrl)
+                    .catalogNo(catalogNo)
+                    .discTotal(discTotal)
+                    .name(name)
+                    .releaseDate(releaseDate)
+                    .trackTotal(trackTotal)
+                    .type(type)
+                    .build();
+            }
+
+            albumRepository().save(album);
+
+            return album.getId();
+        } catch (final Exception exception) {
+            logger().log(Level.SEVERE, "Failed to read album for song: " + filepath, exception);
             return null;
         }
-
-        final var existingAlbum = albumRepository().findByCriteria(Map.of(
-            AlbumSearchCriterias.NAME, name
-        ));
-
-        if (!existingAlbum.isEmpty()) {
-            album = existingAlbum.getFirst();
-        } else {
-            album = AlbumDto.builder()
-                .artistId(this.setAlbumArtist())
-                .artworkUrl(tag.getFirst(FieldKey.COVER_ART))
-                .catalogNo(catalogNo)
-                .discTotal(this.getShort(tag.getFirst(FieldKey.DISC_TOTAL)))
-                .labelId(this.setAlbumLabel())
-                .name(name)
-                .releaseDate(this.getLocalDate(tag.getFirst(FieldKey.YEAR)))
-                .trackTotal(this.getShort(tag.getFirst(FieldKey.TRACK_TOTAL)))
-                .build();
-        }
-
-        albumRepository().save(album);
-
-        return album.getId();
     }
 
-    private Long setAlbumArtist() {
-        ArtistDto albumArtist;
+    private Long readAlbumArtist() {
+        try {
+            ArtistDto albumArtist;
 
-        final var name = tag.getFirst(FieldKey.ALBUM_ARTIST);
+            final var name = tag.getFirst(FieldKey.ALBUM_ARTIST);
 
-        if (name.isBlank()) {
-            return setArtist();
-        }
+            if (name.isBlank()) {
+                return this.readArtist();
+            }
 
-        final var country = this.getLocale(tag.getFirst(FieldKey.COUNTRY));
+            final var country = this.getLocale(tag.getFirst(FieldKey.COUNTRY));
 
-        final var existingArtist = artistRepository().findByCriteria(Map.of(
-            ArtistSearchCriterias.NAME, name
-        ));
+            final var existingArtist = artistRepository().findByCriteria(Map.of(
+                ArtistSearchCriterias.NAME, name
+            ));
 
-        if (!existingArtist.isEmpty()) {
-            albumArtist = existingArtist.getFirst();
-        } else {
-            albumArtist = ArtistDto.builder()
-                .country(country)
-                .name(name)
-                .build();
-        }
+            if (!existingArtist.isEmpty()) {
+                albumArtist = existingArtist.getFirst();
+            } else {
+                albumArtist = ArtistDto.builder()
+                    .country(country)
+                    .name(name)
+                    .build();
+            }
 
-        artistRepository().save(albumArtist);
+            artistRepository().save(albumArtist);
 
-        return albumArtist.getId();
-    }
-
-    private Long setAlbumLabel() {
-        LabelDto albumLabel;
-
-        final var name = tag.getFirst(FieldKey.RECORD_LABEL);
-
-        if (name.isBlank()) {
+            return albumArtist.getId();
+        } catch (final Exception exception) {
+            logger().log(Level.SEVERE, "Failed to read album artist for song: " + filepath, exception);
             return null;
         }
-
-        final var existingLabel = labelRepository().findByCriteria(Map.of(
-            LabelSearchCriterias.NAME, name
-        ));
-
-        if (!existingLabel.isEmpty()) {
-            albumLabel = existingLabel.getFirst();
-        } else {
-            albumLabel = LabelDto.builder()
-                .name(name)
-                .build();
-        }
-
-        labelRepository().save(albumLabel);
-
-        return albumLabel.getId();
     }
 
-    private Long setArtist() {
-        ArtistDto artist;
+    private Long readAlbumLabel() {
+        try {
+            LabelDto albumLabel;
 
-        final var country = this.getLocale(tag.getFirst(FieldKey.COUNTRY));
-        final var name = tag.getFirst(FieldKey.ARTIST);
+            final var name = tag.getFirst(FieldKey.RECORD_LABEL);
 
-        if (name.isBlank()) {
+            if (name.isBlank()) {
+                return null;
+            }
+
+            final var existingLabel = labelRepository().findByCriteria(Map.of(
+                LabelSearchCriterias.NAME, name
+            ));
+
+            if (!existingLabel.isEmpty()) {
+                albumLabel = existingLabel.getFirst();
+            } else {
+                albumLabel = LabelDto.builder()
+                    .name(name)
+                    .build();
+            }
+
+            labelRepository().save(albumLabel);
+
+            return albumLabel.getId();
+        } catch (final Exception exception) {
+            logger().log(Level.SEVERE, "Failed to read album label for song: " + filepath, exception);
             return null;
         }
+    }
 
-        final var existingArtist = artistRepository().findByCriteria(Map.of(
-            ArtistSearchCriterias.NAME, name
-        ));
+    private Long readArtist() {
+        try {
+            ArtistDto artist;
 
-        if (!existingArtist.isEmpty()) {
-            artist = existingArtist.getFirst();
-        } else {
-            artist = ArtistDto.builder()
-                .country(country)
-                .name(name)
-                .build();
+            final var artistArtworkUrl = AudioTaggerHelper.getCustomTag(customTags, CustomFieldKey.ARTIST_ARTWORK_URL);
+            final var country = this.getLocale(tag.getFirst(FieldKey.COUNTRY));
+            final var name = tag.getFirst(FieldKey.ARTIST);
+
+            if (name.isBlank()) {
+                return null;
+            }
+
+            final var existingArtist = artistRepository().findByCriteria(Map.of(
+                ArtistSearchCriterias.NAME, name
+            ));
+
+            if (!existingArtist.isEmpty()) {
+                artist = existingArtist.getFirst();
+            } else {
+                artist = ArtistDto.builder()
+                    .artworkUrl(artistArtworkUrl)
+                    .country(country)
+                    .name(name)
+                    .build();
+            }
+
+            artistRepository().save(artist);
+
+            return artist.getId();
+        } catch (final Exception exception) {
+            logger().log(Level.SEVERE, "Failed to read artist for song: " + filepath, exception);
+            return null;
         }
-
-        artistRepository().save(artist);
-
-        return artist.getId();
     }
 
-    private List<Long> setPrimaryGenres() {
-        final var primaryGenreNames = this.getGenresName("PRIMARY TRACK GENRES");
-        return this.getGenres(primaryGenreNames);
+    private List<Long> readSongPrimaryGenres() {
+        try {
+            final var primaryGenreNames = this.getGenresName("Primary Track Genres");
+            return this.getGenres(primaryGenreNames);
+        } catch (final Exception exception) {
+            logger().log(Level.SEVERE, "Failed to read primary genres for song: " + filepath, exception);
+            return new ArrayList<>();
+        }
     }
 
-    private List<Long> setSecondaryGenres() {
-        final var secondaryGenreNames = this.getGenresName("SECONDARY TRACK GENRES");
-        return this.getGenres(secondaryGenreNames);
+    private List<Long> readSongSecondaryGenres() {
+        try {
+            final var secondaryGenreNames = this.getGenresName(CustomFieldKey.SONG_SECONDARY_GENRES.getKey());
+            return this.getGenres(secondaryGenreNames);
+        } catch (final Exception exception) {
+            logger().log(Level.SEVERE, "Failed to read secondary genres for song: " + filepath, exception);
+            return new ArrayList<>();
+        }
     }
 
     // Genres
@@ -263,7 +321,11 @@ public final class PersistAudioFileMetadata {
     // Getters
 
     private int getInteger(final String fieldValue) {
-        return Integer.parseInt(fieldValue);
+        try {
+            return Integer.parseInt(fieldValue);
+        } catch (final NumberFormatException exception) {
+            return 0;
+        }
     }
 
     private LocalDate getLocalDate(final String fieldValue) {
@@ -281,12 +343,22 @@ public final class PersistAudioFileMetadata {
     }
 
     private Locale getLocale(final String fieldValue) {
-        return new Locale.Builder()
-            .setLanguage(fieldValue.toLowerCase())
-            .build();
+        try {
+            return new Locale.Builder()
+                .setLanguage(fieldValue.toLowerCase())
+                .build();
+        } catch (final Exception exception) {
+            return new Locale.Builder()
+                .setLanguage("en")
+                .build();
+        }
     }
 
     private short getShort(final String fieldValue) {
-        return Short.parseShort(fieldValue);
+        try {
+            return Short.parseShort(fieldValue);
+        } catch (final NumberFormatException exception) {
+            return 0;
+        }
     }
 }

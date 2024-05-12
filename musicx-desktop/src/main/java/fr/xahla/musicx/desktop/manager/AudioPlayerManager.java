@@ -96,7 +96,7 @@ public class AudioPlayerManager {
     }
 
     public Duration getTotalQueueDuration() {
-        return Duration.seconds(this.queueManager.getTotalDuration());
+        return Duration.millis(this.queueManager.getTotalDuration());
     }
 
     /**
@@ -175,7 +175,7 @@ public class AudioPlayerManager {
             final var startVolume = this.getVolume();
 
             DurationHelper.fade(
-                Duration.seconds(0.25),
+                Duration.seconds(0.35),
                 startVolume,
                 0.0,
                 16,

@@ -17,7 +17,7 @@ import java.util.Locale;
  */
 public class Artist {
 
-    private final ArtistDto dto;
+    protected final ArtistDto dto;
 
     private final LongProperty id;
 
@@ -35,11 +35,7 @@ public class Artist {
         this.dto = artist;
     }
 
-    public ArtistDto toDto() {
-        dto.setArtworkUrl(getArtworkUrl());
-        dto.setCountry(getCountry());
-        dto.setName(getName());
-
+    public ArtistDto getDto() {
         return dto;
     }
 
@@ -52,6 +48,7 @@ public class Artist {
     }
 
     public Artist setId(final Long id) {
+        this.dto.setId(id);
         this.id.set(id);
         return this;
     }
@@ -65,6 +62,7 @@ public class Artist {
     }
 
     public void setArtworkUrl(final String artworkUrl) {
+        this.dto.setArtworkUrl(artworkUrl);
         this.artworkUrl.set(artworkUrl);
     }
 
@@ -77,6 +75,7 @@ public class Artist {
     }
 
     public Artist setName(final String name) {
+        this.dto.setName(name);
         this.name.set(name);
         return this;
     }
@@ -90,6 +89,7 @@ public class Artist {
     }
 
     public Artist setCountry(final Locale country) {
+        this.dto.setCountry(country);
         this.country.set(country);
         return this;
     }

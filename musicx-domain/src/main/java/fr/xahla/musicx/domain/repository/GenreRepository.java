@@ -81,6 +81,7 @@ public class GenreRepository implements GenreRepositoryInterface {
             }
 
             transaction.commit();
+            logger().fine("Genre saved successfully: " + genre.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();

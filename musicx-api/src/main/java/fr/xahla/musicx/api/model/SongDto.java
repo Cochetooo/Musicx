@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /** <b>(API) Interface for Song Model contracts.</b>
  * <p>
@@ -38,8 +39,12 @@ public class SongDto {
     private String title;
     private short trackNumber;
 
-    public void setLyrics(final String lyrics) {
+    public void setRawLyrics(final String lyrics) {
         this.lyrics = Map.of(0L, lyrics);
+    }
+
+    public String getRawLyrics() {
+        return String.join("\n", lyrics.values());
     }
 
 }

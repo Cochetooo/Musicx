@@ -5,7 +5,7 @@ public enum ArtistSearchCriterias {
     COUNTRY("country"),
     ID("id"),
     NAME("name"),
-    TYPE("artist_type");
+    TYPE("artistType");
 
     private final String column;
 

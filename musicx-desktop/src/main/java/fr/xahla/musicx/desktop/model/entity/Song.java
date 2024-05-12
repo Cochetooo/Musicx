@@ -62,16 +62,7 @@ public class Song {
         this.dto = song;
     }
 
-    public SongDto toDto() {
-        dto.setBitRate(getBitRate());
-        dto.setDiscNumber((short) getDiscNumber());
-        dto.setDuration(getDuration());
-        dto.setFilepath(getFilepath());
-        dto.setFormat(getFormat());
-        dto.setSampleRate(getSampleRate());
-        dto.setTitle(getTitle());
-        dto.setTrackNumber((short) getTrackNumber());
-
+    public SongDto getDto() {
         return dto;
     }
 
@@ -86,6 +77,7 @@ public class Song {
     }
 
     public Song setId(final long id) {
+        this.dto.setId(id);
         this.id.set(id);
         return this;
     }
@@ -99,6 +91,7 @@ public class Song {
     }
 
     public Song setBitRate(final int bitRate) {
+        this.dto.setBitRate(bitRate);
         this.bitRate.set(bitRate);
         return this;
     }
@@ -111,7 +104,8 @@ public class Song {
         return discNumber;
     }
 
-    public Song setDiscNumber(final int discNumber) {
+    public Song setDiscNumber(final short discNumber) {
+        this.dto.setDiscNumber(discNumber);
         this.discNumber.set(discNumber);
         return this;
     }
@@ -125,6 +119,7 @@ public class Song {
     }
 
     public Song setDuration(final long duration) {
+        this.dto.setDuration(duration);
         this.duration.set(duration);
         return this;
     }
@@ -138,6 +133,7 @@ public class Song {
     }
 
     public Song setFilepath(final String filepath) {
+        this.dto.setFilepath(filepath);
         this.filepath.set(filepath);
         return this;
     }
@@ -151,6 +147,7 @@ public class Song {
     }
 
     public Song setFormat(final AudioFormat format) {
+        this.dto.setFormat(format);
         this.format.set(format);
         return this;
     }
@@ -164,6 +161,7 @@ public class Song {
     }
 
     public Song setSampleRate(final int sampleRate) {
+        this.dto.setSampleRate(sampleRate);
         this.sampleRate.set(sampleRate);
         return this;
     }
@@ -177,6 +175,7 @@ public class Song {
     }
 
     public Song setTitle(final String title) {
+        this.dto.setTitle(title);
         this.title.set(title);
         return this;
     }
@@ -189,7 +188,8 @@ public class Song {
         return trackNumber;
     }
 
-    public Song setTrackNumber(final int trackNumber) {
+    public Song setTrackNumber(final short trackNumber) {
+        this.dto.setTrackNumber(trackNumber);
         this.trackNumber.set(trackNumber);
         return this;
     }

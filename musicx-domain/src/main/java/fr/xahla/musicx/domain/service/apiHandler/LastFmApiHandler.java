@@ -59,7 +59,7 @@ public class LastFmApiHandler
         final var artistJson = jsonResponse.getJSONObject("artist");
 
         // Artwork URL
-        if (!overwrite || null == artist.getArtworkUrl() || artist.getArtworkUrl().isEmpty()) {
+        if (overwrite || null == artist.getArtworkUrl() || artist.getArtworkUrl().isEmpty()) {
             artist.setArtworkUrl(artistJson
                 .getJSONArray("image")
                 .getJSONObject(3)
@@ -108,7 +108,7 @@ public class LastFmApiHandler
         final var albumJson = jsonResponse.getJSONObject("album");
 
         // Artwork URL
-        if (!overwrite || null == album.getArtworkUrl() || album.getArtworkUrl().isEmpty()) {
+        if (overwrite || null == album.getArtworkUrl() || album.getArtworkUrl().isEmpty()) {
             album.setArtworkUrl(albumJson
                 .getJSONArray("image")
                 .getJSONObject(3)

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Button?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.effect.DropShadow?>
+
+<?import javafx.scene.control.TextFormatter?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.content.AlbumEdit"
+      prefHeight="1200.0" prefWidth="400.0"
+      style="
+        -fx-padding: 20px;
+        -fx-background-color: -color-base-7;
+        -fx-background-radius: 10px;
+        -fx-border-radius: 10px;
+      "
+      spacing="10">
+
+    <VBox spacing="5">
+        <Label text="%albumEdit.artistName" styleClass="text-caption" />
+        <Button text="%albumEdit.editArtist" onAction="#editArtist" />
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%albumEdit.labelName" styleClass="text-caption" />
+        <Button text="%albumEdit.editLabel" onAction="#editLabel" />
+    </VBox>
+
+    <Separator />
+
+    <VBox spacing="5">
+        <Label text="%albumEdit.albumName" styleClass="text-caption" />
+        <TextField fx:id="albumNameField" />
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%albumEdit.catalogNo" styleClass="text-caption" />
+        <TextField fx:id="catalogNoField" />
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%albumEdit.discTotal" styleClass="text-caption" />
+        <TextField fx:id="discTotalField" />
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%albumEdit.trackTotal" styleClass="text-caption" />
+        <TextField fx:id="trackTotalField" />
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%albumEdit.albumType" styleClass="text-caption" />
+        <ComboBox fx:id="albumTypeComboBox" />
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%albumEdit.releaseDate" styleClass="text-caption" />
+        <DatePicker fx:id="releaseDatePicker" />
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%albumEdit.artworkUrl" styleClass="text-caption" />
+        <HBox spacing="7">
+            <TextField fx:id="artworkUrlField" editable="false" />
+            <Button text="%albumEdit.chooseArtwork" onAction="#chooseArtwork" />
+        </HBox>
+        <HBox spacing="7">
+            <ImageView fx:id="artworkView" fitWidth="60" fitHeight="60">
+                <effect>
+                    <DropShadow spread="0.4" color="darkslategray" />
+                </effect>
+            </ImageView>
+            <Label fx:id="artworkDimensionLabel" />
+        </HBox>
+
+    </VBox>
+
+    <Separator />
+
+    <Button
+            text="%songEdit.edit"
+            onAction="#edit">
+        <graphic>
+            <FontIcon iconLiteral="fltfmz-save-24" />
+        </graphic>
+    </Button>
+
+</VBox>

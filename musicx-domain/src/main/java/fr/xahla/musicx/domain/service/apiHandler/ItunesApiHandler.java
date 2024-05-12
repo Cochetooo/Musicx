@@ -70,12 +70,12 @@ public class ItunesApiHandler
         final var albumJson = jsonResponse.getJSONArray("results").getJSONObject(0);
 
         // Artwork URL
-        if (!overwrite || null == album.getArtworkUrl() || album.getArtworkUrl().isEmpty()) {
+        if (overwrite || null == album.getArtworkUrl() || album.getArtworkUrl().isEmpty()) {
             album.setArtworkUrl(albumJson.getString("artworkUrl100"));
         }
 
         // Primary Genre placeholder
-        if (!overwrite || null == album.getPrimaryGenreIds() || album.getPrimaryGenreIds().isEmpty()) {
+        if (overwrite || null == album.getPrimaryGenreIds() || album.getPrimaryGenreIds().isEmpty()) {
             final var itunesGenreName = albumJson.getString("primaryGenreName");
 
             final var genre = genreRepository().findByCriteria(Map.of(
@@ -92,7 +92,7 @@ public class ItunesApiHandler
         }
 
         // Release Date
-        if (!overwrite || null == album.getReleaseDate()) {
+        if (overwrite || null == album.getReleaseDate()) {
             album.setReleaseDate(ZonedDateTime.parse(
                 albumJson.getString("releaseDate"),
                 DateTimeFormatter.ISO_DATE_TIME
@@ -100,7 +100,7 @@ public class ItunesApiHandler
         }
 
         // Track Total
-        if (!overwrite || 0 == album.getTrackTotal()) {
+        if (overwrite || 0 == album.getTrackTotal()) {
             album.setTrackTotal((short) albumJson.getInt("trackCount"));
         }
     }

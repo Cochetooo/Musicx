@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Button?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<?import javafx.scene.layout.HBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.content.SongEdit"
+      prefHeight="1200.0" prefWidth="400.0"
+      style="
+        -fx-padding: 20px;
+        -fx-background-color: -color-base-7;
+        -fx-background-radius: 10px;
+        -fx-border-radius: 10px;
+      "
+      spacing="10">
+
+    <VBox spacing="5">
+        <Label text="%songEdit.artistName" styleClass="text-caption" />
+        <Button text="%songEdit.editArtist" onAction="#editArtist" />
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%songEdit.albumName" styleClass="text-caption" />
+        <Button text="%songEdit.editAlbum" onAction="#editAlbum" />
+    </VBox>
+
+    <Separator />
+
+    <VBox spacing="5">
+        <Label text="%songEdit.songName" styleClass="text-caption" />
+        <TextField fx:id="songNameField" />
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%songEdit.disc" styleClass="text-caption" />
+        <HBox spacing="12">
+            <TextField fx:id="discNoField" />
+            <Label text="/" />
+            <TextField fx:id="discTotalField" editable="false" />
+        </HBox>
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="%songEdit.tracks" styleClass="text-caption" />
+        <HBox spacing="7">
+            <TextField fx:id="trackNoField" />
+            <Label text="/" />
+            <TextField fx:id="trackTotalField" editable="false" />
+        </HBox>
+    </VBox>
+
+    <Separator />
+
+    <VBox spacing="5">
+        <Label text="%songEdit.duration" styleClass="text-caption" />
+        <TextField fx:id="durationField" editable="false" />
+    </VBox>
+
+    <HBox spacing="10">
+        <VBox spacing="5">
+            <Label text="%songEdit.bitRate" styleClass="text-caption" />
+            <TextField fx:id="bitRateField" editable="false" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="%songEdit.sampleRate" styleClass="text-caption" />
+            <TextField fx:id="sampleRateField" editable="false" />
+        </VBox>
+    </HBox>
+
+    <VBox spacing="5">
+        <Label text="%songEdit.format" styleClass="text-caption" />
+        <TextField fx:id="formatField" editable="false" />
+    </VBox>
+
+    <Separator />
+
+    <VBox spacing="5">
+        <Label text="%songEdit.filepath" styleClass="text-caption" />
+        <TextField fx:id="filepathField" editable="false" />
+    </VBox>
+
+    <Separator />
+
+    <Button
+        text="%songEdit.edit"
+        onAction="#edit">
+        <graphic>
+            <FontIcon iconLiteral="fltfmz-save-24" />
+        </graphic>
+    </Button>
+
+</VBox>

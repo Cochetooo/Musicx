@@ -8,7 +8,6 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
 import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
 
 public class Genre {
@@ -29,9 +28,7 @@ public class Genre {
         this.dto = genre;
     }
 
-    public GenreDto toDto() {
-        dto.setName(getName());
-
+    public GenreDto getDto() {
         return dto;
     }
 
@@ -46,6 +43,7 @@ public class Genre {
     }
 
     public Genre setId(final long id) {
+        this.dto.setId(id);
         this.id.set(id);
         return this;
     }
@@ -59,6 +57,7 @@ public class Genre {
     }
 
     public Genre setName(final String name) {
+        this.dto.setName(name);
         this.name.set(name);
         return this;
     }

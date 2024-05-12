@@ -92,6 +92,7 @@ public class LabelRepository implements LabelRepositoryInterface {
             }
 
             transaction.commit();
+            logger().fine("Label saved successfully: " + label.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();

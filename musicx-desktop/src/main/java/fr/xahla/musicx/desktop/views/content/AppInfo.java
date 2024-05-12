@@ -90,7 +90,7 @@ public class AppInfo implements Initializable {
 
         this.footerLibrarySumLabel.setText(
             library().getSongs().size() + " " + this.resourceBundle.getString("appInfo.librarySum")
-            + " " + DurationHelper.getTimeString(java.time.Duration.ofSeconds(totalDuration.get()))
+            + " " + DurationHelper.getTimeString(java.time.Duration.ofMillis(totalDuration.get()))
         );
     }
 }

@@ -23,6 +23,13 @@ music lovers:<br>
 
 ## Patch Log
 
+### Release 0.3.1
+
+> #### New Features
+> - `Edit` Songs & Albums
+> #### Changes
+> - Changed pause fade-out from 0.25s to 0.35s
+
 ### Release 0.3.0 *(2024-05-12)*
 
 > #### Changes

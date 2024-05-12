@@ -10,6 +10,7 @@ import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -57,6 +58,7 @@ public class Content implements Initializable {
     // Right Nav Content
     private Parent queueListView;
     private Parent songEditView;
+    private Parent albumEditView;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
@@ -218,8 +220,21 @@ public class Content implements Initializable {
             return;
         }
 
-        this.songEditView = FXMLHelper.getComponent("content/songEdit.fxml", resourceBundle);
+        this.songEditView = FXMLHelper.getComponent("content/edit/songEdit.fxml", resourceBundle);
 
+        rightNavContent().set(null);
         rightNavContent().set(songEditView);
+    }
+
+    @FXML public void actionAlbumEdit() {
+        if (null != rightNavContent().get() && rightNavContent().get().equals(albumEditView)) {
+            rightNavContent().set(null);
+            return;
+        }
+
+        this.albumEditView = FXMLHelper.getComponent("content/edit/albumEdit.fxml", resourceBundle);
+
+        rightNavContent().set(null);
+        rightNavContent().set(albumEditView);
     }
 }

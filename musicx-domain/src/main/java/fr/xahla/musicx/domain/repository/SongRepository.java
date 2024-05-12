@@ -108,6 +108,7 @@ public class SongRepository implements SongRepositoryInterface {
             }
 
             transaction.commit();
+            logger().fine("Song saved successfully: " + song.getTitle());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();

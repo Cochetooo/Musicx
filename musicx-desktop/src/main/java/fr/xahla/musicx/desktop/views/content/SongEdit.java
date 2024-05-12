@@ -1,28 +1,74 @@
 package fr.xahla.musicx.desktop.views.content;
 
-import javafx.event.ActionEvent;
+import fr.xahla.musicx.desktop.helper.DurationHelper;
+import fr.xahla.musicx.domain.helper.StringHelper;
+import fr.xahla.musicx.domain.service.localAudioFile.WriteMetadataToAudioFile;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.player;
+import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public class SongEdit implements Initializable {
 
-    @FXML private TextField artistNameField;
-    @FXML private TextField albumNameField;
     @FXML private TextField songNameField;
 
+    @FXML private TextField discNoField;
+    @FXML private TextField discTotalField;
+
+    @FXML private TextField trackNoField;
+    @FXML private TextField trackTotalField;
+
+    @FXML private TextField durationField;
+    @FXML private TextField bitRateField;
+    @FXML private TextField sampleRateField;
+
+    @FXML private TextField formatField;
+    @FXML private TextField filepathField;
+
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        this.artistNameField.setText(player().getCurrentSong().getArtist().getName());
-        this.albumNameField.setText(player().getCurrentSong().getAlbum().getName());
-        this.songNameField.setText(player().getCurrentSong().getTitle());
+        final var song = player().getCurrentSong();
+
+        this.songNameField.setText(song.getTitle());
+
+        this.discNoField.setText(String.valueOf(song.getDiscNumber()));
+        this.discTotalField.setText(String.valueOf(song.getAlbum().getDiscTotal()));
+
+        this.trackNoField.setText(String.valueOf(song.getTrackNumber()));
+        this.trackTotalField.setText(String.valueOf(song.getAlbum().getTrackTotal()));
+
+        this.durationField.setText(DurationHelper.getTimeString(Duration.millis(
+            song.getDuration()
+        )));
+
+        this.bitRateField.setText(String.valueOf(song.getBitRate()));
+        this.sampleRateField.setText(String.valueOf(song.getSampleRate()));
+
+        this.formatField.setText(song.getFormat().name());
+        this.filepathField.setText(song.getFilepath());
     }
 
     @FXML public void edit() {
+        final var song = player().getCurrentSong();
+
+        song.setDiscNumber(StringHelper.parseShort(discNoField.getText()));
+        song.setTitle(songNameField.getText());
+        song.setTrackNumber(StringHelper.parseShort(trackNoField.getText()));
+
+        songRepository().save(song.getDto());
+        new WriteMetadataToAudioFile().execute(song.getDto());
+    }
+
+    @FXML public void editArtist() {
+
+    }
+
+    @FXML public void editAlbum() {
 
     }
 }

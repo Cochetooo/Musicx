@@ -1,5 +1,7 @@
 package fr.xahla.musicx.domain.application;
 
+import fr.xahla.musicx.domain.database.HibernateLoader;
+import fr.xahla.musicx.domain.logging.SplitConsoleHandler;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.logging.Logger;
@@ -19,6 +21,7 @@ public class AbstractContext {
         this.env = Dotenv.load();
 
         this.logger = logger;
+        logger.addHandler(new SplitConsoleHandler());
     }
 
     public static String env(final String key) {

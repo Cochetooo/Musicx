@@ -59,6 +59,7 @@ module fr.xahla.musicx.domain {
     exports fr.xahla.musicx.domain.helper;
     exports fr.xahla.musicx.domain.helper.enums;
     exports fr.xahla.musicx.domain.listener;
+    exports fr.xahla.musicx.domain.logging;
     exports fr.xahla.musicx.domain.model.data;
     exports fr.xahla.musicx.domain.model.entity;
     exports fr.xahla.musicx.domain.model.enums;

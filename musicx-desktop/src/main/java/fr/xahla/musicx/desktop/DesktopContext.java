@@ -47,16 +47,8 @@ public class DesktopContext extends AbstractContext {
 
     public static void createContext() {
         context = new DesktopContext(
-            Logger.getLogger(DesktopApplication.class.getName())
+            LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME)
         );
-
-        try (var inputStream = Objects.requireNonNull(DesktopApplication.class.getResource("config/logger.properties")).openStream()) {
-            LogManager.getLogManager().readConfiguration(inputStream);
-        } catch (SecurityException | IOException | NullPointerException exception) {
-            logger().severe(exception.getLocalizedMessage());
-        }
-
-        logger().setLevel(Level.ALL);
 
         context.taskProgressManager = new TaskProgressManager();
         context.trackListManager = new QueueManager();

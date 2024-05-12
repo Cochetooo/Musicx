@@ -105,7 +105,7 @@
             <TableColumn text="%tracksTable.genres" fx:id="tracksTableGenresCol" />
 
             <!-- Year -->
-            <TableColumn text="%tracksTable.albumYear" prefWidth="8" fx:id="tracksTableYearCol" />
+            <TableColumn text="%tracksTable.albumYear" prefWidth="12" fx:id="tracksTableYearCol" />
 
             <!-- Duration -->
             <TableColumn fx:id="tracksTableDurationCol" prefWidth="6" style="-fx-alignment: center;">
@@ -158,6 +158,15 @@
                             text="%content.trackListContextMenu.editSong"
                             accelerator="Shift+Enter"
                             onAction="#actionSongEdit">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-edit-32" />
+                        </graphic>
+                    </MenuItem>
+
+                    <!-- Edit Album -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.editAlbum"
+                            onAction="#actionAlbumEdit">
                         <graphic>
                             <FontIcon iconLiteral="fltfal-edit-32" />
                         </graphic>

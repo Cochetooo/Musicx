@@ -75,7 +75,6 @@ public final class ImportGenresFromJson {
 
     public static void main(final String[] args) {
         new Context();
-        new HibernateLoader();
 
         final var service = new ImportGenresFromJson();
         service.execute(env("GENRES_URL"));

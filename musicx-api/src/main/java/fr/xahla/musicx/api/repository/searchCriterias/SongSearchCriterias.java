@@ -1,9 +1,12 @@
 package fr.xahla.musicx.api.repository.searchCriterias;
 
+import lombok.Getter;
+
+@Getter
 public enum SongSearchCriterias {
 
-    ALBUM("album_id"),
-    ARTIST("artist_id"),
+    ALBUM("albumId"),
+    ARTIST("artistId"),
     BIT_RATE("bitRate"),
     DURATION("duration"),
     ID("id"),
@@ -15,10 +18,6 @@ public enum SongSearchCriterias {
 
     SongSearchCriterias(final String column) {
         this.column = column;
-    }
-
-    public String getColumn() {
-        return column;
     }
 
 }

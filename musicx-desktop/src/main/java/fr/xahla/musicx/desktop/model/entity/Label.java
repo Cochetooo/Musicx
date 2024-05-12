@@ -30,9 +30,7 @@ public class Label {
         this.dto = label;
     }
 
-    public LabelDto toDto() {
-        dto.setName(getName());
-
+    public LabelDto getDto() {
         return dto;
     }
 
@@ -47,6 +45,7 @@ public class Label {
     }
 
     public Label setId(final long id) {
+        this.dto.setId(id);
         this.id.set(id);
         return this;
     }
@@ -60,6 +59,7 @@ public class Label {
     }
 
     public Label setName(final String name) {
+        this.dto.setName(name);
         this.name.set(name);
         return this;
     }

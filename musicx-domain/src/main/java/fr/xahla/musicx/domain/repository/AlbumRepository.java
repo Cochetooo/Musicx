@@ -162,6 +162,7 @@ public class AlbumRepository implements AlbumRepositoryInterface {
             }
 
             transaction.commit();
+            logger().fine("Album saved successfully: " + album.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();

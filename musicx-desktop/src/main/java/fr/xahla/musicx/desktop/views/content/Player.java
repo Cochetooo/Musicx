@@ -3,6 +3,7 @@ package fr.xahla.musicx.desktop.views.content;
 import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
+import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.model.enums.RepeatMode;
 import javafx.animation.FadeTransition;
@@ -235,20 +236,26 @@ public class Player implements Initializable {
         final var getArtworkTask = new Task<>() {
             @Override protected Void call() {
                 // We try to get the artwork from LastFM then from iTunes if not found
-                final var dto = song.getAlbum().toDto();
+                final var artworkUrl = song.getAlbum().getArtworkUrl();
 
-                lastFmApi().fetchAlbumFromExternal(dto, true);
+                if (artworkUrl.isEmpty()) {
+                    final var albumDto = song.getAlbum().getDto();
 
-                if (song.getAlbum().getArtworkUrl().isEmpty()) {
-                    itunesApi().fetchAlbumFromExternal(dto, false);
+                    lastFmApi().fetchAlbumFromExternal(albumDto, false);
+
+                    if (albumDto.getArtworkUrl().isEmpty()) {
+                        itunesApi().fetchAlbumFromExternal(albumDto, false);
+                    }
+
+                    if (!albumDto.getArtworkUrl().isEmpty()) {
+                        albumRepository().save(albumDto);
+                        song.setAlbum(new Album(albumDto));
+                    }
                 }
 
-                albumRepository().save(dto);
-                // @TODO !!!!
-
-                final var image = (null == song.getAlbum().getArtworkUrl() || song.getAlbum().getArtworkUrl().isEmpty())
+                final var image = (song.getAlbum().getArtworkUrl().isEmpty())
                     ? new Image(albumThumbnailPlaceholderImageURL)
-                    : new Image(dto.getArtworkUrl());
+                    : new Image(song.getAlbum().getArtworkUrl());
 
                 Platform.runLater(() -> {
                     // Set artwork thumbnail

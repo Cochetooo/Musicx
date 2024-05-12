@@ -1,7 +1,6 @@
 package fr.xahla.musicx.desktop.model.entity;
 
 import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.enums.AlbumType;
 import fr.xahla.musicx.api.model.enums.ArtistRole;
 import javafx.beans.property.*;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
 
 /** <b>Class that defines the Album Model for desktop view usage.</b>
  * <p>
@@ -62,15 +60,7 @@ public class Album {
         this.dto = album;
     }
 
-    public AlbumDto toDto() {
-        dto.setArtworkUrl(getArtworkUrl());
-        dto.setCatalogNo(getCatalogNo());
-        dto.setDiscTotal((short) getDiscTotal());
-        dto.setName(getName());
-        dto.setReleaseDate(getReleaseDate());
-        dto.setTrackTotal((short) getTrackTotal());
-        dto.setType(getType());
-
+    public AlbumDto getDto() {
         return dto;
     }
 
@@ -85,6 +75,7 @@ public class Album {
     }
 
     public Album setId(final long id) {
+        this.dto.setId(id);
         this.id.set(id);
         return this;
     }
@@ -98,6 +89,7 @@ public class Album {
     }
 
     public Album setArtworkUrl(final String artworkUrl) {
+        this.dto.setArtworkUrl(artworkUrl);
         this.artworkUrl.set(artworkUrl);
         return this;
     }
@@ -111,6 +103,7 @@ public class Album {
     }
 
     public Album setCatalogNo(final String catalogNo) {
+        this.dto.setCatalogNo(catalogNo);
         this.catalogNo.set(catalogNo);
         return this;
     }
@@ -123,7 +116,8 @@ public class Album {
         return discTotal;
     }
 
-    public Album setDiscTotal(final int discTotal) {
+    public Album setDiscTotal(final short discTotal) {
+        this.dto.setDiscTotal(discTotal);
         this.discTotal.set(discTotal);
         return this;
     }
@@ -137,6 +131,7 @@ public class Album {
     }
 
     public Album setName(final String name) {
+        this.dto.setName(name);
         this.name.set(name);
         return this;
     }
@@ -150,6 +145,7 @@ public class Album {
     }
 
     public Album setReleaseDate(final LocalDate releaseDate) {
+        this.dto.setReleaseDate(releaseDate);
         this.releaseDate.set(releaseDate);
         return this;
     }
@@ -162,7 +158,8 @@ public class Album {
         return trackTotal;
     }
 
-    public Album setTrackTotal(final int trackTotal) {
+    public Album setTrackTotal(final short trackTotal) {
+        this.dto.setTrackTotal(trackTotal);
         this.trackTotal.set(trackTotal);
         return this;
     }
@@ -176,6 +173,7 @@ public class Album {
     }
 
     public Album setType(final AlbumType type) {
+        this.dto.setType(type);
         this.type.set(type);
         return this;
     }
