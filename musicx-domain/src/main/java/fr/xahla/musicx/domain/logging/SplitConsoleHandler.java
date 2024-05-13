@@ -13,14 +13,20 @@ import java.util.logging.LogRecord;
 @Getter
 public class SplitConsoleHandler extends ConsoleHandler {
 
-    public static interface MessageListener {
-        void onMessage(final String message, final Level level, final ConsoleType type);
+    public interface MessageListener {
+        void onMessage(final MessageData message);
     }
+
+    public record MessageData(
+        String message,
+        Level level,
+        ConsoleType type
+    ) {}
 
     public static final int MAX_MESSAGE = 2_000;
 
-    private final List<String> hibernateSqlLogs;
-    private final List<String> otherLogs;
+    private final List<MessageData> hibernateSqlLogs;
+    private final List<MessageData> otherLogs;
 
     private final List<MessageListener> listeners;
 
@@ -49,15 +55,23 @@ public class SplitConsoleHandler extends ConsoleHandler {
                 hibernateSqlLogs.removeFirst();
             }
 
-            hibernateSqlLogs.add(outputMessage.replace("[Hibernate SQL]", ""));
-            listeners.forEach(listener -> listener.onMessage(outputMessage, record.getLevel(), ConsoleType.HIBERNATE));
+            final var messageData = new MessageData(
+                outputMessage.replace("[Hibernate SQL]", ""), record.getLevel(), ConsoleType.HIBERNATE
+            );
+
+            hibernateSqlLogs.add(messageData);
+            listeners.forEach(listener -> listener.onMessage(messageData));
         } else {
             if (otherLogs.size() > MAX_MESSAGE) {
                 otherLogs.removeFirst();
             }
 
-            otherLogs.add(outputMessage);
-            listeners.forEach(listener -> listener.onMessage(outputMessage, record.getLevel(), ConsoleType.OTHER));
+            final var messageData = new MessageData(
+                outputMessage, record.getLevel(), ConsoleType.OTHER
+            );
+
+            otherLogs.add(messageData);
+            listeners.forEach(listener -> listener.onMessage(messageData));
         }
     }
 

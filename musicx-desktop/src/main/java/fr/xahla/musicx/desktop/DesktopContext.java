@@ -33,7 +33,7 @@ public class DesktopContext extends AbstractContext {
     private Settings settings;
     private AudioPlayerManager audioPlayerManager;
 
-    private ObjectProperty<Parent> rightNavContent;
+    private RightNavContentManager rightNavContent;
 
     private static DesktopContext context;
 
@@ -46,13 +46,16 @@ public class DesktopContext extends AbstractContext {
     }
 
     public static void createContext() {
+        final var logger = Logger.getLogger(DesktopContext.class.getName());
+        logger.setLevel(Level.ALL);
+
         context = new DesktopContext(
-            LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME)
+            logger
         );
 
         context.taskProgressManager = new TaskProgressManager();
         context.trackListManager = new QueueManager();
-        context.rightNavContent = new SimpleObjectProperty<>();
+        context.rightNavContent = new RightNavContentManager();
 
         // Requires library manager
         context.artistManager = new ArtistListManager();
@@ -83,7 +86,7 @@ public class DesktopContext extends AbstractContext {
         return context.trackListManager;
     }
 
-    public static ObjectProperty<Parent> rightNavContent() {
+    public static RightNavContentManager rightNavContent() {
         return context.rightNavContent;
     }
 }

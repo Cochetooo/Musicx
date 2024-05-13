@@ -28,7 +28,7 @@ public class ContentLayout implements Initializable {
     @FXML private VBox rightNavContainer;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        rightNavContent().addListener((observableValue, oldValue, newValue) -> {
+        rightNavContent().onChange((oldValue, newValue) -> {
             if (null == newValue) {
                 rightNavContainer.getChildren().clear();
             } else {

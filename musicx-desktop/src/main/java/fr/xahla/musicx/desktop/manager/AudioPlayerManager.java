@@ -6,6 +6,8 @@ import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Player;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.model.enums.RepeatMode;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
@@ -35,6 +37,7 @@ public class AudioPlayerManager {
 
     private final QueueManager queueManager;
     private final Player player;
+    private final ObjectProperty<Song> editedSong;
 
     private final List<MediaPlayListener> playListeners;
     private final List<MediaPauseListener> pauseListeners;
@@ -47,6 +50,8 @@ public class AudioPlayerManager {
     public AudioPlayerManager() {
         this.queueManager = new QueueManager();
         this.player = new Player();
+
+        this.editedSong = new SimpleObjectProperty<>();
 
         this.playListeners = new ArrayList<>();
         this.pauseListeners = new ArrayList<>();
@@ -309,6 +314,14 @@ public class AudioPlayerManager {
 
     public Song getCurrentSong() {
         return this.player.getSong();
+    }
+
+    public Song getEditedSong() {
+        return this.editedSong.get();
+    }
+
+    public void setEditedSong(final Song song) {
+        this.editedSong.set(song);
     }
 
     // --- Event / Listeners ---

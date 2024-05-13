@@ -36,7 +36,7 @@ public class AlbumEdit implements Initializable {
     @FXML private ImageView artworkView;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        final var album = player().getCurrentSong().getAlbum();
+        final var album = player().getEditedSong().getAlbum();
 
         this.albumNameField.setText(album.getName());
         this.albumNameField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -122,7 +122,7 @@ public class AlbumEdit implements Initializable {
     }
 
     @FXML public void edit() {
-        final var album = player().getCurrentSong().getAlbum();
+        final var album = player().getEditedSong().getAlbum();
 
         album.setArtworkUrl(artworkUrlField.getText());
         album.setCatalogNo(catalogNoField.getText());

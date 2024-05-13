@@ -40,12 +40,12 @@ public class FXMLHelper {
         return null;
     }
 
-    public static void showModal(final String fxmlSource, final ResourceBundle resourceBundle, final String title) {
+    public static void showModal(final FxmlComponent fxmlSource, final ResourceBundle resourceBundle, final String title) {
         final var stage = new Stage();
 
         try {
             final Parent fxmlComponent = FXMLLoader.load(
-                Objects.requireNonNull(Application.class.getResource("modal/" + fxmlSource)),
+                Objects.requireNonNull(Application.class.getResource("modal/" + fxmlSource.getFilepath())),
                 resourceBundle
             );
 
@@ -54,7 +54,7 @@ public class FXMLHelper {
             stage.setTitle(title);
             stage.show();
         } catch (IOException e) {
-            logger().severe(ErrorMessage.LOAD_FXML_MODAL_ERROR.getMsg(fxmlSource, title));
+            logger().severe(ErrorMessage.LOAD_FXML_MODAL_ERROR.getMsg(fxmlSource.getFilepath(), title));
             e.printStackTrace();
         }
     }

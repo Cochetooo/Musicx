@@ -4,6 +4,7 @@ import atlantafx.base.theme.PrimerDark;
 import fr.xahla.musicx.domain.helper.enums.ApplicationInfo;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -76,6 +77,7 @@ public final class DesktopApplication extends Application {
             this.mainStage.setTitle(ApplicationInfo.APP_NAME.getInfo() + " " + ApplicationInfo.APP_VERSION.getInfo());
             this.mainStage.initStyle(StageStyle.DECORATED);
             this.mainStage.setScene(scene);
+            this.mainStage.setOnCloseRequest((event) -> Platform.exit());
 
             DurationHelper.benchmarkFrom("Program Initialization", startTime);
 

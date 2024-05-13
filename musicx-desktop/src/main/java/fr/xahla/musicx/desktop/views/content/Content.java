@@ -1,6 +1,7 @@
 package fr.xahla.musicx.desktop.views.content;
 
 import atlantafx.base.controls.CustomTextField;
+import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
@@ -202,39 +203,24 @@ public class Content implements Initializable {
     }
 
     @FXML public void actionSettings() {
-        FXMLHelper.showModal("settings.fxml", this.resourceBundle, resourceBundle.getString("settings.title"));
+        FXMLHelper.showModal(FxmlComponent.MODAL_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
     }
 
     @FXML public void actionQueueList() {
-        if (null != rightNavContent().get() && rightNavContent().get().equals(queueListView)) {
-            rightNavContent().set(null);
-            return;
+        if (null != rightNavContent().get()) {
+            rightNavContent().close();
+        } else {
+            rightNavContent().switchContent(FxmlComponent.QUEUE_LIST, this.resourceBundle);
         }
-
-        rightNavContent().set(queueListView);
     }
 
     @FXML public void actionSongEdit() {
-        if (null != rightNavContent().get() && rightNavContent().get().equals(songEditView)) {
-            rightNavContent().set(null);
-            return;
-        }
-
-        this.songEditView = FXMLHelper.getComponent("content/edit/songEdit.fxml", resourceBundle);
-
-        rightNavContent().set(null);
-        rightNavContent().set(songEditView);
+        player().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
+        rightNavContent().switchContent(FxmlComponent.EDIT_SONG, this.resourceBundle);
     }
 
     @FXML public void actionAlbumEdit() {
-        if (null != rightNavContent().get() && rightNavContent().get().equals(albumEditView)) {
-            rightNavContent().set(null);
-            return;
-        }
-
-        this.albumEditView = FXMLHelper.getComponent("content/edit/albumEdit.fxml", resourceBundle);
-
-        rightNavContent().set(null);
-        rightNavContent().set(albumEditView);
+        player().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
+        rightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, this.resourceBundle);
     }
 }

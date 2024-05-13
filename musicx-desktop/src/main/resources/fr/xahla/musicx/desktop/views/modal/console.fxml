@@ -5,6 +5,8 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ComboBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.modal.Console"
@@ -15,21 +17,24 @@
 
     <Label text="%console.consoleLabel" styleClass="title-2" />
 
+    <Label text="%console.logLevel" />
+    <ComboBox fx:id="logLevelComboBox" />
+
     <TabPane>
         <Tab text="%console.tabMain">
             <!-- Console Output -->
-            <TextFlow
+            <ListView
                     fx:id="consoleOutputTextArea"
-                    lineSpacing="3"
                     style="-fx-font-size: 11pt; -fx-font-family: 'JetBrains Mono Thin'"
+                    prefHeight="1200.0"
             />
         </Tab>
         <Tab text="%console.tabQueries">
             <!-- Query Output -->
-            <TextFlow
+            <ListView
                     fx:id="queryOutputTextArea"
-                    lineSpacing="3"
                     style="-fx-font-size: 11pt; -fx-font-family: 'JetBrains Mono Thin'"
+                    prefHeight="1200.0"
             />
         </Tab>
     </TabPane>

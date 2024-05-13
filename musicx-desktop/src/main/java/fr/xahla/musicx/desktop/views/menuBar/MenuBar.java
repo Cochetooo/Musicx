@@ -1,6 +1,7 @@
 package fr.xahla.musicx.desktop.views.menuBar;
 
 import fr.xahla.musicx.desktop.helper.FXMLHelper;
+import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,7 +41,7 @@ public class MenuBar implements Initializable {
     /* --------------------------- FILE --------------------------- */
 
     @FXML public void fileImportFolders() {
-        FXMLHelper.showModal("importFolders.fxml", this.resourceBundle, resourceBundle.getString("importFolders.title"));
+        FXMLHelper.showModal(FxmlComponent.MODAL_IMPORT_FOLDERS, this.resourceBundle, resourceBundle.getString("importFolders.title"));
     }
 
     @FXML public void fileScanFolders() {
@@ -48,11 +49,11 @@ public class MenuBar implements Initializable {
     }
 
     @FXML public void fileSettings() {
-        FXMLHelper.showModal("settings.fxml", this.resourceBundle, resourceBundle.getString("settings.title"));
+        FXMLHelper.showModal(FxmlComponent.MODAL_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
     }
 
     @FXML public void fileShowConsole() {
-        FXMLHelper.showModal("console.fxml", this.resourceBundle, resourceBundle.getString("console.title"));
+        FXMLHelper.showModal(FxmlComponent.MODAL_CONSOLE, this.resourceBundle, resourceBundle.getString("console.title"));
     }
 
     @FXML public void fileExit() {

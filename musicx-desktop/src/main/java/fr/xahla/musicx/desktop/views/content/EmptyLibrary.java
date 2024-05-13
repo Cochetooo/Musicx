@@ -1,6 +1,7 @@
 package fr.xahla.musicx.desktop.views.content;
 
 import fr.xahla.musicx.desktop.helper.FXMLHelper;
+import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -26,6 +27,6 @@ public class EmptyLibrary implements Initializable {
     }
 
     @FXML public void importFolders() {
-        FXMLHelper.showModal("importFolders.fxml", this.resourceBundle, resourceBundle.getString("importFolders.title"));
+        FXMLHelper.showModal(FxmlComponent.MODAL_IMPORT_FOLDERS, this.resourceBundle, resourceBundle.getString("importFolders.title"));
     }
 }
