@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TextFormatter?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.modal.Console"
@@ -20,20 +18,18 @@
     <TabPane>
         <Tab text="%console.tabMain">
             <!-- Console Output -->
-            <TextArea
+            <TextFlow
                     fx:id="consoleOutputTextArea"
-                    prefRowCount="40" prefColumnCount="120"
-                    editable="false"
-                    style="-fx-font-size: 11pt; -fx-line-spacing: 2em; -fx-font-family: 'JetBrains Mono Thin'"
+                    lineSpacing="3"
+                    style="-fx-font-size: 11pt; -fx-font-family: 'JetBrains Mono Thin'"
             />
         </Tab>
         <Tab text="%console.tabQueries">
             <!-- Query Output -->
-            <TextArea
+            <TextFlow
                     fx:id="queryOutputTextArea"
-                    prefRowCount="40" prefColumnCount="120"
-                    editable="false"
-                    style="-fx-font-size: 11pt; -fx-line-spacing: 2em; -fx-font-family: 'JetBrains Mono Thin'"
+                    lineSpacing="3"
+                    style="-fx-font-size: 11pt; -fx-font-family: 'JetBrains Mono Thin'"
             />
         </Tab>
     </TabPane>

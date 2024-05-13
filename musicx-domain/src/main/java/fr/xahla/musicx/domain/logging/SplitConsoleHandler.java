@@ -14,7 +14,7 @@ import java.util.logging.LogRecord;
 public class SplitConsoleHandler extends ConsoleHandler {
 
     public static interface MessageListener {
-        void onMessage(final String message, final Level level);
+        void onMessage(final String message, final Level level, final ConsoleType type);
     }
 
     public static final int MAX_MESSAGE = 2_000;
@@ -49,16 +49,16 @@ public class SplitConsoleHandler extends ConsoleHandler {
                 hibernateSqlLogs.removeFirst();
             }
 
-            hibernateSqlLogs.add(outputMessage);
+            hibernateSqlLogs.add(outputMessage.replace("[Hibernate SQL]", ""));
+            listeners.forEach(listener -> listener.onMessage(outputMessage, record.getLevel(), ConsoleType.HIBERNATE));
         } else {
             if (otherLogs.size() > MAX_MESSAGE) {
                 otherLogs.removeFirst();
             }
 
             otherLogs.add(outputMessage);
+            listeners.forEach(listener -> listener.onMessage(outputMessage, record.getLevel(), ConsoleType.OTHER));
         }
-
-        listeners.forEach(listener -> listener.onMessage(outputMessage, record.getLevel()));
     }
 
     public void addListener(final MessageListener listener) {
