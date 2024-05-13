@@ -35,7 +35,7 @@ public class Console implements Initializable {
         consoleOutputTextArea.setText(String.join("\n", consoleHandler.getOtherLogs()));
         queryOutputTextArea.setText(String.join("\n", consoleHandler.getHibernateSqlLogs()));
 
-        consoleHandler.addListener((message) -> {
+        consoleHandler.addListener((message, level) -> {
             consoleOutputTextArea.setText(String.join("\n", consoleHandler.getOtherLogs()));
             queryOutputTextArea.setText(String.join("\n", consoleHandler.getHibernateSqlLogs()));
         });

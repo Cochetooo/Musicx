@@ -88,7 +88,9 @@ public class AlbumEdit implements Initializable {
         this.artworkView.imageProperty().addListener((observable, oldValue, newValue)
             -> this.artworkDimensionLabel.setText(newValue.getWidth() + " x " + newValue.getHeight()));
 
-        this.artworkView.setImage(new Image(album.getArtworkUrl()));
+        if (null != album.getArtworkUrl() && !album.getArtworkUrl().isEmpty()) {
+            this.artworkView.setImage(new Image(album.getArtworkUrl()));
+        }
     }
 
     @FXML public void editArtist() {

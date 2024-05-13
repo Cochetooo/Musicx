@@ -39,6 +39,11 @@ public final class AudioTaggerHelper {
         return customTags;
     }
 
+    /**
+     * @param customTags
+     * @param fieldKey
+     * @return The value of the custom field key, or "" if not found
+     */
     public static String getCustomTag(final List<TagField> customTags, final CustomFieldKey fieldKey) {
         try {
             for (final var tagField : customTags) {

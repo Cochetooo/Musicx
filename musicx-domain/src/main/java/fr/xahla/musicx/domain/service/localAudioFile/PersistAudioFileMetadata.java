@@ -111,9 +111,9 @@ public final class PersistAudioFileMetadata {
             final var name = tag.getFirst(FieldKey.ALBUM);
             final var releaseDate = this.getLocalDate(tag.getFirst(FieldKey.YEAR));
             final var trackTotal = this.getShort(tag.getFirst(FieldKey.TRACK_TOTAL));
-            final var type = AlbumType.valueOf(
-                AudioTaggerHelper.getCustomTag(customTags, CustomFieldKey.ALBUM_TYPE).toUpperCase()
-            );
+
+            final var typeCustomTag = AudioTaggerHelper.getCustomTag(customTags, CustomFieldKey.ALBUM_TYPE);
+            final var type = typeCustomTag.isBlank() ? null : AlbumType.valueOf(typeCustomTag.toUpperCase());
 
             if (name.isBlank()) {
                 return null;
