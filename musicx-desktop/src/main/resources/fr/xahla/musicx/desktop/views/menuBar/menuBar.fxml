@@ -25,6 +25,13 @@
                         <FontIcon iconLiteral="fltfal-arrow-clockwise-24" />
                     </graphic>
                 </MenuItem>
+
+                <!-- Structure folders -->
+                <MenuItem text="%menu.file.library.structureFolders" onAction="#fileStructureFolders" fx:id="fileStructureFolders">
+                    <graphic>
+                        <FontIcon iconLiteral="fltfmz-text-bullet-list-tree-24" />
+                    </graphic>
+                </MenuItem>
             </Menu>
 
             <SeparatorMenuItem />

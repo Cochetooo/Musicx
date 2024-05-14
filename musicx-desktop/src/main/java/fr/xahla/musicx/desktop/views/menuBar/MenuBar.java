@@ -2,10 +2,13 @@ package fr.xahla.musicx.desktop.views.menuBar;
 
 import fr.xahla.musicx.desktop.helper.FXMLHelper;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.domain.service.localAudioFile.StructureAudioFilesTree;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
+import javafx.stage.DirectoryChooser;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,7 +28,8 @@ import static fr.xahla.musicx.desktop.DesktopContext.player;
  */
 public class MenuBar implements Initializable {
 
-    @FXML public MenuItem fileScanFoldersMenuItem;
+    @FXML private MenuItem fileScanFoldersMenuItem;
+    @FXML private MenuItem fileStructureFolders;
 
     private ResourceBundle resourceBundle;
 
@@ -75,5 +79,14 @@ public class MenuBar implements Initializable {
 
     @FXML public void playerMute() {
         player().mute();
+    }
+
+    @FXML public void fileStructureFolders() {
+        final var folderChooser = new DirectoryChooser();
+        final var folder = folderChooser.showDialog(null);
+
+        if (null != folder) {
+            new StructureAudioFilesTree().execute(folder.getAbsolutePath());
+        }
     }
 }
