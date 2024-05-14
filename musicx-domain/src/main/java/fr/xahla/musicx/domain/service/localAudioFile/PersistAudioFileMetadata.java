@@ -1,7 +1,7 @@
 package fr.xahla.musicx.domain.service.localAudioFile;
 
 import fr.xahla.musicx.api.model.*;
-import fr.xahla.musicx.api.model.enums.AlbumType;
+import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.api.model.enums.AudioFormat;
 import fr.xahla.musicx.api.repository.searchCriterias.*;
 import fr.xahla.musicx.domain.helper.AudioTaggerHelper;
@@ -113,7 +113,7 @@ public final class PersistAudioFileMetadata {
             final var trackTotal = this.getShort(tag.getFirst(FieldKey.TRACK_TOTAL));
 
             final var typeCustomTag = AudioTaggerHelper.getCustomTag(customTags, CustomFieldKey.ALBUM_TYPE);
-            final var type = typeCustomTag.isBlank() ? null : AlbumType.valueOf(typeCustomTag.toUpperCase());
+            final var type = typeCustomTag.isBlank() ? null : ReleaseType.valueOf(typeCustomTag.toUpperCase());
 
             if (name.isBlank()) {
                 return null;

@@ -1,15 +1,11 @@
 package fr.xahla.musicx.api.model.enums;
 
-/** <b>(API) Role list for an artist.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+import lombok.Getter;
+
+/** Role list for a credited artist.
  * @author Cochetooo
  */
+@Getter
 public enum ArtistRole {
 
     ALL("Made everything"),
@@ -42,14 +38,10 @@ public enum ArtistRole {
 
     SOUND_ENGINEER("Professional responsible for recording, mixing and mastering the music");
 
-    private String description;
+    private final String description;
 
     ArtistRole(final String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
 }

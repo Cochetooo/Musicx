@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.views.content;
 
-import fr.xahla.musicx.api.model.enums.AlbumType;
+import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.localAudioFile.WriteMetadataToAudioFile;
@@ -9,7 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.net.URL;
@@ -29,7 +28,7 @@ public class AlbumEdit implements Initializable {
     @FXML private TextField discTotalField;
     @FXML private TextField trackTotalField;
 
-    @FXML private ComboBox<AlbumType> albumTypeComboBox;
+    @FXML private ComboBox<ReleaseType> albumTypeComboBox;
     @FXML private DatePicker releaseDatePicker;
 
     @FXML private TextField artworkUrlField;
@@ -66,7 +65,7 @@ public class AlbumEdit implements Initializable {
             }
         });
 
-        this.albumTypeComboBox.getItems().addAll(AlbumType.values());
+        this.albumTypeComboBox.getItems().addAll(ReleaseType.values());
         this.albumTypeComboBox.setValue(album.getType());
         this.albumTypeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue != newValue) {

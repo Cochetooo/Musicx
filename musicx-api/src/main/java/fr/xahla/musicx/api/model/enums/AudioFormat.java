@@ -1,5 +1,9 @@
 package fr.xahla.musicx.api.model.enums;
 
+/**
+ * Standard audio file formats.
+ * @author Cochetooo
+ */
 public enum AudioFormat {
 
     _3GP,

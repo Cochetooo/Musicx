@@ -2,6 +2,7 @@ package fr.xahla.musicx.domain.model.entity;
 
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.enums.ArtistRole;
+import fr.xahla.musicx.api.model.enums.ReleaseType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,12 +58,13 @@ public class AlbumEntity {
     private List<GenreEntity> secondaryGenres = new ArrayList<>();
 
     // Standard columns
-    private String name;
-    private String catalogNo;
     private String artworkUrl;
+    private String catalogNo;
+    private short discTotal;
+    private String name;
     private LocalDate releaseDate;
     private short trackTotal;
-    private short discTotal;
+    private ReleaseType type;
 
     // Casts
 
@@ -76,6 +78,7 @@ public class AlbumEntity {
         this.setName(albumDto.getName());
         this.setReleaseDate(albumDto.getReleaseDate());
         this.setTrackTotal(albumDto.getTrackTotal());
+        this.setType(albumDto.getType());
 
         if (null != albumDto.getCreditArtistIds()) {
             Hibernate.initialize(creditArtists);
@@ -124,6 +127,7 @@ public class AlbumEntity {
             .name(name)
             .releaseDate(releaseDate)
             .trackTotal(trackTotal)
+            .type(type)
             .build();
 
         if (null != this.creditArtists && Hibernate.isInitialized(this.creditArtists)) {

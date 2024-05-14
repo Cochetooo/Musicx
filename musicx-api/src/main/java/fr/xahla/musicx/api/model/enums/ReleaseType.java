@@ -1,6 +1,10 @@
 package fr.xahla.musicx.api.model.enums;
 
-public enum AlbumType {
+/**
+ * Type of release of an album.
+ * @author Cochetooo
+ */
+public enum ReleaseType {
 
     ADDITIONAL_RELEASE,
     BOOTLEG,

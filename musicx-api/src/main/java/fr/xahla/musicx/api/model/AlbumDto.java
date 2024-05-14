@@ -1,11 +1,9 @@
 package fr.xahla.musicx.api.model;
 
-import fr.xahla.musicx.api.model.enums.AlbumType;
+import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.api.model.enums.ArtistRole;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,6 +37,6 @@ public class AlbumDto {
     private String name;
     private LocalDate releaseDate;
     private short trackTotal;
-    private AlbumType type;
+    private ReleaseType type;
 
 }

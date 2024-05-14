@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.model.entity;
 
 import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.enums.AlbumType;
+import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.api.model.enums.ArtistRole;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -38,7 +38,7 @@ public class Album {
     private final StringProperty name;
     private final ObjectProperty<LocalDate> releaseDate;
     private final IntegerProperty trackTotal;
-    private final ObjectProperty<AlbumType> type;
+    private final ObjectProperty<ReleaseType> type;
 
     private ObjectProperty<Artist> artist;
     private MapProperty<Artist, ArtistRole> creditArtists;
@@ -164,15 +164,15 @@ public class Album {
         return this;
     }
 
-    public AlbumType getType() {
+    public ReleaseType getType() {
         return type.get();
     }
 
-    public ObjectProperty<AlbumType> typeProperty() {
+    public ObjectProperty<ReleaseType> typeProperty() {
         return type;
     }
 
-    public Album setType(final AlbumType type) {
+    public Album setType(final ReleaseType type) {
         this.dto.setType(type);
         this.type.set(type);
         return this;
