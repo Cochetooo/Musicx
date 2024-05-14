@@ -29,6 +29,8 @@ music lovers:<br>
 > - `Edit` Songs & Albums
 > - `Save Audio Files` metadata
 > - `Console Tabs` for more clarity
+> - `Console Level Filter`
+> - `Restructure Folders` feature to make a fully organized music folder
 > #### Changes
 > - Changed pause fade-out from 0.25s to 0.35s
 

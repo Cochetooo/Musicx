@@ -52,6 +52,15 @@ public class MenuBar implements Initializable {
         library().launchScanFoldersTask();
     }
 
+    @FXML public void fileStructureFolders() {
+        final var folderChooser = new DirectoryChooser();
+        final var folder = folderChooser.showDialog(null);
+
+        if (null != folder) {
+            new StructureAudioFilesTree().execute(folder.getAbsolutePath());
+        }
+    }
+
     @FXML public void fileSettings() {
         FXMLHelper.showModal(FxmlComponent.MODAL_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
     }
@@ -79,14 +88,5 @@ public class MenuBar implements Initializable {
 
     @FXML public void playerMute() {
         player().mute();
-    }
-
-    @FXML public void fileStructureFolders() {
-        final var folderChooser = new DirectoryChooser();
-        final var folder = folderChooser.showDialog(null);
-
-        if (null != folder) {
-            new StructureAudioFilesTree().execute(folder.getAbsolutePath());
-        }
     }
 }

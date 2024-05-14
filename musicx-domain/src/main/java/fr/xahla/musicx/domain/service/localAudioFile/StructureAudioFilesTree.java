@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
 import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
@@ -29,8 +30,11 @@ public class StructureAudioFilesTree {
 
     private void createArtist(final ArtistDto artist) {
         try {
-            final var artistPath = rootFolder + "/" + artist.getName();
-            Files.createDirectory(Path.of(artistPath));
+            final var artistPath = Path.of(rootFolder).resolve(artist.getName());
+
+            if (!Files.exists(artistPath)) {
+                Files.createDirectory(artistPath);
+            }
 
             final var albums = artistRepository().getAlbums(artist);
 
@@ -40,12 +44,15 @@ public class StructureAudioFilesTree {
         }
     }
 
-    private void createAlbum(final AlbumDto album, final String artistPath) {
-        final var albumPath = artistPath + "/" +
-            album.getReleaseDate().getYear() + " - " +
-            album.getName();
+    private void createAlbum(final AlbumDto album, final Path artistPath) {
+        final var albumPath = artistPath.resolve(
+            album.getReleaseDate().getYear() + " - " + album.getName()
+        );
+
         try {
-            Files.createDirectory(Path.of(albumPath));
+            if (!Files.exists(albumPath)) {
+                Files.createDirectory(albumPath);
+            }
 
             final var songs = albumRepository().getSongs(album);
 
@@ -55,15 +62,27 @@ public class StructureAudioFilesTree {
         }
     }
 
-    private void createSong(final SongDto song, final String albumPath) {
+    private void createSong(final SongDto song, final Path albumPath) {
         try {
-            Files.copy(
-                Paths.get(song.getFilepath()),
-                Paths.get(albumPath + "/").resolve(song.getFilepath()),
-                StandardCopyOption.REPLACE_EXISTING
+            final var songPath = albumPath.resolve(
+                String.format("%02d", song.getTrackNumber()) + " - " + song.getTitle() + ".mp3"
             );
 
-            logger().fine("Song " + song.getFilepath() + " copied to " + albumPath);
+            logger().finest("Song path : " + songPath);
+
+            if (!Files.exists(songPath)) {
+                Files.copy(
+                    Paths.get(song.getFilepath()),
+                    songPath,
+                    StandardCopyOption.REPLACE_EXISTING
+                );
+
+                if (!Files.exists(songPath)) {
+                    logger().warning("File not copied! (Intended output): " + songPath);
+                } else {
+                    logger().fine("Song " + song.getFilepath() + " copied to " + songPath);
+                }
+            }
         } catch (final IOException exception) {
             logger().log(Level.SEVERE, "Could not move song " + song.getFilepath() + " to folder " + albumPath, exception);
         }

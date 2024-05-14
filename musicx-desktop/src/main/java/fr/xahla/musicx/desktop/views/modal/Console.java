@@ -43,15 +43,13 @@ public class Console implements Initializable {
         final var consoleList = FXCollections.observableList(consoleHandler.getOtherLogs());
         final var consoleFilterList = new FilteredList<>(consoleList);
 
+        consoleOutputTextArea.setItems(consoleFilterList);
+
         logLevelComboBox.getItems().addAll(ConsoleLevel.values());
         logLevelComboBox.getSelectionModel().select(ConsoleLevel.ALL);
         logLevelComboBox.valueProperty().addListener((observable, oldValue, newValue)
-            -> consoleFilterList.setPredicate(messageData ->
-                messageData.level().intValue() >= newValue.value
-            )
+            -> this.updateFilterList(consoleFilterList, newValue.value)
         );
-
-        consoleOutputTextArea.setItems(consoleFilterList);
 
         final var queryList = FXCollections.observableList(consoleHandler.getHibernateSqlLogs());
         queryOutputTextArea.setItems(queryList);
@@ -63,9 +61,15 @@ public class Console implements Initializable {
             if (message.type() == ConsoleType.HIBERNATE) {
                 queryList.add(message);
             } else {
-                consoleList.add(message);
+                this.updateFilterList(consoleFilterList, logLevelComboBox.getSelectionModel().getSelectedItem().value);
             }
         });
+    }
+
+    private void updateFilterList(final FilteredList<SplitConsoleHandler.MessageData> filteredList, final int newValue) {
+        filteredList.setPredicate(messageData ->
+            messageData.level().intValue() >= newValue
+        );
     }
 
     /* -------- Inner classes ----------- */
