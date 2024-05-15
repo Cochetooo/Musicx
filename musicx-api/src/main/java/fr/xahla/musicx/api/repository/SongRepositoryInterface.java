@@ -4,20 +4,15 @@ import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.model.SongDto;
-import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriterias;
+import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriteria;
 
 import java.util.List;
 import java.util.Map;
 
-/** <b>(API) Interface for Song Repository contracts.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Contracts to manipulate songs in database.
  * @author Cochetooo
+ * @see SongDto
  */
 public interface SongRepositoryInterface {
 
@@ -28,7 +23,7 @@ public interface SongRepositoryInterface {
 
     SongDto find(final Long id);
     List<SongDto> findAll();
-    List<SongDto> findByCriteria(final Map<SongSearchCriterias, Object> criteria);
+    List<SongDto> findByCriteria(final Map<SongSearchCriteria, Object> criteria);
 
     void save(final SongDto song);
 

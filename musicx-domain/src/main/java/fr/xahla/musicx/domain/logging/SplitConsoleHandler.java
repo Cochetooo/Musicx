@@ -10,6 +10,10 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Handles logs persistence for each log call.
+ * @author Cochetooo
+ */
 @Getter
 public class SplitConsoleHandler extends ConsoleHandler {
 
@@ -20,7 +24,7 @@ public class SplitConsoleHandler extends ConsoleHandler {
     public record MessageData(
         String message,
         Level level,
-        ConsoleType type
+        ConsoleLogType type
     ) {}
 
     public static final int MAX_MESSAGE = 2_000;
@@ -56,7 +60,7 @@ public class SplitConsoleHandler extends ConsoleHandler {
             }
 
             final var messageData = new MessageData(
-                outputMessage.replace("[Hibernate SQL]", ""), record.getLevel(), ConsoleType.HIBERNATE
+                outputMessage.replace("[Hibernate SQL]", ""), record.getLevel(), ConsoleLogType.HIBERNATE
             );
 
             hibernateSqlLogs.add(messageData);
@@ -67,7 +71,7 @@ public class SplitConsoleHandler extends ConsoleHandler {
             }
 
             final var messageData = new MessageData(
-                outputMessage, record.getLevel(), ConsoleType.OTHER
+                outputMessage, record.getLevel(), ConsoleLogType.OTHER
             );
 
             otherLogs.add(messageData);

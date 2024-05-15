@@ -1,6 +1,13 @@
 package fr.xahla.musicx.api.repository.searchCriterias;
 
-public enum ArtistSearchCriterias {
+import lombok.Getter;
+
+/**
+ * Available criteria for filtering artist search in database.
+ * @author Cochetooo
+ */
+@Getter
+public enum ArtistSearchCriteria {
 
     COUNTRY("country"),
     ID("id"),
@@ -9,12 +16,8 @@ public enum ArtistSearchCriterias {
 
     private final String column;
 
-    ArtistSearchCriterias(final String column) {
+    ArtistSearchCriteria(final String column) {
         this.column = column;
-    }
-
-    public String getColumn() {
-        return column;
     }
 
 }

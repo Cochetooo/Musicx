@@ -17,8 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public final class ImportSongsFromFolders {
 

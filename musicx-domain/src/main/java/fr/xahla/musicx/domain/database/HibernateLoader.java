@@ -1,6 +1,6 @@
 package fr.xahla.musicx.domain.database;
 
-import org.hibernate.Session;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -8,6 +8,10 @@ import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
+/**
+ * Loads configuration file for Hibernate ORM.
+ * @author Cochetooo
+ */
 public final class HibernateLoader {
 
     private final SessionFactory sessionFactory;
@@ -22,13 +26,13 @@ public final class HibernateLoader {
 
             this.sessionFactory = configuration.buildSessionFactory();
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "Couldn't initialize Hibernate and its session factory.", exception);
+            logger().log(Level.SEVERE, LogMessage.ERROR_HIBERNATE_INITIALIZATION.msg(), exception);
             throw new ExceptionInInitializerError(exception);
         }
     }
 
-    public static Session openSession() {
-        return INSTANCE.sessionFactory.openSession();
+    public SessionFactory getSession() {
+        return sessionFactory;
     }
 
 }

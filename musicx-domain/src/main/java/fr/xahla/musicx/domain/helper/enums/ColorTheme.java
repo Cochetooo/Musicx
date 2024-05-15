@@ -1,13 +1,7 @@
 package fr.xahla.musicx.domain.helper.enums;
 
-/** <b>List of main colors to be used in applications.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * List of all colors used for the app theme.
  * @author Cochetooo
  */
 public enum ColorTheme {

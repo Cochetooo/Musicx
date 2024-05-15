@@ -2,14 +2,11 @@ package fr.xahla.musicx.domain.repository;
 
 import fr.xahla.musicx.api.model.*;
 import fr.xahla.musicx.api.repository.ArtistRepositoryInterface;
-import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriterias;
-import fr.xahla.musicx.api.repository.searchCriterias.ArtistSearchCriterias;
-import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriterias;
+import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriteria;
+import fr.xahla.musicx.api.repository.searchCriterias.ArtistSearchCriteria;
+import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriteria;
 import fr.xahla.musicx.domain.helper.QueryHelper;
-import fr.xahla.musicx.domain.model.entity.AlbumEntity;
 import fr.xahla.musicx.domain.model.entity.ArtistEntity;
-import fr.xahla.musicx.domain.model.entity.SongEntity;
-import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
@@ -21,7 +18,6 @@ import java.util.stream.Collectors;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
 import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
 import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public class ArtistRepository implements ArtistRepositoryInterface {
@@ -52,13 +48,13 @@ public class ArtistRepository implements ArtistRepositoryInterface {
 
     @Override public List<AlbumDto> getAlbums(final ArtistDto artist) {
         return albumRepository().findByCriteria(Map.of(
-            AlbumSearchCriterias.ARTIST, artist.getId()
+            AlbumSearchCriteria.ARTIST, artist.getId()
         ));
     }
 
     @Override public List<SongDto> getSongs(final ArtistDto artist) {
         return songRepository().findByCriteria(Map.of(
-            SongSearchCriterias.ARTIST, artist.getId()
+            SongSearchCriteria.ARTIST, artist.getId()
         ));
     }
 
@@ -79,7 +75,7 @@ public class ArtistRepository implements ArtistRepositoryInterface {
         );
     }
 
-    @Override public List<ArtistDto> findByCriteria(final Map<ArtistSearchCriterias, Object> criteria) {
+    @Override public List<ArtistDto> findByCriteria(final Map<ArtistSearchCriteria, Object> criteria) {
         return this.toDtoList(
             QueryHelper.findByCriteria(
                 ArtistEntity.class,

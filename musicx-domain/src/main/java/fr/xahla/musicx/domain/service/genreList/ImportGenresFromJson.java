@@ -1,12 +1,9 @@
 package fr.xahla.musicx.domain.service.genreList;
 
 import fr.xahla.musicx.api.model.GenreDto;
-import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriterias;
+import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
 import fr.xahla.musicx.domain.application.AbstractContext;
-import fr.xahla.musicx.domain.database.HibernateLoader;
 import fr.xahla.musicx.domain.helper.JsonHelper;
-import fr.xahla.musicx.domain.model.enums.RepeatMode;
-import fr.xahla.musicx.domain.model.enums.ShuffleMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +36,7 @@ public final class ImportGenresFromJson {
         final var parentIds = new ArrayList<Long>();
 
         if (!genreRepository().findByCriteria(Map.of(
-            GenreSearchCriterias.NAME, name
+            GenreSearchCriteria.NAME, name
         )).isEmpty()) {
             return 0L;
         }
@@ -47,7 +44,7 @@ public final class ImportGenresFromJson {
         if (!parents.isEmpty()) {
             parents.forEach(parentName -> {
                 final var exists = genreRepository().findByCriteria(Map.of(
-                    GenreSearchCriterias.NAME, parentName
+                    GenreSearchCriteria.NAME, parentName
                 ));
 
                 if (!exists.isEmpty()) {

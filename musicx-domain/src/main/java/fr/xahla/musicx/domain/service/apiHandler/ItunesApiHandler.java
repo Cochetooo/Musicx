@@ -1,7 +1,7 @@
 package fr.xahla.musicx.domain.service.apiHandler;
 
 import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriterias;
+import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
 import fr.xahla.musicx.domain.repository.data.ExternalFetchRepositoryInterface;
 
 import java.net.URLEncoder;
@@ -79,7 +79,7 @@ public class ItunesApiHandler
             final var itunesGenreName = albumJson.getString("primaryGenreName");
 
             final var genre = genreRepository().findByCriteria(Map.of(
-                GenreSearchCriterias.NAME, itunesGenreName
+                GenreSearchCriteria.NAME, itunesGenreName
             ));
 
             if (!genre.isEmpty()) {

@@ -1,18 +1,16 @@
 package fr.xahla.musicx.domain.helper;
 
-/** <b>Utility class for progress displaying.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Utility class for Progress bars.
  * @author Cochetooo
- * @see javafx.scene.control.ProgressBar
  */
 public final class ProgressHelper {
 
+    /**
+     * Converts a double as a percentage.
+     * @param value The initial double value.
+     * @param decimal The number of decimal of the percentage.
+     */
     public static double getPercentageFromDouble(
         final double value,
         final double decimal

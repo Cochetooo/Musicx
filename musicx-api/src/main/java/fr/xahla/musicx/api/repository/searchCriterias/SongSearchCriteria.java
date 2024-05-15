@@ -2,8 +2,12 @@ package fr.xahla.musicx.api.repository.searchCriterias;
 
 import lombok.Getter;
 
+/**
+ * Available criteria for filtering song search in database.
+ * @author Cochetooo
+ */
 @Getter
-public enum SongSearchCriterias {
+public enum SongSearchCriteria {
 
     ALBUM("albumId"),
     ARTIST("artistId"),
@@ -16,7 +20,7 @@ public enum SongSearchCriterias {
 
     private final String column;
 
-    SongSearchCriterias(final String column) {
+    SongSearchCriteria(final String column) {
         this.column = column;
     }
 

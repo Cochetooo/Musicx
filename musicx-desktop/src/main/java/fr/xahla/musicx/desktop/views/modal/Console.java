@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.views.modal;
 
-import fr.xahla.musicx.domain.logging.ConsoleType;
+import fr.xahla.musicx.domain.logging.ConsoleLogType;
 import fr.xahla.musicx.domain.logging.SplitConsoleHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -10,9 +10,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
-import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -58,7 +55,7 @@ public class Console implements Initializable {
         queryOutputTextArea.setCellFactory(cellFactory -> new ConsoleCellFactory());
 
         consoleHandler.addListener(message -> {
-            if (message.type() == ConsoleType.HIBERNATE) {
+            if (message.type() == ConsoleLogType.HIBERNATE) {
                 queryList.add(message);
             } else {
                 this.updateFilterList(consoleFilterList, logLevelComboBox.getSelectionModel().getSelectedItem().value);

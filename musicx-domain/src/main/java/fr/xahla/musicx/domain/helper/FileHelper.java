@@ -2,14 +2,8 @@ package fr.xahla.musicx.domain.helper;
 
 import java.nio.file.Path;
 
-/** <b>Utility class for files management.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Utility class for file management.
  * @author Cochetooo
  */
 public final class FileHelper {

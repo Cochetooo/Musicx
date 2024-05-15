@@ -5,6 +5,10 @@ import lombok.*;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Transferring band album data throughout application layers.
+ * @author Cochetooo
+ */
 @Getter
 @Setter
 public class BandArtistDto extends ArtistDto {

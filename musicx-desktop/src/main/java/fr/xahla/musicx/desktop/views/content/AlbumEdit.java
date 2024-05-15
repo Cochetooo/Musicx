@@ -125,10 +125,10 @@ public class AlbumEdit implements Initializable {
 
         album.setArtworkUrl(artworkUrlField.getText());
         album.setCatalogNo(catalogNoField.getText());
-        album.setDiscTotal(StringHelper.parseShort(discTotalField.getText()));
+        album.setDiscTotal(StringHelper.parseShortSafe(discTotalField.getText()));
         album.setName(albumNameField.getText());
         album.setReleaseDate(releaseDatePicker.getValue());
-        album.setTrackTotal(StringHelper.parseShort(trackTotalField.getText()));
+        album.setTrackTotal(StringHelper.parseShortSafe(trackTotalField.getText()));
         album.setType(albumTypeComboBox.getValue());
 
         albumRepository().save(album.getDto());

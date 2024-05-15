@@ -2,6 +2,7 @@ package fr.xahla.musicx.domain.helper;
 
 import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.database.QueryResponse;
+import fr.xahla.musicx.domain.logging.LogMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,15 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
+import static fr.xahla.musicx.domain.application.AbstractContext.openSession;
 
+/**
+ * Utility class for queries
+ * @author Cochetooo
+ */
 public final class QueryHelper {
 
-    public static List<?> findByCriteria(
+    @Deprecated public static List<?> findByCriteria(
         final Class<?> clazz,
         final Map<String, Object> criteria
     ) {
@@ -38,15 +43,19 @@ public final class QueryHelper {
         return query(clazz, sql.toString(), criteria); // @TODO
     }
 
+    /**
+     * @param clazz The class entity to fetch data
+     * @return A collection of object for an entity
+     */
     public static List<?> findAll(final Class<?> clazz) {
         return query(
-            clazz,
-            "FROM " + clazz.getSimpleName(),
-            Map.of()
-        );
+            new QueryBuilder()
+                .from(clazz)
+                .build()
+        ).response();
     }
 
-    private static List<?> query(
+    @Deprecated private static List<?> query(
         final Class<?> clazz,
         final String query,
         final Map<String, Object> parameters
@@ -58,11 +67,19 @@ public final class QueryHelper {
 
             return result.list();
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "An exception has occured while trying to query: " + query, exception);
+            logger().log(
+                Level.SEVERE,
+                String.format(LogMessage.ERROR_QUERY.msg(), query),
+                exception
+            );
+
             return new ArrayList<>();
         }
     }
 
+    /**
+     * @return A QueryResponse from the query, if the statement is not valid it will return an empty QueryResponse.
+     */
     public static QueryResponse query(final QueryBuilder.Query query) {
         try (final var session = openSession()) {
             final var result = session.createQuery(query.request(), query.clazz());
@@ -70,7 +87,11 @@ public final class QueryHelper {
 
             return new QueryResponse(result.list());
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "An exception has occured while trying to query: " + query, exception);
+            logger().log(
+                Level.SEVERE,
+                String.format(LogMessage.ERROR_QUERY.msg(), query),
+                exception
+            );
 
             return new QueryResponse(List.of());
         }

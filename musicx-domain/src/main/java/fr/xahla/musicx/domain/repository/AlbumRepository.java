@@ -3,13 +3,11 @@ package fr.xahla.musicx.domain.repository;
 import fr.xahla.musicx.api.model.*;
 import fr.xahla.musicx.api.model.enums.ArtistRole;
 import fr.xahla.musicx.api.repository.AlbumRepositoryInterface;
-import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriterias;
-import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriterias;
+import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriteria;
+import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriteria;
 import fr.xahla.musicx.domain.helper.QueryHelper;
 import fr.xahla.musicx.domain.model.entity.AlbumEntity;
 import fr.xahla.musicx.domain.model.entity.ArtistEntity;
-import fr.xahla.musicx.domain.model.entity.SongEntity;
-import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
@@ -27,8 +25,6 @@ import static fr.xahla.musicx.domain.repository.LabelRepository.labelRepository;
 import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 
 public class AlbumRepository implements AlbumRepositoryInterface {
-
-    private static final AlbumRepository INSTANCE = new AlbumRepository();
 
     /* ------------ Relations --------------- */
 
@@ -82,7 +78,7 @@ public class AlbumRepository implements AlbumRepositoryInterface {
 
     @Override public List<SongDto> getSongs(final AlbumDto album) {
         return songRepository().findByCriteria(Map.of(
-            SongSearchCriterias.ALBUM, album.getId()
+            SongSearchCriteria.ALBUM, album.getId()
         ));
     }
 
@@ -109,7 +105,7 @@ public class AlbumRepository implements AlbumRepositoryInterface {
             .toList();
     }
 
-    @Override public List<AlbumDto> findByCriteria(final Map<AlbumSearchCriterias, Object> criteria) {
+    @Override public List<AlbumDto> findByCriteria(final Map<AlbumSearchCriteria, Object> criteria) {
         return this.toDtoList(
             QueryHelper.findByCriteria(
                 AlbumEntity.class,
@@ -122,7 +118,7 @@ public class AlbumRepository implements AlbumRepositoryInterface {
         );
     }
 
-    public List<AlbumEntity> findByCriteriaStructured(final Map<AlbumSearchCriterias, Object> criteria) {
+    public List<AlbumEntity> findByCriteriaStructured(final Map<AlbumSearchCriteria, Object> criteria) {
         return QueryHelper.findByCriteria(
                 ArtistEntity.class,
                 criteria.entrySet().stream()
@@ -170,9 +166,5 @@ public class AlbumRepository implements AlbumRepositoryInterface {
 
             logger().log(Level.SEVERE, "Error while persisting " + album.getName(), exception);
         }
-    }
-
-    public static AlbumRepository albumRepository() {
-        return INSTANCE;
     }
 }

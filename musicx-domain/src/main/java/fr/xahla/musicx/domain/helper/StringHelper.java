@@ -1,8 +1,15 @@
 package fr.xahla.musicx.domain.helper;
 
+/**
+ * Utility class for String
+ * @author Cochetooo
+ */
 public final class StringHelper {
 
-    public static long parseLong(final String str) {
+    /**
+     * @return The parsed long or 0 if the format is incorrect.
+     */
+    public static long parseLongSafe(final String str) {
         try {
             return Long.parseLong(str);
         } catch (final NumberFormatException e) {
@@ -10,7 +17,7 @@ public final class StringHelper {
         }
     }
 
-    public static int parseInt(final String str) {
+    public static int parseIntSafe(final String str) {
         try {
             return Integer.parseInt(str);
         } catch (final NumberFormatException e) {
@@ -18,12 +25,23 @@ public final class StringHelper {
         }
     }
 
-    public static short parseShort(final String str) {
+    public static short parseShortSafe(final String str) {
         try {
             return Short.parseShort(str);
         } catch (final NumberFormatException e) {
             return 0;
         }
+    }
+
+    /**
+     * @return A capitalized string or "" if the string is empty
+     */
+    public static String ucFirst(final String str) {
+        if (null == str || str.isEmpty()) {
+            return "";
+        }
+
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
 }

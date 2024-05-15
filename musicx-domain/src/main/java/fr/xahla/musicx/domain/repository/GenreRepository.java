@@ -2,11 +2,9 @@ package fr.xahla.musicx.domain.repository;
 
 import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.repository.GenreRepositoryInterface;
-import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriterias;
-import fr.xahla.musicx.domain.database.QueryBuilder;
+import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
 import fr.xahla.musicx.domain.helper.QueryHelper;
 import fr.xahla.musicx.domain.model.entity.GenreEntity;
-import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
@@ -49,7 +47,7 @@ public class GenreRepository implements GenreRepositoryInterface {
         );
     }
 
-    @Override public List<GenreDto> findByCriteria(final Map<GenreSearchCriterias, Object> criteria) {
+    @Override public List<GenreDto> findByCriteria(final Map<GenreSearchCriteria, Object> criteria) {
         return this.toDtoList(
             QueryHelper.findByCriteria(
                 GenreEntity.class,

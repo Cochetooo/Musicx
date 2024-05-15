@@ -1,10 +1,18 @@
 package fr.xahla.musicx.domain.database;
 
+import fr.xahla.musicx.domain.helper.StringHelper;
+import fr.xahla.musicx.domain.logging.LogMessage;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import static fr.xahla.musicx.domain.application.AbstractContext.log;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
+/**
+ * Build SQL queries for repositories.
+ * @author Cochetooo
+ */
 public final class QueryBuilder {
 
     public record Query(
@@ -22,9 +30,12 @@ public final class QueryBuilder {
         parameters = new HashMap<>();
     }
 
+    /**
+     * @return A query instance, or <b>null</b> if no class selector has been queried.
+     */
     public QueryBuilder.Query build() {
         if (null == clazz) {
-            logger().severe("No table has been defined for query: " + sql);
+            log(LogMessage.ERROR_QUERY_NO_TABLE_DEFINED, sql);
             return null;
         }
 
@@ -75,6 +86,37 @@ public final class QueryBuilder {
             .append(":").append(column);
 
         parameters.put(column, String.valueOf(value));
+
+        return this;
+    }
+
+    /* -------------- WHERE IN -------------- */
+
+    public QueryBuilder whereIn(final String table, final String column, final Object value) {
+        return whereIn(table, column, value, SqlOperator.EQUAL);
+    }
+
+    public QueryBuilder whereIn(final String table, final String column, final Object value, final SqlOperator operator) {
+        if (null == clazz) {
+            log(LogMessage.ERROR_QUERY_NO_TABLE_DEFINED, sql);
+            throw new NullPointerException();
+        }
+
+        final var pivotTable = clazz.getSimpleName() + "_" + table;
+        final var mergedColumnName = table + StringHelper.ucFirst(column);
+
+        sql
+            .append(" JOIN ").append(pivotTable)
+            .append(" ON ").append(clazz.getSimpleName()).append(".id = ")
+            .append(pivotTable).append(".").append(clazz.getSimpleName()).append("_id")
+            .append(" JOIN ").append(table)
+            .append(" ON ").append(pivotTable).append(".").append(table).append("_id = ")
+            .append(table).append(".id")
+            .append(" WHERE ").append(table).append(".").append(column)
+            .append(operator.getSQLOperator())
+            .append(":").append(mergedColumnName);
+
+        parameters.put(mergedColumnName, String.valueOf(value));
 
         return this;
     }

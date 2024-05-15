@@ -70,9 +70,9 @@ public final class PersistAudioFileMetadata {
             final var trackNumber = this.getShort(tag.getFirst(FieldKey.TRACK));
 
             final var existingSong = songRepository().findByCriteria(Map.of(
-                SongSearchCriterias.DURATION, duration,
-                SongSearchCriterias.TITLE, title,
-                SongSearchCriterias.TRACK_NUMBER, trackNumber
+                SongSearchCriteria.DURATION, duration,
+                SongSearchCriteria.TITLE, title,
+                SongSearchCriteria.TRACK_NUMBER, trackNumber
             ));
 
             SongDto song;
@@ -120,7 +120,7 @@ public final class PersistAudioFileMetadata {
             }
 
             final var existingAlbum = albumRepository().findByCriteria(Map.of(
-                AlbumSearchCriterias.NAME, name
+                AlbumSearchCriteria.NAME, name
             ));
 
             if (!existingAlbum.isEmpty()) {
@@ -161,7 +161,7 @@ public final class PersistAudioFileMetadata {
             final var country = this.getLocale(tag.getFirst(FieldKey.COUNTRY));
 
             final var existingArtist = artistRepository().findByCriteria(Map.of(
-                ArtistSearchCriterias.NAME, name
+                ArtistSearchCriteria.NAME, name
             ));
 
             if (!existingArtist.isEmpty()) {
@@ -193,7 +193,7 @@ public final class PersistAudioFileMetadata {
             }
 
             final var existingLabel = labelRepository().findByCriteria(Map.of(
-                LabelSearchCriterias.NAME, name
+                LabelSearchCriteria.NAME, name
             ));
 
             if (!existingLabel.isEmpty()) {
@@ -226,7 +226,7 @@ public final class PersistAudioFileMetadata {
             }
 
             final var existingArtist = artistRepository().findByCriteria(Map.of(
-                ArtistSearchCriterias.NAME, name
+                ArtistSearchCriteria.NAME, name
             ));
 
             if (!existingArtist.isEmpty()) {
@@ -275,7 +275,7 @@ public final class PersistAudioFileMetadata {
 
         genreNames.forEach(primaryGenreName -> {
             final var existGenre = genreRepository().findByCriteria(Map.of(
-                GenreSearchCriterias.NAME, primaryGenreName
+                GenreSearchCriteria.NAME, primaryGenreName
             ));
 
             if (!existGenre.isEmpty()) {

@@ -6,6 +6,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Transferring person artist data throughout application layers.
+ * @author Cochetooo
+ */
 @Getter
 @Setter
 public class PersonArtistDto extends ArtistDto {

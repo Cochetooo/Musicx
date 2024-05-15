@@ -4,11 +4,10 @@ import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.model.LabelDto;
 import fr.xahla.musicx.api.repository.LabelRepositoryInterface;
-import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriterias;
-import fr.xahla.musicx.api.repository.searchCriterias.LabelSearchCriterias;
+import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriteria;
+import fr.xahla.musicx.api.repository.searchCriterias.LabelSearchCriteria;
 import fr.xahla.musicx.domain.helper.QueryHelper;
 import fr.xahla.musicx.domain.model.entity.LabelEntity;
-import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class LabelRepository implements LabelRepositoryInterface {
 
     @Override public List<AlbumDto> getReleases(final LabelDto label) {
         return albumRepository().findByCriteria(Map.of(
-            AlbumSearchCriterias.LABEL, label.getId()
+            AlbumSearchCriteria.LABEL, label.getId()
         ));
     }
 
@@ -61,7 +60,7 @@ public class LabelRepository implements LabelRepositoryInterface {
         );
     }
 
-    @Override public List<LabelDto> findByCriteria(final Map<LabelSearchCriterias, Object> criteria) {
+    @Override public List<LabelDto> findByCriteria(final Map<LabelSearchCriteria, Object> criteria) {
         return this.toDtoList(
             QueryHelper.findByCriteria(
                 LabelEntity.class,

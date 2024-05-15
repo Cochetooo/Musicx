@@ -10,10 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An album is made by an artist and contains a list of songs.<br>
- * It has a name, a release date, a number
- * It can be released by a music label and can have credited artists, with their respective roles.<br>
- * An album has primary and secondary genres.<br>
+ * Transferring album data throughout application layers.
  * @author Cochetooo
  */
 @Data

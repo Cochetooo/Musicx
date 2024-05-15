@@ -1,20 +1,15 @@
 package fr.xahla.musicx.api.repository;
 
 import fr.xahla.musicx.api.model.*;
-import fr.xahla.musicx.api.repository.searchCriterias.ArtistSearchCriterias;
+import fr.xahla.musicx.api.repository.searchCriterias.ArtistSearchCriteria;
 
 import java.util.List;
 import java.util.Map;
 
-/** <b>(API) Interface for Artist Repository contracts.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Contracts to manipulate artists in database.
  * @author Cochetooo
+ * @see ArtistDto
  */
 public interface ArtistRepositoryInterface {
 
@@ -26,7 +21,7 @@ public interface ArtistRepositoryInterface {
 
     ArtistDto find(final Long id);
     List<ArtistDto> findAll();
-    List<ArtistDto> findByCriteria(final Map<ArtistSearchCriterias, Object> criteria);
+    List<ArtistDto> findByCriteria(final Map<ArtistSearchCriteria, Object> criteria);
 
     void save(final ArtistDto artist);
 

@@ -5,11 +5,9 @@ import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.api.repository.SongRepositoryInterface;
-import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriterias;
+import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriteria;
 import fr.xahla.musicx.domain.helper.QueryHelper;
 import fr.xahla.musicx.domain.model.entity.SongEntity;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
@@ -23,7 +21,6 @@ import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
 import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
 import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
 import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
-import static fr.xahla.musicx.domain.repository.LabelRepository.labelRepository;
 
 public class SongRepository implements SongRepositoryInterface {
 
@@ -76,7 +73,7 @@ public class SongRepository implements SongRepositoryInterface {
         );
     }
 
-    @Override public List<SongDto> findByCriteria(final Map<SongSearchCriterias, Object> criteria) {
+    @Override public List<SongDto> findByCriteria(final Map<SongSearchCriteria, Object> criteria) {
         return this.toDtoList(
             QueryHelper.findByCriteria(
                 SongEntity.class,

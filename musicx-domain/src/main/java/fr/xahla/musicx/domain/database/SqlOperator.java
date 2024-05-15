@@ -1,5 +1,9 @@
 package fr.xahla.musicx.domain.database;
 
+/**
+ * List of all comparable operators in a query.
+ * @author Cochetooo
+ */
 public enum SqlOperator {
 
     EQUAL("="),
