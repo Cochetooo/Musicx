@@ -2,7 +2,8 @@ package fr.xahla.musicx.api.model.enums;
 
 import lombok.Getter;
 
-/** Role list for a credited artist.
+/**
+ * Role list for a credited artist.
  * @author Cochetooo
  */
 @Getter

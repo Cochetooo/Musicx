@@ -9,14 +9,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-/** <b>(API) Interface for Album Model contracts.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * An album is made by an artist and contains a list of songs.<br>
+ * It has a name, a release date, a number
+ * It can be released by a music label and can have credited artists, with their respective roles.<br>
+ * An album has primary and secondary genres.<br>
  * @author Cochetooo
  */
 @Data
