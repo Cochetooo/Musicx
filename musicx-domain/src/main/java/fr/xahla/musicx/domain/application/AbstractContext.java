@@ -48,39 +48,66 @@ public class AbstractContext {
     }
 
     public static String env(final String key) {
+        checkInitialization("env");
+
         return context.env.get(key);
     }
 
     public static void log(final LogMessage message, final Object... args) {
+        checkInitialization("log");
+
         logger().log(message.level(), String.format(message.msg(), args));
     }
 
     public static Logger logger() {
+        checkInitialization("logger");
+
         return context.logger;
     }
 
     public static Session openSession() {
+        checkInitialization("openSession");
+
         return context.hibernateLoader.getSession().openSession();
     }
 
     public static AlbumRepository albumRepository() {
+        checkInitialization("albumRepository");
+
         return context.albumRepository;
     }
 
     public static ArtistRepository artistRepository() {
+        checkInitialization("artistRepository");
+
         return context.artistRepository;
     }
 
     public static GenreRepository genreRepository() {
+        checkInitialization("genreRepository");
+
         return context.genreRepository;
     }
 
     public static LabelRepository labelRepository() {
+        checkInitialization("labelRepository");
+
         return context.labelRepository;
     }
 
     public static SongRepository songRepository() {
+        checkInitialization("songRepository");
+
         return context.songRepository;
+    }
+
+    /**
+     * @throws ExceptionInInitializerError if context has not been initialized.
+     */
+    private static void checkInitialization(final String method) {
+        if (null == context) {
+            throw new ExceptionInInitializerError("Must initialize context before exploiting global method: " + method);
+        }
     }
 
 }

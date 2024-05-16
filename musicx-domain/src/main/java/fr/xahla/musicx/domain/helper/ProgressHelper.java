@@ -11,7 +11,7 @@ public final class ProgressHelper {
      * @param value The initial double value.
      * @param decimal The number of decimal of the percentage.
      */
-    public static double getPercentageFromDouble(
+    public static double progress_get_percentage(
         final double value,
         final double decimal
     ) {

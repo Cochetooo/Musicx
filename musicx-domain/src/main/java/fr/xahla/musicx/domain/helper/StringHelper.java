@@ -9,7 +9,7 @@ public final class StringHelper {
     /**
      * @return The parsed long or 0 if the format is incorrect.
      */
-    public static long parseLongSafe(final String str) {
+    public static long str_parse_long_safe(final String str) {
         try {
             return Long.parseLong(str);
         } catch (final NumberFormatException e) {
@@ -17,7 +17,7 @@ public final class StringHelper {
         }
     }
 
-    public static int parseIntSafe(final String str) {
+    public static int str_parse_int_safe(final String str) {
         try {
             return Integer.parseInt(str);
         } catch (final NumberFormatException e) {
@@ -25,7 +25,7 @@ public final class StringHelper {
         }
     }
 
-    public static short parseShortSafe(final String str) {
+    public static short str_parse_short_safe(final String str) {
         try {
             return Short.parseShort(str);
         } catch (final NumberFormatException e) {
@@ -33,10 +33,14 @@ public final class StringHelper {
         }
     }
 
+    public static boolean str_is_null_or_blank(final String str) {
+        return null == str || str.isBlank();
+    }
+
     /**
      * @return A capitalized string or "" if the string is empty
      */
-    public static String ucFirst(final String str) {
+    public static String str_uc_first(final String str) {
         if (null == str || str.isEmpty()) {
             return "";
         }

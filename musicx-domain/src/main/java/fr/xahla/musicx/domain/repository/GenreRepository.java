@@ -3,7 +3,9 @@ package fr.xahla.musicx.domain.repository;
 import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.repository.GenreRepositoryInterface;
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
+import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.helper.QueryHelper;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.entity.GenreEntity;
 import org.hibernate.Transaction;
 
@@ -11,14 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 
+/**
+ * Manipulate genre data with Hibernate.
+ * @author Cochetooo
+ */
 public class GenreRepository implements GenreRepositoryInterface {
-
-    public static final GenreRepository INSTANCE = new GenreRepository();
 
     /* ------------ Relations --------------- */
 
@@ -32,31 +35,32 @@ public class GenreRepository implements GenreRepositoryInterface {
 
     /* ------------ Selectors --------------- */
 
+    /**
+     * @return The GenreDto with the correspond id, otherwise <b>null</b>.
+     */
     @Override public GenreDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(GenreEntity.class, id).toDto();
         } catch (final Exception e) {
-            logger().warning("Genre not found with id: " + id);
+            log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Genre", "id", id);
             return null;
         }
     }
 
     @Override public List<GenreDto> findAll() {
         return this.toDtoList(
-            QueryHelper.findAll(GenreEntity.class)
+            QueryHelper.query_find_all(GenreEntity.class)
         );
     }
 
     @Override public List<GenreDto> findByCriteria(final Map<GenreSearchCriteria, Object> criteria) {
+        final var query = new QueryBuilder()
+            .from(GenreEntity.class);
+
+        criteria.forEach((key, value) -> query.where(key.getColumn(), value));
+
         return this.toDtoList(
-            QueryHelper.findByCriteria(
-                GenreEntity.class,
-                criteria.entrySet().stream()
-                    .collect(Collectors.toMap(
-                        entry -> entry.getKey().getColumn(),
-                        Map.Entry::getValue
-                    ))
-            )
+            query(query.build()).response()
         );
     }
 
@@ -79,13 +83,17 @@ public class GenreRepository implements GenreRepositoryInterface {
             }
 
             transaction.commit();
-            logger().fine("Genre saved successfully: " + genre.getName());
+            log(LogMessage.FINE_REPOSITORY_SAVE_SUCCESS, "Genre", genre.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            logger().log(Level.SEVERE, "Error while persisting " + genre.getName(), exception);
+            logger().log(
+                Level.SEVERE,
+                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), genre.getName()),
+                exception
+            );
         }
     }
 
@@ -95,9 +103,5 @@ public class GenreRepository implements GenreRepositoryInterface {
             .map(GenreEntity.class::cast)
             .map(GenreEntity::toDto)
             .toList();
-    }
-
-    public static GenreRepository genreRepository() {
-        return INSTANCE;
     }
 }

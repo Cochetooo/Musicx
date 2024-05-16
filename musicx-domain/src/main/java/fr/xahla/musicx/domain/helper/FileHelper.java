@@ -8,7 +8,7 @@ import java.nio.file.Path;
  */
 public final class FileHelper {
 
-    public static String getExtensionFromPath(final Path filepath) {
+    public static String file_get_extension(final Path filepath) {
         final var filename = filepath.getFileName().toString();
         final var lastDotIndex = filename.lastIndexOf('.');
 

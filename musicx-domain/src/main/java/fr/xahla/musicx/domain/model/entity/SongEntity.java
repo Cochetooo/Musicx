@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Song persistence class for database
+ * @author Cochetooo
+ */
 @Entity
 @Table(name = "song")
 @Getter

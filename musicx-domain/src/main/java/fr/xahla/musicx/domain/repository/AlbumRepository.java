@@ -5,9 +5,10 @@ import fr.xahla.musicx.api.model.enums.ArtistRole;
 import fr.xahla.musicx.api.repository.AlbumRepositoryInterface;
 import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriteria;
 import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriteria;
+import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.helper.QueryHelper;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.entity.AlbumEntity;
-import fr.xahla.musicx.domain.model.entity.ArtistEntity;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
@@ -15,15 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
-import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
-import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
-import static fr.xahla.musicx.domain.repository.LabelRepository.labelRepository;
-import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 
+/**
+ * Manipulate album data with Hibernate.
+ * @author Cochetooo
+ */
 public class AlbumRepository implements AlbumRepositoryInterface {
 
     /* ------------ Relations --------------- */
@@ -84,51 +84,33 @@ public class AlbumRepository implements AlbumRepositoryInterface {
 
     /* ------------ Selectors --------------- */
 
+    /**
+     * @return The AlbumDto with the correspond id, otherwise <b>null</b>.
+     */
     @Override public AlbumDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(AlbumEntity.class, id).toDto();
         } catch (final Exception e) {
-            logger().warning("Album not found with id: " + id);
+            log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Album", "id", id);
             return null;
         }
     }
 
     @Override public List<AlbumDto> findAll() {
         return this.toDtoList(
-            QueryHelper.findAll(AlbumEntity.class)
+            QueryHelper.query_find_all(AlbumEntity.class)
         );
-    }
-
-    public List<AlbumEntity> findAllStructured() {
-        return QueryHelper.findAll(AlbumEntity.class).stream()
-            .map(AlbumEntity.class::cast)
-            .toList();
     }
 
     @Override public List<AlbumDto> findByCriteria(final Map<AlbumSearchCriteria, Object> criteria) {
-        return this.toDtoList(
-            QueryHelper.findByCriteria(
-                AlbumEntity.class,
-                criteria.entrySet().stream()
-                    .collect(Collectors.toMap(
-                        entry -> entry.getKey().getColumn(),
-                        Map.Entry::getValue
-                    ))
-            )
-        );
-    }
+        final var query = new QueryBuilder()
+            .from(AlbumEntity.class);
 
-    public List<AlbumEntity> findByCriteriaStructured(final Map<AlbumSearchCriteria, Object> criteria) {
-        return QueryHelper.findByCriteria(
-                ArtistEntity.class,
-                criteria.entrySet().stream()
-                    .collect(Collectors.toMap(
-                        entry -> entry.getKey().getColumn(),
-                        Map.Entry::getValue
-                    ))
-            ).stream()
-                .map(AlbumEntity.class::cast)
-                .toList();
+        criteria.forEach((key, value) -> query.where(key.getColumn(), value));
+
+        return this.toDtoList(
+            query(query.build()).response()
+        );
     }
 
     private List<AlbumDto> toDtoList(final List<?> resultQuery) {
@@ -158,13 +140,17 @@ public class AlbumRepository implements AlbumRepositoryInterface {
             }
 
             transaction.commit();
-            logger().fine("Album saved successfully: " + album.getName());
+            log(LogMessage.FINE_REPOSITORY_SAVE_SUCCESS, "Album", album.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            logger().log(Level.SEVERE, "Error while persisting " + album.getName(), exception);
+            logger().log(
+                Level.SEVERE,
+                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), album.getName()),
+                exception
+            );
         }
     }
 }

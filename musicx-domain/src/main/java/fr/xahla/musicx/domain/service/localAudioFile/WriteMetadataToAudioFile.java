@@ -4,7 +4,6 @@ import fr.xahla.musicx.api.model.*;
 import fr.xahla.musicx.api.model.enums.GenreType;
 import fr.xahla.musicx.domain.helper.AudioTaggerHelper;
 import fr.xahla.musicx.domain.model.enums.CustomFieldKey;
-import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldDataInvalidException;
 import org.jaudiotagger.tag.FieldKey;
@@ -101,7 +100,7 @@ public class WriteMetadataToAudioFile {
             tag.setField(FieldKey.TRACK_TOTAL, String.valueOf(album.getTrackTotal()));
             tag.setField(FieldKey.YEAR, album.getReleaseDate().toString());
 
-            AudioTaggerHelper.writeCustomTag(
+            AudioTaggerHelper.audiotagger_write_custom_tag(
                 tag,
                 CustomFieldKey.ARTWORK_URL.getKey(),
                 album.getArtworkUrl()
@@ -129,7 +128,7 @@ public class WriteMetadataToAudioFile {
             }
 
             if (null != album.getType()) {
-                AudioTaggerHelper.writeCustomTag(
+                AudioTaggerHelper.audiotagger_write_custom_tag(
                     tag,
                     CustomFieldKey.ALBUM_TYPE.getKey(),
                     album.getType().name()
@@ -147,7 +146,7 @@ public class WriteMetadataToAudioFile {
             tag.setField(FieldKey.ARTIST, artist.getName());
             tag.setField(FieldKey.COUNTRY, artist.getCountry().getLanguage());
 
-            AudioTaggerHelper.writeCustomTag(
+            AudioTaggerHelper.audiotagger_write_custom_tag(
                 tag,
                 CustomFieldKey.ARTIST_ARTWORK_URL.getKey(),
                 artist.getArtworkUrl()
@@ -177,13 +176,13 @@ public class WriteMetadataToAudioFile {
                 // Album
                 case 'a' -> {
                     if (GenreType.PRIMARY == type) {
-                        AudioTaggerHelper.writeCustomTag(
+                        AudioTaggerHelper.audiotagger_write_custom_tag(
                             tag,
                             CustomFieldKey.ALBUM_PRIMARY_GENRES.getKey(),
                             genreString
                         );
                     } else if (GenreType.SECONDARY == type) {
-                        AudioTaggerHelper.writeCustomTag(
+                        AudioTaggerHelper.audiotagger_write_custom_tag(
                             tag,
                             CustomFieldKey.ALBUM_SECONDARY_GENRES.getKey(),
                             genreString
@@ -196,7 +195,7 @@ public class WriteMetadataToAudioFile {
                     if (GenreType.PRIMARY == type) {
                         tag.setField(FieldKey.GENRE, genreString);
                     } else if (GenreType.SECONDARY == type) {
-                        AudioTaggerHelper.writeCustomTag(
+                        AudioTaggerHelper.audiotagger_write_custom_tag(
                             tag,
                             CustomFieldKey.SONG_SECONDARY_GENRES.getKey(),
                             genreString

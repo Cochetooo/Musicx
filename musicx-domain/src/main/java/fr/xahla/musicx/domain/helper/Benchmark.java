@@ -1,5 +1,10 @@
 package fr.xahla.musicx.domain.helper;
 
+import fr.xahla.musicx.domain.logging.LogMessage;
+
+import static fr.xahla.musicx.domain.application.AbstractContext.log;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+
 /**
  * Simple utility class to make benchmark in milliseconds by returning elapsed time.
  * @author Cochetooo
@@ -24,5 +29,9 @@ public final class Benchmark {
      */
     public void reset() {
         start = System.currentTimeMillis();
+    }
+
+    public void print(final String action) {
+        log(LogMessage.INFO_BENCHMARK, action, this.getElapsedTime());
     }
 }

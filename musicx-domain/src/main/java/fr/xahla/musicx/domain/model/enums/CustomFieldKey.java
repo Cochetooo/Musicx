@@ -2,6 +2,10 @@ package fr.xahla.musicx.domain.model.enums;
 
 import lombok.Getter;
 
+/**
+ * List of custom tags used by the application.
+ * @author Cochetooo
+ */
 @Getter
 public enum CustomFieldKey {
 

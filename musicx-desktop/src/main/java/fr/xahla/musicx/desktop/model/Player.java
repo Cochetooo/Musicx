@@ -1,8 +1,8 @@
 package fr.xahla.musicx.desktop.model;
 
 import fr.xahla.musicx.desktop.model.entity.Song;
-import fr.xahla.musicx.desktop.model.enums.RepeatMode;
-import fr.xahla.musicx.desktop.model.enums.ShuffleMode;
+import fr.xahla.musicx.domain.model.enums.RepeatMode;
+import fr.xahla.musicx.domain.model.enums.ShuffleMode;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;

@@ -20,7 +20,7 @@ public record QueryResponse(
      * @return The first object of the list
      * @throws NullPointerException if the response is empty
      */
-    Object unique() {
+    public Object unique() {
         if (response.isEmpty()) {
             log(LogMessage.ERROR_QUERY_NULL_RESPONSE);
             throw new NullPointerException();
@@ -32,16 +32,12 @@ public record QueryResponse(
     /**
      * @return The first object of the list or <b>null</b> if the list is empty
      */
-    Object uniqueOrNull() {
+    public Object uniqueOrNull() {
         if (response.isEmpty()) {
             return null;
         }
 
         return response.getFirst();
-    }
-
-    List<?> get() {
-        return response;
     }
 
 }

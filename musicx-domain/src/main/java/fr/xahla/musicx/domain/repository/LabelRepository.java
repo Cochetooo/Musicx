@@ -6,7 +6,9 @@ import fr.xahla.musicx.api.model.LabelDto;
 import fr.xahla.musicx.api.repository.LabelRepositoryInterface;
 import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriteria;
 import fr.xahla.musicx.api.repository.searchCriterias.LabelSearchCriteria;
+import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.helper.QueryHelper;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.entity.LabelEntity;
 import org.hibernate.Transaction;
 
@@ -14,16 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 
+/**
+ * Manipulate label data with Hibernate.
+ * @author Cochetooo
+ */
 public class LabelRepository implements LabelRepositoryInterface {
-
-    private static final LabelRepository instance = new LabelRepository();
 
     /* ------------ Relations --------------- */
 
@@ -45,31 +46,32 @@ public class LabelRepository implements LabelRepositoryInterface {
 
     /* ------------ Selectors --------------- */
 
+    /**
+     * @return The LabelDto with the correspond id, otherwise <b>null</b>.
+     */
     @Override public LabelDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(LabelEntity.class, id).toDto();
         } catch (final Exception e) {
-            logger().warning("Label not found with id: " + id);
+            log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Label", "id", id);
             return null;
         }
     }
 
     @Override public List<LabelDto> findAll() {
         return this.toDtoList(
-            QueryHelper.findAll(LabelEntity.class)
+            QueryHelper.query_find_all(LabelEntity.class)
         );
     }
 
     @Override public List<LabelDto> findByCriteria(final Map<LabelSearchCriteria, Object> criteria) {
+        final var query = new QueryBuilder()
+            .from(LabelEntity.class);
+
+        criteria.forEach((key, value) -> query.where(key.getColumn(), value));
+
         return this.toDtoList(
-            QueryHelper.findByCriteria(
-                LabelEntity.class,
-                criteria.entrySet().stream()
-                    .collect(Collectors.toMap(
-                        entry -> entry.getKey().getColumn(),
-                        Map.Entry::getValue
-                    ))
-            )
+            query(query.build()).response()
         );
     }
 
@@ -91,13 +93,17 @@ public class LabelRepository implements LabelRepositoryInterface {
             }
 
             transaction.commit();
-            logger().fine("Label saved successfully: " + label.getName());
+            log(LogMessage.FINE_REPOSITORY_SAVE_SUCCESS, "Label", label.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            logger().log(Level.SEVERE, "Error while persisting " + label.getName(), exception);
+            logger().log(
+                Level.SEVERE,
+                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), label.getName()),
+                exception
+            );
         }
     }
 
@@ -107,9 +113,5 @@ public class LabelRepository implements LabelRepositoryInterface {
             .map(LabelEntity.class::cast)
             .map(LabelEntity::toDto)
             .toList();
-    }
-
-    public static LabelRepository labelRepository() {
-        return instance;
     }
 }

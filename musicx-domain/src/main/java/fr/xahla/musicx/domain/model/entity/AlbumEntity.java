@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Album persistence class for database
+ * @author Cochetooo
+ */
 @Entity
 @Table(name="albums")
 @Getter

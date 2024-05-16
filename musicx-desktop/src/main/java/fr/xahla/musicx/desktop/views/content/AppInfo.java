@@ -59,7 +59,7 @@ public class AppInfo implements Initializable {
                     + (int) (taskProgress().getTaskProgress().getCurrentProgress() * taskProgress().getTaskProgress().getTotal()) + "/"
                     + (int) taskProgress().getTaskProgress().getTotal() + ")"
                 );
-                this.taskProgressStatusLabel.setText(ProgressHelper.getPercentageFromDouble(newProgress.doubleValue(), 1) + "%");
+                this.taskProgressStatusLabel.setText(ProgressHelper.progress_get_percentage(newProgress.doubleValue(), 1) + "%");
 
                 if (newProgress.doubleValue() >= 1.0) {
                     this.revokeProgressBar();

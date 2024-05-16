@@ -12,6 +12,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Person Artist persistence class for database
+ * @author Cochetooo
+ */
 @Entity
 @DiscriminatorValue("PERSON")
 @Getter

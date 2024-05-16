@@ -9,6 +9,10 @@ import org.hibernate.Hibernate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Label persistence class for database
+ * @author Cochetooo
+ */
 @Entity
 @Table(name="label")
 @Getter

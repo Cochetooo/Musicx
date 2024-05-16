@@ -1,9 +1,10 @@
 package fr.xahla.musicx.domain.service.localAudioFile;
 
-import fr.xahla.musicx.api.repository.*;
 import fr.xahla.musicx.domain.helper.ArrayHelper;
+import fr.xahla.musicx.domain.helper.Benchmark;
 import fr.xahla.musicx.domain.helper.FileHelper;
 import fr.xahla.musicx.domain.listener.ProgressListener;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import org.jaudiotagger.audio.AudioFileIO;
 
 import java.io.IOException;
@@ -16,8 +17,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
+import static fr.xahla.musicx.domain.application.AbstractContext.log;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
+/**
+ * Collect all audio files from a source folder and import all valid songs to the database.
+ * @author Cochetooo
+ */
 public final class ImportSongsFromFolders {
 
     /**
@@ -33,7 +39,7 @@ public final class ImportSongsFromFolders {
         final List<String> acceptedFormats,
         final ProgressListener progressListener
     ) {
-        final var startTime = System.currentTimeMillis();
+        final var benchmark = new Benchmark();
 
         // Retrieve audio files from all the library folder paths
         final var audioFiles = getAudioFiles(folderPaths, acceptedFormats);
@@ -41,7 +47,7 @@ public final class ImportSongsFromFolders {
         final var fileNumbers = audioFiles.size();
 
         if (0 == fileNumbers) {
-            logger().info("No audio files has been found in the chosen folders.");
+            log(LogMessage.INFO_IO_NO_FILES_FOUND, "audio files", "the chosen folders");
             progressListener.updateProgress(1, 1);
             return;
         }
@@ -59,7 +65,11 @@ public final class ImportSongsFromFolders {
                     // Create a response from a new thread that try to create a song and all its object members from the audio file.
                     threadExecutor.submit(() -> new PersistAudioFileMetadata().execute(audioFile));
                 } catch (final Exception exception) {
-                    logger().log(Level.SEVERE, "Couldn't read audio file properly: " + filepath, exception);
+                    logger().log(
+                        Level.SEVERE,
+                        String.format(LogMessage.ERROR_AUDIO_TAGGER_READ_FILE.msg(), filepath),
+                        exception
+                    );
                 }
 
                 // Increment and update the progress.
@@ -69,8 +79,7 @@ public final class ImportSongsFromFolders {
         } finally {
             progressListener.updateProgress(1, 1);
 
-            logger().info("Finished importing " + fileProgressCount.get() + " audio files in " +
-                (System.currentTimeMillis() - startTime) + " ms");
+            benchmark.print("Finished importing " + fileProgressCount.get() + " audio files");
         }
     }
 
@@ -89,9 +98,9 @@ public final class ImportSongsFromFolders {
                         return false;
                     }
 
-                    final var extension = FileHelper.getExtensionFromPath(filepath);
+                    final var extension = FileHelper.file_get_extension(filepath);
 
-                    return ArrayHelper.inArrayStringIgnoreCase(extension.toLowerCase(), acceptedFormats);
+                    return ArrayHelper.array_in_string_ignore_case(extension.toLowerCase(), acceptedFormats);
                 }).toList());
             } catch (final IOException exception) {
                 logger().log(Level.SEVERE, "Failed to walk through directory: " + directory.toAbsolutePath(), exception);

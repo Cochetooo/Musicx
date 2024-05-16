@@ -8,6 +8,10 @@ import lombok.Setter;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Artist persistence class for database
+ * @author Cochetooo
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(

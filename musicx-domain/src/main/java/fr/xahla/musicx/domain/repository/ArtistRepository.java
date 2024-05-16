@@ -5,7 +5,9 @@ import fr.xahla.musicx.api.repository.ArtistRepositoryInterface;
 import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriteria;
 import fr.xahla.musicx.api.repository.searchCriterias.ArtistSearchCriteria;
 import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriteria;
+import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.helper.QueryHelper;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.entity.ArtistEntity;
 import org.hibernate.Transaction;
 
@@ -13,16 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 
+/**
+ * Manipulate artist data with Hibernate.
+ * @author Cochetooo
+ */
 public class ArtistRepository implements ArtistRepositoryInterface {
-
-    private static final ArtistRepository INSTANCE = new ArtistRepository();
 
     /* ------------ Relations --------------- */
 
@@ -60,31 +61,32 @@ public class ArtistRepository implements ArtistRepositoryInterface {
 
     /* ------------ Selectors --------------- */
 
+    /**
+     * @return The ArtistDto with the correspond id, otherwise <b>null</b>.
+     */
     @Override public ArtistDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(ArtistEntity.class, id).toDto();
         } catch (final Exception e) {
-            logger().warning("Artist not found with id: " + id);
+            log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Artist", "id", id);
             return null;
         }
     }
 
     @Override public List<ArtistDto> findAll() {
         return this.toDtoList(
-            QueryHelper.findAll(ArtistEntity.class)
+            QueryHelper.query_find_all(ArtistEntity.class)
         );
     }
 
     @Override public List<ArtistDto> findByCriteria(final Map<ArtistSearchCriteria, Object> criteria) {
+        final var query = new QueryBuilder()
+            .from(ArtistEntity.class);
+
+        criteria.forEach((key, value) -> query.where(key.getColumn(), value));
+
         return this.toDtoList(
-            QueryHelper.findByCriteria(
-                ArtistEntity.class,
-                criteria.entrySet().stream()
-                    .collect(Collectors.toMap(
-                        entry -> entry.getKey().getColumn(),
-                        Map.Entry::getValue
-                    ))
-            )
+            query(query.build()).response()
         );
     }
 
@@ -115,17 +117,17 @@ public class ArtistRepository implements ArtistRepositoryInterface {
             }
 
             transaction.commit();
-            logger().fine("Artist saved successfully: " + artist.getName());
+            log(LogMessage.FINE_REPOSITORY_SAVE_SUCCESS, "Artist", artist.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            logger().log(Level.SEVERE, "Error while persisting " + artist.getName(), exception);
+            logger().log(
+                Level.SEVERE,
+                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), artist.getName()),
+                exception
+            );
         }
-    }
-
-    public static ArtistRepository artistRepository() {
-        return INSTANCE;
     }
 }

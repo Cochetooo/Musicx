@@ -5,7 +5,7 @@ import fr.xahla.musicx.desktop.listener.mediaPlayer.*;
 import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.Player;
 import fr.xahla.musicx.desktop.model.entity.Song;
-import fr.xahla.musicx.desktop.model.enums.RepeatMode;
+import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;

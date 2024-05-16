@@ -46,7 +46,7 @@ public final class PersistAudioFileMetadata {
             return;
         }
 
-        this.customTags = AudioTaggerHelper.getCustomTags(tag);
+        this.customTags = AudioTaggerHelper.audiotagger_get_custom_tags(tag);
 
         final var song = this.readSong();
 
@@ -105,14 +105,14 @@ public final class PersistAudioFileMetadata {
         try {
             AlbumDto album;
 
-            final var artworkUrl = AudioTaggerHelper.getCustomTag(customTags, CustomFieldKey.ARTWORK_URL);
+            final var artworkUrl = AudioTaggerHelper.audiotagger_get_custom_tag(customTags, CustomFieldKey.ARTWORK_URL);
             final var catalogNo = tag.getFirst(FieldKey.CATALOG_NO);
             final var discTotal = this.getShort(tag.getFirst(FieldKey.DISC_TOTAL));
             final var name = tag.getFirst(FieldKey.ALBUM);
             final var releaseDate = this.getLocalDate(tag.getFirst(FieldKey.YEAR));
             final var trackTotal = this.getShort(tag.getFirst(FieldKey.TRACK_TOTAL));
 
-            final var typeCustomTag = AudioTaggerHelper.getCustomTag(customTags, CustomFieldKey.ALBUM_TYPE);
+            final var typeCustomTag = AudioTaggerHelper.audiotagger_get_custom_tag(customTags, CustomFieldKey.ALBUM_TYPE);
             final var type = typeCustomTag.isBlank() ? null : ReleaseType.valueOf(typeCustomTag.toUpperCase());
 
             if (name.isBlank()) {
@@ -217,7 +217,7 @@ public final class PersistAudioFileMetadata {
         try {
             ArtistDto artist;
 
-            final var artistArtworkUrl = AudioTaggerHelper.getCustomTag(customTags, CustomFieldKey.ARTIST_ARTWORK_URL);
+            final var artistArtworkUrl = AudioTaggerHelper.audiotagger_get_custom_tag(customTags, CustomFieldKey.ARTIST_ARTWORK_URL);
             final var country = this.getLocale(tag.getFirst(FieldKey.COUNTRY));
             final var name = tag.getFirst(FieldKey.ARTIST);
 

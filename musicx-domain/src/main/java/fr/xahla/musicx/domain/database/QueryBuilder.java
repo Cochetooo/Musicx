@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.log;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Build SQL queries for repositories.
@@ -103,7 +102,7 @@ public final class QueryBuilder {
         }
 
         final var pivotTable = clazz.getSimpleName() + "_" + table;
-        final var mergedColumnName = table + StringHelper.ucFirst(column);
+        final var mergedColumnName = table + StringHelper.str_uc_first(column);
 
         sql
             .append(" JOIN ").append(pivotTable)

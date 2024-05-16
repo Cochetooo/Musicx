@@ -15,7 +15,7 @@ public final class ArrayHelper {
      * @param haystack The array.
      * @return <b>true</b> if needle is found in the array, <b>false</b> otherwise.
      */
-    public static boolean inArray(final Object needle, final Object[] haystack) {
+    public static boolean array_in(final Object needle, final Object[] haystack) {
         for (final var obj : haystack) {
             if (obj.equals(needle)) {
                 return true;
@@ -32,7 +32,7 @@ public final class ArrayHelper {
      * @param haystack The array.
      * @return <b>true</b> if needle is found in the array, <b>false</b> otherwise.
      */
-    public static boolean inArrayStringIgnoreCase(final String needle, final List<String> haystack) {
+    public static boolean array_in_string_ignore_case(final String needle, final List<String> haystack) {
         for (final var string : haystack) {
             if (string.equalsIgnoreCase(needle)) {
                 return true;

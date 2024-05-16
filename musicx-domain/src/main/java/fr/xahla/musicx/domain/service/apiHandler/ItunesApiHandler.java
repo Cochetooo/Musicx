@@ -2,6 +2,7 @@ package fr.xahla.musicx.domain.service.apiHandler;
 
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.repository.data.ExternalFetchRepositoryInterface;
 
 import java.net.URLEncoder;
@@ -12,11 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.env;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
 
+/**
+ * Handles API call for iTunes.
+ * @author Cochetooo
+ */
 public class ItunesApiHandler
     extends ExternalApiHandler
     implements ExternalFetchRepositoryInterface.AlbumFetcher
@@ -63,7 +65,7 @@ public class ItunesApiHandler
         final var jsonResponse = this.sendRequest(requestUrl);
 
         if (!jsonResponse.has("results") || jsonResponse.getJSONArray("results").isEmpty()) {
-            logger().warning("No results found for searchTerm: " + searchTerm);
+            log(LogMessage.WARNING_API_RESPONSE_EMPTY, "iTunes searchTerm", searchTerm);
             return;
         }
 
@@ -87,7 +89,7 @@ public class ItunesApiHandler
                     genre.getFirst().getId()
                 ));
             } else {
-                logger().info("Invalid genre name from ITunes: " + itunesGenreName + " for album: " + album.getName());
+                log(LogMessage.INFO_API_INVALID_DATA, "genre name", "ITunes", itunesGenreName, "album", album.getName());
             }
         }
 

@@ -10,6 +10,10 @@ import org.hibernate.Hibernate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Band Artist persistence class for database
+ * @author Cochetooo
+ */
 @Entity
 @DiscriminatorValue("BAND")
 @Getter

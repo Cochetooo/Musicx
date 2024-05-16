@@ -86,9 +86,9 @@ public class SongEdit implements Initializable {
     @FXML public void edit() {
         final var song = player().getEditedSong();
 
-        song.setDiscNumber(StringHelper.parseShortSafe(discNoField.getText()));
+        song.setDiscNumber(StringHelper.str_parse_short_safe(discNoField.getText()));
         song.setTitle(songNameField.getText());
-        song.setTrackNumber(StringHelper.parseShortSafe(trackNoField.getText()));
+        song.setTrackNumber(StringHelper.str_parse_short_safe(trackNoField.getText()));
 
         songRepository().save(song.getDto());
         new WriteMetadataToAudioFile().execute(song.getDto());

@@ -19,7 +19,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.openSession;
  */
 public final class QueryHelper {
 
-    @Deprecated public static List<?> findByCriteria(
+    @Deprecated public static List<?> query_find_by_criteria(
         final Class<?> clazz,
         final Map<String, Object> criteria
     ) {
@@ -47,7 +47,7 @@ public final class QueryHelper {
      * @param clazz The class entity to fetch data
      * @return A collection of object for an entity
      */
-    public static List<?> findAll(final Class<?> clazz) {
+    public static List<?> query_find_all(final Class<?> clazz) {
         return query(
             new QueryBuilder()
                 .from(clazz)

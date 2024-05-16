@@ -12,10 +12,12 @@ import java.util.logging.Logger;
 
 import org.json.JSONObject;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.env;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
 
+/**
+ * Read a JSON File and import all data as genres into the database.
+ * @author Cochetooo
+ */
 public final class ImportGenresFromJson {
 
     private int nbCreated;
@@ -23,7 +25,7 @@ public final class ImportGenresFromJson {
     private JSONObject jsonContent;
 
     public void execute(final String jsonPath) {
-        jsonContent = JsonHelper.loadJsonFromFile(jsonPath);
+        jsonContent = JsonHelper.json_load_from_file(jsonPath);
 
         for (final var entry : jsonContent.toMap().entrySet()) {
             if (entry.getValue() instanceof final List<?> array) {
@@ -69,6 +71,8 @@ public final class ImportGenresFromJson {
 
         return genreDto.getId();
     }
+
+    /* -------------- Executable -------------- */
 
     public static void main(final String[] args) {
         new Context();

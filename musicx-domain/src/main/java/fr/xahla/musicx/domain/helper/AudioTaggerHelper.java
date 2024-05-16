@@ -2,7 +2,6 @@ package fr.xahla.musicx.domain.helper;
 
 import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.enums.CustomFieldKey;
-import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.id3.*;
@@ -11,7 +10,6 @@ import org.jaudiotagger.tag.mp4.Mp4Tag;
 import org.jaudiotagger.tag.mp4.field.Mp4TagReverseDnsField;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -24,7 +22,10 @@ import static fr.xahla.musicx.domain.application.AbstractContext.logger;
  */
 public final class AudioTaggerHelper {
 
-    public static List<TagField> getCustomTags(final Tag tag) {
+    /**
+     * @return The list of custom tags used in the application, otherwise an empty list if the format is not supported
+     */
+    public static List<TagField> audiotagger_get_custom_tags(final Tag tag) {
         final var customTags = new ArrayList<TagField>();
 
         switch (tag) {
@@ -39,18 +40,16 @@ public final class AudioTaggerHelper {
                 }
             }
 
-            default -> {}
+            default -> log(LogMessage.WARNING_AUDIO_TAGGER_CUSTOM_TAG_FORMAT_NOT_SUPPORTED, "*");
         }
 
         return customTags;
     }
 
     /**
-     * @param customTags
-     * @param fieldKey
      * @return The value of the custom field key, or "" if not found
      */
-    public static String getCustomTag(final List<TagField> customTags, final CustomFieldKey fieldKey) {
+    public static String audiotagger_get_custom_tag(final List<TagField> customTags, final CustomFieldKey fieldKey) {
         try {
             for (final var tagField : customTags) {
                 switch (tagField) {
@@ -80,7 +79,7 @@ public final class AudioTaggerHelper {
         }
     }
 
-    public static void writeCustomTag(final Tag tag, final String customKey, final String value) {
+    public static void audiotagger_write_custom_tag(final Tag tag, final String customKey, final String value) {
         if (null == value) {
             log(LogMessage.FINER_AUDIO_TAGGER_NULL_CUSTOM_KEY, customKey);
             return;

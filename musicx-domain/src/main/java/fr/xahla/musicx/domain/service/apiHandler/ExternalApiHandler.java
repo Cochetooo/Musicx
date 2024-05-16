@@ -1,5 +1,6 @@
 package fr.xahla.musicx.domain.service.apiHandler;
 
+import fr.xahla.musicx.domain.logging.LogMessage;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -12,6 +13,10 @@ import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
+/**
+ * Common methods for external API handler classes
+ * @author Cochetooo
+ */
 public abstract class ExternalApiHandler {
 
     protected String apiUrl;
@@ -25,6 +30,9 @@ public abstract class ExternalApiHandler {
         final Map<String, String> parameters
     );
 
+    /**
+     * @return A JSONObject with the content of the response, otherwise an empty JSONObject.
+     */
     protected JSONObject sendRequest(final String requestUrl) {
         try (final var httpClient = HttpClient.newHttpClient()) {
             final var request = HttpRequest.newBuilder()
@@ -34,7 +42,11 @@ public abstract class ExternalApiHandler {
             final var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             return new JSONObject(response.body());
         } catch (final IOException | InterruptedException exception) {
-            logger().log(Level.SEVERE, "Couldn't call API: " + apiUrl, exception);
+            logger().log(
+                Level.SEVERE,
+                String.format(LogMessage.ERROR_API_REQUEST.msg(), requestUrl),
+                exception
+            );
             return new JSONObject();
         }
     }

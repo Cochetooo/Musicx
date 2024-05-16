@@ -5,7 +5,7 @@ import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
-import fr.xahla.musicx.desktop.model.enums.RepeatMode;
+import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.Observable;

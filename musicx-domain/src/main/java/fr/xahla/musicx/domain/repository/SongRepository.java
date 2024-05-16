@@ -6,7 +6,9 @@ import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.model.SongDto;
 import fr.xahla.musicx.api.repository.SongRepositoryInterface;
 import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriteria;
+import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.helper.QueryHelper;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.entity.SongEntity;
 import org.hibernate.Transaction;
 
@@ -14,17 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.database.HibernateLoader.openSession;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
-import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 
+/**
+ * Manipulate song data with Hibernate.
+ * @author Cochetooo
+ */
 public class SongRepository implements SongRepositoryInterface {
-
-    public static final SongRepository INSTANCE = new SongRepository();
 
     /* ------------ Relations --------------- */
 
@@ -58,31 +58,32 @@ public class SongRepository implements SongRepositoryInterface {
 
     /* ------------ Selectors --------------- */
 
+    /**
+     * @return The SongDto with the correspond id, otherwise <b>null</b>.
+     */
     @Override public SongDto find(final Long id) {
         try (final var session = openSession()) {
             return session.get(SongEntity.class, id).toDto();
         } catch (final Exception e) {
-            logger().warning("Song not found with id: " + id);
+            log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Song", "id", id);
             return null;
         }
     }
 
     @Override public List<SongDto> findAll() {
         return this.toDtoList(
-            QueryHelper.findAll(SongEntity.class)
+            QueryHelper.query_find_all(SongEntity.class)
         );
     }
 
     @Override public List<SongDto> findByCriteria(final Map<SongSearchCriteria, Object> criteria) {
+        final var query = new QueryBuilder()
+            .from(SongEntity.class);
+
+        criteria.forEach((key, value) -> query.where(key.getColumn(), value));
+
         return this.toDtoList(
-            QueryHelper.findByCriteria(
-                SongEntity.class,
-                criteria.entrySet().stream()
-                    .collect(Collectors.toMap(
-                        entry -> entry.getKey().getColumn(),
-                        Map.Entry::getValue
-                    ))
-            )
+            query(query.build()).response()
         );
     }
 
@@ -105,13 +106,17 @@ public class SongRepository implements SongRepositoryInterface {
             }
 
             transaction.commit();
-            logger().fine("Song saved successfully: " + song.getTitle());
+            log(LogMessage.FINE_REPOSITORY_SAVE_SUCCESS, "Song", song.getTitle());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            logger().log(Level.SEVERE, "Error while persisting " + song.getTitle(), exception);
+            logger().log(
+                Level.SEVERE,
+                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), song.getTitle()),
+                exception
+            );
         }
     }
 
@@ -121,9 +126,5 @@ public class SongRepository implements SongRepositoryInterface {
             .map(SongEntity.class::cast)
             .map(SongEntity::toDto)
             .toList();
-    }
-
-    public static SongRepository songRepository() {
-        return INSTANCE;
     }
 }
