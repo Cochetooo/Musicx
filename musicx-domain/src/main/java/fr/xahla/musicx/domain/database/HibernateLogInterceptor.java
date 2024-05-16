@@ -8,6 +8,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.log;
 /**
  * Intercepts SQL statements from Hibernate and logs them.
  * @author Cochetooo
+ * @since 0.3.1
  */
 public class HibernateLogInterceptor implements StatementInspector {
 

@@ -3,6 +3,11 @@ package fr.xahla.musicx.desktop.model;
 import javafx.beans.property.*;
 import javafx.concurrent.Task;
 
+/**
+ * Handles task progress for desktop application.
+ * @author Cochetooo
+ * @since 0.2.0
+ */
 public class TaskProgress {
 
     private final DoubleProperty total;

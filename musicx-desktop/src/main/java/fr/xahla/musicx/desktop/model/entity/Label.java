@@ -8,9 +8,13 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
-import static fr.xahla.musicx.domain.repository.LabelRepository.labelRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.labelRepository;
 
+/**
+ * Defines the behaviour of a label for a JavaFX context.
+ * @author Cochetooo
+ * @since 0.3.0
+ */
 public class Label {
 
     private final LabelDto dto;
@@ -30,6 +34,9 @@ public class Label {
         this.dto = label;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public LabelDto getDto() {
         return dto;
     }

@@ -3,11 +3,13 @@ package fr.xahla.musicx.domain.helper;
 /**
  * Utility class for String
  * @author Cochetooo
+ * @since 0.3.0
  */
 public final class StringHelper {
 
     /**
      * @return The parsed long or 0 if the format is incorrect.
+     * @since 0.3.0
      */
     public static long str_parse_long_safe(final String str) {
         try {
@@ -17,6 +19,9 @@ public final class StringHelper {
         }
     }
 
+    /**
+     * @since 0.3.0
+     */
     public static int str_parse_int_safe(final String str) {
         try {
             return Integer.parseInt(str);
@@ -25,6 +30,9 @@ public final class StringHelper {
         }
     }
 
+    /**
+     * @since 0.3.0
+     */
     public static short str_parse_short_safe(final String str) {
         try {
             return Short.parseShort(str);
@@ -39,6 +47,7 @@ public final class StringHelper {
 
     /**
      * @return A capitalized string or "" if the string is empty
+     * @since 0.3.1
      */
     public static String str_uc_first(final String str) {
         if (null == str || str.isEmpty()) {

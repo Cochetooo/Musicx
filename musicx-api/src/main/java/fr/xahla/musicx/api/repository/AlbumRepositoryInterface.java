@@ -11,6 +11,7 @@ import java.util.Map;
  * Contracts to manipulate albums in database.
  * @author Cochetooo
  * @see AlbumDto
+ * @since 0.2.0
  */
 public interface AlbumRepositoryInterface {
 

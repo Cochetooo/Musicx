@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.manager;
 
 import fr.xahla.musicx.domain.service.localAudioFile.ImportSongsFromFolders;
-import fr.xahla.musicx.desktop.logging.ErrorMessage;
+import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.model.TaskProgress;
 import fr.xahla.musicx.desktop.model.entity.Song;
 
@@ -16,9 +16,9 @@ import java.io.File;
 import java.util.ArrayList;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
 import static fr.xahla.musicx.desktop.DesktopContext.taskProgress;
+import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
 /** <b>Class that allow views to use Library model, while keeping a protection layer to its usage.</b>
  * <p>
@@ -30,6 +30,7 @@ import static fr.xahla.musicx.desktop.DesktopContext.taskProgress;
  *
  * @author Cochetooo
  */
+@Deprecated
 public class LibraryManager {
 
     private final ListProperty<Song> songs;
@@ -39,8 +40,7 @@ public class LibraryManager {
         songs = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
         folderPaths = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
 
-        final var songsDto = songRepository().findAll();
-        songsDto.forEach(songDto -> songs.add(new Song(songDto)));
+        this.refresh();
     }
 
     public void launchScanFoldersTask() {
@@ -71,13 +71,19 @@ public class LibraryManager {
         throw new RuntimeException("TODO");
     }
 
+    public void refresh() {
+        songs.clear();
+        final var songsDto = songRepository().findAll();
+        songsDto.forEach(songDto -> songs.add(new Song(songDto)));
+    }
+
     public boolean isEmpty() {
         return this.songs.isEmpty();
     }
 
     public void addFolder(final File directory) {
         if (!directory.isDirectory()) {
-            logger().warning(ErrorMessage.FOLDER_PATH_NOT_DIRECTORY.getMsg(directory.getAbsolutePath()));
+            logger().warning(directory.getAbsolutePath() + " is not a directory.");
             return;
         }
 

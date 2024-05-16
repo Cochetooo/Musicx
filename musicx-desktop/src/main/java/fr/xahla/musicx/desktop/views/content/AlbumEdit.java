@@ -15,8 +15,13 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.player;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
 
+/**
+ * View for album editing.
+ * @author Cochetooo
+ * @since 0.3.1
+ */
 public class AlbumEdit implements Initializable {
 
     @FXML private Button editButton;

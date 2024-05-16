@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * Utility class for arrays.
  * @author Cochetooo
+ * @since 0.1.0
  */
 public final class ArrayHelper {
 
@@ -14,6 +15,7 @@ public final class ArrayHelper {
      * @param needle The searched value.
      * @param haystack The array.
      * @return <b>true</b> if needle is found in the array, <b>false</b> otherwise.
+     * @since 0.1.0
      */
     public static boolean array_in(final Object needle, final Object[] haystack) {
         for (final var obj : haystack) {
@@ -31,6 +33,7 @@ public final class ArrayHelper {
      * @param needle The searched value.
      * @param haystack The array.
      * @return <b>true</b> if needle is found in the array, <b>false</b> otherwise.
+     * @since 0.1.0
      */
     public static boolean array_in_string_ignore_case(final String needle, final List<String> haystack) {
         for (final var string : haystack) {

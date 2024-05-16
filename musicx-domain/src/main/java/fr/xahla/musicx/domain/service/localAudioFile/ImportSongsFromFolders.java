@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
+import static fr.xahla.musicx.domain.application.AbstractContext.error;
 import static fr.xahla.musicx.domain.application.AbstractContext.log;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Collect all audio files from a source folder and import all valid songs to the database.
  * @author Cochetooo
+ * @since 0.3.0
  */
 public final class ImportSongsFromFolders {
 
@@ -33,6 +33,8 @@ public final class ImportSongsFromFolders {
      * @param folderPaths List of folder paths to search songs for
      * @param acceptedFormats An array of file extension as string
      * @param progressListener A listener interface to get the current progress.
+     *
+     * @since 0.3.0
      */
     public void execute(
         final List<String> folderPaths,
@@ -65,11 +67,7 @@ public final class ImportSongsFromFolders {
                     // Create a response from a new thread that try to create a song and all its object members from the audio file.
                     threadExecutor.submit(() -> new PersistAudioFileMetadata().execute(audioFile));
                 } catch (final Exception exception) {
-                    logger().log(
-                        Level.SEVERE,
-                        String.format(LogMessage.ERROR_AUDIO_TAGGER_READ_FILE.msg(), filepath),
-                        exception
-                    );
+                    error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, filepath);
                 }
 
                 // Increment and update the progress.
@@ -83,6 +81,9 @@ public final class ImportSongsFromFolders {
         }
     }
 
+    /**
+     * @since 0.3.0
+     */
     private List<Path> getAudioFiles(
         final List<String> paths,
         final List<String> acceptedFormats
@@ -103,7 +104,7 @@ public final class ImportSongsFromFolders {
                     return ArrayHelper.array_in_string_ignore_case(extension.toLowerCase(), acceptedFormats);
                 }).toList());
             } catch (final IOException exception) {
-                logger().log(Level.SEVERE, "Failed to walk through directory: " + directory.toAbsolutePath(), exception);
+                error(exception, LogMessage.ERROR_IO_FOLDER_BROWSE, directory.toAbsolutePath());
             }
         }
 

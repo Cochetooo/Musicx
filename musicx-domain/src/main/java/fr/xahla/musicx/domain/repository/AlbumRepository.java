@@ -23,15 +23,22 @@ import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 /**
  * Manipulate album data with Hibernate.
  * @author Cochetooo
+ * @since 0.1.0
  */
 public class AlbumRepository implements AlbumRepositoryInterface {
 
     /* ------------ Relations --------------- */
 
+    /**
+     * @since 0.3.0
+     */
     @Override public ArtistDto getArtist(final AlbumDto album) {
         return artistRepository().find(album.getArtistId());
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public Map<ArtistDto, ArtistRole> getCreditArtists(final AlbumDto album) {
         final var creditArtists = new HashMap<ArtistDto, ArtistRole>();
 
@@ -52,10 +59,16 @@ public class AlbumRepository implements AlbumRepositoryInterface {
         return creditArtists;
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public LabelDto getLabel(final AlbumDto album) {
         return labelRepository().find(album.getLabelId());
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<GenreDto> getPrimaryGenres(final AlbumDto album) {
         final var genres = new ArrayList<GenreDto>();
 
@@ -66,6 +79,9 @@ public class AlbumRepository implements AlbumRepositoryInterface {
         return genres;
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<GenreDto> getSecondaryGenres(final AlbumDto album) {
         final var genres = new ArrayList<GenreDto>();
 
@@ -76,6 +92,9 @@ public class AlbumRepository implements AlbumRepositoryInterface {
         return genres;
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<SongDto> getSongs(final AlbumDto album) {
         return songRepository().findByCriteria(Map.of(
             SongSearchCriteria.ALBUM, album.getId()
@@ -86,6 +105,7 @@ public class AlbumRepository implements AlbumRepositoryInterface {
 
     /**
      * @return The AlbumDto with the correspond id, otherwise <b>null</b>.
+     * @since 0.3.0
      */
     @Override public AlbumDto find(final Long id) {
         try (final var session = openSession()) {
@@ -96,12 +116,18 @@ public class AlbumRepository implements AlbumRepositoryInterface {
         }
     }
 
+    /**
+     * @since 0.1.0
+     */
     @Override public List<AlbumDto> findAll() {
         return this.toDtoList(
             QueryHelper.query_find_all(AlbumEntity.class)
         );
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<AlbumDto> findByCriteria(final Map<AlbumSearchCriteria, Object> criteria) {
         final var query = new QueryBuilder()
             .from(AlbumEntity.class);
@@ -113,14 +139,9 @@ public class AlbumRepository implements AlbumRepositoryInterface {
         );
     }
 
-    private List<AlbumDto> toDtoList(final List<?> resultQuery) {
-        return resultQuery.stream()
-            .filter(AlbumEntity.class::isInstance)
-            .map(AlbumEntity.class::cast)
-            .map(AlbumEntity::toDto)
-            .toList();
-    }
-
+    /**
+     * @since 0.1.0
+     */
     @Override public void save(final AlbumDto album) {
         AlbumEntity albumEntity;
 
@@ -146,11 +167,18 @@ public class AlbumRepository implements AlbumRepositoryInterface {
                 transaction.rollback();
             }
 
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), album.getName()),
-                exception
-            );
+            error(exception, LogMessage.ERROR_REPOSITORY_SAVE, album.getName());
         }
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    private List<AlbumDto> toDtoList(final List<?> resultQuery) {
+        return resultQuery.stream()
+            .filter(AlbumEntity.class::isInstance)
+            .map(AlbumEntity.class::cast)
+            .map(AlbumEntity::toDto)
+            .toList();
     }
 }

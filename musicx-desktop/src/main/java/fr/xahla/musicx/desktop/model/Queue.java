@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.model;
 
 import fr.xahla.musicx.desktop.listener.ValueListener;
-import fr.xahla.musicx.desktop.logging.ErrorMessage;
+import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -10,17 +10,13 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.xahla.musicx.domain.application.AbstractContext.log;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
-/** <b>Class that defines the Queue model for a desktop app usage.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Handles queue data.
  * @author Cochetooo
+ * @since 0.2.2
  */
 public class Queue {
 
@@ -75,14 +71,17 @@ public class Queue {
         return position.get();
     }
 
+    /**
+     * @since 0.2.2
+     */
     public Queue setPosition(final Integer position) {
-        if (this.getSongs().isEmpty()) {
+        if (songs.isEmpty()) {
             this.position.set(-1);
             return this;
         }
 
-        if (position >= this.getSongs().size() || position < 0) {
-            logger().warning(ErrorMessage.QUEUE_POSITION_OUT_OF_BOUNDS.getMsg(position, this.getSongs().size()));
+        if (position >= songs.size() || position < 0) {
+            log(LogMessageFX.FINE_QUEUE_POSITION_OUT_OF_BOUNDS, position, songs.size());
             return this;
         }
 
@@ -93,6 +92,9 @@ public class Queue {
         return this;
     }
 
+    /**
+     * @since 0.2.2
+     */
     public void addPositionListener(final ValueListener<Integer> change) {
         this.positionListeners.add(change);
     }

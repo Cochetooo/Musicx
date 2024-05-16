@@ -1,6 +1,5 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.desktop.logging.ErrorMessage;
 import fr.xahla.musicx.desktop.model.entity.Artist;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.ListProperty;
@@ -17,16 +16,12 @@ import java.util.List;
 import static fr.xahla.musicx.desktop.DesktopContext.library;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
-/** <b>Class that allow views to use Artist model, while keeping a protection layer to its usage.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Manages artist list in the navigation bar.
  * @author Cochetooo
+ * @since 0.2.2
  */
+@Deprecated
 public class ArtistListManager {
 
     private final ListProperty<Artist> artists;
@@ -34,7 +29,7 @@ public class ArtistListManager {
 
     public ArtistListManager() {
         if (null == library()) {
-            logger().severe(ErrorMessage.LIBRARY_NOT_INITIALIZED.getMsg("ArtistManager"));
+            logger().severe("Library has not been initialized when ArtistManager try to access it.");
             throw new RuntimeException();
         }
 
@@ -43,7 +38,7 @@ public class ArtistListManager {
 
         library().onSongsChange(change -> {
             if (null != this.getArtistListThread && this.getArtistListThread.isAlive()) {
-                logger().info(ErrorMessage.THREAD_INTERRUPTED_INFO.getMsg("Artist List Get"));
+                logger().info("The thread for Artist List Get has been interrupted by a new call on this method.");
                 this.getArtistListThread.interrupt();
             }
 

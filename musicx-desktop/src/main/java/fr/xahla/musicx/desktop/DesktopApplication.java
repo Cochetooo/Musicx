@@ -1,8 +1,8 @@
 package fr.xahla.musicx.desktop;
 
 import atlantafx.base.theme.PrimerDark;
+import fr.xahla.musicx.domain.helper.Benchmark;
 import fr.xahla.musicx.domain.helper.enums.ApplicationInfo;
-import fr.xahla.musicx.desktop.helper.DurationHelper;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -19,14 +19,8 @@ import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
-/** <b>Main class for the desktop application.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Handles JavaFX of the main application.
  * @author Cochetooo
  */
 public final class DesktopApplication extends Application {
@@ -44,7 +38,7 @@ public final class DesktopApplication extends Application {
     }
 
     public void setupApp() {
-        final var startTime = System.currentTimeMillis();
+        final var benchmark = new Benchmark();
 
         DesktopContext.createContext();
 
@@ -79,7 +73,7 @@ public final class DesktopApplication extends Application {
             this.mainStage.setScene(scene);
             this.mainStage.setOnCloseRequest((event) -> Platform.exit());
 
-            DurationHelper.benchmarkFrom("Program Initialization", startTime);
+            benchmark.print("Program Initialization");
 
             this.mainStage.show();
         } catch (final IOException exception) {

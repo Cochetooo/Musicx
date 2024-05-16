@@ -5,13 +5,11 @@ import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
-import fr.xahla.musicx.desktop.helper.FXMLHelper;
-import fr.xahla.musicx.desktop.logging.ErrorMessage;
+import fr.xahla.musicx.desktop.helper.FxmlHelper;
+import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -31,15 +29,10 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.*;
 
-/** <b>View for the main center content with the track list and the search bar.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * View for the main center content with the track list and the search bar.
  * @author Cochetooo
+ * @since 0.2.0
  */
 public class Content implements Initializable {
 
@@ -65,7 +58,7 @@ public class Content implements Initializable {
         this.resourceBundle = resourceBundle;
 
         // Right Nav Content
-        this.queueListView = FXMLHelper.getComponent("content/queueList.fxml", resourceBundle);
+        this.queueListView = FxmlHelper.getComponent("content/queueList.fxml", resourceBundle);
 
         this.filteredList = new FilteredList<>(trackList().getSongs());
 
@@ -175,14 +168,6 @@ public class Content implements Initializable {
             final var song = tracksTableView.getSelectionModel().getSelectedItem();
             final var index = trackList().getSongs().indexOf(song);
 
-            if (-1 == index) {
-                logger().warning(ErrorMessage.SONG_NOT_FOUND_IN_LIBRARY.getMsg(
-                    tracksTableView.getSelectionModel().getSelectedItem().getFilepath()
-                ));
-
-                return;
-            }
-
             player().setQueue(
                 trackList().getSongs(),
                 index
@@ -203,7 +188,7 @@ public class Content implements Initializable {
     }
 
     @FXML public void actionSettings() {
-        FXMLHelper.showModal(FxmlComponent.MODAL_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
+        FxmlHelper.showModal(FxmlComponent.MODAL_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
     }
 
     @FXML public void actionQueueList() {

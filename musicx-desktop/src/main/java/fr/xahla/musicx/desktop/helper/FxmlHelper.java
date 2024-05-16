@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.helper;
 
-import fr.xahla.musicx.desktop.logging.ErrorMessage;
+import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.views.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,35 +11,36 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import static fr.xahla.musicx.domain.application.AbstractContext.error;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
-/** <b>Utility class for FXML components.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Utility class for FXML components.
  * @author Cochetooo
+ * @since 0.2.0
  */
-public class FXMLHelper {
+public final class FxmlHelper {
 
+    /**
+     * @return A parent component, otherwise <b>null</b> if the component could not be loaded.
+     * @since 0.2.0
+     */
     public static Parent getComponent(final String fxmlSource, final ResourceBundle resourceBundle) {
         try {
              return FXMLLoader.load(
                 Objects.requireNonNull(Application.class.getResource(fxmlSource)),
                 resourceBundle
             );
-        } catch (IOException e) {
-            logger().severe(ErrorMessage.LOAD_FXML_COMPONENT_ERROR.getMsg(fxmlSource));
-            logger().severe(e.getLocalizedMessage());
-            e.printStackTrace();
-        }
+        } catch (final IOException exception) {
+            error(exception, LogMessageFX.ERROR_FXML_COMPONENT_LOAD, fxmlSource);
 
-        return null;
+            return null;
+        }
     }
 
+    /**
+     * @since 0.2.0
+     */
     public static void showModal(final FxmlComponent fxmlSource, final ResourceBundle resourceBundle, final String title) {
         final var stage = new Stage();
 
@@ -53,9 +54,8 @@ public class FXMLHelper {
             stage.setScene(scene);
             stage.setTitle(title);
             stage.show();
-        } catch (IOException e) {
-            logger().severe(ErrorMessage.LOAD_FXML_MODAL_ERROR.getMsg(fxmlSource.getFilepath(), title));
-            e.printStackTrace();
+        } catch (final IOException exception) {
+            error(exception, LogMessageFX.ERROR_FXML_MODAL_LOAD, fxmlSource);
         }
     }
 

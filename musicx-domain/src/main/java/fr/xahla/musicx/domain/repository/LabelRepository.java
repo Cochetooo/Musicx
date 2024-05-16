@@ -23,11 +23,15 @@ import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 /**
  * Manipulate label data with Hibernate.
  * @author Cochetooo
+ * @since 0.3.0
  */
 public class LabelRepository implements LabelRepositoryInterface {
 
     /* ------------ Relations --------------- */
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<GenreDto> getGenres(final LabelDto label) {
         final var genres = new ArrayList<GenreDto>();
 
@@ -38,6 +42,9 @@ public class LabelRepository implements LabelRepositoryInterface {
         return genres;
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<AlbumDto> getReleases(final LabelDto label) {
         return albumRepository().findByCriteria(Map.of(
             AlbumSearchCriteria.LABEL, label.getId()
@@ -48,6 +55,7 @@ public class LabelRepository implements LabelRepositoryInterface {
 
     /**
      * @return The LabelDto with the correspond id, otherwise <b>null</b>.
+     * @since 0.3.0
      */
     @Override public LabelDto find(final Long id) {
         try (final var session = openSession()) {
@@ -58,12 +66,18 @@ public class LabelRepository implements LabelRepositoryInterface {
         }
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<LabelDto> findAll() {
         return this.toDtoList(
             QueryHelper.query_find_all(LabelEntity.class)
         );
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<LabelDto> findByCriteria(final Map<LabelSearchCriteria, Object> criteria) {
         final var query = new QueryBuilder()
             .from(LabelEntity.class);
@@ -75,6 +89,9 @@ public class LabelRepository implements LabelRepositoryInterface {
         );
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public void save(final LabelDto label) {
         LabelEntity labelEntity;
 
@@ -99,11 +116,7 @@ public class LabelRepository implements LabelRepositoryInterface {
                 transaction.rollback();
             }
 
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), label.getName()),
-                exception
-            );
+            error(exception, LogMessage.ERROR_REPOSITORY_SAVE, label.getName());
         }
     }
 

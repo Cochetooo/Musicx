@@ -5,6 +5,7 @@ import java.util.logging.Level;
 /**
  * Lists of all used logging message in the domain layer.
  * @author Cochetooo
+ * @since 0.3.2
  */
 public record LogMessage(String msg, Level level) {
 
@@ -14,14 +15,18 @@ public record LogMessage(String msg, Level level) {
     public static final LogMessage ERROR_API_REQUEST = new LogMessage("Could not call API: {0}", Level.SEVERE);
     public static final LogMessage ERROR_AUDIO_TAGGER_CUSTOM_TAG_FETCH = new LogMessage("Error while getting custom tag {0}", Level.SEVERE);
     public static final LogMessage ERROR_AUDIO_TAGGER_CUSTOM_TAG_WRITE = new LogMessage("Could not set custom tag {0} with value {1}", Level.SEVERE);
+    public static final LogMessage ERROR_AUDIO_TAGGER_FIELDS_FETCH = new LogMessage("Could not set {0} fields for {1}", Level.SEVERE);
     public static final LogMessage ERROR_AUDIO_TAGGER_READ_FILE = new LogMessage("Could not read audio file: {0}", Level.SEVERE);
     public static final LogMessage ERROR_HIBERNATE_INITIALIZATION = new LogMessage("Could not initialize Hibernate and its session factory.", Level.SEVERE);
     public static final LogMessage ERROR_IO_NOT_VALID_URI = new LogMessage("{0} location is not a valid URI.", Level.SEVERE);
+    public static final LogMessage ERROR_IO_FILE_MOVE = new LogMessage("Could not move {0} to folder {1}", Level.SEVERE);
     public static final LogMessage ERROR_IO_FILE_NOT_FOUND = new LogMessage("{0} location is not a valid file path.", Level.SEVERE);
+    public static final LogMessage ERROR_IO_FOLDER_BROWSE = new LogMessage("Failed to browse folder: {0}", Level.SEVERE);
+    public static final LogMessage ERROR_IO_FOLDER_CREATE = new LogMessage("Could not create folder: {0}", Level.SEVERE);
     public static final LogMessage ERROR_IO_SAVE = new LogMessage("Unable to save file: {0}", Level.SEVERE);
     public static final LogMessage ERROR_JSON_NOT_VALID = new LogMessage("{0} is not a valid JSON.", Level.SEVERE);
     public static final LogMessage ERROR_REPOSITORY_SAVE = new LogMessage("Error while persisting {0}", Level.SEVERE);
-    public static final LogMessage ERROR_QUERY = new LogMessage("An exception has occured while trying to query: {0}", Level.SEVERE);
+    public static final LogMessage ERROR_QUERY = new LogMessage("An exception has occurred while trying to query: {0}", Level.SEVERE);
     public static final LogMessage ERROR_QUERY_NO_TABLE_DEFINED = new LogMessage("No table has been defined for query: {0}", Level.SEVERE);
     public static final LogMessage ERROR_QUERY_NULL_RESPONSE = new LogMessage("Trying to get object of null response", Level.SEVERE);
 
@@ -30,6 +35,10 @@ public record LogMessage(String msg, Level level) {
      */
     public static final LogMessage WARNING_API_RESPONSE_EMPTY = new LogMessage("No result for {0}: {1}", Level.WARNING);
     public static final LogMessage WARNING_AUDIO_TAGGER_CUSTOM_TAG_FORMAT_NOT_SUPPORTED = new LogMessage("Could not set custom tag {0} because tag format is not supported.", Level.WARNING);
+    public static final LogMessage WARNING_AUDIO_TAGGER_FILE_NOT_VALID = new LogMessage("Not a valid audio file: {0}", Level.WARNING);
+    public static final LogMessage WARNING_AUDIO_TAGGER_TAG_NOT_VALID = new LogMessage("Tag {0} has not a valid value: {1}", Level.WARNING);
+    public static final LogMessage WARNING_DATE_FORMAT_INCORRECT = new LogMessage("Incorrect date format: {0}", Level.WARNING);
+    public static final LogMessage WARNING_IO_FILE_COPY = new LogMessage("Could not copy file {0} to folder {1}", Level.SEVERE);
     public static final LogMessage WARNING_REPOSITORY_ITEM_NOT_FOUND = new LogMessage("{0} not found with {1}: {2}", Level.WARNING);
 
     /*
@@ -43,11 +52,14 @@ public record LogMessage(String msg, Level level) {
     /*
      * Fine
      */
-    public static final LogMessage FINE_REPOSITORY_SAVE_SUCCESS = new LogMessage("{0} saved successfully: {1}", Level.INFO);
+    public static final LogMessage FINE_IO_FILE_COPIED = new LogMessage("File {0} copied to: {1}", Level.FINE);
+    public static final LogMessage FINE_IO_FILE_WRITTEN = new LogMessage("File {0} written with success.", Level.FINE);
+    public static final LogMessage FINE_REPOSITORY_SAVE_SUCCESS = new LogMessage("{0} saved successfully: {1}", Level.FINE);
 
     /*
      * Finer
      */
+    public static final LogMessage FINER_AUDIO_TAGGER_FIELDS_WRITTEN = new LogMessage("Successfully written {0} fields for {1}", Level.FINER);
     public static final LogMessage FINER_AUDIO_TAGGER_NULL_CUSTOM_KEY = new LogMessage("Null value for custom key {0}", Level.FINER);
 
 }

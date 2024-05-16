@@ -10,15 +10,18 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.application.AbstractContext.openSession;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
 
 /**
  * Utility class for queries
  * @author Cochetooo
+ * @since 0.3.0
  */
 public final class QueryHelper {
 
+    /**
+     * @since 0.3.0
+     */
     @Deprecated public static List<?> query_find_by_criteria(
         final Class<?> clazz,
         final Map<String, Object> criteria
@@ -46,6 +49,7 @@ public final class QueryHelper {
     /**
      * @param clazz The class entity to fetch data
      * @return A collection of object for an entity
+     * @since 0.3.0
      */
     public static List<?> query_find_all(final Class<?> clazz) {
         return query(
@@ -67,11 +71,7 @@ public final class QueryHelper {
 
             return result.list();
         } catch (final Exception exception) {
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_QUERY.msg(), query),
-                exception
-            );
+            error(exception, LogMessage.ERROR_QUERY, query);
 
             return new ArrayList<>();
         }
@@ -79,6 +79,7 @@ public final class QueryHelper {
 
     /**
      * @return A QueryResponse from the query, if the statement is not valid it will return an empty QueryResponse.
+     * @since 0.3.1
      */
     public static QueryResponse query(final QueryBuilder.Query query) {
         try (final var session = openSession()) {
@@ -87,11 +88,7 @@ public final class QueryHelper {
 
             return new QueryResponse(result.list());
         } catch (final Exception exception) {
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_QUERY.msg(), query),
-                exception
-            );
+            error(exception, LogMessage.ERROR_QUERY, query.request());
 
             return new QueryResponse(List.of());
         }

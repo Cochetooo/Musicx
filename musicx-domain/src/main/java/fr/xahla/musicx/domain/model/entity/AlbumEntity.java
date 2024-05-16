@@ -16,8 +16,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Album persistence class for database
+ * Album persistence class for database.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Entity
 @Table(name="albums")
@@ -72,6 +73,9 @@ public class AlbumEntity {
 
     // Casts
 
+    /**
+     * @since 0.3.0
+     */
     public AlbumEntity fromDto(final AlbumDto albumDto) {
         this.setId(albumDto.getId());
         this.setArtistId(albumDto.getArtistId());
@@ -120,6 +124,9 @@ public class AlbumEntity {
         return this;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public AlbumDto toDto() {
         final var albumDto = AlbumDto.builder()
             .id(id)

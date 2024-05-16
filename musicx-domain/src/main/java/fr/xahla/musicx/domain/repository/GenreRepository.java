@@ -20,11 +20,15 @@ import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 /**
  * Manipulate genre data with Hibernate.
  * @author Cochetooo
+ * @since 0.3.0
  */
 public class GenreRepository implements GenreRepositoryInterface {
 
     /* ------------ Relations --------------- */
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<GenreDto> getParents(final GenreDto genre) {
         final var parents = new ArrayList<GenreDto>();
 
@@ -37,6 +41,7 @@ public class GenreRepository implements GenreRepositoryInterface {
 
     /**
      * @return The GenreDto with the correspond id, otherwise <b>null</b>.
+     * @since 0.3.0
      */
     @Override public GenreDto find(final Long id) {
         try (final var session = openSession()) {
@@ -47,12 +52,18 @@ public class GenreRepository implements GenreRepositoryInterface {
         }
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<GenreDto> findAll() {
         return this.toDtoList(
             QueryHelper.query_find_all(GenreEntity.class)
         );
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<GenreDto> findByCriteria(final Map<GenreSearchCriteria, Object> criteria) {
         final var query = new QueryBuilder()
             .from(GenreEntity.class);
@@ -64,6 +75,9 @@ public class GenreRepository implements GenreRepositoryInterface {
         );
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public void save(final GenreDto genre) {
         GenreEntity genreEntity;
 
@@ -89,11 +103,7 @@ public class GenreRepository implements GenreRepositoryInterface {
                 transaction.rollback();
             }
 
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), genre.getName()),
-                exception
-            );
+            error(exception, LogMessage.ERROR_REPOSITORY_SAVE, genre.getName());
         }
     }
 

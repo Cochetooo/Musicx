@@ -5,15 +5,10 @@ import javafx.beans.property.*;
 
 import java.util.Locale;
 
-/** <b>Class that defines the Artist Model for desktop view usage.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Defines the behaviour of an artist for a JavaFX context.
  * @author Cochetooo
+ * @since 0.1.0
  */
 public class Artist {
 
@@ -35,6 +30,9 @@ public class Artist {
         this.dto = artist;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public ArtistDto getDto() {
         return dto;
     }

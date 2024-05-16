@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.views.content;
 
-import fr.xahla.musicx.desktop.helper.FXMLHelper;
+import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,15 +8,10 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/** <b>View for empty library use case.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * View for empty library use case.
  * @author Cochetooo
+ * @since 0.2.0
  */
 public class EmptyLibrary implements Initializable {
 
@@ -27,6 +22,6 @@ public class EmptyLibrary implements Initializable {
     }
 
     @FXML public void importFolders() {
-        FXMLHelper.showModal(FxmlComponent.MODAL_IMPORT_FOLDERS, this.resourceBundle, resourceBundle.getString("importFolders.title"));
+        FxmlHelper.showModal(FxmlComponent.MODAL_IMPORT_FOLDERS, this.resourceBundle, resourceBundle.getString("importFolders.title"));
     }
 }

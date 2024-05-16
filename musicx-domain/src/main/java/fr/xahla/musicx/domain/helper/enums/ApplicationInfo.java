@@ -3,6 +3,7 @@ package fr.xahla.musicx.domain.helper.enums;
 /**
  * Constants values of the project information.
  * @author Cochetooo
+ * @since 0.2.0
  */
 public enum ApplicationInfo {
 

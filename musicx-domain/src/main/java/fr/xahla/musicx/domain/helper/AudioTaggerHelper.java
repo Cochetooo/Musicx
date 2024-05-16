@@ -13,17 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.log;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
 
 /**
  * Utility class for JAudioTagger
  * @author Cochetooo
+ * @since 0.3.1
  */
 public final class AudioTaggerHelper {
 
     /**
      * @return The list of custom tags used in the application, otherwise an empty list if the format is not supported
+     * @since 0.3.1
      */
     public static List<TagField> audiotagger_get_custom_tags(final Tag tag) {
         final var customTags = new ArrayList<TagField>();
@@ -48,6 +49,7 @@ public final class AudioTaggerHelper {
 
     /**
      * @return The value of the custom field key, or "" if not found
+     * @since 0.3.1
      */
     public static String audiotagger_get_custom_tag(final List<TagField> customTags, final CustomFieldKey fieldKey) {
         try {
@@ -69,16 +71,15 @@ public final class AudioTaggerHelper {
 
             return "";
         } catch (final Exception exception) {
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_FETCH.msg(), fieldKey.getKey()),
-                exception
-            );
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_FETCH, fieldKey.getKey());
 
             return "";
         }
     }
 
+    /**
+     * @since 0.3.1
+     */
     public static void audiotagger_write_custom_tag(final Tag tag, final String customKey, final String value) {
         if (null == value) {
             log(LogMessage.FINER_AUDIO_TAGGER_NULL_CUSTOM_KEY, customKey);
@@ -91,11 +92,7 @@ public final class AudioTaggerHelper {
                 default -> log(LogMessage.WARNING_AUDIO_TAGGER_CUSTOM_TAG_FORMAT_NOT_SUPPORTED, customKey);
             }
         } catch (final Exception exception) {
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_WRITE.msg(), customKey, value),
-                exception
-            );
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_WRITE, customKey, value);
         }
     }
 
@@ -118,13 +115,9 @@ public final class AudioTaggerHelper {
 
             frame.setBody(txxxBody);
 
-            mp3Tag.addField(frame);
+            mp3Tag.setField(frame);
         } catch (final Exception exception) {
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_WRITE.msg(), "(MP3)" + customKey, value),
-                exception
-            );
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_WRITE, "(MP3)" + customKey, value);
         }
     }
 

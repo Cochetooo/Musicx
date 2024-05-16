@@ -17,15 +17,10 @@ import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
-/** <b>View for the console output.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * View for the console output.
  * @author Cochetooo
+ * @since 0.2.2
  */
 public class Console implements Initializable {
 

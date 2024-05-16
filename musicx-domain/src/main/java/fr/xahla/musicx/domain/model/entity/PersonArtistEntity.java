@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Person Artist persistence class for database
+ * Person Artist persistence class for database.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Entity
 @DiscriminatorValue("PERSON")
@@ -31,6 +32,11 @@ public class PersonArtistEntity extends ArtistEntity {
     @ManyToMany(mappedBy = "members")
     private List<BandArtistEntity> bands;
 
+    // Casts
+
+    /**
+     * @since 0.3.0
+     */
     public PersonArtistEntity fromDto(final PersonArtistDto artistDto) {
         super.fromDto(artistDto);
 
@@ -55,6 +61,9 @@ public class PersonArtistEntity extends ArtistEntity {
         return this;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public PersonArtistDto toDto() {
         final var personArtistDto = (PersonArtistDto) super.toDto();
 

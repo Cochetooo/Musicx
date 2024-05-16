@@ -8,8 +8,13 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.genreRepository;
 
+/**
+ * Defines the behaviour of a genre for a JavaFX context.
+ * @author Cochetooo
+ * @since 0.3.0
+ */
 public class Genre {
 
     private final GenreDto dto;
@@ -28,6 +33,9 @@ public class Genre {
         this.dto = genre;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public GenreDto getDto() {
         return dto;
     }

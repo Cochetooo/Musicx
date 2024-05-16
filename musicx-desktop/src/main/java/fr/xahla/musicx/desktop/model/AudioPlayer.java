@@ -8,24 +8,18 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-/** <b>Class that defines the Audio Player model for a desktop app usage.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Handles audio player data.
  * @author Cochetooo
  */
-public class Player {
+public class AudioPlayer {
 
     private final DoubleProperty volume;
     private final ObjectProperty<Song> song;
     private final ObjectProperty<ShuffleMode> shuffleMode;
     private final ObjectProperty<RepeatMode> repeatMode;
 
-    public Player() {
+    public AudioPlayer() {
         this.volume = new SimpleDoubleProperty(0.5);
         this.song = new SimpleObjectProperty<>(null);
         this.shuffleMode = new SimpleObjectProperty<>(ShuffleMode.LINEAR);
@@ -40,7 +34,7 @@ public class Player {
         return volume;
     }
 
-    public Player setVolume(double volume) {
+    public AudioPlayer setVolume(double volume) {
         this.volume.set(volume);
         return this;
     }
@@ -53,7 +47,7 @@ public class Player {
         return song;
     }
 
-    public Player setSong(Song song) {
+    public AudioPlayer setSong(Song song) {
         this.song.set(song);
         return this;
     }
@@ -66,7 +60,7 @@ public class Player {
         return shuffleMode;
     }
 
-    public Player setShuffleMode(ShuffleMode shuffleMode) {
+    public AudioPlayer setShuffleMode(ShuffleMode shuffleMode) {
         this.shuffleMode.set(shuffleMode);
         return this;
     }
@@ -79,7 +73,7 @@ public class Player {
         return repeatMode;
     }
 
-    public Player setRepeatMode(RepeatMode repeatMode) {
+    public AudioPlayer setRepeatMode(RepeatMode repeatMode) {
         this.repeatMode.set(repeatMode);
         return this;
     }

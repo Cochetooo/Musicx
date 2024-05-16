@@ -5,6 +5,7 @@ import lombok.Getter;
 /**
  * Role list for a credited artist.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Getter
 public enum ArtistRole {

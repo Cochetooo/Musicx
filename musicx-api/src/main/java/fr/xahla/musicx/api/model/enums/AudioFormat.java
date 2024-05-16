@@ -3,6 +3,7 @@ package fr.xahla.musicx.api.model.enums;
 /**
  * Standard audio file formats.
  * @author Cochetooo
+ * @since 0.3.0
  */
 public enum AudioFormat {
 

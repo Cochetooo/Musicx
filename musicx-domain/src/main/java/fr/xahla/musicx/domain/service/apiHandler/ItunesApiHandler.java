@@ -18,6 +18,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.*;
 /**
  * Handles API call for iTunes.
  * @author Cochetooo
+ * @since 0.3.0
  */
 public class ItunesApiHandler
     extends ExternalApiHandler
@@ -40,6 +41,7 @@ public class ItunesApiHandler
      * @see <a href="https://itunes.apple.com/search">Get Info from Album</a>
      * @param album The album source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
+     * @since 0.3.0
      */
     @Override public void fetchAlbumFromExternal(final AlbumDto album, final boolean overwrite) {
         final var methodSignature = "search";

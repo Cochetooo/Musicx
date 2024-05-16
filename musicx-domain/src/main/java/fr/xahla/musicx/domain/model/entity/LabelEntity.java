@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Label persistence class for database
+ * Label persistence class for database.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Entity
 @Table(name="label")
@@ -34,6 +35,11 @@ public class LabelEntity {
     )
     private List<GenreEntity> genres;
 
+    // Casts
+
+    /**
+     * @since 0.3.0
+     */
     public LabelEntity fromDto(final LabelDto labelDto) {
         this.setId(labelDto.getId());
         this.setName(labelDto.getName());
@@ -53,6 +59,9 @@ public class LabelEntity {
         return this;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public LabelDto toDto() {
         final var labelDto = LabelDto.builder()
             .id(id)

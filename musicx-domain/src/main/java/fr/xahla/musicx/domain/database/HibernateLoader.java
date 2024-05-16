@@ -6,18 +6,21 @@ import org.hibernate.cfg.Configuration;
 
 import java.util.logging.Level;
 
+import static fr.xahla.musicx.domain.application.AbstractContext.error;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Loads configuration file for Hibernate ORM.
  * @author Cochetooo
+ * @since 0.1.0
  */
 public final class HibernateLoader {
 
     private final SessionFactory sessionFactory;
 
-    public static final HibernateLoader INSTANCE = new HibernateLoader();
-
+    /**
+     * @throws ExceptionInInitializerError If Hibernate has not been initialized correctly.
+     */
     public HibernateLoader() {
         try {
             final var configuration = new Configuration().configure(
@@ -26,7 +29,7 @@ public final class HibernateLoader {
 
             this.sessionFactory = configuration.buildSessionFactory();
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, LogMessage.ERROR_HIBERNATE_INITIALIZATION.msg(), exception);
+            error(exception, LogMessage.ERROR_HIBERNATE_INITIALIZATION);
             throw new ExceptionInInitializerError(exception);
         }
     }

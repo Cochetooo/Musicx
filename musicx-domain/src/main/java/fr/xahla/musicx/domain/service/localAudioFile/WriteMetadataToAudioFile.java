@@ -3,6 +3,7 @@ package fr.xahla.musicx.domain.service.localAudioFile;
 import fr.xahla.musicx.api.model.*;
 import fr.xahla.musicx.api.model.enums.GenreType;
 import fr.xahla.musicx.domain.helper.AudioTaggerHelper;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.enums.CustomFieldKey;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldDataInvalidException;
@@ -13,15 +14,22 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
 
+/**
+ * Write information about a single song into an audio file.
+ * @author Cochetooo
+ * @since 0.3.1
+ */
 public class WriteMetadataToAudioFile {
 
     private Tag tag;
     private String filepath;
 
+    /**
+     * Write data in an audio file from a song.
+     * @since 0.3.1
+     */
     public void execute(final SongDto song) {
         try {
             this.filepath = song.getFilepath();
@@ -53,12 +61,16 @@ public class WriteMetadataToAudioFile {
             }
 
             AudioFileIO.write(audioFile);
-            logger().fine("File written with success: " + filepath);
+            log(LogMessage.FINE_IO_FILE_WRITTEN, filepath);
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "An error has occurred while trying to write audio file: " + song.getFilepath(), exception);
+            error(exception, LogMessage.ERROR_IO_SAVE, song.getFilepath());
         }
     }
 
+    /**
+     * Write data from an album to several audio files.
+     * @since 0.3.1
+     */
     public void execute(final AlbumDto album) {
         try {
             final var songs = albumRepository().getSongs(album);
@@ -71,11 +83,11 @@ public class WriteMetadataToAudioFile {
                 writeAlbum(album);
 
                 AudioFileIO.write(audioFile);
-            }
 
-            logger().fine("Files written with success for albums: " + album.getName());
+                log(LogMessage.FINE_IO_FILE_WRITTEN, filepath);
+            }
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "An error has occured while trying to write audio files for album: " + album.getName(), exception);
+            error(exception, LogMessage.ERROR_IO_SAVE, "Album " + album.getName());
         }
     }
 
@@ -86,9 +98,9 @@ public class WriteMetadataToAudioFile {
             tag.setField(FieldKey.TITLE, song.getTitle());
             tag.setField(FieldKey.TRACK, String.valueOf(song.getTrackNumber()));
 
-            logger().finer("Successfully written song fields for " + filepath);
+            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "song", filepath);
         } catch (FieldDataInvalidException exception) {
-            logger().log(Level.SEVERE, "Could not set song fields for " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, "song", filepath);
         }
     }
 
@@ -135,9 +147,9 @@ public class WriteMetadataToAudioFile {
                 );
             }
 
-            logger().finer("Successfully written album fields for " + filepath);
+            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "album", filepath);
         } catch (FieldDataInvalidException exception) {
-            logger().log(Level.SEVERE, "Could not set album fields for " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, "album", filepath);
         }
     }
 
@@ -152,9 +164,9 @@ public class WriteMetadataToAudioFile {
                 artist.getArtworkUrl()
             );
 
-            logger().finer("Successfully written artist fields for " + filepath);
+            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "artist", filepath);
         } catch (FieldDataInvalidException exception) {
-            logger().log(Level.SEVERE, "Could not set artist fields for " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, "artist", filepath);
         }
     }
 
@@ -162,9 +174,9 @@ public class WriteMetadataToAudioFile {
         try {
             tag.setField(FieldKey.RECORD_LABEL, label.getName());
 
-            logger().finer("Successfully written label fields for " + filepath);
+            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "label", filepath);
         } catch (FieldDataInvalidException exception) {
-            logger().log(Level.SEVERE, "Could not set label fields for " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, "label", filepath);
         }
     }
 
@@ -204,10 +216,9 @@ public class WriteMetadataToAudioFile {
                 }
             }
 
-            logger().finer("Successfully written genre fields for " + filepath);
+            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "genre", filepath);
         } catch (final FieldDataInvalidException exception) {
-            logger().log(Level.SEVERE, "Could not set " + entity + " "
-                + type.name() + " genre fields for " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, entity + " " + type.name() + " genre", filepath);
         }
     }
 

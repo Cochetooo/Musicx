@@ -9,6 +9,11 @@ import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 
+/**
+ * Global settings for desktop application.
+ * @author Cochetooo
+ * @since 0.2.2
+ */
 public class Settings {
 
     // Library

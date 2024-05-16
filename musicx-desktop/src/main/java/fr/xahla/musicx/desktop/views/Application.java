@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.views;
 
-import fr.xahla.musicx.desktop.helper.FXMLHelper;
+import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
@@ -13,15 +13,10 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.library;
 
-/** <b>Main view for the desktop application.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Main view for the desktop application.
  * @author Cochetooo
+ * @since 0.1.0
  */
 public class Application implements Initializable {
 
@@ -31,8 +26,8 @@ public class Application implements Initializable {
     private Parent contentComponent;
 
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.emptyLibraryComponent = FXMLHelper.getComponent("content/emptyLibrary.fxml", resourceBundle);
-        this.contentComponent = FXMLHelper.getComponent("content/contentLayout.fxml", resourceBundle);
+        this.emptyLibraryComponent = FxmlHelper.getComponent("content/emptyLibrary.fxml", resourceBundle);
+        this.contentComponent = FxmlHelper.getComponent("content/contentLayout.fxml", resourceBundle);
 
         this.updateContent();
 

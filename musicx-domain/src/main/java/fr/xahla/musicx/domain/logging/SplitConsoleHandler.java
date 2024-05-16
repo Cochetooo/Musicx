@@ -13,6 +13,7 @@ import java.util.logging.LogRecord;
 /**
  * Handles logs persistence for each log call.
  * @author Cochetooo
+ * @since 0.3.1
  */
 @Getter
 public class SplitConsoleHandler extends ConsoleHandler {
@@ -21,6 +22,10 @@ public class SplitConsoleHandler extends ConsoleHandler {
         void onMessage(final MessageData message);
     }
 
+    /**
+     * Carries the console message data for its listeners.
+     * @since 0.3.1
+     */
     public record MessageData(
         String message,
         Level level,
@@ -79,6 +84,9 @@ public class SplitConsoleHandler extends ConsoleHandler {
         }
     }
 
+    /**
+     * @since 0.3.1
+     */
     public void addListener(final MessageListener listener) {
         listeners.add(listener);
     }

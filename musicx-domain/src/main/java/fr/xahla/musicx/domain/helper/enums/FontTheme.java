@@ -5,6 +5,7 @@ import lombok.Getter;
 /**
  * List of all font policies for the app theme.
  * @author Cochetooo
+ * @since 0.2.3
  */
 @Getter
 public enum FontTheme {

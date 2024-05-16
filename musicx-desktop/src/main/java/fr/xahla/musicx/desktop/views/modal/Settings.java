@@ -9,15 +9,10 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
 
-/** <b>Modal for the app settings.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Modal for the application settings.
  * @author Cochetooo
+ * @since 0.2.2
  */
 public class Settings implements Initializable {
 

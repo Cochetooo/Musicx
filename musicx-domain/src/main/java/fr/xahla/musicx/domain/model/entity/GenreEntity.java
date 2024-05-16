@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Genre persistence class for database
+ * Genre persistence class for database.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Entity
 @Table(name="genre")
@@ -36,6 +37,9 @@ public class GenreEntity {
 
     // Casts
 
+    /**
+     * @since 0.3.0
+     */
     public GenreEntity fromDto(final GenreDto genreDto) {
         this.setId(genreDto.getId());
         this.setName(genreDto.getName());
@@ -53,6 +57,9 @@ public class GenreEntity {
         return this;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public GenreDto toDto() {
         final var genreDto = GenreDto.builder()
             .id(id)

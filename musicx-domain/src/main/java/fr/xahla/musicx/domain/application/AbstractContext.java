@@ -7,12 +7,15 @@ import fr.xahla.musicx.domain.repository.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.Session;
 
+import java.text.MessageFormat;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Simple context that needs to be overridden by a superior layer.<br>
  * Gives a logger and an environment variable handler.
  * @author Cochetooo
+ * @since 0.3.0
  */
 public class AbstractContext {
 
@@ -47,54 +50,108 @@ public class AbstractContext {
         this.songRepository = new SongRepository();
     }
 
+    /**
+     * @return The value stored in the environment file if the key is found, otherwise the key.
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.0
+     */
     public static String env(final String key) {
         checkInitialization("env");
 
         return context.env.get(key);
     }
 
+    /**
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.2
+     */
+    public static void error(final Exception exception, final LogMessage message, final Object... args) {
+        checkInitialization("error");
+
+        final var logMessage = MessageFormat.format(message.msg(), args);
+
+        logger().log(
+            Level.SEVERE,
+            logMessage,
+            exception
+        );
+    }
+
+    /**
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.2
+     */
     public static void log(final LogMessage message, final Object... args) {
         checkInitialization("log");
 
-        logger().log(message.level(), String.format(message.msg(), args));
+        final var logMessage = MessageFormat.format(message.msg(), args);
+        logger().log(message.level(), logMessage);
     }
 
+    /**
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.0
+     */
     public static Logger logger() {
         checkInitialization("logger");
 
         return context.logger;
     }
 
+    /**
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.2
+     */
     public static Session openSession() {
         checkInitialization("openSession");
 
         return context.hibernateLoader.getSession().openSession();
     }
 
+    /**
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.2
+     */
     public static AlbumRepository albumRepository() {
         checkInitialization("albumRepository");
 
         return context.albumRepository;
     }
 
+    /**
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.2
+     */
     public static ArtistRepository artistRepository() {
         checkInitialization("artistRepository");
 
         return context.artistRepository;
     }
 
+    /**
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.2
+     */
     public static GenreRepository genreRepository() {
         checkInitialization("genreRepository");
 
         return context.genreRepository;
     }
 
+    /**
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.2
+     */
     public static LabelRepository labelRepository() {
         checkInitialization("labelRepository");
 
         return context.labelRepository;
     }
 
+    /**
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.2
+     */
     public static SongRepository songRepository() {
         checkInitialization("songRepository");
 
@@ -102,7 +159,8 @@ public class AbstractContext {
     }
 
     /**
-     * @throws ExceptionInInitializerError if context has not been initialized.
+     * @throws ExceptionInInitializerError If context has not been initialized
+     * @since 0.3.2
      */
     private static void checkInitialization(final String method) {
         if (null == context) {

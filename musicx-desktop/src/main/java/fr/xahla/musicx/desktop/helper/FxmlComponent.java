@@ -1,5 +1,11 @@
 package fr.xahla.musicx.desktop.helper;
 
+/**
+ * List of every fxml files components external to the core application.
+ *
+ * @author Cochetooo
+ * @since 0.3.1
+ */
 public enum FxmlComponent {
 
     EDIT_ALBUM("content/edit/albumEdit.fxml"),

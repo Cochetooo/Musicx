@@ -1,13 +1,14 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.desktop.helper.DurationHelper;
-import fr.xahla.musicx.desktop.listener.mediaPlayer.*;
-import fr.xahla.musicx.desktop.logging.ErrorMessage;
-import fr.xahla.musicx.desktop.model.Player;
+import fr.xahla.musicx.desktop.helper.animation.ColorAnimation;
+import fr.xahla.musicx.desktop.logging.LogMessageFX;
+import fr.xahla.musicx.desktop.model.AudioPlayer;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.model.enums.RepeatMode;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
@@ -21,22 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.log;
 
-/** <b>Class that allow views to use Player model, while keeping a protection layer to its usage.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Manages audio player interactions.
  * @author Cochetooo
+ * @since 0.2.0
  */
 public class AudioPlayerManager {
 
     private final QueueManager queueManager;
-    private final Player player;
+    private final AudioPlayer player;
     private final ObjectProperty<Song> editedSong;
 
     private final List<MediaPlayListener> playListeners;
@@ -49,7 +45,7 @@ public class AudioPlayerManager {
 
     public AudioPlayerManager() {
         this.queueManager = new QueueManager();
-        this.player = new Player();
+        this.player = new AudioPlayer();
 
         this.editedSong = new SimpleObjectProperty<>();
 
@@ -70,6 +66,7 @@ public class AudioPlayerManager {
 
     /**
      * Remove all songs from the queue.
+     * @since 0.2.0
      */
     public void clearQueue() {
         this.queueManager.clear();
@@ -77,6 +74,7 @@ public class AudioPlayerManager {
 
     /**
      * Add a song to the queue at its last position.
+     * @since 0.2.0
      */
     public void queueLast(final Song song) {
         this.queueManager.queueLast(song);
@@ -84,6 +82,7 @@ public class AudioPlayerManager {
 
     /**
      * Add a song to the queue at the current position + 1.
+     * @since 0.2.0
      */
     public void queueNext(final Song song) {
         this.queueManager.queueNext(song);
@@ -91,21 +90,29 @@ public class AudioPlayerManager {
 
     /**
      * Set the current song by its position in the queue.
+     * @since 0.2.0
      */
     public void setCurrentSongByPosition(int position) {
         this.queueManager.setPosition(position);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void setQueue(final List<Song> songs, int position) {
         this.queueManager.setQueue(songs, position);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public Duration getTotalQueueDuration() {
         return Duration.millis(this.queueManager.getTotalDuration());
     }
 
     /**
      * Create media player, set up listeners and play the song
+     * @since 0.2.0
      */
     public void updateSong() {
         final var filepath = this.player.getSong().getFilepath();
@@ -142,18 +149,24 @@ public class AudioPlayerManager {
 
     // --- Media Controls ---
 
+    /**
+     * @since 0.2.0
+     */
     public void mute() {
         if (this.isPlayerInactive()) {
-            logger().warning(ErrorMessage.MEDIA_PLAYER_NOT_CREATED.getMsg());
+            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
             return;
         }
 
         this.mediaPlayer.setMute(!this.mediaPlayer.isMute());
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void next() {
         if (this.isPlayerInactive()) {
-            logger().warning(ErrorMessage.MEDIA_PLAYER_NOT_CREATED.getMsg());
+            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
             return;
         }
 
@@ -170,74 +183,97 @@ public class AudioPlayerManager {
         }
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void pause() {
         if (this.isPlayerInactive()) {
-            logger().warning(ErrorMessage.MEDIA_PLAYER_NOT_CREATED.getMsg());
+            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
             return;
         }
 
         if (settings().isSmoothFadeStop()) {
             final var startVolume = this.getVolume();
 
-            DurationHelper.fade(
+            new ColorAnimation(
                 Duration.seconds(0.35),
                 startVolume,
                 0.0,
                 16,
-                this::setVolume,
                 this::getVolume,
+                this::setVolume,
                 () -> {
                     this.mediaPlayer.pause();
                     this.setVolume(startVolume);
                 }
-            );
+            ).fade();
         } else {
             this.mediaPlayer.pause();
         }
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void previous() {
         if (this.isPlayerInactive()) {
-            logger().warning(ErrorMessage.MEDIA_PLAYER_NOT_CREATED.getMsg());
+            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
             return;
         }
 
         this.queueManager.movePrevious();
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void remove(final int position) {
         this.queueManager.remove(position);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void resume() {
         if (this.isPlayerInactive()) {
-            logger().warning(ErrorMessage.MEDIA_PLAYER_NOT_CREATED.getMsg());
+            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
             return;
         }
 
         this.mediaPlayer.play();
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void seek(final Double seconds) {
         this.mediaPlayer.seek(Duration.millis(seconds));
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void shuffle() {
         this.queueManager.shuffle();
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void stop() {
         if (!this.isPlayerInactive()) {
-            logger().info(ErrorMessage.MEDIA_PLAYER_NOT_CREATED_STOP.getMsg());
             this.mediaPlayer.stop();
         }
 
         this.queueManager.clear();
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void togglePlaying() {
         if (this.isPlayerInactive()) {
-            logger().warning(ErrorMessage.MEDIA_PLAYER_NOT_CREATED.getMsg());
+            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
             return;
         }
 
@@ -249,6 +285,9 @@ public class AudioPlayerManager {
         this.resume();
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void toggleRepeat() {
         switch (this.player.getRepeatMode()) {
             case NO_REPEAT -> this.player.setRepeatMode(RepeatMode.QUEUE_REPEAT);
@@ -272,7 +311,7 @@ public class AudioPlayerManager {
     }
 
     /**
-     * @return true if the media player has not yet been created, false otherwise.
+     * @return True if the media player has not yet been created, false otherwise.
      */
     public boolean isPlayerInactive() {
         return null == this.mediaPlayer;
@@ -280,7 +319,7 @@ public class AudioPlayerManager {
 
     public boolean isPlaying() {
         if (this.isPlayerInactive()) {
-            logger().warning(ErrorMessage.MEDIA_PLAYER_NOT_CREATED.getMsg());
+            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
             return false;
         }
 
@@ -289,7 +328,7 @@ public class AudioPlayerManager {
 
     public double getPlayingTime() {
         if (this.isPlayerInactive()) {
-            logger().warning(ErrorMessage.MEDIA_PLAYER_NOT_CREATED.getMsg());
+            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
             return -1;
         }
 
@@ -326,28 +365,72 @@ public class AudioPlayerManager {
 
     // --- Event / Listeners ---
 
+    /**
+     * @since 0.2.0
+     */
     public void onQueueChange(final ListChangeListener<Song> change) {
         this.getSongs().addListener(change);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void onSongChange(final MediaChangeListener changeListener) {
         this.changeListeners.add(changeListener);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void onCurrentTimeChange(final MediaCurrentTimeListener currentTimeListener) {
         this.currentTimeListeners.add(currentTimeListener);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void onMute(final MediaMuteListener muteListener) {
         this.muteListeners.add(muteListener);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void onPlay(final MediaPlayListener playListener) {
         this.playListeners.add(playListener);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void onPause(final MediaPauseListener pauseListener) {
         this.pauseListeners.add(pauseListener);
+    }
+
+    // Interfaces
+
+    public interface MediaChangeListener {
+        void onChange(final Song song);
+    }
+
+    public interface MediaCurrentTimeListener {
+        void onCurrentTimeChange(
+            final ObservableValue<? extends Duration> observable,
+            final Duration oldValue,
+            final Duration newValue
+        );
+    }
+
+    public interface MediaMuteListener {
+        void onToggleMute(Observable observable);
+    }
+
+    public interface MediaPauseListener {
+        void onPause();
+    }
+
+    public interface MediaPlayListener {
+        void onPlay();
     }
 
 }

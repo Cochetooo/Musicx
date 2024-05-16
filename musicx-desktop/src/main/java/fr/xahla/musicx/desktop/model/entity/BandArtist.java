@@ -9,8 +9,13 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.artistRepository;
 
+/**
+ * Defines the behaviour of a band artist for a JavaFX context.
+ * @author Cochetooo
+ * @since 0.3.0
+ */
 public class BandArtist extends Artist {
 
     private ListProperty<PersonArtist> members;
@@ -19,6 +24,9 @@ public class BandArtist extends Artist {
         super(artist);
     }
 
+    /**
+     * @since 0.3.0
+     */
     public BandArtistDto getDto() {
         return (BandArtistDto) dto;
     }

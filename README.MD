@@ -23,6 +23,11 @@ music lovers:<br>
 
 ## Patch Log
 
+### Release 0.3.2
+
+> #### Technical Changes
+> - Documentation and specification for developers
+
 ### Release 0.3.1
 
 > #### New Features

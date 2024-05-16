@@ -10,6 +10,7 @@ import java.util.Map;
  * Contracts to manipulate artists in database.
  * @author Cochetooo
  * @see ArtistDto
+ * @since 0.2.0
  */
 public interface ArtistRepositoryInterface {
 

@@ -3,25 +3,14 @@ package fr.xahla.musicx.desktop;
 import fr.xahla.musicx.desktop.manager.*;
 import fr.xahla.musicx.desktop.model.Settings;
 import fr.xahla.musicx.domain.application.AbstractContext;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.Parent;
 
-import java.io.IOException;
-import java.util.Objects;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-/** <b>Global context for the desktop application.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Global context for the desktop application.
  * @author Cochetooo
+ * @since 0.1.0
  */
 public class DesktopContext extends AbstractContext {
 

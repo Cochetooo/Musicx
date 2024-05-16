@@ -11,11 +11,13 @@ import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.logging.Level;
 
+import static fr.xahla.musicx.domain.application.AbstractContext.error;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Common methods for external API handler classes
  * @author Cochetooo
+ * @since 0.3.0
  */
 public abstract class ExternalApiHandler {
 
@@ -25,6 +27,9 @@ public abstract class ExternalApiHandler {
         this.apiUrl = apiUrl;
     }
 
+    /**
+     * @since 0.3.0
+     */
     protected abstract String makeURL(
         final String method,
         final Map<String, String> parameters
@@ -32,6 +37,7 @@ public abstract class ExternalApiHandler {
 
     /**
      * @return A JSONObject with the content of the response, otherwise an empty JSONObject.
+     * @since 0.3.0
      */
     protected JSONObject sendRequest(final String requestUrl) {
         try (final var httpClient = HttpClient.newHttpClient()) {
@@ -42,11 +48,8 @@ public abstract class ExternalApiHandler {
             final var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             return new JSONObject(response.body());
         } catch (final IOException | InterruptedException exception) {
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_API_REQUEST.msg(), requestUrl),
-                exception
-            );
+            error(exception, LogMessage.ERROR_API_REQUEST, requestUrl);
+
             return new JSONObject();
         }
     }

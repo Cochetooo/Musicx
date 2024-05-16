@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Song persistence class for database
+ * Song persistence class for database.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Entity
 @Table(name = "song")
@@ -63,6 +64,9 @@ public class SongEntity {
 
     // Casts
 
+    /**
+     * @since 0.3.0
+     */
     public SongEntity fromDto(final SongDto songDto) {
         this.setId(songDto.getId());
         this.setAlbumId(songDto.getAlbumId());
@@ -102,6 +106,9 @@ public class SongEntity {
         return this;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public SongDto toDto() {
         final var songDto = SongDto.builder()
             .id(id)

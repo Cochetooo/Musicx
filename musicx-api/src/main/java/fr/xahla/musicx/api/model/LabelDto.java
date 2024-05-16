@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Transferring label data throughout application layers.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Data
 @Builder

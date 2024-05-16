@@ -22,11 +22,15 @@ import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 /**
  * Manipulate artist data with Hibernate.
  * @author Cochetooo
+ * @since 0.1.0
  */
 public class ArtistRepository implements ArtistRepositoryInterface {
 
     /* ------------ Relations --------------- */
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<PersonArtistDto> getMembers(final BandArtistDto artist) {
         final var members = new ArrayList<PersonArtistDto>();
 
@@ -37,6 +41,9 @@ public class ArtistRepository implements ArtistRepositoryInterface {
         return members;
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<BandArtistDto> getBands(final PersonArtistDto artist) {
         final var bands = new ArrayList<BandArtistDto>();
 
@@ -47,12 +54,18 @@ public class ArtistRepository implements ArtistRepositoryInterface {
         return bands;
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<AlbumDto> getAlbums(final ArtistDto artist) {
         return albumRepository().findByCriteria(Map.of(
             AlbumSearchCriteria.ARTIST, artist.getId()
         ));
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<SongDto> getSongs(final ArtistDto artist) {
         return songRepository().findByCriteria(Map.of(
             SongSearchCriteria.ARTIST, artist.getId()
@@ -63,6 +76,7 @@ public class ArtistRepository implements ArtistRepositoryInterface {
 
     /**
      * @return The ArtistDto with the correspond id, otherwise <b>null</b>.
+     * @since 0.3.0
      */
     @Override public ArtistDto find(final Long id) {
         try (final var session = openSession()) {
@@ -73,12 +87,18 @@ public class ArtistRepository implements ArtistRepositoryInterface {
         }
     }
 
+    /**
+     * @since 0.1.0
+     */
     @Override public List<ArtistDto> findAll() {
         return this.toDtoList(
             QueryHelper.query_find_all(ArtistEntity.class)
         );
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<ArtistDto> findByCriteria(final Map<ArtistSearchCriteria, Object> criteria) {
         final var query = new QueryBuilder()
             .from(ArtistEntity.class);
@@ -90,14 +110,9 @@ public class ArtistRepository implements ArtistRepositoryInterface {
         );
     }
 
-    private List<ArtistDto> toDtoList(final List<?> resultQuery) {
-        return resultQuery.stream()
-            .filter(ArtistEntity.class::isInstance)
-            .map(ArtistEntity.class::cast)
-            .map(ArtistEntity::toDto)
-            .toList();
-    }
-
+    /**
+     * @since 0.1.0
+     */
     @Override public void save(final ArtistDto artist) {
         ArtistEntity artistEntity;
 
@@ -123,11 +138,18 @@ public class ArtistRepository implements ArtistRepositoryInterface {
                 transaction.rollback();
             }
 
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), artist.getName()),
-                exception
-            );
+            error(exception, LogMessage.ERROR_REPOSITORY_SAVE, artist.getName());
         }
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    private List<ArtistDto> toDtoList(final List<?> resultQuery) {
+        return resultQuery.stream()
+            .filter(ArtistEntity.class::isInstance)
+            .map(ArtistEntity.class::cast)
+            .map(ArtistEntity::toDto)
+            .toList();
     }
 }

@@ -10,6 +10,7 @@ import java.util.Map;
  * Contracts to manipulate genres in database.
  * @author Cochetooo
  * @see GenreDto
+ * @since 0.3.0
  */
 public interface GenreRepositoryInterface {
 

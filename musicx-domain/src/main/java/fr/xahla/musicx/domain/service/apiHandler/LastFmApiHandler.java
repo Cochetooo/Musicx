@@ -16,6 +16,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.*;
 /**
  * Handles API call for LastFm.
  * @author Cochetooo
+ * @since 0.3.0
  */
 public class LastFmApiHandler
     extends ExternalApiHandler
@@ -39,6 +40,7 @@ public class LastFmApiHandler
      * @see <a href="https://ws.audioscrobbler.com/2.0/?method=artist.getinfo">Get Info from Artist</a>
      * @param artist The artist source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
+     * @since 0.3.0
      */
     @Override public void fetchArtistFromExternal(final ArtistDto artist, final boolean overwrite) {
         final var methodSignature = "artist.getinfo";
@@ -79,6 +81,7 @@ public class LastFmApiHandler
      * @see <a href="https://ws.audioscrobbler.com/2.0/?method=album.getinfo">Get Info from Album</a>
      * @param album The album source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
+     * @since 0.3.0
      */
     @Override public void fetchAlbumFromExternal(final AlbumDto album, final boolean overwrite) {
         final var methodSignature = "album.getinfo";
@@ -128,6 +131,7 @@ public class LastFmApiHandler
      * @see <a href="https://ws.audioscrobbler.com/2.0/?method=track.getinfo">Get Info from Song</a>
      * @param song The song source that will be modified then.
      * @param overwrite If true, overwrite data if already exists
+     * @since 0.3.0
      */
     @Override public void fetchSongFromExternal(final SongDto song, final boolean overwrite) {
         final var methodSignature = "track.getinfo";

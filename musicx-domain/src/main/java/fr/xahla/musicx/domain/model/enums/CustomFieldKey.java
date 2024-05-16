@@ -5,6 +5,7 @@ import lombok.Getter;
 /**
  * List of custom tags used by the application.
  * @author Cochetooo
+ * @since 0.3.1
  */
 @Getter
 public enum CustomFieldKey {

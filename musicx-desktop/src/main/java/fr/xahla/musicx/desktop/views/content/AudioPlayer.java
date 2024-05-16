@@ -1,10 +1,10 @@
 package fr.xahla.musicx.desktop.views.content;
 
 import fr.xahla.musicx.desktop.DesktopApplication;
-import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import fr.xahla.musicx.domain.helper.DurationHelper;
 import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -31,21 +31,16 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
 import static fr.xahla.musicx.domain.service.apiHandler.ItunesApiHandler.itunesApi;
 import static fr.xahla.musicx.domain.service.apiHandler.LastFmApiHandler.lastFmApi;
 
-/** <b>View for the audio player with its controls.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * View for the audio player with its controls.
  * @author Cochetooo
+ * @since 0.2.0
  */
-public class Player implements Initializable {
+public class AudioPlayer implements Initializable {
 
     // Container
     @FXML private BorderPane playerContainer;

@@ -11,9 +11,14 @@ import static fr.xahla.musicx.domain.application.AbstractContext.log;
 /**
  * Build SQL queries for repositories.
  * @author Cochetooo
+ * @since 0.3.1
  */
 public final class QueryBuilder {
 
+    /**
+     * Stores data for a HQL query.
+     * @since 0.3.1
+     */
     public record Query(
         String request,
         Map<String, String> parameters,
@@ -31,6 +36,7 @@ public final class QueryBuilder {
 
     /**
      * @return A query instance, or <b>null</b> if no class selector has been queried.
+     * @since 0.3.1
      */
     public QueryBuilder.Query build() {
         if (null == clazz) {
@@ -43,6 +49,9 @@ public final class QueryBuilder {
 
     /* -------------- FROM -------------- */
 
+    /**
+     * @since 0.3.1
+     */
     public QueryBuilder from(final Class<?> clazz) {
         sql
             .append("FROM ")
@@ -55,31 +64,45 @@ public final class QueryBuilder {
 
     /* -------------- WHERE -------------- */
 
-    public QueryBuilder andWhere(final String column, final Object value) {
-        return andWhere(column, value, SqlOperator.EQUAL);
-    }
-
-    public QueryBuilder andWhere(final String column, final Object value, final SqlOperator operator) {
-        sql.append(" AND ");
-        return where(column, value, operator);
-    }
-
+    /**
+     * @since 0.3.1
+     */
     public QueryBuilder orWhere(final String column, final Object value) {
         return orWhere(column, value, SqlOperator.EQUAL);
     }
 
+    /**
+     * @since 0.3.1
+     */
     public QueryBuilder orWhere(final String column, final Object value, final SqlOperator operator) {
-        sql.append(" OR ");
-        return where(column, value, operator);
+        sql.append(" OR ")
+            .append(column)
+            .append(operator.getSQLOperator())
+            .append(":").append(column);
+
+        parameters.put(column, String.valueOf(value));
+
+        return this;
     }
 
+    /**
+     * @since 0.3.1
+     */
     public QueryBuilder where(final String column, final Object value) {
         return where(column, value, SqlOperator.EQUAL);
     }
 
+    /**
+     * @since 0.3.1
+     */
     public QueryBuilder where(final String column, final Object value, final SqlOperator operator) {
+        if (sql.toString().contains("WHERE")) {
+            sql.append(" AND ");
+        } else {
+            sql.append(" WHERE ");
+        }
+
         sql
-            .append(" WHERE ")
             .append(column)
             .append(operator.getSQLOperator())
             .append(":").append(column);
@@ -91,10 +114,18 @@ public final class QueryBuilder {
 
     /* -------------- WHERE IN -------------- */
 
+    /**
+     * @throws NullPointerException If class selector has not been set.
+     * @since 0.3.2
+     */
     public QueryBuilder whereIn(final String table, final String column, final Object value) {
         return whereIn(table, column, value, SqlOperator.EQUAL);
     }
 
+    /**
+     * @throws NullPointerException If class selector has not been set.
+     * @since 0.3.2
+     */
     public QueryBuilder whereIn(final String table, final String column, final Object value, final SqlOperator operator) {
         if (null == clazz) {
             log(LogMessage.ERROR_QUERY_NO_TABLE_DEFINED, sql);
@@ -122,6 +153,9 @@ public final class QueryBuilder {
 
     /* -------------- ORDER BY -------------- */
 
+    /**
+     * @since 0.3.1
+     */
     public QueryBuilder orderBy(final String column, final SqlOrderBy orderBy) {
         sql
             .append(" ORDER BY ")

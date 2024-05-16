@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Artist persistence class for database
+ * Artist persistence class for database.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -34,6 +35,9 @@ public class ArtistEntity {
 
     private String name;
 
+    /**
+     * @since 0.3.0
+     */
     public ArtistEntity fromDto(final ArtistDto artistDto) {
         this.setId(artistDto.getId());
         this.setName(artistDto.getName());
@@ -43,6 +47,9 @@ public class ArtistEntity {
         return this;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public ArtistDto toDto() {
         return ArtistDto.builder()
             .id(id)

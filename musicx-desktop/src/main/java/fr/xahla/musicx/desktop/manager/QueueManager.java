@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.manager;
 
 import fr.xahla.musicx.desktop.listener.ValueListener;
-import fr.xahla.musicx.desktop.logging.ErrorMessage;
+import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.model.Queue;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.collections.ListChangeListener;
@@ -11,17 +11,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.log;
 
-/** <b>Class that allow views to use Queue model, while keeping a protection layer to its usage.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Manages audio queue related list.
  * @author Cochetooo
+ * @since 0.2.0
  */
 public class QueueManager {
 
@@ -40,16 +35,25 @@ public class QueueManager {
         });
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void setQueue(final List<Song> songs, int position) {
         this.queue.getSongs().setAll(songs);
         this.queue.setPosition(position);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void clear() {
         this.queue.getSongs().clear();
         this.queue.setPosition(-1);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void remove(final int position) {
         if (position < this.queue.getPosition()) {
             return;
@@ -62,55 +66,92 @@ public class QueueManager {
         this.queue.getSongs().remove(position);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void setPosition(final Integer position) {
         this.queue.setPosition(position);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void movePrevious() {
         this.queue.setPosition(this.queue.getPosition() - 1);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void moveNext() {
         this.queue.setPosition(this.queue.getPosition() + 1);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void queueNext(final Song song) {
         this.queue.getSongs().add(this.queue.getPosition() + 1, song);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void queueLast(final Song song) {
         this.queue.getSongs().add(song);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void repeatSong() {
         this.queue.setPosition(this.queue.getPosition());
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void shuffle() {
         Collections.shuffle(this.queue.getSongs());
     }
 
+    /**
+     * @return The song at the chosen index, otherwise <b>null</b> if index is out of bounds.
+     * @since 0.2.0
+     */
     public Song getSongAt(final int index) {
         if (index < 0 || index >= this.queue.getSongCount()) {
-            logger().warning(ErrorMessage.QUEUE_SONG_OUT_OF_BOUNDS.getMsg(index, this.queue.getSongCount()));
+            log(LogMessageFX.FINE_QUEUE_SONG_OUT_OF_BOUNDS, index, this.queue.getPosition());
             return null;
         }
 
         return this.queue.getSongs().get(index);
     }
 
+    /**
+     * @since 0.2.0
+     */
     public ObservableList<Song> getSongs() {
         return this.queue.getSongs();
     }
 
+    /**
+     * @since 0.2.0
+     */
     public long getTotalDuration() {
         return this.queue.getDuration();
     }
 
+    /**
+     * @since 0.2.0
+     */
     public boolean isLastSong() {
         return this.queue.getPosition() == this.getSongs().size();
     }
 
+    /**
+     * @since 0.2.0
+     */
     public void onChangePosition(final ValueListener<Integer> change) {
         this.queue.addPositionListener(change);
     }

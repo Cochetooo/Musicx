@@ -3,6 +3,7 @@ package fr.xahla.musicx.domain.model.enums;
 /**
  * List of all different mode of repetition for the track list.
  * @author Cochetooo
+ * @since 0.2.0
  */
 public enum RepeatMode {
 

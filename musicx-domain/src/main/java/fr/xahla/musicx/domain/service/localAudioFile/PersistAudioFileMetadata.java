@@ -1,10 +1,11 @@
 package fr.xahla.musicx.domain.service.localAudioFile;
 
 import fr.xahla.musicx.api.model.*;
-import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.api.model.enums.AudioFormat;
+import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.api.repository.searchCriterias.*;
 import fr.xahla.musicx.domain.helper.AudioTaggerHelper;
+import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.enums.CustomFieldKey;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioHeader;
@@ -18,15 +19,15 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.logging.Level;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
-import static fr.xahla.musicx.domain.repository.GenreRepository.genreRepository;
-import static fr.xahla.musicx.domain.repository.LabelRepository.labelRepository;
-import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.helper.StringHelper.str_parse_short_safe;
 
+/**
+ * Write information about songs, albums, artists, labels and genres into audio files.
+ * @author Cochetooo
+ * @since 0.3.1
+ */
 public final class PersistAudioFileMetadata {
 
     private Tag tag;
@@ -34,6 +35,9 @@ public final class PersistAudioFileMetadata {
     private AudioHeader audioHeader;
     private String filepath;
 
+    /**
+     * @since 0.3.1
+     */
     public void execute(
         final AudioFile audioFile
     ) {
@@ -42,7 +46,7 @@ public final class PersistAudioFileMetadata {
         this.filepath = audioFile.getFile().getAbsolutePath();
 
         if (null == tag || null == audioHeader) {
-            logger().warning("Skipping potentially corrupted song: " + audioFile.getFile().getAbsolutePath());
+            log(LogMessage.WARNING_AUDIO_TAGGER_FILE_NOT_VALID, audioFile.getFile().getAbsolutePath());
             return;
         }
 
@@ -61,13 +65,13 @@ public final class PersistAudioFileMetadata {
     private SongDto readSong() {
         try {
             final var bitRate = (int) audioHeader.getBitRateAsNumber();
-            final var discNumber = this.getShort(tag.getFirst(FieldKey.DISC_NO));
+            final var discNumber = str_parse_short_safe(tag.getFirst(FieldKey.DISC_NO));
             final var duration = audioHeader.getTrackLength() * 1_000L;
             final var format = AudioFormat.valueOf(audioHeader.getFormat().toUpperCase());
             final var rawLyrics = tag.getFirst(FieldKey.LYRICS);
             final var sampleRate = audioHeader.getSampleRateAsNumber();
             final var title = tag.getFirst(FieldKey.TITLE);
-            final var trackNumber = this.getShort(tag.getFirst(FieldKey.TRACK));
+            final var trackNumber = str_parse_short_safe(tag.getFirst(FieldKey.TRACK));
 
             final var existingSong = songRepository().findByCriteria(Map.of(
                 SongSearchCriteria.DURATION, duration,
@@ -95,7 +99,7 @@ public final class PersistAudioFileMetadata {
 
             return song;
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "Failed to read song for filepath: " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Song Partition] " + filepath);
 
             return SongDto.builder().title(filepath).build();
         }
@@ -107,13 +111,21 @@ public final class PersistAudioFileMetadata {
 
             final var artworkUrl = AudioTaggerHelper.audiotagger_get_custom_tag(customTags, CustomFieldKey.ARTWORK_URL);
             final var catalogNo = tag.getFirst(FieldKey.CATALOG_NO);
-            final var discTotal = this.getShort(tag.getFirst(FieldKey.DISC_TOTAL));
+            final var discTotal = str_parse_short_safe(tag.getFirst(FieldKey.DISC_TOTAL));
             final var name = tag.getFirst(FieldKey.ALBUM);
             final var releaseDate = this.getLocalDate(tag.getFirst(FieldKey.YEAR));
-            final var trackTotal = this.getShort(tag.getFirst(FieldKey.TRACK_TOTAL));
+            final var trackTotal = str_parse_short_safe(tag.getFirst(FieldKey.TRACK_TOTAL));
 
             final var typeCustomTag = AudioTaggerHelper.audiotagger_get_custom_tag(customTags, CustomFieldKey.ALBUM_TYPE);
-            final var type = typeCustomTag.isBlank() ? null : ReleaseType.valueOf(typeCustomTag.toUpperCase());
+
+            ReleaseType type;
+
+            try {
+                type = typeCustomTag.isBlank() ? null : ReleaseType.valueOf(typeCustomTag.toUpperCase());
+            } catch (final IllegalArgumentException exception) {
+                log(LogMessage.WARNING_AUDIO_TAGGER_TAG_NOT_VALID, "ReleaseType", typeCustomTag);
+                type = null;
+            }
 
             if (name.isBlank()) {
                 return null;
@@ -143,7 +155,8 @@ public final class PersistAudioFileMetadata {
 
             return album.getId();
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "Failed to read album for song: " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Album Partition] " + filepath);
+
             return null;
         }
     }
@@ -177,7 +190,8 @@ public final class PersistAudioFileMetadata {
 
             return albumArtist.getId();
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "Failed to read album artist for song: " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Album Artist Partition] " + filepath);
+
             return null;
         }
     }
@@ -208,7 +222,7 @@ public final class PersistAudioFileMetadata {
 
             return albumLabel.getId();
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "Failed to read album label for song: " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Label Partition] " + filepath);
             return null;
         }
     }
@@ -243,7 +257,7 @@ public final class PersistAudioFileMetadata {
 
             return artist.getId();
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "Failed to read artist for song: " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Artist Partition] " + filepath);
             return null;
         }
     }
@@ -253,7 +267,7 @@ public final class PersistAudioFileMetadata {
             final var primaryGenreNames = this.getGenresName("Primary Track Genres");
             return this.getGenres(primaryGenreNames);
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "Failed to read primary genres for song: " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Song Primary Genres Partition] " + filepath);
             return new ArrayList<>();
         }
     }
@@ -263,7 +277,7 @@ public final class PersistAudioFileMetadata {
             final var secondaryGenreNames = this.getGenresName(CustomFieldKey.SONG_SECONDARY_GENRES.getKey());
             return this.getGenres(secondaryGenreNames);
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "Failed to read secondary genres for song: " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Song Secondary Genres Partition] " + filepath);
             return new ArrayList<>();
         }
     }
@@ -281,7 +295,7 @@ public final class PersistAudioFileMetadata {
             if (!existGenre.isEmpty()) {
                 genres.add(existGenre.getFirst());
             } else {
-                logger().warning("Given genre does not exist: " + primaryGenreName);
+                log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Genre", "name", primaryGenreName);
             }
         });
 
@@ -312,21 +326,13 @@ public final class PersistAudioFileMetadata {
                 }
             });
         } catch (final Exception exception) {
-            logger().log(Level.SEVERE, "Error while setting up " + fieldKey + " for song: " + filepath, exception);
+            error(exception, LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_FETCH, fieldKey + " for song: " + filepath);
         }
 
         return genresName;
     }
 
     // Getters
-
-    private int getInteger(final String fieldValue) {
-        try {
-            return Integer.parseInt(fieldValue);
-        } catch (final NumberFormatException exception) {
-            return 0;
-        }
-    }
 
     private LocalDate getLocalDate(final String fieldValue) {
         try {
@@ -336,7 +342,7 @@ public final class PersistAudioFileMetadata {
 
             return LocalDate.parse(fieldValue);
         } catch (final DateTimeParseException | NumberFormatException exception) {
-            logger().warning("Wrong format of date: " + fieldValue);
+            log(LogMessage.WARNING_DATE_FORMAT_INCORRECT, fieldValue);
 
             return LocalDate.of(0, 1, 1);
         }
@@ -351,14 +357,6 @@ public final class PersistAudioFileMetadata {
             return new Locale.Builder()
                 .setLanguage("en")
                 .build();
-        }
-    }
-
-    private short getShort(final String fieldValue) {
-        try {
-            return Short.parseShort(fieldValue);
-        } catch (final NumberFormatException exception) {
-            return 0;
         }
     }
 }

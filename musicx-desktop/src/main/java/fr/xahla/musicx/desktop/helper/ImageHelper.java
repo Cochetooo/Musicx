@@ -3,18 +3,16 @@ package fr.xahla.musicx.desktop.helper;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-/** <b>Utility class for JavaFX Images.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Utility class for JavaFX Images.
  * @author Cochetooo
+ * @since 0.2.4
  */
-public class ImageHelper {
+public final class ImageHelper {
 
+    /**
+     * @since 0.2.4
+     */
     public static Color calculateAverageColor(final Image image) {
         final int width = (int) image.getWidth();
         final int height = (int) image.getHeight();

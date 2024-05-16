@@ -9,8 +9,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.artistRepository;
 
+/**
+ * Defines the behaviour of a person artist for a JavaFX context.
+ * @author Cochetooo
+ * @since 0.3.2
+ */
 public class PersonArtist extends Artist {
 
     private final StringProperty firstName;
@@ -31,6 +36,9 @@ public class PersonArtist extends Artist {
         this.getDto().setDeathDate(this.getDeathDate());
     }
 
+    /**
+     * @since 0.3.0
+     */
     public PersonArtistDto getDto() {
         return (PersonArtistDto) dto;
     }

@@ -23,19 +23,29 @@ import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 /**
  * Manipulate song data with Hibernate.
  * @author Cochetooo
+ * @since 0.1.0
  */
 public class SongRepository implements SongRepositoryInterface {
 
     /* ------------ Relations --------------- */
 
+    /**
+     * @since 0.3.0
+     */
     @Override public AlbumDto getAlbum(final SongDto song) {
         return albumRepository().find(song.getAlbumId());
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public ArtistDto getArtist(final SongDto song) {
         return artistRepository().find(song.getArtistId());
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<GenreDto> getPrimaryGenres(final SongDto song) {
         final var genres = new ArrayList<GenreDto>();
 
@@ -46,6 +56,9 @@ public class SongRepository implements SongRepositoryInterface {
         return genres;
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<GenreDto> getSecondaryGenres(final SongDto song) {
         final var genres = new ArrayList<GenreDto>();
 
@@ -60,6 +73,7 @@ public class SongRepository implements SongRepositoryInterface {
 
     /**
      * @return The SongDto with the correspond id, otherwise <b>null</b>.
+     * @since 0.3.0
      */
     @Override public SongDto find(final Long id) {
         try (final var session = openSession()) {
@@ -70,12 +84,18 @@ public class SongRepository implements SongRepositoryInterface {
         }
     }
 
+    /**
+     * @since 0.1.0
+     */
     @Override public List<SongDto> findAll() {
         return this.toDtoList(
             QueryHelper.query_find_all(SongEntity.class)
         );
     }
 
+    /**
+     * @since 0.3.0
+     */
     @Override public List<SongDto> findByCriteria(final Map<SongSearchCriteria, Object> criteria) {
         final var query = new QueryBuilder()
             .from(SongEntity.class);
@@ -87,6 +107,9 @@ public class SongRepository implements SongRepositoryInterface {
         );
     }
 
+    /**
+     * @since 0.1.0
+     */
     @Override public void save(final SongDto song) {
         SongEntity songEntity;
 
@@ -112,11 +135,7 @@ public class SongRepository implements SongRepositoryInterface {
                 transaction.rollback();
             }
 
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_REPOSITORY_SAVE.msg(), song.getTitle()),
-                exception
-            );
+            error(exception, LogMessage.ERROR_REPOSITORY_SAVE, song.getTitle());
         }
     }
 

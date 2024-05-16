@@ -17,6 +17,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.*;
 /**
  * Read a JSON File and import all data as genres into the database.
  * @author Cochetooo
+ * @since 0.3.0
  */
 public final class ImportGenresFromJson {
 
@@ -24,6 +25,9 @@ public final class ImportGenresFromJson {
 
     private JSONObject jsonContent;
 
+    /**
+     * @since 0.3.0
+     */
     public void execute(final String jsonPath) {
         jsonContent = JsonHelper.json_load_from_file(jsonPath);
 

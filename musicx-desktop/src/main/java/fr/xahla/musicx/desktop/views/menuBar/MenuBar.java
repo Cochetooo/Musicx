@@ -1,10 +1,9 @@
 package fr.xahla.musicx.desktop.views.menuBar;
 
-import fr.xahla.musicx.desktop.helper.FXMLHelper;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import fr.xahla.musicx.domain.service.localAudioFile.StructureAudioFilesTree;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
@@ -16,15 +15,10 @@ import java.util.ResourceBundle;
 import static fr.xahla.musicx.desktop.DesktopContext.library;
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 
-/** <b>View for the top menu bar and all its sub-menus.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * View for the top menu bar and all its sub-menus.
  * @author Cochetooo
+ * @since 0.2.0
  */
 public class MenuBar implements Initializable {
 
@@ -45,7 +39,7 @@ public class MenuBar implements Initializable {
     /* --------------------------- FILE --------------------------- */
 
     @FXML public void fileImportFolders() {
-        FXMLHelper.showModal(FxmlComponent.MODAL_IMPORT_FOLDERS, this.resourceBundle, resourceBundle.getString("importFolders.title"));
+        FxmlHelper.showModal(FxmlComponent.MODAL_IMPORT_FOLDERS, this.resourceBundle, resourceBundle.getString("importFolders.title"));
     }
 
     @FXML public void fileScanFolders() {
@@ -62,11 +56,11 @@ public class MenuBar implements Initializable {
     }
 
     @FXML public void fileSettings() {
-        FXMLHelper.showModal(FxmlComponent.MODAL_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
+        FxmlHelper.showModal(FxmlComponent.MODAL_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
     }
 
     @FXML public void fileShowConsole() {
-        FXMLHelper.showModal(FxmlComponent.MODAL_CONSOLE, this.resourceBundle, resourceBundle.getString("console.title"));
+        FxmlHelper.showModal(FxmlComponent.MODAL_CONSOLE, this.resourceBundle, resourceBundle.getString("console.title"));
     }
 
     @FXML public void fileExit() {

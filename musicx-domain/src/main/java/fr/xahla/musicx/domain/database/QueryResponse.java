@@ -9,8 +9,8 @@ import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Container for a query response used to properly manage the response.
- * @param response
  * @author Cochetooo
+ * @since 0.3.1
  */
 public record QueryResponse(
     List<?> response
@@ -19,6 +19,7 @@ public record QueryResponse(
     /**
      * @return The first object of the list
      * @throws NullPointerException if the response is empty
+     * @since 0.3.1
      */
     public Object unique() {
         if (response.isEmpty()) {
@@ -31,6 +32,7 @@ public record QueryResponse(
 
     /**
      * @return The first object of the list or <b>null</b> if the list is empty
+     * @since 0.3.1
      */
     public Object uniqueOrNull() {
         if (response.isEmpty()) {

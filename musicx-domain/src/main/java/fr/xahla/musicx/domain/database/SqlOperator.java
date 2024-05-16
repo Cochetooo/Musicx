@@ -3,6 +3,7 @@ package fr.xahla.musicx.domain.database;
 /**
  * List of all comparable operators in a query.
  * @author Cochetooo
+ * @since 0.3.1
  */
 public enum SqlOperator {
 

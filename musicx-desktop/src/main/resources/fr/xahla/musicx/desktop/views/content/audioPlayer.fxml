@@ -11,7 +11,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="fr.xahla.musicx.desktop.views.content.Player"
+            fx:controller="fr.xahla.musicx.desktop.views.content.AudioPlayer"
             fx:id="playerContainer"
             prefHeight="80" prefWidth="Infinity"
             style="-fx-background-color: -color-base-9; -fx-padding: 10 25 10 25"

@@ -16,6 +16,11 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 
+/**
+ * View for the queue list shown on the right-side container
+ * @author Cochetooo
+ * @since 0.2.2
+ */
 public class QueueList implements Initializable {
 
     @FXML private ListView<Song> queueListView;

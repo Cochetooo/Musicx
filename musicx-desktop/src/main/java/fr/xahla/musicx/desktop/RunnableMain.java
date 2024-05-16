@@ -1,17 +1,12 @@
 package fr.xahla.musicx.desktop;
 
-/** <b>This class is made to prevent the executable JAR to give the famous error:
+/** This class is made to prevent the executable JAR to give the famous error:<br>
  * "Error: JavaFX runtime components are missing, and are required to run this application"
  * by instantiating a new Main class that does not inherit from <i>Application</i>,
- * causing the application to crash while trying to find javafx modules.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
+ * causing the application to crash while trying to find javafx modules.
  *
  * @author Cochetooo
+ * @since 0.2.1
  */
 public class RunnableMain {
 

@@ -8,6 +8,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 /**
  * Simple utility class to make benchmark in milliseconds by returning elapsed time.
  * @author Cochetooo
+ * @since 0.3.2
  */
 public final class Benchmark {
 
@@ -19,6 +20,7 @@ public final class Benchmark {
 
     /**
      * @return Elapsed time since the instantiation of the benchmark in milliseconds.
+     * @since 0.3.2
      */
     public long getElapsedTime() {
         return System.currentTimeMillis() - start;
@@ -26,11 +28,15 @@ public final class Benchmark {
 
     /**
      * Put the counter to current time to simulate a reset.
+     * @since 0.3.2
      */
     public void reset() {
         start = System.currentTimeMillis();
     }
 
+    /**
+     * @since 0.3.2
+     */
     public void print(final String action) {
         log(LogMessage.INFO_BENCHMARK, action, this.getElapsedTime());
     }

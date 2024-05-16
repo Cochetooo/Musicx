@@ -3,6 +3,7 @@ package fr.xahla.musicx.domain.service.localAudioFile;
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.SongDto;
+import fr.xahla.musicx.domain.logging.LogMessage;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,15 +13,21 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileAttribute;
 import java.util.logging.Level;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
-import static fr.xahla.musicx.domain.repository.ArtistRepository.artistRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
 
+/**
+ * Service that collects all songs and restructure them in an organized folder with Artist > Album > Songs.
+ * @author Cochetooo
+ * @since 0.3.2
+ */
 public class StructureAudioFilesTree {
 
     private static final String UNKNOWN_ARTISTS = "Unknown Artists";
     private String rootFolder;
 
+    /**
+     * @since 0.3.2
+     */
     public void execute(final String rootFolder) {
         final var artists = artistRepository().findAll();
         this.rootFolder = rootFolder;
@@ -29,9 +36,9 @@ public class StructureAudioFilesTree {
     }
 
     private void createArtist(final ArtistDto artist) {
-        try {
-            final var artistPath = Path.of(rootFolder).resolve(artist.getName());
+        final var artistPath = Path.of(rootFolder).resolve(artist.getName());
 
+        try {
             if (!Files.exists(artistPath)) {
                 Files.createDirectory(artistPath);
             }
@@ -40,7 +47,7 @@ public class StructureAudioFilesTree {
 
             albums.forEach((album) -> this.createAlbum(album, artistPath));
         } catch (final IOException exception) {
-            logger().log(Level.SEVERE, "Could not create directory tree for artist: " + artist.getName(), exception);
+            error(exception, LogMessage.ERROR_IO_FOLDER_CREATE, artistPath.toAbsolutePath());
         }
     }
 
@@ -58,7 +65,7 @@ public class StructureAudioFilesTree {
 
             songs.forEach((song) -> this.createSong(song, albumPath));
         } catch (final IOException exception) {
-            logger().log(Level.SEVERE, "Could not create directory for album " + album.getName(), exception);
+            error(exception, LogMessage.ERROR_IO_FOLDER_CREATE, albumPath.toAbsolutePath());
         }
     }
 
@@ -78,13 +85,13 @@ public class StructureAudioFilesTree {
                 );
 
                 if (!Files.exists(songPath)) {
-                    logger().warning("File not copied! (Intended output): " + songPath);
+                    log(LogMessage.WARNING_IO_FILE_COPY, song.getFilepath(), songPath);
                 } else {
-                    logger().fine("Song " + song.getFilepath() + " copied to " + songPath);
+                    log(LogMessage.FINE_IO_FILE_COPIED, song.getFilepath(), songPath);
                 }
             }
         } catch (final IOException exception) {
-            logger().log(Level.SEVERE, "Could not move song " + song.getFilepath() + " to folder " + albumPath, exception);
+            error(exception, LogMessage.ERROR_IO_FILE_MOVE, "song " + song.getFilepath(), albumPath);
         }
     }
 

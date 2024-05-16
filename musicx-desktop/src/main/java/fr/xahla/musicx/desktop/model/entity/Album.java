@@ -14,17 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.xahla.musicx.domain.repository.AlbumRepository.albumRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
 
-/** <b>Class that defines the Album Model for desktop view usage.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Defines the behaviour of an album for a JavaFX context.
  * @author Cochetooo
+ * @since 0.1.0
  */
 public class Album {
 
@@ -60,6 +55,9 @@ public class Album {
         this.dto = album;
     }
 
+    /**
+     * @since 0.3.0
+     */
     public AlbumDto getDto() {
         return dto;
     }

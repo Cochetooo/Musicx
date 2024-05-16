@@ -5,6 +5,7 @@ import lombok.Getter;
 /**
  * Available criteria for filtering label search in database.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Getter
 public enum LabelSearchCriteria {

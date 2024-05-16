@@ -1,13 +1,7 @@
-/** <b>Domain Module for Musicx apps, should be accessible for anyone that wants to make their own app
- * out of the raw contracts.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * Module management for Domain layer.
  * @author Cochetooo
+ * @since 0.1.0
  */
 module fr.xahla.musicx.domain {
 
@@ -24,16 +18,7 @@ module fr.xahla.musicx.domain {
     // Lib -> Dotenv
     requires io.github.cdimascio.dotenv.java;
 
-    // Lib -> JAudioTagger
-    requires jaudiotagger;
-
-    // Lib -> JSON
-    requires org.json;
-
-    // Lib -> Lombok
-    requires lombok;
-
-    // --- Hibernate ---
+    // Lib -> Hibernate
     requires org.jboss.logging;
     requires jakarta.cdi;
     requires jakarta.persistence;
@@ -46,14 +31,23 @@ module fr.xahla.musicx.domain {
     requires org.hibernate.orm.core;
     requires org.hibernate.orm.community.dialects;
 
-    // --- SQLite Database ---
+    // Lib -> JAudioTagger
+    requires jaudiotagger;
+
+    // Lib -> JSON
+    requires org.json;
+
+    // Lib -> Lombok
+    requires lombok;
+
+    // Lib -> SQLite Database
     requires org.xerial.sqlitejdbc;
 
     // --- Opens ---
 
     opens fr.xahla.musicx.domain.model.entity to org.hibernate.orm.core;
 
-    // ------------- [EXPORT] -------------
+    // --- Exports ---
     exports fr.xahla.musicx.domain.application;
     exports fr.xahla.musicx.domain.database;
     exports fr.xahla.musicx.domain.helper;

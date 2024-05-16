@@ -3,6 +3,11 @@ package fr.xahla.musicx.desktop.helper;
 import fr.xahla.musicx.domain.helper.enums.ColorTheme;
 import javafx.scene.paint.Color;
 
+/**
+ * Utility class for JavaFX Colors, containing color theme cast for JavaFX.
+ * @author Cochetooo
+ * @since 0.2.3
+ */
 public class ColorHelper {
 
     public static final Color PRIMARY = Color.web(ColorTheme.PRIMARY.getHex());

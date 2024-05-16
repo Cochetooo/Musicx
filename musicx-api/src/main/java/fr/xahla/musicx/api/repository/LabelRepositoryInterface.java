@@ -12,6 +12,7 @@ import java.util.Map;
  * Contracts to manipulate labels in database.
  * @author Cochetooo
  * @see LabelDto
+ * @since 0.3.0
  */
 public interface LabelRepositoryInterface {
 

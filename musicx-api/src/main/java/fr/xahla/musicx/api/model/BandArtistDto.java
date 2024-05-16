@@ -8,6 +8,7 @@ import java.util.Locale;
 /**
  * Transferring band album data throughout application layers.
  * @author Cochetooo
+ * @since 0.3.0
  */
 @Getter
 @Setter

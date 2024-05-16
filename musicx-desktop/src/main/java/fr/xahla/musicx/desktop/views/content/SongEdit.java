@@ -15,8 +15,13 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 import static fr.xahla.musicx.desktop.DesktopContext.rightNavContent;
-import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
+/**
+ * View for song editing.
+ * @author Cochetooo
+ * @since 0.3.1
+ */
 public class SongEdit implements Initializable {
 
     @FXML private Button editButton;

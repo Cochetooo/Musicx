@@ -16,15 +16,10 @@ import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.desktop.DesktopContext.*;
 
-/** <b>View for the library folder imports management modal.</b>
- * <p>
- * Copyright (C) Xahla - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Alexis Cochet <alexiscochet.pro@gmail.com>, April 2024
- * </p>
- *
+/**
+ * View for the library folder imports management modal.
  * @author Cochetooo
+ * @since 0.2.0
  */
 public class ImportFolders implements Initializable {
 
@@ -84,6 +79,7 @@ public class ImportFolders implements Initializable {
 
     @FXML public void scanFolders() {
         library().launchScanFoldersTask();
+        library().refresh();
     }
 
     @FXML public void clear() {

@@ -13,6 +13,7 @@ import java.util.Map;
  * Contracts to manipulate songs in database.
  * @author Cochetooo
  * @see SongDto
+ * @since 0.2.0
  */
 public interface SongRepositoryInterface {
 
