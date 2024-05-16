@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.desktop.helper.animation.ColorAnimation;
+import fr.xahla.musicx.desktop.helper.animation.Animation;
 import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.model.AudioPlayer;
 import fr.xahla.musicx.desktop.model.entity.Song;
@@ -195,7 +195,7 @@ public class AudioPlayerManager {
         if (settings().isSmoothFadeStop()) {
             final var startVolume = this.getVolume();
 
-            new ColorAnimation(
+            new Animation(
                 Duration.seconds(0.35),
                 startVolume,
                 0.0,
@@ -206,7 +206,7 @@ public class AudioPlayerManager {
                     this.mediaPlayer.pause();
                     this.setVolume(startVolume);
                 }
-            ).fade();
+            ).play();
         } else {
             this.mediaPlayer.pause();
         }

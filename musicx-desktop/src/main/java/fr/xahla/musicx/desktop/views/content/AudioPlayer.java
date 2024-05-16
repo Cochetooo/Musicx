@@ -2,11 +2,14 @@ package fr.xahla.musicx.desktop.views.content;
 
 import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
+import fr.xahla.musicx.desktop.helper.animation.ColorTransition;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.helper.DurationHelper;
 import fr.xahla.musicx.domain.model.enums.RepeatMode;
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.animation.FillTransition;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -256,24 +260,21 @@ public class AudioPlayer implements Initializable {
                     // Set artwork thumbnail
                     albumArtwork.setImage(image);
 
-                    final var imageColor = ImageHelper.calculateAverageColor(image);
+                    final var currentBackgroundColor = (Color) playerContainer.getBackground().getFills().getFirst().getFill();
+                    final var imageColor = ImageHelper.calculateAverageColor(image).darker();
 
                     // Set background color
                     if (settings().isBackgroundArtworkBind()) {
-                        final var fadeTransition = new FadeTransition(Duration.seconds(0.5), playerContainer);
-                        fadeTransition.setFromValue(0);
-                        fadeTransition.setToValue(1);
-
-                        fadeTransition.setOnFinished(event -> {
-                            final var newBackground = new Background(new BackgroundFill(
-                                imageColor.darker(),
-                                CornerRadii.EMPTY,
-                                null
-                            ));
-                            playerContainer.setBackground(newBackground);
-                        });
-
-                        fadeTransition.play();
+                        new ColorTransition(
+                            Duration.seconds(0.5),
+                            currentBackgroundColor,
+                            imageColor,
+                            10,
+                            (color) -> {
+                                final var newBackground = new Background(new BackgroundFill(color, CornerRadii.EMPTY, null));
+                                playerContainer.setBackground(newBackground);
+                            }
+                        ).play();
                     } else {
                         playerContainer.setBackground(Background.EMPTY);
                     }

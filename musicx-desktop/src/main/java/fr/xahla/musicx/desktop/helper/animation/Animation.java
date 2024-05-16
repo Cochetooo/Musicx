@@ -10,7 +10,7 @@ import javafx.util.Duration;
  * @author Cochetooo
  * @since 0.3.2
  */
-public record ColorAnimation(
+public record Animation(
     Duration duration,
     double startValue,
     double endValue,
@@ -23,7 +23,7 @@ public record ColorAnimation(
     /**
      * @since 0.3.2
      */
-    public void fade() {
+    public void play() {
         final var numFrames = (int) (duration.toMillis() / timeStep);
         final var valueStep = (startValue - endValue) / numFrames;
 

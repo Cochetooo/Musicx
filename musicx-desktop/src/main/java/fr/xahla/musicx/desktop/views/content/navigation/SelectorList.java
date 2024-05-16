@@ -2,6 +2,7 @@ package fr.xahla.musicx.desktop.views.content.navigation;
 
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import fr.xahla.musicx.desktop.model.entity.Artist;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,7 +40,7 @@ public class SelectorList implements Initializable {
             final var updateArtistList = FXCollections.observableList(artist().getArtists());
             updateArtistList.addFirst(null);
 
-            this.selectorListView.setItems(updateArtistList);
+            Platform.runLater(() -> this.selectorListView.setItems(updateArtistList));
         });
 
         this.selectorListView.setCellFactory(list -> new ListCell<>() {

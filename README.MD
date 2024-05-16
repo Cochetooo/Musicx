@@ -23,6 +23,12 @@ music lovers:<br>
 
 ## Patch Log
 
+### Release 0.3.3
+
+> #### Fixes
+> - Fixed audio player color transition
+> - Fixed some library issues
+
 ### Release 0.3.2
 
 > #### Technical Changes

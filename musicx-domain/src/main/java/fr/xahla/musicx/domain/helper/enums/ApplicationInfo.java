@@ -10,7 +10,7 @@ public enum ApplicationInfo {
     APP_AUTHOR("Alexis Cochet"),
     APP_NAME("Musicx"),
     APP_ORGANIZATION("fr.xahla"),
-    APP_VERSION("0.3.2");
+    APP_VERSION("0.3.3");
 
     private final String info;
 
