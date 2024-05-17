@@ -1,6 +1,7 @@
 package fr.xahla.musicx.desktop;
 
 import atlantafx.base.theme.PrimerDark;
+import fr.xahla.musicx.desktop.helper.ImageHelper;
 import fr.xahla.musicx.domain.helper.Benchmark;
 import fr.xahla.musicx.domain.helper.enums.ApplicationInfo;
 import javafx.application.Application;
@@ -8,6 +9,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -69,6 +71,7 @@ public final class DesktopApplication extends Application {
 
             this.mainStage.setMaximized(true);
             this.mainStage.setTitle(ApplicationInfo.APP_NAME.getInfo() + " " + ApplicationInfo.APP_VERSION.getInfo());
+            this.setWindowIcon();
             this.mainStage.initStyle(StageStyle.DECORATED);
             this.mainStage.setScene(scene);
             this.mainStage.setOnCloseRequest((event) -> Platform.exit());
@@ -79,6 +82,11 @@ public final class DesktopApplication extends Application {
         } catch (final IOException exception) {
             logger().log(Level.SEVERE, "Something went wrong during JavaFX initialization.", exception);
         }
+    }
+
+    private void setWindowIcon() {
+        final var icon = ImageHelper.loadImageFromResource("logo500.png");
+        this.mainStage.getIcons().add(icon);
     }
 
 }

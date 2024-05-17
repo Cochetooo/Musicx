@@ -1,7 +1,13 @@
 package fr.xahla.musicx.desktop.helper;
 
+import fr.xahla.musicx.desktop.DesktopApplication;
+import static fr.xahla.musicx.domain.application.AbstractContext.error;
+
+import fr.xahla.musicx.domain.logging.LogMessage;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+
+import java.util.Objects;
 
 /**
  * Utility class for JavaFX Images.
@@ -9,6 +15,8 @@ import javafx.scene.paint.Color;
  * @since 0.2.4
  */
 public final class ImageHelper {
+
+    private final static String IMAGES_LOCATION = "assets/images/";
 
     /**
      * @since 0.2.4
@@ -36,6 +44,27 @@ public final class ImageHelper {
         final var avgBlue = totalBlue / numPixels;
 
         return Color.color(avgRed, avgGreen, avgBlue);
+    }
+
+    /**
+     * @since 0.3.3
+     */
+    public static Image loadImageFromResource(final String path) {
+        final var imagePath = IMAGES_LOCATION + path;
+
+        try {
+            final var resource =
+                Objects.requireNonNull(DesktopApplication.class.getResource(imagePath)).toExternalForm();
+
+            final var image = new Image(resource);
+            return image;
+        } catch (final NullPointerException exception) {
+            error(exception, LogMessage.ERROR_IO_FILE_NOT_FOUND, imagePath);
+            return null;
+        } catch (final IllegalArgumentException exception) {
+            error(exception, LogMessage.ERROR_IO_NOT_VALID_URI, imagePath);
+            return null;
+        }
     }
 
 }
