@@ -7,14 +7,12 @@ import fr.xahla.musicx.api.repository.searchCriterias.ArtistSearchCriteria;
 import fr.xahla.musicx.api.repository.searchCriterias.SongSearchCriteria;
 import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.helper.QueryHelper;
-import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.entity.ArtistEntity;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.*;
 import static fr.xahla.musicx.domain.helper.QueryHelper.query;
@@ -82,7 +80,7 @@ public class ArtistRepository implements ArtistRepositoryInterface {
         try (final var session = openSession()) {
             return session.get(ArtistEntity.class, id).toDto();
         } catch (final Exception e) {
-            log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Artist", "id", id);
+            logger().warn("REPOSITORY_ITEM_NOT_FOUND", "Artist", "id", id);
             return null;
         }
     }
@@ -132,13 +130,13 @@ public class ArtistRepository implements ArtistRepositoryInterface {
             }
 
             transaction.commit();
-            log(LogMessage.FINE_REPOSITORY_SAVE_SUCCESS, "Artist", artist.getName());
+            logger().fine("REPOSITORY_SAVED", "Artist", artist.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            error(exception, LogMessage.ERROR_REPOSITORY_SAVE, artist.getName());
+            logger().error(exception, "REPOSITORY_SAVE_ERROR", "Artist", artist.getName());
         }
     }
 

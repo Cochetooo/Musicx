@@ -1,14 +1,13 @@
 package fr.xahla.musicx.domain.application;
 
 import fr.xahla.musicx.domain.database.HibernateLoader;
-import fr.xahla.musicx.domain.logging.LogMessage;
+import fr.xahla.musicx.domain.logging.CommonLogger;
+import fr.xahla.musicx.domain.logging.ExceptionHandler;
 import fr.xahla.musicx.domain.logging.SplitConsoleHandler;
 import fr.xahla.musicx.domain.repository.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.Session;
 
-import java.text.MessageFormat;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class AbstractContext {
 
-    protected final Logger logger;
+    protected final CommonLogger commonLogger;
     protected final Dotenv env;
     protected final HibernateLoader hibernateLoader;
 
@@ -38,8 +37,10 @@ public class AbstractContext {
 
         this.env = Dotenv.load();
 
-        this.logger = logger;
         logger.addHandler(new SplitConsoleHandler());
+        this.commonLogger = new CommonLogger(logger);
+
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 
         this.hibernateLoader = new HibernateLoader();
 
@@ -63,39 +64,12 @@ public class AbstractContext {
 
     /**
      * @throws ExceptionInInitializerError If context has not been initialized
-     * @since 0.3.2
-     */
-    public static void error(final Exception exception, final LogMessage message, final Object... args) {
-        checkInitialization("error");
-
-        final var logMessage = MessageFormat.format(message.msg(), args);
-
-        logger().log(
-            Level.SEVERE,
-            logMessage,
-            exception
-        );
-    }
-
-    /**
-     * @throws ExceptionInInitializerError If context has not been initialized
-     * @since 0.3.2
-     */
-    public static void log(final LogMessage message, final Object... args) {
-        checkInitialization("log");
-
-        final var logMessage = MessageFormat.format(message.msg(), args);
-        logger().log(message.level(), logMessage);
-    }
-
-    /**
-     * @throws ExceptionInInitializerError If context has not been initialized
      * @since 0.3.0
      */
-    public static Logger logger() {
+    public static CommonLogger logger() {
         checkInitialization("logger");
 
-        return context.logger;
+        return context.commonLogger;
     }
 
     /**

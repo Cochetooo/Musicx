@@ -3,7 +3,7 @@ package fr.xahla.musicx.desktop.views.content;
 import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.domain.helper.StringHelper;
-import fr.xahla.musicx.domain.service.localAudioFile.WriteMetadataToAudioFile;
+import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;

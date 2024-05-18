@@ -1,10 +1,9 @@
-package fr.xahla.musicx.domain.service.localAudioFile;
+package fr.xahla.musicx.domain.service.importLocalSongs;
 
 import fr.xahla.musicx.domain.helper.ArrayHelper;
 import fr.xahla.musicx.domain.helper.Benchmark;
 import fr.xahla.musicx.domain.helper.FileHelper;
 import fr.xahla.musicx.domain.listener.ProgressListener;
-import fr.xahla.musicx.domain.logging.LogMessage;
 import org.jaudiotagger.audio.AudioFileIO;
 
 import java.io.IOException;
@@ -16,8 +15,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.error;
-import static fr.xahla.musicx.domain.application.AbstractContext.log;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Collect all audio files from a source folder and import all valid songs to the database.
@@ -49,7 +47,7 @@ public final class ImportSongsFromFolders {
         final var fileNumbers = audioFiles.size();
 
         if (0 == fileNumbers) {
-            log(LogMessage.INFO_IO_NO_FILES_FOUND, "audio files", "the chosen folders");
+            logger().info("IO_FILE_FOUND", "0");
             progressListener.updateProgress(1, 1);
             return;
         }
@@ -67,7 +65,7 @@ public final class ImportSongsFromFolders {
                     // Create a response from a new thread that try to create a song and all its object members from the audio file.
                     threadExecutor.submit(() -> new PersistAudioFileMetadata().execute(audioFile));
                 } catch (final Exception exception) {
-                    error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, filepath);
+                    logger().error(exception, "AUDIO_TAGGER_READ_FILE_ERROR", filepath);
                 }
 
                 // Increment and update the progress.
@@ -104,7 +102,7 @@ public final class ImportSongsFromFolders {
                     return ArrayHelper.array_in_string_ignore_case(extension.toLowerCase(), acceptedFormats);
                 }).toList());
             } catch (final IOException exception) {
-                error(exception, LogMessage.ERROR_IO_FOLDER_BROWSE, directory.toAbsolutePath());
+                logger().error(exception, "IO_FOLDER_BROWSE_ERROR", directory.toAbsolutePath());
             }
         }
 

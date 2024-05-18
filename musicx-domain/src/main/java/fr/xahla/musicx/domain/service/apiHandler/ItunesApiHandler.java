@@ -2,7 +2,6 @@ package fr.xahla.musicx.domain.service.apiHandler;
 
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
-import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.repository.data.ExternalFetchRepositoryInterface;
 
 import java.net.URLEncoder;
@@ -67,7 +66,7 @@ public class ItunesApiHandler
         final var jsonResponse = this.sendRequest(requestUrl);
 
         if (!jsonResponse.has("results") || jsonResponse.getJSONArray("results").isEmpty()) {
-            log(LogMessage.WARNING_API_RESPONSE_EMPTY, "iTunes searchTerm", searchTerm);
+            logger().warn("API_EMPTY_RESPONSE", "iTunes", "searchTerm " + searchTerm);
             return;
         }
 
@@ -91,7 +90,7 @@ public class ItunesApiHandler
                     genre.getFirst().getId()
                 ));
             } else {
-                log(LogMessage.INFO_API_INVALID_DATA, "genre name", "ITunes", itunesGenreName, "album", album.getName());
+                logger().info("API_INVALID_DATA", "genre name", "ITunes", itunesGenreName, "album", album.getName());
             }
         }
 

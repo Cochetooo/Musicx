@@ -4,6 +4,8 @@ import fr.xahla.musicx.desktop.manager.*;
 import fr.xahla.musicx.desktop.model.Settings;
 import fr.xahla.musicx.domain.application.AbstractContext;
 
+import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +43,8 @@ public class DesktopContext extends AbstractContext {
         context = new DesktopContext(
             logger
         );
+
+        context.commonLogger.addResourceBundle(ResourceBundle.getBundle("fr.xahla.musicx.desktop.config.log_message_fx"));
 
         context.taskProgressManager = new TaskProgressManager();
         context.trackListManager = new QueueManager();

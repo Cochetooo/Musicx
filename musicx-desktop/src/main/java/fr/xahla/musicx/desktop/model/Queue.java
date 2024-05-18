@@ -1,7 +1,6 @@
 package fr.xahla.musicx.desktop.model;
 
 import fr.xahla.musicx.desktop.listener.ValueListener;
-import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -10,7 +9,6 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.log;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
@@ -81,7 +79,7 @@ public class Queue {
         }
 
         if (position >= songs.size() || position < 0) {
-            log(LogMessageFX.FINE_QUEUE_POSITION_OUT_OF_BOUNDS, position, songs.size());
+            logger().fine("QUEUE_POSITION_OUT_OF_BOUNDS", position, songs.size());
             return this;
         }
 

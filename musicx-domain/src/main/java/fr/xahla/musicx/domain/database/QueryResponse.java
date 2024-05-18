@@ -1,10 +1,7 @@
 package fr.xahla.musicx.domain.database;
 
-import fr.xahla.musicx.domain.logging.LogMessage;
-
 import java.util.List;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.log;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
@@ -23,7 +20,7 @@ public record QueryResponse(
      */
     public Object unique() {
         if (response.isEmpty()) {
-            log(LogMessage.ERROR_QUERY_NULL_RESPONSE);
+            logger().severe("QUERY_NULL_RESPONSE");
             throw new NullPointerException();
         }
 

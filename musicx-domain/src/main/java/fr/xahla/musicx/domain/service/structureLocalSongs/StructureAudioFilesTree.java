@@ -1,17 +1,14 @@
-package fr.xahla.musicx.domain.service.localAudioFile;
+package fr.xahla.musicx.domain.service.structureLocalSongs;
 
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.SongDto;
-import fr.xahla.musicx.domain.logging.LogMessage;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.FileAttribute;
-import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.*;
 
@@ -47,7 +44,7 @@ public class StructureAudioFilesTree {
 
             albums.forEach((album) -> this.createAlbum(album, artistPath));
         } catch (final IOException exception) {
-            error(exception, LogMessage.ERROR_IO_FOLDER_CREATE, artistPath.toAbsolutePath());
+            logger().error(exception, "IO_FOLDER_CREATE_ERROR", artistPath.toAbsolutePath());
         }
     }
 
@@ -65,7 +62,7 @@ public class StructureAudioFilesTree {
 
             songs.forEach((song) -> this.createSong(song, albumPath));
         } catch (final IOException exception) {
-            error(exception, LogMessage.ERROR_IO_FOLDER_CREATE, albumPath.toAbsolutePath());
+            logger().error(exception, "IO_FOLDER_CREATE_ERROR", albumPath.toAbsolutePath());
         }
     }
 
@@ -85,13 +82,13 @@ public class StructureAudioFilesTree {
                 );
 
                 if (!Files.exists(songPath)) {
-                    log(LogMessage.WARNING_IO_FILE_COPY, song.getFilepath(), songPath);
+                    logger().warn("IO_FILE_COPY_ERROR", song.getFilepath(), albumPath);
                 } else {
-                    log(LogMessage.FINE_IO_FILE_COPIED, song.getFilepath(), songPath);
+                    logger().fine("IO_FILE_COPIED", song.getFilepath(), albumPath);
                 }
             }
         } catch (final IOException exception) {
-            error(exception, LogMessage.ERROR_IO_FILE_MOVE, "song " + song.getFilepath(), albumPath);
+            logger().error(exception, "IO_FILE_MOVE_ERROR", song.getFilepath(), albumPath);
         }
     }
 

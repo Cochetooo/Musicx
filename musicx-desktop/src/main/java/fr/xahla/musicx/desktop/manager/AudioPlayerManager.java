@@ -1,7 +1,6 @@
 package fr.xahla.musicx.desktop.manager;
 
 import fr.xahla.musicx.desktop.helper.animation.Animation;
-import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.model.AudioPlayer;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.model.enums.RepeatMode;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
-import static fr.xahla.musicx.domain.application.AbstractContext.log;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Manages audio player interactions.
@@ -154,7 +153,7 @@ public class AudioPlayerManager {
      */
     public void mute() {
         if (this.isPlayerInactive()) {
-            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
+            logger().warn("MEDIA_PLAYER_NOT_CREATED");
             return;
         }
 
@@ -166,7 +165,7 @@ public class AudioPlayerManager {
      */
     public void next() {
         if (this.isPlayerInactive()) {
-            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
+            logger().warn("MEDIA_PLAYER_NOT_CREATED");
             return;
         }
 
@@ -188,7 +187,7 @@ public class AudioPlayerManager {
      */
     public void pause() {
         if (this.isPlayerInactive()) {
-            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
+            logger().warn("MEDIA_PLAYER_NOT_CREATED");
             return;
         }
 
@@ -217,7 +216,7 @@ public class AudioPlayerManager {
      */
     public void previous() {
         if (this.isPlayerInactive()) {
-            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
+            logger().warn("MEDIA_PLAYER_NOT_CREATED");
             return;
         }
 
@@ -236,7 +235,7 @@ public class AudioPlayerManager {
      */
     public void resume() {
         if (this.isPlayerInactive()) {
-            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
+            logger().warn("MEDIA_PLAYER_NOT_CREATED");
             return;
         }
 
@@ -273,7 +272,7 @@ public class AudioPlayerManager {
      */
     public void togglePlaying() {
         if (this.isPlayerInactive()) {
-            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
+            logger().warn("MEDIA_PLAYER_NOT_CREATED");
             return;
         }
 
@@ -319,7 +318,7 @@ public class AudioPlayerManager {
 
     public boolean isPlaying() {
         if (this.isPlayerInactive()) {
-            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
+            logger().warn("MEDIA_PLAYER_NOT_CREATED");
             return false;
         }
 
@@ -328,7 +327,7 @@ public class AudioPlayerManager {
 
     public double getPlayingTime() {
         if (this.isPlayerInactive()) {
-            log(LogMessageFX.WARNING_MEDIA_PLAYER_NOT_CREATED);
+            logger().warn("MEDIA_PLAYER_NOT_CREATED");
             return -1;
         }
 

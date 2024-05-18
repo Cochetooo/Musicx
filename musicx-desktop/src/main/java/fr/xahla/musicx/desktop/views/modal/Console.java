@@ -2,6 +2,7 @@ package fr.xahla.musicx.desktop.views.modal;
 
 import fr.xahla.musicx.domain.logging.ConsoleLogType;
 import fr.xahla.musicx.domain.logging.SplitConsoleHandler;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -30,7 +31,7 @@ public class Console implements Initializable {
     @FXML private ListView<SplitConsoleHandler.MessageData> consoleOutputTextArea;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        final var consoleHandler = (SplitConsoleHandler) logger().getHandlers()[0];
+        final var consoleHandler = (SplitConsoleHandler) logger().getLogger().getHandlers()[0];
 
         final var consoleList = FXCollections.observableList(consoleHandler.getOtherLogs());
         final var consoleFilterList = new FilteredList<>(consoleList);
@@ -53,7 +54,8 @@ public class Console implements Initializable {
             if (message.type() == ConsoleLogType.HIBERNATE) {
                 queryList.add(message);
             } else {
-                this.updateFilterList(consoleFilterList, logLevelComboBox.getSelectionModel().getSelectedItem().value);
+                Platform.runLater(()
+                    -> this.updateFilterList(consoleFilterList, logLevelComboBox.getSelectionModel().getSelectedItem().value));
             }
         });
     }

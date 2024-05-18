@@ -80,7 +80,7 @@ public final class DesktopApplication extends Application {
 
             this.mainStage.show();
         } catch (final IOException exception) {
-            logger().log(Level.SEVERE, "Something went wrong during JavaFX initialization.", exception);
+            logger().error(exception, "JAVA_FX_INITIALIZATION_ERROR");
         }
     }
 

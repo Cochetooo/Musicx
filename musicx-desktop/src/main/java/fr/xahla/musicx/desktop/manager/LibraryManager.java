@@ -1,7 +1,6 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.domain.service.localAudioFile.ImportSongsFromFolders;
-import fr.xahla.musicx.desktop.logging.LogMessageFX;
+import fr.xahla.musicx.domain.service.importLocalSongs.ImportSongsFromFolders;
 import fr.xahla.musicx.desktop.model.TaskProgress;
 import fr.xahla.musicx.desktop.model.entity.Song;
 
@@ -83,7 +82,7 @@ public class LibraryManager {
 
     public void addFolder(final File directory) {
         if (!directory.isDirectory()) {
-            logger().warning(directory.getAbsolutePath() + " is not a directory.");
+            logger().warn(directory.getAbsolutePath() + " is not a directory.");
             return;
         }
 

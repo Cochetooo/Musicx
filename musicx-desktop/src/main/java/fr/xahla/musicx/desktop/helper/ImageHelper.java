@@ -1,9 +1,8 @@
 package fr.xahla.musicx.desktop.helper;
 
 import fr.xahla.musicx.desktop.DesktopApplication;
-import static fr.xahla.musicx.domain.application.AbstractContext.error;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
-import fr.xahla.musicx.domain.logging.LogMessage;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
@@ -59,10 +58,10 @@ public final class ImageHelper {
             final var image = new Image(resource);
             return image;
         } catch (final NullPointerException exception) {
-            error(exception, LogMessage.ERROR_IO_FILE_NOT_FOUND, imagePath);
+            logger().error(exception, "IO_FILE_NOT_FOUND", imagePath);
             return null;
         } catch (final IllegalArgumentException exception) {
-            error(exception, LogMessage.ERROR_IO_NOT_VALID_URI, imagePath);
+            logger().error(exception, "IO_URI_ERROR", imagePath);
             return null;
         }
     }

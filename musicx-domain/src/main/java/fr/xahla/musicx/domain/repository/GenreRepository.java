@@ -5,14 +5,12 @@ import fr.xahla.musicx.api.repository.GenreRepositoryInterface;
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
 import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.helper.QueryHelper;
-import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.entity.GenreEntity;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.*;
 import static fr.xahla.musicx.domain.helper.QueryHelper.query;
@@ -47,7 +45,7 @@ public class GenreRepository implements GenreRepositoryInterface {
         try (final var session = openSession()) {
             return session.get(GenreEntity.class, id).toDto();
         } catch (final Exception e) {
-            log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Genre", "id", id);
+            logger().warn("REPOSITORY_ITEM_NOT_FOUND", "Genre", "id", id);
             return null;
         }
     }
@@ -97,13 +95,14 @@ public class GenreRepository implements GenreRepositoryInterface {
             }
 
             transaction.commit();
-            log(LogMessage.FINE_REPOSITORY_SAVE_SUCCESS, "Genre", genre.getName());
+
+            logger().fine("REPOSITORY_SAVED", "Genre", genre.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            error(exception, LogMessage.ERROR_REPOSITORY_SAVE, genre.getName());
+            logger().error(exception, "REPOSITORY_SAVE_ERROR", "Genre", genre.getName());
         }
     }
 

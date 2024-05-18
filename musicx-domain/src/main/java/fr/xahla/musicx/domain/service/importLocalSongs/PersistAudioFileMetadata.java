@@ -1,11 +1,10 @@
-package fr.xahla.musicx.domain.service.localAudioFile;
+package fr.xahla.musicx.domain.service.importLocalSongs;
 
 import fr.xahla.musicx.api.model.*;
 import fr.xahla.musicx.api.model.enums.AudioFormat;
 import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.api.repository.searchCriterias.*;
 import fr.xahla.musicx.domain.helper.AudioTaggerHelper;
-import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.enums.CustomFieldKey;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioHeader;
@@ -46,7 +45,7 @@ public final class PersistAudioFileMetadata {
         this.filepath = audioFile.getFile().getAbsolutePath();
 
         if (null == tag || null == audioHeader) {
-            log(LogMessage.WARNING_AUDIO_TAGGER_FILE_NOT_VALID, audioFile.getFile().getAbsolutePath());
+            logger().warn("AUDIO_TAGGER_FILE_NOT_VALID", audioFile.getFile().getAbsolutePath());
             return;
         }
 
@@ -97,9 +96,10 @@ public final class PersistAudioFileMetadata {
             song.setTitle(title);
             song.setTrackNumber(trackNumber);
 
+            logger().finest("AUDIO_TAGGER_FIELD_FETCHED", "song", filepath);
             return song;
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Song Partition] " + filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_FETCH_ERROR", "song", filepath);
 
             return SongDto.builder().title(filepath).build();
         }
@@ -123,7 +123,7 @@ public final class PersistAudioFileMetadata {
             try {
                 type = typeCustomTag.isBlank() ? null : ReleaseType.valueOf(typeCustomTag.toUpperCase());
             } catch (final IllegalArgumentException exception) {
-                log(LogMessage.WARNING_AUDIO_TAGGER_TAG_NOT_VALID, "ReleaseType", typeCustomTag);
+                logger().warn("AUDIO_TAGGER_TAG_NOT_VALID", "ReleaseType", typeCustomTag);
                 type = null;
             }
 
@@ -153,9 +153,11 @@ public final class PersistAudioFileMetadata {
 
             albumRepository().save(album);
 
+            logger().finest("AUDIO_TAGGER_FIELD_FETCHED", "album", filepath);
+
             return album.getId();
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Album Partition] " + filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_FETCH_ERROR", "album", filepath);
 
             return null;
         }
@@ -188,9 +190,11 @@ public final class PersistAudioFileMetadata {
 
             artistRepository().save(albumArtist);
 
+            logger().finest("AUDIO_TAGGER_FIELD_FETCHED", "album artist", filepath);
+
             return albumArtist.getId();
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Album Artist Partition] " + filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_FETCH_ERROR", "album artist", filepath);
 
             return null;
         }
@@ -220,9 +224,11 @@ public final class PersistAudioFileMetadata {
 
             labelRepository().save(albumLabel);
 
+            logger().finest("AUDIO_TAGGER_FIELD_FETCHED", "label", filepath);
+
             return albumLabel.getId();
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Label Partition] " + filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_FETCH_ERROR", "label", filepath);
             return null;
         }
     }
@@ -255,9 +261,11 @@ public final class PersistAudioFileMetadata {
 
             artistRepository().save(artist);
 
+            logger().finest("AUDIO_TAGGER_FIELD_FETCHED", "artist", filepath);
+
             return artist.getId();
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Artist Partition] " + filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_FETCH_ERROR", "artist", filepath);
             return null;
         }
     }
@@ -265,9 +273,11 @@ public final class PersistAudioFileMetadata {
     private List<Long> readSongPrimaryGenres() {
         try {
             final var primaryGenreNames = this.getGenresName("Primary Track Genres");
+
+            logger().finest("AUDIO_TAGGER_FIELD_FETCHED", "song primary genres", filepath);
             return this.getGenres(primaryGenreNames);
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Song Primary Genres Partition] " + filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_FETCH_ERROR", "song primary genres", filepath);
             return new ArrayList<>();
         }
     }
@@ -275,9 +285,11 @@ public final class PersistAudioFileMetadata {
     private List<Long> readSongSecondaryGenres() {
         try {
             final var secondaryGenreNames = this.getGenresName(CustomFieldKey.SONG_SECONDARY_GENRES.getKey());
+
+            logger().finest("AUDIO_TAGGER_FIELD_FETCHED", "song secondary genres", filepath);
             return this.getGenres(secondaryGenreNames);
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_READ_FILE, "[Song Secondary Genres Partition] " + filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_FETCH_ERROR", "song secondary genres", filepath);
             return new ArrayList<>();
         }
     }
@@ -287,15 +299,15 @@ public final class PersistAudioFileMetadata {
     private List<Long> getGenres(final List<String> genreNames) {
         final var genres = new ArrayList<GenreDto>();
 
-        genreNames.forEach(primaryGenreName -> {
+        genreNames.forEach(genreName -> {
             final var existGenre = genreRepository().findByCriteria(Map.of(
-                GenreSearchCriteria.NAME, primaryGenreName
+                GenreSearchCriteria.NAME, genreName
             ));
 
             if (!existGenre.isEmpty()) {
                 genres.add(existGenre.getFirst());
             } else {
-                log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Genre", "name", primaryGenreName);
+                logger().warn("REPOSITORY_ITEM_NOT_FOUND", "Genre", "name", genreName);
             }
         });
 
@@ -305,7 +317,7 @@ public final class PersistAudioFileMetadata {
     }
 
     private List<String> getGenresName(final String fieldKey) {
-        final List<String> genresName = new ArrayList<>();
+        final var genresName = new ArrayList<String>();
 
         try {
             this.customTags.forEach(tagField -> {
@@ -326,7 +338,7 @@ public final class PersistAudioFileMetadata {
                 }
             });
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_FETCH, fieldKey + " for song: " + filepath);
+            logger().error(exception, "AUDIO_TAGGER_CUSTOM_TAG_FETCH_ERROR", fieldKey, "song: " + filepath);
         }
 
         return genresName;
@@ -342,7 +354,7 @@ public final class PersistAudioFileMetadata {
 
             return LocalDate.parse(fieldValue);
         } catch (final DateTimeParseException | NumberFormatException exception) {
-            log(LogMessage.WARNING_DATE_FORMAT_INCORRECT, fieldValue);
+            logger().warn("DATE_FORMAT_INCORRECT", fieldValue);
 
             return LocalDate.of(0, 1, 1);
         }

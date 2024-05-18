@@ -2,12 +2,10 @@ package fr.xahla.musicx.domain.helper;
 
 import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.database.QueryResponse;
-import fr.xahla.musicx.domain.logging.LogMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.*;
@@ -71,7 +69,7 @@ public final class QueryHelper {
 
             return result.list();
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_QUERY, query);
+            logger().error(exception, "QUERY_EXECUTE_ERROR", query);
 
             return new ArrayList<>();
         }
@@ -88,7 +86,7 @@ public final class QueryHelper {
 
             return new QueryResponse(result.list());
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_QUERY, query.request());
+            logger().error(exception, "QUERY_EXECUTE_ERROR", query.request());
 
             return new QueryResponse(List.of());
         }

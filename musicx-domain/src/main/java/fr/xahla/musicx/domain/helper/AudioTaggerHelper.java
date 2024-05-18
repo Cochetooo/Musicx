@@ -1,6 +1,5 @@
 package fr.xahla.musicx.domain.helper;
 
-import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.enums.CustomFieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagField;
@@ -11,9 +10,8 @@ import org.jaudiotagger.tag.mp4.field.Mp4TagReverseDnsField;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Utility class for JAudioTagger
@@ -30,8 +28,11 @@ public final class AudioTaggerHelper {
         final var customTags = new ArrayList<TagField>();
 
         switch (tag) {
-            case AbstractID3v2Tag mp3Tag
-                -> customTags.addAll(mp3Tag.getFrame("TXXX"));
+            case AbstractID3v2Tag mp3Tag -> {
+                if (mp3Tag.hasField("TXXX")) {
+                    customTags.addAll(mp3Tag.getFrame("TXXX"));
+                }
+            }
 
             case Mp4Tag mp4Tag -> {
                 for (final var customField : CustomFieldKey.values()) {
@@ -41,7 +42,7 @@ public final class AudioTaggerHelper {
                 }
             }
 
-            default -> log(LogMessage.WARNING_AUDIO_TAGGER_CUSTOM_TAG_FORMAT_NOT_SUPPORTED, "*");
+            default -> logger().warn("AUDIO_TAGGER_CUSTOM_TAG_FORMAT_NOT_SUPPORTED", "*");
         }
 
         return customTags;
@@ -71,7 +72,7 @@ public final class AudioTaggerHelper {
 
             return "";
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_FETCH, fieldKey.getKey());
+            logger().error(exception, "AUDIO_TAGGER_CUSTOM_TAG_FETCH_ERROR", fieldKey.getKey());
 
             return "";
         }
@@ -82,17 +83,17 @@ public final class AudioTaggerHelper {
      */
     public static void audiotagger_write_custom_tag(final Tag tag, final String customKey, final String value) {
         if (null == value) {
-            log(LogMessage.FINER_AUDIO_TAGGER_NULL_CUSTOM_KEY, customKey);
+            logger().finer("AUDIO_TAGGER_NULL_CUSTOM_KEY", customKey);
             return;
         }
 
         try {
             switch (tag) {
                 case AbstractID3v2Tag mp3Tag -> writeMP3Tag(mp3Tag, customKey, value);
-                default -> log(LogMessage.WARNING_AUDIO_TAGGER_CUSTOM_TAG_FORMAT_NOT_SUPPORTED, customKey);
+                default -> logger().warn("AUDIO_TAGGER_CUSTOM_TAG_FORMAT_NOT_SUPPORTED", customKey);
             }
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_WRITE, customKey, value);
+            logger().error(exception, "AUDIO_TAGGER_CUSTOM_TAG_WRITE_ERROR", customKey, value);
         }
     }
 
@@ -109,7 +110,7 @@ public final class AudioTaggerHelper {
             } else if (mp3Tag instanceof ID3v24Tag) {
                 frame = new ID3v24Frame("TXXX");
             } else {
-                log(LogMessage.WARNING_AUDIO_TAGGER_CUSTOM_TAG_FORMAT_NOT_SUPPORTED, "(MP3) " + customKey);
+                logger().warn("AUDIO_TAGGER_CUSTOM_TAG_FORMAT_NOT_SUPPORTED", "(MP3) " + customKey);
                 return;
             }
 
@@ -117,7 +118,7 @@ public final class AudioTaggerHelper {
 
             mp3Tag.setField(frame);
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_CUSTOM_TAG_WRITE, "(MP3)" + customKey, value);
+            logger().error(exception, "AUDIO_TAGGER_CUSTOM_TAG_WRITE_ERROR", "(MP3) " + customKey, value);
         }
     }
 

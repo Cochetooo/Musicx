@@ -2,7 +2,7 @@ package fr.xahla.musicx.desktop.views.menuBar;
 
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
-import fr.xahla.musicx.domain.service.localAudioFile.StructureAudioFilesTree;
+import fr.xahla.musicx.domain.service.structureLocalSongs.StructureAudioFilesTree;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,7 +23,6 @@ import static fr.xahla.musicx.desktop.DesktopContext.player;
 public class MenuBar implements Initializable {
 
     @FXML private MenuItem fileScanFoldersMenuItem;
-    @FXML private MenuItem fileStructureFolders;
 
     private ResourceBundle resourceBundle;
 

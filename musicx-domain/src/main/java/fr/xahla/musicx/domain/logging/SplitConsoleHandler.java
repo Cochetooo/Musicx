@@ -59,7 +59,7 @@ public class SplitConsoleHandler extends ConsoleHandler {
             "[" + sourceClassName.substring(sourceClassName.lastIndexOf('.') + 1) + "." + record.getSourceMethodName() + "] " +
             record.getMessage();
 
-        if (Level.INFO == record.getLevel() && record.getMessage().contains("[Hibernate SQL]")) {
+        if (Level.INFO == record.getLevel() && record.getMessage().contains("[Hibernate:Query]")) {
             if (hibernateSqlLogs.size() > MAX_MESSAGE) {
                 hibernateSqlLogs.removeFirst();
             }

@@ -1,9 +1,8 @@
 package fr.xahla.musicx.domain.database;
 
-import fr.xahla.musicx.domain.logging.LogMessage;
 import org.hibernate.resource.jdbc.spi.StatementInspector;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.log;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Intercepts SQL statements from Hibernate and logs them.
@@ -13,7 +12,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.log;
 public class HibernateLogInterceptor implements StatementInspector {
 
     @Override public String inspect(final String sql) {
-        log(LogMessage.INFO_HIBERNATE_SQL_STATEMENT, sql);
+        logger().info("HIBERNATE_QUERY", sql);
         return sql;
     }
 

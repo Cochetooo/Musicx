@@ -42,6 +42,7 @@ module fr.xahla.musicx.domain {
 
     // Lib -> SQLite Database
     requires org.xerial.sqlitejdbc;
+    requires org.jetbrains.annotations;
 
     // --- Opens ---
 
@@ -60,6 +61,8 @@ module fr.xahla.musicx.domain {
     exports fr.xahla.musicx.domain.repository;
     exports fr.xahla.musicx.domain.repository.data;
     exports fr.xahla.musicx.domain.service.apiHandler;
-    exports fr.xahla.musicx.domain.service.localAudioFile;
+    exports fr.xahla.musicx.domain.service.importLocalSongs;
+    exports fr.xahla.musicx.domain.service.saveLocalSongs;
+    exports fr.xahla.musicx.domain.service.structureLocalSongs;
 
 }

@@ -8,14 +8,12 @@ import fr.xahla.musicx.api.repository.searchCriterias.AlbumSearchCriteria;
 import fr.xahla.musicx.api.repository.searchCriterias.LabelSearchCriteria;
 import fr.xahla.musicx.domain.database.QueryBuilder;
 import fr.xahla.musicx.domain.helper.QueryHelper;
-import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.entity.LabelEntity;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.*;
 import static fr.xahla.musicx.domain.helper.QueryHelper.query;
@@ -61,7 +59,7 @@ public class LabelRepository implements LabelRepositoryInterface {
         try (final var session = openSession()) {
             return session.get(LabelEntity.class, id).toDto();
         } catch (final Exception e) {
-            log(LogMessage.WARNING_REPOSITORY_ITEM_NOT_FOUND, "Label", "id", id);
+            logger().warn("REPOSITORY_ITEM_NOT_FOUND", "Label", "id", id);
             return null;
         }
     }
@@ -110,13 +108,14 @@ public class LabelRepository implements LabelRepositoryInterface {
             }
 
             transaction.commit();
-            log(LogMessage.FINE_REPOSITORY_SAVE_SUCCESS, "Label", label.getName());
+
+            logger().fine("REPOSITORY_SAVED", "Label", label.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            error(exception, LogMessage.ERROR_REPOSITORY_SAVE, label.getName());
+            logger().error(exception, "REPOSITORY_SAVE_ERROR", "Label", label.getName());
         }
     }
 

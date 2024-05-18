@@ -1,6 +1,5 @@
 package fr.xahla.musicx.desktop.helper;
 
-import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.views.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.error;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
@@ -32,7 +30,7 @@ public final class FxmlHelper {
                 resourceBundle
             );
         } catch (final IOException exception) {
-            error(exception, LogMessageFX.ERROR_FXML_COMPONENT_LOAD, fxmlSource);
+            logger().error(exception, "FXML_COMPONENT_LOAD_ERROR", fxmlSource);
 
             return null;
         }
@@ -55,7 +53,7 @@ public final class FxmlHelper {
             stage.setTitle(title);
             stage.show();
         } catch (final IOException exception) {
-            error(exception, LogMessageFX.ERROR_FXML_MODAL_LOAD, fxmlSource);
+            logger().error(exception, "FXML_MODAL_LOAD_ERROR", fxmlSource);
         }
     }
 

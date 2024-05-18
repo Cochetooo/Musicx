@@ -3,7 +3,6 @@ package fr.xahla.musicx.domain.service.apiHandler;
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.SongDto;
-import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.repository.data.ExternalFetchRepositoryInterface;
 
 import java.net.URLEncoder;
@@ -56,7 +55,7 @@ public class LastFmApiHandler
         final var jsonResponse = this.sendRequest(requestUrl);
 
         if (!jsonResponse.has("artist")) {
-            log(LogMessage.WARNING_API_RESPONSE_EMPTY, "Last.FM artist", artist.getName());
+            logger().warn("API_EMPTY_RESPONSE", "Lastfm", "artist " + artist.getName());
             return;
         }
 
@@ -89,7 +88,7 @@ public class LastFmApiHandler
         final var artist = albumRepository().getArtist(album);
 
         if (null == artist) {
-            log(LogMessage.WARNING_API_RESPONSE_EMPTY, "Last.FM album", album.getName());
+            logger().warn("REPOSITORY_ITEM_NOT_FOUND", "Artist", "album", album.getName());
             return;
         }
 
@@ -105,8 +104,7 @@ public class LastFmApiHandler
         final var jsonResponse = this.sendRequest(requestUrl);
 
         if (!jsonResponse.has("album")) {
-            logger().warning("No Last.FM album has been found for album: " +
-                artist.getName() + " - " + album.getName());
+            logger().warn("API_EMPTY_RESPONSE", "Lastfm", "album " + album.getName());
             return;
         }
 
@@ -139,7 +137,7 @@ public class LastFmApiHandler
         final var artist = songRepository().getArtist(song);
 
         if (null == artist) {
-            log(LogMessage.WARNING_API_RESPONSE_EMPTY, "Last.FM song", song.getTitle());
+            logger().warn("REPOSITORY_ITEM_NOT_FOUND", "Artist", "song", song.getTitle());
             return;
         }
 
@@ -155,8 +153,7 @@ public class LastFmApiHandler
         final var jsonResponse = this.sendRequest(requestUrl);
 
         if (!jsonResponse.has("track")) {
-            logger().warning("No Last.FM song has been found for song: " +
-                artist.getName() + " - " + song.getTitle());
+            logger().warn("API_EMPTY_RESPONSE", "Lastfm", "song " + song.getTitle());
             return;
         }
 

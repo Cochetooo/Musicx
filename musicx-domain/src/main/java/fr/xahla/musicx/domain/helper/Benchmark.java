@@ -1,8 +1,5 @@
 package fr.xahla.musicx.domain.helper;
 
-import fr.xahla.musicx.domain.logging.LogMessage;
-
-import static fr.xahla.musicx.domain.application.AbstractContext.log;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
@@ -38,6 +35,6 @@ public final class Benchmark {
      * @since 0.3.2
      */
     public void print(final String action) {
-        log(LogMessage.INFO_BENCHMARK, action, this.getElapsedTime());
+        logger().info("BENCHMARK", action, this.getElapsedTime());
     }
 }

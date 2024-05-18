@@ -1,12 +1,11 @@
 package fr.xahla.musicx.domain.database;
 
 import fr.xahla.musicx.domain.helper.StringHelper;
-import fr.xahla.musicx.domain.logging.LogMessage;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.log;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Build SQL queries for repositories.
@@ -40,7 +39,7 @@ public final class QueryBuilder {
      */
     public QueryBuilder.Query build() {
         if (null == clazz) {
-            log(LogMessage.ERROR_QUERY_NO_TABLE_DEFINED, sql);
+            logger().severe("QUERY_NO_TABLE_DEFINED", sql);
             return null;
         }
 
@@ -128,7 +127,7 @@ public final class QueryBuilder {
      */
     public QueryBuilder whereIn(final String table, final String column, final Object value, final SqlOperator operator) {
         if (null == clazz) {
-            log(LogMessage.ERROR_QUERY_NO_TABLE_DEFINED, sql);
+            logger().severe("QUERY_NO_TABLE_DEFINED", sql);
             throw new NullPointerException();
         }
 

@@ -1,7 +1,6 @@
 package fr.xahla.musicx.desktop.manager;
 
 import fr.xahla.musicx.desktop.listener.ValueListener;
-import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.model.Queue;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.collections.ListChangeListener;
@@ -11,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.log;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Manages audio queue related list.
@@ -121,7 +120,7 @@ public class QueueManager {
      */
     public Song getSongAt(final int index) {
         if (index < 0 || index >= this.queue.getSongCount()) {
-            log(LogMessageFX.FINE_QUEUE_SONG_OUT_OF_BOUNDS, index, this.queue.getPosition());
+            logger().fine("QUEUE_SONG_OUT_OF_BOUNDS", index, queue.getPosition());
             return null;
         }
 

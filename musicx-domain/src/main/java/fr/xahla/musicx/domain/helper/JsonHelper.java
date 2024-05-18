@@ -1,6 +1,5 @@
 package fr.xahla.musicx.domain.helper;
 
-import fr.xahla.musicx.domain.logging.LogMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,9 +8,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.logging.Level;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.error;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
@@ -33,7 +30,7 @@ public final class JsonHelper {
                 Objects.requireNonNull(caller.getResource(resourceName)).toURI().toString()
             );
         }  catch (URISyntaxException exception) {
-            error(exception, LogMessage.ERROR_IO_NOT_VALID_URI, resourceName);
+            logger().error(exception, "IO_URI_ERROR", resourceName);
 
             return new JSONObject();
         }
@@ -52,19 +49,11 @@ public final class JsonHelper {
 
             return new JSONObject(jsonContent);
         } catch (final IOException exception) {
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_IO_FILE_NOT_FOUND.msg(), filename),
-                exception
-            );
+            logger().error(exception, "IO_FILE_NOT_FOUND", filename);
 
             return new JSONObject();
         } catch (final JSONException exception) {
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_JSON_NOT_VALID.msg(), filename),
-                exception
-            );
+            logger().error(exception, "JSON_NOT_VALID", filename);
 
             return new JSONObject();
         }
@@ -79,11 +68,7 @@ public final class JsonHelper {
         try {
             Files.writeString(Paths.get(filename), jsonObject.toString());
         } catch (final IOException exception) {
-            logger().log(
-                Level.SEVERE,
-                String.format(LogMessage.ERROR_IO_SAVE.msg(), filename),
-                exception
-            );
+            logger().error(exception, "IO_FILE_SAVE_ERROR", filename);
         }
     }
 

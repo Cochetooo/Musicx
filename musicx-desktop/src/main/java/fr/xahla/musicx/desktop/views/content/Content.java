@@ -6,7 +6,6 @@ import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
-import fr.xahla.musicx.desktop.logging.LogMessageFX;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.transformation.FilteredList;
@@ -66,8 +65,8 @@ public class Content implements Initializable {
         this.searchTextField.textProperty().addListener((observable, oldValue, newValue)
             -> this.filteredList.setPredicate(song ->
                 song.getTitle().toLowerCase().contains(searchTextField.getText().toLowerCase())
-                || song.getAlbum().getName().toLowerCase().contains(searchTextField.getText().toLowerCase())
-                || song.getArtist().getName().toLowerCase().contains(searchTextField.getText().toLowerCase())
+                || (null != song.getAlbum() && song.getAlbum().getName().toLowerCase().contains(searchTextField.getText().toLowerCase()))
+                || (null != song.getArtist() && song.getArtist().getName().toLowerCase().contains(searchTextField.getText().toLowerCase()))
         ));
 
         this.tracksTableView.setItems(filteredList);

@@ -1,6 +1,5 @@
 package fr.xahla.musicx.domain.service.apiHandler;
 
-import fr.xahla.musicx.domain.logging.LogMessage;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -9,9 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
-import java.util.logging.Level;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.error;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
@@ -48,7 +45,7 @@ public abstract class ExternalApiHandler {
             final var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             return new JSONObject(response.body());
         } catch (final IOException | InterruptedException exception) {
-            error(exception, LogMessage.ERROR_API_REQUEST, requestUrl);
+            logger().error(exception, "API_CALL_ERROR", requestUrl);
 
             return new JSONObject();
         }

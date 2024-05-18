@@ -1,9 +1,8 @@
-package fr.xahla.musicx.domain.service.localAudioFile;
+package fr.xahla.musicx.domain.service.saveLocalSongs;
 
 import fr.xahla.musicx.api.model.*;
 import fr.xahla.musicx.api.model.enums.GenreType;
 import fr.xahla.musicx.domain.helper.AudioTaggerHelper;
-import fr.xahla.musicx.domain.logging.LogMessage;
 import fr.xahla.musicx.domain.model.enums.CustomFieldKey;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldDataInvalidException;
@@ -12,7 +11,6 @@ import org.jaudiotagger.tag.Tag;
 
 import java.io.File;
 import java.util.List;
-import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.*;
 
@@ -61,9 +59,9 @@ public class WriteMetadataToAudioFile {
             }
 
             AudioFileIO.write(audioFile);
-            log(LogMessage.FINE_IO_FILE_WRITTEN, filepath);
+            logger().fine("IO_FILE_SAVED", filepath);
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_IO_SAVE, song.getFilepath());
+            logger().error(exception, "IO_FILE_SAVE_ERROR", song.getFilepath());
         }
     }
 
@@ -84,10 +82,10 @@ public class WriteMetadataToAudioFile {
 
                 AudioFileIO.write(audioFile);
 
-                log(LogMessage.FINE_IO_FILE_WRITTEN, filepath);
+                logger().fine("IO_FILE_SAVED", filepath);
             }
         } catch (final Exception exception) {
-            error(exception, LogMessage.ERROR_IO_SAVE, "Album " + album.getName());
+            logger().error(exception, "IO_FILE_SAVE_ERROR", "Album " + album.getName());
         }
     }
 
@@ -98,9 +96,9 @@ public class WriteMetadataToAudioFile {
             tag.setField(FieldKey.TITLE, song.getTitle());
             tag.setField(FieldKey.TRACK, String.valueOf(song.getTrackNumber()));
 
-            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "song", filepath);
+            logger().finer("AUDIO_TAGGER_FIELD_SAVED", "song", filepath);
         } catch (FieldDataInvalidException exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, "song", filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_SAVE_ERROR", "song", filepath);
         }
     }
 
@@ -147,9 +145,9 @@ public class WriteMetadataToAudioFile {
                 );
             }
 
-            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "album", filepath);
+            logger().finer("AUDIO_TAGGER_FIELD_SAVED", "album", filepath);
         } catch (FieldDataInvalidException exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, "album", filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_SAVE_ERROR", "album", filepath);
         }
     }
 
@@ -164,9 +162,9 @@ public class WriteMetadataToAudioFile {
                 artist.getArtworkUrl()
             );
 
-            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "artist", filepath);
+            logger().finer("AUDIO_TAGGER_FIELD_SAVED", "artist", filepath);
         } catch (FieldDataInvalidException exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, "artist", filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_SAVE_ERROR", "artist", filepath);
         }
     }
 
@@ -174,9 +172,9 @@ public class WriteMetadataToAudioFile {
         try {
             tag.setField(FieldKey.RECORD_LABEL, label.getName());
 
-            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "label", filepath);
+            logger().finer("AUDIO_TAGGER_FIELD_SAVED", "label", filepath);
         } catch (FieldDataInvalidException exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, "label", filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_SAVE_ERROR", "label", filepath);
         }
     }
 
@@ -216,9 +214,9 @@ public class WriteMetadataToAudioFile {
                 }
             }
 
-            log(LogMessage.FINER_AUDIO_TAGGER_FIELDS_WRITTEN, "genre", filepath);
+            logger().finer("AUDIO_TAGGER_FIELD_SAVED", "genre", filepath);
         } catch (final FieldDataInvalidException exception) {
-            error(exception, LogMessage.ERROR_AUDIO_TAGGER_FIELDS_FETCH, entity + " " + type.name() + " genre", filepath);
+            logger().error(exception, "AUDIO_TAGGER_FIELD_SAVE_ERROR", "genre", filepath);
         }
     }
 
