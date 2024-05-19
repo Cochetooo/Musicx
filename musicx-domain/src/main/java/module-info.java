@@ -43,6 +43,7 @@ module fr.xahla.musicx.domain {
     // Lib -> SQLite Database
     requires org.xerial.sqlitejdbc;
     requires org.jetbrains.annotations;
+    requires java.desktop;
 
     // --- Opens ---
 

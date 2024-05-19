@@ -14,9 +14,8 @@ import javafx.concurrent.Task;
 import java.io.File;
 import java.util.ArrayList;
 
+import static fr.xahla.musicx.desktop.DesktopContext.*;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.desktop.DesktopContext.settings;
-import static fr.xahla.musicx.desktop.DesktopContext.taskProgress;
 import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
 /** <b>Class that allow views to use Library model, while keeping a protection layer to its usage.</b>
@@ -50,6 +49,8 @@ public class LibraryManager {
                     settings().getScanLibraryAudioFormats(),
                     this::updateProgress
                 );
+
+                library().refresh();
 
                 return null;
             }

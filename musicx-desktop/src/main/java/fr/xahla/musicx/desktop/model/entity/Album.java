@@ -3,10 +3,13 @@ package fr.xahla.musicx.desktop.model.entity;
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.api.model.enums.ArtistRole;
+import fr.xahla.musicx.desktop.helper.ImageHelper;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,6 +25,9 @@ import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository
  * @since 0.1.0
  */
 public class Album {
+
+    public static final Image artworkPlaceholder
+        = ImageHelper.loadImageFromResource("thumbnail-placeholder.png");
 
     private final AlbumDto dto;
 
@@ -40,6 +46,8 @@ public class Album {
     private ObjectProperty<Label> label;
     private ListProperty<Genre> primaryGenres;
     private ListProperty<Genre> secondaryGenres;
+
+    private Image image;
 
     public Album(final AlbumDto album) {
         this.id = new SimpleLongProperty(album.getId());
@@ -89,6 +97,11 @@ public class Album {
     public Album setArtworkUrl(final String artworkUrl) {
         this.dto.setArtworkUrl(artworkUrl);
         this.artworkUrl.set(artworkUrl);
+
+        if (null != image) {
+            this.setImage(new Image(artworkUrl));
+        }
+
         return this;
     }
 
@@ -297,6 +310,19 @@ public class Album {
             this.secondaryGenres.setAll(secondaryGenres);
         }
 
+        return this;
+    }
+
+    public Image getImage() {
+        if (null == image) {
+            image = new Image(this.getArtworkUrl());
+        }
+
+        return image;
+    }
+
+    public Album setImage(final Image image) {
+        this.image = image;
         return this;
     }
 }

@@ -55,8 +55,7 @@ public final class ImageHelper {
             final var resource =
                 Objects.requireNonNull(DesktopApplication.class.getResource(imagePath)).toExternalForm();
 
-            final var image = new Image(resource);
-            return image;
+            return new Image(resource);
         } catch (final NullPointerException exception) {
             logger().error(exception, "IO_FILE_NOT_FOUND", imagePath);
             return null;

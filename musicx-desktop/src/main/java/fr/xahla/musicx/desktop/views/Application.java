@@ -31,8 +31,7 @@ public class Application implements Initializable {
 
         this.updateContent();
 
-        library().getFolderPaths().addListener((ListChangeListener<String>) change
-            -> Platform.runLater(this::updateContent));
+        library().onSongsChange(change -> Platform.runLater(this::updateContent));
     }
 
     private void updateContent() {

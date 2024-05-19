@@ -2,11 +2,14 @@ package fr.xahla.musicx.desktop.views.content;
 
 import atlantafx.base.controls.CustomTextField;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.desktop.service.loadArtwork.LoadAlbumArtwork;
+import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -15,6 +18,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -39,6 +44,7 @@ public class Content implements Initializable {
 
     @FXML private TableView<Song> tracksTableView;
 
+    @FXML private TableColumn<Song, Void> tracksTableArtworkCol;
     @FXML private TableColumn<Song, String> tracksTableTitleCol;
     @FXML private TableColumn<Song, String> tracksTableGenresCol;
     @FXML private TableColumn<Song, LocalDate> tracksTableYearCol;
@@ -48,16 +54,8 @@ public class Content implements Initializable {
 
     private ResourceBundle resourceBundle;
 
-    // Right Nav Content
-    private Parent queueListView;
-    private Parent songEditView;
-    private Parent albumEditView;
-
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
-
-        // Right Nav Content
-        this.queueListView = FxmlHelper.getComponent("content/queueList.fxml", resourceBundle);
 
         this.filteredList = new FilteredList<>(trackList().getSongs());
 
@@ -72,6 +70,24 @@ public class Content implements Initializable {
         this.tracksTableView.setItems(filteredList);
         this.tracksTableView.setTableMenuButtonVisible(false);
         this.tracksTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
+        this.tracksTableArtworkCol.setCellFactory(song -> new TableCell<>() {
+            @Override protected void updateItem(final Void nothing, final boolean empty) {
+                final var song = this.getTableRow().getItem();
+
+                if (null == song || null == song.getAlbum() || StringHelper.str_is_null_or_blank(song.getAlbum().getArtworkUrl())) {
+                    setGraphic(null);
+                    return;
+                }
+
+                final var imageView = new ImageView();
+                imageView.setImage(song.getAlbum().getImage());
+                imageView.setFitWidth(32);
+                imageView.setFitHeight(32);
+                imageView.setPreserveRatio(true);
+                setGraphic(imageView);
+            }
+        });
 
         this.tracksTableYearCol.setCellValueFactory(song -> {
             if (null == song.getValue().getAlbum()) {

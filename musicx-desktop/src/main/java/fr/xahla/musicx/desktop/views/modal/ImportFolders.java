@@ -79,7 +79,6 @@ public class ImportFolders implements Initializable {
 
     @FXML public void scanFolders() {
         library().launchScanFoldersTask();
-        library().refresh();
     }
 
     @FXML public void clear() {

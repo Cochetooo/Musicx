@@ -1,19 +1,15 @@
 package fr.xahla.musicx.desktop.views.content;
 
-import fr.xahla.musicx.desktop.DesktopApplication;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
 import fr.xahla.musicx.desktop.helper.animation.ColorTransition;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import fr.xahla.musicx.desktop.service.loadArtwork.LoadAlbumArtwork;
 import fr.xahla.musicx.domain.helper.DurationHelper;
 import fr.xahla.musicx.domain.model.enums.RepeatMode;
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.FillTransition;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -28,16 +24,11 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.DesktopContext.player;
 import static fr.xahla.musicx.desktop.DesktopContext.settings;
-import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
-import static fr.xahla.musicx.domain.service.apiHandler.ItunesApiHandler.itunesApi;
-import static fr.xahla.musicx.domain.service.apiHandler.LastFmApiHandler.lastFmApi;
 
 /**
  * View for the audio player with its controls.
@@ -52,7 +43,6 @@ public class AudioPlayer implements Initializable {
     // Album Artwork
     @FXML private DropShadow albumArtworkShadow;
     @FXML private ImageView albumArtwork;
-    private String albumThumbnailPlaceholderImageURL;
 
     // Current Track Info
     @FXML private Label artistNameLabel;
@@ -85,16 +75,7 @@ public class AudioPlayer implements Initializable {
 
         player().setVolume(this.volumeSlider.getValue());
 
-        try {
-            this.albumThumbnailPlaceholderImageURL =
-                Objects.requireNonNull(DesktopApplication.class.getResource("assets/images/thumbnail-placeholder.png"))
-                    .toURI()
-                    .toString();
-        } catch (final URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-
-        albumArtwork.setImage(new Image(albumThumbnailPlaceholderImageURL));
+        albumArtwork.setImage(Album.artworkPlaceholder);
 
         // Listeners
 
@@ -232,64 +213,11 @@ public class AudioPlayer implements Initializable {
         this.trackTimeSlider.setMax(total);
         this.trackTotalTimeLabel.setText(DurationHelper.getTimeString(total));
 
-        final var getArtworkTask = new Task<>() {
-            @Override protected Void call() {
-                // We try to get the artwork from LastFM then from iTunes if not found
-                final var artworkUrl = song.getAlbum().getArtworkUrl();
-
-                if (artworkUrl.isEmpty()) {
-                    final var albumDto = song.getAlbum().getDto();
-
-                    lastFmApi().fetchAlbumFromExternal(albumDto, false);
-
-                    if (albumDto.getArtworkUrl().isEmpty()) {
-                        itunesApi().fetchAlbumFromExternal(albumDto, false);
-                    }
-
-                    if (!albumDto.getArtworkUrl().isEmpty()) {
-                        albumRepository().save(albumDto);
-                        song.setAlbum(new Album(albumDto));
-                    }
-                }
-
-                final var image = (song.getAlbum().getArtworkUrl().isEmpty())
-                    ? new Image(albumThumbnailPlaceholderImageURL)
-                    : new Image(song.getAlbum().getArtworkUrl());
-
-                Platform.runLater(() -> {
-                    // Set artwork thumbnail
-                    albumArtwork.setImage(image);
-
-                    final var currentBackgroundColor = (Color) playerContainer.getBackground().getFills().getFirst().getFill();
-                    final var imageColor = ImageHelper.calculateAverageColor(image).darker();
-
-                    // Set background color
-                    if (settings().isBackgroundArtworkBind()) {
-                        new ColorTransition(
-                            Duration.seconds(0.5),
-                            currentBackgroundColor,
-                            imageColor,
-                            10,
-                            (color) -> {
-                                final var newBackground = new Background(new BackgroundFill(color, CornerRadii.EMPTY, null));
-                                playerContainer.setBackground(newBackground);
-                            }
-                        ).play();
-                    } else {
-                        playerContainer.setBackground(Background.EMPTY);
-                    }
-
-                    // Set shadow artwork
-                    if (settings().isArtworkShadow()) {
-                        albumArtworkShadow.setColor(imageColor.brighter());
-                    }
-                });
-
-                return null;
-            }
-        };
-
-        new Thread(getArtworkTask).start();
+        new LoadAlbumArtwork().execute(
+            albumArtwork,
+            song,
+            this::changeBackground
+        );
     }
 
     private void settingsOnArtworkShadowChange(
@@ -327,5 +255,36 @@ public class AudioPlayer implements Initializable {
         }
 
         return this.volumeOffIcon;
+    }
+
+    private void changeBackground(final Image image) {
+        Platform.runLater(() -> {
+            // Set artwork thumbnail
+            albumArtwork.setImage(image);
+
+            final var currentBackgroundColor = (Color) playerContainer.getBackground().getFills().getFirst().getFill();
+            final var imageColor = ImageHelper.calculateAverageColor(image).darker();
+
+            // Set background color
+            if (settings().isBackgroundArtworkBind()) {
+                new ColorTransition(
+                    Duration.seconds(0.5),
+                    currentBackgroundColor,
+                    imageColor,
+                    10,
+                    (color) -> {
+                        final var newBackground = new Background(new BackgroundFill(color, CornerRadii.EMPTY, null));
+                        playerContainer.setBackground(newBackground);
+                    }
+                ).play();
+            } else {
+                playerContainer.setBackground(Background.EMPTY);
+            }
+
+            // Set shadow artwork
+            if (settings().isArtworkShadow()) {
+                albumArtworkShadow.setColor(imageColor.brighter());
+            }
+        });
     }
 }

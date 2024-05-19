@@ -91,6 +91,9 @@
         styleClass="noTableHeader"
     >
         <columns>
+            <!-- Artwork -->
+            <TableColumn text="%tracksTable.trackNumber" prefWidth="1" fx:id="tracksTableArtworkCol" />
+
             <!-- Track No -->
             <TableColumn text="%tracksTable.trackNumber" prefWidth="1" fx:id="tracksTableNumberCol">
                 <cellValueFactory>
@@ -105,7 +108,7 @@
             <TableColumn text="%tracksTable.genres" fx:id="tracksTableGenresCol" />
 
             <!-- Year -->
-            <TableColumn text="%tracksTable.albumYear" prefWidth="12" fx:id="tracksTableYearCol" />
+            <TableColumn text="%tracksTable.albumYear" prefWidth="14" fx:id="tracksTableYearCol" />
 
             <!-- Duration -->
             <TableColumn fx:id="tracksTableDurationCol" prefWidth="6" style="-fx-alignment: center;">
