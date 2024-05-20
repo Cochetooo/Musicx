@@ -27,8 +27,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.DesktopContext.player;
-import static fr.xahla.musicx.desktop.DesktopContext.settings;
+import static fr.xahla.musicx.desktop.context.DesktopContext.player;
+import static fr.xahla.musicx.desktop.context.DesktopContext.settings;
 
 /**
  * View for the audio player with its controls.

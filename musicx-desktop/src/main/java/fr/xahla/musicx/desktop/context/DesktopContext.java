@@ -1,10 +1,11 @@
-package fr.xahla.musicx.desktop;
+package fr.xahla.musicx.desktop.context;
 
 import fr.xahla.musicx.desktop.manager.*;
 import fr.xahla.musicx.desktop.model.Settings;
 import fr.xahla.musicx.domain.application.AbstractContext;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,10 +27,14 @@ public class DesktopContext extends AbstractContext {
 
     private RightNavContentManager rightNavContent;
 
+    private Controller contextController;
+
     private static DesktopContext context;
 
     protected DesktopContext(final Logger logger) {
         super(logger);
+
+        this.contextController = new Controller();
 
         this.libraryManager = new LibraryManager();
         this.settings = new Settings();
@@ -81,5 +86,9 @@ public class DesktopContext extends AbstractContext {
 
     public static RightNavContentManager rightNavContent() {
         return context.rightNavContent;
+    }
+
+    public static Controller controller() {
+        return context.contextController;
     }
 }

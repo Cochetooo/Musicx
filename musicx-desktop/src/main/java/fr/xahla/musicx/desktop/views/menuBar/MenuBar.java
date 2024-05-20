@@ -12,7 +12,7 @@ import javafx.stage.DirectoryChooser;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.DesktopContext.*;
+import static fr.xahla.musicx.desktop.context.DesktopContext.*;
 
 /**
  * View for the top menu bar and all its sub-menus.
@@ -42,7 +42,6 @@ public class MenuBar implements Initializable {
 
     @FXML public void fileScanFolders() {
         library().launchScanFoldersTask();
-        //trackList().setQueue(library().getSongs(), 0);
     }
 
     @FXML public void fileStructureFolders() {

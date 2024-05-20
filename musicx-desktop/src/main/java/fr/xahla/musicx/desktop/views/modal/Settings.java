@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.DesktopContext.settings;
+import static fr.xahla.musicx.desktop.context.DesktopContext.settings;
 
 /**
  * Modal for the application settings.

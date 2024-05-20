@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.DesktopContext.*;
+import static fr.xahla.musicx.desktop.context.DesktopContext.*;
 
 /**
  * View for the selected category sorting list panel.

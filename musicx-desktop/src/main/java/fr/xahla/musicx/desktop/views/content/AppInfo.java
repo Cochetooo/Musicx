@@ -13,8 +13,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static fr.xahla.musicx.desktop.DesktopContext.library;
-import static fr.xahla.musicx.desktop.DesktopContext.taskProgress;
+import static fr.xahla.musicx.desktop.context.DesktopContext.library;
+import static fr.xahla.musicx.desktop.context.DesktopContext.taskProgress;
 
 /**
  * View for the little row showing app information at the bottom.

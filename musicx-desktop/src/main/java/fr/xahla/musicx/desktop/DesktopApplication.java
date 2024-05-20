@@ -1,6 +1,7 @@
 package fr.xahla.musicx.desktop;
 
 import atlantafx.base.theme.PrimerDark;
+import fr.xahla.musicx.desktop.context.DesktopContext;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
 import fr.xahla.musicx.domain.helper.Benchmark;
 import fr.xahla.musicx.domain.helper.enums.ApplicationInfo;
@@ -9,7 +10,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 

@@ -13,6 +13,7 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import fr.xahla.musicx.desktop.views.content.components.TrackListTable?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.come/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.Content"
@@ -83,100 +84,6 @@
     </HBox>
 
     <Label text="%content.trackListLabel" styleClass="title-2" />
-    <TableView
-        fx:id="tracksTableView"
-        VBox.vgrow="ALWAYS"
-        onMouseClicked="#tracksTableClick"
-        style="-fx-border-radius: 10px; -fx-background-radius: 10px;"
-        styleClass="noTableHeader"
-    >
-        <columns>
-            <!-- Artwork -->
-            <TableColumn text="%tracksTable.trackNumber" prefWidth="1" fx:id="tracksTableArtworkCol" />
 
-            <!-- Track No -->
-            <TableColumn text="%tracksTable.trackNumber" prefWidth="1" fx:id="tracksTableNumberCol">
-                <cellValueFactory>
-                    <PropertyValueFactory property="trackNumber" />
-                </cellValueFactory>
-            </TableColumn>
-
-            <!-- Title -->
-            <TableColumn text="%tracksTable.songTitle" fx:id="tracksTableTitleCol" />
-
-            <!-- Genres -->
-            <TableColumn text="%tracksTable.genres" fx:id="tracksTableGenresCol" />
-
-            <!-- Year -->
-            <TableColumn text="%tracksTable.albumYear" prefWidth="14" fx:id="tracksTableYearCol" />
-
-            <!-- Duration -->
-            <TableColumn fx:id="tracksTableDurationCol" prefWidth="6" style="-fx-alignment: center;">
-                <cellValueFactory>
-                    <PropertyValueFactory property="duration" />
-                </cellValueFactory>
-                <graphic>
-                    <FontIcon iconLiteral="fltfal-clock-28" />
-                </graphic>
-            </TableColumn>
-        </columns>
-
-        <contextMenu>
-            <ContextMenu>
-                <items>
-                    <!-- Play Track Now -->
-                    <MenuItem
-                        text="%content.trackListContextMenu.playNow"
-                        accelerator="Alt+Enter"
-                        onAction="#tracksTablePlayNow">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfmz-play-24" />
-                        </graphic>
-                    </MenuItem>
-
-                    <!-- Queue Next -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.queueNext"
-                            accelerator="Shortcut+Shift+Enter"
-                            onAction="#tracksTableQueueNext">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
-                        </graphic>
-                    </MenuItem>
-
-                    <!-- Queue Last -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.queueLast"
-                            accelerator="Shortcut+Enter"
-                            onAction="#tracksTableQueueLast">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
-                        </graphic>
-                    </MenuItem>
-
-                    <SeparatorMenuItem />
-
-                    <!-- Edit Song -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.editSong"
-                            accelerator="Shift+Enter"
-                            onAction="#actionSongEdit">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfal-edit-32" />
-                        </graphic>
-                    </MenuItem>
-
-                    <!-- Edit Album -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.editAlbum"
-                            onAction="#actionAlbumEdit">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfal-edit-32" />
-                        </graphic>
-                    </MenuItem>
-                </items>
-            </ContextMenu>
-        </contextMenu>
-    </TableView>
-
+    <fx:include source="components/trackListTable.fxml" />
 </VBox>

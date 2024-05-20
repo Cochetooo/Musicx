@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.desktop.DesktopContext.*;
+import static fr.xahla.musicx.desktop.context.DesktopContext.*;
 
 /**
  * View for the library folder imports management modal.

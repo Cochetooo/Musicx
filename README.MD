@@ -25,9 +25,12 @@ music lovers:<br>
 
 ### Release 0.3.3
 
+> #### New Features
+> - Album artwork view in each song of the track list
 > #### Fixes
 > - Fixed audio player color transition
 > - Fixed some library issues
+> - Library now updates correctly when scanning new folders
 
 ### Release 0.3.2
 

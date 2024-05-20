@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static fr.xahla.musicx.desktop.DesktopContext.library;
+import static fr.xahla.musicx.desktop.context.DesktopContext.library;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**

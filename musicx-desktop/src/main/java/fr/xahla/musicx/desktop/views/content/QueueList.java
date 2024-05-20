@@ -2,7 +2,6 @@ package fr.xahla.musicx.desktop.views.content;
 
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.model.entity.Song;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -14,7 +13,7 @@ import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.DesktopContext.player;
+import static fr.xahla.musicx.desktop.context.DesktopContext.player;
 
 /**
  * View for the queue list shown on the right-side container

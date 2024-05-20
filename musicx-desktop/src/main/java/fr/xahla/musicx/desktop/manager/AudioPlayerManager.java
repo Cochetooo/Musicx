@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.desktop.DesktopContext.settings;
+import static fr.xahla.musicx.desktop.context.DesktopContext.settings;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**

@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.content;
+package fr.xahla.musicx.desktop.views.content.edit;
 
 import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
@@ -14,7 +14,7 @@ import javafx.stage.FileChooser;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.DesktopContext.player;
+import static fr.xahla.musicx.desktop.context.DesktopContext.player;
 import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
 
 /**

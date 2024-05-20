@@ -2,7 +2,6 @@ package fr.xahla.musicx.desktop.views;
 
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -11,7 +10,7 @@ import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.DesktopContext.library;
+import static fr.xahla.musicx.desktop.context.DesktopContext.library;
 
 /**
  * Main view for the desktop application.
