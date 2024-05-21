@@ -86,6 +86,11 @@
         <TextField fx:id="filepathField" editable="false" />
     </VBox>
 
+    <VBox spacing="5">
+        <Label text="%songEdit.createdAt" styleClass="text-caption" />
+        <TextField fx:id="createdAtField" editable="false" />
+    </VBox>
+
     <Separator />
 
     <Button

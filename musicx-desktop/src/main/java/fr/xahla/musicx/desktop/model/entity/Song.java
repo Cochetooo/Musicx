@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ public class Song {
     private final SongDto dto;
 
     private final LongProperty id;
+    private final ObjectProperty<LocalDateTime> createdAt;
 
     private final IntegerProperty bitRate;
     private final IntegerProperty discNumber;
@@ -41,6 +43,7 @@ public class Song {
 
     public Song(final SongDto song) {
         this.id = new SimpleLongProperty(song.getId());
+        this.createdAt = new SimpleObjectProperty<>(song.getCreatedAt());
 
         this.bitRate = new SimpleIntegerProperty(song.getBitRate());
         this.discNumber = new SimpleIntegerProperty(song.getDiscNumber());
@@ -76,6 +79,19 @@ public class Song {
     public Song setId(final long id) {
         this.dto.setId(id);
         this.id.set(id);
+        return this;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt.get();
+    }
+
+    public ObjectProperty<LocalDateTime> createdAtProperty() {
+        return createdAt;
+    }
+
+    public Song setCreatedAt(final LocalDateTime createdAt) {
+        this.createdAt.set(createdAt);
         return this;
     }
 

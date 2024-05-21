@@ -1,0 +1,68 @@
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.Tooltip?>
+<TabPane
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.content.navigation.TabSelector"
+        style="
+        -fx-padding: 10px;
+        "
+        prefHeight="1200"
+        fx:id="pageTab"
+        side="LEFT"
+        tabClosingPolicy="UNAVAILABLE"
+        tabDragPolicy="FIXED">
+    <!-- Encyclopedia -->
+    <Tab style="-fx-padding: 10px">
+        <graphic>
+            <FontIcon iconLiteral="fltfal-book-database-24" scaleX="2" scaleY="2" />
+        </graphic>
+        <tooltip>
+            <Tooltip text="%tabSelector.tabEncyclopedia" />
+        </tooltip>
+    </Tab>
+
+    <!-- History -->
+    <Tab style="-fx-padding: 10px">
+        <graphic>
+            <FontIcon iconLiteral="fltfal-history-24" scaleX="2" scaleY="2" />
+        </graphic>
+        <tooltip>
+            <Tooltip text="%tabSelector.tabHistory" />
+        </tooltip>
+    </Tab>
+
+    <!-- Local Library -->
+    <Tab style="-fx-padding: 10px">
+        <graphic>
+            <FontIcon iconLiteral="fltfmz-music-note-24" scaleX="2" scaleY="2" />
+        </graphic>
+        <tooltip>
+            <Tooltip text="%tabSelector.tabLocalLibrary" />
+        </tooltip>
+    </Tab>
+
+    <!-- Profile -->
+    <Tab style="-fx-padding: 10px">
+        <graphic>
+            <FontIcon iconLiteral="fltfmz-person-28" scaleX="2" scaleY="2" />
+        </graphic>
+        <tooltip>
+            <Tooltip text="%tabSelector.tabProfile" />
+        </tooltip>
+    </Tab>
+
+    <!-- Settings -->
+    <Tab style="-fx-padding: 10px">
+        <graphic>
+            <FontIcon iconLiteral="fltfmz-settings-28" scaleX="2" scaleY="2" />
+        </graphic>
+        <tooltip>
+            <Tooltip text="%tabSelector.tabSettings" />
+        </tooltip>
+    </Tab>
+</TabPane>

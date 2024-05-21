@@ -1,10 +1,8 @@
 package fr.xahla.musicx.desktop.context;
 
 import fr.xahla.musicx.desktop.manager.*;
-import fr.xahla.musicx.desktop.model.Settings;
+import fr.xahla.musicx.desktop.context.scene.settings.Settings;
 import fr.xahla.musicx.domain.application.AbstractContext;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -16,6 +14,8 @@ import java.util.logging.Logger;
  * @since 0.1.0
  */
 public class DesktopContext extends AbstractContext {
+
+    private Config config;
 
     private ArtistListManager artistManager;
     private QueueManager trackListManager;
@@ -33,12 +33,6 @@ public class DesktopContext extends AbstractContext {
 
     protected DesktopContext(final Logger logger) {
         super(logger);
-
-        this.contextController = new Controller();
-
-        this.libraryManager = new LibraryManager();
-        this.settings = new Settings();
-        this.audioPlayerManager = new AudioPlayerManager();
     }
 
     public static void createContext() {
@@ -49,6 +43,13 @@ public class DesktopContext extends AbstractContext {
             logger
         );
 
+        context.config = new Config();
+        context.contextController = new Controller();
+
+        context.libraryManager = new LibraryManager();
+        context.settings = new Settings();
+        context.audioPlayerManager = new AudioPlayerManager();
+
         context.commonLogger.addResourceBundle(ResourceBundle.getBundle("fr.xahla.musicx.desktop.config.log_message_fx"));
 
         context.taskProgressManager = new TaskProgressManager();
@@ -57,11 +58,20 @@ public class DesktopContext extends AbstractContext {
 
         // Requires library manager
         context.artistManager = new ArtistListManager();
+
         context.trackListManager.setQueue(library().getSongs(), 0);
+
+        library().onSongsChange(change -> {
+            context.trackListManager.setQueue(library().getSongs(), 0);
+        });
     }
 
     public static ArtistListManager artist() {
         return context.artistManager;
+    }
+
+    public static Config config() {
+        return context.config;
     }
 
     public static LibraryManager library() {

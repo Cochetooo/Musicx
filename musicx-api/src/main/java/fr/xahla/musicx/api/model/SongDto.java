@@ -4,6 +4,7 @@ import fr.xahla.musicx.api.model.enums.AudioFormat;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class SongDto {
 
     private Long id;
+    private LocalDateTime createdAt;
 
     private Long albumId;
     private Long artistId;

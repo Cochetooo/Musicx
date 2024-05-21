@@ -11,10 +11,11 @@ import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.player;
-import static fr.xahla.musicx.desktop.context.DesktopContext.rightNavContent;
+import static fr.xahla.musicx.desktop.context.DesktopContext.*;
+import static fr.xahla.musicx.desktop.helper.DurationHelper.*;
 import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
 /**
@@ -37,9 +38,10 @@ public class SongEdit implements Initializable {
     @FXML private TextField durationField;
     @FXML private TextField bitRateField;
     @FXML private TextField sampleRateField;
-
     @FXML private TextField formatField;
+
     @FXML private TextField filepathField;
+    @FXML private TextField createdAtField;
 
     private ResourceBundle resourceBundle;
 
@@ -62,7 +64,11 @@ public class SongEdit implements Initializable {
             }
         });
 
-        this.discTotalField.setText(String.valueOf(song.getAlbum().getDiscTotal()));
+        this.discTotalField.setText(String.valueOf(
+            (null == song.getAlbum())
+            ? 1
+            : song.getAlbum().getDiscTotal()
+        ));
 
         this.trackNoField.setText(String.valueOf(song.getTrackNumber()));
         this.trackNoField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -71,9 +77,13 @@ public class SongEdit implements Initializable {
             }
         });
 
-        this.trackTotalField.setText(String.valueOf(song.getAlbum().getTrackTotal()));
+        this.trackTotalField.setText(String.valueOf(
+            (null == song.getAlbum())
+                ? 1
+                : song.getAlbum().getTrackTotal()
+        ));
 
-        this.durationField.setText(DurationHelper.getTimeString(Duration.millis(
+        this.durationField.setText(getTimeString(Duration.millis(
             song.getDuration()
         )));
 
@@ -82,6 +92,8 @@ public class SongEdit implements Initializable {
 
         this.formatField.setText(song.getFormat().name());
         this.filepathField.setText(song.getFilepath());
+        this.createdAtField.setText(
+            fr.xahla.musicx.domain.helper.DurationHelper.getDateTimeString(song.getCreatedAt()));
     }
 
     @FXML public void change() {
@@ -97,6 +109,8 @@ public class SongEdit implements Initializable {
 
         songRepository().save(song.getDto());
         new WriteMetadataToAudioFile().execute(song.getDto());
+
+        //library().editSong(song);
 
         editButton.setDisable(true);
     }

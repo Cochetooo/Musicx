@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,9 @@ public class SongEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "album_id")
     private Long albumId;
@@ -72,6 +76,7 @@ public class SongEntity {
         this.setAlbumId(songDto.getAlbumId());
         this.setArtistId(songDto.getArtistId());
         this.setBitRate(songDto.getBitRate());
+        this.setCreatedAt(songDto.getCreatedAt());
         this.setDiscNumber(songDto.getDiscNumber());
         this.setDuration(songDto.getDuration());
         this.setFilepath(songDto.getFilepath());
@@ -112,6 +117,7 @@ public class SongEntity {
     public SongDto toDto() {
         final var songDto = SongDto.builder()
             .id(id)
+            .createdAt(createdAt)
             .albumId(albumId)
             .artistId(artistId)
             .bitRate(bitRate)
@@ -138,5 +144,12 @@ public class SongEntity {
         }
 
         return songDto;
+    }
+
+    /**
+     * @since 0.3.3
+     */
+    @PrePersist protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 }

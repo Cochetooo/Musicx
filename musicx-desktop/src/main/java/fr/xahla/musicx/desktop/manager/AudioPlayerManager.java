@@ -191,7 +191,7 @@ public class AudioPlayerManager {
             return;
         }
 
-        if (settings().isSmoothFadeStop()) {
+        if (settings().getSmoothPause()) {
             final var startVolume = this.getVolume();
 
             new Animation(

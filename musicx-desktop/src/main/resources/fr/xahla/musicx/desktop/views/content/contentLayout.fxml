@@ -10,12 +10,12 @@
             style="-fx-padding: 10px;"
             fx:id="contentPane">
         <left>
-            <VBox prefWidth="320" spacing="15" style="-fx-padding: 0 10px 0 0;">
+            <VBox spacing="15" style="-fx-padding: 0 10px 0 0;">
                 <!-- Group Selector -->
-                <fx:include source="navigation/groupSelector.fxml" />
+                <fx:include source="navigation/tabSelector.fxml" />
 
-                <!-- Selector List -->
-                <fx:include source="navigation/selectorList.fxml" />
+                <!-- Selector List
+                <fx:include source="navigation/selectorList.fxml" /> -->
             </VBox>
         </left>
         <center>

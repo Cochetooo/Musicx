@@ -23,6 +23,11 @@ music lovers:<br>
 
 ## Patch Log
 
+### Release 0.4.0
+
+> ### New Features
+> - `Vertical Navigation bar` for scenes
+
 ### Release 0.3.3
 
 > #### New Features
@@ -30,6 +35,7 @@ music lovers:<br>
 > #### Fixes
 > - Fixed audio player color transition
 > - Fixed some library issues
+> - Fixed player not working properly when song has no artist
 > - Library now updates correctly when scanning new folders
 
 ### Release 0.3.2

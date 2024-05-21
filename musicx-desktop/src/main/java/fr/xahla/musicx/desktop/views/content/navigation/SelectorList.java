@@ -31,22 +31,12 @@ public class SelectorList implements Initializable {
     @FXML private ListView<Artist> selectorListView;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        final var artistList = FXCollections.observableList(artist().getArtists());
-        artistList.addFirst(null);
+        this.updateList();
 
-        this.selectorListView.setItems(artistList);
-
-        artist().onArtistsChange(change -> {
-            final var updateArtistList = FXCollections.observableList(artist().getArtists());
-            updateArtistList.addFirst(null);
-
-            Platform.runLater(() -> this.selectorListView.setItems(updateArtistList));
-        });
+        artist().onArtistsChange(change -> this.updateList());
 
         this.selectorListView.setCellFactory(list -> new ListCell<>() {
             @Override public void updateItem(final Artist artist, final boolean empty) {
-                super.updateItem(artist, empty);
-
                 if (empty || null == artist) {
                     if (0 == this.getIndex()) {
                         this.setTextFill(Color.WHITE);
@@ -114,5 +104,14 @@ public class SelectorList implements Initializable {
     @FXML public void playShuffled() {
         this.playNow();
         player().shuffle();
+    }
+
+    private void updateList() {
+        logger().finest("UPDATE artist list.");
+
+        final var artistList = FXCollections.observableList(artist().getArtists());
+        artistList.addFirst(null);
+
+        Platform.runLater(() -> this.selectorListView.setItems(artistList));
     }
 }

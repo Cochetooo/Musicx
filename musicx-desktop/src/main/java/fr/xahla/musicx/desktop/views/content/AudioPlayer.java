@@ -206,7 +206,10 @@ public class AudioPlayer implements Initializable {
     private void playerOnSongChange(final Song song) {
         this.trackTimeSlider.setDisable(false);
 
-        this.artistNameLabel.setText(song.getArtist().getName());
+        this.artistNameLabel.setText((null == song.getArtist())
+            ? "-"
+            : song.getArtist().getName());
+
         this.trackNameLabel.setText(song.getTitle());
 
         final var total = Duration.millis(song.getDuration()).toMillis();

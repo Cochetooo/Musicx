@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.model;
+package fr.xahla.musicx.desktop.context.scene.settings;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
@@ -6,8 +6,11 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.json.JSONArray;
 
 import java.util.ArrayList;
+
+import static fr.xahla.musicx.desktop.context.DesktopContext.config;
 
 /**
  * Global settings for desktop application.
@@ -22,14 +25,26 @@ public class Settings {
     // Player
     private final BooleanProperty artworkShadow;
     private final BooleanProperty backgroundArtworkBind;
-    private final BooleanProperty smoothFadeStop;
+    private final BooleanProperty smoothPause;
 
     public Settings() {
-        this.scanLibraryAudioFormats = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+        this.scanLibraryAudioFormats = new SimpleListProperty<>(FXCollections.observableList(
+            new ArrayList<>(((JSONArray) config().getSetting("scanLibraryAudioFormats")).toList().stream()
+                .map(Object::toString)
+                .toList())
+        ));
 
-        this.artworkShadow = new SimpleBooleanProperty(true);
-        this.backgroundArtworkBind = new SimpleBooleanProperty(true);
-        this.smoothFadeStop = new SimpleBooleanProperty(true);
+        this.artworkShadow = new SimpleBooleanProperty(
+            (boolean) config().getSetting("artworkShadow")
+        );
+
+        this.backgroundArtworkBind = new SimpleBooleanProperty(
+            (boolean) config().getSetting("backgroundArtworkBind")
+        );
+
+        this.smoothPause = new SimpleBooleanProperty(
+            (boolean) config().getSetting("smoothPause")
+        );
     }
 
     public ObservableList<String> getScanLibraryAudioFormats() {
@@ -71,16 +86,16 @@ public class Settings {
         return this;
     }
 
-    public boolean isSmoothFadeStop() {
-        return smoothFadeStop.get();
+    public boolean getSmoothPause() {
+        return smoothPause.get();
     }
 
-    public BooleanProperty smoothFadeStopProperty() {
-        return smoothFadeStop;
+    public BooleanProperty smoothPauseProperty() {
+        return smoothPause;
     }
 
-    public Settings setSmoothFadeStop(final boolean smoothFadeStop) {
-        this.smoothFadeStop.set(smoothFadeStop);
+    public Settings setSmoothPause(final boolean smoothPause) {
+        this.smoothPause.set(smoothPause);
         return this;
     }
 }

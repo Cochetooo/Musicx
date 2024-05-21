@@ -13,6 +13,8 @@ import javafx.concurrent.Task;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.*;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
@@ -34,9 +36,12 @@ public class LibraryManager {
     private final ListProperty<Song> songs;
     private final ListProperty<String> folderPaths;
 
+    private final List<SongEditListener> songEditListeners;
+
     public LibraryManager() {
         songs = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
         folderPaths = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+        songEditListeners = new ArrayList<>();
 
         this.refresh();
     }
@@ -74,6 +79,7 @@ public class LibraryManager {
     public void refresh() {
         songs.clear();
         final var songsDto = songRepository().findAll();
+
         songsDto.forEach(songDto -> songs.add(new Song(songDto)));
     }
 
@@ -88,6 +94,15 @@ public class LibraryManager {
         }
 
         folderPaths.add(directory.getAbsolutePath());
+    }
+
+    /**
+     * @since 0.3.3
+     */
+    public void editSong(final Song song) {
+        final var index = songs.indexOf(song);
+
+        songEditListeners.forEach(listener -> listener.onSongEdited(song, index));
     }
 
     // --- Accessors / Modifiers ---
@@ -109,4 +124,21 @@ public class LibraryManager {
     public void onSongsChange(final ListChangeListener<Song> change) {
         this.songs.addListener(change);
     }
+
+    /**
+     * @since 0.3.3
+     */
+    public void onSongEdited(final SongEditListener listener) {
+        songEditListeners.add(listener);
+    }
+
+    // --- Inner classes ---
+
+    /**
+     * @since 0.3.3
+     */
+    interface SongEditListener {
+        void onSongEdited(final Song song, final int position);
+    }
+
 }

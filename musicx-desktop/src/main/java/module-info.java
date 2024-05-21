@@ -40,6 +40,9 @@ module fr.xahla.musicx.desktop {
     // --- JFoenix ---
     requires com.jfoenix;
 
+    // --- JSON ---
+    requires org.json;
+
     // -- Opens --
     opens fr.xahla.musicx.desktop to javafx.graphics, javafx.fxml;
     opens fr.xahla.musicx.desktop.views to javafx.fxml;

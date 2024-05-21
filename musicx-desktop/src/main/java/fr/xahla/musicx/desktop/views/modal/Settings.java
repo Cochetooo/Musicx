@@ -23,6 +23,6 @@ public class Settings implements Initializable {
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         playerArtworkShadow.selectedProperty().bindBidirectional(settings().artworkShadowProperty());
         playerBackgroundArtworkBind.selectedProperty().bindBidirectional(settings().backgroundArtworkBindProperty());
-        playerSmoothFadingStop.selectedProperty().bindBidirectional(settings().smoothFadeStopProperty());
+        playerSmoothFadingStop.selectedProperty().bindBidirectional(settings().smoothPauseProperty());
     }
 }
