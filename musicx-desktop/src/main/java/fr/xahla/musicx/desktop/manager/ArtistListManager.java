@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.library;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
@@ -24,15 +23,10 @@ import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 @Deprecated
 public class ArtistListManager {
 
-    private final ListProperty<Artist> artists;
+    /* private final ListProperty<Artist> artists;
     private Thread getArtistListThread;
 
     public ArtistListManager() {
-        if (null == library()) {
-            logger().severe("Library has not been initialized when ArtistManager try to access it.");
-            throw new RuntimeException();
-        }
-
         artists = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
         this.getArtistList(library().getSongs());
 
@@ -112,6 +106,6 @@ public class ArtistListManager {
 
     public void onArtistsChange(ListChangeListener<Artist> change) {
         this.artists.addListener(change);
-    }
+    } */
 
 }

@@ -27,8 +27,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.player;
-import static fr.xahla.musicx.desktop.context.DesktopContext.settings;
+import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 
 /**
  * View for the audio player with its controls.
@@ -73,23 +73,23 @@ public class AudioPlayer implements Initializable {
 
         // Default values
 
-        player().setVolume(this.volumeSlider.getValue());
+        audioPlayer().setVolume(this.volumeSlider.getValue());
 
         albumArtwork.setImage(Album.artworkPlaceholder);
 
         // Listeners
 
-        settings().artworkShadowProperty().addListener(this::settingsOnArtworkShadowChange);
+        scene().getSettings().artworkShadowProperty().addListener(this::settingsOnArtworkShadowChange);
 
-        player().onCurrentTimeChange(this::playerOnCurrentTimeChange);
-        player().onSongChange(this::playerOnSongChange);
-        player().onMute(this::playerOnMute);
-        player().onPlay(() -> togglePlayingButton.setGraphic(pauseIcon));
-        player().onPause(() -> togglePlayingButton.setGraphic(playIcon));
+        audioPlayer().onCurrentTimeChange(this::playerOnCurrentTimeChange);
+        audioPlayer().onSongChange(this::playerOnSongChange);
+        audioPlayer().onMute(this::playerOnMute);
+        audioPlayer().onPlay(() -> togglePlayingButton.setGraphic(pauseIcon));
+        audioPlayer().onPause(() -> togglePlayingButton.setGraphic(playIcon));
 
         this.volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (!player().isPlayerInactive()) {
-                player().setVolume((Double) newValue);
+            if (!audioPlayer().isPlayerInactive()) {
+                audioPlayer().setVolume((Double) newValue);
             }
 
             this.volumeButton.setGraphic(this.getVolumeStateIcon());
@@ -141,38 +141,38 @@ public class AudioPlayer implements Initializable {
     // --- Controls ---
 
     @FXML public void toggleShuffle() {
-        player().shuffle();
+        audioPlayer().shuffle();
     }
 
     @FXML public void previous() {
-        player().previous();
+        audioPlayer().previous();
     }
 
     @FXML public void backward() {
-        player().seek(player().getPlayingTime() - Duration.seconds(30).toMillis());
+        audioPlayer().seek(audioPlayer().getPlayingTime() - Duration.seconds(30).toMillis());
     }
 
     @FXML public void togglePlaying() {
-        player().togglePlaying();
+        audioPlayer().togglePlaying();
     }
 
     @FXML public void forward() {
-        player().seek(player().getPlayingTime() + Duration.seconds(30).toMillis());
+        audioPlayer().seek(audioPlayer().getPlayingTime() + Duration.seconds(30).toMillis());
     }
 
     @FXML public void next() {
-        player().next();
+        audioPlayer().next();
     }
 
     @FXML public void toggleRepeat() {
-        player().toggleRepeat();
+        audioPlayer().toggleRepeat();
 
-        this.toggleRepeatButton.setGraphic(player().getRepeatMode() == RepeatMode.NO_REPEAT ? this.noRepeatIcon : this.repeatIcon);
-        this.songRepeatBadge.setVisible(player().getRepeatMode() == RepeatMode.SONG_REPEAT);
+        this.toggleRepeatButton.setGraphic(audioPlayer().getRepeatMode() == RepeatMode.NO_REPEAT ? this.noRepeatIcon : this.repeatIcon);
+        this.songRepeatBadge.setVisible(audioPlayer().getRepeatMode() == RepeatMode.SONG_REPEAT);
     }
 
     @FXML public void mute() {
-        player().mute();
+        audioPlayer().mute();
     }
 
     // --- Listeners ---
@@ -186,7 +186,7 @@ public class AudioPlayer implements Initializable {
             return;
         }
 
-        final var current = player().getCurrentTime().toMillis();
+        final var current = audioPlayer().getCurrentTime().toMillis();
 
         if (!trackTimeSlider.isValueChanging()) {
             this.trackTimeSlider.setValue(current);
@@ -196,7 +196,7 @@ public class AudioPlayer implements Initializable {
     }
 
     private void playerOnMute(final Observable observable) {
-        if (player().isMuted()) {
+        if (audioPlayer().isMuted()) {
             this.volumeButton.setGraphic(volumeMuteIcon);
         } else {
             this.volumeButton.setGraphic(this.getVolumeStateIcon());
@@ -238,10 +238,10 @@ public class AudioPlayer implements Initializable {
     @FXML public void trackTimeSliderClick(final MouseEvent event) {
         final var mouseX = event.getX();
         final var width = trackTimeSlider.getWidth();
-        final var totalDuration = player().getTotalDuration().toMillis();
+        final var totalDuration = audioPlayer().getTotalDuration().toMillis();
         final var seekTime = (mouseX / width) * totalDuration;
 
-        player().seek(seekTime);
+        audioPlayer().seek(seekTime);
     }
 
     // --- Helpers ---
@@ -269,7 +269,7 @@ public class AudioPlayer implements Initializable {
             final var imageColor = ImageHelper.calculateAverageColor(image).darker();
 
             // Set background color
-            if (settings().isBackgroundArtworkBind()) {
+            if (scene().getSettings().isBackgroundArtworkBind()) {
                 new ColorTransition(
                     Duration.seconds(0.5),
                     currentBackgroundColor,
@@ -285,7 +285,7 @@ public class AudioPlayer implements Initializable {
             }
 
             // Set shadow artwork
-            if (settings().isArtworkShadow()) {
+            if (scene().getSettings().isArtworkShadow()) {
                 albumArtworkShadow.setColor(imageColor.brighter());
             }
         });

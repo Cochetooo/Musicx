@@ -1,17 +1,21 @@
 package fr.xahla.musicx.desktop.context.scene.localLibrary;
 
+import fr.xahla.musicx.desktop.model.TaskProgress;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import fr.xahla.musicx.domain.service.importLocalSongs.ImportSongsFromFolders;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.config;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
@@ -27,7 +31,11 @@ public final class LocalLibrary {
 
     public LocalLibrary() {
         this.localSongs = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
-        this.folders = new SimpleListProperty<>(FXCollections.observableList(config().getLocalFolders()));
+        this.folders = new SimpleListProperty<>(FXCollections.observableList(
+            new ArrayList<>(config().getLocalFolders())
+        ));
+
+        this.refresh();
     }
 
     public void clear() {
@@ -44,6 +52,28 @@ public final class LocalLibrary {
         final var songsDto = songRepository().findAll();
 
         songsDto.forEach(songDto -> localSongs.add(new Song(songDto)));
+    }
+
+    public void scanFolders() {
+        final var scanFolderTask = new Task<>() {
+            @Override public Void call() {
+                new ImportSongsFromFolders().execute(
+                    folders,
+                    scene().getSettings().getScanLibraryAudioFormats(),
+                    this::updateProgress
+                );
+
+                refresh();
+
+                return null;
+            }
+        };
+
+        scene().getTaskProgress().setTaskProgress(
+            new TaskProgress(scanFolderTask, "library.scanFolderProgress")
+        );
+
+        new Thread(scanFolderTask).start();
     }
 
     // --- Getters / Setters ---
@@ -77,6 +107,10 @@ public final class LocalLibrary {
 
     public void onLocalSongsChange(final ListChangeListener<Song> change) {
         localSongs.addListener(change);
+    }
+
+    public void onFoldersChange(final ListChangeListener<String> change) {
+        folders.addListener(change);
     }
 
 }

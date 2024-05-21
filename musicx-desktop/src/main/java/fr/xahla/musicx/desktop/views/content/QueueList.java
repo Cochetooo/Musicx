@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.player;
+import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
 
 /**
  * View for the queue list shown on the right-side container
@@ -26,11 +26,11 @@ public class QueueList implements Initializable {
     @FXML private Label queueInfoLabel;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        this.queueListView.setItems(player().getSongs());
+        this.queueListView.setItems(audioPlayer().getSongs());
 
-        player().onQueueChange(change
-            -> queueInfoLabel.setText(player().getSongs().size() + " " + resourceBundle.getString("queueList.infoLabel")
-            + " - " + DurationHelper.getTimeString(player().getTotalQueueDuration()))
+        audioPlayer().onQueueChange(change
+            -> queueInfoLabel.setText(audioPlayer().getSongs().size() + " " + resourceBundle.getString("queueList.infoLabel")
+            + " - " + DurationHelper.getTimeString(audioPlayer().getTotalQueueDuration()))
         );
 
         this.queueListView.setCellFactory(list -> new ListCell<>() {
@@ -51,11 +51,11 @@ public class QueueList implements Initializable {
 
     @FXML public void play(final MouseEvent mouseEvent) {
         if (2 == mouseEvent.getClickCount()) {
-            player().setCurrentSongByPosition(queueListView.getSelectionModel().getSelectedIndex());
+            audioPlayer().setCurrentSongByPosition(queueListView.getSelectionModel().getSelectedIndex());
         }
     }
 
     @FXML public void remove() {
-        player().remove(queueListView.getSelectionModel().getSelectedIndex());
+        audioPlayer().remove(queueListView.getSelectionModel().getSelectedIndex());
     }
 }

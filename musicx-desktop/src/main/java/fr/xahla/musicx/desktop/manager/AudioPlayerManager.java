@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.settings;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
@@ -191,7 +191,7 @@ public class AudioPlayerManager {
             return;
         }
 
-        if (settings().getSmoothPause()) {
+        if (scene().getSettings().getSmoothPause()) {
             final var startVolume = this.getVolume();
 
             new Animation(

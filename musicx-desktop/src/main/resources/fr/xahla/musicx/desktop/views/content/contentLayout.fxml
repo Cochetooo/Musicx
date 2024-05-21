@@ -10,17 +10,16 @@
             style="-fx-padding: 10px;"
             fx:id="contentPane">
         <left>
-            <VBox spacing="15" style="-fx-padding: 0 10px 0 0;">
-                <!-- Group Selector -->
-                <fx:include source="navigation/tabSelector.fxml" />
-
-                <!-- Selector List
-                <fx:include source="navigation/selectorList.fxml" /> -->
-            </VBox>
+            <!-- Group Selector -->
+            <fx:include source="navigation/tabSelector.fxml" />
         </left>
         <center>
-            <VBox prefWidth="1600" spacing="15" style="-fx-padding: 0 10px 0 0;">
-                <fx:include source="content.fxml" />
+            <VBox prefWidth="1800" spacing="15" style="-fx-padding: 0 10px 0 0;">
+                <!-- Search Bar -->
+                <fx:include source="topBar.fxml" />
+
+                <!-- Content Scene -->
+                <HBox fx:id="contentSceneBox" />
             </VBox>
         </center>
         <right>

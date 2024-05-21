@@ -26,14 +26,14 @@ import static fr.xahla.musicx.desktop.context.DesktopContext.*;
  * @author Cochetooo
  * @since 0.2.0
  */
-public class SelectorList implements Initializable {
+public class SelectorList {
 
-    @FXML private ListView<Artist> selectorListView;
+    /* @FXML private ListView<Artist> selectorListView;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.updateList();
 
-        artist().onArtistsChange(change -> this.updateList());
+        //artist().onArtistsChange(change -> this.updateList());
 
         this.selectorListView.setCellFactory(list -> new ListCell<>() {
             @Override public void updateItem(final Artist artist, final boolean empty) {
@@ -81,7 +81,7 @@ public class SelectorList implements Initializable {
             }
 
             if (2 == event.getClickCount()) {
-                player().setQueue(trackList().getSongs(), 0);
+                audioPlayer().setQueue(trackList().getSongs(), 0);
             }
         }
     }
@@ -98,12 +98,12 @@ public class SelectorList implements Initializable {
             );
         }
 
-        player().setQueue(trackList().getSongs(), 0);
+        audioPlayer().setQueue(trackList().getSongs(), 0);
     }
 
     @FXML public void playShuffled() {
         this.playNow();
-        player().shuffle();
+        audioPlayer().shuffle();
     }
 
     private void updateList() {
@@ -113,5 +113,5 @@ public class SelectorList implements Initializable {
         artistList.addFirst(null);
 
         Platform.runLater(() -> this.selectorListView.setItems(artistList));
-    }
+    } */
 }

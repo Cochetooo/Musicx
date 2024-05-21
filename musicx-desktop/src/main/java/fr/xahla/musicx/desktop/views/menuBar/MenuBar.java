@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.views.menuBar;
 
+import fr.xahla.musicx.desktop.context.scene.localLibrary.LocalLibrary;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import fr.xahla.musicx.domain.service.structureLocalSongs.StructureAudioFilesTree;
@@ -24,13 +25,15 @@ public class MenuBar implements Initializable {
     @FXML private MenuItem fileScanFoldersMenuItem;
 
     private ResourceBundle resourceBundle;
+    private LocalLibrary library;
 
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
+        this.library = scene().getLocalLibraryScene().getLibrary();
 
-        this.fileScanFoldersMenuItem.setDisable(library().isEmpty());
+        this.fileScanFoldersMenuItem.setDisable(library.isEmpty());
 
-        library().onFolderPathsChange(change
+        library.onFoldersChange(change
             -> Platform.runLater(() -> fileScanFoldersMenuItem.setDisable(change.getList().isEmpty())));
     }
 
@@ -41,7 +44,7 @@ public class MenuBar implements Initializable {
     }
 
     @FXML public void fileScanFolders() {
-        library().launchScanFoldersTask();
+        library.scanFolders();
     }
 
     @FXML public void fileStructureFolders() {
@@ -54,11 +57,11 @@ public class MenuBar implements Initializable {
     }
 
     @FXML public void fileSettings() {
-        FxmlHelper.showModal(FxmlComponent.MODAL_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
+        FxmlHelper.showModal(FxmlComponent.SCENE_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
     }
 
     @FXML public void fileShowConsole() {
-        FxmlHelper.showModal(FxmlComponent.MODAL_CONSOLE, this.resourceBundle, resourceBundle.getString("console.title"));
+        FxmlHelper.showModal(FxmlComponent.SCENE_CONSOLE, this.resourceBundle, resourceBundle.getString("console.title"));
     }
 
     @FXML public void fileExit() {
@@ -67,18 +70,18 @@ public class MenuBar implements Initializable {
 
     /* --------------------------- PLAYER --------------------------- */
     @FXML public void playerTogglePlaying() {
-        player().togglePlaying();
+        audioPlayer().togglePlaying();
     }
 
     @FXML public void playerPrevious() {
-        player().previous();
+        audioPlayer().previous();
     }
 
     @FXML public void playerNext() {
-        player().next();
+        audioPlayer().next();
     }
 
     @FXML public void playerMute() {
-        player().mute();
+        audioPlayer().mute();
     }
 }

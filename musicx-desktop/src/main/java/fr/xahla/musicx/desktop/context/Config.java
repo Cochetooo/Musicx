@@ -1,14 +1,15 @@
 package fr.xahla.musicx.desktop.context;
 
-import fr.xahla.musicx.desktop.model.enums.SceneTab;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.env;
 import static fr.xahla.musicx.domain.helper.JsonHelper.json_load_from_file;
+import static fr.xahla.musicx.domain.helper.StringHelper.str_is_null_or_blank;
 
 /**
  * User configurations such as settings or active scenes data.<br>
@@ -24,21 +25,24 @@ public class Config {
         configJson = json_load_from_file(env("CONFIG_URL"));
     }
 
-    public SceneTab getActiveScene() {
-        return SceneTab.valueOf(configJson.getString("activeScene"));
+    public String getActiveScene() {
+        return configJson.getString("activeScene");
     }
 
-    public void setActiveScene(final SceneTab activeScene) {
-        configJson.put("activeScene", activeScene.name());
+    public void setActiveScene(final String activeScene) {
+        configJson.put("activeScene", activeScene);
     }
 
     public List<String> getLocalFolders() {
+        if (str_is_null_or_blank(configJson.getString("localFolders"))) {
+            return new ArrayList<>();
+        }
+
         return Arrays.asList(configJson.getString("localFolders").split(";"));
     }
 
     public void setLocalFolders(final List<String> localFolders) {
-        configJson.put("localFolders", localFolders.stream()
-            .collect(Collectors.joining(";")));
+        configJson.put("localFolders", String.join(";", localFolders));
     }
 
     public Object getSetting(final String key) {

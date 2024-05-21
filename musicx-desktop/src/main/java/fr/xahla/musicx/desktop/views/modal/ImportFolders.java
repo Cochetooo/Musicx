@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.views.modal;
 
+import fr.xahla.musicx.desktop.context.scene.localLibrary.LocalLibrary;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -36,12 +37,14 @@ public class ImportFolders implements Initializable {
     private List<ToggleButton> formatButtons;
 
     private ResourceBundle resourceBundle;
+    private LocalLibrary library;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
+        this.library = scene().getLocalLibraryScene().getLibrary();
 
-        this.clearButton.setDisable(library().isEmpty());
-        this.scanFoldersButton.setDisable(library().isEmpty());
+        this.clearButton.setDisable(library.isEmpty());
+        this.scanFoldersButton.setDisable(library.isEmpty());
 
         this.formatButtons = new ArrayList<>(List.of(
             formatMp3Button, formatFlacButton, formatOggButton, formatWavButton, formatM4aButton
@@ -49,15 +52,15 @@ public class ImportFolders implements Initializable {
 
         this.formatButtons.forEach(toggle
             -> toggle.selectedProperty().addListener(change -> {
-                settings().getScanLibraryAudioFormats().setAll(this.getSelectedFormats());
+                scene().getSettings().getScanLibraryAudioFormats().setAll(this.getSelectedFormats());
             }
         ));
 
         this.folderPathsCheckListView.setItems(FXCollections.observableList(
-            new ArrayList<>(library().getFolderPaths())
+            new ArrayList<>(library.getFolders())
         ));
 
-        library().onFolderPathsChange(change -> {
+        library.onFoldersChange(change -> {
             Platform.runLater(() -> {
                 folderPathsCheckListView.getItems().setAll(change.getList());
                 clearButton.setDisable(change.getList().isEmpty());
@@ -71,12 +74,12 @@ public class ImportFolders implements Initializable {
         final var selectedDirectory = directoryChooser.showDialog(null);
 
         if (null != selectedDirectory) {
-            library().addFolder(selectedDirectory);
+            library.addFolder(selectedDirectory);
         }
     }
 
     @FXML public void scanFolders() {
-        library().launchScanFoldersTask();
+        library.scanFolders();
     }
 
     @FXML public void clear() {
@@ -91,10 +94,8 @@ public class ImportFolders implements Initializable {
         }
 
         if (response.get() == ButtonType.OK) {
-            library().clear();
-            trackList().clear();
-            player().clearQueue();
-            artist().getArtists().clear();
+            library.clear();
+            audioPlayer().clearQueue();
         }
     }
 

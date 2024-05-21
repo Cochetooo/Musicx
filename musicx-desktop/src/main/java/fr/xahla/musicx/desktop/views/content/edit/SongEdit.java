@@ -1,9 +1,9 @@
 package fr.xahla.musicx.desktop.views.content.edit;
 
-import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
 import java.net.URL;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.*;
@@ -48,7 +47,7 @@ public class SongEdit implements Initializable {
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
 
-        final var song = player().getEditedSong();
+        final var song = audioPlayer().getEditedSong();
 
         this.songNameField.setText(song.getTitle());
         this.songNameField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -101,7 +100,7 @@ public class SongEdit implements Initializable {
     }
 
     @FXML public void edit() {
-        final var song = player().getEditedSong();
+        final var song = audioPlayer().getEditedSong();
 
         song.setDiscNumber(StringHelper.str_parse_short_safe(discNoField.getText()));
         song.setTitle(songNameField.getText());
@@ -120,6 +119,10 @@ public class SongEdit implements Initializable {
     }
 
     @FXML public void editAlbum() {
-        rightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, resourceBundle);
+        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, resourceBundle);
+    }
+
+    public void close() {
+        scene().getRightNavContent().close();
     }
 }

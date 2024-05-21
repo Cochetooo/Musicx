@@ -4,6 +4,7 @@ import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -14,7 +15,8 @@ import javafx.stage.FileChooser;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.player;
+import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
 
 /**
@@ -40,7 +42,7 @@ public class AlbumEdit implements Initializable {
     @FXML private ImageView artworkView;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        final var album = player().getEditedSong().getAlbum();
+        final var album = audioPlayer().getEditedSong().getAlbum();
 
         this.albumNameField.setText(album.getName());
         this.albumNameField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -126,7 +128,7 @@ public class AlbumEdit implements Initializable {
     }
 
     @FXML public void edit() {
-        final var album = player().getEditedSong().getAlbum();
+        final var album = audioPlayer().getEditedSong().getAlbum();
 
         album.setArtworkUrl(artworkUrlField.getText());
         album.setCatalogNo(catalogNoField.getText());
@@ -140,5 +142,9 @@ public class AlbumEdit implements Initializable {
         new WriteMetadataToAudioFile().execute(album.getDto());
 
         this.editButton.setDisable(true);
+    }
+
+    public void close() {
+        scene().getRightNavContent().close();
     }
 }

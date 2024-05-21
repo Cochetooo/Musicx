@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.settings;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 
 /**
  * Modal for the application settings.
@@ -21,8 +21,8 @@ public class Settings implements Initializable {
     @FXML private ToggleSwitch playerSmoothFadingStop;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        playerArtworkShadow.selectedProperty().bindBidirectional(settings().artworkShadowProperty());
-        playerBackgroundArtworkBind.selectedProperty().bindBidirectional(settings().backgroundArtworkBindProperty());
-        playerSmoothFadingStop.selectedProperty().bindBidirectional(settings().smoothPauseProperty());
+        playerArtworkShadow.selectedProperty().bindBidirectional(scene().getSettings().artworkShadowProperty());
+        playerBackgroundArtworkBind.selectedProperty().bindBidirectional(scene().getSettings().backgroundArtworkBindProperty());
+        playerSmoothFadingStop.selectedProperty().bindBidirectional(scene().getSettings().smoothPauseProperty());
     }
 }

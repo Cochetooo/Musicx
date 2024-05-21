@@ -1,0 +1,14 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.come/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.content.Content"
+      style="
+        -fx-padding: 20px;
+        -fx-background-color: -color-base-7;
+        -fx-background-radius: 10px;
+        -fx-border-radius: 10px;"
+      spacing="15" HBox.hgrow="ALWAYS" prefHeight="1200">
+
+</VBox>

@@ -33,7 +33,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 @Deprecated
 public class LibraryManager {
 
-    private final ListProperty<Song> songs;
+    /* private final ListProperty<Song> songs;
     private final ListProperty<String> folderPaths;
 
     private final List<SongEditListener> songEditListeners;
@@ -66,7 +66,7 @@ public class LibraryManager {
         );
 
         new Thread(scanFolderTask).start();
-    }
+    } */
 
     /**
      * Clear the song collection and the folder paths of the library,
@@ -76,6 +76,7 @@ public class LibraryManager {
         throw new RuntimeException("TODO");
     }
 
+    /*
     public void refresh() {
         songs.clear();
         final var songsDto = songRepository().findAll();
@@ -94,11 +95,11 @@ public class LibraryManager {
         }
 
         folderPaths.add(directory.getAbsolutePath());
-    }
+    } */
 
     /**
      * @since 0.3.3
-     */
+     *
     public void editSong(final Song song) {
         final var index = songs.indexOf(song);
 
@@ -127,7 +128,7 @@ public class LibraryManager {
 
     /**
      * @since 0.3.3
-     */
+     *
     public void onSongEdited(final SongEditListener listener) {
         songEditListeners.add(listener);
     }
@@ -136,9 +137,9 @@ public class LibraryManager {
 
     /**
      * @since 0.3.3
-     */
+     *
     interface SongEditListener {
         void onSongEdited(final Song song, final int position);
-    }
+    } */
 
 }

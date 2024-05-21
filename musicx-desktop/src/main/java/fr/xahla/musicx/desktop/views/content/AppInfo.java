@@ -13,8 +13,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.library;
-import static fr.xahla.musicx.desktop.context.DesktopContext.taskProgress;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 
 /**
  * View for the little row showing app information at the bottom.
@@ -35,14 +34,16 @@ public class AppInfo implements Initializable {
         this.resourceBundle = resourceBundle;
 
         this.updateLibraryInfo();
-        library().onSongsChange(change -> Platform.runLater(this::updateLibraryInfo));
+        scene().getLocalLibraryScene().getLibrary().onLocalSongsChange(change -> Platform.runLater(this::updateLibraryInfo));
 
-        taskProgress().onTaskProgressChange((observableValue, oldValue, newValue) -> {
+        final var taskProgress = scene().getTaskProgress();
+
+        taskProgress.onTaskProgressChange((observableValue, oldValue, newValue) -> {
             this.revokeProgressBar();
 
             this.taskProgressBar = new ProgressBar();
             this.taskProgressBar.setPrefHeight(20);
-            this.taskProgressBar.progressProperty().bind(taskProgress().getTaskProgress().currentProgressProperty());
+            this.taskProgressBar.progressProperty().bind(taskProgress.getTaskProgress().currentProgressProperty());
 
             final var translatedTaskProgressLabelText = resourceBundle.getString(newValue.getName());
 
@@ -51,8 +52,8 @@ public class AppInfo implements Initializable {
 
             this.taskProgressBar.progressProperty().addListener(((observableValue1, oldProgress, newProgress) -> {
                 this.taskProgressLabel.setText(translatedTaskProgressLabelText + " ("
-                    + (int) (taskProgress().getTaskProgress().getCurrentProgress() * taskProgress().getTaskProgress().getTotal()) + "/"
-                    + (int) taskProgress().getTaskProgress().getTotal() + ")"
+                    + (int) (taskProgress.getTaskProgress().getCurrentProgress() * taskProgress.getTaskProgress().getTotal()) + "/"
+                    + (int) taskProgress.getTaskProgress().getTotal() + ")"
                 );
                 this.taskProgressStatusLabel.setText(ProgressHelper.progress_get_percentage(newProgress.doubleValue(), 1) + "%");
 
@@ -79,13 +80,15 @@ public class AppInfo implements Initializable {
     private void updateLibraryInfo() {
         final var totalDuration = new AtomicLong(0L);
 
-        library().getSongs().forEach((song) -> {
+        final var songs = scene().getLocalLibraryScene().getLibrary().getLocalSongs();
+
+        songs.forEach((song) -> {
             totalDuration.getAndAdd(song.getDuration());
         });
 
         this.footerLibrarySumLabel.setText(
-            library().getSongs().size() + " " + this.resourceBundle.getString("appInfo.librarySum")
-            + " " + DurationHelper.getTimeString(java.time.Duration.ofMillis(totalDuration.get()))
+            songs.size() + " " + this.resourceBundle.getString("appInfo.librarySum")
+                + " " + DurationHelper.getTimeString(java.time.Duration.ofMillis(totalDuration.get()))
         );
     }
 }

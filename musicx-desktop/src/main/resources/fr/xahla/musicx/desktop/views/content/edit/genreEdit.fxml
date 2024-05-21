@@ -7,7 +7,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.edit.GenreEdit"
-      prefHeight="1200.0" prefWidth="400.0"
+      prefHeight="1200.0" prefWidth="500.0"
       style="
         -fx-padding: 20px;
         -fx-background-color: -color-base-7;
@@ -15,6 +15,12 @@
         -fx-border-radius: 10px;
       "
       spacing="10">
+
+    <Button alignment="TOP_RIGHT" onAction="#close">
+        <graphic>
+            <FontIcon iconLiteral="fltfal-dismiss-28" />
+        </graphic>
+    </Button>
 
     <VBox spacing="5">
         <Label text="%genreEdit.songName" styleClass="text-caption" />

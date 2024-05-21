@@ -1,9 +1,5 @@
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.Tab?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
-<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 <TabPane
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
@@ -17,7 +13,7 @@
         tabClosingPolicy="UNAVAILABLE"
         tabDragPolicy="FIXED">
     <!-- Encyclopedia -->
-    <Tab style="-fx-padding: 10px">
+    <Tab style="-fx-padding: 10px" fx:id="encyclopediaTab">
         <graphic>
             <FontIcon iconLiteral="fltfal-book-database-24" scaleX="2" scaleY="2" />
         </graphic>
@@ -27,7 +23,7 @@
     </Tab>
 
     <!-- History -->
-    <Tab style="-fx-padding: 10px">
+    <Tab style="-fx-padding: 10px" fx:id="historyTab">
         <graphic>
             <FontIcon iconLiteral="fltfal-history-24" scaleX="2" scaleY="2" />
         </graphic>
@@ -37,7 +33,7 @@
     </Tab>
 
     <!-- Local Library -->
-    <Tab style="-fx-padding: 10px">
+    <Tab style="-fx-padding: 10px" fx:id="localLibraryTab">
         <graphic>
             <FontIcon iconLiteral="fltfmz-music-note-24" scaleX="2" scaleY="2" />
         </graphic>
@@ -47,7 +43,7 @@
     </Tab>
 
     <!-- Profile -->
-    <Tab style="-fx-padding: 10px">
+    <Tab style="-fx-padding: 10px" fx:id="profileTab">
         <graphic>
             <FontIcon iconLiteral="fltfmz-person-28" scaleX="2" scaleY="2" />
         </graphic>
@@ -57,12 +53,22 @@
     </Tab>
 
     <!-- Settings -->
-    <Tab style="-fx-padding: 10px">
+    <Tab style="-fx-padding: 10px" fx:id="settingsTab">
         <graphic>
             <FontIcon iconLiteral="fltfmz-settings-28" scaleX="2" scaleY="2" />
         </graphic>
         <tooltip>
             <Tooltip text="%tabSelector.tabSettings" />
+        </tooltip>
+    </Tab>
+
+    <!-- Console -->
+    <Tab style="-fx-padding: 10px" fx:id="consoleTab">
+        <graphic>
+            <FontIcon iconLiteral="fltfal-laptop-28" scaleX="2" scaleY="2" />
+        </graphic>
+        <tooltip>
+            <Tooltip text="%tabSelector.tabConsole" />
         </tooltip>
     </Tab>
 </TabPane>

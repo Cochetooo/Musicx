@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.content.components;
+package fr.xahla.musicx.desktop.views.content.localLibrary;
 
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
@@ -9,7 +9,6 @@ import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableCell;
@@ -28,16 +27,15 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.*;
+import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 
 /**
- * Defines the table displaying songs list
+ * View for Songs group in Local Library scene.
  * @author Cochetooo
  * @since 0.3.3
  */
-public class TrackListTable implements Initializable {
-
-    private FilteredList<Song> filteredList;
+public class Songs implements Initializable {
 
     @FXML private TableView<Song> tracksTableView;
 
@@ -51,7 +49,6 @@ public class TrackListTable implements Initializable {
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
-        this.filteredList = new FilteredList<>(trackList().getSongs());
 
         tracksTableArtworkCol.setCellFactory(song -> new AlbumArtworkTableCell());
         tracksTableTitleCol.setCellFactory(song -> new TrackTitleTableCell());
@@ -61,7 +58,7 @@ public class TrackListTable implements Initializable {
 
         this.addListeners();
 
-        tracksTableView.setItems(filteredList);
+        tracksTableView.setItems(scene().getLocalLibraryScene().getTrackList());
         tracksTableView.setTableMenuButtonVisible(false);
         tracksTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
     }
@@ -69,13 +66,13 @@ public class TrackListTable implements Initializable {
     // --- Initializers ---
 
     private void addListeners() {
-       controller().searchTextProperty().addListener((observable, oldValue, newValue) -> onSearch(newValue));
+        scene().onSearchTextChange((observable, oldValue, newValue) -> onSearch(newValue));
     }
 
     // --- Events ---
 
     private void onSearch(final String searchTerm) {
-        this.filteredList.setPredicate(song ->
+        scene().getLocalLibraryScene().setTrackListFilters(song ->
             song.getTitle().toLowerCase().contains(searchTerm.toLowerCase())
                 || (null != song.getAlbum() && song.getAlbum().getName().toLowerCase().contains(searchTerm.toLowerCase()))
                 || (null != song.getArtist() && song.getArtist().getName().toLowerCase().contains(searchTerm.toLowerCase()))
@@ -84,36 +81,37 @@ public class TrackListTable implements Initializable {
 
     @FXML private void onClick(final MouseEvent mouseEvent) {
         if (2 == mouseEvent.getClickCount()) {
+            final var trackList = scene().getLocalLibraryScene().getTrackList();
             final var song = tracksTableView.getSelectionModel().getSelectedItem();
-            final var index = trackList().getSongs().indexOf(song);
+            final var index = trackList.indexOf(song);
 
-            player().setQueue(
-                trackList().getSongs(),
+            audioPlayer().setQueue(
+                trackList,
                 index
             );
         }
     }
 
     @FXML private void playNow() {
-        player().setCurrentSongByPosition(tracksTableView.getSelectionModel().getSelectedIndex());
+        audioPlayer().setCurrentSongByPosition(tracksTableView.getSelectionModel().getSelectedIndex());
     }
 
     @FXML private void queueNext() {
-        player().queueNext(tracksTableView.getSelectionModel().getSelectedItem());
+        audioPlayer().queueNext(tracksTableView.getSelectionModel().getSelectedItem());
     }
 
     @FXML private void queueLast() {
-        player().queueLast(tracksTableView.getSelectionModel().getSelectedItem());
+        audioPlayer().queueLast(tracksTableView.getSelectionModel().getSelectedItem());
     }
 
     @FXML private void editSong() {
-        player().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
-        rightNavContent().switchContent(FxmlComponent.EDIT_SONG, this.resourceBundle);
+        audioPlayer().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
+        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_SONG, this.resourceBundle);
     }
 
     @FXML private void editAlbum() {
-        player().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
-        rightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, this.resourceBundle);
+        audioPlayer().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
+        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, this.resourceBundle);
     }
 
     // --- Cell Factories ---
@@ -227,4 +225,5 @@ public class TrackListTable implements Initializable {
             }
         }
     }
+
 }

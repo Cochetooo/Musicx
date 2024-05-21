@@ -13,19 +13,19 @@ import java.util.ResourceBundle;
  * @author Cochetooo
  * @since 0.3.1
  */
-public class RightNavContentManager {
+public class ContentManager {
 
-    private final ObjectProperty<Parent> rightNavContent;
+    private final ObjectProperty<Parent> content;
 
-    public RightNavContentManager() {
-        this.rightNavContent = new SimpleObjectProperty<>();
+    public ContentManager() {
+        this.content = new SimpleObjectProperty<>();
     }
 
     /**
      * @since 0.3.1
      */
     public void close() {
-        this.rightNavContent.set(null);
+        this.content.set(null);
     }
 
     /**
@@ -34,15 +34,14 @@ public class RightNavContentManager {
     public void switchContent(final FxmlComponent fxmlFile, final ResourceBundle resourceBundle) {
         final var view = FxmlHelper.getComponent(fxmlFile.getFilepath(), resourceBundle);
 
-        rightNavContent.set(null);
-        rightNavContent.set(view);
+        content.set(view);
     }
 
     /**
      * @since 0.3.1
      */
     public Parent get() {
-        return rightNavContent.get();
+        return content.get();
     }
 
     // --- Listeners ---
@@ -50,8 +49,8 @@ public class RightNavContentManager {
     /**
      * @since 0.3.1
      */
-    public void onChange(final RightNavContentChangeListener listener) {
-        rightNavContent.addListener((observable, oldValue, newValue) -> listener.onChange(oldValue, newValue));
+    public void onChange(final ContentChangeListener listener) {
+        content.addListener((observable, oldValue, newValue) -> listener.onChange(oldValue, newValue));
     }
 
     // --- Inner Classes ---
@@ -59,7 +58,7 @@ public class RightNavContentManager {
     /**
      * @since 0.3.1
      */
-    public interface RightNavContentChangeListener {
+    public interface ContentChangeListener {
         void onChange(final Parent oldContent, final Parent newContent);
     }
 }

@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.modal;
+package fr.xahla.musicx.desktop.views.content.console;
 
 import fr.xahla.musicx.domain.logging.ConsoleLogType;
 import fr.xahla.musicx.domain.logging.SplitConsoleHandler;

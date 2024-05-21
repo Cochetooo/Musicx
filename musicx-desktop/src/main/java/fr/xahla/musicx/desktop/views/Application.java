@@ -10,8 +10,6 @@ import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.library;
-
 /**
  * Main view for the desktop application.
  * @author Cochetooo
@@ -27,13 +25,14 @@ public class Application implements Initializable {
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
         this.emptyLibraryComponent = FxmlHelper.getComponent("content/emptyLibrary.fxml", resourceBundle);
         this.contentComponent = FxmlHelper.getComponent("content/contentLayout.fxml", resourceBundle);
+        this.applicationBox.getChildren().add(contentComponent);
 
-        this.updateContent();
+        /* this.updateContent();
 
-        library().onSongsChange(change -> Platform.runLater(this::updateContent));
+        library().onSongsChange(change -> Platform.runLater(this::updateContent)); */
     }
 
-    private void updateContent() {
+    /* private void updateContent() {
         if (library().isEmpty()) {
             this.applicationBox.getChildren().remove(this.contentComponent);
 
@@ -47,5 +46,5 @@ public class Application implements Initializable {
                 this.applicationBox.getChildren().add(this.contentComponent);
             }
         }
-    }
+    } */
 }

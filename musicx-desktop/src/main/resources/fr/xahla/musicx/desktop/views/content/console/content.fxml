@@ -3,15 +3,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ComboBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.xahla.musicx.desktop.views.modal.Console"
+      fx:controller="fr.xahla.musicx.desktop.views.content.console.Console"
       spacing="5"
-      prefHeight="800.0" prefWidth="800.0"
+      HBox.hgrow="ALWAYS"
       alignment="TOP_CENTER"
       style="-fx-padding: 20 20 20 20">
 
