@@ -63,10 +63,17 @@
 
     <Separator />
 
-    <VBox spacing="5">
-        <Label text="%songEdit.duration" styleClass="text-caption" />
-        <TextField fx:id="durationField" editable="false" />
-    </VBox>
+    <HBox spacing="10">
+        <VBox spacing="5">
+            <Label text="%songEdit.duration" styleClass="text-caption" />
+            <TextField fx:id="durationField" editable="false" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="%songEdit.format" styleClass="text-caption" />
+            <TextField fx:id="formatField" editable="false" />
+        </VBox>
+    </HBox>
 
     <HBox spacing="10">
         <VBox spacing="5">
@@ -79,11 +86,6 @@
             <TextField fx:id="sampleRateField" editable="false" />
         </VBox>
     </HBox>
-
-    <VBox spacing="5">
-        <Label text="%songEdit.format" styleClass="text-caption" />
-        <TextField fx:id="formatField" editable="false" />
-    </VBox>
 
     <Separator />
 

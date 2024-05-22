@@ -10,8 +10,8 @@
     <!-- Search Bar -->
     <CustomTextField promptText="%content.searchTextField"
                      fx:id="searchTextField"
-                     prefWidth="1600"
-                     prefHeight="40"
+                     prefWidth="1800"
+                     prefHeight="60"
                      style="-fx-border-radius: 10px; -fx-background-radius: 10px;">
         <right>
             <FontIcon iconLiteral="fltfmz-search-28" />

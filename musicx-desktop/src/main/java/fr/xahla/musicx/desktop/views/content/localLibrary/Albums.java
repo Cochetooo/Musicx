@@ -30,8 +30,7 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
-import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
-import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.*;
 
 /**
  * View for Albums group in Local Library scene.
@@ -133,6 +132,7 @@ public class Albums implements Initializable {
 
         songs.forEach(this::addSongToSelectedAlbumTrackList);
 
+        logger().finest("Clicked");
         selectedAlbumContainer.setVisible(true);
     }
 

@@ -12,7 +12,9 @@
         -fx-background-radius: 10px;
         -fx-border-radius: 10px;"
       spacing="15" HBox.hgrow="ALWAYS" prefHeight="1200">
-    <TabPane tabDragPolicy="REORDER" fx:id="localLibraryTab">
+    <TabPane
+            tabDragPolicy="REORDER"
+            fx:id="localLibraryTab">
         <!-- Artists -->
         <Tab text="%localLibrary.tabArtists">
 
