@@ -2,6 +2,7 @@ package fr.xahla.musicx.desktop.helper;
 
 import fr.xahla.musicx.domain.helper.enums.ColorTheme;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Utility class for JavaFX Colors, containing color theme cast for JavaFX.

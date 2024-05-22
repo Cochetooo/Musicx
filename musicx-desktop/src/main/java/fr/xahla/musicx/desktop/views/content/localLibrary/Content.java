@@ -19,11 +19,16 @@ public class Content implements Initializable {
 
     @FXML private TabPane localLibraryTab;
 
+    @FXML private Tab tabAlbums;
     @FXML private Tab tabSongs;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         localLibraryTab.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == tabSongs) {
+            if (newValue == tabAlbums) {
+                tabAlbums.setContent(
+                    FxmlHelper.getComponent(FxmlComponent.LOCAL_LIBRARY_ALBUMS.getFilepath(), resourceBundle)
+                );
+            } if (newValue == tabSongs) {
                 tabSongs.setContent(
                     FxmlHelper.getComponent(FxmlComponent.LOCAL_LIBRARY_SONGS.getFilepath(), resourceBundle)
                 );

@@ -19,9 +19,7 @@
         </Tab>
 
         <!-- Albums -->
-        <Tab text="%localLibrary.tabAlbums">
-
-        </Tab>
+        <Tab text="%localLibrary.tabAlbums" fx:id="tabAlbums" />
 
         <!-- Album Genres -->
         <Tab text="%localLibrary.tabAlbumGenres">

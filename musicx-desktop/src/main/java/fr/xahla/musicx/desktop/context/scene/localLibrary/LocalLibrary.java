@@ -22,7 +22,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 /**
  * Contains Local Library data.
  * @author Cochetooo
- * @since 0.3.3
+ * @since 0.4.0
  */
 public final class LocalLibrary {
 

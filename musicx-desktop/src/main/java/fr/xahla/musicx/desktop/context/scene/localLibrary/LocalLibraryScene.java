@@ -2,27 +2,17 @@ package fr.xahla.musicx.desktop.context.scene.localLibrary;
 
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.model.enums.LocalSongGroup;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.function.Predicate;
-
-import static fr.xahla.musicx.desktop.context.DesktopContext.config;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
 /**
  * Defines all global variables for the local library scene.
  * @author Cochetooo
- * @since 0.3.3
+ * @since 0.4.0
  */
 public final class LocalLibraryScene {
 

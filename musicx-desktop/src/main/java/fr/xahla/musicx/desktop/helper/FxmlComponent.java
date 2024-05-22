@@ -17,6 +17,7 @@ public enum FxmlComponent {
     SCENE_CONSOLE("content/console/content.fxml"),
 
     // Local Library Tabs
+    LOCAL_LIBRARY_ALBUMS("content/localLibrary/albums.fxml"),
     LOCAL_LIBRARY_SONGS("content/localLibrary/songs.fxml"),
 
     // Right Nav

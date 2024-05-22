@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
+import static fr.xahla.musicx.domain.helper.StringHelper.str_is_null_or_blank;
 
 /**
  * Defines the behaviour of an album for a JavaFX context.
@@ -315,6 +316,10 @@ public class Album {
 
     public Image getImage() {
         if (null == image) {
+            if (str_is_null_or_blank(this.getArtworkUrl())) {
+                return null;
+            }
+
             image = new Image(this.getArtworkUrl());
         }
 
