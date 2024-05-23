@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.context.scene.localLibrary;
 
+import fr.xahla.musicx.desktop.helper.CollectionSortHelper;
 import fr.xahla.musicx.desktop.model.TaskProgress;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.service.importLocalSongs.ImportSongsFromFolders;
@@ -52,6 +53,7 @@ public final class LocalLibrary {
         final var songsDto = songRepository().findAll();
 
         songsDto.forEach(songDto -> localSongs.add(new Song(songDto)));
+        CollectionSortHelper.sortSongsByYears(localSongs);
     }
 
     public void scanFolders() {

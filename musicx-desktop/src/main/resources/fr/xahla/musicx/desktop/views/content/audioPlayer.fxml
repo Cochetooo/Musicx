@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.media.MediaView?>
 <?import org.kordamp.ikonli.javafx.*?>
-
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="fr.xahla.musicx.desktop.views.content.AudioPlayer"

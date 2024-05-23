@@ -1,14 +1,13 @@
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
-
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.come/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.localLibrary.Content"
       styleClass="box-container"
       spacing="15" HBox.hgrow="ALWAYS" prefHeight="1200">
     <TabPane
+            styleClass="tab-round"
             tabDragPolicy="REORDER"
             fx:id="localLibraryTab">
         <!-- Artists -->

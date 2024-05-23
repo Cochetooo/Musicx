@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.openSession;
 import static fr.xahla.musicx.domain.helper.QueryHelper.query;
 
 /**

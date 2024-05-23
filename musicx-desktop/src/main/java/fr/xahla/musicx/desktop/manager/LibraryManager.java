@@ -1,25 +1,5 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.domain.service.importLocalSongs.ImportSongsFromFolders;
-import fr.xahla.musicx.desktop.model.TaskProgress;
-import fr.xahla.musicx.desktop.model.entity.Song;
-
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import static fr.xahla.musicx.desktop.context.DesktopContext.*;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
-
 /** <b>Class that allow views to use Library model, while keeping a protection layer to its usage.</b>
  * <p>
  * Copyright (C) Xahla - All Rights Reserved

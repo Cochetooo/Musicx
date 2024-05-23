@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.openSession;
 
 /**
  * Utility class for queries

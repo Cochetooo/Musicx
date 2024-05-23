@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="fr.xahla.musicx.desktop.views.content.edit.SongEdit"
+           prefHeight="1200.0" prefWidth="500.0"
+           styleClass="box-container">
 
-<?import javafx.scene.layout.HBox?>
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.xahla.musicx.desktop.views.content.edit.SongEdit"
-      prefHeight="1200.0" prefWidth="500.0"
-      styleClass="box-container"
-      spacing="10">
-
-    <Button alignment="TOP_RIGHT" onAction="#close">
+    <Button StackPane.alignment="TOP_RIGHT" onAction="#close">
         <graphic>
             <FontIcon iconLiteral="fltfal-dismiss-28" />
         </graphic>
     </Button>
 
-    <VBox spacing="5">
-        <Label text="%songEdit.artistName" styleClass="text-caption" />
-        <Button text="%songEdit.editArtist" onAction="#editArtist" />
-    </VBox>
+    <HBox spacing="10">
+        <VBox spacing="5">
+            <Label text="%songEdit.artistName" styleClass="text-caption" />
+            <Button text="%songEdit.editArtist" onAction="#editArtist" />
+        </VBox>
 
-    <VBox spacing="5">
-        <Label text="%songEdit.albumName" styleClass="text-caption" />
-        <Button text="%songEdit.editAlbum" onAction="#editAlbum" />
-    </VBox>
+        <VBox spacing="5">
+            <Label text="%songEdit.albumName" styleClass="text-caption" />
+            <Button text="%songEdit.editAlbum" onAction="#editAlbum" />
+        </VBox>
+    </HBox>
 
     <Separator />
 
@@ -106,4 +102,4 @@
         </graphic>
     </Button>
 
-</VBox>
+</StackPane>

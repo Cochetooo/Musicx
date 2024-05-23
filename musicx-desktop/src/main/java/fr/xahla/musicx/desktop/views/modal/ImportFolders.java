@@ -5,7 +5,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ToggleButton;
 import javafx.stage.DirectoryChooser;
 import org.controlsfx.control.CheckListView;
 
@@ -15,7 +18,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.*;
+import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 
 /**
  * View for the library folder imports management modal.

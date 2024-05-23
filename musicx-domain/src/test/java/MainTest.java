@@ -3,8 +3,8 @@ import fr.xahla.musicx.domain.database.HibernateLoader;
 
 import java.util.logging.Logger;
 
-import static fr.xahla.musicx.domain.application.AbstractContext.*;
-import static fr.xahla.musicx.domain.repository.SongRepository.songRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
+import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
 public class MainTest {
 

@@ -2,8 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import org.controlsfx.control.ListActionView?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.edit.GenreEdit"

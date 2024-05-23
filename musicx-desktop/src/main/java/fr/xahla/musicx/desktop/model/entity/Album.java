@@ -1,15 +1,14 @@
 package fr.xahla.musicx.desktop.model.entity;
 
 import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.api.model.enums.ArtistRole;
+import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

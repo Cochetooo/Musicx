@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Parent;

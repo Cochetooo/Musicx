@@ -19,7 +19,7 @@ public final class LocalLibraryScene {
     private final LocalLibrary localLibrary;
     private final FilteredList<Song> trackList;
 
-    private ObjectProperty<LocalSongGroup> currentListGroup;
+    private final ObjectProperty<LocalSongGroup> currentListGroup;
 
     public LocalLibraryScene() {
         this.localLibrary = new LocalLibrary();

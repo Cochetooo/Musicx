@@ -1,7 +1,5 @@
 package fr.xahla.musicx.desktop.helper;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.util.Duration;
 
 /**

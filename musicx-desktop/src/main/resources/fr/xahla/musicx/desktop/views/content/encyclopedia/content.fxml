@@ -1,6 +1,5 @@
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
-
+<?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.come/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.Content"

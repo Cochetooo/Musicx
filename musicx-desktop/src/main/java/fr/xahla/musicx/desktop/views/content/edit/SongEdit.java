@@ -3,7 +3,6 @@ package fr.xahla.musicx.desktop.views.content.edit;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,8 +12,9 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.*;
-import static fr.xahla.musicx.desktop.helper.DurationHelper.*;
+import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
+import static fr.xahla.musicx.desktop.helper.DurationHelper.getTimeString;
 import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
 /**

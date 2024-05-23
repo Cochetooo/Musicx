@@ -5,28 +5,29 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.xahla.musicx.desktop.views.content.edit.AlbumEdit"
-      prefHeight="1200.0" prefWidth="500.0"
-      styleClass="box-container"
-      spacing="10">
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="fr.xahla.musicx.desktop.views.content.edit.AlbumEdit"
+           prefHeight="1200.0" prefWidth="500.0"
+           styleClass="box-container">
 
-    <Button alignment="TOP_RIGHT" onAction="#close">
+    <Button StackPane.alignment="TOP_RIGHT" onAction="#close">
         <graphic>
             <FontIcon iconLiteral="fltfal-dismiss-28" />
         </graphic>
     </Button>
 
-    <VBox spacing="5">
-        <Label text="%albumEdit.artistName" styleClass="text-caption" />
-        <Button text="%albumEdit.editArtist" onAction="#editArtist" />
-    </VBox>
+    <HBox spacing="10">
+        <VBox spacing="5">
+            <Label text="%albumEdit.artistName" styleClass="text-caption" />
+            <Button text="%albumEdit.editArtist" onAction="#editArtist" />
+        </VBox>
 
-    <VBox spacing="5">
-        <Label text="%albumEdit.labelName" styleClass="text-caption" />
-        <Button text="%albumEdit.editLabel" onAction="#editLabel" />
-    </VBox>
+        <VBox spacing="5">
+            <Label text="%albumEdit.labelName" styleClass="text-caption" />
+            <Button text="%albumEdit.editLabel" onAction="#editLabel" />
+        </VBox>
+    </HBox>
 
     <Separator />
 
@@ -89,4 +90,4 @@
         </graphic>
     </Button>
 
-</VBox>
+</StackPane>

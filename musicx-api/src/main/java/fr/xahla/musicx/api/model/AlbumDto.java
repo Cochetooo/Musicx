@@ -1,7 +1,7 @@
 package fr.xahla.musicx.api.model;
 
-import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.api.model.enums.ArtistRole;
+import fr.xahla.musicx.api.model.enums.ReleaseType;
 import lombok.Builder;
 import lombok.Data;
 

@@ -1,26 +1,5 @@
 package fr.xahla.musicx.desktop.views.content.navigation;
 
-import fr.xahla.musicx.domain.helper.enums.FontTheme;
-import fr.xahla.musicx.desktop.model.entity.Artist;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import static fr.xahla.musicx.desktop.context.DesktopContext.*;
-
 /**
  * View for the selected category sorting list panel.
  * @author Cochetooo

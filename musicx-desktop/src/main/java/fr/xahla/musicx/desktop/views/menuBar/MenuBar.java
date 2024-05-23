@@ -13,7 +13,8 @@ import javafx.stage.DirectoryChooser;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.*;
+import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 
 /**
  * View for the top menu bar and all its sub-menus.

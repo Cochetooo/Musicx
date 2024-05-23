@@ -5,9 +5,9 @@
     -musicx-color-secondary: #b2d8d8;
     -musicx-color-alternative: #66b2b2;
     -musicx-color-ternary: #008080;
-    -musicx-color-background: #153a3a; /* Valeur assombrie */
-    -musicx-color-alt-background: #122525; /* Valeur assombrie */
-    -musicx-color-dark-background: #051c1c; /* Valeur assombrie */
+    -musicx-color-background: #253a3a;
+    -musicx-color-alt-background: #1b2525;
+    -musicx-color-dark-background: #0d1c1c;
 
     -musicx-color-light-text: #ffffff;
     -musicx-color-dark-text: #003333;
@@ -40,23 +40,24 @@
 }
 
 /* TabPanes */
-.tab-pane .tab-header-area {
-    -fx-border-radius: 10px;
-    -fx-background-radius: 10px;
-}
-
 .tab-pane .tab-header-area .tab-header-background {
-    -fx-opacity: 0;
+    -fx-background-color: -musicx-color-background;
 }
 
 .tab-pane .tab {
+    -fx-padding: 0 3px 0 3px;
     -fx-border-radius: 10px 10px 0 0;
     -fx-background-radius: 10px 10px 0 0;
     -fx-background-color: -musicx-color-dark-background;
 }
 
+.tab-pane.tab-round .tab {
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}
+
 .tab-pane .tab:selected {
-    -fx-background-color: -musicx-color-background;
+    -fx-background-color: -musicx-color-ternary;
 }
 
 .tab-pane .tab .tab-label {

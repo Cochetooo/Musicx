@@ -1,7 +1,6 @@
 package fr.xahla.musicx.desktop.views;
 
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;

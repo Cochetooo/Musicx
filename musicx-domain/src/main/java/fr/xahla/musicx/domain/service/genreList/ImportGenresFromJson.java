@@ -4,13 +4,12 @@ import fr.xahla.musicx.api.model.GenreDto;
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
 import fr.xahla.musicx.domain.application.AbstractContext;
 import fr.xahla.musicx.domain.helper.JsonHelper;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.json.JSONObject;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.*;
 

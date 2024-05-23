@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.context;
 
-import fr.xahla.musicx.desktop.manager.*;
+import fr.xahla.musicx.desktop.manager.AudioPlayerManager;
 import fr.xahla.musicx.domain.application.AbstractContext;
 
 import java.util.ResourceBundle;

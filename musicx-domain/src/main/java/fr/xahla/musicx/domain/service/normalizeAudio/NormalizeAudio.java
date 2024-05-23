@@ -1,9 +1,6 @@
 package fr.xahla.musicx.domain.service.normalizeAudio;
 
-import fr.xahla.musicx.api.model.SongDto;
-
 import javax.sound.sampled.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;

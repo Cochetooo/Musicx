@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.env;
 import static fr.xahla.musicx.domain.helper.JsonHelper.json_load_from_file;

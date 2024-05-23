@@ -1,12 +1,12 @@
 package fr.xahla.musicx.desktop.helper;
 
 import fr.xahla.musicx.desktop.DesktopApplication;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
-
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 import java.util.Objects;
+
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * Utility class for JavaFX Images.

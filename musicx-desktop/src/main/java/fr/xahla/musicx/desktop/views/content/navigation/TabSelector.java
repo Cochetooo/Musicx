@@ -1,7 +1,6 @@
 package fr.xahla.musicx.desktop.views.content.navigation;
 
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
-import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;

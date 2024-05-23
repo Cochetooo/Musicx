@@ -1,40 +1,34 @@
 package fr.xahla.musicx.desktop.views.content.localLibrary;
 
-import fr.xahla.musicx.desktop.helper.ColorHelper;
-import fr.xahla.musicx.desktop.helper.DurationHelper;
-import fr.xahla.musicx.desktop.helper.TextHelper;
-import fr.xahla.musicx.desktop.helper.ThemePolicyHelper;
+import fr.xahla.musicx.desktop.helper.*;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
-import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
-import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
 
 /**
  * View for Albums group in Local Library scene.
@@ -70,6 +64,8 @@ public class Albums implements Initializable {
         albums = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
         albumsDto.forEach((albumDto) -> albums.add(new Album(albumDto)));
 
+        CollectionSortHelper.sortAlbumsByYears(albums);
+
         albums.forEach(this::addAlbumTile);
     }
 
@@ -100,18 +96,25 @@ public class Albums implements Initializable {
         container.setOnMouseClicked(event -> this.onAlbumClick(event, album));
         container.setAlignment(Pos.TOP_CENTER);
 
-        container.getChildren().add(0, imageView);
+        container.getChildren().addFirst(imageView);
 
         albumList.getChildren().add(container);
     }
 
-    @FXML private void closeSelectedAlbumContent(final ActionEvent actionEvent) {
+    @FXML private void closeSelectedAlbumContent() {
         selectedAlbumContainer.setVisible(false);
     }
 
     // --- Listeners ---
 
     private void onAlbumClick(final MouseEvent event, final Album album) {
+        final var clickedItem = (VBox) event.getSource();
+
+        // No need to re-operate if it's already selected.
+        if (selectedAlbum == clickedItem) {
+            return;
+        }
+
         selectedAlbumImageView.setImage(album.getImage());
 
         selectedAlbumLabel.setText(album.getName());
@@ -136,7 +139,6 @@ public class Albums implements Initializable {
             selectedAlbum.setStyle("");
         }
 
-        final var clickedItem = (VBox) event.getSource();
         clickedItem.setStyle("-fx-background-color: darkgray");
         selectedAlbum = clickedItem;
     }

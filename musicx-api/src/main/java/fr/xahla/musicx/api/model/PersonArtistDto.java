@@ -1,6 +1,7 @@
 package fr.xahla.musicx.api.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
