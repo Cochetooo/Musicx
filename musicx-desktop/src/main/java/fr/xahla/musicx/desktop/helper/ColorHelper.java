@@ -1,6 +1,7 @@
 package fr.xahla.musicx.desktop.helper;
 
 import fr.xahla.musicx.domain.helper.enums.ColorTheme;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -18,5 +19,14 @@ public class ColorHelper {
     public static final Color BACKGROUND = Color.web(ColorTheme.BACKGROUND.getHex());
     public static final Color ALTERNATIVE = Color.web(ColorTheme.ALTERNATIVE.getHex());
     public static final Color ALTERNATIVE_BACKGROUND = Color.web(ColorTheme.ALTERNATIVE_BACKGROUND.getHex());
+
+    /**
+     * @since 0.4.0
+     */
+    public static void backgroundColor(final Node node, final String color) {
+        node.setStyle(node.getStyle()
+            + "-fx-background-color: -musicx-color-" + color + ";"
+        );
+    }
 
 }

@@ -14,7 +14,7 @@
             fx:controller="fr.xahla.musicx.desktop.views.content.AudioPlayer"
             fx:id="playerContainer"
             prefHeight="80" prefWidth="Infinity"
-            style="-fx-background-color: -color-base-9; -fx-padding: 10 25 10 25"
+            style="-fx-background-color: -musicx-color-dark-background; -fx-padding: 10 25 10 25"
             HBox.hgrow="ALWAYS">
     <left>
         <HBox spacing="20">

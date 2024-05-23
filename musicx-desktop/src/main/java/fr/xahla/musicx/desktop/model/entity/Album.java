@@ -314,10 +314,14 @@ public class Album {
         return this;
     }
 
+    /**
+     * @return the Image created from the artwork url of the album, otherwise the default placeholder Image if
+     * artwork url is empty or null.
+     */
     public Image getImage() {
         if (null == image) {
             if (str_is_null_or_blank(this.getArtworkUrl())) {
-                return null;
+                return Album.artworkPlaceholder;
             }
 
             image = new Image(this.getArtworkUrl());

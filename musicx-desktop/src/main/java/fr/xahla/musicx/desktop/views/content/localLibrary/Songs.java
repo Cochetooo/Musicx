@@ -3,6 +3,7 @@ package fr.xahla.musicx.desktop.views.content.localLibrary;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.desktop.helper.TextHelper;
 import fr.xahla.musicx.desktop.model.entity.Genre;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.helper.StringHelper;
@@ -150,20 +151,19 @@ public class Songs implements Initializable {
                 return;
             }
 
-            // Set song title
-            final var titleText = new Text(song.getTitle());
-            titleText.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.BOLD, 15));
-            titleText.setFill(ColorHelper.PRIMARY);
-
             // Artist and album can be empty, if so it will just be an empty string
             final var artistName = (null == song.getArtist()) ? "" : song.getArtist().getName();
             final var albumName = (null == song.getAlbum()) ? "" : song.getAlbum().getName();
 
-            final var artistText = new Text(artistName + " - " + albumName);
-            artistText.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.LIGHT, 12));
-            artistText.setFill(ColorHelper.GRAY);
+            final var vBox = TextHelper.caption(
+                song.getTitle(),
+                artistName + " - " + albumName,
+                15,
+                12,
+                null,
+                null
+            );
 
-            final var vBox = new VBox(titleText, artistText);
             this.setGraphic(vBox);
         }
     }

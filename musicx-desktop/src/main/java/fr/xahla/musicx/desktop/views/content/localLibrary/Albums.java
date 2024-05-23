@@ -2,6 +2,8 @@ package fr.xahla.musicx.desktop.views.content.localLibrary;
 
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.helper.DurationHelper;
+import fr.xahla.musicx.desktop.helper.TextHelper;
+import fr.xahla.musicx.desktop.helper.ThemePolicyHelper;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
@@ -9,19 +11,21 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.text.*;
 import javafx.util.Duration;
 
 import java.net.URL;
@@ -41,16 +45,21 @@ public class Albums implements Initializable {
 
     @FXML private TilePane albumList;
 
-    @FXML private HBox selectedAlbumContainer;
+    @FXML private StackPane selectedAlbumContainer;
     @FXML private ImageView selectedAlbumImageView;
     @FXML private Label selectedAlbumLabel;
     @FXML private Label selectedAlbumArtistLabel;
     @FXML private TilePane selectedAlbumTrackList;
 
     private ListProperty<Album> albums;
+    private VBox selectedAlbum;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         final var albumsDto = albumRepository().findAll();
+
+        selectedAlbumContainer.setPrefHeight(albumList.getHeight() / 2);
+
+        ThemePolicyHelper.clipAlbumArtwork(selectedAlbumImageView);
 
         selectedAlbumLabel.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.BOLD, 14));
         selectedAlbumLabel.setTextFill(ColorHelper.PRIMARY);
@@ -66,55 +75,44 @@ public class Albums implements Initializable {
 
     private void addAlbumTile(final Album album) {
         final var imageView = new ImageView();
-        imageView.setFitWidth(80);
-        imageView.setFitHeight(80);
+        imageView.setFitWidth(100);
+        imageView.setFitHeight(100);
         imageView.setPreserveRatio(true);
 
-        final var roundedBorderClip = new Rectangle(
-            imageView.getFitWidth(),
-            imageView.getFitHeight()
-        );
+        ThemePolicyHelper.clipAlbumArtwork(imageView);
 
-        roundedBorderClip.setArcWidth(10);
-        roundedBorderClip.setArcHeight(10);
-
-        imageView.setClip(roundedBorderClip);
-
-        final var image = (null == album.getImage()) ? Album.artworkPlaceholder : album.getImage();
-        imageView.setImage(image);
-
-        imageView.onMouseClickedProperty().addListener(
-            (observable, oldValue, newValue) -> this.onAlbumClick(album)
-        );
-
-        final var albumText = new Text(album.getName());
-        albumText.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.BOLD, 14));
-        albumText.setFill(ColorHelper.PRIMARY);
+        imageView.setImage(album.getImage());
 
         // Artist can be empty, if so it will just be an empty string
         final var artistName = (null == album.getArtist()) ? "" : album.getArtist().getName();
         final var year = (null == album.getReleaseDate()) ? "" : " - " + album.getReleaseDate().getYear();
 
-        final var artistText = new Text(artistName + year);
-        artistText.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.LIGHT, 12));
-        artistText.setFill(ColorHelper.SECONDARY);
+        final var container = TextHelper.caption(
+            album.getName() + "\n",
+            artistName + year,
+            14,
+            12,
+            140.0,
+            TextAlignment.CENTER
+        );
 
-        final var vBox = new VBox();
-        vBox.setAlignment(Pos.CENTER);
+        container.setPadding(new Insets(5, 5, 5, 5));
+        container.setOnMouseClicked(event -> this.onAlbumClick(event, album));
+        container.setAlignment(Pos.TOP_CENTER);
 
-        vBox.getChildren().addAll(imageView, albumText, artistText);
+        container.getChildren().add(0, imageView);
 
-        albumList.getChildren().add(vBox);
+        albumList.getChildren().add(container);
+    }
+
+    @FXML private void closeSelectedAlbumContent(final ActionEvent actionEvent) {
+        selectedAlbumContainer.setVisible(false);
     }
 
     // --- Listeners ---
 
-    private void onAlbumClick(final Album album) {
-        selectedAlbumImageView.setImage(
-            (null == album.getImage())
-            ? Album.artworkPlaceholder
-            : album.getImage()
-        );
+    private void onAlbumClick(final MouseEvent event, final Album album) {
+        selectedAlbumImageView.setImage(album.getImage());
 
         selectedAlbumLabel.setText(album.getName());
 
@@ -132,8 +130,15 @@ public class Albums implements Initializable {
 
         songs.forEach(this::addSongToSelectedAlbumTrackList);
 
-        logger().finest("Clicked");
         selectedAlbumContainer.setVisible(true);
+
+        if (null != selectedAlbum) {
+            selectedAlbum.setStyle("");
+        }
+
+        final var clickedItem = (VBox) event.getSource();
+        clickedItem.setStyle("-fx-background-color: darkgray");
+        selectedAlbum = clickedItem;
     }
 
     private void addSongToSelectedAlbumTrackList(final Song song) {
@@ -146,5 +151,4 @@ public class Albums implements Initializable {
 
         selectedAlbumTrackList.getChildren().add(songRow);
     }
-
 }

@@ -3,20 +3,45 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import java.lang.Double?>
 <VBox
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.come/fxml"
         fx:controller="fr.xahla.musicx.desktop.views.content.localLibrary.Albums"
         style="-fx-padding: 10px">
-    <TilePane fx:id="albumList" hgap="1" />
+    <fx:define>
+        <Double fx:id="selectedAlbumArtworkSize" fx:value="200.0" />
+    </fx:define>
 
-    <HBox spacing="10" visible="false" fx:id="selectedAlbumContainer">
-        <VBox>
-            <ImageView fx:id="selectedAlbumImageView" />
-            <Label styleClass="text-caption" fx:id="selectedAlbumLabel" />
-            <Label styleClass="text-caption" fx:id="selectedAlbumArtistLabel" />
-        </VBox>
+    <TilePane fx:id="albumList"
+              hgap="5"
+              prefHeight="1200"
+    />
 
-        <TilePane orientation="VERTICAL" prefRows="10" fx:id="selectedAlbumTrackList" />
-    </HBox>
+    <StackPane fx:id="selectedAlbumContainer"
+               visible="false"
+               style="-fx-border-radius: 10px; -fx-background-radius: 10px;
+               -fx-background-color: -musicx-color-alt-background; -fx-padding: 10px">
+        <HBox spacing="20">
+            <VBox>
+                <ImageView fx:id="selectedAlbumImageView"
+                           fitWidth="$selectedAlbumArtworkSize"
+                           fitHeight="$selectedAlbumArtworkSize"
+                />
+
+                <Label styleClass="text-caption" fx:id="selectedAlbumLabel" />
+                <Label styleClass="text-caption" fx:id="selectedAlbumArtistLabel" />
+            </VBox>
+
+            <TilePane orientation="VERTICAL" prefRows="10" fx:id="selectedAlbumTrackList" />
+        </HBox>
+
+        <Button text="X"
+                onAction="#closeSelectedAlbumContent"
+                style="-fx-background-color: transparent; -fx-text-fill: var(--title-color)"
+                StackPane.alignment="TOP_RIGHT" />
+    </StackPane>
+
+
 </VBox>

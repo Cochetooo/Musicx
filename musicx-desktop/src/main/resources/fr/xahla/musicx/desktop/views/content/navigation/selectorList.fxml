@@ -7,12 +7,7 @@
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="fr.xahla.musicx.desktop.views.content.navigation.SelectorList"
-        style="
-        -fx-padding: 15px;
-        -fx-background-color: -color-base-7;
-        -fx-background-radius: 10px;
-        -fx-border-radius: 10px;
-        "
+        styleClass="box-container"
         prefHeight="900">
     <ListView fx:id="selectorListView" prefWidth="320" prefHeight="900"
         style="-fx-background-color: transparent;"

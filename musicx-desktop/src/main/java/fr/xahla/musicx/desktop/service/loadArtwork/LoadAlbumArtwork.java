@@ -52,12 +52,8 @@ public class LoadAlbumArtwork {
                     }
                 }
 
-                final var image = (StringHelper.str_is_null_or_blank(album.getArtworkUrl()))
-                    ? Album.artworkPlaceholder
-                    : song.getAlbum().getImage();
-
-                Platform.runLater(() -> imageView.setImage(image));
-                callback.onSuccess(image);
+                Platform.runLater(() -> imageView.setImage(song.getAlbum().getImage()));
+                callback.onSuccess(song.getAlbum().getImage());
 
                 return null;
             }

@@ -12,12 +12,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.edit.SongEdit"
       prefHeight="1200.0" prefWidth="500.0"
-      style="
-        -fx-padding: 20px;
-        -fx-background-color: -color-base-7;
-        -fx-background-radius: 10px;
-        -fx-border-radius: 10px;
-      "
+      styleClass="box-container"
       spacing="10">
 
     <Button alignment="TOP_RIGHT" onAction="#close">

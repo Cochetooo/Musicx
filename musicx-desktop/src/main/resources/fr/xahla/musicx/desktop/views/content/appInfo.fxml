@@ -10,7 +10,7 @@
         prefWidth="Infinity"
         style="
         -fx-padding: 5 5 5 5;
-        -fx-background-color: -color-base-8;
+        -fx-background-color: -musicx-color-alt-background;
         "
 >
     <left>

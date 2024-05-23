@@ -14,7 +14,7 @@
       HBox.hgrow="ALWAYS"
       alignment="TOP_CENTER"
       spacing="10"
-      style="-fx-padding: 20 20 20 20;">
+      styleClass="box-container">
     <Label text="%settings.title" styleClass="title-2">
         <graphic>
             <FontIcon iconLiteral="fltfmz-settings-28" />

@@ -43,7 +43,7 @@ public final class DesktopApplication extends Application {
 
         DesktopContext.createContext();
 
-        Locale.setDefault(Locale.ENGLISH);
+        Locale.setDefault(Locale.FRENCH);
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 
         final var resources = ResourceBundle.getBundle("fr.xahla.musicx.desktop.translations.messages");

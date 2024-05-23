@@ -7,8 +7,7 @@
         fx:controller="fr.xahla.musicx.desktop.views.content.ContentLayout">
     <BorderPane
             VBox.vgrow="ALWAYS"
-            style="-fx-padding: 10px;"
-            fx:id="contentPane">
+            style="-fx-padding: 10px">
         <left>
             <!-- Group Selector -->
             <fx:include source="navigation/tabSelector.fxml" />

@@ -11,11 +11,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.QueueList"
       prefHeight="1200.0" prefWidth="400.0"
-      style="
-        -fx-padding: 20px;
-        -fx-background-color: -color-base-7;
-        -fx-background-radius: 10px;
-        -fx-border-radius: 10px;"
+      styleClass="box-container"
       spacing="15">
 
     <Label text="%queueList.title" styleClass="title-2" />
