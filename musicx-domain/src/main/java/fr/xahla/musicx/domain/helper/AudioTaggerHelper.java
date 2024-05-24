@@ -72,7 +72,7 @@ public final class AudioTaggerHelper {
 
             return "";
         } catch (final Exception exception) {
-            logger().error(exception, "AUDIO_TAGGER_CUSTOM_TAG_FETCH_ERROR", fieldKey.getKey());
+            logger().error(exception, "AUDIO_TAGGER_CUSTOM_TAG_FETCH_ERROR", fieldKey.getKey(), "song");
 
             return "";
         }
