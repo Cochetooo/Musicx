@@ -12,6 +12,16 @@
         side="LEFT"
         tabClosingPolicy="UNAVAILABLE"
         tabDragPolicy="FIXED">
+    <!-- Local Library -->
+    <Tab style="-fx-padding: 10px" fx:id="localLibraryTab">
+        <graphic>
+            <FontIcon iconLiteral="fltfmz-music-note-24" scaleX="2" scaleY="2" />
+        </graphic>
+        <tooltip>
+            <Tooltip text="%tabSelector.tabLocalLibrary" />
+        </tooltip>
+    </Tab>
+
     <!-- Encyclopedia -->
     <Tab style="-fx-padding: 10px" fx:id="encyclopediaTab">
         <graphic>
@@ -29,16 +39,6 @@
         </graphic>
         <tooltip>
             <Tooltip text="%tabSelector.tabHistory" />
-        </tooltip>
-    </Tab>
-
-    <!-- Local Library -->
-    <Tab style="-fx-padding: 10px" fx:id="localLibraryTab">
-        <graphic>
-            <FontIcon iconLiteral="fltfmz-music-note-24" scaleX="2" scaleY="2" />
-        </graphic>
-        <tooltip>
-            <Tooltip text="%tabSelector.tabLocalLibrary" />
         </tooltip>
     </Tab>
 

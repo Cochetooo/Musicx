@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
-import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
+import static fr.xahla.musicx.desktop.context.DesktopContext.*;
 
 /**
  * View for the library folder imports management modal.
@@ -65,6 +64,8 @@ public class ImportFolders implements Initializable {
         ));
 
         library.onFoldersChange(change -> {
+            config().setLocalFolders(library.getFolders());
+
             Platform.runLater(() -> {
                 folderPathsCheckListView.getItems().setAll(change.getList());
                 clearButton.setDisable(change.getList().isEmpty());

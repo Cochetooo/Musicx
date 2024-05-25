@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import static fr.xahla.musicx.desktop.context.DesktopContext.config;
 import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
@@ -43,7 +44,7 @@ public final class DesktopApplication extends Application {
 
         DesktopContext.createContext();
 
-        Locale.setDefault(Locale.FRENCH);
+        Locale.setDefault(Locale.of(config().getLanguage()));
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 
         final var resources = ResourceBundle.getBundle("fr.xahla.musicx.desktop.translations.messages");

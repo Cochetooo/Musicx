@@ -23,13 +23,21 @@ music lovers:<br>
 
 ## Patch Log
 
-### Release 0.4.0
+### Release 0.4.1
+
+> ### Changes
+> - `Language` is now loaded by config.json
+> - `Local Folders` are now loaded by config.json
+> - `Scene Tabs` Local Library is now on top
+
+### Release 0.4.0 *(2024-05-25)*
 
 > ### New Features
 > - `Genre Edit` to add primary & secondary genres
 > - `Albums Group` with list of albums and their songs if selected
 > - `Local Library Group` with editable tabs
 > - `Scenes` for each functionality
+> - `Language: French` added
 > - `Vertical Navigation bar` for scenes
 > ### Changes
 > - `Color Theme` has been improved

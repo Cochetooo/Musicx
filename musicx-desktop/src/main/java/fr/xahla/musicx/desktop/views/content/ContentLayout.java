@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.views.content;
 
+import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
@@ -8,6 +9,7 @@ import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static fr.xahla.musicx.desktop.context.DesktopContext.config;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 
 /**
@@ -24,6 +26,10 @@ public class ContentLayout implements Initializable {
         scene().getSceneContent().onChange((oldValue, newValue) -> {
             contentSceneBox.getChildren().setAll(newValue);
         });
+
+        scene().getSceneContent().switchContent(
+            FxmlComponent.valueOf("SCENE_" + config().getActiveScene()),
+            resourceBundle);
 
         scene().getRightNavContent().onChange((oldValue, newValue) -> {
             if (null == newValue) {

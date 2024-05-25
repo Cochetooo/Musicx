@@ -1,13 +1,14 @@
 {
-  "activeScene": "Local_Library",
-  "localFolders": "",
-  "settings": {
-    "artworkShadow": true,
-    "backgroundArtworkBind": true,
-    "scanLibraryAudioFormats": [
-      "MP3",
-      "M4A"
-    ],
-    "smoothPause": true
-  }
+    "settings": {
+        "scanLibraryAudioFormats": [
+            "MP3",
+            "M4A"
+        ],
+        "smoothPause": true,
+        "backgroundArtworkBind": true,
+        "artworkShadow": true
+    },
+    "activeScene": "LOCAL_LIBRARY",
+    "localFolders": "",
+    "language": "en"
 }

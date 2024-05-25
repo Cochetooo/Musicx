@@ -35,7 +35,7 @@ public class TabSelector implements Initializable {
                 );
             } else if (newValue == historyTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_ENCYCLOPEDIA,
+                    FxmlComponent.SCENE_HISTORY,
                     resourceBundle
                 );
             } else if (newValue == localLibraryTab) {

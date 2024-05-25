@@ -3,11 +3,14 @@ package fr.xahla.musicx.desktop.context;
 import fr.xahla.musicx.desktop.context.scene.history.HistoryScene;
 import fr.xahla.musicx.desktop.context.scene.localLibrary.LocalLibraryScene;
 import fr.xahla.musicx.desktop.context.scene.settings.Settings;
+import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.desktop.manager.ContentManager;
 import fr.xahla.musicx.desktop.manager.TaskProgressManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+
+import static fr.xahla.musicx.desktop.context.DesktopContext.config;
 
 /**
  * Controller that handles global variables.
