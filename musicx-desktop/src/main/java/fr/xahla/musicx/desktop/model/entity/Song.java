@@ -298,6 +298,11 @@ public class Song {
             this.primaryGenres.setAll(primaryGenres);
         }
 
+        this.dto.setPrimaryGenreIds(primaryGenres.stream()
+            .map(Genre::getId)
+            .toList()
+        );
+
         return this;
     }
 
@@ -322,6 +327,11 @@ public class Song {
         } else {
             this.secondaryGenres.setAll(secondaryGenres);
         }
+
+        this.dto.setSecondaryGenreIds(secondaryGenres.stream()
+            .map(Genre::getId)
+            .toList()
+        );
 
         return this;
     }

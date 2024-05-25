@@ -5,9 +5,12 @@
     -musicx-color-secondary: #b2d8d8;
     -musicx-color-alternative: #66b2b2;
     -musicx-color-ternary: #008080;
-    -musicx-color-background: #253a3a;
-    -musicx-color-alt-background: #1b2525;
-    -musicx-color-dark-background: #0d1c1c;
+    -musicx-color-darker: #005a5a;
+
+    -musicx-color-light-background: #2f3838;
+    -musicx-color-background: #2a2f2f;
+    -musicx-color-alt-background: #222828;
+    -musicx-color-dark-background: #171c1c;
 
     -musicx-color-light-text: #ffffff;
     -musicx-color-dark-text: #003333;
@@ -25,13 +28,6 @@
     -fx-border-radius: 10px;
 }
 
-/* Table No Header */
-.noTableHeader .column-header-background {
-    -fx-max-height: 0;
-    -fx-pref-height: 0;
-    -fx-min-height: 0;
-}
-
 /* JFX Slider */
 .jfx-slider > .thumb,
 .jfx-slider > .animated-thumb,
@@ -39,9 +35,58 @@
     -fx-background-color: -musicx-color-alternative;
 }
 
-/* TabPanes */
-.tab-pane .tab-header-area .tab-header-background {
+.jfx-slider > .thumb,
+.jfx-slider > .animated-thumb {
+    -fx-background-insets: 3px;
+}
+
+/* Table No Header */
+.noTableHeader .column-header-background {
+    -fx-max-height: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+}
+
+/* TableView & ListView */
+.table-view, .list-view,
+.table-view .table-cell, .list-view .list-cell,
+.table-view .corner, .list-view .corner,
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:vertical .track,
+.table-view .virtual-flow .scroll-bar:vertical .track-background,
+.table-view .virtual-flow .scroll-bar:horizontal,
+.table-view .virtual-flow .scroll-bar:horizontal .track,
+.table-view .virtual-flow .scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell:filled:selected,
+.list-cell:filled:selected {
+    -fx-background-color: -musicx-color-darker;
+}
+
+.table-row-cell,
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: -musicx-color-light-background;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 0.0em;
+}
+
+.table-row-cell:even,
+.list-cell:even {
     -fx-background-color: -musicx-color-background;
+}
+
+.table-row-cell:odd,
+.list-cell:even {
+    -fx-background-color: -musicx-color-alt-background;
+}
+
+/* TabPanes */
+.tab-pane .tab-header-area,
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
 }
 
 .tab-pane .tab {
@@ -63,4 +108,13 @@
 .tab-pane .tab .tab-label {
     -fx-alignment: CENTER;
     -fx-text-fill: -musicx-color-light-text;
+}
+
+/* Toggle Switch */
+.toggle-switch:selected > .thumb {
+    -fx-background-color: -musicx-color-ternary, -color-fg-emphasis;
+}
+
+.toggle-switch:selected > .thumb-area {
+    -fx-background-color: -musicx-color-ternary;
 }

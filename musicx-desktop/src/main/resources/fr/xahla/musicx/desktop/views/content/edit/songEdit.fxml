@@ -3,28 +3,25 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<StackPane xmlns="http://javafx.com/javafx"
+<VBox xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="fr.xahla.musicx.desktop.views.content.edit.SongEdit"
            prefHeight="1200.0" prefWidth="500.0"
-           styleClass="box-container">
+           styleClass="box-container"
+           spacing="10">
 
-    <Button StackPane.alignment="TOP_RIGHT" onAction="#close">
-        <graphic>
-            <FontIcon iconLiteral="fltfal-dismiss-28" />
-        </graphic>
-    </Button>
+    <HBox alignment="TOP_RIGHT">
+        <Button onAction="#close">
+            <graphic>
+                <FontIcon iconLiteral="fltfal-dismiss-28" />
+            </graphic>
+        </Button>
+    </HBox>
 
     <HBox spacing="10">
-        <VBox spacing="5">
-            <Label text="%songEdit.artistName" styleClass="text-caption" />
-            <Button text="%songEdit.editArtist" onAction="#editArtist" />
-        </VBox>
-
-        <VBox spacing="5">
-            <Label text="%songEdit.albumName" styleClass="text-caption" />
-            <Button text="%songEdit.editAlbum" onAction="#editAlbum" />
-        </VBox>
+        <Button text="%songEdit.editArtist" onAction="#editArtist" />
+        <Button text="%songEdit.editAlbum" onAction="#editAlbum" />
+        <Button text="%songEdit.editGenres" onAction="#editGenres" />
     </HBox>
 
     <Separator />
@@ -102,4 +99,4 @@
         </graphic>
     </Button>
 
-</StackPane>
+</VBox>

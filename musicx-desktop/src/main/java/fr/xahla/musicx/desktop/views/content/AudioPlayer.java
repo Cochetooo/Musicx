@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.views.content;
 
+import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
 import fr.xahla.musicx.desktop.helper.animation.ColorTransition;
 import fr.xahla.musicx.desktop.model.entity.Album;
@@ -10,6 +11,7 @@ import fr.xahla.musicx.domain.model.enums.RepeatMode;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -68,7 +70,11 @@ public class AudioPlayer implements Initializable {
     private FontIcon volumeMuteIcon, volumeOffIcon, volumeDownIcon, volumeIcon, volumeUpIcon;
     private FontIcon noRepeatIcon, repeatIcon;
 
+    private ResourceBundle resourceBundle;
+
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
+
         this.setControlIcons();
 
         // Default values
@@ -235,13 +241,23 @@ public class AudioPlayer implements Initializable {
         }
     }
 
-    @FXML public void trackTimeSliderClick(final MouseEvent event) {
+    @FXML private void trackTimeSliderClick(final MouseEvent event) {
         final var mouseX = event.getX();
         final var width = trackTimeSlider.getWidth();
         final var totalDuration = audioPlayer().getTotalDuration().toMillis();
         final var seekTime = (mouseX / width) * totalDuration;
 
         audioPlayer().seek(seekTime);
+    }
+
+    @FXML private void openQueue() {
+        final var rightNavContent = scene().getRightNavContent();
+
+        if (null != rightNavContent.get()) {
+            rightNavContent.close();
+        } else {
+            rightNavContent.switchContent(FxmlComponent.QUEUE_LIST, this.resourceBundle);
+        }
     }
 
     // --- Helpers ---

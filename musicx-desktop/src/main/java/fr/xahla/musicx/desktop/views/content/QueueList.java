@@ -2,6 +2,7 @@ package fr.xahla.musicx.desktop.views.content;
 
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 
 /**
  * View for the queue list shown on the right-side container
@@ -25,13 +27,14 @@ public class QueueList implements Initializable {
     @FXML private ListView<Song> queueListView;
     @FXML private Label queueInfoLabel;
 
+    private ResourceBundle resourceBundle;
+
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
         this.queueListView.setItems(audioPlayer().getSongs());
 
-        audioPlayer().onQueueChange(change
-            -> queueInfoLabel.setText(audioPlayer().getSongs().size() + " " + resourceBundle.getString("queueList.infoLabel")
-            + " - " + DurationHelper.getTimeString(audioPlayer().getTotalQueueDuration()))
-        );
+        this.updateLabelText();
+        audioPlayer().onQueueChange(change -> updateLabelText());
 
         this.queueListView.setCellFactory(list -> new ListCell<>() {
             @Override public void updateItem(final Song song, final boolean empty) {
@@ -57,5 +60,14 @@ public class QueueList implements Initializable {
 
     @FXML public void remove() {
         audioPlayer().remove(queueListView.getSelectionModel().getSelectedIndex());
+    }
+
+    @FXML private void close() {
+        scene().getRightNavContent().close();
+    }
+
+    private void updateLabelText() {
+        queueInfoLabel.setText(audioPlayer().getSongs().size() + " " + resourceBundle.getString("queueList.infoLabel")
+            + " - " + DurationHelper.getTimeString(audioPlayer().getTotalQueueDuration()));
     }
 }

@@ -22,6 +22,7 @@ public enum FxmlComponent {
 
     // Right Nav
     EDIT_ALBUM("content/edit/albumEdit.fxml"),
+    EDIT_GENRE("content/edit/genreEdit.fxml"),
     EDIT_SONG("content/edit/songEdit.fxml"),
     QUEUE_LIST("content/queueList.fxml"),
 

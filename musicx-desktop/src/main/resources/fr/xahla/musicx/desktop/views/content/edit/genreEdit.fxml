@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import org.controlsfx.control.ListActionView?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.content.edit.GenreEdit"
@@ -11,11 +12,13 @@
       styleClass="box-container"
       spacing="10">
 
-    <Button alignment="TOP_RIGHT" onAction="#close">
-        <graphic>
-            <FontIcon iconLiteral="fltfal-dismiss-28" />
-        </graphic>
-    </Button>
+    <HBox alignment="TOP_RIGHT">
+        <Button onAction="#close">
+            <graphic>
+                <FontIcon iconLiteral="fltfal-dismiss-28" />
+            </graphic>
+        </Button>
+    </HBox>
 
     <VBox spacing="5">
         <Label text="%genreEdit.songName" styleClass="text-caption" />

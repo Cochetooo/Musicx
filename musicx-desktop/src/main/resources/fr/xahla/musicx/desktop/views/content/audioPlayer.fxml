@@ -12,7 +12,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="fr.xahla.musicx.desktop.views.content.AudioPlayer"
             fx:id="playerContainer"
-            prefHeight="80" prefWidth="Infinity"
+            prefHeight="60" prefWidth="Infinity"
             style="-fx-background-color: -musicx-color-dark-background; -fx-padding: 10 25 10 25"
             HBox.hgrow="ALWAYS">
     <left>
@@ -119,6 +119,11 @@
             </VBox>
 
             <HBox alignment="CENTER" spacing="5">
+                <Button onAction="#openQueue" style="-fx-background-color: transparent">
+                    <graphic>
+                        <FontIcon iconLiteral="fltfmz-text-bullet-list-24" />
+                    </graphic>
+                </Button>
                 <Button onAction="#mute" fx:id="volumeButton" style="-fx-background-color: transparent">
                     <graphic>
                         <FontIcon iconLiteral="fltfmz-speaker-48" iconSize="64" />
@@ -129,7 +134,7 @@
                     max="1"
                     blockIncrement="0.01"
                     value="0.3"
-                    prefWidth="200"
+                    prefWidth="100"
                 />
                 <Label fx:id="volumeLabel" text="30" />
             </HBox>

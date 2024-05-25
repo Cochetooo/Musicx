@@ -3,6 +3,7 @@ package fr.xahla.musicx.desktop.views.content.edit;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -120,6 +121,10 @@ public class SongEdit implements Initializable {
 
     @FXML public void editAlbum() {
         scene().getRightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, resourceBundle);
+    }
+
+    @FXML private void editGenres() {
+        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_GENRE, resourceBundle);
     }
 
     public void close() {

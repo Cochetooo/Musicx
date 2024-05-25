@@ -23,9 +23,7 @@ public class ColorHelper {
      * @since 0.4.0
      */
     public static void backgroundColor(final Node node, final String color) {
-        node.setStyle(node.getStyle()
-            + "-fx-background-color: -musicx-color-" + color + ";"
-        );
+        node.setStyle("-fx-background-color: -musicx-color-" + color + ";");
     }
 
 }

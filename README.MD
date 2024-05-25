@@ -26,9 +26,24 @@ music lovers:<br>
 ### Release 0.4.0
 
 > ### New Features
+> - `Genre Edit` to add primary & secondary genres
+> - `Albums Group` with list of albums and their songs if selected
+> - `Local Library Group` with editable tabs
+> - `Scenes` for each functionality
 > - `Vertical Navigation bar` for scenes
+> ### Changes
+> - `Color Theme` has been improved
+> - `Album Artwork Placeholder` is darker now
+> - `Sliders` are now thiner
+> - `Songs Group` List has been improved
+> ### Fixes
+> - Fixed a lot of visual issues
+> - Songs better updates when edited
+> - Fixed wrong custom tags for genres
+> - Fixed null exceptions here and there
+> - Fixed queue info not displaying until queue gets updated
 
-### Release 0.3.3
+### Release 0.3.3 *(2024-05-20)*
 
 > #### New Features
 > - Album artwork view in each song of the track list
@@ -38,12 +53,12 @@ music lovers:<br>
 > - Fixed player not working properly when song has no artist
 > - Library now updates correctly when scanning new folders
 
-### Release 0.3.2
+### Release 0.3.2 *(2024-05-16)*
 
 > #### Technical Changes
 > - Documentation and specification for developers
 
-### Release 0.3.1
+### Release 0.3.1 *(2024-05-14)*
 
 > #### New Features
 > - `Edit` Songs & Albums

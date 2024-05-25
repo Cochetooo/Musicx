@@ -51,7 +51,7 @@ public class Albums implements Initializable {
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         final var albumsDto = albumRepository().findAll();
 
-        selectedAlbumContainer.setPrefHeight(albumList.getHeight() / 2);
+        selectedAlbumContainer.setPrefHeight(albumList.getHeight());
 
         ThemePolicyHelper.clipAlbumArtwork(selectedAlbumImageView);
 
@@ -139,7 +139,7 @@ public class Albums implements Initializable {
             selectedAlbum.setStyle("");
         }
 
-        clickedItem.setStyle("-fx-background-color: darkgray");
+        ColorHelper.backgroundColor(clickedItem, "light-background");
         selectedAlbum = clickedItem;
     }
 

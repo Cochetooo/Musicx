@@ -191,6 +191,7 @@ public class WriteMetadataToAudioFile {
                             CustomFieldKey.ALBUM_PRIMARY_GENRES.getKey(),
                             genreString
                         );
+                        tag.setField(FieldKey.GENRE, genreString);
                     } else if (GenreType.SECONDARY == type) {
                         AudioTaggerHelper.audiotagger_write_custom_tag(
                             tag,
@@ -203,7 +204,11 @@ public class WriteMetadataToAudioFile {
                 // Song
                 case 's' -> {
                     if (GenreType.PRIMARY == type) {
-                        tag.setField(FieldKey.GENRE, genreString);
+                        AudioTaggerHelper.audiotagger_write_custom_tag(
+                            tag,
+                            CustomFieldKey.SONG_PRIMARY_GENRES.getKey(),
+                            genreString
+                        );
                     } else if (GenreType.SECONDARY == type) {
                         AudioTaggerHelper.audiotagger_write_custom_tag(
                             tag,

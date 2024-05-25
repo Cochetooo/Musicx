@@ -13,7 +13,6 @@
                fx:id="tracksTableView"
                VBox.vgrow="ALWAYS"
                onMouseClicked="#onClick"
-               style="-fx-border-radius: 10px; -fx-background-radius: 10px;"
                styleClass="noTableHeader"
                 prefHeight="1200">
         <columns>

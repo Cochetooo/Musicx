@@ -5,6 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.Double?>
+<?import javafx.scene.control.ScrollPane?>
 <VBox
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.come/fxml"
@@ -14,10 +15,11 @@
         <Double fx:id="selectedAlbumArtworkSize" fx:value="200.0" />
     </fx:define>
 
-    <TilePane fx:id="albumList"
-              hgap="5"
-              prefHeight="1200"
-    />
+    <ScrollPane fitToWidth="true" fitToHeight="true" prefHeight="600">
+        <TilePane fx:id="albumList"
+                  hgap="3"
+        />
+    </ScrollPane>
 
     <StackPane fx:id="selectedAlbumContainer"
                visible="false"

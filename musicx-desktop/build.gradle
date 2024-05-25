@@ -107,3 +107,16 @@ extraJavaModuleInfo {
         exports("org.javatuples")
     }
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += [
+            '--add-exports=javafx.base/com.sun.javafx.event=org.controlsfx.controls'
+    ]
+}
+
+run {
+    jvmArgs += [
+            '--add-exports=javafx.base/com.sun.javafx.event=org.controlsfx.controls'
+    ]
+}
