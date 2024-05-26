@@ -32,7 +32,7 @@ public class MenuBar implements Initializable {
         this.resourceBundle = resourceBundle;
         this.library = scene().getLocalLibraryScene().getLibrary();
 
-        this.fileScanFoldersMenuItem.setDisable(library.isEmpty());
+        this.fileScanFoldersMenuItem.setDisable(library.getFolders().isEmpty());
 
         library.onFoldersChange(change
             -> Platform.runLater(() -> fileScanFoldersMenuItem.setDisable(change.getList().isEmpty())));

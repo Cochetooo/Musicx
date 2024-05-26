@@ -16,15 +16,15 @@
                styleClass="noTableHeader"
                 prefHeight="1200">
         <columns>
-            <!-- Artwork -->
-            <TableColumn text="%tracksTable.trackArtwork" prefWidth="1" fx:id="tracksTableArtworkCol" />
-
             <!-- Track No -->
-            <TableColumn text="%tracksTable.trackNumber" prefWidth="1">
+            <TableColumn text="%tracksTable.trackNumber" minWidth="50" maxWidth="50" style="-fx-text-alignment: CENTER">
                 <cellValueFactory>
                     <PropertyValueFactory property="trackNumber" />
                 </cellValueFactory>
             </TableColumn>
+
+            <!-- Artwork -->
+            <TableColumn text="%tracksTable.trackArtwork" minWidth="50" maxWidth="50" fx:id="tracksTableArtworkCol" />
 
             <!-- Title -->
             <TableColumn text="%tracksTable.songTitle" fx:id="tracksTableTitleCol" />
@@ -95,6 +95,15 @@
                     <MenuItem
                             text="%content.trackListContextMenu.editAlbum"
                             onAction="#editAlbum">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-edit-32" />
+                        </graphic>
+                    </MenuItem>
+
+                    <!-- Edit Genres -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.editGenres"
+                            onAction="#editGenres">
                         <graphic>
                             <FontIcon iconLiteral="fltfal-edit-32" />
                         </graphic>

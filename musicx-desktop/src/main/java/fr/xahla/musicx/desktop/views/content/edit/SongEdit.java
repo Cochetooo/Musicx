@@ -110,8 +110,6 @@ public class SongEdit implements Initializable {
         songRepository().save(song.getDto());
         new WriteMetadataToAudioFile().execute(song.getDto());
 
-        //library().editSong(song);
-
         editButton.setDisable(true);
     }
 

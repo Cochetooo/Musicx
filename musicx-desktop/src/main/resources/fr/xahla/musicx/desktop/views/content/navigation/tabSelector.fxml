@@ -1,5 +1,7 @@
 <?import javafx.scene.control.*?>
 <?import org.kordamp.ikonli.javafx.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <TabPane
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
@@ -35,7 +37,9 @@
     <!-- History -->
     <Tab style="-fx-padding: 10px" fx:id="historyTab">
         <graphic>
-            <FontIcon iconLiteral="fltfal-history-24" scaleX="2" scaleY="2" />
+            <ImageView fitWidth="20" fitHeight="20" style="-fx-padding: 0px">
+                <Image url="@../../../assets/icons/lastfm-128.png" />
+            </ImageView>
         </graphic>
         <tooltip>
             <Tooltip text="%tabSelector.tabHistory" />

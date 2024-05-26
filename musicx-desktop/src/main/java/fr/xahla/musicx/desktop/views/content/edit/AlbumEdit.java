@@ -2,8 +2,10 @@ package fr.xahla.musicx.desktop.views.content.edit;
 
 import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
+import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -140,10 +142,27 @@ public class AlbumEdit implements Initializable {
         albumRepository().save(album.getDto());
         new WriteMetadataToAudioFile().execute(album.getDto());
 
+        this.updateSongs(album);
+
         this.editButton.setDisable(true);
     }
 
-    public void close() {
+    @FXML private void close() {
         scene().getRightNavContent().close();
+    }
+
+    private void updateSongs(final Album album) {
+        final var updateTask = new Task<Void>() {
+            @Override protected Void call() {
+                final var songs = scene().getLocalLibraryScene().getLibrary().getLocalSongs().stream()
+                    .filter(song -> null != song && song.getAlbum().getId() == album.getId())
+                    .toList();
+
+                songs.forEach(song -> song.setAlbum(album));
+                return null;
+            }
+        };
+
+        new Thread(updateTask).start();
     }
 }

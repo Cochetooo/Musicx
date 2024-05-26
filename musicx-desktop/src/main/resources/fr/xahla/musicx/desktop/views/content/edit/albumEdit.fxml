@@ -15,7 +15,7 @@
     <HBox alignment="TOP_RIGHT">
         <Button onAction="#close">
             <graphic>
-                <FontIcon iconLiteral="fltfal-dismiss-28" />
+                <FontIcon iconLiteral="fltfal-dismiss-16" />
             </graphic>
         </Button>
     </HBox>

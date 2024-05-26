@@ -1,15 +1,13 @@
 package fr.xahla.musicx.desktop.views.content.localLibrary;
 
-import fr.xahla.musicx.desktop.helper.ColorHelper;
-import fr.xahla.musicx.desktop.helper.DurationHelper;
-import fr.xahla.musicx.desktop.helper.FxmlComponent;
-import fr.xahla.musicx.desktop.helper.TextHelper;
+import fr.xahla.musicx.desktop.helper.*;
 import fr.xahla.musicx.desktop.model.entity.Genre;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableCell;
@@ -19,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -57,6 +56,7 @@ public class Songs implements Initializable {
         tracksTableYearCol.setCellValueFactory(this::setAlbumYearTableCell);
         tracksTableDurationCol.setCellFactory(song -> new TrackDurationTableCell());
 
+        scene().getLocalLibraryScene().resetFilters();
         this.addListeners();
 
         tracksTableView.setItems(scene().getLocalLibraryScene().getTrackList());
@@ -115,6 +115,11 @@ public class Songs implements Initializable {
         scene().getRightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, this.resourceBundle);
     }
 
+    @FXML private void editGenres() {
+        audioPlayer().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
+        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_GENRE, this.resourceBundle);
+    }
+
     // --- Cell Factories ---
 
     /* #######################
@@ -131,9 +136,11 @@ public class Songs implements Initializable {
 
             final var imageView = new ImageView();
             imageView.setImage(song.getAlbum().getImage());
-            imageView.setFitWidth(32);
-            imageView.setFitHeight(32);
+            imageView.setFitWidth(36);
+            imageView.setFitHeight(36);
             imageView.setPreserveRatio(true);
+            ThemePolicyHelper.clipAlbumArtwork(imageView);
+
             setGraphic(imageView);
         }
     }
@@ -158,8 +165,8 @@ public class Songs implements Initializable {
             final var vBox = TextHelper.caption(
                 song.getTitle(),
                 artistName + " - " + albumName,
-                15,
-                12,
+                16,
+                13,
                 null,
                 null
             );
@@ -201,7 +208,7 @@ public class Songs implements Initializable {
             };
 
             final var primaryGenresText = new Text(genresText[0]);
-            primaryGenresText.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.BOLD, 13));
+            primaryGenresText.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.BOLD, 15));
             primaryGenresText.setFill(ColorHelper.ALTERNATIVE);
 
             final var secondaryGenresText = new Text(genresText[1]);

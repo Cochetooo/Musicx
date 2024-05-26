@@ -57,6 +57,7 @@ public class Settings {
 
     public Settings setScanLibraryAudioFormats(final ObservableList<String> scanLibraryAudioFormats) {
         this.scanLibraryAudioFormats.set(scanLibraryAudioFormats);
+        config().setSetting("scanLibraryAudioFormats", new JSONArray(scanLibraryAudioFormats));
         return this;
     }
 
@@ -70,6 +71,7 @@ public class Settings {
 
     public Settings setArtworkShadow(final boolean artworkShadow) {
         this.artworkShadow.set(artworkShadow);
+        config().setSetting("artworkShadow", artworkShadow);
         return this;
     }
 
@@ -83,6 +85,7 @@ public class Settings {
 
     public Settings setBackgroundArtworkBind(final boolean backgroundArtworkBind) {
         this.backgroundArtworkBind.set(backgroundArtworkBind);
+        config().setSetting("backgroundArtworkBind", backgroundArtworkBind);
         return this;
     }
 
@@ -96,6 +99,7 @@ public class Settings {
 
     public Settings setSmoothPause(final boolean smoothPause) {
         this.smoothPause.set(smoothPause);
+        config().setSetting("smoothPause", smoothPause);
         return this;
     }
 }

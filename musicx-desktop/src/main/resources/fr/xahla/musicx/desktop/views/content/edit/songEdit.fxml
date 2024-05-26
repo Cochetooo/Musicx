@@ -13,7 +13,7 @@
     <HBox alignment="TOP_RIGHT">
         <Button onAction="#close">
             <graphic>
-                <FontIcon iconLiteral="fltfal-dismiss-28" />
+                <FontIcon iconLiteral="fltfal-dismiss-16" />
             </graphic>
         </Button>
     </HBox>
@@ -42,7 +42,7 @@
 
     <VBox spacing="5">
         <Label text="%songEdit.tracks" styleClass="text-caption" />
-        <HBox spacing="7">
+        <HBox spacing="12">
             <TextField fx:id="trackNoField" />
             <Label text="/" />
             <TextField fx:id="trackTotalField" editable="false" />

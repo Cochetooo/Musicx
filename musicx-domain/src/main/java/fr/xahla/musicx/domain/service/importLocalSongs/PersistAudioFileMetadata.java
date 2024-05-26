@@ -272,7 +272,7 @@ public final class PersistAudioFileMetadata {
 
     private List<Long> readSongPrimaryGenres() {
         try {
-            final var primaryGenreNames = this.getGenresName("Primary Track Genres");
+            final var primaryGenreNames = this.getGenresName(CustomFieldKey.SONG_PRIMARY_GENRES.getKey());
 
             logger().finest("AUDIO_TAGGER_FIELD_FETCHED", "song primary genres", filepath);
             return this.getGenres(primaryGenreNames);

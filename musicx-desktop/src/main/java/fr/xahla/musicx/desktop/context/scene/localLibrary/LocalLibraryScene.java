@@ -57,4 +57,7 @@ public final class LocalLibraryScene {
         currentListGroup.addListener(listener);
     }
 
+    public void resetFilters() {
+        trackList.setPredicate(null);
+    }
 }

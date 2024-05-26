@@ -4,9 +4,11 @@ import fr.xahla.musicx.desktop.helper.*;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
+import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -28,6 +30,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
 
 /**
@@ -64,9 +68,20 @@ public class Albums implements Initializable {
         albums = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
         albumsDto.forEach((albumDto) -> albums.add(new Album(albumDto)));
 
+        scene().getLocalLibraryScene().resetFilters();
+
         CollectionSortHelper.sortAlbumsByYears(albums);
 
-        albums.forEach(this::addAlbumTile);
+        final var addAlbumTask = new Task<Void>() {
+            @Override protected Void call() {
+                albums.forEach(album -> Platform.runLater(() -> addAlbumTile(album)));
+
+                return null;
+            }
+        };
+
+        new Thread(addAlbumTask).start();
+
     }
 
     private void addAlbumTile(final Album album) {
@@ -127,11 +142,11 @@ public class Albums implements Initializable {
 
         selectedAlbumTrackList.getChildren().clear();
 
-        final var songs = albumRepository().getSongs(album.getDto()).stream()
-            .map(Song::new)
-            .toList();
+        scene().getLocalLibraryScene().setTrackListFilters(song
+            -> null != song.getAlbum() && song.getAlbum().getId() == album.getId()
+        );
 
-        songs.forEach(this::addSongToSelectedAlbumTrackList);
+        scene().getLocalLibraryScene().getTrackList().forEach(this::addSongToSelectedAlbumTrackList);
 
         selectedAlbumContainer.setVisible(true);
 
@@ -150,7 +165,17 @@ public class Albums implements Initializable {
         songRow.getChildren().add(new Text(song.getTrackNumber() + "."));
         songRow.getChildren().add(new Text(song.getTitle()));
         songRow.getChildren().add(new Text(DurationHelper.getTimeString(Duration.millis(song.getDuration()))));
+        songRow.setOnMouseClicked(mouseEvent -> onTrackClick(mouseEvent, selectedAlbumTrackList.getChildren().size()));
 
         selectedAlbumTrackList.getChildren().add(songRow);
+    }
+
+    private void onTrackClick(final MouseEvent event, final int index) {
+        if (2 == event.getClickCount()) {
+            audioPlayer().setQueue(
+                scene().getLocalLibraryScene().getTrackList(),
+                index
+            );
+        }
     }
 }

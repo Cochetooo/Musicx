@@ -48,9 +48,12 @@
 }
 
 /* TableView & ListView */
-.table-view, .list-view,
-.table-view .table-cell, .list-view .list-cell,
-.table-view .corner, .list-view .corner,
+.table-view,
+.list-view.transparent-list,
+.table-view .table-cell,
+.list-view.transparent-list .list-cell,
+.table-view .corner,
+.list-view.transparent-list .corner,
 .table-view .virtual-flow .scroll-bar:vertical,
 .table-view .virtual-flow .scroll-bar:vertical .track,
 .table-view .virtual-flow .scroll-bar:vertical .track-background,
@@ -61,16 +64,15 @@
 }
 
 .table-row-cell:filled:selected,
-.list-cell:filled:selected {
+.transparent-list.list-cell:filled:selected {
     -fx-background-color: -musicx-color-darker;
 }
 
 .table-row-cell,
-.list-cell {
+.transparent-list.list-cell {
     -fx-background-color: transparent;
     -fx-border-color: -musicx-color-light-background;
     -fx-border-width: 0 0 1px 0;
-    -fx-padding: 0.0em;
 }
 
 .table-row-cell:even,

@@ -35,7 +35,7 @@
                 </graphic>
             </Button>
         </HBox>
-        <ListActionView fx:id="primaryGenresList" />
+        <ListActionView fx:id="primaryGenresList" styleClass="transparent-list" />
     </VBox>
 
     <VBox spacing="5">
@@ -44,11 +44,11 @@
             <TextField fx:id="secondaryGenreField" />
             <Button onAction="#proposeSecondaryGenre">
                 <graphic>
-                    <FontIcon iconLiteral="fltfal-add-28" />
+                    <FontIcon iconLiteral="fltfal-add-16" />
                 </graphic>
             </Button>
         </HBox>
-        <ListActionView fx:id="secondaryGenresList" />
+        <ListActionView fx:id="secondaryGenresList" styleClass="transparent-list" />
     </VBox>
 
     <Separator />

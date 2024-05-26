@@ -29,6 +29,9 @@ music lovers:<br>
 > - `Language` is now loaded by config.json
 > - `Local Folders` are now loaded by config.json
 > - `Scene Tabs` Local Library is now on top
+> ### Fixes
+> - Fixed wrong custom tag for loading song primary genres
+> - Fixed Scan Folders buttons disabled if no songs but folders paths not empty
 
 ### Release 0.4.0 *(2024-05-25)*
 

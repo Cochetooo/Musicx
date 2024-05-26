@@ -63,6 +63,9 @@ public class ImportFolders implements Initializable {
             new ArrayList<>(library.getFolders())
         ));
 
+        clearButton.setDisable(library.getFolders().isEmpty());
+        scanFoldersButton.setDisable(library.getFolders().isEmpty());
+
         library.onFoldersChange(change -> {
             config().setLocalFolders(library.getFolders());
 
