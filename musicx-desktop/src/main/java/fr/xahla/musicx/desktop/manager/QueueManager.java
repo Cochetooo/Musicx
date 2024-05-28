@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.desktop.listener.ValueListener;
+import fr.xahla.musicx.desktop.interfaces.ValueListener;
 import fr.xahla.musicx.desktop.model.Queue;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.collections.ListChangeListener;

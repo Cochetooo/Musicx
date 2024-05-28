@@ -10,7 +10,8 @@
            fx:controller="fr.xahla.musicx.desktop.views.content.edit.AlbumEdit"
            prefHeight="1200.0" prefWidth="500.0"
            spacing="10"
-           styleClass="box-container">
+           styleClass="box-container"
+           fx:id="albumEditContainer">
 
     <HBox alignment="TOP_RIGHT">
         <Button onAction="#close">

@@ -8,7 +8,7 @@ package fr.xahla.musicx.desktop;
  * @author Cochetooo
  * @since 0.2.1
  */
-public class RunnableMain {
+public final class RunnableMain {
 
     public static void main(final String[] args) {
         DesktopApplication.main(args);

@@ -29,6 +29,7 @@ music lovers:<br>
 > - `Language` is now loaded by config.json
 > - `Local Folders` are now loaded by config.json
 > - `Scene Tabs` Local Library is now on top
+> - `Date` for track with no release year is now 1/1/1
 > ### Fixes
 > - Fixed wrong custom tag for loading song primary genres
 > - Fixed Scan Folders buttons disabled if no songs but folders paths not empty

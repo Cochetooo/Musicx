@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.model;
 
-import fr.xahla.musicx.desktop.listener.ValueListener;
+import fr.xahla.musicx.desktop.interfaces.ValueListener;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;

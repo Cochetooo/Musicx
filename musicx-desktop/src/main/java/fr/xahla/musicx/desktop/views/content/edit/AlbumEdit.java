@@ -1,31 +1,40 @@
 package fr.xahla.musicx.desktop.views.content.edit;
 
+import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
+import fr.xahla.musicx.desktop.interfaces.EditFormInterface;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.artistRepository;
 
 /**
  * View for album editing.
  * @author Cochetooo
  * @since 0.3.1
  */
-public class AlbumEdit implements Initializable {
+public class AlbumEdit implements Initializable, EditFormInterface {
+
+    @FXML private VBox albumEditContainer;
 
     @FXML private Button editButton;
 
@@ -42,77 +51,39 @@ public class AlbumEdit implements Initializable {
     @FXML private TextField artworkUrlField;
     @FXML private ImageView artworkView;
 
+    private Album album;
+
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        final var album = audioPlayer().getEditedSong().getAlbum();
+        this.setupListeners();
 
-        this.albumNameField.setText(album.getName());
-        this.albumNameField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!oldValue.equals(newValue)) {
-                change();
-            }
-        });
+        final var editedSong = audioPlayer().getEditedSong();
+        this.album = editedSong.getAlbum();
 
-        this.catalogNoField.setText(album.getCatalogNo());
-        this.catalogNoField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!oldValue.equals(newValue)) {
-                change();
-            }
-        });
-
-        this.discTotalField.setText(String.valueOf(album.getDiscTotal()));
-        this.discTotalField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!oldValue.equals(newValue)) {
-                change();
-            }
-        });
-
-        this.trackTotalField.setText(String.valueOf(album.getTrackTotal()));
-        this.trackTotalField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!oldValue.equals(newValue)) {
-                change();
-            }
-        });
-
-        this.albumTypeComboBox.getItems().addAll(ReleaseType.values());
-        this.albumTypeComboBox.setValue(album.getType());
-        this.albumTypeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (oldValue != newValue) {
-                change();
-            }
-        });
-
-        this.releaseDatePicker.setValue(album.getReleaseDate());
-        this.releaseDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (oldValue != newValue) {
-                change();
-            }
-        });
-
-        this.artworkUrlField.setText(album.getArtworkUrl());
-
-        this.artworkDimensionLabel.setTextFill(ColorHelper.GRAY);
-
-        this.artworkView.imageProperty().addListener((observable, oldValue, newValue)
-            -> this.artworkDimensionLabel.setText(newValue.getWidth() + " x " + newValue.getHeight()));
-
-        if (null != album.getArtworkUrl() && !album.getArtworkUrl().isEmpty()) {
-            this.artworkView.setImage(new Image(album.getArtworkUrl()));
+        if (null != editedSong.getArtist()) {
+            this.addArtistAlbumsComboBox();
         }
+
+        if (null == album) {
+
+            return;
+        }
+
+        this.updateFields();
     }
 
-    @FXML public void editArtist() {
+    @FXML private void editArtist() {
 
     }
 
-    @FXML public void editLabel() {
+    @FXML private void editLabel() {
 
     }
 
-    @FXML public void change() {
+    @Override public void applyChange() {
         editButton.setDisable(false);
     }
 
-    @FXML public void chooseArtwork() {
+    @FXML private void chooseArtwork() {
         final var fileChooser = new FileChooser();
         final var imageFilter = new FileChooser.ExtensionFilter("Images",
             "*.jpg", "*.jpeg", "*.png", "*.gif"
@@ -124,12 +95,16 @@ public class AlbumEdit implements Initializable {
         if (null != selectedFile) {
             this.artworkUrlField.setText(selectedFile.getAbsolutePath());
             this.artworkView.setImage(new Image(artworkUrlField.getText()));
-            this.change();
+            this.applyChange();
         }
     }
 
-    @FXML public void edit() {
-        final var album = audioPlayer().getEditedSong().getAlbum();
+    @Override @FXML public void edit() {
+        final var editedSong = audioPlayer().getEditedSong();
+
+        if (null == album) {
+            album = new Album(AlbumDto.builder().build());
+        }
 
         album.setArtworkUrl(artworkUrlField.getText());
         album.setCatalogNo(catalogNoField.getText());
@@ -164,5 +139,95 @@ public class AlbumEdit implements Initializable {
         };
 
         new Thread(updateTask).start();
+    }
+
+    private void addArtistAlbumsComboBox() {
+        final var editedSong = audioPlayer().getEditedSong();
+
+        final var artistAlbumComboBox = new ComboBox<Album>();
+        final var artistAlbums = new SimpleListProperty<Album>(FXCollections.observableList(new ArrayList<>()));
+
+        artistRepository().getAlbums(editedSong.getArtist().getDto()).forEach(albumDto
+            -> artistAlbums.add(new Album(albumDto)));
+
+        artistAlbumComboBox.setItems(artistAlbums);
+        artistAlbumComboBox.setCellFactory(param -> new ListCell<>(){
+            @Override protected void updateItem(final Album item, final boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || null == item) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+        artistAlbumComboBox.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            if (null == newValue || oldValue == newValue) {
+                return;
+            }
+
+            album = newValue;
+            this.updateFields();
+        }));
+
+        albumEditContainer.getChildren().add(1, artistAlbumComboBox);
+    }
+
+    @Override public void setupListeners() {
+        this.albumNameField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                applyChange();
+            }
+        });
+
+        this.catalogNoField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                applyChange();
+            }
+        });
+
+        this.discTotalField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                applyChange();
+            }
+        });
+
+        this.trackTotalField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue)) {
+                applyChange();
+            }
+        });
+
+        this.albumTypeComboBox.getItems().addAll(ReleaseType.values());
+        this.albumTypeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue != newValue) {
+                applyChange();
+            }
+        });
+
+        this.releaseDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue != newValue) {
+                applyChange();
+            }
+        });
+
+        this.artworkDimensionLabel.setTextFill(ColorHelper.GRAY);
+        this.artworkView.imageProperty().addListener((observable, oldValue, newValue)
+            -> this.artworkDimensionLabel.setText(newValue.getWidth() + " x " + newValue.getHeight()));
+    }
+
+    @Override public void updateFields() {
+        this.albumNameField.setText(album.getName());
+        this.catalogNoField.setText(album.getCatalogNo());
+        this.discTotalField.setText(String.valueOf(album.getDiscTotal()));
+        this.trackTotalField.setText(String.valueOf(album.getTrackTotal()));
+        this.albumTypeComboBox.setValue(album.getType());
+        this.releaseDatePicker.setValue(album.getReleaseDate());
+        this.artworkUrlField.setText(album.getArtworkUrl());
+
+        if (null != album.getArtworkUrl() && !album.getArtworkUrl().isEmpty()) {
+            this.artworkView.setImage(new Image(album.getArtworkUrl()));
+        }
     }
 }

@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.listener;
+package fr.xahla.musicx.desktop.interfaces;
 
 import javafx.beans.value.ObservableValue;
 

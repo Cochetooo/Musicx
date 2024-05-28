@@ -180,7 +180,7 @@ public class Songs implements Initializable {
      * ####################### */
     private ObjectProperty<LocalDate> setAlbumYearTableCell(final TableColumn.CellDataFeatures<Song, LocalDate> song) {
         if (null == song.getValue().getAlbum()) {
-            return new SimpleObjectProperty<>(LocalDate.MIN);
+            return new SimpleObjectProperty<>(fr.xahla.musicx.domain.helper.DurationHelper.FIRST_DAY);
         }
 
         return song.getValue().getAlbum().releaseDateProperty();
