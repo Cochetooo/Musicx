@@ -38,7 +38,7 @@
     <Tab style="-fx-padding: 10px" fx:id="historyTab">
         <graphic>
             <ImageView fitWidth="20" fitHeight="20" style="-fx-padding: 0px">
-                <Image url="@../../../assets/icons/lastfm-128.png" />
+                <Image url="@../../assets/icons/lastfm-128.png" />
             </ImageView>
         </graphic>
         <tooltip>

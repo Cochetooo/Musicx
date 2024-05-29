@@ -12,7 +12,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 public class HibernateLogInterceptor implements StatementInspector {
 
     @Override public String inspect(final String sql) {
-        logger().info("HIBERNATE_QUERY", sql);
+        //logger().info("HIBERNATE_QUERY", sql);
         return sql;
     }
 

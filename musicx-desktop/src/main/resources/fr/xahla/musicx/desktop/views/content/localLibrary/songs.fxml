@@ -33,10 +33,10 @@
             <TableColumn text="%tracksTable.genres" fx:id="tracksTableGenresCol" />
 
             <!-- Year -->
-            <TableColumn text="%tracksTable.albumYear" prefWidth="14" fx:id="tracksTableYearCol" />
+            <TableColumn text="%tracksTable.albumYear" minWidth="120" maxWidth="120" fx:id="tracksTableYearCol" />
 
             <!-- Duration -->
-            <TableColumn fx:id="tracksTableDurationCol" prefWidth="6" style="-fx-alignment: center;">
+            <TableColumn fx:id="tracksTableDurationCol" minWidth="80" maxWidth="120" style="-fx-alignment: center;">
                 <cellValueFactory>
                     <PropertyValueFactory property="duration" />
                 </cellValueFactory>

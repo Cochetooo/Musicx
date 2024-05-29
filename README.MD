@@ -33,6 +33,8 @@ music lovers:<br>
 > ### Fixes
 > - Fixed wrong custom tag for loading song primary genres
 > - Fixed Scan Folders buttons disabled if no songs but folders paths not empty
+> - Songs name and genres now updates instantly when edited
+> - Partially fixed transparency issue for autocompletion list for genres selection
 
 ### Release 0.4.0 *(2024-05-25)*
 

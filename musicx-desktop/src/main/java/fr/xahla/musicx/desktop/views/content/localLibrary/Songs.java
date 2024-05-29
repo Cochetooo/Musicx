@@ -3,6 +3,9 @@ package fr.xahla.musicx.desktop.views.content.localLibrary;
 import fr.xahla.musicx.desktop.helper.*;
 import fr.xahla.musicx.desktop.model.entity.Genre;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import fr.xahla.musicx.desktop.model.table.AlbumArtworkTableCell;
+import fr.xahla.musicx.desktop.model.table.TrackGenresTableCell;
+import fr.xahla.musicx.desktop.model.table.TrackTitleTableCell;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import javafx.beans.property.ObjectProperty;
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * View for Songs group in Local Library scene.
@@ -40,9 +44,9 @@ public class Songs implements Initializable {
 
     @FXML private TableView<Song> tracksTableView;
 
-    @FXML private TableColumn<Song, LocalDateTime> tracksTableArtworkCol;
-    @FXML private TableColumn<Song, LocalDateTime> tracksTableTitleCol;
-    @FXML private TableColumn<Song, LocalDateTime> tracksTableGenresCol;
+    @FXML private TableColumn<Song, Void> tracksTableArtworkCol;
+    @FXML private TableColumn<Song, Void> tracksTableTitleCol;
+    @FXML private TableColumn<Song, Void> tracksTableGenresCol;
     @FXML private TableColumn<Song, LocalDate> tracksTableYearCol;
     @FXML private TableColumn<Song, Long> tracksTableDurationCol;
 
@@ -51,14 +55,11 @@ public class Songs implements Initializable {
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
 
-        tracksTableArtworkCol.setCellValueFactory(cellData -> cellData.getValue().updatedAtProperty());
-        tracksTableTitleCol.setCellValueFactory(cellData -> cellData.getValue().updatedAtProperty());
-        tracksTableGenresCol.setCellValueFactory(cellData -> cellData.getValue().updatedAtProperty());
+        tracksTableYearCol.setCellValueFactory(this::setAlbumYearTableCell);
 
         tracksTableArtworkCol.setCellFactory(song -> new AlbumArtworkTableCell());
         tracksTableTitleCol.setCellFactory(song -> new TrackTitleTableCell());
         tracksTableGenresCol.setCellFactory(song -> new TrackGenresTableCell());
-        tracksTableYearCol.setCellValueFactory(this::setAlbumYearTableCell);
         tracksTableDurationCol.setCellFactory(song -> new TrackDurationTableCell());
 
         scene().getLocalLibraryScene().resetFilters();
@@ -128,59 +129,6 @@ public class Songs implements Initializable {
     // --- Cell Factories ---
 
     /* #######################
-     * ###  Album Artwork  ###
-     * ####################### */
-    static class AlbumArtworkTableCell extends TableCell<Song, LocalDateTime> {
-        @Override protected void updateItem(final LocalDateTime updatedAt, final boolean empty) {
-            final var song = this.getTableRow().getItem();
-
-            if (null == song || null == song.getAlbum() || StringHelper.str_is_null_or_blank(song.getAlbum().getArtworkUrl())) {
-                setGraphic(null);
-                return;
-            }
-
-            final var imageView = new ImageView();
-            imageView.setImage(song.getAlbum().getImage());
-            imageView.setFitWidth(36);
-            imageView.setFitHeight(36);
-            imageView.setPreserveRatio(true);
-            ThemePolicyHelper.clipAlbumArtwork(imageView);
-
-            setGraphic(imageView);
-        }
-    }
-
-    /* #######################
-     * ###   Track Title   ###
-     * ####################### */
-    static class TrackTitleTableCell extends TableCell<Song, LocalDateTime> {
-        @Override protected void updateItem(final LocalDateTime updatedAt, final boolean empty) {
-            final var song = this.getTableRow().getItem();
-
-            // Song title must not be empty
-            if (null == song || null == song.getTitle()) {
-                setGraphic(null);
-                return;
-            }
-
-            // Artist and album can be empty, if so it will just be an empty string
-            final var artistName = (null == song.getArtist()) ? "" : song.getArtist().getName();
-            final var albumName = (null == song.getAlbum()) ? "" : song.getAlbum().getName();
-
-            final var vBox = TextHelper.caption(
-                song.getTitle(),
-                artistName + " - " + albumName,
-                16,
-                13,
-                null,
-                null
-            );
-
-            this.setGraphic(vBox);
-        }
-    }
-
-    /* #######################
      * ###    Album Year   ###
      * ####################### */
     private ObjectProperty<LocalDate> setAlbumYearTableCell(final TableColumn.CellDataFeatures<Song, LocalDate> song) {
@@ -189,40 +137,6 @@ public class Songs implements Initializable {
         }
 
         return song.getValue().getAlbum().releaseDateProperty();
-    }
-
-    /* #######################
-     * ###   Track Genres  ###
-     * ####################### */
-    static class TrackGenresTableCell extends TableCell<Song, LocalDateTime> {
-        @Override protected void updateItem(final LocalDateTime updatedAt, final boolean empty) {
-            final var song = this.getTableRow().getItem();
-
-            if (null == song || (song.getPrimaryGenres().isEmpty() && song.getSecondaryGenres().isEmpty())) {
-                setGraphic(null);
-                return;
-            }
-
-            final var genresText = new String[]{
-                song.getPrimaryGenres().stream()
-                    .map(Genre::getName)
-                    .collect(Collectors.joining(", ")),
-                song.getSecondaryGenres().stream()
-                    .map(Genre::getName)
-                    .collect(Collectors.joining(", "))
-            };
-
-            final var primaryGenresText = new Text(genresText[0]);
-            primaryGenresText.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.BOLD, 15));
-            primaryGenresText.setFill(ColorHelper.ALTERNATIVE);
-
-            final var secondaryGenresText = new Text(genresText[1]);
-            secondaryGenresText.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.LIGHT, 12));
-            secondaryGenresText.setFill(ColorHelper.TERNARY);
-
-            final var vBox = new VBox(primaryGenresText, secondaryGenresText);
-            this.setGraphic(vBox);
-        }
     }
 
     /* #######################

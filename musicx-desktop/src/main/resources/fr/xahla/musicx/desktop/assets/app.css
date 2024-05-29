@@ -28,6 +28,17 @@
     -fx-border-radius: 10px;
 }
 
+/* Auto completion TextField */
+.auto-complete-popup .list-view,
+.auto-complete-popup .list-cell,
+.auto-complete-popup .list-cell:filled,
+.auto-complete-popup .list-cell:filled:hover,
+.auto-complete-popup .list-cell:filled:selected,
+.auto-complete-popup .list-cell:filled:selected:hover
+{
+    -fx-background-color: -musicx-color-dark-background;
+}
+
 /* JFX Slider */
 .jfx-slider > .thumb,
 .jfx-slider > .animated-thumb,

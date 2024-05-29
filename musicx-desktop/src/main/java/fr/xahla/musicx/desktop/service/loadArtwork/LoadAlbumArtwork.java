@@ -38,17 +38,19 @@ public class LoadAlbumArtwork {
             @Override protected Void call() {
                 final var album = song.getAlbum().getDto();
 
+                // If no album we return
                 if (null == album) {
                     return null;
                 }
 
+                // If album artwork is null or blank, we fetch image with APIs
                 if (StringHelper.str_is_null_or_blank(album.getArtworkUrl())) {
                     fetchDtoArtwork(album);
 
                     // If APIs proceed to find an artwork
                     if (!StringHelper.str_is_null_or_blank(album.getArtworkUrl())) {
                         albumRepository().save(album);
-                        song.setAlbum(new Album(album));
+                        song.getAlbum().setArtworkUrl(album.getArtworkUrl());
                     }
                 }
 

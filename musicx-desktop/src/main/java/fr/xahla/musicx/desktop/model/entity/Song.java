@@ -56,6 +56,24 @@ public class Song {
         this.title = new SimpleStringProperty(song.getTitle());
         this.trackNumber = new SimpleIntegerProperty(song.getTrackNumber());
 
+        album = new SimpleObjectProperty<>();
+
+        final var albumRepos = songRepository().getAlbum(song);
+
+        if (null != albumRepos) {
+            album.set(new Album(albumRepos));
+        }
+
+        this.primaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+
+        final var primaryGenresDto = songRepository().getPrimaryGenres(song);
+        primaryGenresDto.forEach(genre -> primaryGenres.add(new Genre(genre)));
+
+        this.secondaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
+
+        final var secondaryGenresDto = songRepository().getSecondaryGenres(song);
+        secondaryGenresDto.forEach(genre -> secondaryGenres.add(new Genre(genre)));
+
         this.lyrics = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
 
         this.dto = song;
@@ -223,16 +241,6 @@ public class Song {
     }
 
     public Album getAlbum() {
-        if (null == album) {
-            album = new SimpleObjectProperty<>();
-
-            final var albumRepos = songRepository().getAlbum(dto);
-
-            if (null != albumRepos) {
-                album.set(new Album(albumRepos));
-            }
-        }
-
         return album.get();
     }
 
@@ -292,13 +300,6 @@ public class Song {
     }
 
     public ObservableList<Genre> getPrimaryGenres() {
-        if (null == primaryGenres) {
-            primaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
-
-            final var primaryGenresDto = songRepository().getPrimaryGenres(dto);
-            primaryGenresDto.forEach(genre -> primaryGenres.add(new Genre(genre)));
-        }
-
         return primaryGenres.get();
     }
 
@@ -322,13 +323,6 @@ public class Song {
     }
 
     public ObservableList<Genre> getSecondaryGenres() {
-        if (null == secondaryGenres) {
-            secondaryGenres = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>()));
-
-            final var secondaryGenresDto = songRepository().getSecondaryGenres(dto);
-            secondaryGenresDto.forEach(genre -> secondaryGenres.add(new Genre(genre)));
-        }
-
         return secondaryGenres.get();
     }
 

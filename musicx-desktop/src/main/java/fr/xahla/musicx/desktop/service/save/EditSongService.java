@@ -31,7 +31,7 @@ public final class EditSongService {
                     new WriteMetadataToAudioFile().execute(dto);
                 }
 
-                Platform.runLater(() -> callback.done());
+                Platform.runLater(callback::done);
                 return null;
             }
         };

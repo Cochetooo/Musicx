@@ -4,6 +4,7 @@ import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.enums.ArtistRole;
 import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
+import fr.xahla.musicx.domain.helper.StringHelper;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
+import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 import static fr.xahla.musicx.domain.helper.StringHelper.str_is_null_or_blank;
 
 /**
@@ -47,7 +49,7 @@ public class Album {
     private ListProperty<Genre> primaryGenres;
     private ListProperty<Genre> secondaryGenres;
 
-    private Image image;
+    private ObjectProperty<Image> image;
 
     public Album(final AlbumDto album) {
         this.id = new SimpleLongProperty(album.getId());
@@ -59,6 +61,8 @@ public class Album {
         this.releaseDate = new SimpleObjectProperty<>(album.getReleaseDate());
         this.trackTotal = new SimpleIntegerProperty(album.getTrackTotal());
         this.type = new SimpleObjectProperty<>(album.getType());
+
+        this.image = new SimpleObjectProperty<>();
 
         this.dto = album;
     }
@@ -98,7 +102,7 @@ public class Album {
         this.dto.setArtworkUrl(artworkUrl);
         this.artworkUrl.set(artworkUrl);
 
-        if (null != image) {
+        if (!StringHelper.str_is_null_or_blank(artworkUrl)) {
             this.setImage(new Image(artworkUrl));
         }
 
@@ -318,19 +322,31 @@ public class Album {
      * artwork url is empty or null.
      */
     public Image getImage() {
-        if (null == image) {
+        if (null == image.get()) {
             if (str_is_null_or_blank(this.getArtworkUrl())) {
-                return Album.artworkPlaceholder;
+                this.setImage(Album.artworkPlaceholder);
             }
 
-            image = new Image(this.getArtworkUrl());
+            this.setImage(new Image(this.getArtworkUrl()));
         }
 
-        return image;
+        return image.get();
     }
 
     public Album setImage(final Image image) {
-        this.image = image;
+        this.image.set(image);
         return this;
+    }
+
+    public ObjectProperty<Image> imageProperty() {
+        if (null == image.get()) {
+            if (str_is_null_or_blank(this.getArtworkUrl())) {
+                this.setImage(Album.artworkPlaceholder);
+            }
+
+            this.setImage(new Image(this.getArtworkUrl()));
+        }
+
+        return image;
     }
 }
