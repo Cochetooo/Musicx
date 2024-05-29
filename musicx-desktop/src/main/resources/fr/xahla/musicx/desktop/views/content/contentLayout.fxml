@@ -9,7 +9,7 @@
             style="-fx-padding: 10px">
         <left>
             <!-- Group Selector -->
-            <fx:include source="navigation/tabSelector.fxml" />
+            <fx:include source="tabSelector.fxml" />
         </left>
         <center>
             <VBox prefWidth="1800" spacing="15" style="-fx-padding: 0 10px 0 0;">

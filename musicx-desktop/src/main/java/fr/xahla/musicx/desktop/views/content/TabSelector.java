@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.content.navigation;
+package fr.xahla.musicx.desktop.views.content;
 
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import javafx.fxml.FXML;
@@ -19,16 +19,22 @@ public class TabSelector implements Initializable {
 
     @FXML private TabPane pageTab;
 
+    @FXML private Tab localLibraryTab;
     @FXML private Tab encyclopediaTab;
     @FXML private Tab historyTab;
-    @FXML private Tab localLibraryTab;
+    @FXML private Tab editorTab;
     @FXML private Tab profileTab;
     @FXML private Tab settingsTab;
     @FXML private Tab consoleTab;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         pageTab.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == encyclopediaTab) {
+            if (newValue == localLibraryTab) {
+                scene().getSceneContent().switchContent(
+                    FxmlComponent.SCENE_LOCAL_LIBRARY,
+                    resourceBundle
+                );
+            } else if (newValue == encyclopediaTab) {
                 scene().getSceneContent().switchContent(
                     FxmlComponent.SCENE_ENCYCLOPEDIA,
                     resourceBundle
@@ -38,9 +44,9 @@ public class TabSelector implements Initializable {
                     FxmlComponent.SCENE_HISTORY,
                     resourceBundle
                 );
-            } else if (newValue == localLibraryTab) {
+            } else if (newValue == editorTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_LOCAL_LIBRARY,
+                    FxmlComponent.SCENE_EDITOR,
                     resourceBundle
                 );
             } else if (newValue == profileTab) {

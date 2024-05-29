@@ -30,6 +30,8 @@ public class SongEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    private LocalDateTime updatedAt;
+
     @Column(name = "album_id")
     private Long albumId;
 
@@ -151,5 +153,12 @@ public class SongEntity {
      */
     @PrePersist protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    /**
+     * @since 0.4.1
+     */
+    @PreUpdate protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

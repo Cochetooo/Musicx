@@ -25,6 +25,7 @@ public class Song {
 
     private final LongProperty id;
     private final ObjectProperty<LocalDateTime> createdAt;
+    private final ObjectProperty<LocalDateTime> updatedAt;
 
     private final IntegerProperty bitRate;
     private final IntegerProperty discNumber;
@@ -44,6 +45,7 @@ public class Song {
     public Song(final SongDto song) {
         this.id = new SimpleLongProperty(song.getId());
         this.createdAt = new SimpleObjectProperty<>(song.getCreatedAt());
+        this.updatedAt = new SimpleObjectProperty<>(song.getUpdatedAt());
 
         this.bitRate = new SimpleIntegerProperty(song.getBitRate());
         this.discNumber = new SimpleIntegerProperty(song.getDiscNumber());
@@ -92,6 +94,19 @@ public class Song {
 
     public Song setCreatedAt(final LocalDateTime createdAt) {
         this.createdAt.set(createdAt);
+        return this;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt.get();
+    }
+
+    public ObjectProperty<LocalDateTime> updatedAtProperty() {
+        return updatedAt;
+    }
+
+    public Song setUpdatedAt(final LocalDateTime updatedAt) {
+        this.updatedAt.set(updatedAt);
         return this;
     }
 

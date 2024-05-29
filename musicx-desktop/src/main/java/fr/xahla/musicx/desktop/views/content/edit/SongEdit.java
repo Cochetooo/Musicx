@@ -1,6 +1,7 @@
 package fr.xahla.musicx.desktop.views.content.edit;
 
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.desktop.service.save.EditSongService;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
 import javafx.event.ActionEvent;
@@ -107,10 +108,9 @@ public class SongEdit implements Initializable {
         song.setTitle(songNameField.getText());
         song.setTrackNumber(StringHelper.str_parse_short_safe(trackNoField.getText()));
 
-        songRepository().save(song.getDto());
-        new WriteMetadataToAudioFile().execute(song.getDto());
-
-        editButton.setDisable(true);
+        new EditSongService().execute(song, () -> {
+            editButton.setDisable(true);
+        });
     }
 
     @FXML public void editArtist() {

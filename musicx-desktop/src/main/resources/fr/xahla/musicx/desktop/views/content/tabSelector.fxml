@@ -5,7 +5,7 @@
 <TabPane
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="fr.xahla.musicx.desktop.views.content.navigation.TabSelector"
+        fx:controller="fr.xahla.musicx.desktop.views.content.TabSelector"
         style="
         -fx-padding: 10px;
         "
@@ -43,6 +43,16 @@
         </graphic>
         <tooltip>
             <Tooltip text="%tabSelector.tabHistory" />
+        </tooltip>
+    </Tab>
+
+    <!-- Editor -->
+    <Tab style="-fx-padding: 10px" fx:id="editorTab">
+        <graphic>
+            <FontIcon iconLiteral="fltfal-edit-settings-24" scaleX="2" scaleY="2" />
+        </graphic>
+        <tooltip>
+            <Tooltip text="%tabSelector.tabEditor" />
         </tooltip>
     </Tab>
 

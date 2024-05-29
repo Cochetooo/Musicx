@@ -19,6 +19,7 @@ public class SongDto {
 
     private Long id;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     private Long albumId;
     private Long artistId;

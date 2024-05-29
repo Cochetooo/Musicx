@@ -9,9 +9,10 @@ package fr.xahla.musicx.desktop.helper;
 public enum FxmlComponent {
 
     // Scenes
+    SCENE_LOCAL_LIBRARY("content/localLibrary/content.fxml"),
     SCENE_ENCYCLOPEDIA("content/encyclopedia/content.fxml"),
     SCENE_HISTORY("content/history/content.fxml"),
-    SCENE_LOCAL_LIBRARY("content/localLibrary/content.fxml"),
+    SCENE_EDITOR("content/editor/content.fxml"),
     SCENE_PROFILE("content/profile/content.fxml"),
     SCENE_SETTINGS("content/settings/content.fxml"),
     SCENE_CONSOLE("content/console/content.fxml"),

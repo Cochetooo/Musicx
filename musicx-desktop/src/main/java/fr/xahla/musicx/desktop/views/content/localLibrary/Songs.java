@@ -24,6 +24,7 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -39,9 +40,9 @@ public class Songs implements Initializable {
 
     @FXML private TableView<Song> tracksTableView;
 
-    @FXML private TableColumn<Song, Void> tracksTableArtworkCol;
-    @FXML private TableColumn<Song, Void> tracksTableTitleCol;
-    @FXML private TableColumn<Song, Void> tracksTableGenresCol;
+    @FXML private TableColumn<Song, LocalDateTime> tracksTableArtworkCol;
+    @FXML private TableColumn<Song, LocalDateTime> tracksTableTitleCol;
+    @FXML private TableColumn<Song, LocalDateTime> tracksTableGenresCol;
     @FXML private TableColumn<Song, LocalDate> tracksTableYearCol;
     @FXML private TableColumn<Song, Long> tracksTableDurationCol;
 
@@ -49,6 +50,10 @@ public class Songs implements Initializable {
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
+
+        tracksTableArtworkCol.setCellValueFactory(cellData -> cellData.getValue().updatedAtProperty());
+        tracksTableTitleCol.setCellValueFactory(cellData -> cellData.getValue().updatedAtProperty());
+        tracksTableGenresCol.setCellValueFactory(cellData -> cellData.getValue().updatedAtProperty());
 
         tracksTableArtworkCol.setCellFactory(song -> new AlbumArtworkTableCell());
         tracksTableTitleCol.setCellFactory(song -> new TrackTitleTableCell());
@@ -125,8 +130,8 @@ public class Songs implements Initializable {
     /* #######################
      * ###  Album Artwork  ###
      * ####################### */
-    static class AlbumArtworkTableCell extends TableCell<Song, Void> {
-        @Override protected void updateItem(final Void nothing, final boolean empty) {
+    static class AlbumArtworkTableCell extends TableCell<Song, LocalDateTime> {
+        @Override protected void updateItem(final LocalDateTime updatedAt, final boolean empty) {
             final var song = this.getTableRow().getItem();
 
             if (null == song || null == song.getAlbum() || StringHelper.str_is_null_or_blank(song.getAlbum().getArtworkUrl())) {
@@ -148,8 +153,8 @@ public class Songs implements Initializable {
     /* #######################
      * ###   Track Title   ###
      * ####################### */
-    static class TrackTitleTableCell extends TableCell<Song, Void> {
-        @Override protected void updateItem(final Void nothing, final boolean empty) {
+    static class TrackTitleTableCell extends TableCell<Song, LocalDateTime> {
+        @Override protected void updateItem(final LocalDateTime updatedAt, final boolean empty) {
             final var song = this.getTableRow().getItem();
 
             // Song title must not be empty
@@ -189,8 +194,8 @@ public class Songs implements Initializable {
     /* #######################
      * ###   Track Genres  ###
      * ####################### */
-    static class TrackGenresTableCell extends TableCell<Song, Void> {
-        @Override protected void updateItem(final Void nothing, final boolean empty) {
+    static class TrackGenresTableCell extends TableCell<Song, LocalDateTime> {
+        @Override protected void updateItem(final LocalDateTime updatedAt, final boolean empty) {
             final var song = this.getTableRow().getItem();
 
             if (null == song || (song.getPrimaryGenres().isEmpty() && song.getSecondaryGenres().isEmpty())) {
