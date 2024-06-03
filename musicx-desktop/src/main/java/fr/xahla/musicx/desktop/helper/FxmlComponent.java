@@ -8,6 +8,9 @@ package fr.xahla.musicx.desktop.helper;
  */
 public enum FxmlComponent {
 
+    // Components
+    COMPONENT_TOAST("Components/Toast.fxml"),
+
     // Scenes
     SCENE_LOCAL_LIBRARY("content/localLibrary/content.fxml"),
     SCENE_ENCYCLOPEDIA("content/encyclopedia/content.fxml"),

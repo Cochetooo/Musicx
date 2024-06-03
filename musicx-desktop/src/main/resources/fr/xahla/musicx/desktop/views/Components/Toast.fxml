@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Text?>
+<StackPane
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.components.Toast"
+        styleClass="toast"
+        fx:id="toastContainer"
+>
+    <Text fx:id="toastText" fill="red" font="Space Grotesk" />
+</StackPane>

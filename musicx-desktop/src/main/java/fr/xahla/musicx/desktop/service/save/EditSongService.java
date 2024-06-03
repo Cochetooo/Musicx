@@ -8,8 +8,7 @@ import javafx.concurrent.Task;
 import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
 /**
- * Edit or create a song
- *
+ * Edit or create a song.
  * @author Cochetooo
  * @since 0.4.1
  */

@@ -17,6 +17,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -87,20 +88,21 @@ public class Songs implements Initializable {
     }
 
     @FXML private void onClick(final MouseEvent mouseEvent) {
-        if (2 == mouseEvent.getClickCount()) {
-            final var trackList = scene().getLocalLibraryScene().getTrackList();
-            final var song = tracksTableView.getSelectionModel().getSelectedItem();
-            final var index = trackList.indexOf(song);
-
-            audioPlayer().setQueue(
-                trackList,
-                index
-            );
+        if (2 == mouseEvent.getClickCount()
+                && MouseButton.PRIMARY == mouseEvent.getButton()) {
+            playNow();
         }
     }
 
     @FXML private void playNow() {
-        audioPlayer().setCurrentSongByPosition(tracksTableView.getSelectionModel().getSelectedIndex());
+        final var trackList = scene().getLocalLibraryScene().getTrackList();
+        final var song = tracksTableView.getSelectionModel().getSelectedItem();
+        final var index = trackList.indexOf(song);
+
+        audioPlayer().setQueue(
+            trackList,
+            index
+        );
     }
 
     @FXML private void queueNext() {

@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.menuBar;
+package fr.xahla.musicx.desktop.views.menus;
 
 import fr.xahla.musicx.desktop.context.scene.localLibrary.LocalLibrary;
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
@@ -21,7 +21,7 @@ import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
  * @author Cochetooo
  * @since 0.2.0
  */
-public class MenuBar implements Initializable {
+public class MainMenu implements Initializable {
 
     @FXML private MenuItem fileScanFoldersMenuItem;
 

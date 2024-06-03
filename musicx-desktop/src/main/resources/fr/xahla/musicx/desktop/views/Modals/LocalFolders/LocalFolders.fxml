@@ -6,7 +6,7 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.xahla.musicx.desktop.views.modal.ImportFolders"
+      fx:controller="fr.xahla.musicx.desktop.views.modals.LocalFolders"
       alignment="CENTER"
       prefWidth="600" prefHeight="600"
       spacing="5"
@@ -48,3 +48,4 @@
         </Button>
     </HBox>
 </VBox>
+

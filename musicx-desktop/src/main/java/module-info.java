@@ -48,8 +48,8 @@ module fr.xahla.musicx.desktop {
     opens fr.xahla.musicx.desktop.views to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.content to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.content.localLibrary to javafx.fxml;
-    opens fr.xahla.musicx.desktop.views.modal to javafx.fxml;
-    opens fr.xahla.musicx.desktop.views.menuBar to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.modals to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.menus to javafx.fxml;
 
     opens fr.xahla.musicx.desktop.model.entity to javafx.base;
     opens fr.xahla.musicx.desktop.views.content.edit to javafx.fxml;

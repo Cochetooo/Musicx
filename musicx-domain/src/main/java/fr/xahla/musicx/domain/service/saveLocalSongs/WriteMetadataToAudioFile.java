@@ -75,6 +75,11 @@ public class WriteMetadataToAudioFile {
 
             for (final var song : songs) {
                 this.filepath = song.getFilepath();
+
+                if (null == this.filepath) {
+                    continue;
+                }
+
                 final var audioFile = AudioFileIO.read(new File(filepath));
                 this.tag = audioFile.getTag();
 

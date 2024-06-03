@@ -123,8 +123,8 @@ public class Album {
         return this;
     }
 
-    public int getDiscTotal() {
-        return discTotal.get();
+    public short getDiscTotal() {
+        return (short) discTotal.get();
     }
 
     public IntegerProperty discTotalProperty() {
@@ -165,8 +165,8 @@ public class Album {
         return this;
     }
 
-    public int getTrackTotal() {
-        return trackTotal.get();
+    public short getTrackTotal() {
+        return (short) trackTotal.get();
     }
 
     public IntegerProperty trackTotalProperty() {

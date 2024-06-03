@@ -10,5 +10,5 @@
         fx:id="applicationBox"
 >
     <!-- Menu Bar -->
-    <fx:include source="menuBar/menuBar.fxml" />
+    <fx:include source="menus/menuBar.fxml" />
 </VBox>

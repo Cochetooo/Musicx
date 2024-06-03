@@ -5,6 +5,7 @@ import fr.xahla.musicx.api.model.enums.ReleaseType;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.interfaces.EditFormInterface;
 import fr.xahla.musicx.desktop.model.entity.Album;
+import fr.xahla.musicx.desktop.service.save.EditAlbumService;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
 import javafx.beans.property.SimpleListProperty;
@@ -100,8 +101,6 @@ public class AlbumEdit implements Initializable, EditFormInterface {
     }
 
     @Override @FXML public void edit() {
-        final var editedSong = audioPlayer().getEditedSong();
-
         if (null == album) {
             album = new Album(AlbumDto.builder().build());
         }
@@ -114,31 +113,12 @@ public class AlbumEdit implements Initializable, EditFormInterface {
         album.setTrackTotal(StringHelper.str_parse_short_safe(trackTotalField.getText()));
         album.setType(albumTypeComboBox.getValue());
 
-        albumRepository().save(album.getDto());
-        new WriteMetadataToAudioFile().execute(album.getDto());
-
-        this.updateSongs(album);
-
-        this.editButton.setDisable(true);
+        new EditAlbumService().execute(album, ()
+            -> this.editButton.setDisable(true));
     }
 
     @FXML private void close() {
         scene().getRightNavContent().close();
-    }
-
-    private void updateSongs(final Album album) {
-        final var updateTask = new Task<Void>() {
-            @Override protected Void call() {
-                final var songs = scene().getLocalLibraryScene().getLibrary().getLocalSongs().stream()
-                    .filter(song -> null != song && song.getAlbum().getId() == album.getId())
-                    .toList();
-
-                songs.forEach(song -> song.setAlbum(album));
-                return null;
-            }
-        };
-
-        new Thread(updateTask).start();
     }
 
     private void addArtistAlbumsComboBox() {

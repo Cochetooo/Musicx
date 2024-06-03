@@ -48,7 +48,7 @@ public final class DesktopApplication extends Application {
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 
         final var resources = ResourceBundle.getBundle("fr.xahla.musicx.desktop.translations.messages");
-        final var fxmlLoader = new FXMLLoader(DesktopApplication.class.getResource("views/application.fxml"), resources);
+        final var fxmlLoader = new FXMLLoader(DesktopApplication.class.getResource("views/AApplication.fxml"), resources);
 
         try {
             final var root = (Parent) fxmlLoader.load();

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<MenuBar xmlns:fx="http://javafx.com/fxml" fx:controller="fr.xahla.musicx.desktop.views.menus.MainMenu">
+    <Menu text="%menu.name" styleClass="title-4" style="font-weight: bold">
+        <!-- File -->
+        <fx:include source="SubMenus/FileMenu.fxml" />
+
+        <!-- Audio Player -->
+        <fx:include source="SubMenus/AudioPlayerMenu.fxml" />
+    </Menu>
+</MenuBar>

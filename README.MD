@@ -30,11 +30,14 @@ music lovers:<br>
 > - `Local Folders` are now loaded by config.json
 > - `Scene Tabs` Local Library is now on top
 > - `Date` for track with no release year is now 1/1/1
+> - `Song Play` now requires primary button double click on tracklist
 > ### Fixes
 > - Fixed wrong custom tag for loading song primary genres
 > - Fixed Scan Folders buttons disabled if no songs but folders paths not empty
 > - Songs name and genres now updates instantly when edited
 > - Partially fixed transparency issue for autocompletion list for genres selection
+> - Fixed Play Now button was not correctly working
+> - When an album is edited from a song, now correctly updates all others song from the album
 
 ### Release 0.4.0 *(2024-05-25)*
 

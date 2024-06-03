@@ -123,6 +123,13 @@
     -fx-text-fill: -musicx-color-light-text;
 }
 
+/* Toasts */
+.toast {
+    -fx-background-radius: 20;
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-padding: 50px;
+}
+
 /* Toggle Switch */
 .toggle-switch:selected > .thumb {
     -fx-background-color: -musicx-color-ternary, -color-fg-emphasis;

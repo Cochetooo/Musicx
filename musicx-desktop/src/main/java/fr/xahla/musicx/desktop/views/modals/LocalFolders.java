@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.modal;
+package fr.xahla.musicx.desktop.views.modals;
 
 import fr.xahla.musicx.desktop.context.scene.localLibrary.LocalLibrary;
 import javafx.application.Platform;
@@ -25,7 +25,7 @@ import static fr.xahla.musicx.desktop.context.DesktopContext.*;
  * @author Cochetooo
  * @since 0.2.0
  */
-public class ImportFolders implements Initializable {
+public class LocalFolders implements Initializable {
 
     @FXML private CheckListView<String> folderPathsCheckListView;
     @FXML private Button clearButton;
