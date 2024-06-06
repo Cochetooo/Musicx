@@ -55,4 +55,7 @@ module fr.xahla.musicx.desktop {
     opens fr.xahla.musicx.desktop.views.content.edit to javafx.fxml;
     opens fr.xahla.musicx.desktop.context to javafx.fxml, javafx.graphics;
     opens fr.xahla.musicx.desktop.views.content.console to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.modals.console to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.modals.localFolders to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.navigation to javafx.fxml;
 }

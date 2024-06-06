@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.modals;
+package fr.xahla.musicx.desktop.views.modals.localFolders;
 
 import fr.xahla.musicx.desktop.context.scene.localLibrary.LocalLibrary;
 import javafx.application.Platform;

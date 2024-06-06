@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.content;
+package fr.xahla.musicx.desktop.views.navigation;
 
 import atlantafx.base.controls.CustomTextField;
 import javafx.fxml.FXML;

@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.content;
+package fr.xahla.musicx.desktop.views.navigation;
 
 import fr.xahla.musicx.domain.helper.DurationHelper;
 import fr.xahla.musicx.domain.helper.ProgressHelper;
@@ -20,7 +20,7 @@ import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
  * @author Cochetooo
  * @since 0.2.0
  */
-public class AppInfo implements Initializable {
+public class BottomBar implements Initializable {
 
     @FXML private HBox footerLeftBox;
     @FXML private Label footerLibrarySumLabel;
