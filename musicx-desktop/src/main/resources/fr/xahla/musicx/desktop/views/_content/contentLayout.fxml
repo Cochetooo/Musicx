@@ -29,5 +29,5 @@
     <fx:include source="appInfo.fxml" />
 
     <!-- Audio Player -->
-    <fx:include source="audioPlayer.fxml" />
+    <fx:include source="../AudioPlayer/AudioPlayerLayout.fxml" />
 </VBox>

@@ -1,0 +1,118 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.MediaView?>
+<?import javafx.scene.control.Button?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import com.jfoenix.controls.JFXBadge?>
+<?import javafx.scene.control.Label?>
+<?import com.jfoenix.controls.JFXSlider?>
+
+<HBox
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.audioPlayer.AudioPlayer"
+        alignment="CENTER"
+        spacing="10">
+    <VBox alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+        <BorderPane>
+            <left>
+                <!-- Audio Spectrum Visualizer -->
+            </left>
+            <center>
+                <HBox alignment="CENTER" spacing="15">
+                    <!-- Shuffle Mode -->
+                    <Button onAction="#toggleShuffle" fx:id="toggleShuffleButton" style="-fx-background-color: transparent" >
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-arrow-swap-24" />
+                        </graphic>
+                    </Button>
+
+                    <!-- Previous Button -->
+                    <Button onAction="#previous" fx:id="previousButton" style="-fx-background-color: transparent">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-previous-24" />
+                        </graphic>
+                    </Button>
+
+                    <!-- Backward 30s Button -->
+                    <Button onAction="#backward" fx:id="backwardButton" style="-fx-background-color: transparent">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-arrow-rotate-counterclockwise-24" />
+                        </graphic>
+                    </Button>
+
+                    <!-- Play Button -->
+                    <Button onAction="#togglePlaying" fx:id="togglePlayingButton" style="-fx-background-color: transparent">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-play-48" />
+                        </graphic>
+                    </Button>
+
+                    <!-- Forward 30s Button -->
+                    <Button onAction="#forward" fx:id="forwardButton" style="-fx-background-color: transparent">
+                        <graphic>
+                            <FontIcon iconLiteral="fltral-arrow-rotate-clockwise-24" />
+                        </graphic>
+                    </Button>
+
+                    <!-- Next Button -->
+                    <Button onAction="#next" fx:id="nextButton" style="-fx-background-color: transparent">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-next-24" />
+                        </graphic>
+                    </Button>
+
+                    <!-- Repeat Mode -->
+                    <StackPane>
+                        <Button onAction="#toggleRepeat" fx:id="toggleRepeatButton" style="-fx-background-color: transparent">
+                            <graphic>
+                                <FontIcon iconLiteral="fltfal-arrow-repeat-all-off-24" iconSize="96" />
+                            </graphic>
+                        </Button>
+
+                        <JFXBadge fx:id="songRepeatBadge" pickOnBounds="false"
+                                  position="BOTTOM_RIGHT" text="1"
+                                  styleClass="icons-badge" visible="false">
+                            <StackPane pickOnBounds="false">
+                                <FontIcon iconLiteral="fltfal-circle-24" styleClass="icon" pickOnBounds="false" />
+                            </StackPane>
+                        </JFXBadge>
+                    </StackPane>
+
+                </HBox>
+            </center>
+        </BorderPane>
+
+        <HBox alignment="CENTER" spacing="15">
+            <Label fx:id="trackTimeLabel" text="--:--:--" />
+            <JFXSlider
+                    prefWidth="1000"
+                    max="1"
+                    fx:id="trackTimeSlider"
+                    disable="true"
+                    onMouseClicked="#trackTimeSliderClick"
+            />
+            <Label fx:id="trackTotalTimeLabel" text="--:--:--" />
+        </HBox>
+    </VBox>
+
+    <HBox alignment="CENTER" spacing="5">
+        <Button onAction="#openQueue" style="-fx-background-color: transparent">
+            <graphic>
+                <FontIcon iconLiteral="fltfmz-text-bullet-list-24" />
+            </graphic>
+        </Button>
+        <Button onAction="#mute" fx:id="volumeButton" style="-fx-background-color: transparent">
+            <graphic>
+                <FontIcon iconLiteral="fltfmz-speaker-48" iconSize="64" />
+            </graphic>
+        </Button>
+        <JFXSlider
+                fx:id="volumeSlider"
+                max="1"
+                blockIncrement="0.01"
+                value="0.3"
+                prefWidth="100"
+        />
+        <Label fx:id="volumeLabel" text="30" />
+    </HBox>
+</HBox>

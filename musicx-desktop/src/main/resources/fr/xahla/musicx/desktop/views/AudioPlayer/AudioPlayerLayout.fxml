@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXBadge?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.MediaView?>
+<?import org.kordamp.ikonli.javafx.*?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="fr.xahla.musicx.desktop.views.audioPlayer.AudioPlayer"
+            fx:id="playerContainer"
+            prefHeight="60" prefWidth="Infinity"
+            style="-fx-background-color: -musicx-color-dark-background; -fx-padding: 10 25 10 25"
+            HBox.hgrow="ALWAYS">
+    <!-- Audio Media Container -->
+    <MediaView fx:id="trackMediaView" />
+
+    <!-- Grid -->
+    <left>
+        <fx:include source="AudioPlayerTrackInfo.fxml" />
+    </left>
+
+    <center>
+        <fx:include source="AudioPlayerControls.fxml" />
+    </center>
+</BorderPane>

@@ -1,0 +1,21 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+
+<HBox
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.audioPlayer.AudioPlayer"
+        spacing="20">
+    <ImageView fx:id="albumArtwork" fitWidth="80" fitHeight="80">
+        <effect>
+            <DropShadow fx:id="albumArtworkShadow" spread="0.4" color="darkslategray" />
+        </effect>
+    </ImageView>
+
+    <VBox spacing="10" prefWidth="320" alignment="CENTER_LEFT">
+        <Label fx:id="trackNameLabel" styleClass="title-3" />
+        <Label fx:id="artistNameLabel" styleClass="text-caption" textFill="gray" />
+    </VBox>
+</HBox>
