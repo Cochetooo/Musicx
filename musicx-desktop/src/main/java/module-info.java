@@ -59,4 +59,5 @@ module fr.xahla.musicx.desktop {
     opens fr.xahla.musicx.desktop.views.modals.localFolders to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.navigation to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.audioPlayer to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.pages.settings to javafx.fxml;
 }

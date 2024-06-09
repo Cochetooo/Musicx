@@ -12,13 +12,13 @@ public enum FxmlComponent {
     COMPONENT_TOAST("Components/Toast.fxml"),
 
     // Scenes
-    SCENE_LOCAL_LIBRARY("content/localLibrary/content.fxml"),
-    SCENE_ENCYCLOPEDIA("content/encyclopedia/content.fxml"),
-    SCENE_HISTORY("content/history/content.fxml"),
-    SCENE_EDITOR("content/editor/content.fxml"),
-    SCENE_PROFILE("content/profile/content.fxml"),
-    SCENE_SETTINGS("content/settings/content.fxml"),
-    SCENE_CONSOLE("content/console/content.fxml"),
+    SCENE_LOCAL_LIBRARY("content/localLibrary/Settings.fxml"),
+    SCENE_ENCYCLOPEDIA("content/encyclopedia/Settings.fxml"),
+    SCENE_HISTORY("content/history/Settings.fxml"),
+    SCENE_EDITOR("content/editor/Settings.fxml"),
+    SCENE_PROFILE("content/profile/Settings.fxml"),
+    SCENE_SETTINGS("content/settings/Settings.fxml"),
+    SCENE_CONSOLE("content/console/Settings.fxml"),
 
     // Local Library Tabs
     LOCAL_LIBRARY_ALBUMS("content/localLibrary/albums.fxml"),
@@ -32,7 +32,7 @@ public enum FxmlComponent {
 
     // Modals
     MODAL_IMPORT_FOLDERS("importFolders.fxml"),
-    MODAL_SETTINGS("content.fxml");
+    MODAL_SETTINGS("Settings.fxml");
 
     private final String filepath;
 

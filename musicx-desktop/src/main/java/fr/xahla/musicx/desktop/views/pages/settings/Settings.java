@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.modals;
+package fr.xahla.musicx.desktop.views.pages.settings;
 
 import atlantafx.base.controls.ToggleSwitch;
 import javafx.fxml.FXML;
