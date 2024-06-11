@@ -5,32 +5,30 @@
 <TabPane
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="fr.xahla.musicx.desktop.views.content.TabSelector"
-        style="
-        -fx-padding: 10px;
-        "
+        fx:controller="fr.xahla.musicx.desktop.views.navigation.LeftTabSelector"
+        styleClass="base-padding"
         prefHeight="1200"
         fx:id="pageTab"
         side="LEFT"
         tabClosingPolicy="UNAVAILABLE"
         tabDragPolicy="FIXED">
-    <!-- Local Library -->
-    <Tab style="-fx-padding: 10px" fx:id="localLibraryTab">
+    <!-- Music Library -->
+    <Tab style="-fx-padding: 10px" fx:id="libraryTab">
         <graphic>
-            <FontIcon iconLiteral="fltfmz-music-note-24" scaleX="2" scaleY="2" />
+            <FontIcon iconLiteral="fltfal-library-28" scaleX="2" scaleY="2" />
         </graphic>
         <tooltip>
             <Tooltip text="%tabSelector.tabLocalLibrary" />
         </tooltip>
     </Tab>
 
-    <!-- Encyclopedia -->
-    <Tab style="-fx-padding: 10px" fx:id="encyclopediaTab">
+    <!-- Search -->
+    <Tab style="-fx-padding: 10px" fx:id="searchTab">
         <graphic>
-            <FontIcon iconLiteral="fltfal-book-database-24" scaleX="2" scaleY="2" />
+            <FontIcon iconLiteral="fltfmz-search-28" scaleX="2" scaleY="2" />
         </graphic>
         <tooltip>
-            <Tooltip text="%tabSelector.tabEncyclopedia" />
+            <Tooltip text="%tabSelector.tabSearch" />
         </tooltip>
     </Tab>
 
@@ -73,16 +71,6 @@
         </graphic>
         <tooltip>
             <Tooltip text="%tabSelector.tabSettings" />
-        </tooltip>
-    </Tab>
-
-    <!-- Console -->
-    <Tab style="-fx-padding: 10px" fx:id="consoleTab">
-        <graphic>
-            <FontIcon iconLiteral="fltfal-laptop-28" scaleX="2" scaleY="2" />
-        </graphic>
-        <tooltip>
-            <Tooltip text="%tabSelector.tabConsole" />
         </tooltip>
     </Tab>
 </TabPane>

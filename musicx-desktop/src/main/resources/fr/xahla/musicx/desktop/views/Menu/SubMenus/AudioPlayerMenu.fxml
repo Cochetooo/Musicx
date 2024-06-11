@@ -2,10 +2,10 @@
 <?import javafx.scene.control.MenuItem?>
 
 <Menu xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.xahla.musicx.desktop.views.menus.MainMenu"
+      fx:controller="fr.xahla.musicx.desktop.views.menus.submenus.AudioPlayerMenu"
       text="%menu.player.name">
-    <MenuItem text="%menu.player.togglePlaying" onAction="#playerTogglePlaying" accelerator="Shortcut+P" />
-    <MenuItem text="%menu.player.previous" onAction="#playerPrevious" accelerator="Shortcut+B" />
-    <MenuItem text="%menu.player.next" onAction="#playerNext" accelerator="Shortcut+N" />
-    <MenuItem text="%menu.player.mute" onAction="#playerMute" accelerator="Shortcut+M" />
+    <MenuItem text="%menu.player.togglePlaying" onAction="#togglePlaying" accelerator="Shortcut+P" />
+    <MenuItem text="%menu.player.previous" onAction="#previous" accelerator="Shortcut+B" />
+    <MenuItem text="%menu.player.next" onAction="#next" accelerator="Shortcut+N" />
+    <MenuItem text="%menu.player.mute" onAction="#mute" accelerator="Shortcut+M" />
 </Menu>

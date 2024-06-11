@@ -12,27 +12,16 @@ public enum FxmlComponent {
     COMPONENT_TOAST("Components/Toast.fxml"),
 
     // Scenes
-    SCENE_LOCAL_LIBRARY("content/localLibrary/Settings.fxml"),
-    SCENE_ENCYCLOPEDIA("content/encyclopedia/Settings.fxml"),
-    SCENE_HISTORY("content/history/Settings.fxml"),
-    SCENE_EDITOR("content/editor/Settings.fxml"),
-    SCENE_PROFILE("content/profile/Settings.fxml"),
-    SCENE_SETTINGS("content/settings/Settings.fxml"),
-    SCENE_CONSOLE("content/console/Settings.fxml"),
-
-    // Local Library Tabs
-    LOCAL_LIBRARY_ALBUMS("content/localLibrary/albums.fxml"),
-    LOCAL_LIBRARY_SONGS("content/localLibrary/songs.fxml"),
-
-    // Right Nav
-    EDIT_ALBUM("content/edit/albumEdit.fxml"),
-    EDIT_GENRE("content/edit/genreEdit.fxml"),
-    EDIT_SONG("content/edit/songEdit.fxml"),
-    QUEUE_LIST("content/queueList.fxml"),
+    SCENE_LIBRARY("Pages/Library/Songs/SongList.fxml"),
+    SCENE_SEARCH("Pages/Library/Search/Search.fxml"),
+    SCENE_HISTORY("Pages/History/Summary.fxml"),
+    SCENE_EDITOR("Pages/Editor/SongMatrix/SongMatrix.fxml"),
+    SCENE_PROFILE("Pages/Profile/Profile.fxml"),
+    SCENE_SETTINGS("Pages/Settings/Settings.fxml"),
 
     // Modals
-    MODAL_IMPORT_FOLDERS("importFolders.fxml"),
-    MODAL_SETTINGS("Settings.fxml");
+    MODAL_LOCAL_FOLDERS("LocalFolders/LocalFolders.fxml"),
+    MODAL_CONSOLE("Console/Console.fxml");
 
     private final String filepath;
 

@@ -57,4 +57,14 @@ public final class StringHelper {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
+    final private static String invalidChars = "[\\\\/:*?\"<>|]";
+
+    /**
+     * @return The same string without any of those characters : [\\/:*?"&lt;&gt;|] to fit a valid Path
+     * @since 0.5.0
+     */
+    public static String str_convert_to_path(final String str) {
+        return str.replaceAll(invalidChars, "");
+    }
+
 }

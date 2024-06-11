@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.xahla.musicx.desktop.views.content.QueueList"
+      fx:controller="fr.xahla.musicx.desktop.views._content.QueueList"
       prefHeight="1200.0" prefWidth="400.0"
       styleClass="box-container"
       spacing="15">

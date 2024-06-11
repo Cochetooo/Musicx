@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.content.localLibrary;
+package fr.xahla.musicx.desktop.views._content.localLibrary;
 
 import fr.xahla.musicx.desktop.helper.*;
 import fr.xahla.musicx.desktop.model.entity.Album;

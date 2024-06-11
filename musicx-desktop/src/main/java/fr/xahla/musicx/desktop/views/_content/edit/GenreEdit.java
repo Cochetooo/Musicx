@@ -1,7 +1,6 @@
-package fr.xahla.musicx.desktop.views.content.edit;
+package fr.xahla.musicx.desktop.views._content.edit;
 
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
-import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.desktop.model.entity.Genre;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
@@ -14,7 +13,6 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
@@ -73,7 +71,7 @@ public class GenreEdit implements Initializable {
     }
 
     @FXML private void editSong() {
-        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_SONG, resourceBundle);
+        //scene().getRightNavContent().switchContent(FxmlComponent.EDIT_SONG, resourceBundle);
     }
 
     @FXML private void proposePrimaryGenre() {

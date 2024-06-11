@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.come/fxml"
-      fx:controller="fr.xahla.musicx.desktop.views.content.localLibrary.Content"
+      fx:controller="fr.xahla.musicx.desktop.views._content.localLibrary.Content"
       styleClass="box-container"
       spacing="15" HBox.hgrow="ALWAYS" prefHeight="1200">
     <TabPane

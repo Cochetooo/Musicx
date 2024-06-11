@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import atlantafx.base.controls.CustomTextField?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="fr.xahla.musicx.desktop.views.pages.library.LibrarySearch"
+            prefHeight="1200.0"
+            styleClass="box-container">
+    <top>
+        <HBox spacing="10" styleClass="base-padding">
+            <!-- Search Bar -->
+            <CustomTextField promptText="%content.searchTextField"
+                             fx:id="searchTextField"
+                             prefWidth="1800"
+                             prefHeight="60"
+                             styleClass="main-search-text">
+                <right>
+                    <FontIcon iconLiteral="fltfmz-search-28" />
+                </right>
+            </CustomTextField>
+
+            <!-- Online Mode -->
+            <Button fx:id="onlineModeButton" onAction="#toggleOnlineMode">
+                <graphic>
+                    <FontIcon iconLiteral="fltfmz-wifi-1-24" />
+                </graphic>
+            </Button>
+        </HBox>
+
+    </top>
+
+    <center>
+        <!-- Track Result -->
+        <ListView fx:id="searchTrackResultList" />
+
+        <!-- Album Result -->
+        <ListView fx:id="searchAlbumResultList" />
+
+        <!-- Artist Result -->
+        <ListView fx:id="searchArtistResultList" />
+
+        <!-- Label Result -->
+        <ListView fx:id="searchLabelResultList" />
+
+        <!-- Genre Result -->
+        <ListView fx:id="searchGenreResultList" />
+    </center>
+</BorderPane>

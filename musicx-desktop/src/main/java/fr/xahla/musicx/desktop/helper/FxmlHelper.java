@@ -4,6 +4,7 @@ import fr.xahla.musicx.desktop.views.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public final class FxmlHelper {
 
         try {
             final Parent fxmlComponent = FXMLLoader.load(
-                Objects.requireNonNull(Application.class.getResource("modal/" + fxmlSource.getFilepath())),
+                Objects.requireNonNull(Application.class.getResource("Modals/" + fxmlSource.getFilepath())),
                 resourceBundle
             );
 
@@ -55,6 +56,17 @@ public final class FxmlHelper {
         } catch (final IOException exception) {
             logger().error(exception, "FXML_MODAL_LOAD_ERROR", fxmlSource);
         }
+    }
+
+    /**
+     * @since 0.5.0
+     */
+    public static void showInformationAlert(final String title, final String message) {
+        final var alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
     }
 
 }

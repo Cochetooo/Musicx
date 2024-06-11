@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.content;
+package fr.xahla.musicx.desktop.views.navigation;
 
 import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import javafx.fxml.FXML;
@@ -15,28 +15,27 @@ import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
  * @author Cochetooo
  * @since 0.3.3
  */
-public class TabSelector implements Initializable {
+public class LeftTabSelector implements Initializable {
 
     @FXML private TabPane pageTab;
 
-    @FXML private Tab localLibraryTab;
-    @FXML private Tab encyclopediaTab;
+    @FXML private Tab libraryTab;
+    @FXML private Tab searchTab;
     @FXML private Tab historyTab;
     @FXML private Tab editorTab;
     @FXML private Tab profileTab;
     @FXML private Tab settingsTab;
-    @FXML private Tab consoleTab;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         pageTab.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == localLibraryTab) {
+            if (newValue == libraryTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_LOCAL_LIBRARY,
+                    FxmlComponent.SCENE_LIBRARY,
                     resourceBundle
                 );
-            } else if (newValue == encyclopediaTab) {
+            } else if (newValue == searchTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_ENCYCLOPEDIA,
+                    FxmlComponent.SCENE_SEARCH,
                     resourceBundle
                 );
             } else if (newValue == historyTab) {
@@ -57,11 +56,6 @@ public class TabSelector implements Initializable {
             } else if (newValue == settingsTab) {
                 scene().getSceneContent().switchContent(
                     FxmlComponent.SCENE_SETTINGS,
-                    resourceBundle
-                );
-            } else if (newValue == consoleTab) {
-                scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_CONSOLE,
                     resourceBundle
                 );
             }

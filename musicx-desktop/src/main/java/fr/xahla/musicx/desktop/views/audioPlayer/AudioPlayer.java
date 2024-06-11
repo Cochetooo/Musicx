@@ -21,6 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -69,11 +70,7 @@ public class AudioPlayer implements Initializable {
     private FontIcon volumeMuteIcon, volumeOffIcon, volumeDownIcon, volumeIcon, volumeUpIcon;
     private FontIcon noRepeatIcon, repeatIcon;
 
-    private ResourceBundle resourceBundle;
-
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        this.resourceBundle = resourceBundle;
-
         this.setControlIcons();
 
         // Default values
@@ -250,13 +247,15 @@ public class AudioPlayer implements Initializable {
     }
 
     @FXML private void openQueue() {
-        final var rightNavContent = scene().getRightNavContent();
+        throw new RuntimeException("TODO");
+
+        /* final var rightNavContent = scene().getRightNavContent();
 
         if (null != rightNavContent.get()) {
             rightNavContent.close();
         } else {
             rightNavContent.switchContent(FxmlComponent.QUEUE_LIST, this.resourceBundle);
-        }
+        } */
     }
 
     // --- Helpers ---

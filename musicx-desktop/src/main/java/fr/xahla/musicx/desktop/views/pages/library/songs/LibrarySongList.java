@@ -1,47 +1,34 @@
-package fr.xahla.musicx.desktop.views.content.localLibrary;
+package fr.xahla.musicx.desktop.views.pages.library.songs;
 
 import fr.xahla.musicx.desktop.helper.*;
-import fr.xahla.musicx.desktop.model.entity.Genre;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.model.table.AlbumArtworkTableCell;
 import fr.xahla.musicx.desktop.model.table.TrackGenresTableCell;
 import fr.xahla.musicx.desktop.model.table.TrackTitleTableCell;
-import fr.xahla.musicx.domain.helper.StringHelper;
-import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 
 /**
  * View for Songs group in Local Library scene.
  * @author Cochetooo
  * @since 0.3.3
  */
-public class Songs implements Initializable {
+public class LibrarySongList implements Initializable {
 
     @FXML private TableView<Song> tracksTableView;
 
@@ -115,17 +102,17 @@ public class Songs implements Initializable {
 
     @FXML private void editSong() {
         audioPlayer().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
-        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_SONG, this.resourceBundle);
+        //scene().getRightNavContent().switchContent(FxmlComponent.EDIT_SONG, this.resourceBundle);
     }
 
     @FXML private void editAlbum() {
         audioPlayer().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
-        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, this.resourceBundle);
+        //scene().getRightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, this.resourceBundle);
     }
 
     @FXML private void editGenres() {
         audioPlayer().setEditedSong(tracksTableView.getSelectionModel().getSelectedItem());
-        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_GENRE, this.resourceBundle);
+        //scene().getRightNavContent().switchContent(FxmlComponent.EDIT_GENRE, this.resourceBundle);
     }
 
     // --- Cell Factories ---

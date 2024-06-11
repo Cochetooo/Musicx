@@ -1,8 +1,7 @@
-package fr.xahla.musicx.desktop.views.content;
+package fr.xahla.musicx.desktop.views._content;
 
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.model.entity.Song;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;

@@ -7,7 +7,7 @@
 <VBox
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="fr.xahla.musicx.desktop.views.content.EmptyLibrary"
+        fx:controller="fr.xahla.musicx.desktop.views._content.EmptyLibrary"
         alignment="CENTER"
         spacing="10"
         VBox.vgrow="ALWAYS">

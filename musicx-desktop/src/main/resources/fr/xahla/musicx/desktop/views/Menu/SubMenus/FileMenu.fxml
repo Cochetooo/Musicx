@@ -4,26 +4,26 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 
 <Menu xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.xahla.musicx.desktop.views.menus.MainMenu"
+      fx:controller="fr.xahla.musicx.desktop.views.menus.submenus.FileMenu"
       text="%menu.file.name">
     <!-- Library -->
     <Menu text="%menu.file.library.name">
         <!-- Import Folders -->
-        <MenuItem text="%menu.file.library.importFolders" onAction="#fileImportFolders" accelerator="Shortcut+Shift+O">
+        <MenuItem text="%menu.file.library.importFolders" onAction="#openLocalFoldersModal" accelerator="Shortcut+Shift+O">
             <graphic>
                 <FontIcon iconLiteral="fltfal-folder-add-24" />
             </graphic>
         </MenuItem>
 
         <!-- Scan Folders -->
-        <MenuItem text="%menu.file.library.scanFolders" onAction="#fileScanFolders" disable="true" fx:id="fileScanFoldersMenuItem">
+        <MenuItem text="%menu.file.library.scanFolders" onAction="#scanLocalFolders" disable="true" fx:id="scanLocalFoldersMenuItem">
             <graphic>
                 <FontIcon iconLiteral="fltfal-arrow-clockwise-24" />
             </graphic>
         </MenuItem>
 
         <!-- Structure folders -->
-        <MenuItem text="%menu.file.library.structureFolders" onAction="#fileStructureFolders" fx:id="fileStructureFolders">
+        <MenuItem text="%menu.file.library.structureFolders" onAction="#structureFolders">
             <graphic>
                 <FontIcon iconLiteral="fltfmz-text-bullet-list-tree-24" />
             </graphic>
@@ -33,17 +33,17 @@
     <SeparatorMenuItem />
 
     <!-- Settings -->
-    <MenuItem text="%menu.file.settings" onAction="#fileSettings" accelerator="Ctrl+O">
+    <MenuItem text="%menu.file.settings" onAction="#openSettings" accelerator="Ctrl+O">
         <graphic>
             <FontIcon iconLiteral="fltfmz-settings-28" />
         </graphic>
     </MenuItem>
 
     <!-- Show Console -->
-    <MenuItem text="%menu.file.showConsole" onAction="#fileShowConsole" accelerator="Alt+L" />
+    <MenuItem text="%menu.file.showConsole" onAction="#showConsole" accelerator="Alt+L" />
 
     <SeparatorMenuItem />
 
     <!-- Exit Program -->
-    <MenuItem text="%menu.file.exit" onAction="#fileExit" accelerator="Alt+F4" />
+    <MenuItem text="%menu.file.exit" onAction="#exitProgram" accelerator="Alt+F4" />
 </Menu>

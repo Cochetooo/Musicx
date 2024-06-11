@@ -123,6 +123,14 @@
     -fx-text-fill: -musicx-color-light-text;
 }
 
+/* Text Field */
+.main-search-text {
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-font-size: 20px;
+    -fx-background-color: -musicx-color-light-background;
+}
+
 /* Toasts */
 .toast {
     -fx-background-radius: 20;
@@ -137,4 +145,10 @@
 
 .toggle-switch:selected > .thumb-area {
     -fx-background-color: -musicx-color-ternary;
+}
+
+/* Utils */
+
+.base-padding {
+    -fx-padding: 10px;
 }

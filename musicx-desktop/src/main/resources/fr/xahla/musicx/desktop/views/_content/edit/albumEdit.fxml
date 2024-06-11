@@ -7,7 +7,7 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="fr.xahla.musicx.desktop.views.content.edit.AlbumEdit"
+           fx:controller="fr.xahla.musicx.desktop.views._content.edit.AlbumEdit"
            prefHeight="1200.0" prefWidth="500.0"
            spacing="10"
            styleClass="box-container"

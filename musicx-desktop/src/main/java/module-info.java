@@ -45,19 +45,17 @@ module fr.xahla.musicx.desktop {
 
     // -- Opens --
     opens fr.xahla.musicx.desktop to javafx.graphics, javafx.fxml;
-    opens fr.xahla.musicx.desktop.views to javafx.fxml;
-    opens fr.xahla.musicx.desktop.views.content to javafx.fxml;
-    opens fr.xahla.musicx.desktop.views.content.localLibrary to javafx.fxml;
-    opens fr.xahla.musicx.desktop.views.modals to javafx.fxml;
-    opens fr.xahla.musicx.desktop.views.menus to javafx.fxml;
-
-    opens fr.xahla.musicx.desktop.model.entity to javafx.base;
-    opens fr.xahla.musicx.desktop.views.content.edit to javafx.fxml;
     opens fr.xahla.musicx.desktop.context to javafx.fxml, javafx.graphics;
-    opens fr.xahla.musicx.desktop.views.content.console to javafx.fxml;
+    opens fr.xahla.musicx.desktop.model.entity to javafx.base;
+
+    opens fr.xahla.musicx.desktop.views to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.audioPlayer to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.menus to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.menus.submenus to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.modals.console to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.modals.localFolders to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.navigation to javafx.fxml;
-    opens fr.xahla.musicx.desktop.views.audioPlayer to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.pages.library to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.pages.library.songs to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.pages.settings to javafx.fxml;
 }

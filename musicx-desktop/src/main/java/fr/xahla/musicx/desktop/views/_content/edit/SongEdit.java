@@ -1,10 +1,7 @@
-package fr.xahla.musicx.desktop.views.content.edit;
+package fr.xahla.musicx.desktop.views._content.edit;
 
-import fr.xahla.musicx.desktop.helper.FxmlComponent;
 import fr.xahla.musicx.desktop.service.save.EditSongService;
 import fr.xahla.musicx.domain.helper.StringHelper;
-import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -17,7 +14,6 @@ import java.util.ResourceBundle;
 import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 import static fr.xahla.musicx.desktop.helper.DurationHelper.getTimeString;
-import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
 /**
  * View for song editing.
@@ -118,11 +114,11 @@ public class SongEdit implements Initializable {
     }
 
     @FXML public void editAlbum() {
-        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, resourceBundle);
+        //scene().getRightNavContent().switchContent(FxmlComponent.EDIT_ALBUM, resourceBundle);
     }
 
     @FXML private void editGenres() {
-        scene().getRightNavContent().switchContent(FxmlComponent.EDIT_GENRE, resourceBundle);
+        //scene().getRightNavContent().switchContent(FxmlComponent.EDIT_GENRE, resourceBundle);
     }
 
     public void close() {

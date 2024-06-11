@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <VBox
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="fr.xahla.musicx.desktop.views.Application"
@@ -10,5 +12,25 @@
         fx:id="applicationBox"
 >
     <!-- Menu Bar -->
-    <fx:include source="menus/menuBar.fxml" />
+    <fx:include source="Menu/MainMenu.fxml" />
+
+    <!-- Main Content -->
+    <BorderPane
+            VBox.vgrow="ALWAYS"
+            styleClass="base-padding">
+        <left>
+            <!-- Page Selector -->
+            <fx:include source="Navigation/LeftTabSelector.fxml" />
+        </left>
+        <center>
+            <!-- Page Content -->
+            <HBox fx:id="contentSceneBox" />
+        </center>
+    </BorderPane>
+
+    <!-- App Info Row -->
+    <fx:include source="Navigation/BottomBar.fxml" />
+
+    <!-- Audio Player -->
+    <fx:include source="AudioPlayer/AudioPlayer.fxml" />
 </VBox>

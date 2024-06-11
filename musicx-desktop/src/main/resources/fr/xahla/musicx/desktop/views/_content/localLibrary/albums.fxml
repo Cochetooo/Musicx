@@ -9,8 +9,8 @@
 <VBox
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.come/fxml"
-        fx:controller="fr.xahla.musicx.desktop.views.content.localLibrary.Albums"
-        style="-fx-padding: 10px">
+        fx:controller="fr.xahla.musicx.desktop.views._content.localLibrary.Albums"
+        styleClass="base-padding">
     <fx:define>
         <Double fx:id="selectedAlbumArtworkSize" fx:value="200.0" />
     </fx:define>

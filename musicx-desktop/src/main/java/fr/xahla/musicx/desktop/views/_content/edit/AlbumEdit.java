@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.content.edit;
+package fr.xahla.musicx.desktop.views._content.edit;
 
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.enums.ReleaseType;
@@ -7,10 +7,8 @@ import fr.xahla.musicx.desktop.interfaces.EditFormInterface;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.service.save.EditAlbumService;
 import fr.xahla.musicx.domain.helper.StringHelper;
-import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -25,7 +23,6 @@ import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
-import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
 import static fr.xahla.musicx.domain.application.AbstractContext.artistRepository;
 
 /**

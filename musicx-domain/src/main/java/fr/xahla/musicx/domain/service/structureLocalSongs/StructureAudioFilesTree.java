@@ -3,14 +3,14 @@ package fr.xahla.musicx.domain.service.structureLocalSongs;
 import fr.xahla.musicx.api.model.AlbumDto;
 import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.api.model.SongDto;
+import fr.xahla.musicx.domain.helper.FileHelper;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.*;
+import static fr.xahla.musicx.domain.helper.FileHelper.file_get_extension;
+import static fr.xahla.musicx.domain.helper.StringHelper.str_convert_to_path;
 
 /**
  * Service that collects all songs and restructure them in an organized folder with Artist > Album > Songs.
@@ -33,7 +33,9 @@ public class StructureAudioFilesTree {
     }
 
     private void createArtist(final ArtistDto artist) {
-        final var artistPath = Path.of(rootFolder).resolve(artist.getName());
+        final var artistPath = Path.of(rootFolder).resolve(
+            str_convert_to_path(artist.getName())
+        );
 
         try {
             if (!Files.exists(artistPath)) {
@@ -50,7 +52,8 @@ public class StructureAudioFilesTree {
 
     private void createAlbum(final AlbumDto album, final Path artistPath) {
         final var albumPath = artistPath.resolve(
-            album.getReleaseDate().getYear() + " - " + album.getName()
+            album.getReleaseDate().getYear() + " - "
+                + str_convert_to_path(album.getName())
         );
 
         try {
@@ -69,7 +72,9 @@ public class StructureAudioFilesTree {
     private void createSong(final SongDto song, final Path albumPath) {
         try {
             final var songPath = albumPath.resolve(
-                String.format("%02d", song.getTrackNumber()) + " - " + song.getTitle() + ".mp3"
+                String.format("%02d", song.getTrackNumber()) + " - "
+                    + str_convert_to_path(song.getTitle()) + "."
+                    + file_get_extension(Path.of(song.getFilepath()))
             );
 
             logger().finest("Song path : " + songPath);
