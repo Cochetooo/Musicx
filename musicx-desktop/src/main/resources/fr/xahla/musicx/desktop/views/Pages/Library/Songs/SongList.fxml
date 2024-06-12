@@ -4,114 +4,138 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.*?>
+<?import atlantafx.base.controls.CustomTextField?>
+<?import org.controlsfx.control.CheckComboBox?>
 <VBox
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.come/fxml"
         fx:controller="fr.xahla.musicx.desktop.views.pages.library.songs.LibrarySongList"
-        styleClass="base-padding"
+        styleClass="box-container"
         HBox.hgrow="ALWAYS"
         spacing="15">
-    <TableView
-            fx:id="tracksTableView"
-            VBox.vgrow="ALWAYS"
-            onMouseClicked="#onClick"
-            styleClass="noTableHeader"
-            prefHeight="1200">
-        <columns>
-            <!-- Track No -->
-            <TableColumn text="%tracksTable.trackNumber" minWidth="50" maxWidth="50" style="-fx-text-alignment: CENTER">
-                <cellValueFactory>
-                    <PropertyValueFactory property="trackNumber" />
-                </cellValueFactory>
-            </TableColumn>
+    <HBox spacing="10">
+        <!-- Search Bar -->
+        <CustomTextField promptText="%content.searchTextField"
+                         fx:id="searchTextField"
+                         prefWidth="1800"
+                         prefHeight="60"
+                         styleClass="main-search-text">
+            <right>
+                <FontIcon iconLiteral="fltfmz-search-28" />
+            </right>
+        </CustomTextField>
 
-            <!-- Artwork -->
-            <TableColumn text="%tracksTable.trackArtwork" minWidth="50" maxWidth="50" fx:id="tracksTableArtworkCol" />
+        <!-- Filters Settings -->
+        <CheckComboBox fx:id="filterSettingsComboBox" maxWidth="200" styleClass="transparent-list" style="-fx-background-color: -musicx-color-light-background" />
+    </HBox>
 
-            <!-- Title -->
-            <TableColumn text="%tracksTable.songTitle" fx:id="tracksTableTitleCol" />
 
-            <!-- Genres -->
-            <TableColumn text="%tracksTable.genres" fx:id="tracksTableGenresCol" />
+    <!-- We use a stackpane in order to put loading progress for the table view if necessary -->
+    <StackPane fx:id="tableViewContainer">
+        <TableView
+                fx:id="tracksTableView"
+                VBox.vgrow="ALWAYS"
+                onMouseClicked="#onClick"
+                styleClass="noTableHeader"
+                prefHeight="1200">
+            <columns>
+                <!-- Track No -->
+                <TableColumn text="%tracksTable.trackNumber" minWidth="50" maxWidth="50" style="-fx-text-alignment: CENTER">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="trackNumber" />
+                    </cellValueFactory>
+                </TableColumn>
 
-            <!-- Year -->
-            <TableColumn text="%tracksTable.albumYear" minWidth="120" maxWidth="120" fx:id="tracksTableYearCol" />
+                <!-- Artwork -->
+                <TableColumn text="%tracksTable.trackArtwork" minWidth="50" maxWidth="50" fx:id="tracksTableArtworkCol" />
 
-            <!-- Duration -->
-            <TableColumn fx:id="tracksTableDurationCol" minWidth="80" maxWidth="120" style="-fx-alignment: center;">
-                <cellValueFactory>
-                    <PropertyValueFactory property="duration" />
-                </cellValueFactory>
-                <graphic>
-                    <FontIcon iconLiteral="fltfal-clock-28" />
-                </graphic>
-            </TableColumn>
-        </columns>
+                <!-- Title -->
+                <TableColumn text="%tracksTable.songTitle" fx:id="tracksTableTitleCol" />
 
-        <contextMenu>
-            <ContextMenu>
-                <items>
-                    <!-- Play Track Now -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.playNow"
-                            accelerator="Alt+Enter"
-                            onAction="#playNow">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfmz-play-24" />
-                        </graphic>
-                    </MenuItem>
+                <!-- Genres -->
+                <TableColumn text="%tracksTable.genres" fx:id="tracksTableGenresCol" />
 
-                    <!-- Queue Next -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.queueNext"
-                            accelerator="Shortcut+Shift+Enter"
-                            onAction="#queueNext">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
-                        </graphic>
-                    </MenuItem>
+                <!-- Year -->
+                <TableColumn text="%tracksTable.albumYear" minWidth="120" maxWidth="120" fx:id="tracksTableYearCol" />
 
-                    <!-- Queue Last -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.queueLast"
-                            accelerator="Shortcut+Enter"
-                            onAction="#queueLast">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
-                        </graphic>
-                    </MenuItem>
+                <!-- Duration -->
+                <TableColumn fx:id="tracksTableDurationCol" minWidth="80" maxWidth="120" style="-fx-alignment: center;">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="duration" />
+                    </cellValueFactory>
+                    <graphic>
+                        <FontIcon iconLiteral="fltfal-clock-28" />
+                    </graphic>
+                </TableColumn>
+            </columns>
 
-                    <SeparatorMenuItem />
+            <contextMenu>
+                <ContextMenu>
+                    <items>
+                        <!-- Play Track Now -->
+                        <MenuItem
+                                text="%content.trackListContextMenu.playNow"
+                                accelerator="Alt+Enter"
+                                onAction="#playNow">
+                            <graphic>
+                                <FontIcon iconLiteral="fltfmz-play-24" />
+                            </graphic>
+                        </MenuItem>
 
-                    <!-- Edit Song -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.editSong"
-                            accelerator="Shift+Enter"
-                            onAction="#editSong">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfal-edit-32" />
-                        </graphic>
-                    </MenuItem>
+                        <!-- Queue Next -->
+                        <MenuItem
+                                text="%content.trackListContextMenu.queueNext"
+                                accelerator="Shortcut+Shift+Enter"
+                                onAction="#queueNext">
+                            <graphic>
+                                <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
+                            </graphic>
+                        </MenuItem>
 
-                    <!-- Edit Album -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.editAlbum"
-                            onAction="#editAlbum">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfal-edit-32" />
-                        </graphic>
-                    </MenuItem>
+                        <!-- Queue Last -->
+                        <MenuItem
+                                text="%content.trackListContextMenu.queueLast"
+                                accelerator="Shortcut+Enter"
+                                onAction="#queueLast">
+                            <graphic>
+                                <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
+                            </graphic>
+                        </MenuItem>
 
-                    <!-- Edit Genres -->
-                    <MenuItem
-                            text="%content.trackListContextMenu.editGenres"
-                            onAction="#editGenres">
-                        <graphic>
-                            <FontIcon iconLiteral="fltfal-edit-32" />
-                        </graphic>
-                    </MenuItem>
-                </items>
-            </ContextMenu>
-        </contextMenu>
-    </TableView>
+                        <SeparatorMenuItem />
+
+                        <!-- Edit Song -->
+                        <MenuItem
+                                text="%content.trackListContextMenu.editSong"
+                                accelerator="Shift+Enter"
+                                onAction="#editSong">
+                            <graphic>
+                                <FontIcon iconLiteral="fltfal-edit-32" />
+                            </graphic>
+                        </MenuItem>
+
+                        <!-- Edit Album -->
+                        <MenuItem
+                                text="%content.trackListContextMenu.editAlbum"
+                                onAction="#editAlbum">
+                            <graphic>
+                                <FontIcon iconLiteral="fltfal-edit-32" />
+                            </graphic>
+                        </MenuItem>
+
+                        <!-- Edit Genres -->
+                        <MenuItem
+                                text="%content.trackListContextMenu.editGenres"
+                                onAction="#editGenres">
+                            <graphic>
+                                <FontIcon iconLiteral="fltfal-edit-32" />
+                            </graphic>
+                        </MenuItem>
+                    </items>
+                </ContextMenu>
+            </contextMenu>
+        </TableView>
+
+        <ProgressIndicator visible="false" fx:id="filterProgressIndicator" />
+    </StackPane>
 </VBox>

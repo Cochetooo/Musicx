@@ -45,4 +45,22 @@ public final class ArrayHelper {
         return false;
     }
 
+    /**
+     * Checks if a string is contained in a string array element, case-insensitive.
+     *
+     * @param needle The searched value.
+     * @param haystack The array.
+     * @return <b>true</b> if needle is found in an array element, <b>false</b> otherwise.
+     * @since 0.5.0
+     */
+    public static boolean array_contains_string_ignore_case(final String needle, final List<String> haystack) {
+        for (final var string : haystack) {
+            if (string.toLowerCase().contains(needle.toLowerCase())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

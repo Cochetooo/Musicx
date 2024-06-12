@@ -11,6 +11,9 @@ public enum FxmlComponent {
     // Components
     COMPONENT_TOAST("Components/Toast.fxml"),
 
+    // Edit
+    EDIT_GENRE("Pages/Editor/Genre/EditGenre.fxml"),
+
     // Scenes
     SCENE_LIBRARY("Pages/Library/Songs/SongList.fxml"),
     SCENE_SEARCH("Pages/Library/Search/Search.fxml"),
@@ -20,8 +23,8 @@ public enum FxmlComponent {
     SCENE_SETTINGS("Pages/Settings/Settings.fxml"),
 
     // Modals
-    MODAL_LOCAL_FOLDERS("LocalFolders/LocalFolders.fxml"),
-    MODAL_CONSOLE("Console/Console.fxml");
+    MODAL_LOCAL_FOLDERS("Modals/LocalFolders/LocalFolders.fxml"),
+    MODAL_CONSOLE("Modals/Console/Console.fxml");
 
     private final String filepath;
 

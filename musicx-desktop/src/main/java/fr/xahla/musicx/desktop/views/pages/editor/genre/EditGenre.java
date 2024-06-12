@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views._content.edit;
+package fr.xahla.musicx.desktop.views.pages.editor.genre;
 
 import fr.xahla.musicx.api.repository.searchCriterias.GenreSearchCriteria;
 import fr.xahla.musicx.desktop.model.entity.Genre;
@@ -33,7 +33,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
  * @author Cochetooo
  * @since 0.3.3
  */
-public class GenreEdit implements Initializable {
+public class EditGenre implements Initializable {
 
     @FXML private Button editButton;
 
@@ -42,13 +42,10 @@ public class GenreEdit implements Initializable {
     @FXML private TextField secondaryGenreField;
     @FXML private TextField primaryGenreField;
 
-    private ResourceBundle resourceBundle;
     private Song song;
     private List<Genre> genreList;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        this.resourceBundle = resourceBundle;
-
         this.song = audioPlayer().getEditedSong();
 
         primaryGenresList.setCellFactory(this::getGenreListFactory);
@@ -68,10 +65,6 @@ public class GenreEdit implements Initializable {
 
     public void close() {
         scene().getRightNavContent().close();
-    }
-
-    @FXML private void editSong() {
-        //scene().getRightNavContent().switchContent(FxmlComponent.EDIT_SONG, resourceBundle);
     }
 
     @FXML private void proposePrimaryGenre() {

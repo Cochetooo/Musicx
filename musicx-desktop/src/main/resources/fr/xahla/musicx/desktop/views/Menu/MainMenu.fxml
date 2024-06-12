@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <MenuBar xmlns:fx="http://javafx.com/fxml" fx:controller="fr.xahla.musicx.desktop.views.menus.MainMenu">
-    <Menu text="%menu.name" styleClass="title-4" style="font-weight: bold">
+    <Menu text="%menu.name" styleClass="title-4, futuristic-font" style="font-weight: bold">
         <!-- File -->
         <fx:include source="SubMenus/FileMenu.fxml" />
 

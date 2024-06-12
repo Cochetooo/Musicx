@@ -63,6 +63,10 @@ public final class DesktopApplication extends Application {
             );
 
             scene.getStylesheets().add(
+                "https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap"
+            );
+
+            scene.getStylesheets().add(
                 "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
             );
 
@@ -70,14 +74,6 @@ public final class DesktopApplication extends Application {
             scene.getStylesheets().add(
                 Objects.requireNonNull(DesktopApplication.class.getResource("assets/app.css")).toExternalForm()
             );
-
-            scene.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-                if (event.getTarget() instanceof final TableCell<?, ?> tableCell) {
-                    if (tableCell.isEditing()) {
-                        return;
-                    }
-                }
-            });
 
             this.mainStage.setMaximized(true);
             this.mainStage.setTitle(ApplicationInfo.APP_NAME.getInfo() + " " + ApplicationInfo.APP_VERSION.getInfo());

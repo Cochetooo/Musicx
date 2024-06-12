@@ -11,6 +11,7 @@ import lombok.Getter;
 public enum FontTheme {
 
     CONSOLE_FONT("JetBrains Mono"),
+    FUTURISTIC_FONT("Orbitron"),
     PRIMARY_FONT("Space Grotesk");
 
     private final String font;

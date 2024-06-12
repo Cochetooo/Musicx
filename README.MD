@@ -23,6 +23,14 @@ music lovers:<br>
 
 ## Patch Log
 
+### Release 0.5.0
+
+> ### New Features
+> - `New Layout` for library
+> ### Changes
+> - Edit is now directly in the table view
+> - Filtering library is now asynchronous to avoid freezes
+
 ### Release 0.4.1
 
 > ### Changes

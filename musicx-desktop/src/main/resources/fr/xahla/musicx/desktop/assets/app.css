@@ -131,6 +131,13 @@
     -fx-background-color: -musicx-color-light-background;
 }
 
+.genre-text-field {
+    -fx-background-color: -musicx-color-light-background;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-padding: 5px;
+}
+
 /* Toasts */
 .toast {
     -fx-background-radius: 20;
@@ -151,4 +158,8 @@
 
 .base-padding {
     -fx-padding: 10px;
+}
+
+.futuristic-font {
+    -fx-font-family: "Orbitron";
 }

@@ -45,7 +45,7 @@ public final class FxmlHelper {
 
         try {
             final Parent fxmlComponent = FXMLLoader.load(
-                Objects.requireNonNull(Application.class.getResource("Modals/" + fxmlSource.getFilepath())),
+                Objects.requireNonNull(Application.class.getResource(fxmlSource.getFilepath())),
                 resourceBundle
             );
 
