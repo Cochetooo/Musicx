@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.pages.library;
+package fr.xahla.musicx.desktop.views.pages.library.search;
 
 import atlantafx.base.controls.CustomTextField;
 import fr.xahla.musicx.desktop.model.entity.*;

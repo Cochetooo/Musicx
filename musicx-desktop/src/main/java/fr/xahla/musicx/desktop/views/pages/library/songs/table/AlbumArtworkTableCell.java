@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.model.table;
+package fr.xahla.musicx.desktop.views.pages.library.songs.table;
 
 import fr.xahla.musicx.desktop.helper.ThemePolicyHelper;
 import fr.xahla.musicx.desktop.model.entity.Song;

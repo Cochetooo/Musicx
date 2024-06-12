@@ -10,6 +10,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -68,6 +70,14 @@ public final class DesktopApplication extends Application {
             scene.getStylesheets().add(
                 Objects.requireNonNull(DesktopApplication.class.getResource("assets/app.css")).toExternalForm()
             );
+
+            scene.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                if (event.getTarget() instanceof final TableCell<?, ?> tableCell) {
+                    if (tableCell.isEditing()) {
+                        return;
+                    }
+                }
+            });
 
             this.mainStage.setMaximized(true);
             this.mainStage.setTitle(ApplicationInfo.APP_NAME.getInfo() + " " + ApplicationInfo.APP_VERSION.getInfo());

@@ -8,7 +8,7 @@
 <?import javafx.scene.control.Button?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="fr.xahla.musicx.desktop.views.pages.library.LibrarySearch"
+            fx:controller="fr.xahla.musicx.desktop.views.pages.library.search.LibrarySearch"
             prefHeight="1200.0"
             styleClass="box-container">
     <top>
@@ -25,13 +25,12 @@
             </CustomTextField>
 
             <!-- Online Mode -->
-            <Button fx:id="onlineModeButton" onAction="#toggleOnlineMode">
+            <Button fx:id="onlineModeButton" onAction="#toggleOnlineMode" prefHeight="60">
                 <graphic>
-                    <FontIcon iconLiteral="fltfmz-wifi-1-24" />
+                    <FontIcon iconLiteral="fltfmz-wifi-1-24" scaleX="2" scaleY="2" />
                 </graphic>
             </Button>
         </HBox>
-
     </top>
 
     <center>

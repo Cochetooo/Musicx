@@ -2,6 +2,7 @@ package fr.xahla.musicx.desktop.context;
 
 import fr.xahla.musicx.desktop.manager.AudioPlayerManager;
 import fr.xahla.musicx.domain.application.AbstractContext;
+import javafx.stage.Stage;
 
 import java.util.ResourceBundle;
 import java.util.logging.Level;

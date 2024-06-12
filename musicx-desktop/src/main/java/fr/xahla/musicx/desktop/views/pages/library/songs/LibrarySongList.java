@@ -2,9 +2,10 @@ package fr.xahla.musicx.desktop.views.pages.library.songs;
 
 import fr.xahla.musicx.desktop.helper.*;
 import fr.xahla.musicx.desktop.model.entity.Song;
-import fr.xahla.musicx.desktop.model.table.AlbumArtworkTableCell;
-import fr.xahla.musicx.desktop.model.table.TrackGenresTableCell;
-import fr.xahla.musicx.desktop.model.table.TrackTitleTableCell;
+import fr.xahla.musicx.desktop.views.pages.library.songs.table.AlbumArtworkTableCell;
+import fr.xahla.musicx.desktop.views.pages.library.songs.table.TrackDurationTableCell;
+import fr.xahla.musicx.desktop.views.pages.library.songs.table.TrackGenresTableCell;
+import fr.xahla.musicx.desktop.views.pages.library.songs.table.TrackTitleTableCell;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -126,19 +127,6 @@ public class LibrarySongList implements Initializable {
         }
 
         return song.getValue().getAlbum().releaseDateProperty();
-    }
-
-    /* #######################
-     * ###  Track Duration ###
-     * ####################### */
-    static class TrackDurationTableCell extends TableCell<Song, Long> {
-        @Override protected void updateItem(final Long duration, final boolean empty) {
-            if (null == duration || empty) {
-                setText(null);
-            } else {
-                setText(DurationHelper.getTimeString(Duration.millis(duration)));
-            }
-        }
     }
 
 }
