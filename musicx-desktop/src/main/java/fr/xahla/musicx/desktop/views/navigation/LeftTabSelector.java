@@ -9,6 +9,7 @@ import javafx.scene.control.TabPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 
 /**
@@ -21,12 +22,15 @@ public class LeftTabSelector implements Initializable {
 
     @FXML private Tab libraryTab;
     @FXML private Tab searchTab;
+    @FXML private Tab nowPlayingTab;
     @FXML private Tab historyTab;
     @FXML private Tab editorTab;
     @FXML private Tab profileTab;
     @FXML private Tab settingsTab;
 
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
+        audioPlayer().onSongChange(listener -> nowPlayingTab.setDisable(false));
+
         pageTab.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == libraryTab) {
                 scene().getSceneContent().switchContent(
@@ -36,6 +40,11 @@ public class LeftTabSelector implements Initializable {
             } else if (newValue == searchTab) {
                 scene().getSceneContent().switchContent(
                     FxmlComponent.SCENE_SEARCH,
+                    resourceBundle
+                );
+            } else if (newValue == nowPlayingTab) {
+                scene().getSceneContent().switchContent(
+                    FxmlComponent.SCENE_NOW_PLAYING,
                     resourceBundle
                 );
             } else if (newValue == historyTab) {

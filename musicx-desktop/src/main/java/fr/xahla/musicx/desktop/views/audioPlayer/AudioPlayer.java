@@ -295,7 +295,7 @@ public class AudioPlayer implements Initializable {
                     }
                 ).play();
             } else {
-                playerContainer.setBackground(Background.EMPTY);
+                playerContainer.setBackground(Background.fill(Color.TRANSPARENT));
             }
 
             // Set shadow artwork

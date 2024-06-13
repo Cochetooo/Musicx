@@ -30,8 +30,8 @@
             </ImageView>
 
             <VBox spacing="10" prefWidth="320" alignment="CENTER_LEFT">
-                <Label fx:id="trackNameLabel" styleClass="title-3, futuristic-font" />
-                <Label fx:id="artistNameLabel" styleClass="text-caption, futuristic-font" textFill="lightgray" />
+                <Label fx:id="trackNameLabel" styleClass="title-3" />
+                <Label fx:id="artistNameLabel" styleClass="text-caption" textFill="lightgray" />
             </VBox>
         </HBox>
     </left>

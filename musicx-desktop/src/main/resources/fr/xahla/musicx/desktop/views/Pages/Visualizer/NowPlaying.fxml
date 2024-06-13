@@ -1,0 +1,39 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.TilePane?>
+<?import eu.hansolo.tilesfx.Tile?>
+<VBox
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.pages.visualizer.NowPlaying"
+        alignment="CENTER"
+        styleClass="box-container"
+        HBox.hgrow="ALWAYS"
+        prefHeight="1200"
+        fx:id="nowPlayingContainer" spacing="25">
+    <!-- Album Artwork -->
+    <ImageView fitWidth="600" fitHeight="600" fx:id="albumArtwork">
+        <effect>
+            <DropShadow fx:id="albumArtworkShadow" spread="0.8" radius="20" color="darkslategray" />
+        </effect>
+    </ImageView>
+
+    <!-- Track Info -->
+    <VBox spacing="10" alignment="CENTER">
+        <Label fx:id="trackNameLabel" styleClass="title-3, futuristic-font" />
+        <Label fx:id="artistAlbumLabel" styleClass="text-caption, futuristic-font" textFill="lightgray" />
+    </VBox>
+
+    <!-- Additional Info -->
+    <TilePane orientation="VERTICAL" prefColumns="2">
+        <!-- Primary Genres -->
+        <Label fx:id="primaryGenresText" textFill="whitesmoke" />
+
+        <!-- Secondary Genres -->
+        <Label fx:id="secondaryGenresText" textFill="lightgray" />
+
+
+    </TilePane>
+</VBox>

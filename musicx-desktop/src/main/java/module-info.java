@@ -59,4 +59,5 @@ module fr.xahla.musicx.desktop {
     opens fr.xahla.musicx.desktop.views.pages.library.search to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.pages.library.songs to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.pages.settings to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.pages.visualizer to javafx.fxml;
 }

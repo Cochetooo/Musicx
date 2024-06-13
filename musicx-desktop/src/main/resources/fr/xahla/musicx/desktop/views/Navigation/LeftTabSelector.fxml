@@ -32,6 +32,16 @@
         </tooltip>
     </Tab>
 
+    <!-- Now Playing -->
+    <Tab style="-fx-padding: 10px" fx:id="nowPlayingTab" disable="true">
+        <graphic>
+            <FontIcon iconLiteral="fltfmz-play-circle-24" scaleX="2" scaleY="2" />
+        </graphic>
+        <tooltip>
+            <Tooltip text="%tabSelector.tabNowPlaying" />
+        </tooltip>
+    </Tab>
+
     <!-- History -->
     <Tab style="-fx-padding: 10px" fx:id="historyTab">
         <graphic>

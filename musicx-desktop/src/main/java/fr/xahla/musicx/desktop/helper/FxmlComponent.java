@@ -17,6 +17,7 @@ public enum FxmlComponent {
     // Scenes
     SCENE_LIBRARY("Pages/Library/Songs/SongList.fxml"),
     SCENE_SEARCH("Pages/Library/Search/Search.fxml"),
+    SCENE_NOW_PLAYING("Pages/Visualizer/NowPlaying.fxml"),
     SCENE_HISTORY("Pages/History/Summary.fxml"),
     SCENE_EDITOR("Pages/Editor/SongMatrix/SongMatrix.fxml"),
     SCENE_PROFILE("Pages/Profile/Profile.fxml"),
