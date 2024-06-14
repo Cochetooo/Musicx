@@ -1,14 +1,12 @@
 package fr.xahla.musicx.desktop.service.save;
 
 import fr.xahla.musicx.desktop.model.entity.Album;
-import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.service.saveLocalSongs.WriteMetadataToAudioFile;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
-import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
 
 /**
  * Edit or create an album.

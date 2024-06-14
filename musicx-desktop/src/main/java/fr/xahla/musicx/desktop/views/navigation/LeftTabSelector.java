@@ -1,6 +1,6 @@
 package fr.xahla.musicx.desktop.views.navigation;
 
-import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.desktop.config.FxmlComponent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;
@@ -34,38 +34,31 @@ public class LeftTabSelector implements Initializable {
         pageTab.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == libraryTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_LIBRARY,
-                    resourceBundle
+                    FxmlComponent.SCENE_LIBRARY
                 );
             } else if (newValue == searchTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_SEARCH,
-                    resourceBundle
+                    FxmlComponent.SCENE_SEARCH
                 );
             } else if (newValue == nowPlayingTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_NOW_PLAYING,
-                    resourceBundle
+                    FxmlComponent.SCENE_NOW_PLAYING
                 );
             } else if (newValue == historyTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_HISTORY,
-                    resourceBundle
+                    FxmlComponent.SCENE_HISTORY
                 );
             } else if (newValue == editorTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_EDITOR,
-                    resourceBundle
+                    FxmlComponent.SCENE_EDITOR
                 );
             } else if (newValue == profileTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_PROFILE,
-                    resourceBundle
+                    FxmlComponent.SCENE_PROFILE
                 );
             } else if (newValue == settingsTab) {
                 scene().getSceneContent().switchContent(
-                    FxmlComponent.SCENE_SETTINGS,
-                    resourceBundle
+                    FxmlComponent.SCENE_SETTINGS
                 );
             }
         });

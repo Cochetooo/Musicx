@@ -2,7 +2,6 @@ package fr.xahla.musicx.desktop.views.pages.visualizer;
 
 import fr.xahla.musicx.desktop.helper.ImageHelper;
 import fr.xahla.musicx.desktop.helper.animation.ColorTransition;
-import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

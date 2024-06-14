@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import fr.xahla.musicx.desktop.views.components.ContentSwitchTab?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.xahla.musicx.desktop.views.pages.editor.EditorLayout"
+      styleClass="box-container"
+      HBox.hgrow="ALWAYS" spacing="5">
+
+    <ContentSwitchTab fx:id="contentSwitchTab" />
+
+    <StackPane fx:id="pageContainer" />
+</VBox>

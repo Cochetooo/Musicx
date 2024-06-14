@@ -1,12 +1,10 @@
 package fr.xahla.musicx.desktop.manager;
 
-import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.desktop.config.FxmlComponent;
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Parent;
-
-import java.util.ResourceBundle;
 
 /**
  * Manages what is shown on the right side of the application.
@@ -31,8 +29,8 @@ public class ContentManager {
     /**
      * @since 0.3.1
      */
-    public void switchContent(final FxmlComponent fxmlFile, final ResourceBundle resourceBundle) {
-        final var view = FxmlHelper.getComponent(fxmlFile.getFilepath(), resourceBundle);
+    public void switchContent(final FxmlComponent fxmlFile) {
+        final var view = FxmlHelper.getComponent(fxmlFile.getFilepath());
 
         content.set(view);
     }

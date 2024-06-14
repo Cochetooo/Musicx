@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.views.pages.library.songs.table;
 
 import fr.xahla.musicx.desktop.helper.ColorHelper;
-import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.desktop.config.FxmlComponent;
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import fr.xahla.musicx.desktop.model.entity.Genre;
 import fr.xahla.musicx.desktop.model.entity.Song;
@@ -9,7 +9,6 @@ import fr.xahla.musicx.domain.helper.enums.FontTheme;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Parent;
 import javafx.scene.control.TableCell;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -18,7 +17,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
@@ -71,8 +69,7 @@ public class TrackGenresTableCell extends TableCell<Song, Void> {
 
         audioPlayer().setEditedSong(currentSong);
 
-        final var resources = ResourceBundle.getBundle("fr.xahla.musicx.desktop.translations.messages");
-        editContainer = FxmlHelper.getComponent(FxmlComponent.EDIT_GENRE.getFilepath(), resources);
+        editContainer = FxmlHelper.getComponent(FxmlComponent.EDIT_GENRE.getFilepath());
 
         if (null == editContainer) {
             cancelEdit();

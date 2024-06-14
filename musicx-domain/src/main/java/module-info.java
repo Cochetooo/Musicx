@@ -63,6 +63,7 @@ module fr.xahla.musicx.domain {
     exports fr.xahla.musicx.domain.repository.data;
     exports fr.xahla.musicx.domain.service.apiHandler;
     exports fr.xahla.musicx.domain.service.importLocalSongs;
+    exports fr.xahla.musicx.domain.service.normalizeAudio;
     exports fr.xahla.musicx.domain.service.saveLocalSongs;
     exports fr.xahla.musicx.domain.service.structureLocalSongs;
 

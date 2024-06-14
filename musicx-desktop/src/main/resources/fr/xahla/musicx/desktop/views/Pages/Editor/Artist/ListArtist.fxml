@@ -1,0 +1,88 @@
+<?import atlantafx.base.controls.CustomTextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.MenuItem?>
+<VBox
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.pages.editor.artist.ListArtist"
+        alignment="CENTER"
+        styleClass="box-container"
+        HBox.hgrow="ALWAYS"
+        prefHeight="1200"
+        spacing="15">
+
+    <Label styleClass="title-2" text="%editor.listArtist.title" />
+
+    <!-- Search Bar -->
+    <CustomTextField promptText="%editor.listArtist.searchArtist"
+                     fx:id="searchTextField"
+                     prefWidth="1800"
+                     prefHeight="60"
+                     styleClass="main-search-text">
+        <right>
+            <FontIcon iconLiteral="fltfmz-search-28" />
+        </right>
+    </CustomTextField>
+
+    <TableView fx:id="artistTableView" prefHeight="700">
+        <columns>
+            <!-- ID -->
+            <TableColumn text="#">
+                <cellValueFactory>
+                    <PropertyValueFactory property="id" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Name -->
+            <TableColumn text="%editor.artist.listArtist.nameTableColumn">
+                <cellValueFactory>
+                    <PropertyValueFactory property="name" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Number of songs -->
+            <TableColumn fx:id="nbSongsColumn" text="%editor.artist.listArtist.nbSongsColumn" />
+
+            <!-- Number of albums -->
+            <TableColumn fx:id="nbAlbumsColumn" text="%editor.artist.listArtist.nbAlbumsColumn" />
+        </columns>
+
+        <contextMenu>
+            <ContextMenu>
+                <items>
+                    <!-- Delete artist -->
+                    <MenuItem   text="%editor.artist.listArtist.delete"
+                                accelerator="Alt+Enter"
+                                onAction="#deleteArtist">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-delete-48" />
+                        </graphic>
+                    </MenuItem>
+                </items>
+            </ContextMenu>
+        </contextMenu>
+    </TableView>
+
+    <HBox spacing="15" alignment="CENTER">
+        <Button onAction="#createArtist" text="%editor.listArtist.createArtistBtn">
+            <graphic>
+                <FontIcon iconLiteral="fltfal-add-12" />
+            </graphic>
+        </Button>
+
+        <Button onAction="#mergeArtist" text="%editor.listArtist.mergeArtistBtn">
+            <graphic>
+                <FontIcon iconLiteral="fltfmz-merge-24" />
+            </graphic>
+        </Button>
+    </HBox>
+</VBox>

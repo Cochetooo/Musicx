@@ -5,7 +5,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
 
 /**
- * Helper class for text, labels, etc.
+ * Helper class for resourceText, labels, etc.
  * @author Cochetooo
  * @since 0.4.0
  */

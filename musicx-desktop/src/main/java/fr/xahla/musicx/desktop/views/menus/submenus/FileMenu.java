@@ -1,7 +1,7 @@
 package fr.xahla.musicx.desktop.views.menus.submenus;
 
 import fr.xahla.musicx.desktop.context.scene.localLibrary.LocalLibrary;
-import fr.xahla.musicx.desktop.helper.FxmlComponent;
+import fr.xahla.musicx.desktop.config.FxmlComponent;
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import fr.xahla.musicx.domain.service.structureLocalSongs.StructureAudioFilesTree;
 import javafx.application.Platform;
@@ -39,7 +39,7 @@ public class FileMenu implements Initializable {
     /* --------------------------- FILE --------------------------- */
 
     @FXML public void openLocalFoldersModal() {
-        FxmlHelper.showModal(FxmlComponent.MODAL_LOCAL_FOLDERS, this.resourceBundle, resourceBundle.getString("importFolders.title"));
+        FxmlHelper.showModal(FxmlComponent.MODAL_LOCAL_FOLDERS, "importFolders.title");
     }
 
     @FXML public void scanLocalFolders() {
@@ -58,11 +58,11 @@ public class FileMenu implements Initializable {
     }
 
     @FXML public void openSettings() {
-        FxmlHelper.showModal(FxmlComponent.SCENE_SETTINGS, this.resourceBundle, resourceBundle.getString("settings.title"));
+        FxmlHelper.showModal(FxmlComponent.SCENE_SETTINGS, "settings.title");
     }
 
     @FXML public void showConsole() {
-        FxmlHelper.showModal(FxmlComponent.MODAL_CONSOLE, this.resourceBundle, resourceBundle.getString("console.title"));
+        FxmlHelper.showModal(FxmlComponent.MODAL_CONSOLE, "console.title");
     }
 
     @FXML public void exitProgram() {

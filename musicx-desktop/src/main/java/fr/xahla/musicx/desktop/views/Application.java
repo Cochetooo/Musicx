@@ -1,10 +1,8 @@
 package fr.xahla.musicx.desktop.views;
 
-import fr.xahla.musicx.desktop.helper.FxmlComponent;
-import fr.xahla.musicx.desktop.helper.FxmlHelper;
+import fr.xahla.musicx.desktop.config.FxmlComponent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -26,20 +24,10 @@ public class Application implements Initializable {
     @FXML private HBox contentSceneBox;
 
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
-        scene().getSceneContent().onChange((oldValue, newValue) -> {
-            contentSceneBox.getChildren().setAll(newValue);
-        });
+        scene().getSceneContent().onChange((oldValue, newValue)
+            -> contentSceneBox.getChildren().setAll(newValue));
 
         scene().getSceneContent().switchContent(
-            FxmlComponent.valueOf("SCENE_" + config().getActiveScene()),
-            resourceBundle);
-
-        /* scene().getRightNavContent().onChange((oldValue, newValue) -> {
-            if (null == newValue) {
-                rightNavContainer.getChildren().clear();
-            } else {
-                rightNavContainer.getChildren().setAll(newValue);
-            }
-        }); */
+            FxmlComponent.valueOf("SCENE_" + config().getActiveScene()));
     }
 }

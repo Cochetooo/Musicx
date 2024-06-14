@@ -7,6 +7,7 @@
     -musicx-color-ternary: #008080;
     -musicx-color-darker: #005a5a;
 
+    -musicx-color-extra-light-background: #3e4848;
     -musicx-color-light-background: #2f3838;
     -musicx-color-background: #2a2f2f;
     -musicx-color-alt-background: #222828;
@@ -92,8 +93,13 @@
 }
 
 .table-row-cell:odd,
-.list-cell:even {
+.list-cell:odd {
     -fx-background-color: -musicx-color-alt-background;
+}
+
+.table-row-cell:selected,
+.list-cell:selected {
+    -fx-background-color: -musicx-color-extra-light-background;
 }
 
 /* TabPanes */

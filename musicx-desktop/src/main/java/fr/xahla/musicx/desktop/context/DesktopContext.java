@@ -2,7 +2,6 @@ package fr.xahla.musicx.desktop.context;
 
 import fr.xahla.musicx.desktop.manager.AudioPlayerManager;
 import fr.xahla.musicx.domain.application.AbstractContext;
-import javafx.stage.Stage;
 
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -19,6 +18,8 @@ public class DesktopContext extends AbstractContext {
     private AudioPlayerManager audioPlayerManager;
     private SceneController sceneController;
 
+    private ResourceBundle resourceBundle;
+
     private static DesktopContext context;
 
     protected DesktopContext(final Logger logger) {
@@ -32,6 +33,9 @@ public class DesktopContext extends AbstractContext {
         context = new DesktopContext(
             logger
         );
+
+        final var resources = ResourceBundle.getBundle("fr.xahla.musicx.desktop.translations.messages");
+        context.resourceBundle = resources;
 
         context.commonLogger.addResourceBundle(ResourceBundle.getBundle("fr.xahla.musicx.desktop.config.log_message_fx"));
 
@@ -51,5 +55,9 @@ public class DesktopContext extends AbstractContext {
 
     public static SceneController scene() {
         return context.sceneController;
+    }
+
+    public static ResourceBundle globalResourceBundle() {
+        return context.resourceBundle;
     }
 }

@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.helper;
+package fr.xahla.musicx.desktop.config;
 
 /**
  * List of every fxml files components external to the core application.
@@ -12,14 +12,17 @@ public enum FxmlComponent {
     COMPONENT_TOAST("Components/Toast.fxml"),
 
     // Edit
-    EDIT_GENRE("Pages/Editor/Genre/EditGenre.fxml"),
+    EDIT_GENRE("Pages/Editor/Genre/InlineEditGenre.fxml"),
+
+    // Editor
+    EDITOR_LIST_ARTIST("Pages/Editor/Artist/ListArtist.fxml"),
 
     // Scenes
     SCENE_LIBRARY("Pages/Library/Songs/SongList.fxml"),
     SCENE_SEARCH("Pages/Library/Search/Search.fxml"),
     SCENE_NOW_PLAYING("Pages/Visualizer/NowPlaying.fxml"),
     SCENE_HISTORY("Pages/History/Summary.fxml"),
-    SCENE_EDITOR("Pages/Editor/SongMatrix/SongMatrix.fxml"),
+    SCENE_EDITOR("Pages/Editor/EditorLayout.fxml"),
     SCENE_PROFILE("Pages/Profile/Profile.fxml"),
     SCENE_SETTINGS("Pages/Settings/Settings.fxml"),
 

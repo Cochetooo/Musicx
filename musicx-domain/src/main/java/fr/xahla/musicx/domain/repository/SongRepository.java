@@ -109,32 +109,37 @@ public class SongRepository implements SongRepositoryInterface {
      * @since 0.1.0
      */
     @Override public void save(final SongDto song) {
-        SongEntity songEntity;
+        this.saveAll(List.of(song));
+    }
 
+    @Override public void saveAll(final List<SongDto> songs) {
         Transaction transaction = null;
 
         try (final var session = openSession()) {
             transaction = session.beginTransaction();
 
-            if (null != song.getId()
-                && null != (songEntity = session.get(SongEntity.class, song.getId()))) {
-                songEntity.fromDto(song);
-                session.merge(songEntity);
-            } else {
-                songEntity = new SongEntity().fromDto(song);
-                session.persist(songEntity);
-                song.setId(songEntity.getId());
-            }
+            songs.forEach(song -> {
+                var songEntity = session.get(SongEntity.class, song.getId());
+
+                if (null != song.getId() && null != songEntity) {
+                    songEntity.fromDto(song);
+                    session.merge(songEntity);
+                } else {
+                    songEntity = new SongEntity().fromDto(song);
+                    session.persist(songEntity);
+                    song.setId(songEntity.getId());
+                }
+
+                logger().fine("REPOSITORY_SAVED", "Song", song.getTitle());
+            });
 
             transaction.commit();
-
-            logger().fine("REPOSITORY_SAVED", "Song", song.getTitle());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            logger().error(exception, "REPOSITORY_SAVE_ERROR", "Song", song.getTitle());
+            logger().error(exception, "REPOSITORY_SAVE_ERROR", "Song", "");
         }
     }
 

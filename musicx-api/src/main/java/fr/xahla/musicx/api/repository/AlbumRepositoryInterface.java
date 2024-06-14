@@ -28,5 +28,6 @@ public interface AlbumRepositoryInterface {
     List<AlbumDto> findAll();
 
     void save(final AlbumDto album);
+    void saveAll(final List<AlbumDto> albums);
 
 }

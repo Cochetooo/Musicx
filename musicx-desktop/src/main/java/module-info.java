@@ -50,11 +50,14 @@ module fr.xahla.musicx.desktop {
 
     opens fr.xahla.musicx.desktop.views to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.audioPlayer to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.components to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.menus to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.menus.submenus to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.modals.console to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.modals.localFolders to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.navigation to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.pages.editor to javafx.fxml;
+    opens fr.xahla.musicx.desktop.views.pages.editor.artist to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.pages.editor.genre to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.pages.library.search to javafx.fxml;
     opens fr.xahla.musicx.desktop.views.pages.library.songs to javafx.fxml;

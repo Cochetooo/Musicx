@@ -2,15 +2,12 @@ package fr.xahla.musicx.desktop.views.pages.library.songs.table;
 
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.service.save.EditAlbumService;
-import fr.xahla.musicx.desktop.service.save.EditSongService;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
 
 import java.time.LocalDate;
 

@@ -82,9 +82,8 @@ public class BottomBar implements Initializable {
 
         final var songs = scene().getLocalLibraryScene().getLibrary().getLocalSongs();
 
-        songs.forEach((song) -> {
-            totalDuration.getAndAdd(song.getDuration());
-        });
+        songs.forEach((song)
+            -> totalDuration.getAndAdd(song.getDuration()));
 
         this.footerLibrarySumLabel.setText(
             songs.size() + " " + this.resourceBundle.getString("appInfo.librarySum")

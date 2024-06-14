@@ -1,7 +1,6 @@
 package fr.xahla.musicx.desktop.views.pages.library.songs;
 
 import atlantafx.base.controls.CustomTextField;
-import fr.xahla.musicx.desktop.helper.*;
 import fr.xahla.musicx.desktop.model.entity.Genre;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.views.pages.library.songs.table.*;
@@ -29,7 +28,6 @@ import java.util.ResourceBundle;
 import static fr.xahla.musicx.desktop.context.DesktopContext.audioPlayer;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 import static fr.xahla.musicx.domain.helper.ArrayHelper.array_contains_string_ignore_case;
-import static fr.xahla.musicx.domain.helper.ArrayHelper.array_in_string_ignore_case;
 
 /**
  * View for Songs group in Local Library scene.
@@ -105,8 +103,6 @@ public class LibrarySongList implements Initializable {
 
         final var filterListTask = new Task<>() {
             @Override protected Void call() {
-
-
                 scene().getLocalLibraryScene().setTrackListFilters(song -> {
                     boolean filtering = false;
 

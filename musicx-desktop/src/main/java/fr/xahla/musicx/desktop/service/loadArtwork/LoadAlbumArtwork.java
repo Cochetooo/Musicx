@@ -1,7 +1,6 @@
 package fr.xahla.musicx.desktop.service.loadArtwork;
 
 import fr.xahla.musicx.api.model.AlbumDto;
-import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.domain.helper.StringHelper;
 import javafx.application.Platform;

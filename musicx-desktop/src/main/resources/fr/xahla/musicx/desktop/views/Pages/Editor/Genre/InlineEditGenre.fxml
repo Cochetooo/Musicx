@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.*?>
 <?import org.controlsfx.control.ListActionView?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.pages.editor.genre.EditGenre"

@@ -15,9 +15,10 @@ import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 public class NormalizeAudio {
 
     /**
+     * @return The difference of decibels given during the normalization.
      * @since 0.3.3
      */
-    public void execute(
+    public double execute(
         final String filepath,
         final double decibel
     ) {
@@ -29,11 +30,15 @@ public class NormalizeAudio {
 
             final var normalizedAudioData = normalizeAudio(audioData, decibel);
             saveNormalizedAudio(normalizedAudioData, audioFile);
+
+            return decibel - currentDb;
         } catch (final UnsupportedAudioFileException exception) {
             logger().error(exception, "IO_AUDIO_NOT_SUPPORTED", filepath);
         } catch (final IOException exception) {
             logger().error(exception, "IO_URI_ERROR", filepath);
         }
+
+        return 0.0;
     }
 
     private void saveNormalizedAudio(final byte[] audioData, final File file) throws UnsupportedAudioFileException, IOException {

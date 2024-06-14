@@ -54,9 +54,8 @@ public class LocalFolders implements Initializable {
         ));
 
         this.formatButtons.forEach(toggle
-            -> toggle.selectedProperty().addListener(change -> {
-                scene().getSettings().getScanLibraryAudioFormats().setAll(this.getSelectedFormats());
-            }
+            -> toggle.selectedProperty().addListener(change
+                -> scene().getSettings().getScanLibraryAudioFormats().setAll(this.getSelectedFormats())
         ));
 
         this.folderPathsCheckListView.setItems(FXCollections.observableList(

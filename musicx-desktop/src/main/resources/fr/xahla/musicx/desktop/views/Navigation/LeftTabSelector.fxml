@@ -1,7 +1,7 @@
 <?import javafx.scene.control.*?>
-<?import org.kordamp.ikonli.javafx.*?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import org.kordamp.ikonli.javafx.*?>
 <TabPane
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
@@ -43,7 +43,7 @@
     </Tab>
 
     <!-- History -->
-    <Tab style="-fx-padding: 10px" fx:id="historyTab">
+    <Tab style="-fx-padding: 10px" fx:id="historyTab" disable="true">
         <graphic>
             <ImageView fitWidth="20" fitHeight="20" style="-fx-padding: 0px">
                 <Image url="@../../assets/icons/lastfm-128.png" />
@@ -65,7 +65,7 @@
     </Tab>
 
     <!-- Profile -->
-    <Tab style="-fx-padding: 10px" fx:id="profileTab">
+    <Tab style="-fx-padding: 10px" fx:id="profileTab" disable="true">
         <graphic>
             <FontIcon iconLiteral="fltfmz-person-28" scaleX="2" scaleY="2" />
         </graphic>

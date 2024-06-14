@@ -141,6 +141,47 @@ public class ArtistRepository implements ArtistRepositoryInterface {
     }
 
     /**
+     * @param cascade If set to true, will also delete albums and songs that are related to this artist, otherwise
+     *                will set their artist to null and not delete them.
+     */
+    @Override public void delete(final ArtistDto artist, final boolean cascade) {
+        Transaction transaction = null;
+
+        try (final var session = openSession()) {
+            transaction = session.beginTransaction();
+
+            final var artistEntity = session.get(ArtistEntity.class, artist.getId());
+
+            if (null == artistEntity) {
+                return;
+            }
+
+            if (!cascade) {
+                final var albums = artistRepository().getAlbums(artist);
+                final var songs = artistRepository().getSongs(artist);
+
+                albums.forEach(album -> album.setArtistId(null));
+                songs.forEach(song -> song.setArtistId(null));
+
+                albumRepository().saveAll(albums);
+                songRepository().saveAll(songs);
+            }
+
+            session.remove(artistEntity);
+
+            transaction.commit();
+
+            logger().fine("REPOSITORY_DELETED", "Artist", artist.getName());
+        } catch (final Exception exception) {
+            if (null != transaction) {
+                transaction.rollback();
+            }
+
+            logger().error(exception, "REPOSITORY_DELETE_ERROR", "Artist", artist.getName());
+        }
+    }
+
+    /**
      * @since 0.3.0
      */
     private List<ArtistDto> toDtoList(final List<?> resultQuery) {

@@ -104,9 +104,8 @@ public class SongEdit implements Initializable {
         song.setTitle(songNameField.getText());
         song.setTrackNumber(StringHelper.str_parse_short_safe(trackNoField.getText()));
 
-        new EditSongService().execute(song, () -> {
-            editButton.setDisable(true);
-        });
+        new EditSongService().execute(song, ()
+            -> editButton.setDisable(true));
     }
 
     @FXML public void editArtist() {

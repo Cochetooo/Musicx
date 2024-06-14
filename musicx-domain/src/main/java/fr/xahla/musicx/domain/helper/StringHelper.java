@@ -67,4 +67,12 @@ public final class StringHelper {
         return str.replaceAll(invalidChars, "");
     }
 
+    /**
+     * @return True if the needle is contained in the haystack string, ignoring case.
+     * @since 0.5.0
+     */
+    public static boolean str_contains_ignore_case(final String haystack, final String needle) {
+        return haystack.toLowerCase().contains(needle.toLowerCase());
+    }
+
 }

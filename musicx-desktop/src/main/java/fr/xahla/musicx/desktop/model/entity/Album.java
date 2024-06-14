@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.albumRepository;
-import static fr.xahla.musicx.domain.application.AbstractContext.logger;
 import static fr.xahla.musicx.domain.helper.StringHelper.str_is_null_or_blank;
 
 /**
@@ -49,7 +48,7 @@ public class Album {
     private ListProperty<Genre> primaryGenres;
     private ListProperty<Genre> secondaryGenres;
 
-    private ObjectProperty<Image> image;
+    private final ObjectProperty<Image> image;
 
     public Album(final AlbumDto album) {
         this.id = new SimpleLongProperty(album.getId());

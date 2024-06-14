@@ -141,32 +141,40 @@ public class AlbumRepository implements AlbumRepositoryInterface {
      * @since 0.1.0
      */
     @Override public void save(final AlbumDto album) {
-        AlbumEntity albumEntity;
+        this.saveAll(List.of(album));
+    }
 
+    /**
+     * @since 0.5.0
+     */
+    @Override public void saveAll(final List<AlbumDto> albums) {
         Transaction transaction = null;
 
         try (final var session = openSession()) {
             transaction = session.beginTransaction();
 
-            if (null != album.getId()
-                    && null != (albumEntity = session.get(AlbumEntity.class, album.getId()))) {
-                albumEntity.fromDto(album);
-                session.merge(albumEntity);
-            } else {
-                albumEntity = new AlbumEntity().fromDto(album);
-                session.persist(albumEntity);
-                album.setId(albumEntity.getId());
-            }
+            albums.forEach(album -> {
+                var albumEntity = session.get(AlbumEntity.class, album.getId());
+
+                if (null != album.getId() && null != albumEntity) {
+                    albumEntity.fromDto(album);
+                    session.merge(albumEntity);
+                } else {
+                    albumEntity = new AlbumEntity().fromDto(album);
+                    session.persist(albumEntity);
+                    album.setId(albumEntity.getId());
+                }
+
+                logger().fine("REPOSITORY_SAVED", "Album", album.getName());
+            });
 
             transaction.commit();
-
-            logger().fine("REPOSITORY_SAVED", "Album", album.getName());
         } catch (final Exception exception) {
             if (null != transaction) {
                 transaction.rollback();
             }
 
-            logger().error(exception, "REPOSITORY_SAVE_ERROR", "Album", album.getName());
+            logger().error(exception, "REPOSITORY_SAVE_ERROR", "Albums", "");
         }
     }
 

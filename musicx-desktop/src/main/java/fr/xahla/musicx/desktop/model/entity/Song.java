@@ -38,7 +38,7 @@ public class Song {
 
     private ObjectProperty<Album> album;
     private ObjectProperty<Artist> artist;
-    private MapProperty<Long, String> lyrics;
+    private final MapProperty<Long, String> lyrics;
     private ListProperty<Genre> primaryGenres;
     private ListProperty<Genre> secondaryGenres;
 
