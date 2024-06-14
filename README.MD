@@ -27,11 +27,22 @@ music lovers:<br>
 
 > ### New Features
 > - `New Layout` for library
+> - `Now Playing` tab
+> - `Artist Editor` with delete feature
+> - `Normalize Songs` but works only with WAV files for now.
+> - `Structure Library`
 > ### Changes
 > - Edit is now directly in the table view
 > - Filtering library is now asynchronous to avoid freezes
+> - Reverted history icon
+> - History and Profile tab are now disabled for the meantime.
+> - `Queue List` is now disabled for the meantime
+> - Font family for now playing track has been changed from *Space Grotesk* to *Orbitron*.
+> ### Fixes
+> - List View color fix for odd rows.
+> - Background color for audio player is not stuck anymore after playing a song without artwork
 
-### Release 0.4.1
+### Release 0.4.1 *(2024-05-30)*
 
 > ### Changes
 > - `Language` is now loaded by config.json

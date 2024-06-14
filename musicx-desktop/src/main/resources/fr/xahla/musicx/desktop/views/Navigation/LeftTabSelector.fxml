@@ -45,9 +45,11 @@
     <!-- History -->
     <Tab style="-fx-padding: 10px" fx:id="historyTab" disable="true">
         <graphic>
-            <ImageView fitWidth="20" fitHeight="20" style="-fx-padding: 0px">
+            <FontIcon iconLiteral="fltfal-history-24" scaleX="2" scaleY="2" />
+
+            <!-- <ImageView fitWidth="20" fitHeight="20" style="-fx-padding: 0px">
                 <Image url="@../../assets/icons/lastfm-128.png" />
-            </ImageView>
+            </ImageView> -->
         </graphic>
         <tooltip>
             <Tooltip text="%tabSelector.tabHistory" />
