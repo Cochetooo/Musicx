@@ -119,9 +119,10 @@ public class SongRepository implements SongRepositoryInterface {
             transaction = session.beginTransaction();
 
             songs.forEach(song -> {
-                var songEntity = session.get(SongEntity.class, song.getId());
+                SongEntity songEntity;
 
-                if (null != song.getId() && null != songEntity) {
+                if (null != song.getId()
+                        && null != (songEntity = session.get(SongEntity.class, song.getId()))) {
                     songEntity.fromDto(song);
                     session.merge(songEntity);
                 } else {

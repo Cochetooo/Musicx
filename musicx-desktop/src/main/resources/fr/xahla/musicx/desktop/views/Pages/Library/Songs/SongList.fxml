@@ -31,7 +31,7 @@
 
 
     <!-- We use a stackpane in order to put loading progress for the table view if necessary -->
-    <StackPane fx:id="tableViewContainer">
+    <StackPane>
         <TableView
                 fx:id="tracksTableView"
                 VBox.vgrow="ALWAYS"
@@ -56,7 +56,7 @@
                 <TableColumn text="%tracksTable.genres" fx:id="tracksTableGenresCol" />
 
                 <!-- Year -->
-                <TableColumn text="%tracksTable.albumYear" minWidth="120" maxWidth="120" fx:id="tracksTableYearCol" />
+                <TableColumn text="%tracksTable.albumYear" minWidth="120" maxWidth="250" fx:id="tracksTableYearCol" />
 
                 <!-- Duration -->
                 <TableColumn fx:id="tracksTableDurationCol" minWidth="80" maxWidth="120" style="-fx-alignment: center;">

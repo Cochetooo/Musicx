@@ -6,17 +6,17 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.xahla.musicx.desktop.views.pages.editor.genre.EditGenre"
+      fx:controller="fr.xahla.musicx.desktop.views.pages.editor.genre.InlineEditGenre"
       styleClass="box-container"
       spacing="10"
       alignment="CENTER">
-    <HBox alignment="CENTER" spacing="30" styleClass="base-padding">
+    <HBox alignment="CENTER" spacing="20" styleClass="base-padding">
         <VBox spacing="5" alignment="CENTER">
             <Label text="%genreEdit.primaryGenres" styleClass="text-caption" />
             <HBox spacing="5">
                 <TextField fx:id="primaryGenreField"
                            styleClass="genre-text-field"
-                           prefHeight="30"
+                           prefHeight="28"
                 />
                 <Button onAction="#proposePrimaryGenre">
                     <graphic>
@@ -24,7 +24,7 @@
                     </graphic>
                 </Button>
             </HBox>
-            <ListActionView fx:id="primaryGenresList" prefHeight="400" styleClass="transparent-list" />
+            <ListActionView fx:id="primaryGenresList" prefHeight="250" />
         </VBox>
 
         <VBox spacing="5" alignment="CENTER">
@@ -32,7 +32,7 @@
             <HBox spacing="5">
                 <TextField fx:id="secondaryGenreField"
                            styleClass="genre-text-field"
-                           prefHeight="30"
+                           prefHeight="28"
                 />
                 <Button onAction="#proposeSecondaryGenre">
                     <graphic>
@@ -40,7 +40,7 @@
                     </graphic>
                 </Button>
             </HBox>
-            <ListActionView fx:id="secondaryGenresList" prefHeight="400" styleClass="transparent-list" />
+            <ListActionView fx:id="secondaryGenresList" prefHeight="250" />
         </VBox>
     </HBox>
 

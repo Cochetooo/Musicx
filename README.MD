@@ -23,7 +23,7 @@ music lovers:<br>
 
 ## Patch Log
 
-### Release 0.5.0
+### Release 0.5.0 *(2024-06-14)*
 
 > ### New Features
 > - `New Layout` for library

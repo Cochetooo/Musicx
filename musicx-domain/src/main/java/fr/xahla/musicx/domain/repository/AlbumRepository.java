@@ -154,9 +154,10 @@ public class AlbumRepository implements AlbumRepositoryInterface {
             transaction = session.beginTransaction();
 
             albums.forEach(album -> {
-                var albumEntity = session.get(AlbumEntity.class, album.getId());
+                AlbumEntity albumEntity;
 
-                if (null != album.getId() && null != albumEntity) {
+                if (null != album.getId()
+                        && null != (albumEntity = session.get(AlbumEntity.class, album.getId()))) {
                     albumEntity.fromDto(album);
                     session.merge(albumEntity);
                 } else {

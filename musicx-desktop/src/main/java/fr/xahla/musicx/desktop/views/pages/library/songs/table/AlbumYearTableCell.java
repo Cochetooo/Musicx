@@ -19,7 +19,6 @@ public class AlbumYearTableCell extends TableCell<Song, LocalDate> {
     private DatePicker releaseDatePicker;
 
     public AlbumYearTableCell() {
-
         this.setOnMouseClicked(this::handleMouseClick);
         this.setOnKeyPressed(event -> {
             if (null != releaseDatePicker) {

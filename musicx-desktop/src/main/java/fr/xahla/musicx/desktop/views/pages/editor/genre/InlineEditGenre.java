@@ -36,7 +36,7 @@ import static fr.xahla.musicx.domain.application.AbstractContext.songRepository;
  * @author Cochetooo
  * @since 0.3.3
  */
-public class EditGenre implements Initializable {
+public class InlineEditGenre implements Initializable {
 
     @FXML private Button editButton;
 
@@ -66,16 +66,13 @@ public class EditGenre implements Initializable {
         TextFields.bindAutoCompletion(secondaryGenreField, this::getGenreSuggestionProvider, new GenreStringConverter());
     }
 
-    public void close() {
-        scene().getRightNavContent().close();
-    }
-
     @FXML private void proposePrimaryGenre() {
         final var genre = getGenreFromString(primaryGenreField.getText());
 
         if (null != genre && !primaryGenresList.getItems().contains(genre)) {
             primaryGenresList.getItems().add(genre);
             editButton.setDisable(false);
+            primaryGenreField.setText("");
         }
     }
 
@@ -85,6 +82,7 @@ public class EditGenre implements Initializable {
         if (null != genre && !secondaryGenresList.getItems().contains(genre)) {
             secondaryGenresList.getItems().add(genre);
             editButton.setDisable(false);
+            secondaryGenreField.setText("");
         }
     }
 

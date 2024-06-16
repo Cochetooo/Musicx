@@ -38,7 +38,6 @@ public class LibrarySongList implements Initializable {
 
     @FXML private CustomTextField searchTextField;
 
-    @FXML private StackPane tableViewContainer;
     @FXML private TableView<Song> tracksTableView;
 
     @FXML private TableColumn<Song, Void> tracksTableArtworkCol;
@@ -137,7 +136,8 @@ public class LibrarySongList implements Initializable {
             }
         });
 
-        new Thread(filterListTask).start();
+        filterListThread = new Thread(filterListTask);
+        filterListThread.start();
     }
 
     @FXML private void onClick(final MouseEvent mouseEvent) {

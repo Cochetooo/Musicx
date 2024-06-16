@@ -1,7 +1,9 @@
 package fr.xahla.musicx.desktop.views.pages.editor.artist;
 
 import atlantafx.base.controls.CustomTextField;
+import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
+import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Artist;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
@@ -16,6 +18,7 @@ import javafx.scene.control.TableView;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import static fr.xahla.musicx.domain.application.AbstractContext.artistRepository;
@@ -46,6 +49,9 @@ public class ListArtist implements Initializable {
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> onSearch(newValue));
     }
 
+    /**
+     * Retrieve all the artists from the repository and sort them.
+     */
     private void updateTable() {
         final var artistDtoList = artistRepository().findAll();
 
@@ -73,6 +79,8 @@ public class ListArtist implements Initializable {
      * Merge an artist to another artist.
      */
     @FXML private void mergeArtist() {
+
+
         //this.updateTable();
     }
 
