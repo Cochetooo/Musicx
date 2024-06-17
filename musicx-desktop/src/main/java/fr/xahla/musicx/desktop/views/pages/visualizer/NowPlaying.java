@@ -107,15 +107,7 @@ public class NowPlaying implements Initializable {
                 imageColor,
                 10,
                 (color) -> {
-                    final var gradient = new LinearGradient(
-                        0, 0, 0, 1,
-                        true,
-                        CycleMethod.NO_CYCLE,
-                        new Stop(0, color.darker()),
-                        new Stop(1, color)
-                    );
-
-                    final var newBackground = new Background(new BackgroundFill(gradient, CornerRadii.EMPTY, null));
+                    final var newBackground = new Background(new BackgroundFill(color, CornerRadii.EMPTY, null));
                     nowPlayingContainer.setBackground(newBackground);
                 }
             ).play();
