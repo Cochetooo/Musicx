@@ -3,6 +3,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.ScrollPane?>
 <VBox
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="fr.xahla.musicx.desktop.views.Application"
@@ -24,8 +27,15 @@
         </left>
         <center>
             <!-- Page Content -->
-            <HBox fx:id="contentSceneBox" />
+            <ScrollPane fitToHeight="true" fitToWidth="true">
+                <HBox fx:id="contentSceneBox" />
+            </ScrollPane>
         </center>
+        <right>
+            <ScrollPane fitToHeight="true" fitToWidth="true">
+                <Pane fx:id="navContainer" />
+            </ScrollPane>
+        </right>
     </BorderPane>
 
     <!-- App Info Row -->

@@ -1,0 +1,30 @@
+/*
+ * This stylesheet defines all colors and fonts used by Musicx.
+ */
+.root {
+    /* Globally, we want to use Space Grotesk font family. */
+    -fx-font-family: "Space Grotesk";
+
+    -musicx-color-primary: #e9ffff;
+    -musicx-color-secondary: #b2d8d8;
+    -musicx-color-alternative: #66b2b2;
+    -musicx-color-ternary: #008080;
+    -musicx-color-darker: #005a5a;
+
+    -musicx-color-extra-light-background: #3e4848;
+    -musicx-color-light-background: #2f3838;
+    -musicx-color-background: #2a2f2f;
+    -musicx-color-alt-background: #222828;
+    -musicx-color-dark-background: #171c1c;
+
+    -musicx-color-light-text: #ffffff;
+    -musicx-color-dark-text: #003333;
+    -musicx-color-error-text: #cc0000;
+    -musicx-color-warning-text: #ffcc00;
+
+    -musicx-color-gray: #808080;
+}
+
+.futuristic-font {
+    -fx-font-family: "Orbitron";
+}

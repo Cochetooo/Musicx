@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views._content;
+package fr.xahla.musicx.desktop.views.navigation;
 
 import fr.xahla.musicx.desktop.helper.DurationHelper;
 import fr.xahla.musicx.desktop.model.entity.Song;
@@ -62,7 +62,7 @@ public class QueueList implements Initializable {
     }
 
     @FXML private void close() {
-        scene().getRightNavContent().close();
+        scene().getNavContent().close();
     }
 
     private void updateLabelText() {

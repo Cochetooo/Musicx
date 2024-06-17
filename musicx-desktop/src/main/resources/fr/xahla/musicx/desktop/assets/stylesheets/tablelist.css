@@ -1,0 +1,53 @@
+/*
+ * This stylesheet is used for TableView, ListView, TreeView, etc.
+ */
+
+/* DEFAULT */
+.table-view,
+.list-view.transparent-list,
+.table-view .table-cell,
+.list-view.transparent-list .list-cell,
+.table-view .corner,
+.list-view.transparent-list .corner,
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:vertical .track,
+.table-view .virtual-flow .scroll-bar:vertical .track-background,
+.table-view .virtual-flow .scroll-bar:horizontal,
+.table-view .virtual-flow .scroll-bar:horizontal .track,
+.table-view .virtual-flow .scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell:filled:selected,
+.transparent-list.list-cell:filled:selected {
+    -fx-background-color: -musicx-color-darker;
+}
+
+.table-row-cell,
+.transparent-list.list-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: -musicx-color-light-background;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.table-row-cell:even,
+.list-cell:even {
+    -fx-background-color: -musicx-color-background;
+}
+
+.table-row-cell:odd,
+.list-cell:odd {
+    -fx-background-color: -musicx-color-alt-background;
+}
+
+.table-row-cell:selected,
+.list-cell:selected {
+    -fx-background-color: -musicx-color-extra-light-background;
+}
+
+/* CUSTOM */
+.noTableHeader .column-header-background {
+    -fx-max-height: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+}

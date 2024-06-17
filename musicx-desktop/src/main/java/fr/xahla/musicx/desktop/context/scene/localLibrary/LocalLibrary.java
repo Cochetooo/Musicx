@@ -1,8 +1,10 @@
 package fr.xahla.musicx.desktop.context.scene.localLibrary;
 
 import fr.xahla.musicx.desktop.helper.CollectionSortHelper;
+import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import fr.xahla.musicx.desktop.model.TaskProgress;
 import fr.xahla.musicx.desktop.model.entity.Song;
+import fr.xahla.musicx.domain.service.deleteLocalLibrary.DeleteLocalLibrary;
 import fr.xahla.musicx.domain.service.importLocalSongs.ImportSongsFromFolders;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -10,10 +12,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.scene.control.ButtonType;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fr.xahla.musicx.desktop.context.DesktopContext.config;
 import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
@@ -40,7 +44,21 @@ public final class LocalLibrary {
     }
 
     public void clear() {
-        throw new RuntimeException("TODO");
+        final var response = FxmlHelper.showConfirmAlert(
+            "Delete Local Library",
+            "Are you sure you want to delete the whole locale library?"
+        );
+
+        if (response.isPresent() && ButtonType.OK == response.get()) {
+            final var result = new DeleteLocalLibrary().execute();
+
+            FxmlHelper.showInformationAlert(
+                "Delete Success",
+                result.entrySet().stream().map(entry -> entry.getKey() + ": " + entry.getValue() + " deleted").collect(Collectors.joining("\n"))
+            );
+
+            refresh();
+        }
     }
 
     /**

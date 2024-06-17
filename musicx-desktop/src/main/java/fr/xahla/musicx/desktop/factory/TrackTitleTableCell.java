@@ -1,9 +1,13 @@
-package fr.xahla.musicx.desktop.views.pages.library.songs.table;
+package fr.xahla.musicx.desktop.factory;
 
+import fr.xahla.musicx.desktop.config.FxmlComponent;
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.model.entity.Song;
 import fr.xahla.musicx.desktop.service.save.EditSongService;
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
@@ -16,6 +20,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
+
 /**
  * @author Cochetooo
  * @since 0.4.1
@@ -26,8 +32,8 @@ public class TrackTitleTableCell extends TableCell<Song, Void> {
 
     private final VBox container;
     private final Label songText = new Label();
-    private final Label artistText = new Label();
-    private final Label albumText = new Label();
+    private final Hyperlink artistText = new Hyperlink();
+    private final Hyperlink albumText = new Hyperlink();
 
     public TrackTitleTableCell() {
         songText.setFont(Font.font(FontTheme.PRIMARY_FONT.getFont(), FontWeight.BOLD, 15));
@@ -122,11 +128,18 @@ public class TrackTitleTableCell extends TableCell<Song, Void> {
         songText.textProperty().bind(song.titleProperty());
         if (artist != null) {
             artistText.textProperty().bind(artist.nameProperty());
+            artistText.setOnAction(event -> {
+
+            });
         } else {
             artistText.setText("");
         }
         if (album != null) {
             albumText.textProperty().bind(album.nameProperty());
+            albumText.setOnAction(event -> {
+                scene().getLocalLibraryScene().setCurrentAlbum(album);
+                scene().getSceneContent().switchContent(FxmlComponent.SCENE_LIBRARY_ALBUM);
+            });
         } else {
             albumText.setText("");
         }

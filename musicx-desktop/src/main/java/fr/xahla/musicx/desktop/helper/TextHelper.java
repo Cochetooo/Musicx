@@ -1,8 +1,12 @@
 package fr.xahla.musicx.desktop.helper;
 
 import fr.xahla.musicx.domain.helper.enums.FontTheme;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
+
+import java.util.function.UnaryOperator;
 
 /**
  * Helper class for resourceText, labels, etc.

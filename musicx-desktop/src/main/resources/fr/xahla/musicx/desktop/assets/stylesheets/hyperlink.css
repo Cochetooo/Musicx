@@ -1,0 +1,11 @@
+/*
+ * This stylesheet is used for Hyperlink components.
+ */
+
+.hyperlink {
+    -fx-underline: false;
+}
+
+.hyperlink:hover {
+    -fx-underline: true;
+}

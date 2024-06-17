@@ -19,6 +19,7 @@ public enum FxmlComponent {
 
     // Scenes
     SCENE_LIBRARY("Pages/Library/Songs/SongList.fxml"),
+    SCENE_LIBRARY_ALBUM("Pages/Library/Album/ShowAlbum.fxml"),
     SCENE_SEARCH("Pages/Library/Search/Search.fxml"),
     SCENE_NOW_PLAYING("Pages/Visualizer/NowPlaying.fxml"),
     SCENE_HISTORY("Pages/History/Summary.fxml"),
@@ -28,7 +29,10 @@ public enum FxmlComponent {
 
     // Modals
     MODAL_LOCAL_FOLDERS("Modals/LocalFolders/LocalFolders.fxml"),
-    MODAL_CONSOLE("Modals/Console/Console.fxml");
+    MODAL_CONSOLE("Modals/Console/Console.fxml"),
+
+    // Navigation
+    NAV_QUEUE_LIST("Navigation/QueueList.fxml");
 
     private final String filepath;
 

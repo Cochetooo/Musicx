@@ -34,7 +34,7 @@ public class LibrarySearch implements Initializable {
     }
 
     private void bindTextFields() {
-        scene().bindSearchText(searchTextField.textProperty());
+
     }
 
     @FXML private void toggleOnlineMode(final ActionEvent actionEvent) {

@@ -115,7 +115,7 @@ public class AlbumEdit implements Initializable, EditFormInterface {
     }
 
     @FXML private void close() {
-        scene().getRightNavContent().close();
+        scene().getNavContent().close();
     }
 
     private void addArtistAlbumsComboBox() {

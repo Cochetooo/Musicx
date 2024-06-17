@@ -8,6 +8,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.pages.editor.EditorLayout"
       styleClass="box-container"
+      VBox.vgrow="ALWAYS"
       HBox.hgrow="ALWAYS" spacing="5">
 
     <ContentSwitchTab fx:id="contentSwitchTab" />

@@ -1,9 +1,9 @@
 package fr.xahla.musicx.desktop.views.pages.library.songs;
 
 import atlantafx.base.controls.CustomTextField;
+import fr.xahla.musicx.desktop.factory.*;
 import fr.xahla.musicx.desktop.model.entity.Genre;
 import fr.xahla.musicx.desktop.model.entity.Song;
-import fr.xahla.musicx.desktop.views.pages.library.songs.table.*;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
@@ -40,6 +40,7 @@ public class LibrarySongList implements Initializable {
 
     @FXML private TableView<Song> tracksTableView;
 
+    @FXML private TableColumn<Song, Integer> tracksTableNumberCol;
     @FXML private TableColumn<Song, Void> tracksTableArtworkCol;
     @FXML private TableColumn<Song, Void> tracksTableTitleCol;
     @FXML private TableColumn<Song, Void> tracksTableGenresCol;
@@ -54,6 +55,7 @@ public class LibrarySongList implements Initializable {
     @Override public void initialize(final URL url, final ResourceBundle resourceBundle) {
         searchTextField.textProperty().addListener(((observable, oldValue, newValue) -> this.onSearch(newValue)));
 
+        tracksTableNumberCol.setCellFactory(song -> new TrackNumberTableCell());
         tracksTableArtworkCol.setCellFactory(song -> new AlbumArtworkTableCell());
         tracksTableTitleCol.setCellFactory(song -> new TrackTitleTableCell());
         tracksTableGenresCol.setCellFactory(song -> new TrackGenresTableCell());
@@ -66,7 +68,6 @@ public class LibrarySongList implements Initializable {
         filterSettingsComboBox.getCheckModel().checkAll();
 
         scene().getLocalLibraryScene().resetFilters();
-        this.addListeners();
 
         tracksTableView.setItems(scene().getLocalLibraryScene().getTrackList());
         tracksTableView.setTableMenuButtonVisible(false);
@@ -83,12 +84,6 @@ public class LibrarySongList implements Initializable {
         });
 
         StackPane.setAlignment(filterProgressIndicator, Pos.CENTER);
-    }
-
-    // --- Initializers ---
-
-    private void addListeners() {
-        scene().onSearchTextChange((observable, oldValue, newValue) -> onSearch(newValue));
     }
 
     // --- Events ---

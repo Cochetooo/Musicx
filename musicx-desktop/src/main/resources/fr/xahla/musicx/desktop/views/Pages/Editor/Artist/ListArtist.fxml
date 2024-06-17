@@ -12,7 +12,7 @@
         alignment="CENTER"
         styleClass="box-container"
         HBox.hgrow="ALWAYS"
-        prefHeight="1200"
+        VBox.vgrow="ALWAYS"
         spacing="15">
 
     <Label styleClass="title-2" text="%editor.listArtist.title" />

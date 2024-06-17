@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import java.lang.Double?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Hyperlink?>
+<VBox
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.come/fxml"
+        fx:controller="fr.xahla.musicx.desktop.views.pages.library.album.ShowAlbum"
+        styleClass="box-container"
+        HBox.hgrow="ALWAYS"
+        VBox.vgrow="ALWAYS"
+        spacing="15">
+    <fx:define>
+        <Double fx:id="IMAGE_SIZE" fx:value="200" />
+    </fx:define>
+
+    <HBox spacing="30">
+        <!-- Album Artwork -->
+        <ImageView fitWidth="$IMAGE_SIZE" fitHeight="$IMAGE_SIZE" fx:id="albumArtwork" />
+
+        <VBox spacing="10">
+            <Label fx:id="albumTypeLabel" style="-fx-font-size: 10px" />
+            <Label fx:id="albumNameLabel" />
+            <Hyperlink fx:id="artistLink" />
+        </VBox>
+    </HBox>
+
+    <TableView
+            fx:id="tracksTableView"
+            VBox.vgrow="ALWAYS"
+            onMouseClicked="#onClick"
+            styleClass="noTableHeader"
+            prefHeight="1200">
+        <columns>
+            <!-- Track No -->
+            <TableColumn text="%tracksTable.trackNumber" minWidth="50" maxWidth="50" style="-fx-text-alignment: CENTER" fx:id="tracksTableNumberCol">
+                <cellValueFactory>
+                    <PropertyValueFactory property="trackNumber" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Title -->
+            <TableColumn text="%tracksTable.songTitle" fx:id="tracksTableTitleCol" />
+
+            <!-- Genres -->
+            <TableColumn text="%tracksTable.genres" fx:id="tracksTableGenresCol" />
+
+            <!-- Duration -->
+            <TableColumn fx:id="tracksTableDurationCol" minWidth="80" maxWidth="120" style="-fx-alignment: center;">
+                <cellValueFactory>
+                    <PropertyValueFactory property="duration" />
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+
+        <contextMenu>
+            <ContextMenu>
+                <items>
+                    <!-- Play Track Now -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.playNow"
+                            accelerator="Alt+Enter"
+                            onAction="#playNow">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-play-24" />
+                        </graphic>
+                    </MenuItem>
+
+                    <!-- Queue Next -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.queueNext"
+                            accelerator="Shortcut+Shift+Enter"
+                            onAction="#queueNext">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
+                        </graphic>
+                    </MenuItem>
+
+                    <!-- Queue Last -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.queueLast"
+                            accelerator="Shortcut+Enter"
+                            onAction="#queueLast">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfmz-text-bullet-list-add-24" />
+                        </graphic>
+                    </MenuItem>
+
+                    <SeparatorMenuItem  />
+
+                    <!-- Edit Song -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.editSong"
+                            accelerator="Shift+Enter"
+                            onAction="#editSong">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-edit-32" />
+                        </graphic>
+                    </MenuItem>
+
+                    <!-- Edit Album -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.editAlbum"
+                            onAction="#editAlbum">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-edit-32" />
+                        </graphic>
+                    </MenuItem>
+
+                    <!-- Edit Genres -->
+                    <MenuItem
+                            text="%content.trackListContextMenu.editGenres"
+                            onAction="#editGenres">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-edit-32" />
+                        </graphic>
+                    </MenuItem>
+                </items>
+            </ContextMenu>
+        </contextMenu>
+    </TableView>
+</VBox>

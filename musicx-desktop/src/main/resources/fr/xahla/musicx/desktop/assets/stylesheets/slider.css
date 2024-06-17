@@ -1,0 +1,14 @@
+/*
+ * This stylesheet is used for Sliders components.
+ */
+
+.jfx-slider > .thumb,
+.jfx-slider > .animated-thumb,
+.jfx-slider > .colored-track {
+    -fx-background-color: -musicx-color-alternative;
+}
+
+.jfx-slider > .thumb,
+.jfx-slider > .animated-thumb {
+    -fx-background-insets: 3px;
+}

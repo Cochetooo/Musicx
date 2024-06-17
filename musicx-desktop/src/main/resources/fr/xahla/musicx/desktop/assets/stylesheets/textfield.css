@@ -1,0 +1,40 @@
+/*
+ * This stylesheet is used for Text fields components.
+ */
+
+/* Auto completion TextField */
+.auto-complete-popup .list-view,
+.auto-complete-popup .list-cell,
+.auto-complete-popup .list-cell:filled,
+.auto-complete-popup .list-cell:filled:hover,
+.auto-complete-popup .list-cell:filled:selected,
+.auto-complete-popup .list-cell:filled:selected:hover
+{
+    -fx-background-color: -musicx-color-dark-background;
+}
+
+/* CUSTOM */
+/* Pages -> Editor -> Genre -> InlineEditGenre */
+.genre-text-field {
+    -fx-background-color: -musicx-color-light-background;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-padding: 5px;
+}
+
+/* Pages -> Library -> Search -> LibrarySearch
+ * Pages -> Library -> Songs -> LibrarySongList
+*/
+.main-search-text {
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-font-size: 20px;
+    -fx-background-color: -musicx-color-light-background;
+}
+
+/* Pages -> Visualizer > NowPlaying */
+.nowPlayingInfo {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -musicx-color-primary;
+}

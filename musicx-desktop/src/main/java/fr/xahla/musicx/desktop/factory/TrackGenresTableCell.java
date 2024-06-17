@@ -1,4 +1,4 @@
-package fr.xahla.musicx.desktop.views.pages.library.songs.table;
+package fr.xahla.musicx.desktop.factory;
 
 import fr.xahla.musicx.desktop.helper.ColorHelper;
 import fr.xahla.musicx.desktop.config.FxmlComponent;

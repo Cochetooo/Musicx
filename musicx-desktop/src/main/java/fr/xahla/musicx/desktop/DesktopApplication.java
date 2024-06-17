@@ -3,6 +3,7 @@ package fr.xahla.musicx.desktop;
 import atlantafx.base.theme.PrimerDark;
 import fr.xahla.musicx.desktop.context.DesktopContext;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
+import fr.xahla.musicx.desktop.helper.ThemePolicyHelper;
 import fr.xahla.musicx.domain.helper.Benchmark;
 import fr.xahla.musicx.domain.helper.enums.ApplicationInfo;
 import javafx.application.Application;
@@ -69,9 +70,7 @@ public final class DesktopApplication extends Application {
             );
 
             // Additional CSS
-            scene.getStylesheets().add(
-                Objects.requireNonNull(DesktopApplication.class.getResource("assets/app.css")).toExternalForm()
-            );
+            ThemePolicyHelper.loadAllStylesheets(scene);
 
             this.mainStage.setMaximized(true);
             this.mainStage.setTitle(ApplicationInfo.APP_NAME.getInfo() + " " + ApplicationInfo.APP_VERSION.getInfo());

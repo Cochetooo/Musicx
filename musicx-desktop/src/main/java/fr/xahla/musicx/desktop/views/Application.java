@@ -3,7 +3,9 @@ package fr.xahla.musicx.desktop.views;
 import fr.xahla.musicx.desktop.config.FxmlComponent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -21,6 +23,7 @@ public class Application implements Initializable {
 
     @FXML public VBox applicationBox;
 
+    @FXML public Pane navContainer;
     @FXML private HBox contentSceneBox;
 
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -29,5 +32,13 @@ public class Application implements Initializable {
 
         scene().getSceneContent().switchContent(
             FxmlComponent.valueOf("SCENE_" + config().getActiveScene()));
+
+        scene().getNavContent().onChange((oldValue, newValue) -> {
+            if (null == newValue) {
+                navContainer.getChildren().clear();
+            } else {
+                navContainer.getChildren().setAll(newValue);
+            }
+        });
     }
 }

@@ -1,0 +1,10 @@
+/*
+ * This stylesheet is used for Toggle Switch components.
+ */
+.toggle-switch:selected > .thumb {
+    -fx-background-color: -musicx-color-ternary, -color-fg-emphasis;
+}
+
+.toggle-switch:selected > .thumb-area {
+    -fx-background-color: -musicx-color-ternary;
+}

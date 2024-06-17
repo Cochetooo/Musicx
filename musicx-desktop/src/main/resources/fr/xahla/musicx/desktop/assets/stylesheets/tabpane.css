@@ -1,0 +1,29 @@
+/*
+ * This stylesheet is used for Tabs components.
+ */
+
+.tab-pane .tab-header-area,
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-padding: 0 3px 0 3px;
+    -fx-border-radius: 10px 10px 0 0;
+    -fx-background-radius: 10px 10px 0 0;
+    -fx-background-color: -musicx-color-dark-background;
+}
+
+.tab-pane.tab-round .tab {
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: -musicx-color-ternary;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: -musicx-color-light-text;
+}

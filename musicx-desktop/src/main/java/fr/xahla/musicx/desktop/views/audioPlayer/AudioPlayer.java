@@ -1,5 +1,6 @@
 package fr.xahla.musicx.desktop.views.audioPlayer;
 
+import fr.xahla.musicx.desktop.config.FxmlComponent;
 import fr.xahla.musicx.desktop.helper.ImageHelper;
 import fr.xahla.musicx.desktop.helper.animation.ColorTransition;
 import fr.xahla.musicx.desktop.model.entity.Album;
@@ -245,15 +246,7 @@ public class AudioPlayer implements Initializable {
     }
 
     @FXML private void openQueue() {
-        throw new RuntimeException("TODO");
-
-        /* final var rightNavContent = scene().getRightNavContent();
-
-        if (null != rightNavContent.get()) {
-            rightNavContent.close();
-        } else {
-            rightNavContent.switchContent(FxmlComponent.QUEUE_LIST, this.resourceBundle);
-        } */
+        scene().getNavContent().switchContent(FxmlComponent.NAV_QUEUE_LIST);
     }
 
     // --- Helpers ---

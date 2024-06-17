@@ -4,36 +4,82 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
-<VBox
+<?import java.lang.Double?>
+
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Text?>
+<HBox
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="fr.xahla.musicx.desktop.views.pages.visualizer.NowPlaying"
         alignment="CENTER"
         styleClass="box-container"
         HBox.hgrow="ALWAYS"
-        prefHeight="1200"
-        fx:id="nowPlayingContainer" spacing="25">
-    <!-- Album Artwork -->
-    <ImageView fitWidth="600" fitHeight="600" fx:id="albumArtwork">
-        <effect>
-            <DropShadow fx:id="albumArtworkShadow" spread="0.8" radius="20" color="darkslategray" />
-        </effect>
-    </ImageView>
+        VBox.vgrow="ALWAYS"
+        style="-fx-spacing: 50px"
+        fx:id="nowPlayingContainer">
 
-    <!-- Track Info -->
-    <VBox spacing="10" alignment="CENTER">
-        <Label fx:id="trackNameLabel" styleClass="title-3, futuristic-font" />
-        <Label fx:id="artistAlbumLabel" styleClass="text-caption, futuristic-font" textFill="lightgray" />
+    <!-- Constants -->
+    <fx:define>
+        <!-- Parallax -->
+        <Double fx:id="PARALLAX_FACTOR" fx:value="0.01" />
+
+        <!-- Image size -->
+        <Double fx:id="IMAGE_SIZE" fx:value="700.0" />
+        <Double fx:id="CROP_REFLECTION_HEIGHT" fx:value="40.0" />
+
+        <!-- Image shadow properties -->
+        <Double fx:id="SHADOW_SPREAD" fx:value="0.8" />
+        <Double fx:id="SHADOW_RADIUS" fx:value="20.0" />
+        <Color fx:id="SHADOW_COLOR" fx:value="darkslategray" />
+    </fx:define>
+
+    <!-- Artwork Container -->
+    <VBox spacing="15">
+        <!-- Album Artwork -->
+        <ImageView fitWidth="$IMAGE_SIZE" fitHeight="$IMAGE_SIZE" fx:id="albumArtwork">
+            <effect>
+                <DropShadow
+                        fx:id="albumArtworkShadow"
+                        spread="$SHADOW_SPREAD"
+                        radius="$SHADOW_RADIUS"
+                        color="$SHADOW_COLOR"
+                />
+            </effect>
+        </ImageView>
+
+        <!-- Image Reflection -->
+        <ImageView fitWidth="$IMAGE_SIZE" fitHeight="$CROP_REFLECTION_HEIGHT" fx:id="albumArtworkReflection" scaleY="-1">
+            <effect>
+                <DropShadow
+                        fx:id="albumArtworkReflectionShadow"
+                        spread="$SHADOW_SPREAD"
+                        radius="$SHADOW_RADIUS"
+                        color="$SHADOW_COLOR"
+                />
+            </effect>
+        </ImageView>
     </VBox>
 
-    <!-- Additional Info -->
-    <TilePane orientation="VERTICAL" prefColumns="2">
-        <!-- Primary Genres -->
-        <Label fx:id="primaryGenresText" textFill="whitesmoke" />
 
-        <!-- Secondary Genres -->
-        <Label fx:id="secondaryGenresText" textFill="lightgray" />
+    <!-- Track Info -->
+    <VBox spacing="15">
+        <Label fx:id="trackNameLabel" styleClass="title-3, futuristic-font" />
+        <Label fx:id="artistAlbumLabel" styleClass="text-caption, futuristic-font" textFill="lightgray" />
 
+        <!-- Additional Info -->
+        <TilePane orientation="VERTICAL" prefColumns="2">
+            <!-- Primary Genres -->
+            <Label fx:id="primaryGenresText" styleClass="nowPlayingInfo" />
 
-    </TilePane>
-</VBox>
+            <!-- Secondary Genres -->
+            <Label fx:id="secondaryGenresText" styleClass="nowPlayingInfo" />
+
+            <!-- Bit Rate -->
+            <Label fx:id="bitRateText" styleClass="nowPlayingInfo" />
+
+            <!-- Audio Format -->
+            <Label fx:id="formatText" styleClass="nowPlayingInfo" />
+        </TilePane>
+    </VBox>
+</HBox>

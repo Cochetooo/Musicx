@@ -121,6 +121,6 @@ public class SongEdit implements Initializable {
     }
 
     public void close() {
-        scene().getRightNavContent().close();
+        scene().getNavContent().close();
     }
 }

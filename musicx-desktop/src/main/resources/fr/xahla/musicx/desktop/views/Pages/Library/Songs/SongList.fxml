@@ -12,6 +12,7 @@
         fx:controller="fr.xahla.musicx.desktop.views.pages.library.songs.LibrarySongList"
         styleClass="box-container"
         HBox.hgrow="ALWAYS"
+        VBox.vgrow="ALWAYS"
         spacing="15">
     <HBox spacing="10">
         <!-- Search Bar -->
@@ -40,7 +41,7 @@
                 prefHeight="1200">
             <columns>
                 <!-- Track No -->
-                <TableColumn text="%tracksTable.trackNumber" minWidth="50" maxWidth="50" style="-fx-text-alignment: CENTER">
+                <TableColumn text="%tracksTable.trackNumber" minWidth="50" maxWidth="50" style="-fx-text-alignment: CENTER" fx:id="tracksTableNumberCol">
                     <cellValueFactory>
                         <PropertyValueFactory property="trackNumber" />
                     </cellValueFactory>
@@ -63,9 +64,6 @@
                     <cellValueFactory>
                         <PropertyValueFactory property="duration" />
                     </cellValueFactory>
-                    <graphic>
-                        <FontIcon iconLiteral="fltfal-clock-28" />
-                    </graphic>
                 </TableColumn>
             </columns>
 

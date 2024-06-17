@@ -1,0 +1,18 @@
+/*
+ * This stylesheet is a helper for different kind of layouts within the app.
+ */
+
+/* Margin / Padding / Spacing / Alignment Tweaks */
+.base-padding {
+    -fx-padding: 10px;
+}
+
+/* Scene box container */
+.box-container {
+    -fx-padding: 20px;
+    -fx-background-color: -musicx-color-background;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-spacing: 20px;
+    -fx-alignment: top-center;
+}

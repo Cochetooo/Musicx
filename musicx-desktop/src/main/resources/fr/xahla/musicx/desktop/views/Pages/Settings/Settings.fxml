@@ -8,6 +8,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.xahla.musicx.desktop.views.pages.settings.Settings"
       HBox.hgrow="ALWAYS"
+      VBox.vgrow="ALWAYS"
       alignment="TOP_CENTER"
       spacing="10"
       styleClass="box-container">

@@ -23,6 +23,17 @@ music lovers:<br>
 
 ## Patch Log
 
+### Release 0.5.1
+
+> ### New Features
+> - Added 20+ new genres
+> - `Queue List` is back
+> - `Track Number` now editable
+> - `Clear Library` now working again.
+> - `Album Page`
+> ### Changes
+> - `Now Playing` layout has been improved
+
 ### Release 0.5.0 *(2024-06-14)*
 
 > ### New Features

@@ -5,6 +5,9 @@ import fr.xahla.musicx.desktop.context.scene.localLibrary.LocalLibraryScene;
 import fr.xahla.musicx.desktop.context.scene.settings.Settings;
 import fr.xahla.musicx.desktop.manager.ContentManager;
 import fr.xahla.musicx.desktop.manager.TaskProgressManager;
+import fr.xahla.musicx.desktop.model.entity.Album;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -16,22 +19,20 @@ import javafx.beans.value.ChangeListener;
  */
 public class SceneController {
 
-    private final StringProperty searchText;
     private final TaskProgressManager taskProgressManager;
 
     private final ContentManager sceneContent;
-    private final ContentManager rightNavContent;
+    private final ContentManager navContent;
 
     private final LocalLibraryScene localLibraryScene;
     private final HistoryScene historyScene;
     private final Settings settings;
 
     public SceneController() {
-        searchText = new SimpleStringProperty();
         taskProgressManager = new TaskProgressManager();
 
         sceneContent = new ContentManager();
-        rightNavContent = new ContentManager();
+        navContent = new ContentManager();
 
         localLibraryScene = new LocalLibraryScene();
         historyScene = new HistoryScene();
@@ -57,32 +58,10 @@ public class SceneController {
         return sceneContent;
     }
 
-    public ContentManager getRightNavContent() {
-        return rightNavContent;
-    }
+    public ContentManager getNavContent() { return navContent; }
 
     public TaskProgressManager getTaskProgress() {
         return taskProgressManager;
-    }
-
-    public String getSearchText() {
-        return searchText.get();
-    }
-
-    public SceneController setSearchText(String searchText) {
-        this.searchText.set(searchText);
-        return this;
-    }
-
-    // --- Listeners ---
-
-    public void bindSearchText(final StringProperty searchText) {
-        this.searchText.bind(searchText);
-    }
-
-    public void onSearchTextChange(final ChangeListener<String> listener) {
-        searchText.removeListener(listener);
-        searchText.addListener(listener);
     }
 
 }

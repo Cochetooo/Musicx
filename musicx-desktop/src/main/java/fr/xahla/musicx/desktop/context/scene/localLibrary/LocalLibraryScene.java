@@ -1,10 +1,9 @@
 package fr.xahla.musicx.desktop.context.scene.localLibrary;
 
+import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Song;
-import fr.xahla.musicx.desktop.model.enums.LocalSongGroup;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.transformation.FilteredList;
 
 import java.util.function.Predicate;
@@ -19,14 +18,13 @@ public final class LocalLibraryScene {
     private final LocalLibrary localLibrary;
     private final FilteredList<Song> trackList;
 
-    private final ObjectProperty<LocalSongGroup> currentListGroup;
+    private final ObjectProperty<Album> currentAlbum;
 
     public LocalLibraryScene() {
         this.localLibrary = new LocalLibrary();
 
         this.trackList = new FilteredList<>(localLibrary.getLocalSongs());
-
-        this.currentListGroup = new SimpleObjectProperty<>(LocalSongGroup.ARTISTS);
+        this.currentAlbum = new SimpleObjectProperty<>();
     }
 
     // --- Getters / Setters ---
@@ -43,19 +41,20 @@ public final class LocalLibraryScene {
         trackList.setPredicate(filter);
     }
 
-    public LocalSongGroup getCurrentListGroup() {
-        return currentListGroup.get();
+    public Album getCurrentAlbum() {
+        return currentAlbum.get();
     }
 
-    public void setCurrentListGroup(final LocalSongGroup currentListGroup) {
-        this.currentListGroup.set(currentListGroup);
+    public ObjectProperty<Album> currentAlbumProperty() {
+        return currentAlbum;
+    }
+
+    public LocalLibraryScene setCurrentAlbum(final Album album) {
+        currentAlbum.set(album);
+        return this;
     }
 
     // --- Listeners ---
-
-    public void onListGroupChange(final ChangeListener<LocalSongGroup> listener) {
-        currentListGroup.addListener(listener);
-    }
 
     public void resetFilters() {
         trackList.setPredicate(null);
