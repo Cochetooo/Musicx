@@ -18,13 +18,13 @@
                            styleClass="genre-text-field"
                            prefHeight="28"
                 />
-                <Button onAction="#proposePrimaryGenre">
+                <Button onAction="#proposePrimaryGenre" styleClass="light-button">
                     <graphic>
-                        <FontIcon iconLiteral="fltfal-add-28" />
+                        <FontIcon iconLiteral="fltfal-add-12" />
                     </graphic>
                 </Button>
             </HBox>
-            <ListActionView fx:id="primaryGenresList" prefHeight="250" />
+            <ListActionView fx:id="primaryGenresList" prefHeight="200" />
         </VBox>
 
         <VBox spacing="5" alignment="CENTER">
@@ -34,13 +34,13 @@
                            styleClass="genre-text-field"
                            prefHeight="28"
                 />
-                <Button onAction="#proposeSecondaryGenre">
+                <Button onAction="#proposeSecondaryGenre" styleClass="light-button">
                     <graphic>
-                        <FontIcon iconLiteral="fltfal-add-28" />
+                        <FontIcon iconLiteral="fltfal-add-12" />
                     </graphic>
                 </Button>
             </HBox>
-            <ListActionView fx:id="secondaryGenresList" prefHeight="250" />
+            <ListActionView fx:id="secondaryGenresList" prefHeight="200"  />
         </VBox>
     </HBox>
 

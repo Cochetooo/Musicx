@@ -30,8 +30,10 @@ public class Song {
     private final IntegerProperty bitRate;
     private final IntegerProperty discNumber;
     private final LongProperty duration;
+    private final ObjectProperty<Boolean> favourite;
     private final StringProperty filepath;
     private final ObjectProperty<AudioFormat> format;
+    private final ObjectProperty<Byte> rating;
     private final IntegerProperty sampleRate;
     private final StringProperty title;
     private final IntegerProperty trackNumber;
@@ -50,8 +52,10 @@ public class Song {
         this.bitRate = new SimpleIntegerProperty(song.getBitRate());
         this.discNumber = new SimpleIntegerProperty(song.getDiscNumber());
         this.duration = new SimpleLongProperty(song.getDuration());
+        this.favourite = new SimpleObjectProperty<>(song.getFavourite());
         this.filepath = new SimpleStringProperty(song.getFilepath());
         this.format = new SimpleObjectProperty<>(song.getFormat());
+        this.rating = new SimpleObjectProperty<>(song.getRating());
         this.sampleRate = new SimpleIntegerProperty(song.getSampleRate());
         this.title = new SimpleStringProperty(song.getTitle());
         this.trackNumber = new SimpleIntegerProperty(song.getTrackNumber());
@@ -170,6 +174,20 @@ public class Song {
         return this;
     }
 
+    public boolean isFavourite() {
+        return favourite.get();
+    }
+
+    public ObjectProperty<Boolean> favouriteProperty() {
+        return favourite;
+    }
+
+    public Song setFavourite(final boolean favourite) {
+        this.dto.setFavourite(favourite);
+        this.favourite.set(favourite);
+        return this;
+    }
+
     public String getFilepath() {
         return filepath.get();
     }
@@ -195,6 +213,21 @@ public class Song {
     public Song setFormat(final AudioFormat format) {
         this.dto.setFormat(format);
         this.format.set(format);
+        return this;
+    }
+
+    public byte getRating() {
+        return (byte) rating.get();
+    }
+
+    public ObjectProperty<Byte> ratingProperty() {
+        return rating;
+    }
+
+    public Song setRating(final byte rating) {
+        this.dto.setRating(rating);
+        this.rating.set(rating);
+
         return this;
     }
 

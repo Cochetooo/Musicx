@@ -12,13 +12,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.StringConverter;
 import org.controlsfx.control.ListActionView;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -122,20 +124,28 @@ public class InlineEditGenre implements Initializable {
                     setGraphic(null);
                 } else {
                     final var text = new Text(genre.getName());
-                    final var delete = new Button("X");
+                    final var delete = new Button();
+                    final var deleteIcon = new FontIcon();
+                    deleteIcon.setIconLiteral("fltfal-delete-24");
+
+                    delete.setGraphic(deleteIcon);
                     delete.setBackground(Background.EMPTY);
                     delete.setOnMouseClicked(event -> {
                         listView.getItems().remove(genre);
                         editButton.setDisable(false);
                     });
 
-                    final var hBox = new HBox();
-                    hBox.setAlignment(Pos.CENTER_LEFT);
-                    hBox.setSpacing(10);
-                    hBox.setPadding(new Insets(3, 3, 3, 3));
-                    hBox.getChildren().addAll(delete, text);
+                    final var borderPane = new BorderPane();
+                    borderPane.setPadding(new Insets(3, 3, 3, 3));
 
-                    setGraphic(hBox);
+                    final var hboxText = new HBox(text);
+                    hboxText.setAlignment(Pos.CENTER);
+                    VBox.setVgrow(hboxText, Priority.ALWAYS);
+
+                    borderPane.setLeft(hboxText);
+                    borderPane.setRight(delete);
+
+                    setGraphic(borderPane);
                 }
             }
         };

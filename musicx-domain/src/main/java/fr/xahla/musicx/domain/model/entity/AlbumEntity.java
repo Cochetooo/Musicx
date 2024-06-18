@@ -65,13 +65,13 @@ public class AlbumEntity {
     // Standard columns
     private String artworkUrl;
     private String catalogNo;
-    private short discTotal;
+    private Short discTotal;
     private String name;
-    private byte positiveRatingModel;
-    private byte rating;
+    private Byte positiveRatingModel;
+    private Byte rating;
     private LocalDate releaseDate;
-    private char tier;
-    private short trackTotal;
+    private Character tier;
+    private Short trackTotal;
     private ReleaseType type;
 
     // Casts

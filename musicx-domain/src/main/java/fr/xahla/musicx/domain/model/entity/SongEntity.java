@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.hibernate.Interceptor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,16 +45,16 @@ public class SongEntity {
     @Column(name = "lyric")
     private Map<Long, String> lyrics;
 
-    private int bitRate;
-    private short discNumber;
-    private long duration;
-    private boolean favourite;
+    private Integer bitRate;
+    private Short discNumber;
+    private Long duration;
+    private Boolean favourite;
     private String filepath;
     private AudioFormat format;
-    private byte rating;
-    private int sampleRate;
+    private Byte rating;
+    private Integer sampleRate;
     private String title;
-    private short trackNumber;
+    private Short trackNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -83,7 +84,7 @@ public class SongEntity {
         this.setCreatedAt(songDto.getCreatedAt());
         this.setDiscNumber(songDto.getDiscNumber());
         this.setDuration(songDto.getDuration());
-        this.setFavourite(songDto.isFavourite());
+        this.setFavourite(songDto.getFavourite());
         this.setFilepath(songDto.getFilepath());
         this.setFormat(songDto.getFormat());
         this.setLyrics(songDto.getLyrics());

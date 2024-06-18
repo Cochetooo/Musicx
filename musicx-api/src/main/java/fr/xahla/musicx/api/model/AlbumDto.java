@@ -28,14 +28,14 @@ public class AlbumDto {
 
     private String artworkUrl;
     private String catalogNo;
-    private short discTotal;
+    private Short discTotal;
     private String name;
     private LocalDate releaseDate;
-    private short trackTotal;
+    private Short trackTotal;
     private ReleaseType type;
 
-    private byte rating;
-    private byte positiveRatingModel;
-    private char tier;
+    private Byte rating;
+    private Byte positiveRatingModel;
+    private Character tier;
 
 }

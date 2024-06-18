@@ -26,18 +26,18 @@ public class SongDto {
     private List<Long> primaryGenreIds;
     private List<Long> secondaryGenreIds;
 
-    private int bitRate;
-    private short discNumber;
-    private long duration;
+    private Integer bitRate;
+    private Short discNumber;
+    private Long duration;
     private String filepath;
     private AudioFormat format;
     private Map<Long, String> lyrics;
-    private int sampleRate;
+    private Integer sampleRate;
     private String title;
-    private short trackNumber;
+    private Short trackNumber;
 
-    private byte rating;
-    private boolean favourite;
+    private Byte rating;
+    private Boolean favourite;
 
     public void setRawLyrics(final String lyrics) {
         this.lyrics = Map.of(0L, lyrics);
