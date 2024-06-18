@@ -67,7 +67,10 @@ public class AlbumEntity {
     private String catalogNo;
     private short discTotal;
     private String name;
+    private byte positiveRatingModel;
+    private byte rating;
     private LocalDate releaseDate;
+    private char tier;
     private short trackTotal;
     private ReleaseType type;
 
@@ -84,7 +87,10 @@ public class AlbumEntity {
         this.setDiscTotal(albumDto.getDiscTotal());
         this.setLabelId(albumDto.getLabelId());
         this.setName(albumDto.getName());
+        this.setPositiveRatingModel(albumDto.getPositiveRatingModel());
+        this.setRating(albumDto.getRating());
         this.setReleaseDate(albumDto.getReleaseDate());
+        this.setTier(albumDto.getTier());
         this.setTrackTotal(albumDto.getTrackTotal());
         this.setType(albumDto.getType());
 
@@ -136,7 +142,10 @@ public class AlbumEntity {
             .discTotal(discTotal)
             .labelId(labelId)
             .name(name)
+            .positiveRatingModel(positiveRatingModel)
+            .rating(rating)
             .releaseDate(releaseDate)
+            .tier(tier)
             .trackTotal(trackTotal)
             .type(type)
             .build();

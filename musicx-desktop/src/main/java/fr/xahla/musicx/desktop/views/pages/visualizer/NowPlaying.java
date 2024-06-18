@@ -107,7 +107,7 @@ public class NowPlaying implements Initializable {
                 imageColor,
                 10,
                 (color) -> {
-                    final var newBackground = new Background(new BackgroundFill(color, CornerRadii.EMPTY, null));
+                    final var newBackground = new Background(new BackgroundFill(color, new CornerRadii(10), null));
                     nowPlayingContainer.setBackground(newBackground);
                 }
             ).play();

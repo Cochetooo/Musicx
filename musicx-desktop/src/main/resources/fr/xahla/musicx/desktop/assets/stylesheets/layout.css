@@ -16,3 +16,8 @@
     -fx-spacing: 20px;
     -fx-alignment: top-center;
 }
+
+.rounded-container {
+    -fx-padding: 15px;
+    -fx-border-radius: 10px;
+}

@@ -36,6 +36,9 @@ public class SongDto {
     private String title;
     private short trackNumber;
 
+    private byte rating;
+    private boolean favourite;
+
     public void setRawLyrics(final String lyrics) {
         this.lyrics = Map.of(0L, lyrics);
     }

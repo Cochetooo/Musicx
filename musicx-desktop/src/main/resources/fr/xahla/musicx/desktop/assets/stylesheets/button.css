@@ -1,0 +1,42 @@
+/*
+ * This stylesheet is used for button components.
+ */
+
+.button {
+    -fx-cursor: HAND;
+    -fx-background-color: -musicx-color-dark-background;
+    -fx-alignment: center;
+}
+
+.button:hover {
+    -fx-background-color: -musicx-color-light-background;
+}
+
+.button:selected {
+    -fx-background-color: -musicx-color-extra-light-background;
+}
+
+.button:disabled {
+    -fx-opacity: 0.78;
+}
+
+/* Circle */
+.circle-button {
+    -fx-pref-width: 48px;
+    -fx-pref-height: 48px;
+    -fx-border-radius: 24px;
+    -fx-background-radius: 24px;
+}
+
+/* Highlight button */
+.light-button {
+    -fx-background-color: -musicx-color-ternary;
+}
+
+.light-button:hover {
+    -fx-background-color: -musicx-color-alternative;
+}
+
+.light-button:selected {
+    -fx-background-color: -musicx-color-secondary;
+}

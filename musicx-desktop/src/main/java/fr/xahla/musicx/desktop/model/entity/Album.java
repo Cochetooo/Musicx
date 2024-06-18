@@ -38,7 +38,10 @@ public class Album {
     private final StringProperty catalogNo;
     private final IntegerProperty discTotal;
     private final StringProperty name;
+    private final IntegerProperty positiveRatingModel;
+    private final IntegerProperty rating;
     private final ObjectProperty<LocalDate> releaseDate;
+    private final StringProperty tier;
     private final IntegerProperty trackTotal;
     private final ObjectProperty<ReleaseType> type;
 
@@ -57,7 +60,10 @@ public class Album {
         this.catalogNo = new SimpleStringProperty(album.getCatalogNo());
         this.discTotal = new SimpleIntegerProperty(album.getDiscTotal());
         this.name = new SimpleStringProperty(album.getName());
+        this.positiveRatingModel = new SimpleIntegerProperty(album.getPositiveRatingModel());
+        this.rating = new SimpleIntegerProperty(album.getRating());
         this.releaseDate = new SimpleObjectProperty<>(album.getReleaseDate());
+        this.tier = new SimpleStringProperty(String.valueOf(album.getTier()));
         this.trackTotal = new SimpleIntegerProperty(album.getTrackTotal());
         this.type = new SimpleObjectProperty<>(album.getType());
 
@@ -150,6 +156,32 @@ public class Album {
         return this;
     }
 
+    public byte getPositiveRatingModel() {
+        return (byte) positiveRatingModel.get();
+    }
+
+    public IntegerProperty positiveRatingModelProperty() {
+        return positiveRatingModel;
+    }
+
+    public Album setPositiveRatingModel(final short positiveRatingModel) {
+        this.positiveRatingModel.set(positiveRatingModel);
+        return this;
+    }
+
+    public byte getRating() {
+        return (byte) rating.get();
+    }
+
+    public IntegerProperty ratingProperty() {
+        return rating;
+    }
+
+    public Album setRating(final byte rating) {
+        this.rating.set(rating);
+        return this;
+    }
+
     public LocalDate getReleaseDate() {
         return releaseDate.get();
     }
@@ -162,6 +194,22 @@ public class Album {
         this.dto.setReleaseDate(releaseDate);
         this.releaseDate.set(releaseDate);
         return this;
+    }
+
+    public Character getTier() {
+        if (tier.get().isEmpty()) {
+            return null;
+        }
+
+        return tier.get().charAt(0);
+    }
+
+    public StringProperty tierProperty() {
+        return tier;
+    }
+
+    public Album setTier(final char tier) {
+        this.tier.set(String.valueOf(tier));
     }
 
     public short getTrackTotal() {
@@ -324,9 +372,9 @@ public class Album {
         if (null == image.get()) {
             if (str_is_null_or_blank(this.getArtworkUrl())) {
                 this.setImage(Album.artworkPlaceholder);
+            } else {
+                this.setImage(new Image(this.getArtworkUrl()));
             }
-
-            this.setImage(new Image(this.getArtworkUrl()));
         }
 
         return image.get();
@@ -347,5 +395,13 @@ public class Album {
         }
 
         return image;
+    }
+
+    @Override public boolean equals(final Object obj) {
+        if (obj instanceof final Album album) {
+            return album.getId() == this.getId();
+        }
+
+        return false;
     }
 }

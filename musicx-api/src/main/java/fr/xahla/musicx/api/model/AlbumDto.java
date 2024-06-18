@@ -34,4 +34,8 @@ public class AlbumDto {
     private short trackTotal;
     private ReleaseType type;
 
+    private byte rating;
+    private byte positiveRatingModel;
+    private char tier;
+
 }

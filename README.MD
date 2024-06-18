@@ -33,6 +33,8 @@ music lovers:<br>
 > - `Album Page`
 > ### Changes
 > - `Now Playing` layout has been improved
+> ### Fixes
+> - Corrected a rare bug where an album without artwork would give an error.
 
 ### Release 0.5.0 *(2024-06-14)*
 

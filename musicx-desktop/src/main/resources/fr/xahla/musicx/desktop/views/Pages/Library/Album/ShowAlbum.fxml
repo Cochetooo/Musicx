@@ -15,6 +15,7 @@
 <?import java.lang.Double?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Button?>
 <VBox
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.come/fxml"
@@ -24,17 +25,32 @@
         VBox.vgrow="ALWAYS"
         spacing="15">
     <fx:define>
-        <Double fx:id="IMAGE_SIZE" fx:value="200" />
+        <Double fx:id="IMAGE_SIZE" fx:value="240" />
     </fx:define>
 
-    <HBox spacing="30">
+    <HBox spacing="30" fx:id="topContainer" styleClass="rounded-container">
+        <Button onAction="#backToTrackList" styleClass="circle-button">
+            <graphic>
+                <FontIcon iconLiteral="fltfal-arrow-left-24" scaleX="2" scaleY="2" />
+            </graphic>
+        </Button>
+
         <!-- Album Artwork -->
         <ImageView fitWidth="$IMAGE_SIZE" fitHeight="$IMAGE_SIZE" fx:id="albumArtwork" />
 
-        <VBox spacing="10">
-            <Label fx:id="albumTypeLabel" style="-fx-font-size: 10px" />
-            <Label fx:id="albumNameLabel" />
-            <Hyperlink fx:id="artistLink" />
+        <VBox spacing="8" alignment="BOTTOM_LEFT">
+            <Label fx:id="albumTypeLabel" style="-fx-font-size: 13px" />
+            <Label fx:id="albumNameLabel" styleClass="futuristic-font" style="-fx-font-size: 42px; -fx-font-weight: bold" />
+            <Hyperlink fx:id="artistLink" style="-fx-font-size: 17px" textFill="white" />
+            <Label fx:id="yearDurationLabel" style="-fx-font-size: 15px" textFill="darkgray" />
+
+            <HBox>
+                <Button onAction="#playAlbum" styleClass="circle-button, light-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fltfmz-play-24" scaleX="2" scaleY="2" />
+                    </graphic>
+                </Button>
+            </HBox>
         </VBox>
     </HBox>
 

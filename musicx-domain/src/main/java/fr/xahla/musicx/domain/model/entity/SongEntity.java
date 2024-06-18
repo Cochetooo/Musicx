@@ -47,8 +47,10 @@ public class SongEntity {
     private int bitRate;
     private short discNumber;
     private long duration;
+    private boolean favourite;
     private String filepath;
     private AudioFormat format;
+    private byte rating;
     private int sampleRate;
     private String title;
     private short trackNumber;
@@ -81,9 +83,11 @@ public class SongEntity {
         this.setCreatedAt(songDto.getCreatedAt());
         this.setDiscNumber(songDto.getDiscNumber());
         this.setDuration(songDto.getDuration());
+        this.setFavourite(songDto.isFavourite());
         this.setFilepath(songDto.getFilepath());
         this.setFormat(songDto.getFormat());
         this.setLyrics(songDto.getLyrics());
+        this.setRating(songDto.getRating());
         this.setSampleRate(songDto.getSampleRate());
         this.setTitle(songDto.getTitle());
         this.setTrackNumber(songDto.getTrackNumber());
@@ -125,9 +129,11 @@ public class SongEntity {
             .bitRate(bitRate)
             .discNumber(discNumber)
             .duration(duration)
+            .favourite(favourite)
             .filepath(filepath)
             .format(format)
             .lyrics(lyrics)
+            .rating(rating)
             .sampleRate(sampleRate)
             .title(title)
             .trackNumber(trackNumber)

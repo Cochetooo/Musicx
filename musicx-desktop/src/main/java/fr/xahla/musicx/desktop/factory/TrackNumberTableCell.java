@@ -73,7 +73,7 @@ public class TrackNumberTableCell extends TableCell<Song, Integer> {
         textProperty().unbind();
 
         if (null == item || empty) {
-            setText("-");
+            setText("");
         } else {
             textProperty().bind(this.getTableRow().getItem().trackNumberProperty().asString());
         }
