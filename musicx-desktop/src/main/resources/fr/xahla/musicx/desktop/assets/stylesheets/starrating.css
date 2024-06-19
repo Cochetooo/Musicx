@@ -1,0 +1,17 @@
+/*
+ * This stylesheet is used for star ratings.
+ */
+.rating-star {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -musicx-color-light-background;
+    -fx-cursor: hand;
+}
+
+.rating-star.selected {
+    -fx-text-fill: -musicx-color-ternary;
+}
+
+.rating-star.half-selected {
+    -fx-text-fill: -musicx-color-darker;
+}

@@ -31,6 +31,7 @@ music lovers:<br>
 > - `Track Number` now editable
 > - `Clear Library` now working again.
 > - `Album Page`
+> - `Star Ratings & Tier` for albums
 > ### Changes
 > - `Now Playing` layout has been improved
 > ### Fixes

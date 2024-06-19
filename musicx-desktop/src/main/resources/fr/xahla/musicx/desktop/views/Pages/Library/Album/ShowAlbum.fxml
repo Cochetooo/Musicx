@@ -16,6 +16,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Button?>
+<?import org.controlsfx.control.Rating?>
+<?import fr.xahla.musicx.desktop.views.components.StarRating?>
 <VBox
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.come/fxml"
@@ -50,6 +52,25 @@
                         <FontIcon iconLiteral="fltfmz-play-24" scaleX="2" scaleY="2" />
                     </graphic>
                 </Button>
+            </HBox>
+        </VBox>
+
+        <!-- Rating -->
+        <VBox spacing="8" alignment="BOTTOM_LEFT">
+            <Label text="%Pages.Library.Album.ShowAlbum.rating" />
+            <StarRating />
+
+            <Label text="%Pages.Library.Album.ShowAlbum.positiveRatingModel" />
+            <StarRating />
+
+            <Label text="%Pages.Library.Album.ShowAlbum.tier" />
+            <HBox spacing="3">
+                <Button text="S" styleClass="tier-button, tier-S" />
+                <Button text="A" styleClass="tier-button, tier-A" />
+                <Button text="B" styleClass="tier-button, tier-B" />
+                <Button text="C" styleClass="tier-button, tier-C" />
+                <Button text="D" styleClass="tier-button, tier-D" />
+                <Button text="F" styleClass="tier-button, tier-F" />
             </HBox>
         </VBox>
     </HBox>
