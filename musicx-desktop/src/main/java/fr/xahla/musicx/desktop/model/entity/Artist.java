@@ -37,7 +37,7 @@ public class Artist {
         return dto;
     }
 
-    public Long getId() {
+    public long getId() {
         return id.get();
     }
 
@@ -45,7 +45,7 @@ public class Artist {
         return id;
     }
 
-    public Artist setId(final Long id) {
+    public Artist setId(final long id) {
         this.dto.setId(id);
         this.id.set(id);
         return this;

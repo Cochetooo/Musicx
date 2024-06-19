@@ -56,7 +56,7 @@
                 <items>
                     <!-- Delete artist -->
                     <MenuItem   text="%editor.artist.listArtist.delete"
-                                accelerator="Alt+Enter"
+                                accelerator="Delete"
                                 onAction="#deleteArtist">
                         <graphic>
                             <FontIcon iconLiteral="fltfal-delete-48" />

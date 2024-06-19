@@ -5,6 +5,7 @@ import fr.xahla.musicx.api.model.ArtistDto;
 import fr.xahla.musicx.desktop.helper.FxmlHelper;
 import fr.xahla.musicx.desktop.model.entity.Album;
 import fr.xahla.musicx.desktop.model.entity.Artist;
+import fr.xahla.musicx.desktop.views.modals.selector.ArtistSelector;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 
+import static fr.xahla.musicx.desktop.context.DesktopContext.scene;
 import static fr.xahla.musicx.domain.application.AbstractContext.artistRepository;
 import static fr.xahla.musicx.domain.helper.StringHelper.str_contains_ignore_case;
 
@@ -79,9 +81,27 @@ public class ListArtist implements Initializable {
      * Merge an artist to another artist.
      */
     @FXML private void mergeArtist() {
+        final var selectedArtists = artistTableView.getSelectionModel().getSelectedItems();
 
+        final var artistSelector = new ArtistSelector(artistList).showAndWait();
 
-        //this.updateTable();
+        if (artistSelector.isPresent()) {
+            final var targetArtist = artistSelector.get();
+
+            selectedArtists.forEach(artist -> {
+                final var songs = artistRepository().getSongs(artist.getDto());
+
+                songs.forEach(song -> song.setArtistId(targetArtist.getId()));
+
+                artistRepository().delete(
+                    artist.getDto(),
+                    false
+                );
+            });
+
+            scene().getLocalLibraryScene().getLibrary().refresh();
+            this.updateTable();
+        }
     }
 
     /**
