@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Musicx.Views.Menu.TopBarMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Musicx.Views.Menu"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             mc:Ignorable="d">
+    <Grid>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <ui:MenuItem Header="_File">
+                        <ui:MenuItem Header="Library">
+                            <ui:MenuItem Header="Import Folders"
+                                         InputGestureText="Ctrl+Shift+O">
+                                <ui:SymbolIcon Symbol="FolderAdd24" />
+                            </ui:MenuItem>
+                        </ui:MenuItem>
+                    </ui:MenuItem>
+                
+                <ui:MenuItem Header="_Tools">
+                    
+                </ui:MenuItem>
+                
+                <ui:MenuItem Header="_Player">
+                    
+                </ui:MenuItem>
+            </Menu>
+        </DockPanel>
+    </Grid>
+</UserControl>
