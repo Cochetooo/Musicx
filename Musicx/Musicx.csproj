@@ -21,4 +21,15 @@
       <PackageReference Include="WPF-UI" Version="3.0.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Assets\Images\Logo\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\Images\Logo\logo500.png" />
+      <Resource Include="Assets\Images\Logo\Logo500.png" />
+      <None Remove="Assets\Fonts\SpaceGrotesk-VariableFont_wght.ttf" />
+      <Resource Include="Assets\Fonts\SpaceGrotesk-VariableFont_wght.ttf" />
+    </ItemGroup>
+
 </Project>

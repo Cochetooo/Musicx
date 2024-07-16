@@ -6,8 +6,10 @@
     <Application.Resources>
          <ResourceDictionary>
              <ResourceDictionary.MergedDictionaries>
-                 <ui:ThemesDictionary Theme="Light" />
+                 <ui:ThemesDictionary Theme="Dark" />
                  <ui:ControlsDictionary />
+                 
+                 <ResourceDictionary Source="Themes/ClassicTheme.xaml" />
              </ResourceDictionary.MergedDictionaries>
          </ResourceDictionary>
     </Application.Resources>

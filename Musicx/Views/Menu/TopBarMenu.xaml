@@ -9,14 +9,62 @@
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
+                <!-- File -->
                 <ui:MenuItem Header="_File">
-                        <ui:MenuItem Header="Library">
-                            <ui:MenuItem Header="Import Folders"
-                                         InputGestureText="Ctrl+Shift+O">
+                    <!-- Library -->
+                    <ui:MenuItem Header="Library">
+                        <!-- Import Folders -->
+                        <ui:MenuItem Header="Import Folders"
+                                     InputGestureText="Ctrl+Shift+O">
+                            <ui:MenuItem.Icon>
                                 <ui:SymbolIcon Symbol="FolderAdd24" />
-                            </ui:MenuItem>
+                            </ui:MenuItem.Icon>
+                        </ui:MenuItem>
+                        
+                        <!-- Scan Library -->
+                        <ui:MenuItem Header="Scan Local Library"
+                                     IsEnabled="False">
+                            <ui:MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="ArrowClockwise24" />
+                            </ui:MenuItem.Icon>
+                        </ui:MenuItem>
+                        
+                        <!-- Organize Library -->
+                        <ui:MenuItem Header="Organize Library">
+                            <ui:MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="TextBulletListTree24" />
+                            </ui:MenuItem.Icon>
                         </ui:MenuItem>
                     </ui:MenuItem>
+                    
+                    <ui:NavigationViewItemSeparator />
+                    
+                    <!-- Settings -->
+                    <ui:MenuItem Header="Settings"
+                                 InputGestureText="Ctrl+O">
+                        <ui:MenuItem.Icon>
+                            <ui:SymbolIcon Symbol="Settings24" />
+                        </ui:MenuItem.Icon>
+                    </ui:MenuItem>
+                    
+                    <!-- Show Console -->
+                    <ui:MenuItem Header="Show Console Logs"
+                                 InputGestureText="Alt+L">
+                        <ui:MenuItem.Icon>
+                            <ui:SymbolIcon Symbol="WindowDevTools24" />
+                        </ui:MenuItem.Icon>
+                    </ui:MenuItem>
+                    
+                    <ui:NavigationViewItemSeparator />
+                    
+                    <!-- Settings -->
+                    <ui:MenuItem Header="Exit Program"
+                                 InputGestureText="Ctrl+O">
+                        <ui:MenuItem.Icon>
+                            <ui:SymbolIcon Symbol="Dismiss24" />
+                        </ui:MenuItem.Icon>
+                    </ui:MenuItem>
+                </ui:MenuItem>
                 
                 <ui:MenuItem Header="_Tools">
                     
