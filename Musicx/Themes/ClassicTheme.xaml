@@ -3,12 +3,35 @@
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     <FontFamily x:Key="PrimaryFontFamily">pack://application:,,,/Assets/Fonts/SpaceGrotesk-VariableFont_wght.ttf#Space Grotesk</FontFamily>
     
+    <LinearDoubleKeyFrame x:Key="EaseIn" />
     
-    <Style TargetType="ui:TextBlock">
+    <!-- Static Resources -->
+    <Style x:Key="ContainerMargin" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="5" />
+    </Style>
+    
+    <Style x:Key="HubTextBlock" TargetType="ui:TextBlock">
+        <Setter Property="Background" Value="#171c1c77" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+    
+    <!-- UI Elements -->
+    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    
+    <Style TargetType="Label" BasedOn="{StaticResource ContainerMargin}">
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}" />
     </Style>
     
-    <Style TargetType="Label">
+    <Style TargetType="StackPanel" BasedOn="{StaticResource ContainerMargin}" />
+    
+    <Style TargetType="ui:TextBlock" BasedOn="{StaticResource ContainerMargin}">
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}" />
     </Style>
+    
 </ResourceDictionary>

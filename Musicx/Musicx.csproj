@@ -30,6 +30,17 @@
       <Resource Include="Assets\Images\Logo\Logo500.png" />
       <None Remove="Assets\Fonts\SpaceGrotesk-VariableFont_wght.ttf" />
       <Resource Include="Assets\Fonts\SpaceGrotesk-VariableFont_wght.ttf" />
+      <None Update="log4net.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\Navigation\AppInfoBar.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
     </ItemGroup>
 
 </Project>

@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Musicx"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-        xmlns:menu="clr-namespace:Musicx.Views.Menu"
-        xmlns:bottom="clr-namespace:Musicx.Views.Bottom"
+        xmlns:content="clr-namespace:Musicx.Views.Content"
+        xmlns:nav="clr-namespace:Musicx.Views.Navigation"
+        xmlns:audioPlayer="clr-namespace:Musicx.Views.AudioPlayer"
         mc:Ignorable="d"
         Title="MainWindow" Height="900" Width="1440"
         Icon="pack://application:,,,/Assets/Images/Logo/Logo500.png">
@@ -23,17 +23,18 @@
                 Title="Musicx - Development Version 0.6.0" 
                 Icon="{ui:ImageIcon 'pack://application:,,,/Assets/Images/Logo/Logo500.png'}" />
         
-            <menu:TopBarMenu />
+            <nav:TopBar />
         </StackPanel>
         
         <!-- Main Content -->
         <Grid Grid.Row="1">
-            
+            <content:ModuleSelector />
         </Grid>
         
         <!-- Bottom Bar -->
         <StackPanel Grid.Row="2">
-            <bottom:AudioPlayer />
+            <nav:AppInfoBar />
+            <audioPlayer:AudioPlayer />
         </StackPanel>
     </Grid>
 </ui:FluentWindow>

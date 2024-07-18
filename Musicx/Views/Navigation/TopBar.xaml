@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="Musicx.Views.Menu.TopBarMenu"
+﻿<UserControl x:Class="Musicx.Views.Navigation.TopBar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Musicx.Views.Menu"
+             xmlns:local="clr-namespace:Musicx.Views.Navigation"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d">
     <Grid>
@@ -59,7 +59,7 @@
                     
                     <!-- Settings -->
                     <ui:MenuItem Header="Exit Program"
-                                 InputGestureText="Ctrl+O">
+                                 InputGestureText="Alt+F4">
                         <ui:MenuItem.Icon>
                             <ui:SymbolIcon Symbol="Dismiss24" />
                         </ui:MenuItem.Icon>

@@ -1,17 +1,22 @@
-﻿<UserControl x:Class="Musicx.Views.Bottom.AudioPlayer"
+﻿<UserControl x:Class="Musicx.Views.AudioPlayer.AudioPlayer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:local="clr-namespace:Musicx.Views.Bottom"
              mc:Ignorable="d"
-             d:DesignHeight="80" HorizontalAlignment="Stretch">
-    <DockPanel HorizontalAlignment="Stretch">
+             d:DesignHeight="80">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        
         <!-- Left Side:
             Contains Info about Current Track
         -->
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+        <StackPanel Grid.Column="0" Orientation="Horizontal">
             <ui:Image Height="80" Width="80">
                 <ui:Image.Effect>
                     <DropShadowEffect Color="DarkSlateGray" ShadowDepth="0.4" BlurRadius="0.2" />
@@ -28,7 +33,7 @@
             Contains Player Controls such as Previous, Play, Next, Shuffle, Repeat
             And Time Tracking Slider
         -->
-        <StackPanel HorizontalAlignment="Stretch">
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <!-- Shuffle Mode -->
                 <ui:Button Icon="{ui:SymbolIcon ArrowSwap24}" Appearance="Transparent" />
@@ -54,7 +59,7 @@
             
             <StackPanel Orientation="Horizontal">
                 <ui:TextBlock Uid="TrackTimeTextBlock" Text="--:--:--" />
-                <Slider Uid="TrackTimeSlider" IsEnabled="False" Maximum="1" />
+                <Slider Uid="TrackTimeSlider" IsEnabled="False" Maximum="1" Width="400" />
                 <ui:TextBlock Uid="TrackTotalTimeTextBlock" Text="--:--:--" />
             </StackPanel>
         </StackPanel>
@@ -62,11 +67,11 @@
         <!-- Right Side: 
             Contains Volume Slider Controls
         -->
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
             <ui:Button Icon="{ui:SymbolIcon TextBulletList24}" Appearance="Transparent" />
             <ui:Button Uid="VolumeButton" Icon="{ui:SymbolIcon Speaker048}" Appearance="Transparent" />
             <Slider Uid="VolumeSlider" Maximum="1" Value="0.3" />
-            <ui:TextBlock Uid="VolumeLabel" Text="30" />
+            <ui:TextBlock Text="30" />
         </StackPanel>
-    </DockPanel>
+    </Grid>
 </UserControl>

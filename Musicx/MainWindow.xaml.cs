@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using log4net;
 using Wpf.Ui.Controls;
 
 namespace Musicx;
@@ -18,12 +19,11 @@ namespace Musicx;
 /// </summary>
 public partial class MainWindow
 {
-    private static readonly log4net.ILog log =
-        log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
     
     public MainWindow()
     {
-        log.Info("Initializing program...");
+        Log.Info("Initializing program...");
         var stopwatch = new Stopwatch();
         
         stopwatch.Start();
@@ -31,6 +31,6 @@ public partial class MainWindow
         InitializeComponent();
         
         stopwatch.Stop();
-        log.Info("Program initialized in " + stopwatch.ElapsedMilliseconds + "ms.");
+        Log.Info("Program initialized in " + stopwatch.ElapsedMilliseconds + "ms.");
     }
 }

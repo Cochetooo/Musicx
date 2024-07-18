@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Musicx.Views.Bottom;
+namespace Musicx.Views.AudioPlayer;
 
 public partial class AudioPlayer : UserControl
 {
