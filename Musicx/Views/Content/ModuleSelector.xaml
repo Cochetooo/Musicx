@@ -69,64 +69,80 @@
             </Grid.ColumnDefinitions>
             
             <ui:Button Grid.Row="0" Grid.Column="0">
-                <Grid Width="225" Height="225">
-                    <ui:Image Stretch="UniformToFill" />
+                <Grid Width="300" Height="200">
+                    <Viewbox>
+                        <ui:SymbolIcon Symbol="Library24" Foreground="LightGray" />
+                    </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="LOCAL LIBRARY" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>
             
             <ui:Button Grid.Row="0" Grid.Column="1">
-                <Grid Width="225" Height="225">
-                    <ui:Image Stretch="UniformToFill" />
+                <Grid Width="300" Height="200">
+                    <Viewbox>
+                        <ui:SymbolIcon Symbol="Stream24" Foreground="LightGray" />
+                    </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="STREAMING" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>
             
             <ui:Button Grid.Row="0" Grid.Column="2">
-                <Grid Width="225" Height="225">
-                    <ui:Image Stretch="UniformToFill" />
+                <Grid Width="300" Height="200">
+                    <Viewbox>
+                        <ui:SymbolIcon Symbol="BookLetter24" Foreground="LightGray" />
+                    </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="ENCYCLOPEDIA" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>
             
             <ui:Button Grid.Row="1" Grid.Column="0">
-                <Grid Width="225" Height="225">
-                    <ui:Image Stretch="UniformToFill" />
+                <Grid Width="300" Height="200">
+                    <Viewbox>
+                        <ui:SymbolIcon Symbol="PlayMultiple16" Foreground="LightGray" />
+                    </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="LISTEN TOGETHER" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>
             
             <ui:Button Grid.Row="1" Grid.Column="1" IsEnabled="False">
-                <Grid Width="225" Height="225">
+                <Grid Width="300" Height="200">
                     <ui:Image Stretch="UniformToFill" />
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="Hub" VerticalAlignment="Bottom"  Foreground="DarkGray" />
                 </Grid>
             </ui:Button>
             
             <ui:Button Grid.Row="1" Grid.Column="2">
-                <Grid Width="225" Height="225">
-                    <ui:Image Stretch="UniformToFill" />
+                <Grid Width="300" Height="200">
+                    <Viewbox>
+                        <ui:SymbolIcon Symbol="DataBarVertical32" Foreground="LightGray" />
+                    </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="STATISTICS" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>
             
             <ui:Button Grid.Row="2" Grid.Column="0">
-                <Grid Width="225" Height="225">
-                    <ui:Image Stretch="UniformToFill" />
+                <Grid Width="300" Height="200">
+                    <Viewbox>
+                        <ui:SymbolIcon Symbol="People48" Foreground="LightGray" />
+                    </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="FRIENDS" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>
             
             <ui:Button Grid.Row="2" Grid.Column="1">
-                <Grid Width="225" Height="225">
-                    <ui:Image Stretch="UniformToFill" />
+                <Grid Width="300" Height="200">
+                    <Viewbox>
+                        <ui:SymbolIcon Symbol="Person48" Foreground="LightGray" />
+                    </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="PROFILE" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>
             
             <ui:Button Grid.Row="2" Grid.Column="2">
-                <Grid Width="225" Height="225">
-                    <ui:Image Stretch="UniformToFill" />
+                <Grid Width="300" Height="200">
+                    <Viewbox>
+                        <ui:SymbolIcon Symbol="Settings48" Foreground="LightGray" />
+                    </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="SETTINGS" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>

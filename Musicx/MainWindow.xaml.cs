@@ -25,7 +25,6 @@ public partial class MainWindow
     {
         Log.Info("Initializing program...");
         var stopwatch = new Stopwatch();
-        
         stopwatch.Start();
         
         InitializeComponent();
