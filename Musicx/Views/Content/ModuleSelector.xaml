@@ -91,7 +91,7 @@
                     <Viewbox>
                         <ui:SymbolIcon Symbol="BookLetter24" Foreground="LightGray" />
                     </Viewbox>
-                    <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="ENCYCLOPEDIA" VerticalAlignment="Bottom" />
+                    <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="MUSICOPEDIA" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>
             
