@@ -67,11 +67,49 @@
                 </ui:MenuItem>
                 
                 <ui:MenuItem Header="_Tools">
-                    
+                    <!-- Music -->
+                    <ui:MenuItem Header="_Audio">
+                        <!-- Normalize Audio -->
+                        <ui:MenuItem Header="Normalize Audio">
+                            <ui:MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="Speaker024" />
+                            </ui:MenuItem.Icon>
+                        </ui:MenuItem>
+                    </ui:MenuItem>
                 </ui:MenuItem>
                 
                 <ui:MenuItem Header="_Player">
+                    <!-- Toggle Playing -->
+                    <ui:MenuItem Header="Toggle Playing"
+                                 InputGestureText="¨Ctrl+P">
+                        <ui:MenuItem.Icon>
+                            <ui:SymbolIcon Symbol="VideoPlayPause24" />
+                        </ui:MenuItem.Icon>
+                    </ui:MenuItem>
                     
+                    <!-- Previous -->
+                    <ui:MenuItem Header="Previous"
+                                 InputGestureText="¨Ctrl+B">
+                        <ui:MenuItem.Icon>
+                            <ui:SymbolIcon Symbol="Previous24" />
+                        </ui:MenuItem.Icon>
+                    </ui:MenuItem>
+                    
+                    <!-- Next -->
+                    <ui:MenuItem Header="Next"
+                                 InputGestureText="¨Ctrl+N">
+                        <ui:MenuItem.Icon>
+                            <ui:SymbolIcon Symbol="Next24" />
+                        </ui:MenuItem.Icon>
+                    </ui:MenuItem>
+                    
+                    <!-- Mute -->
+                    <ui:MenuItem Header="Mute"
+                                 InputGestureText="¨Ctrl+M">
+                        <ui:MenuItem.Icon>
+                            <ui:SymbolIcon Symbol="SpeakerMute24" />
+                        </ui:MenuItem.Icon>
+                    </ui:MenuItem>
                 </ui:MenuItem>
             </Menu>
         </DockPanel>

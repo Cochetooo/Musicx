@@ -19,17 +19,10 @@ namespace Musicx;
 /// </summary>
 public partial class MainWindow
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
     
     public MainWindow()
     {
-        Log.Info("Initializing program...");
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
-        
         InitializeComponent();
-        
-        stopwatch.Stop();
-        Log.Info("Program initialized in " + stopwatch.ElapsedMilliseconds + "ms.");
     }
 }

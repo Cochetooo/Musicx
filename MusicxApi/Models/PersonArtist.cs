@@ -1,8 +1,8 @@
-namespace Musicx.Models;
+namespace MusicxApi.Models;
 
-public class PersonArtistEntity : ArtistEntity
+public class PersonArtist : Artist
 {
-    public List<long> BandIds { get; } = new();
+    public List<ulong> BandIds { get; } = [];
     
     public required string FirstName { get; set; }
     public DateTime? BirthDate { get; set; }

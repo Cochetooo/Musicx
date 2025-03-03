@@ -1,31 +1,34 @@
-﻿using System.Windows.Media.Media3D;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+﻿using System.Windows;
+using log4net;
+using Microsoft.Win32;
+using Musicx.Services.Audio;
+using MusicxApi.Models;
+using NAudio.Wave;
 
 namespace Musicx.Views.Content;
 
 public partial class ModuleSelector
 {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(ModuleSelector));
+    
     public ModuleSelector()
     {
         InitializeComponent();
-        this.MouseMove += ModuleSelector_MouseMove;
     }
 
-    private void ModuleSelector_MouseMove(object sender, MouseEventArgs e)
+    private void TestReadAudioFile(object sender, RoutedEventArgs e)
     {
-        var mousePos = e.GetPosition(this);
-        var centerX = this.ActualWidth / 2;
-        var centerY = this.ActualHeight / 2;
+        var fileBrowse = new OpenFileDialog
+        {
+            Title = "Select Audio File",
+            Filter = "MP3 Files (*.mp3)|*.mp3|All Files (*.*)|*.*"
+        };
 
-        var offsetX = (mousePos.X - centerX) / centerX;
-        var offsetY = (mousePos.Y - centerY) / centerY;
+        Song song;
 
-        AxisAngleRotation.Angle = offsetX * 10;
-        AxisAngleRotation.Axis = new Vector3D(0, 1, 0);
-        RotateTransform.Rotation = AxisAngleRotation;
-        
-        AxisAngleRotation.Angle = offsetY * 10;
-        AxisAngleRotation.Axis = new Vector3D(1, 0, 0);
-        RotateTransform.Rotation = AxisAngleRotation;
+        if (true == fileBrowse.ShowDialog())
+        {
+            ReadAudioFile.Execute(fileBrowse.FileName, out song);
+        }
     }
 }

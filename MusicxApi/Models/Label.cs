@@ -1,8 +1,8 @@
-namespace Musicx.Models;
+namespace MusicxApi.Models;
 
-public class LabelEntity
+public class Label
 {
-    public long Id { get; set; }
+    public ulong Id { get; set; }
     
     public string? Description { get; set; }
     public required string Name { get; set; }

@@ -1,6 +1,5 @@
 using System.Net.Http;
 using log4net;
-using Musicx.Views.AudioPlayer;
 using Newtonsoft.Json.Linq;
 
 namespace Musicx.Services.ExternalApi;
