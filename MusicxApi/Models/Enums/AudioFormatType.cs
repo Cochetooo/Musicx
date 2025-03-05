@@ -40,6 +40,7 @@ public enum AudioFormatType
     Rm,
     Sln,
     Tta,
+    Unknown,
     Voc,
     Vox,
     Wav,

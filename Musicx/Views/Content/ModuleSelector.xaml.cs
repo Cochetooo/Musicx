@@ -1,7 +1,9 @@
 ﻿using System.Windows;
 using log4net;
 using Microsoft.Win32;
+using Musicx.Listeners;
 using Musicx.Services.Audio;
+using Musicx.Services.LocalLibrary;
 using MusicxApi.Models;
 using NAudio.Wave;
 
@@ -10,25 +12,31 @@ namespace Musicx.Views.Content;
 public partial class ModuleSelector
 {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ModuleSelector));
+
+    class ProgressListener : IProgressListener
+    {
+        public void UpdateProgress(int progress, int total)
+        {
+
+        }
+    }
     
     public ModuleSelector()
     {
         InitializeComponent();
     }
 
-    private void TestReadAudioFile(object sender, RoutedEventArgs e)
+    private async void LocalLibrary_Click(object sender, RoutedEventArgs e)
     {
-        var fileBrowse = new OpenFileDialog
+        var fileBrowse = new OpenFolderDialog()
         {
-            Title = "Select Audio File",
-            Filter = "MP3 Files (*.mp3)|*.mp3|All Files (*.*)|*.*"
+            Title = "Select Audio Folder",
+            Multiselect = true
         };
-
-        Song song;
 
         if (true == fileBrowse.ShowDialog())
         {
-            ReadAudioFile.Execute(fileBrowse.FileName, out song);
+            await ImportLocalSongs.Execute(fileBrowse.FolderNames.ToList(), [".mp3"], new ProgressListener());
         }
     }
 }

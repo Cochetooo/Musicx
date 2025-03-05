@@ -18,7 +18,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             
-            <ui:Button Grid.Row="0" Grid.Column="0">
+            <ui:Button Grid.Row="0" Grid.Column="0" Click="LocalLibrary_Click">
                 <Grid Width="300" Height="200">
                     <Viewbox>
                         <ui:SymbolIcon Symbol="Library24" Foreground="LightGray" />
@@ -36,7 +36,7 @@
                 </Grid>
             </ui:Button>
             
-            <ui:Button Grid.Row="0" Grid.Column="2" Click="TestReadAudioFile">
+            <ui:Button Grid.Row="0" Grid.Column="2">
                 <Grid Width="300" Height="200">
                     <Viewbox>
                         <ui:SymbolIcon Symbol="BookLetter24" Foreground="LightGray" />

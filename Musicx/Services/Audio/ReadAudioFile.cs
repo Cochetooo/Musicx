@@ -18,6 +18,32 @@ public class ReadAudioFile
         
         Logger.Debug("✅ ReadAudioFile success");
     }
+    
+    public static async Task<Song> ExecuteAsync(string filePath)
+    {
+        Logger.Debug("⛏️ Executing ReadAudioFile");
+        
+        var song = new Song
+        {
+            AudioFormat = AudioFormatType.Unknown,
+            BitRate = 0,
+            Duration = 0,
+            Filepath = filePath,
+            SampleRate = 0
+        };
+        
+        await Task.Run(() =>
+        {
+            var file = TagLib.File.Create(filePath);
+        
+            Logger.Warn("⚠️ Audio Format set to MP3 per default. Fix later");
+            ReadSong(file, out song);
+            
+            Logger.Debug("✅ ReadAudioFile success");
+        });
+
+        return song;
+    }
 
     private static void ReadSong(in TagLib.File file, out Song song)
     {

@@ -23,7 +23,7 @@ public class Song
     public string? GeneratedGenreName { get; set; }
     public Dictionary<long, string> Lyrics { get; set; } = [];
     public required int SampleRate { get; set; }
-    public string? Title { get; set; }
+    public string Title { get; set; } = "Untitled";
     public uint? TrackNumber { get; set; }
 
     public void SetRawLyrics(string lyrics)

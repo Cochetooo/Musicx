@@ -1,19 +1,19 @@
 using System.Net.Http;
 using log4net;
+using MusicxApi.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Musicx.Services.ExternalApi;
 
-public abstract class ExternalApiHandler
+public abstract class ExternalApiHandler(string apiUrl)
 {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ExternalApiHandler));
     
-    protected string ApiUrl;
+    protected readonly string ApiUrl = apiUrl;
 
-    protected ExternalApiHandler(string apiUrl)
-    {
-        ApiUrl = apiUrl;
-    }
+    public abstract Task<Song> FetchSong(Song song);
+    public abstract Task<Album> FetchAlbum(Album album);
+    public abstract Task<Artist> FetchArtist(Artist artist);
 
     protected abstract string MakeUrl(string method, Dictionary<string, string> parameters);
 
