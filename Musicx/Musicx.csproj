@@ -10,7 +10,12 @@
 
     <ItemGroup>
       <PackageReference Include="log4net" Version="3.0.4" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="NAudio" Version="2.2.1" />
       <PackageReference Include="NAudio.Asio" Version="2.2.1" />
       <PackageReference Include="NAudio.Flac" Version="1.0.5702.29018" />

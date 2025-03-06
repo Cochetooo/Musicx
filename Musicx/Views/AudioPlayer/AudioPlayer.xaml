@@ -58,9 +58,9 @@
             </StackPanel>
             
             <StackPanel Orientation="Horizontal">
-                <ui:TextBlock Uid="TrackTimeTextBlock" Text="--:--:--" />
+                <ui:TextBlock Uid="TrackTimeTextBlock" Text="--:--:--" Margin="0,0,5,0" />
                 <Slider Uid="TrackTimeSlider" IsEnabled="False" Maximum="1" Width="400" />
-                <ui:TextBlock Uid="TrackTotalTimeTextBlock" Text="--:--:--" />
+                <ui:TextBlock Uid="TrackTotalTimeTextBlock" Text="--:--:--" Margin="5,0,0,0" />
             </StackPanel>
         </StackPanel>
         
@@ -68,10 +68,10 @@
             Contains Volume Slider Controls
         -->
         <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-            <ui:Button Icon="{ui:SymbolIcon TextBulletList24}" Appearance="Transparent" />
-            <ui:Button Uid="VolumeButton" Icon="{ui:SymbolIcon Speaker048}" Appearance="Transparent" />
-            <Slider Uid="VolumeSlider" Maximum="1" Value="0.3" />
-            <ui:TextBlock Text="30" />
+            <ui:Button Icon="{ui:SymbolIcon List28}" Appearance="Transparent" VerticalAlignment="Center" />
+            <ui:Button Uid="VolumeButton" Icon="{ui:SymbolIcon Speaker048}" Appearance="Transparent" VerticalAlignment="Center" />
+            <Slider Uid="VolumeSlider" Maximum="1" Value="0.3" Margin="5,0,0,0" VerticalAlignment="Center" />
+            <ui:TextBlock Text="30" VerticalAlignment="Center" />
         </StackPanel>
     </Grid>
 </UserControl>

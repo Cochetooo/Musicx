@@ -55,12 +55,11 @@ public class ReadAudioFile
             DiscNumber = file.Tag.Disc,
             Duration = (long) file.Properties.Duration.TotalSeconds,
             Filepath = file.Name,
+            Lyrics = file.Tag.Lyrics,
             SampleRate = file.Properties.AudioSampleRate,
             Title = file.Tag.Title,
             TrackNumber = file.Tag.Track
         };
-        
-        song.SetRawLyrics(file.Tag.Lyrics);
         
         Logger.Info($"Track : {song.BitRate} Kbps | {song.Duration}s | {song.Filepath} | {song.SampleRate} Hz | {song.Title}");
     }

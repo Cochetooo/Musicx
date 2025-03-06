@@ -20,7 +20,7 @@
             
             <ui:Button Grid.Row="0" Grid.Column="0" Click="LocalLibrary_Click">
                 <Grid Width="300" Height="200">
-                    <Viewbox>
+                    <Viewbox VerticalAlignment="Top" Height="150">
                         <ui:SymbolIcon Symbol="Library24" Foreground="LightGray" />
                     </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="LOCAL LIBRARY" VerticalAlignment="Bottom" />
@@ -29,7 +29,7 @@
             
             <ui:Button Grid.Row="0" Grid.Column="1">
                 <Grid Width="300" Height="200">
-                    <Viewbox>
+                    <Viewbox VerticalAlignment="Top" Height="150">
                         <ui:SymbolIcon Symbol="Stream24" Foreground="LightGray" />
                     </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="STREAMING" VerticalAlignment="Bottom" />
@@ -38,16 +38,16 @@
             
             <ui:Button Grid.Row="0" Grid.Column="2">
                 <Grid Width="300" Height="200">
-                    <Viewbox>
+                    <Viewbox VerticalAlignment="Top" Height="150">
                         <ui:SymbolIcon Symbol="BookLetter24" Foreground="LightGray" />
                     </Viewbox>
-                    <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="MUSICOPEDIA" VerticalAlignment="Bottom" />
+                    <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="DATABASE" VerticalAlignment="Bottom" />
                 </Grid>
             </ui:Button>
             
             <ui:Button Grid.Row="1" Grid.Column="0">
                 <Grid Width="300" Height="200">
-                    <Viewbox>
+                    <Viewbox VerticalAlignment="Top" Height="150">
                         <ui:SymbolIcon Symbol="PlayMultiple16" Foreground="LightGray" />
                     </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="LISTEN TOGETHER" VerticalAlignment="Bottom" />
@@ -55,15 +55,12 @@
             </ui:Button>
             
             <ui:Button Grid.Row="1" Grid.Column="1" IsEnabled="False">
-                <Grid Width="300" Height="200">
-                    <ui:Image Stretch="UniformToFill" />
-                    <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="Hub" VerticalAlignment="Bottom"  Foreground="DarkGray" />
-                </Grid>
+                <Grid Width="300" Height="200" />
             </ui:Button>
             
             <ui:Button Grid.Row="1" Grid.Column="2">
                 <Grid Width="300" Height="200">
-                    <Viewbox>
+                    <Viewbox VerticalAlignment="Top" Height="150">
                         <ui:SymbolIcon Symbol="DataBarVertical32" Foreground="LightGray" />
                     </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="STATISTICS" VerticalAlignment="Bottom" />
@@ -72,7 +69,7 @@
             
             <ui:Button Grid.Row="2" Grid.Column="0">
                 <Grid Width="300" Height="200">
-                    <Viewbox>
+                    <Viewbox VerticalAlignment="Top" Height="150">
                         <ui:SymbolIcon Symbol="People48" Foreground="LightGray" />
                     </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="FRIENDS" VerticalAlignment="Bottom" />
@@ -81,7 +78,7 @@
             
             <ui:Button Grid.Row="2" Grid.Column="1">
                 <Grid Width="300" Height="200">
-                    <Viewbox>
+                    <Viewbox VerticalAlignment="Top" Height="150">
                         <ui:SymbolIcon Symbol="Person48" Foreground="LightGray" />
                     </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="PROFILE" VerticalAlignment="Bottom" />
@@ -90,7 +87,7 @@
             
             <ui:Button Grid.Row="2" Grid.Column="2">
                 <Grid Width="300" Height="200">
-                    <Viewbox>
+                    <Viewbox VerticalAlignment="Top" Height="150">
                         <ui:SymbolIcon Symbol="Settings48" Foreground="LightGray" />
                     </Viewbox>
                     <ui:TextBlock Style="{StaticResource HubTextBlock}" Text="SETTINGS" VerticalAlignment="Bottom" />

@@ -18,13 +18,17 @@
         </Grid.RowDefinitions>
         
         <!-- Top Bar -->
-        <StackPanel Grid.Row="0">
-            <ui:TitleBar 
-                Title="Musicx - Development Version 0.6.0" 
-                Icon="{ui:ImageIcon 'pack://application:,,,/Assets/Images/Logo/Logo500.png'}" />
-        
-            <nav:TopBar />
-        </StackPanel>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/> <!-- Logo -->
+                <ColumnDefinition Width="Auto"/>    <!-- TopBar prend l'espace disponible -->
+                <ColumnDefinition Width="*"/> <!-- TitleBar aligné à droite -->
+            </Grid.ColumnDefinitions>
+            
+            <ui:ImageIcon Margin="10, 0, 0, 0" Grid.Column="0" Source="pack://application:,,,/Assets/Images/Logo/Logo500.png" Width="20" Height="20" />
+            <nav:TopBar Grid.Column="1" />
+            <ui:TitleBar Grid.Column="2" />
+        </Grid>
         
         <!-- Main Content -->
         <Grid Grid.Row="1">

@@ -23,6 +23,7 @@
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Cursor" Value="Hand" />
     </Style>
     
     <Style TargetType="Label" BasedOn="{StaticResource ContainerMargin}">

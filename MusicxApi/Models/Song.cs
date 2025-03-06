@@ -13,7 +13,11 @@ public class Song
     public ulong? ArtistId { get; set; }
     public List<ulong> GenreIds { get; } = [];
     public List<ulong> InfluenceGenreIds { get; } = [];
-    public List<ulong> InstrumentIds { get; } = [];
+    
+    public virtual Album Album { get; set; }
+    public virtual Artist Artist { get; set; }
+    public virtual List<Genre> Genres { get; set; }
+    public virtual List<Genre> InfluenceGenres { get; set; }
     
     public required AudioFormatType AudioFormat { get; set; }
     public required int BitRate { get; set; }
@@ -21,16 +25,8 @@ public class Song
     public required long Duration { get; set; }
     public required string Filepath { get; set; }
     public string? GeneratedGenreName { get; set; }
-    public Dictionary<long, string> Lyrics { get; set; } = [];
+    public string? Lyrics { get; set; }
     public required int SampleRate { get; set; }
     public string Title { get; set; } = "Untitled";
     public uint? TrackNumber { get; set; }
-
-    public void SetRawLyrics(string lyrics)
-    {
-        Lyrics = new Dictionary<long, string>
-        {
-            { 0L, lyrics }
-        };
-    }
 }
