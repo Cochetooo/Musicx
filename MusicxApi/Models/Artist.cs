@@ -1,6 +1,6 @@
 namespace MusicxApi.Models;
 
-public class Artist
+public abstract class Artist
 {
     public ulong Id { get; set; }
     

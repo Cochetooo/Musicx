@@ -1,16 +1,17 @@
 ﻿using System.IO;
 using Microsoft.EntityFrameworkCore;
+using Musicx.Entities;
 using MusicxApi.Models;
 
 namespace Musicx.Database;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<Artist> Artists { get; set; }
-    public DbSet<Album> Albums { get; set; }
-    public DbSet<Song> Songs { get; set; }
-    public DbSet<Genre> Genres { get; set; }
-    public DbSet<Label> Labels { get; set; }
+    public DbSet<ArtistEntity> Artists { get; set; }
+    public DbSet<AlbumEntity> Albums { get; set; }
+    public DbSet<SongEntity> Songs { get; set; }
+    public DbSet<GenreEntity> Genres { get; set; }
+    public DbSet<LabelEntity> Labels { get; set; }
 
     private static string GetDatabasePath()
     {
@@ -25,5 +26,13 @@ public class AppDbContext : DbContext
         optionsBuilder
             .UseLazyLoadingProxies()
             .UseSqlite($"Data Source={GetDatabasePath()}");
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ArtistEntity>()
+            .HasDiscriminator<string>("Discriminator")
+            .HasValue<BandArtistEntity>("Band")
+            .HasValue<PersonArtistEntity>("Person");
     }
 }

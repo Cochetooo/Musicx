@@ -19,7 +19,7 @@ internal sealed class LastFmHandler(string apiUrl, string apiKey) : ExternalApiH
         Logger.Debug($"⛏️ Fetching LastFm Song: {song.Title}");
         
         Logger.Warn($"⚠️ Using example artist, please fix later.");
-        var artist = new Artist
+        var artist = new BandArtist
         {
             Name = "Katatonia"
         };
@@ -51,7 +51,7 @@ internal sealed class LastFmHandler(string apiUrl, string apiKey) : ExternalApiH
         Logger.Debug($"⛏️ Fetching LastFm Album: {album.Name}");
         
         Logger.Warn($"⚠️ Using example artist, please fix later.");
-        var artist = new Artist
+        var artist = new BandArtist
         {
             Name = "Katatonia"
         };

@@ -11,13 +11,8 @@ public class Song
 
     public ulong? AlbumId { get; set; }
     public ulong? ArtistId { get; set; }
-    public List<ulong> GenreIds { get; } = [];
-    public List<ulong> InfluenceGenreIds { get; } = [];
-    
-    public virtual Album Album { get; set; }
-    public virtual Artist Artist { get; set; }
-    public virtual List<Genre> Genres { get; set; }
-    public virtual List<Genre> InfluenceGenres { get; set; }
+    public List<ulong> GenreIds { get; set; } = [];
+    public List<ulong> InfluenceGenreIds { get; set; } = [];
     
     public required AudioFormatType AudioFormat { get; set; }
     public required int BitRate { get; set; }
