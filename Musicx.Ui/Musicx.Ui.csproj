@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="log4net" Version="3.0.4" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+      <PackageReference Include="WPF-UI" Version="4.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Assets\Images\Logo\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\Images\Logo\logo500.png" />
+      <Resource Include="Assets\Images\Logo\Logo500.png" />
+      <None Remove="Assets\Fonts\SpaceGrotesk-VariableFont_wght.ttf" />
+      <Resource Include="Assets\Fonts\SpaceGrotesk-VariableFont_wght.ttf" />
+      <None Update="log4net.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\Navigation\AppInfoBar.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Musicx.Core\Musicx.Core.csproj" />
+        <ProjectReference Include="..\Musicx.Infrastructure\Musicx.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
