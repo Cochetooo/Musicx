@@ -16,7 +16,7 @@ public class LabelRepository(AppDbContext context, ILoggerFactory loggerFactory)
         return await context.Labels.FindAsync(id);
     }
 
-    public async Task<IEnumerable<LabelEntity>> FindAll(int skip = 0, int count = 100,
+    public async Task<List<LabelEntity>> FindAll(int skip = 0, int count = 100,
         Expression<Func<LabelEntity, bool>>? filter = null)
     {
         var query = context.Labels.AsQueryable();

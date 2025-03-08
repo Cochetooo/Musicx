@@ -1,27 +1,33 @@
-﻿using log4net;
+﻿using System.Linq.Expressions;
 using Musicx.Core.Interfaces;
+using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
-using Musicx.Entities.Mappers;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Helpers;
+using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 
-public class ArtistManager(ArtistRepository artistRepository) : IManager<Artist>
+public class ArtistManager(ArtistRepository artistRepository, ILoggerFactory loggerFactory) : IManager<Artist>
 {
-    private readonly ILog Logger = LogManager.GetLogger(typeof(ArtistManager));
+    private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(ArtistManager));
     
-    /// 🔍 Récupérer un artiste sous forme de DTO
-    public async Task<Artist?> GetById(ulong id)
+    /// 🔍 Récupérer un artist sous forme de DTO
+    public async Task<Artist?> FindById(ulong id)
     {
-        var entity = await artistRepository.GetById(id);
+        var entity = await artistRepository.FindById(id);
+        
         return entity?.ToDto();
     }
-
-    /// 📜 Récupérer tous les artistes sous forme de DTOs
-    public async Task<List<Artist>> GetAll(int skip = 0, int take = 100)
+    
+    /// 📜 Récupérer tous les artists sous forme de DTOs
+    public async Task<List<Artist>> FindAll(int skip = 0, int take = 100,
+        Expression<Func<Artist, bool>>? filter = null)
     {
-        var entities = await artistRepository.GetAll(skip, take);
+        var entityFilter = ExpressionMapper<Artist, ArtistEntity>.Convert(filter);
+        
+        var entities = await artistRepository.FindAll(skip, take, entityFilter);
         
         return entities
             .Select(a => a.ToDto())
@@ -29,10 +35,10 @@ public class ArtistManager(ArtistRepository artistRepository) : IManager<Artist>
             .ToList();
     }
 
-    /// 🆕 Sauvegarder un artiste à partir d’un DTO
+    /// 🆕 Sauvegarder un artist à partir d’un DTO
     public async Task Save(Artist artist)
     {
-        var entity = await artistRepository.GetById(artist.Id);
+        var entity = await artistRepository.FindById(artist.Id);
 
         if (null == entity)
         {
@@ -42,7 +48,16 @@ public class ArtistManager(ArtistRepository artistRepository) : IManager<Artist>
         await artistRepository.Save(entity);
     }
     
-    /// ❌ Supprimer un artiste
+    /// 🆕 Sauvegarder un artist à partir d’un DTO
+    public async Task SaveAll(IList<Artist> artists)
+    {
+        var entities = await artistRepository
+            .FindAll(filter: a => artists.Any(b => b.Id == a.Id));
+        
+        await artistRepository.SaveAll(entities);
+    }
+    
+    /// ❌ Supprimer un artist
     public async Task Delete(ulong id)
     {
         await artistRepository.Delete(id);

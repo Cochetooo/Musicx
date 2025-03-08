@@ -16,7 +16,7 @@ public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory)
         return await context.Genres.FindAsync(id);
     }
 
-    public async Task<IEnumerable<GenreEntity>> FindAll(int skip = 0, int count = 100,
+    public async Task<List<GenreEntity>> FindAll(int skip = 0, int count = 100,
         Expression<Func<GenreEntity, bool>>? filter = null)
     {
         var query = context.Genres.AsQueryable();

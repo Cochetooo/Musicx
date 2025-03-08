@@ -16,7 +16,7 @@ public class SongRepository(AppDbContext context, ILoggerFactory loggerFactory) 
         return await context.Songs.FindAsync(id);
     }
 
-    public async Task<IEnumerable<SongEntity>> FindAll(int skip = 0, int count = 100,
+    public async Task<List<SongEntity>> FindAll(int skip = 0, int count = 100,
         Expression<Func<SongEntity, bool>>? filter = null)
     {
         var query = context.Songs.AsQueryable();

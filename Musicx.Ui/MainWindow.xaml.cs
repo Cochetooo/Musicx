@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Musicx.Core.Logging;
+using Musicx.Ui.Views.Content;
 
 namespace Musicx.Ui;
 
@@ -7,10 +8,10 @@ namespace Musicx.Ui;
 /// </summary>
 public partial class MainWindow
 {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
-    
-    public MainWindow()
+    public MainWindow(ModuleSelector moduleSelector)
     {
         InitializeComponent();
+        
+        ContentHost.Content = moduleSelector;
     }
 }

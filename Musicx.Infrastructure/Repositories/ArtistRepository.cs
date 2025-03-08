@@ -21,7 +21,7 @@ public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory
         return await context.Artists.FindAsync(id);
     }
 
-    public async Task<IEnumerable<ArtistEntity>> FindAll(int skip = 0, int count = 100,
+    public async Task<List<ArtistEntity>> FindAll(int skip = 0, int count = 100,
         Expression<Func<ArtistEntity, bool>>? filter = null)
     {
         var query = context.Artists.AsQueryable();

@@ -2,6 +2,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Musicx.Data;
 using Musicx.Infrastructure;
+using Musicx.Ui.Services;
+using Musicx.Ui.ViewModels;
+using Musicx.Ui.ViewModels.Content;
+using Musicx.Ui.ViewModels.LocalLibrary;
+using Musicx.Ui.Views.Content;
+using Musicx.Ui.Views.LocalLibrary;
 
 namespace Musicx.Ui;
 
@@ -16,11 +22,18 @@ public partial class App
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
+        {
+            Console.WriteLine($"[EXCEPTION] {eventArgs.Exception}");
+        };
+
+        
         var services = new ServiceCollection();
         
         ConfigureServices(services);
         
         ServiceProvider = services.BuildServiceProvider();
+        ViewModelLocator.ServiceProvider = ServiceProvider;
         
         // 🔹 Assurer que la base de données est créée
         using (var scope = ServiceProvider.CreateScope())
@@ -40,7 +53,19 @@ public partial class App
         // 🔹 Ajout de l'infrastructure
         services.AddInfrastructure();
         
-        // 🔹 Ajout de la MainWindow
+        // 🔹 Ajout des services UI
+        services.AddSingleton<NavigationService>();
+        
+        // 🔹 Ajout des view models
+        services.AddTransient<ModuleSelectorViewModel>();
+        services.AddTransient<SongListViewModel>();
+
+        services.AddTransient<MainViewModel>();
+        
+        // 🔹 Ajout des views
+        services.AddTransient<ModuleSelector>();
+        services.AddTransient<SongList>();
+        
         services.AddTransient<MainWindow>();
     }
 }

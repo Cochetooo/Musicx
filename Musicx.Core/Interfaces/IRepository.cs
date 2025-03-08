@@ -10,5 +10,5 @@ public interface IRepository<T> where T : class
     Task Delete(ulong id);
 
     Task<T?> FindById(ulong id);
-    Task<IEnumerable<T>> FindAll(int skip = 0, int take = 100, Expression<Func<T, bool>>? filter = null);
+    Task<List<T>> FindAll(int skip = 0, int take = 100, Expression<Func<T, bool>>? filter = null);
 }

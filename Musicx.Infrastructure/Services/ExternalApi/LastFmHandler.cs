@@ -6,7 +6,7 @@ using Artist = Musicx.Core.Models.Artist;
 
 namespace Musicx.Infrastructure.Services.ExternalApi;
 
-internal sealed class LastFmHandler(string apiUrl, string apiKey) : ExternalApiHandler(apiUrl)
+internal sealed class LastFmHandler(string apiUrl, string apiKey) : ExternalApiHandler(apiUrl), IService
 {
     private readonly ILog Logger = LogManager.GetLogger(typeof(LastFmHandler));
 

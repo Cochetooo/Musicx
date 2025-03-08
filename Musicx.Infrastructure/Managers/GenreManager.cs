@@ -1,41 +1,56 @@
-﻿using log4net;
+﻿using System.Linq.Expressions;
 using Musicx.Core.Interfaces;
+using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
-using Musicx.Entities.Mappers;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Helpers;
+using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 
-public class GenreManager(GenreRepository genreRepository) : IManager<Genre>
+public class GenreManager(GenreRepository genreRepository, ILoggerFactory loggerFactory) : IManager<Genre>
 {
-    private readonly ILog Logger = LogManager.GetLogger(typeof(GenreManager));
-
+    private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(GenreManager));
+    
     /// 🔍 Récupérer un genre sous forme de DTO
-    public async Task<Genre?> GetById(ulong id)
+    public async Task<Genre?> FindById(ulong id)
     {
-        var entity = await genreRepository.GetById(id);
+        var entity = await genreRepository.FindById(id);
+        
         return entity?.ToDto();
     }
     
     /// 📜 Récupérer tous les genres sous forme de DTOs
-    public async Task<List<Genre>> GetAll(int skip = 0, int take = 100)
+    public async Task<List<Genre>> FindAll(int skip = 0, int take = 100,
+        Expression<Func<Genre, bool>>? filter = null)
     {
-        var entities = await genreRepository.GetAll(skip, take);
+        var entityFilter = ExpressionMapper<Genre, GenreEntity>.Convert(filter);
+        
+        var entities = await genreRepository.FindAll(skip, take, entityFilter);
         
         return entities
-            .Select(se => se.ToDto())
+            .Select(a => a.ToDto())
             .OfType<Genre>()
             .ToList();
     }
-    
+
     /// 🆕 Sauvegarder un genre à partir d’un DTO
     public async Task Save(Genre genre)
     {
-        var entity = await genreRepository.GetById(genre.Id) 
+        var entity = await genreRepository.FindById(genre.Id)
                      ?? new GenreEntity();
         
         await genreRepository.Save(entity);
+    }
+    
+    /// 🆕 Sauvegarder un genre à partir d’un DTO
+    public async Task SaveAll(IList<Genre> genres)
+    {
+        var entities = await genreRepository
+            .FindAll(filter: a => genres.Any(b => b.Id == a.Id));
+        
+        await genreRepository.SaveAll(entities);
     }
     
     /// ❌ Supprimer un genre

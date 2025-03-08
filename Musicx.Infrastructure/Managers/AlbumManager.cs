@@ -5,6 +5,7 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Helpers;
 using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
@@ -22,10 +23,12 @@ public class AlbumManager(AlbumRepository albumRepository, ILoggerFactory logger
     }
     
     /// 📜 Récupérer tous les albums sous forme de DTOs
-    public async Task<IEnumerable<Album>> FindAll(int skip = 0, int take = 100,
+    public async Task<List<Album>> FindAll(int skip = 0, int take = 100,
         Expression<Func<Album, bool>>? filter = null)
     {
-        var entities = await albumRepository.FindAll(skip, take, filter);
+        var entityFilter = ExpressionMapper<Album, AlbumEntity>.Convert(filter);
+        
+        var entities = await albumRepository.FindAll(skip, take, entityFilter);
         
         return entities
             .Select(a => a.ToDto())

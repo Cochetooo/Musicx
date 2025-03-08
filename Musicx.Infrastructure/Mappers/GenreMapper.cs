@@ -1,5 +1,6 @@
 using log4net;
 using Musicx.Core.Models;
+using Musicx.Data.Entities;
 
 namespace Musicx.Infrastructure.Mappers;
 
