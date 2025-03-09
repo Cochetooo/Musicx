@@ -7,9 +7,9 @@ using Musicx.Infrastructure.Services.LocalLibrary;
 
 namespace Musicx.Ui.Views.Content;
 
-public partial class ModuleSelector
+public partial class ModuleSelectorView
 {
-    public ModuleSelector()
+    public ModuleSelectorView()
     {
         InitializeComponent();
     }

@@ -79,14 +79,14 @@ public partial class App
         services.AddTransient<SongListViewModel>();
 
         // Enregistre Func<T> pour permettre la création différée des ViewModels
-        services.AddTransient<Func<ModuleSelectorViewModel>>(sp => sp.GetRequiredService<ModuleSelectorViewModel>);
-        services.AddTransient<Func<SongListViewModel>>(sp => sp.GetRequiredService<SongListViewModel>);
+        services.AddSingleton<Func<ModuleSelectorViewModel>>(sp => sp.GetRequiredService<ModuleSelectorViewModel>);
+        services.AddSingleton<Func<SongListViewModel>>(sp => sp.GetRequiredService<SongListViewModel>);
 
         
         // 🔹 Ajout des views
         Logger.Info("⛏️ Loading Views...");
-        services.AddTransient<ModuleSelector>();
-        services.AddTransient<SongList>();
+        services.AddTransient<ModuleSelectorView>();
+        services.AddTransient<SongListView>();
         
         services.AddSingleton<MainWindow>();
     }

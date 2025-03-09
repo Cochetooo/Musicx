@@ -13,8 +13,14 @@ public class ViewModelToViewConverter : DataTemplateSelector
         }
 
         var viewModelType = item.GetType();
-        var viewTypeName = viewModelType.FullName?.Replace("ViewModel", "") ?? "View";
-        var viewType = Type.GetType(viewTypeName);
+        var viewTypeName = viewModelType.FullName?.Replace("ViewModel", "View");
+        
+        if (null == viewTypeName)
+        {
+            return null;
+        }
+        
+        var viewType = viewModelType.Assembly.GetType(viewTypeName);
 
         if (null == viewType)
         {

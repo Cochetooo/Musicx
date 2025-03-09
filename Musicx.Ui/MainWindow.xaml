@@ -32,7 +32,7 @@
         
         <!-- Main Content -->
         <Grid Grid.Row="1">
-            <ContentControl Content="{Binding CurrentViewModel}"
+            <ContentControl Content="{Binding Navigator.CurrentViewModel}"
                             ContentTemplateSelector="{StaticResource ViewModelToViewConverter}" />
         </Grid>
         

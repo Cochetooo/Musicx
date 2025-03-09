@@ -30,6 +30,7 @@ public class AlbumRepository(AppDbContext context, ILoggerFactory loggerFactory)
         }
         
         return await query
+            .AsNoTracking()
             .Skip(skip)
             .Take(count)
             .ToListAsync();

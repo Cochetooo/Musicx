@@ -32,9 +32,6 @@ public class ViewModelNavigator : IViewModelNavigator, INotifyPropertyChanged
     {
         _moduleSelectorVmFactory = moduleSelectorVmFactory;
         _songListVmFactory = songListVmFactory;
-
-        // Initialisation avec ModuleSelectorViewModel
-        CurrentViewModel = _moduleSelectorVmFactory();
     }
 
     public void ChangeViewModel(object viewModel)

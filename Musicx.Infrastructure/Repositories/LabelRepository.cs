@@ -29,6 +29,7 @@ public class LabelRepository(AppDbContext context, ILoggerFactory loggerFactory)
         }
         
         return await query
+            .AsNoTracking()
             .Skip(skip)
             .Take(count)
             .ToListAsync();
