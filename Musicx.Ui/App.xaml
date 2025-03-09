@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:viewModels="clr-namespace:Musicx.Ui.ViewModels">
+             xmlns:viewModels="clr-namespace:Musicx.Ui.ViewModels"
+             xmlns:helpers="clr-namespace:Musicx.Ui.Helpers">
     <Application.Resources>
          <ResourceDictionary>
              <ResourceDictionary.MergedDictionaries>
@@ -12,6 +13,7 @@
                  <ResourceDictionary Source="Themes/ClassicTheme.xaml" />
              </ResourceDictionary.MergedDictionaries>
              <viewModels:ViewModelLocator x:Key="Locator" />
+             <helpers:ViewModelToViewConverter x:Key="ViewModelToViewConverter" />
          </ResourceDictionary>
     </Application.Resources>
 </Application>

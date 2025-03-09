@@ -7,7 +7,9 @@ using Musicx.Data.Entities;
 
 namespace Musicx.Infrastructure.Repositories;
 
-public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory) : IRepository<GenreEntity>
+public interface IGenreRepository : IRepository<GenreEntity>;
+
+public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory) : IGenreRepository
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(GenreRepository));
 

@@ -1,4 +1,5 @@
-﻿using Musicx.Core.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Musicx.Core.Logging;
 using Musicx.Ui.Views.Content;
 
 namespace Musicx.Ui;
@@ -8,10 +9,8 @@ namespace Musicx.Ui;
 /// </summary>
 public partial class MainWindow
 {
-    public MainWindow(ModuleSelector moduleSelector)
+    public MainWindow()
     {
         InitializeComponent();
-        
-        ContentHost.Content = moduleSelector;
     }
 }

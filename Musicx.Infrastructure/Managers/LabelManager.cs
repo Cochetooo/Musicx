@@ -9,7 +9,9 @@ using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 
-public class LabelManager(LabelRepository labelRepository, ILoggerFactory loggerFactory) : IManager<Label>
+public interface ILabelManager : IManager<Label>;
+
+public class LabelManager(ILabelRepository labelRepository, ILoggerFactory loggerFactory) : ILabelManager
 {
     private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(LabelManager));
     
@@ -38,8 +40,8 @@ public class LabelManager(LabelRepository labelRepository, ILoggerFactory logger
     /// 🆕 Sauvegarder un label à partir d’un DTO
     public async Task Save(Label label)
     {
-        var entity = await labelRepository.FindById(label.Id)
-                     ?? new LabelEntity();
+        var entity = new LabelEntity();
+        entity.FromDto(label);
         
         await labelRepository.Save(entity);
     }
@@ -47,8 +49,14 @@ public class LabelManager(LabelRepository labelRepository, ILoggerFactory logger
     /// 🆕 Sauvegarder un label à partir d’un DTO
     public async Task SaveAll(IList<Label> labels)
     {
-        var entities = await labelRepository
-            .FindAll(filter: a => labels.Any(b => b.Id == a.Id));
+        var entities = new List<LabelEntity>();
+        
+        foreach (var label in labels)
+        {
+            var entity = new LabelEntity();
+            entity.FromDto(label);
+            entities.Add(entity);
+        }
         
         await labelRepository.SaveAll(entities);
     }

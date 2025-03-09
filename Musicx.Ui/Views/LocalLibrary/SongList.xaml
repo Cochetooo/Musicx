@@ -8,6 +8,6 @@
              Loaded="{Binding LoadedCommand}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <DataGrid x:Name="SongDataGrid" />
+        <DataGrid x:Name="SongDataGrid" ItemsSource="{Binding Songs}" />
     </Grid>
 </UserControl>

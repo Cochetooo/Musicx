@@ -8,7 +8,7 @@ public class ViewModelLocator
 {
     public static IServiceProvider ServiceProvider { get; set; } = null!;
     
-    public MainViewModel MainViewModel => ServiceProvider.GetRequiredService<MainViewModel>();
+    public MainWindowViewModel MainWindowViewModel => ServiceProvider.GetRequiredService<MainWindowViewModel>();
     
     public ModuleSelectorViewModel ModuleSelectorVm => ServiceProvider.GetRequiredService<ModuleSelectorViewModel>();
     

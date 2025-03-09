@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using System.Text;
+using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using Musicx.Core.Interfaces;
 using Musicx.Core.Logging;
@@ -9,50 +11,61 @@ using Musicx.Infrastructure.Logging;
 using Musicx.Infrastructure.Managers;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Infrastructure.Services;
+using Musicx.Infrastructure.Services.LocalLibrary;
 
 namespace Musicx.Infrastructure;
 
 public static class DependencyInjection
 {
+    private static ILogger Logger;
+    
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<ILoggerFactory, Log4NetLoggerFactory>();
         
+        using (var serviceProvider = services.BuildServiceProvider())
+        {
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            Logger = loggerFactory.CreateLogger(typeof(DependencyInjection));
+        }
+        
+        Logger.Info("⛏️ Injecting Dependencies from Infrastructure module...");
+        
         // 🔹 Ajout de DbContext
         services.AddDbContext<AppDbContext>();
         
+        Logger.Info("⛏️ Loading Infrastructure Services...");
         // 🔹 Ajout des services
         services.AddServices(Assembly.Load("Musicx.Infrastructure"));
         
         // 🔹 Ajout des repositories
-        services.AddScoped<IRepository<ArtistEntity>, ArtistRepository>();
-        services.AddScoped<IRepository<AlbumEntity>, AlbumRepository>();
-        services.AddScoped<IRepository<SongEntity>, SongRepository>();
-        services.AddScoped<IRepository<LabelEntity>, LabelRepository>();
-        services.AddScoped<IRepository<GenreEntity>, GenreRepository>();
+        Logger.Info("⛏️ Loading Infrastructure Repositories...");
+        services.AddScoped<IArtistRepository, ArtistRepository>();
+        services.AddScoped<IAlbumRepository, AlbumRepository>();
+        services.AddScoped<ISongRepository, SongRepository>();
+        services.AddScoped<ILabelRepository, LabelRepository>();
+        services.AddScoped<IGenreRepository, GenreRepository>();
         
         // 🔹 Ajout des managers
-        services.AddScoped<IManager<Artist>, ArtistManager>();
-        services.AddScoped<IManager<Album>, AlbumManager>();
-        services.AddScoped<IManager<Song>, SongManager>();
-        services.AddScoped<IManager<Label>, LabelManager>();
-        services.AddScoped<IManager<Genre>, GenreManager>();
+        Logger.Info("⛏️ Loading Infrastructure Managers...");
+        services.AddScoped<IArtistManager, ArtistManager>();
+        services.AddScoped<IAlbumManager, AlbumManager>();
+        services.AddScoped<ISongManager, SongManager>();
+        services.AddScoped<ILabelManager, LabelManager>();
+        services.AddScoped<IGenreManager, GenreManager>();
 
         return services;
     }
 
-    public static IServiceCollection AddServices(this IServiceCollection services, Assembly assembly)
+    private static IServiceCollection AddServices(this IServiceCollection services, Assembly assembly)
     {
         var serviceType = assembly.GetTypes()
             .Where(t => typeof(IService).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
         
         foreach (var service in serviceType)
         {
-            var interfaceType = service.GetInterfaces().FirstOrDefault(i => i != typeof(IService));
-            if (null != interfaceType)
-            {
-                services.AddSingleton(interfaceType, service);
-            }
+            Logger.Debug($"🔍 Loading Service: {service.FullName}");
+            services.AddScoped(service);
         }
         
         return services;

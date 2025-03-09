@@ -7,7 +7,9 @@ using Musicx.Data.Entities;
 
 namespace Musicx.Infrastructure.Repositories;
 
-public class SongRepository(AppDbContext context, ILoggerFactory loggerFactory) : IRepository<SongEntity>
+public interface ISongRepository : IRepository<SongEntity>;
+
+public class SongRepository(AppDbContext context, ILoggerFactory loggerFactory) : ISongRepository
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(SongRepository));
 

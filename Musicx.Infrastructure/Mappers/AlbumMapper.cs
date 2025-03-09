@@ -47,6 +47,8 @@ public static class AlbumMapper
         var genres = albumDto.GenreIds.Select(genreId => new AlbumGenreEntity { GenreId = genreId }).ToList();
         var influenceGenres = albumDto.InfluenceGenreIds.Select(genreId => new AlbumInfluenceGenreEntity { GenreId = genreId }).ToList();
         
+        entity.Id = albumDto.Id;
+        
         entity.Genres = genres;
         entity.InfluenceGenres = influenceGenres;
         

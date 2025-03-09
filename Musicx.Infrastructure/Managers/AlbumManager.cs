@@ -10,7 +10,9 @@ using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 
-public class AlbumManager(AlbumRepository albumRepository, ILoggerFactory loggerFactory) : IManager<Album>
+public interface IAlbumManager : IManager<Album>;
+
+public class AlbumManager(IAlbumRepository albumRepository, ILoggerFactory loggerFactory) : IAlbumManager
 {
     private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(AlbumManager));
     
@@ -39,8 +41,8 @@ public class AlbumManager(AlbumRepository albumRepository, ILoggerFactory logger
     /// 🆕 Sauvegarder un album à partir d’un DTO
     public async Task Save(Album album)
     {
-        var entity = await albumRepository.FindById(album.Id)
-            ?? new AlbumEntity();
+        var entity = new AlbumEntity();
+        entity.FromDto(album);
         
         await albumRepository.Save(entity);
     }
@@ -48,8 +50,14 @@ public class AlbumManager(AlbumRepository albumRepository, ILoggerFactory logger
     /// 🆕 Sauvegarder un album à partir d’un DTO
     public async Task SaveAll(IList<Album> albums)
     {
-        var entities = await albumRepository
-            .FindAll(filter: a => albums.Any(b => b.Id == a.Id));
+        var entities = new List<AlbumEntity>();
+        
+        foreach (var album in albums)
+        {
+            var entity = new AlbumEntity();
+            entity.FromDto(album);
+            entities.Add(entity);
+        }
         
         await albumRepository.SaveAll(entities);
     }

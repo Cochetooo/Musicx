@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using Musicx.Core.Logging;
 using Musicx.Data;
 using Musicx.Infrastructure;
-using Musicx.Ui.Services;
 using Musicx.Ui.ViewModels;
 using Musicx.Ui.ViewModels.Content;
 using Musicx.Ui.ViewModels.LocalLibrary;
@@ -20,19 +20,16 @@ public partial class App
     
     public static AppDbContext DbContext { get; private set; }
 
+    private static ILogger Logger;
+
     protected override void OnStartup(StartupEventArgs e)
     {
-        AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
-        {
-            Console.WriteLine($"[EXCEPTION] {eventArgs.Exception}");
-        };
-
-        
         var services = new ServiceCollection();
         
         ConfigureServices(services);
         
         ServiceProvider = services.BuildServiceProvider();
+        
         ViewModelLocator.ServiceProvider = ServiceProvider;
         
         // 🔹 Assurer que la base de données est créée
@@ -44,7 +41,10 @@ public partial class App
         
         base.OnStartup(e);
         
+        Logger.Info("⛏️ Creating Main Window...");
         var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+        
+        Logger.Info("🟢 Initialization complete, running program!");
         mainWindow.Show();
     }
 
@@ -52,20 +52,42 @@ public partial class App
     {
         // 🔹 Ajout de l'infrastructure
         services.AddInfrastructure();
+
+        using (var serviceProvider = services.BuildServiceProvider())
+        {
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            Logger = loggerFactory.CreateLogger(typeof(DependencyInjection));
+        
+            AppDomain.CurrentDomain.FirstChanceException += (_, eventArgs) =>
+            {
+                Logger.Fatal("❌ An exception from WPF has been thrown.", eventArgs.Exception);
+            };
+        }
         
         // 🔹 Ajout des services UI
-        services.AddSingleton<NavigationService>();
         
         // 🔹 Ajout des view models
+        Logger.Info("⛏️ Loading View Models...");
+        services.AddTransient<Func<ModuleSelectorViewModel>>(provider => provider.GetRequiredService<ModuleSelectorViewModel>);
+        services.AddTransient<Func<SongListViewModel>>(provider => provider.GetRequiredService<SongListViewModel>);
+        
+        services.AddSingleton<IViewModelNavigator, ViewModelNavigator>();
+        services.AddSingleton<MainWindowViewModel>();
+        
+        // Factory-based injection
         services.AddTransient<ModuleSelectorViewModel>();
         services.AddTransient<SongListViewModel>();
 
-        services.AddTransient<MainViewModel>();
+        // Enregistre Func<T> pour permettre la création différée des ViewModels
+        services.AddTransient<Func<ModuleSelectorViewModel>>(sp => sp.GetRequiredService<ModuleSelectorViewModel>);
+        services.AddTransient<Func<SongListViewModel>>(sp => sp.GetRequiredService<SongListViewModel>);
+
         
         // 🔹 Ajout des views
+        Logger.Info("⛏️ Loading Views...");
         services.AddTransient<ModuleSelector>();
         services.AddTransient<SongList>();
         
-        services.AddTransient<MainWindow>();
+        services.AddSingleton<MainWindow>();
     }
 }

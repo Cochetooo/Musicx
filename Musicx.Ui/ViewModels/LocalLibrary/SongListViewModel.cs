@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Accessibility;
+using Musicx.Core.Interfaces;
 using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Infrastructure.Managers;
@@ -14,13 +15,13 @@ public class SongListViewModel
 {
     private readonly ILogger Logger;
 
-    private SongManager _songManager;
+    private readonly IManager<Song> _songManager;
 
     public ObservableCollection<Song> Songs { get; set; } = [];
     
     public ICommand LoadedCommand { get; }
 
-    public SongListViewModel(ILoggerFactory loggerFactory, SongManager songManager)
+    public SongListViewModel(ILoggerFactory loggerFactory, ISongManager songManager)
     {
         LoadedCommand = new RelayCommand(async() => await OnComponentLoaded());
         Logger = loggerFactory.CreateLogger(typeof(SongListViewModel));
@@ -34,11 +35,13 @@ public class SongListViewModel
 
     private async Task LoadSongs()
     {
+        Logger.Info("⛏️ Loading songs...");
         var listSongs = await _songManager.FindAll();
         foreach (var song in listSongs)
         {
             Songs.Add(song);
         }
+        Logger.Info("✅ Songs loaded successfully!");
     }
     
     public event PropertyChangedEventHandler? PropertyChanged;

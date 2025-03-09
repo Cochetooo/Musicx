@@ -1,5 +1,6 @@
 using log4net;
 using Microsoft.Extensions.Logging;
+using Musicx.Core.Interfaces;
 using Musicx.Infrastructure.Managers;
 using Musicx.Core.Models;
 using Musicx.Core.Models.Enums;
@@ -10,11 +11,11 @@ using ILoggerFactory = Musicx.Core.Logging.ILoggerFactory;
 
 namespace Musicx.Infrastructure.Services.Audio;
 
-public class ReadAudioFileService(SongManager songManager,
-    AlbumManager albumManager,
-    ArtistManager artistManager,
-    GenreManager genreManager,
-    LabelManager labelManager,
+public class ReadAudioFileService(ISongManager songManager,
+    IAlbumManager albumManager,
+    IArtistManager artistManager,
+    IGenreManager genreManager,
+    ILabelManager labelManager,
     ILoggerFactory loggerFactory) : IService
 {
     private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(ReadAudioFileService));
@@ -27,6 +28,8 @@ public class ReadAudioFileService(SongManager songManager,
     
         Logger.Warn("⚠️ Audio Format set to MP3 per default. Fix later");
         var song = await ReadSong(file);
+        
+        Logger.Info($"Track : {song.BitRate} Kbps | {song.Duration}s | {song.Filepath} | {song.SampleRate} Hz | {song.Title}");
         
         Logger.Debug("✅ ReadAudioFile success");
 
@@ -56,6 +59,7 @@ public class ReadAudioFileService(SongManager songManager,
         var existingSong = existingSongs.FirstOrDefault();
         if (null != existingSong)
         {
+            Logger.Info($"ℹ️ Found existing song with id {existingSong.Id}.");
             song.Id = existingSong.Id;
             
             song.ArtistId = existingSong.ArtistId;
@@ -63,8 +67,6 @@ public class ReadAudioFileService(SongManager songManager,
             song.GenreIds = existingSong.GenreIds;
             song.InfluenceGenreIds = existingSong.InfluenceGenreIds;
         }
-        
-        Logger.Info($"Track : {song.BitRate} Kbps | {song.Duration}s | {song.Filepath} | {song.SampleRate} Hz | {song.Title}");
 
         return song;
     }

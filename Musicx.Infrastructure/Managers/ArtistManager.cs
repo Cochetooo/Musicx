@@ -9,7 +9,9 @@ using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 
-public class ArtistManager(ArtistRepository artistRepository, ILoggerFactory loggerFactory) : IManager<Artist>
+public interface IArtistManager : IManager<Artist>;
+
+public class ArtistManager(IArtistRepository artistRepository, ILoggerFactory loggerFactory) : IArtistManager
 {
     private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(ArtistManager));
     
@@ -38,12 +40,8 @@ public class ArtistManager(ArtistRepository artistRepository, ILoggerFactory log
     /// 🆕 Sauvegarder un artist à partir d’un DTO
     public async Task Save(Artist artist)
     {
-        var entity = await artistRepository.FindById(artist.Id);
-
-        if (null == entity)
-        {
-            entity = CreateEntityFromDto(artist);
-        }
+        var entity = CreateEntityFromDto(artist);
+        entity.FromDto(artist);
         
         await artistRepository.Save(entity);
     }
@@ -51,8 +49,14 @@ public class ArtistManager(ArtistRepository artistRepository, ILoggerFactory log
     /// 🆕 Sauvegarder un artist à partir d’un DTO
     public async Task SaveAll(IList<Artist> artists)
     {
-        var entities = await artistRepository
-            .FindAll(filter: a => artists.Any(b => b.Id == a.Id));
+        var entities = new List<ArtistEntity>();
+        
+        foreach (var artist in artists)
+        {
+            var entity = CreateEntityFromDto(artist);
+            entity.FromDto(artist);
+            entities.Add(entity);
+        }
         
         await artistRepository.SaveAll(entities);
     }

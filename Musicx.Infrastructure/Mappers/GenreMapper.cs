@@ -33,6 +33,7 @@ public static class GenreMapper
     // Mappage du DTO vers l'entité
     public static void FromDto(this GenreEntity entity, Genre genreDto)
     {
+        entity.Id = genreDto.Id;
         entity.Name = genreDto.Name;
 
         // Mappage des Parents et des Children (en créant les relations Many-to-Many)

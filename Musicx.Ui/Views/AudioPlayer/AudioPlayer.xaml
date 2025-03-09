@@ -36,25 +36,25 @@
         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <!-- Shuffle Mode -->
-                <ui:Button Icon="{ui:SymbolIcon ArrowSwap24}" Appearance="Transparent" />
+                <ui:Button Icon="{ui:SymbolIcon ArrowSwap24, FontSize={StaticResource AudioPlayerIconWidth}}"  Appearance="Transparent" />
                 
                 <!-- Previous Button -->
-                <ui:Button Icon="{ui:SymbolIcon Previous24}" Appearance="Transparent" />
+                <ui:Button Icon="{ui:SymbolIcon Previous24, FontSize={StaticResource AudioPlayerIconWidth}}" Appearance="Transparent" />
                 
                 <!-- Backward 30s Button -->
-                <ui:Button Icon="{ui:SymbolIcon ArrowRotateCounterclockwise24}" Appearance="Transparent" />
+                <ui:Button Icon="{ui:SymbolIcon ArrowRotateCounterclockwise24, FontSize={StaticResource AudioPlayerIconWidth}}" Appearance="Transparent" />
                 
                 <!-- Play Button -->
-                <ui:Button Icon="{ui:SymbolIcon Play24}" Appearance="Transparent" />
+                <ui:Button Icon="{ui:SymbolIcon Play24, FontSize={StaticResource AudioPlayerIconWidth}}" Appearance="Transparent" />
                 
                 <!-- Forward 30s Button -->
-                <ui:Button Icon="{ui:SymbolIcon ArrowRotateClockwise24}" Appearance="Transparent" />
+                <ui:Button Icon="{ui:SymbolIcon ArrowRotateClockwise24, FontSize={StaticResource AudioPlayerIconWidth}}" Appearance="Transparent" />
                 
                 <!-- Next Button -->
-                <ui:Button Icon="{ui:SymbolIcon Next24}" Appearance="Transparent" />
+                <ui:Button Icon="{ui:SymbolIcon Next24, FontSize={StaticResource AudioPlayerIconWidth}}" Appearance="Transparent" />
                 
                 <!-- Repeat Mode -->
-                <ui:Button Icon="{ui:SymbolIcon ArrowRepeatAllOff24}" Appearance="Transparent" />
+                <ui:Button Icon="{ui:SymbolIcon ArrowRepeatAllOff24, FontSize={StaticResource AudioPlayerIconWidth}}" Appearance="Transparent" />
             </StackPanel>
             
             <StackPanel Orientation="Horizontal">
@@ -68,10 +68,10 @@
             Contains Volume Slider Controls
         -->
         <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-            <ui:Button Icon="{ui:SymbolIcon List28}" Appearance="Transparent" VerticalAlignment="Center" />
-            <ui:Button Uid="VolumeButton" Icon="{ui:SymbolIcon Speaker048}" Appearance="Transparent" VerticalAlignment="Center" />
+            <ui:Button Icon="{ui:SymbolIcon List28, FontSize={StaticResource AudioPlayerIconWidth}}" Appearance="Transparent" VerticalAlignment="Center" />
+            <ui:Button Uid="VolumeButton" Icon="{ui:SymbolIcon Speaker048, FontSize={StaticResource AudioPlayerIconWidth}}" Appearance="Transparent" VerticalAlignment="Center" />
             <Slider Uid="VolumeSlider" Maximum="1" Value="0.3" Margin="5,0,0,0" VerticalAlignment="Center" />
-            <ui:TextBlock Text="30" VerticalAlignment="Center" />
+            <ui:TextBlock Text="30" VerticalAlignment="Center" Margin="5,0,0,0" />
         </StackPanel>
     </Grid>
 </UserControl>

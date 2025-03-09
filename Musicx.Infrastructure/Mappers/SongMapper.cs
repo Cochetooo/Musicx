@@ -60,6 +60,8 @@ public static class SongMapper
             GenreId = genreId
         }).ToList();
 
+        entity.Id = songDto.Id;
+
         entity.Genres = genres;
         entity.InfluenceGenres = influenceGenres;
         

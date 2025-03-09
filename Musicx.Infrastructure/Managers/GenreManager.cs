@@ -9,7 +9,9 @@ using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 
-public class GenreManager(GenreRepository genreRepository, ILoggerFactory loggerFactory) : IManager<Genre>
+public interface IGenreManager : IManager<Genre>;
+
+public class GenreManager(IGenreRepository genreRepository, ILoggerFactory loggerFactory) : IGenreManager
 {
     private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(GenreManager));
     
@@ -38,8 +40,8 @@ public class GenreManager(GenreRepository genreRepository, ILoggerFactory logger
     /// 🆕 Sauvegarder un genre à partir d’un DTO
     public async Task Save(Genre genre)
     {
-        var entity = await genreRepository.FindById(genre.Id)
-                     ?? new GenreEntity();
+        var entity = new GenreEntity();
+        entity.FromDto(genre);
         
         await genreRepository.Save(entity);
     }
@@ -47,8 +49,14 @@ public class GenreManager(GenreRepository genreRepository, ILoggerFactory logger
     /// 🆕 Sauvegarder un genre à partir d’un DTO
     public async Task SaveAll(IList<Genre> genres)
     {
-        var entities = await genreRepository
-            .FindAll(filter: a => genres.Any(b => b.Id == a.Id));
+        var entities = new List<GenreEntity>();
+        
+        foreach (var genre in genres)
+        {
+            var entity = new GenreEntity();
+            entity.FromDto(genre);
+            entities.Add(entity);
+        }
         
         await genreRepository.SaveAll(entities);
     }

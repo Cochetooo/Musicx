@@ -1,4 +1,5 @@
 using log4net;
+using Musicx.Core.Interfaces;
 using Musicx.Core.Models;
 using Musicx.Core.Models.ExternalApi.LastFm;
 using Album = Musicx.Core.Models.Album;

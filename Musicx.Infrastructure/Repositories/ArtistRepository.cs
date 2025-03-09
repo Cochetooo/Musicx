@@ -2,17 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using Musicx.Core.Interfaces;
 using Musicx.Core.Logging;
+using Musicx.Core.Models;
 using Musicx.Data;
 using Musicx.Data.Entities;
 
 namespace Musicx.Infrastructure.Repositories;
+
+public interface IArtistRepository : IRepository<ArtistEntity>;
 
 /// <summary>
 /// Manipulate artist data with EntityFramework.
 /// </summary>
 /// <author>Cochetooo</author>
 /// <since>0.6.0</since>
-public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory) : IRepository<ArtistEntity>
+public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory) : IArtistRepository
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(ArtistRepository));
 

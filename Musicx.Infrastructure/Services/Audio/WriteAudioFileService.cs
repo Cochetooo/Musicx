@@ -1,4 +1,5 @@
 using log4net;
+using Musicx.Core.Interfaces;
 using Musicx.Core.Models;
 
 namespace Musicx.Infrastructure.Services.Audio;

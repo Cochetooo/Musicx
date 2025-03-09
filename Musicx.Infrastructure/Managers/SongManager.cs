@@ -9,7 +9,9 @@ using Musicx.Infrastructure.Repositories;
 
 namespace Musicx.Infrastructure.Managers;
 
-public class SongManager(SongRepository songRepository, ILoggerFactory loggerFactory) : IManager<Song>
+public interface ISongManager : IManager<Song>;
+
+public class SongManager(ISongRepository songRepository, ILoggerFactory loggerFactory) : ISongManager
 {
     private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(SongManager));
     
@@ -38,8 +40,8 @@ public class SongManager(SongRepository songRepository, ILoggerFactory loggerFac
     /// 🆕 Sauvegarder un song à partir d’un DTO
     public async Task Save(Song song)
     {
-        var entity = await songRepository.FindById(song.Id)
-                     ?? new SongEntity();
+        var entity = new SongEntity();
+        entity.FromDto(song);
         
         await songRepository.Save(entity);
     }
@@ -47,8 +49,14 @@ public class SongManager(SongRepository songRepository, ILoggerFactory loggerFac
     /// 🆕 Sauvegarder un song à partir d’un DTO
     public async Task SaveAll(IList<Song> songs)
     {
-        var entities = await songRepository
-            .FindAll(filter: a => songs.Any(b => b.Id == a.Id));
+        var entities = new List<SongEntity>();
+        
+        foreach (var song in songs)
+        {
+            var entity = new SongEntity();
+            entity.FromDto(song);
+            entities.Add(entity);
+        }
         
         await songRepository.SaveAll(entities);
     }

@@ -1,15 +1,19 @@
 using System.Diagnostics;
 using log4net;
+using Musicx.Core.Interfaces;
 using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Infrastructure.Listeners;
+using Musicx.Infrastructure.Managers;
+using Musicx.Infrastructure.Repositories;
 using Musicx.Infrastructure.Services.Audio;
 
 namespace Musicx.Infrastructure.Services.LocalLibrary;
 
 public sealed class ImportLocalSongsService(
     ReadAudioFileService readAudioFileService,
-    ILoggerFactory loggerFactory) : IService
+    ILoggerFactory loggerFactory,
+    ISongManager songManager) : IService
 {
     private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(ImportLocalSongsService));
     
@@ -34,9 +38,9 @@ public sealed class ImportLocalSongsService(
         
         progressListener.UpdateProgress(0, fileNumbers);
         var fileProgressCount = 0;
-
-        var songs = new List<Song>();
             
+        var songs = new List<Song>();
+        
         var tasks = audioFiles.Select(async filePath =>
         {
             try
@@ -54,6 +58,8 @@ public sealed class ImportLocalSongsService(
         }).ToList();
         
         await Task.WhenAll(tasks);
+
+        await songManager.SaveAll(songs);
         
         progressListener.UpdateProgress(1, 1);
         Logger.Info($"Finished importing {fileProgressCount} audio files in {benchmark.Elapsed.TotalMilliseconds} ms.");

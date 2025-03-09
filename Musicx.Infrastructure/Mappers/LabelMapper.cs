@@ -33,6 +33,8 @@ public static class LabelMapper
     // Mappage du DTO vers l'entité
     public static void FromDto(this LabelEntity entity, Label labelDto)
     {
+        entity.Id = labelDto.Id;
+        
         entity.Description = labelDto.Description;
         entity.Name = labelDto.Name;
         

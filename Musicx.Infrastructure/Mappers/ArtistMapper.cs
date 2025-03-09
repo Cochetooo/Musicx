@@ -59,6 +59,8 @@ public static class ArtistMapper
     
     public static void FromDto(this ArtistEntity entity, Artist dto) 
     {
+        entity.Id = dto.Id;
+        
         entity.ArtworkUrl = dto.ArtworkUrl;
         entity.Country = dto.Country;
         entity.Name = dto.Name;

@@ -6,7 +6,7 @@
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:navigation="clr-namespace:Musicx.Ui.Views.Navigation"
         xmlns:audioPlayer="clr-namespace:Musicx.Ui.Views.AudioPlayer"
-        DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
+        DataContext="{Binding MainWindowViewModel, Source={StaticResource Locator}}"
         mc:Ignorable="d"
         Title="MainWindow" Height="900" Width="1440"
         Icon="pack://application:,,,/Assets/Images/Logo/Logo500.png">
@@ -32,7 +32,8 @@
         
         <!-- Main Content -->
         <Grid Grid.Row="1">
-            <ContentControl x:Name="ContentHost" />
+            <ContentControl Content="{Binding CurrentViewModel}"
+                            ContentTemplateSelector="{StaticResource ViewModelToViewConverter}" />
         </Grid>
         
         <!-- Bottom Bar -->

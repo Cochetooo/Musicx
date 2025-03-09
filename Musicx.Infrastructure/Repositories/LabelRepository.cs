@@ -7,7 +7,9 @@ using Musicx.Data.Entities;
 
 namespace Musicx.Infrastructure.Repositories;
 
-public class LabelRepository(AppDbContext context, ILoggerFactory loggerFactory) : IRepository<LabelEntity>
+public interface ILabelRepository : IRepository<LabelEntity>;
+
+public class LabelRepository(AppDbContext context, ILoggerFactory loggerFactory) : ILabelRepository
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(LabelRepository));
 

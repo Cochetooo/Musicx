@@ -6,7 +6,7 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Listeners;
 using Musicx.Infrastructure.Services.LocalLibrary;
 using Musicx.Ui.Commands;
-using Wpf.Ui.Input;
+using Musicx.Ui.ViewModels.LocalLibrary;
 
 namespace Musicx.Ui.ViewModels.Content;
 
@@ -17,13 +17,20 @@ public class ModuleSelectorViewModel
     public ICommand BrowseLocalLibraryCommand { get; }
     private ImportLocalSongsService ImportLocalSongsService { get; }
 
+    private readonly IViewModelNavigator ViewModelNavigator;
+    private Func<SongListViewModel> _songListVmFactory;
+
     public ModuleSelectorViewModel(
         ILoggerFactory loggerFactory, 
-        ImportLocalSongsService importLocalSongsService)
+        ImportLocalSongsService importLocalSongsService,
+        IViewModelNavigator viewModelNavigator,
+        Func<SongListViewModel> songListVmFactory)
     {
         Logger = loggerFactory.CreateLogger(typeof(ModuleSelectorViewModel));
         BrowseLocalLibraryCommand = new RelayCommand(async () => await BrowseLocalLibrary());
         ImportLocalSongsService = importLocalSongsService;
+        ViewModelNavigator = viewModelNavigator;
+        _songListVmFactory = songListVmFactory;
     }
 
     private async Task BrowseLocalLibrary()
@@ -37,6 +44,7 @@ public class ModuleSelectorViewModel
         if (true == fileBrowse.ShowDialog())
         {
             await ImportLocalSongsService.Execute(fileBrowse.FolderNames.ToList(), [".mp3"], new ProgressListener());
+            ViewModelNavigator.ChangeViewModel(_songListVmFactory());
         }
     }
     

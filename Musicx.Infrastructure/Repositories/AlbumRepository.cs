@@ -2,12 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Musicx.Core.Interfaces;
 using Musicx.Core.Logging;
+using Musicx.Core.Models;
 using Musicx.Data;
 using Musicx.Data.Entities;
 
 namespace Musicx.Infrastructure.Repositories;
 
-public class AlbumRepository(AppDbContext context, ILoggerFactory loggerFactory) : IRepository<AlbumEntity>
+public interface IAlbumRepository : IRepository<AlbumEntity>;
+
+public class AlbumRepository(AppDbContext context, ILoggerFactory loggerFactory) : IAlbumRepository
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(AlbumRepository));
 
