@@ -3,11 +3,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Musicx.Core.Logging;
 using Musicx.Data;
 using Musicx.Infrastructure;
-using Musicx.Ui.ViewModels;
-using Musicx.Ui.ViewModels.Content;
-using Musicx.Ui.ViewModels.LocalLibrary;
-using Musicx.Ui.Views.Content;
-using Musicx.Ui.Views.LocalLibrary;
+using Musicx.Ui.Core;
+using Musicx.Ui.Main.ViewModels;
+using Musicx.Ui.Main.Views;
+using Musicx.Ui.Pages.LocalLibrary.ViewModels;
+using Musicx.Ui.Pages.LocalLibrary.Views;
+using Musicx.Ui.Pages.PageSelector.ViewModels;
+using Musicx.Ui.Pages.PageSelector.Views;
+using Musicx.Ui.UIComponents.AudioPlayer.ViewModels;
+using ViewModelNavigator = Musicx.Ui.Core.ViewModelNavigator;
 
 namespace Musicx.Ui;
 
@@ -42,10 +46,17 @@ public partial class App
         base.OnStartup(e);
         
         Logger.Info("⛏️ Creating Main Window...");
-        var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+        var mainWindow = ServiceProvider.GetRequiredService<MainWindowView>();
         
         Logger.Info("🟢 Initialization complete, running program!");
         mainWindow.Show();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        base.OnExit(e);
+        
+        Logger.Info("🔴 Program exiting.");
     }
 
     private void ConfigureServices(IServiceCollection services)
@@ -68,26 +79,20 @@ public partial class App
         
         // 🔹 Ajout des view models
         Logger.Info("⛏️ Loading View Models...");
-        services.AddTransient<Func<ModuleSelectorViewModel>>(provider => provider.GetRequiredService<ModuleSelectorViewModel>);
-        services.AddTransient<Func<SongListViewModel>>(provider => provider.GetRequiredService<SongListViewModel>);
-        
         services.AddSingleton<IViewModelNavigator, ViewModelNavigator>();
         services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<AudioPlayerViewModel>();
+        services.AddSingleton<LocalLibraryViewModel>();
         
         // Factory-based injection
-        services.AddTransient<ModuleSelectorViewModel>();
-        services.AddTransient<SongListViewModel>();
-
-        // Enregistre Func<T> pour permettre la création différée des ViewModels
-        services.AddSingleton<Func<ModuleSelectorViewModel>>(sp => sp.GetRequiredService<ModuleSelectorViewModel>);
-        services.AddSingleton<Func<SongListViewModel>>(sp => sp.GetRequiredService<SongListViewModel>);
+        services.AddPageFactory<PageSelectorViewModel>();
 
         
         // 🔹 Ajout des views
         Logger.Info("⛏️ Loading Views...");
-        services.AddTransient<ModuleSelectorView>();
-        services.AddTransient<SongListView>();
+        services.AddTransient<PageSelectorView>();
+        services.AddTransient<LocalLibraryView>();
         
-        services.AddSingleton<MainWindow>();
+        services.AddSingleton<MainWindowView>();
     }
 }

@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
       <PackageReference Include="log4net" Version="3.0.4" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
       <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
@@ -17,6 +18,16 @@
 
     <ItemGroup>
       <Folder Include="Assets\Images\Logo\" />
+      <Folder Include="Modals\" />
+      <Folder Include="Pages\Encyclopedia\" />
+      <Folder Include="Pages\Friends\" />
+      <Folder Include="Pages\ListenTogether\" />
+      <Folder Include="Pages\OnlineStreaming\" />
+      <Folder Include="Pages\Profile\" />
+      <Folder Include="Pages\Settings\ViewModels\" />
+      <Folder Include="Pages\Settings\Views\" />
+      <Folder Include="Pages\Statistics\" />
+      <Folder Include="UIComponents\TopBar\ViewModels\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -30,7 +41,32 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Page Update="Views\Navigation\AppInfoBar.xaml">
+      <Page Update="Main\Views\MainWindowView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="UIComponents\AudioPlayer\Views\AudioPlayerView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="UIComponents\AppInfoBar\Views\AppInfoBar.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="UIComponents\TopBar\Views\TopBar.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Pages\PageSelector\Views\PageSelectorView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Pages\LocalLibrary\Views\LocalLibraryView.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>
