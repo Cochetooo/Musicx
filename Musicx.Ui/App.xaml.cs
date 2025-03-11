@@ -65,7 +65,7 @@ public partial class App
     {
         // 🔹 Ajout de l'infrastructure
         services.AddInfrastructure();
-
+        
         using (var serviceProvider = services.BuildServiceProvider())
         {
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();

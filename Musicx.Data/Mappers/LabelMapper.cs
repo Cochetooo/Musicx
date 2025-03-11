@@ -2,21 +2,15 @@ using log4net;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
 
-namespace Musicx.Infrastructure.Mappers;
+namespace Musicx.Data.Mappers;
 
 public static class LabelMapper
 {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(LabelMapper));
     
     // Mappage de l'entité vers le DTO
-    public static Label? ToDto(this LabelEntity? labelEntity)
+    public static Label ToDto(this LabelEntity labelEntity)
     {
-        if (null == labelEntity)
-        {
-            Logger.Warn("⚠️ Entity is null.");
-            return null;
-        }
-        
         var labelDto = new Label
         {
             Id = labelEntity.Id,

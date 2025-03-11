@@ -47,7 +47,7 @@ public class ReadAudioFileService(ISongManager songManager,
             Filepath = file.Name,
             Lyrics = file.Tag.Lyrics,
             SampleRate = file.Properties.AudioSampleRate,
-            Title = file.Tag.Title,
+            Title = string.IsNullOrEmpty(file.Tag.Title) ? "Unknown" : file.Tag.Title,
             TrackNumber = file.Tag.Track
         };
         
@@ -85,7 +85,7 @@ public class ReadAudioFileService(ISongManager songManager,
             ArtworkUrl = "",
             CatalogNumber = AudioTagHelper.ReadCustomTag(song.Filepath, "CATALOGNUMBER"),
             DiscTotal = file.Tag.DiscCount,
-            Name = file.Tag.Album,
+            Name = string.IsNullOrEmpty(file.Tag.Album) ? "Unknown" : file.Tag.Album,
             ReleaseDate = DateTime.MinValue,
             TrackTotal = file.Tag.TrackCount,
         };

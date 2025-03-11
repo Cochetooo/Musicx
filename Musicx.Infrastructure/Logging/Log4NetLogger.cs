@@ -7,16 +7,8 @@ namespace Musicx.Infrastructure.Logging;
 
 public class Log4NetLogger<T> : ILogger<T>
 {
-    private readonly ILog _logger;
+    private readonly ILog _logger = LogManager.GetLogger(typeof(T));
 
-    public Log4NetLogger()
-    {
-        var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly()!);
-        XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
-        
-        _logger = LogManager.GetLogger(typeof(T));
-    }
-    
     public void Debug(string message) => _logger.Debug(message);
     public void Info(string message) => _logger.Info(message);
     public void Warn(string message) => _logger.Warn(message);
@@ -27,5 +19,11 @@ public class Log4NetLogger<T> : ILogger<T>
 
 public class Log4NetLoggerFactory : ILoggerFactory
 {
+    public Log4NetLoggerFactory()
+    {
+        var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly()!);
+        XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+    }
+    
     public ILogger<T> CreateLogger<T>() => new Log4NetLogger<T>();
 }

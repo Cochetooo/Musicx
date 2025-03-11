@@ -2,21 +2,15 @@ using log4net;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
 
-namespace Musicx.Infrastructure.Mappers;
+namespace Musicx.Data.Mappers;
 
 public static class SongMapper
 {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(SongMapper));
     
     // Mappage de l'entité vers le DTO
-    public static Song? ToDto(this SongEntity? songEntity)
+    public static Song ToDto(this SongEntity songEntity)
     {
-        if (null == songEntity)
-        {
-            Logger.Warn("⚠️ Entity is null.");
-            return null;
-        }
-        
         // Mappage des genres et des genres d'influence
         var genres = songEntity.Genres.Select(g => g.GenreId).ToList();
         var influenceGenres = songEntity.InfluenceGenres.Select(g => g.GenreId).ToList();

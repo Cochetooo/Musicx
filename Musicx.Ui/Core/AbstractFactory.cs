@@ -1,21 +1,14 @@
 ﻿namespace Musicx.Ui.Core;
 
-public class AbstractFactory<T> : IAbstractFactory<T>
+public class AbstractFactory<T>(Func<T> factory) : IAbstractFactory<T>
 {
-    private readonly Func<T> _factory;
-
-    public AbstractFactory(Func<T> factory)
-    {
-        _factory = factory;
-    }
-
     public T Create()
     {
-        return _factory();
+        return factory();
     }
 }
 
-public interface IAbstractFactory<T>
+public interface IAbstractFactory<out T>
 {
     T Create();
 }

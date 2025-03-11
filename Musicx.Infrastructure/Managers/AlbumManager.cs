@@ -5,9 +5,9 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Data.Mappers;
 using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
-using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 

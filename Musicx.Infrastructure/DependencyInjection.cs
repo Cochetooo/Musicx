@@ -12,17 +12,24 @@ using Musicx.Infrastructure.Logging;
 using Musicx.Infrastructure.Managers;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Infrastructure.Services;
+using Musicx.Infrastructure.Services.Audio;
 using Musicx.Infrastructure.Services.LocalLibrary;
 
 namespace Musicx.Infrastructure;
 
 public static class DependencyInjection
 {
-    private static ILog Logger = LogManager.GetLogger(typeof(DependencyInjection));
+    private static ILogger<object> Logger;
     
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<ILoggerFactory, Log4NetLoggerFactory>();
+
+        using (var scope = services.BuildServiceProvider().CreateScope())
+        {
+            var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+            Logger = loggerFactory.CreateLogger<object>();
+        }
         
         Logger.Info("⛏️ Injecting Dependencies from Infrastructure module...");
         

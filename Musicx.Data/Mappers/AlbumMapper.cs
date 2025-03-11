@@ -2,24 +2,18 @@ using log4net;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
 
-namespace Musicx.Infrastructure.Mappers;
+namespace Musicx.Data.Mappers;
 
 public static class AlbumMapper
 {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(AlbumMapper));
     
     // Mappage de l'entité vers le DTO
-    public static Album? ToDto(this AlbumEntity? albumEntity)
+    public static Album ToDto(this AlbumEntity albumEntity)
     {
-        if (null == albumEntity)
-        {
-            Logger.Warn("⚠️ Entity is null.");
-            return null;
-        }
-
         // On récupère les identifiants des relations (Lazy Loading pour les relations Many-to-Many)
-        var genreIds = albumEntity.Genres?.Select(g => g.GenreId).ToList() ?? new List<ulong>();
-        var influenceGenreIds = albumEntity.InfluenceGenres?.Select(g => g.GenreId).ToList() ?? new List<ulong>();
+        var genreIds = albumEntity.Genres?.Select(g => g.GenreId).ToList() ?? [];
+        var influenceGenreIds = albumEntity.InfluenceGenres?.Select(g => g.GenreId).ToList() ?? [];
 
         return new Album
         {

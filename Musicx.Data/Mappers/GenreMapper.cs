@@ -2,21 +2,15 @@ using log4net;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
 
-namespace Musicx.Infrastructure.Mappers;
+namespace Musicx.Data.Mappers;
 
 public static class GenreMapper
 {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(GenreMapper));
     
     // Mappage de l'entité vers le DTO
-    public static Genre? ToDto(this GenreEntity? genreEntity)
+    public static Genre ToDto(this GenreEntity genreEntity)
     {
-        if (null == genreEntity)
-        {
-            Logger.Warn("⚠️ Entity is null.");
-            return null;
-        }
-        
         var genreDto = new Genre
         {
             Id = genreEntity.Id,
