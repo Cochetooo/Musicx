@@ -10,7 +10,7 @@
              d:DesignHeight="80">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.6*" />
+            <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -30,8 +30,9 @@
                     FontWeight="Bold" 
                     FontSize="20" 
                     Text="{Binding CurrentTrack.Title, Mode=OneWay}"
-                    TextTrimming="CharacterEllipsis"
-                    TextWrapping="NoWrap" />
+                    TextWrapping="NoWrap">
+                </ui:TextBlock>
+                
                 <ui:TextBlock 
                     FontSize="16" 
                     FontStyle="Italic"

@@ -5,16 +5,16 @@ using Musicx.Core.Logging;
 
 namespace Musicx.Infrastructure.Logging;
 
-public class Log4NetLogger : ILogger
+public class Log4NetLogger<T> : ILogger<T>
 {
     private readonly ILog _logger;
 
-    public Log4NetLogger(Type type)
+    public Log4NetLogger()
     {
         var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly()!);
         XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
         
-        _logger = LogManager.GetLogger(type);
+        _logger = LogManager.GetLogger(typeof(T));
     }
     
     public void Debug(string message) => _logger.Debug(message);
@@ -27,5 +27,5 @@ public class Log4NetLogger : ILogger
 
 public class Log4NetLoggerFactory : ILoggerFactory
 {
-    public ILogger CreateLogger(Type type) => new Log4NetLogger(type);
+    public ILogger<T> CreateLogger<T>() => new Log4NetLogger<T>();
 }

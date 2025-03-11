@@ -4,6 +4,7 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
 using Musicx.Infrastructure.Mappers;
 
@@ -11,9 +12,11 @@ namespace Musicx.Infrastructure.Managers;
 
 public interface IGenreManager : IManager<Genre>;
 
-public class GenreManager(IGenreRepository genreRepository, ILoggerFactory loggerFactory) : IGenreManager
+public class GenreManager(IGenreRepository genreRepository, 
+    IGenreCache genreCache,
+    ILoggerFactory loggerFactory) : IGenreManager
 {
-    private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(GenreManager));
+    private readonly ILogger<GenreManager> Logger = loggerFactory.CreateLogger<GenreManager>();
     
     /// 🔍 Récupérer un genre sous forme de DTO
     public async Task<Genre?> FindById(ulong id)
@@ -35,6 +38,33 @@ public class GenreManager(IGenreRepository genreRepository, ILoggerFactory logge
             .Select(a => a.ToDto())
             .OfType<Genre>()
             .ToList();
+    }
+    
+    public async Task<Genre?> FindExisting(Genre genre)
+    {
+        var key = $"{genre.Name}";
+
+        var cachedSong = genreCache.Get(key);
+        if (null != cachedSong)
+        {
+            return cachedSong;
+        }
+        
+        var genres = await genreRepository.FindAll(filter:
+            a => a.Name == genre.Name);
+        
+        var existingGenre = genres.FirstOrDefault().ToDto();
+        if (null != existingGenre)
+        {
+            genreCache.Add(key, existingGenre);
+        }
+        
+        return existingGenre;
+    }
+
+    public async Task<uint> GetCount()
+    {
+        return await genreRepository.GetCount();
     }
 
     /// 🆕 Sauvegarder un genre à partir d’un DTO

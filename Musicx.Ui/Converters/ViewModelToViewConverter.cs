@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Musicx.Ui.Core;
+namespace Musicx.Ui.Converters;
 
 public class ViewModelToViewConverter : DataTemplateSelector
 {

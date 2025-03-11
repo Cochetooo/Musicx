@@ -14,9 +14,19 @@
     </b:Interaction.Triggers>
     
     <Grid>
-        <DataGrid x:Name="SongDataGrid" ItemsSource="{Binding Songs}" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <DataGrid Grid.Row="0"
+                  x:Name="SongDataGrid" ItemsSource="{Binding Songs}" 
                   AutoGenerateColumns="False"
+                  EnableRowVirtualization="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
                   IsReadOnly="True"
+                  SelectionMode="Single"
                   SelectedValue="{Binding SelectedSong}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="#" Binding="{Binding TrackNumber}" />
@@ -28,5 +38,12 @@
                 <DataGridTextColumn Header="Format" Binding="{Binding AudioFormat}" />
             </DataGrid.Columns>
         </DataGrid>
+        
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Content="⬅️ Précédent" Command="{Binding PreviousPageCommand}" 
+                    IsEnabled="{Binding CanGoPrevious}" Margin="5"/>
+            <Button Content="Suivant ➡️" Command="{Binding NextPageCommand}" 
+                    IsEnabled="{Binding CanGoNext}" Margin="5"/>
+        </StackPanel>
     </Grid>
 </UserControl>

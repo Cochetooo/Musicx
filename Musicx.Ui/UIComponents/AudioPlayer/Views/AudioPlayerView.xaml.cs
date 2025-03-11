@@ -1,11 +1,13 @@
-﻿using log4net;
+﻿using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using log4net;
+using Musicx.Ui.UIComponents.AudioPlayer.ViewModels;
 
 namespace Musicx.Ui.UIComponents.AudioPlayer.Views;
 
 public partial class AudioPlayerView
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(AudioPlayerView));
-    
     public AudioPlayerView()
     {
         InitializeComponent();

@@ -4,6 +4,7 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
 using Musicx.Infrastructure.Mappers;
 
@@ -11,9 +12,11 @@ namespace Musicx.Infrastructure.Managers;
 
 public interface IArtistManager : IManager<Artist>;
 
-public class ArtistManager(IArtistRepository artistRepository, ILoggerFactory loggerFactory) : IArtistManager
+public class ArtistManager(IArtistRepository artistRepository, 
+    IArtistCache artistCache,
+    ILoggerFactory loggerFactory) : IArtistManager
 {
-    private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(ArtistManager));
+    private readonly ILogger<ArtistManager> Logger = loggerFactory.CreateLogger<ArtistManager>();
     
     /// 🔍 Récupérer un artist sous forme de DTO
     public async Task<Artist?> FindById(ulong id)
@@ -35,6 +38,33 @@ public class ArtistManager(IArtistRepository artistRepository, ILoggerFactory lo
             .Select(a => a.ToDto())
             .OfType<Artist>()
             .ToList();
+    }
+    
+    public async Task<Artist?> FindExisting(Artist artist)
+    {
+        var key = $"{artist.Name}";
+
+        var cachedSong = artistCache.Get(key);
+        if (null != cachedSong)
+        {
+            return cachedSong;
+        }
+        
+        var artists = await artistRepository.FindAll(filter:
+            a => a.Name == artist.Name);
+        
+        var existingArtist = artists.FirstOrDefault().ToDto();
+        if (null != existingArtist)
+        {
+            artistCache.Add(key, existingArtist);
+        }
+        
+        return existingArtist;
+    }
+
+    public async Task<uint> GetCount()
+    {
+        return await artistRepository.GetCount();
     }
 
     /// 🆕 Sauvegarder un artist à partir d’un DTO

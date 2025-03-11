@@ -1,12 +1,10 @@
-using log4net;
-using Microsoft.Extensions.Logging;
 using Musicx.Core.Interfaces;
-using Musicx.Infrastructure.Managers;
+using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Core.Models.Enums;
-using Musicx.Infrastructure.Repositories;
-using TagLib;
-using ILogger = Musicx.Core.Logging.ILogger;
+using Musicx.Infrastructure.Helpers;
+using Musicx.Infrastructure.Managers;
+using File = TagLib.File;
 using ILoggerFactory = Musicx.Core.Logging.ILoggerFactory;
 
 namespace Musicx.Infrastructure.Services.Audio;
@@ -18,13 +16,13 @@ public class ReadAudioFileService(ISongManager songManager,
     ILabelManager labelManager,
     ILoggerFactory loggerFactory) : IService
 {
-    private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(ReadAudioFileService));
+    private readonly ILogger<ReadAudioFileService> Logger = loggerFactory.CreateLogger<ReadAudioFileService>();
     
     public async Task<Song> ExecuteAsync(string filePath)
     {
         Logger.Debug("⛏️ Executing ReadAudioFile");
         
-        var file = TagLib.File.Create(filePath);
+        var file = File.Create(filePath);
     
         Logger.Warn("⚠️ Audio Format set to MP3 per default. Fix later");
         var song = await ReadSong(file);
@@ -36,7 +34,7 @@ public class ReadAudioFileService(ISongManager songManager,
         return song;
     }
 
-    private async Task<Song> ReadSong(TagLib.File file)
+    private async Task<Song> ReadSong(File file)
     {
         Logger.Debug("➕ Reading Song Data");
         
@@ -53,10 +51,7 @@ public class ReadAudioFileService(ISongManager songManager,
             TrackNumber = file.Tag.Track
         };
         
-        var existingSongs = await songManager.FindAll(filter:
-            s => s.Duration == song.Duration && s.Title == song.Title && s.TrackNumber == song.TrackNumber);
-
-        var existingSong = existingSongs.FirstOrDefault();
+        var existingSong = await songManager.FindExisting(song);
         if (null != existingSong)
         {
             Logger.Info($"ℹ️ Found existing song with id {existingSong.Id}.");
@@ -67,11 +62,19 @@ public class ReadAudioFileService(ISongManager songManager,
             song.GenreIds = existingSong.GenreIds;
             song.InfluenceGenreIds = existingSong.InfluenceGenreIds;
         }
+        else
+        {
+            var album = await ReadAlbum(file, song);
+
+            var artist = await ReadArtist(file, song);
+            
+            Logger.Debug($"ℹ️ Creating new song, album id : {album.Id} artist id: {artist.Id}");
+        }
 
         return song;
     }
 
-    private async Task<Album> ReadAlbum(TagLib.File file, Song song)
+    private async Task<Album> ReadAlbum(File file, Song song)
     {
         Logger.Debug("➕ Reading Album Data");
         
@@ -80,27 +83,68 @@ public class ReadAudioFileService(ISongManager songManager,
         var album = new Album
         {
             ArtworkUrl = "",
-            CatalogNumber = "",
+            CatalogNumber = AudioTagHelper.ReadCustomTag(song.Filepath, "CATALOGNUMBER"),
             DiscTotal = file.Tag.DiscCount,
             Name = file.Tag.Album,
             ReleaseDate = DateTime.MinValue,
             TrackTotal = file.Tag.TrackCount,
         };
+        
+        var existingAlbum = await albumManager.FindExisting(album);
+
+        if (null != existingAlbum)
+        {
+            Logger.Info($"ℹ️ Found existing album with id {existingAlbum.Id}.");
+            album.Id = existingAlbum.Id;
+            
+            album.ArtistId = existingAlbum.ArtistId;
+            album.GenreIds = existingAlbum.GenreIds;
+            album.InfluenceGenreIds = existingAlbum.InfluenceGenreIds;
+            album.LabelId = existingAlbum.LabelId;
+        }
+        else
+        {
+            Logger.Warn("⚠️ Does not allow to update the existing album. Please fix later");
+            await albumManager.Save(album);
+        }
 
         return album;
     }
 
-    private void ReadArtist(in TagLib.File file, Song song)
+    private async Task<Artist> ReadArtist(File file, Song song)
     {
         Logger.Debug("➕ Reading Artist Data");
+        
+        Logger.Warn("⚠️ Choosing Band artist to create new artist. Please fix later.");
+        var artist = new BandArtist
+        {
+            ArtworkUrl = "",
+            Country = "",
+            Name = string.IsNullOrEmpty(file.Tag.FirstAlbumArtist) ? "Unknown" : file.Tag.FirstAlbumArtist,
+        };
+
+        var existingArtist = await artistManager.FindExisting(artist);
+
+        if (null != existingArtist)
+        {
+            Logger.Info($"ℹ️ Found existing artist with id {existingArtist.Id}.");
+            artist.Id = existingArtist.Id;
+        }
+        else
+        {
+            Logger.Warn("⚠️ Does not allow to update the existing artist. Please fix later");
+            await artistManager.Save(artist);
+        }
+        
+        return artist;
     }
 
-    private void ReadGenres(in TagLib.File file, Song song)
+    private void ReadGenres(in File file, Song song)
     {
         Logger.Debug("➕ Reading Genres Data");
     }
 
-    private void ReadLabel(in TagLib.File file, Song song)
+    private void ReadLabel(in File file, Song song)
     {
         Logger.Debug("➕ Reading Label Data");
     }

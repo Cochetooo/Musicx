@@ -7,6 +7,7 @@ using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Data;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Logging;
 using Musicx.Infrastructure.Managers;
 using Musicx.Infrastructure.Repositories;
@@ -17,17 +18,11 @@ namespace Musicx.Infrastructure;
 
 public static class DependencyInjection
 {
-    private static ILogger Logger;
+    private static ILog Logger = LogManager.GetLogger(typeof(DependencyInjection));
     
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<ILoggerFactory, Log4NetLoggerFactory>();
-        
-        using (var serviceProvider = services.BuildServiceProvider())
-        {
-            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            Logger = loggerFactory.CreateLogger(typeof(DependencyInjection));
-        }
         
         Logger.Info("⛏️ Injecting Dependencies from Infrastructure module...");
         
@@ -45,6 +40,14 @@ public static class DependencyInjection
         services.AddScoped<ISongRepository, SongRepository>();
         services.AddScoped<ILabelRepository, LabelRepository>();
         services.AddScoped<IGenreRepository, GenreRepository>();
+        
+        // 🔹 Ajout des caches
+        Logger.Info("⛏️ Loading Infrastructure Caches...");
+        services.AddSingleton<ISongCache, SongCache>();
+        services.AddSingleton<IAlbumCache, AlbumCache>();
+        services.AddSingleton<IArtistCache, ArtistCache>();
+        services.AddSingleton<ILabelCache, LabelCache>();
+        services.AddSingleton<IGenreCache, GenreCache>();
         
         // 🔹 Ajout des managers
         Logger.Info("⛏️ Loading Infrastructure Managers...");

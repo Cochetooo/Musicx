@@ -5,6 +5,7 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
 using Musicx.Infrastructure.Mappers;
 
@@ -12,9 +13,11 @@ namespace Musicx.Infrastructure.Managers;
 
 public interface IAlbumManager : IManager<Album>;
 
-public class AlbumManager(IAlbumRepository albumRepository, ILoggerFactory loggerFactory) : IAlbumManager
+public class AlbumManager(IAlbumRepository albumRepository,
+    IAlbumCache albumCache,
+    ILoggerFactory loggerFactory) : IAlbumManager
 {
-    private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(AlbumManager));
+    private readonly ILogger<AlbumManager> Logger = loggerFactory.CreateLogger<AlbumManager>();
     
     /// 🔍 Récupérer un album sous forme de DTO
     public async Task<Album?> FindById(ulong id)
@@ -36,6 +39,33 @@ public class AlbumManager(IAlbumRepository albumRepository, ILoggerFactory logge
             .Select(a => a.ToDto())
             .OfType<Album>()
             .ToList();
+    }
+
+    public async Task<Album?> FindExisting(Album album)
+    {
+        var key = $"{album.Name}|{album.CatalogNumber}";
+
+        var cachedSong = albumCache.Get(key);
+        if (null != cachedSong)
+        {
+            return cachedSong;
+        }
+        
+        var albums = await albumRepository.FindAll(filter:
+            a => a.Name == album.Name && a.CatalogNumber == album.CatalogNumber);
+        
+        var existingAlbum = albums.FirstOrDefault().ToDto();
+        if (null != existingAlbum)
+        {
+            albumCache.Add(key, existingAlbum);
+        }
+        
+        return existingAlbum;
+    }
+
+    public async Task<uint> GetCount()
+    {
+        return await albumRepository.GetCount();
     }
 
     /// 🆕 Sauvegarder un album à partir d’un DTO

@@ -4,18 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             DataContext="{Binding AppInfoVm, Source={StaticResource Locator}}"
              mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.7*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         
-        <StackPanel Grid.Column="0">
-            <ProgressBar Uid="ActionProgressBar" 
-                         Minimum="0" Maximum="100" />
+        <ui:TextBlock Grid.Column="0" Margin="10,0,0,0" FontSize="12" Text="{Binding LeftContentText}" VerticalAlignment="Center" />
+        
+        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+            <ProgressBar Value="{Binding ProgressValue}"
+                         Minimum="0"
+                         Maximum="1"
+                         VerticalAlignment="Center"
+                         Visibility="{Binding IsProgressVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </StackPanel>
         
-        <ui:TextBlock Grid.Column="1" Text="0 files, --:--:--, 0 MB" />
+        <ui:TextBlock Grid.Column="2" Margin="10,0,10,0" FontSize="12" Text="{Binding RightContentText}" VerticalAlignment="Center" />
     </Grid>
 </UserControl>

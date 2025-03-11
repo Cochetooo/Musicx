@@ -1,6 +1,6 @@
 ﻿namespace Musicx.Core.Logging;
 
-public interface ILogger
+public interface ILogger<T>
 {
     void Debug(string message);
     void Info(string message);
@@ -12,5 +12,5 @@ public interface ILogger
 
 public interface ILoggerFactory
 {
-    ILogger CreateLogger(Type type);
+    ILogger<T> CreateLogger<T>();
 }

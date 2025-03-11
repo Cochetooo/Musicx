@@ -4,6 +4,7 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
 using Musicx.Infrastructure.Mappers;
 
@@ -11,9 +12,11 @@ namespace Musicx.Infrastructure.Managers;
 
 public interface ILabelManager : IManager<Label>;
 
-public class LabelManager(ILabelRepository labelRepository, ILoggerFactory loggerFactory) : ILabelManager
+public class LabelManager(ILabelRepository labelRepository, 
+    ILabelCache labelCache,
+    ILoggerFactory loggerFactory) : ILabelManager
 {
-    private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(LabelManager));
+    private readonly ILogger<LabelManager> Logger = loggerFactory.CreateLogger<LabelManager>();
     
     /// 🔍 Récupérer un label sous forme de DTO
     public async Task<Label?> FindById(ulong id)
@@ -35,6 +38,33 @@ public class LabelManager(ILabelRepository labelRepository, ILoggerFactory logge
             .Select(a => a.ToDto())
             .OfType<Label>()
             .ToList();
+    }
+    
+    public async Task<Label?> FindExisting(Label label)
+    {
+        var key = $"{label.Name}";
+
+        var cachedSong = labelCache.Get(key);
+        if (null != cachedSong)
+        {
+            return cachedSong;
+        }
+        
+        var labels = await labelRepository.FindAll(filter:
+            a => a.Name == label.Name);
+        
+        var existingLabel = labels.FirstOrDefault().ToDto();
+        if (null != existingLabel)
+        {
+            labelCache.Add(key, existingLabel);
+        }
+        
+        return existingLabel;
+    }
+
+    public async Task<uint> GetCount()
+    {
+        return await labelRepository.GetCount();
     }
 
     /// 🆕 Sauvegarder un label à partir d’un DTO

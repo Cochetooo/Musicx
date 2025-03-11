@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace Musicx.Ui.Core;
+namespace Musicx.Ui.Converters;
 
 public class FloatToPercentageConverter : IValueConverter
 {

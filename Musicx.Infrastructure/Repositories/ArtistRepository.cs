@@ -17,7 +17,7 @@ public interface IArtistRepository : IRepository<ArtistEntity>;
 /// <since>0.6.0</since>
 public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory) : IArtistRepository
 {
-    private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(ArtistRepository));
+    private readonly ILogger<ArtistRepository> _logger = loggerFactory.CreateLogger<ArtistRepository>();
 
     public async Task<ArtistEntity?> FindById(ulong id)
     {
@@ -39,6 +39,11 @@ public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory
             .Skip(skip)
             .Take(count)
             .ToListAsync();
+    }
+    
+    public async Task<uint> GetCount()
+    {
+        return (uint)await context.Artists.CountAsync();
     }
 
     public async Task Save(ArtistEntity artist)

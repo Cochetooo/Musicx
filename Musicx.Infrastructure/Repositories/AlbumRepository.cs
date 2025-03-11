@@ -12,7 +12,7 @@ public interface IAlbumRepository : IRepository<AlbumEntity>;
 
 public class AlbumRepository(AppDbContext context, ILoggerFactory loggerFactory) : IAlbumRepository
 {
-    private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(AlbumRepository));
+    private readonly ILogger<AlbumRepository> _logger = loggerFactory.CreateLogger<AlbumRepository>();
 
     public async Task<AlbumEntity?> FindById(ulong id)
     {
@@ -34,6 +34,11 @@ public class AlbumRepository(AppDbContext context, ILoggerFactory loggerFactory)
             .Skip(skip)
             .Take(count)
             .ToListAsync();
+    }
+
+    public async Task<uint> GetCount()
+    {
+        return (uint)await context.Albums.CountAsync();
     }
 
     public async Task Save(AlbumEntity album)

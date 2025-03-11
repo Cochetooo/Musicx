@@ -9,6 +9,8 @@ public interface IRepository<T> where T : class
 
     Task Delete(ulong id);
 
+    Task<uint> GetCount();
+
     Task<T?> FindById(ulong id);
     Task<List<T>> FindAll(int skip = 0, int take = 100, Expression<Func<T, bool>>? filter = null);
 }

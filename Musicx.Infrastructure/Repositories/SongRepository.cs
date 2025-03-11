@@ -11,7 +11,7 @@ public interface ISongRepository : IRepository<SongEntity>;
 
 public class SongRepository(AppDbContext context, ILoggerFactory loggerFactory) : ISongRepository
 {
-    private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(SongRepository));
+    private readonly ILogger<SongRepository> _logger = loggerFactory.CreateLogger<SongRepository>();
 
     public async Task<SongEntity?> FindById(ulong id)
     {
@@ -33,6 +33,11 @@ public class SongRepository(AppDbContext context, ILoggerFactory loggerFactory) 
             .Skip(skip)
             .Take(count)
             .ToListAsync();
+    }
+    
+    public async Task<uint> GetCount()
+    {
+        return (uint)await context.Songs.CountAsync();
     }
 
     public async Task Save(SongEntity song)

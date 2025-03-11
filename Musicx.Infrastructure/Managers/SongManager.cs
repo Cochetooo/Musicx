@@ -3,6 +3,7 @@ using Musicx.Core.Interfaces;
 using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
 using Musicx.Infrastructure.Mappers;
 using Musicx.Infrastructure.Repositories;
@@ -11,9 +12,11 @@ namespace Musicx.Infrastructure.Managers;
 
 public interface ISongManager : IManager<Song>;
 
-public class SongManager(ISongRepository songRepository, ILoggerFactory loggerFactory) : ISongManager
+public class SongManager(ISongRepository songRepository, 
+    ISongCache songCache,
+    ILoggerFactory loggerFactory) : ISongManager
 {
-    private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(SongManager));
+    private readonly ILogger<SongManager> Logger = loggerFactory.CreateLogger<SongManager>();
     
     /// 🔍 Récupérer un song sous forme de DTO
     public async Task<Song?> FindById(ulong id)
@@ -35,6 +38,33 @@ public class SongManager(ISongRepository songRepository, ILoggerFactory loggerFa
             .Select(a => a.ToDto())
             .OfType<Song>()
             .ToList();
+    }
+    
+    public async Task<Song?> FindExisting(Song song)
+    {
+        var key = $"{song.Title}|{song.Duration}|{song.TrackNumber}";
+
+        var cachedSong = songCache.Get(key);
+        if (null != cachedSong)
+        {
+            return cachedSong;
+        }
+        
+        var songs = await songRepository.FindAll(filter:
+            a => a.Title == song.Title && a.Duration == song.Duration && a.TrackNumber == song.TrackNumber);
+        
+        var existingSong = songs.FirstOrDefault().ToDto();
+        if (null != existingSong)
+        {
+            songCache.Add(key, existingSong);
+        }
+        
+        return existingSong;
+    }
+
+    public async Task<uint> GetCount()
+    {
+        return await songRepository.GetCount();
     }
 
     /// 🆕 Sauvegarder un song à partir d’un DTO

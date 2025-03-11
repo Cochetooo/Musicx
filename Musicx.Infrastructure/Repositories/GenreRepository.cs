@@ -11,7 +11,7 @@ public interface IGenreRepository : IRepository<GenreEntity>;
 
 public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory) : IGenreRepository
 {
-    private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(GenreRepository));
+    private readonly ILogger<GenreRepository> _logger = loggerFactory.CreateLogger<GenreRepository>();
 
     public async Task<GenreEntity?> FindById(ulong id)
     {
@@ -33,6 +33,11 @@ public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory)
             .Skip(skip)
             .Take(count)
             .ToListAsync();
+    }
+    
+    public async Task<uint> GetCount()
+    {
+        return (uint)await context.Genres.CountAsync();
     }
 
     public async Task Save(GenreEntity genre)

@@ -1,9 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Media.Animation;
 using Musicx.Core.Models;
+using Musicx.Ui.UIComponents.AudioPlayer.Models;
 using NAudio.Wave;
 
-namespace Musicx.Ui.UIComponents.AudioPlayer.Models;
+namespace Musicx.Ui.UIComponents.AudioPlayer.Services;
 
 public class AudioPlayerService
 {
@@ -37,7 +38,6 @@ public class AudioPlayerService
 
         _audioQueueService.AudioQueue.IndexChanged += (sender, args) =>
         {
-            Console.WriteLine("Index has changed.");
             _audioPlayerData.Song = _audioQueueService[args.NewIndex];
             UpdateSong();
             MediaChanged?.Invoke();
@@ -55,7 +55,6 @@ public class AudioPlayerService
     {
         if (null == _audioPlayerData.Song)
         {
-            Console.WriteLine("song is null");
             return;
         }
         
@@ -125,6 +124,8 @@ public class AudioPlayerService
             _output?.Pause();
             SetVolume(startVolume);
         };
+        
+        TrackPaused?.Invoke();
     }
 
     public void Previous()
@@ -140,6 +141,7 @@ public class AudioPlayerService
     public void Resume()
     {
         _output?.Play();
+        TrackResumed?.Invoke();
     }
 
     public void Seek(double seconds)

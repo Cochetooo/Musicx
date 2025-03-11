@@ -11,7 +11,7 @@ public interface ILabelRepository : IRepository<LabelEntity>;
 
 public class LabelRepository(AppDbContext context, ILoggerFactory loggerFactory) : ILabelRepository
 {
-    private readonly ILogger _logger = loggerFactory.CreateLogger(typeof(LabelRepository));
+    private readonly ILogger<LabelRepository> _logger = loggerFactory.CreateLogger<LabelRepository>();
 
     public async Task<LabelEntity?> FindById(ulong id)
     {
@@ -33,6 +33,11 @@ public class LabelRepository(AppDbContext context, ILoggerFactory loggerFactory)
             .Skip(skip)
             .Take(count)
             .ToListAsync();
+    }
+    
+    public async Task<uint> GetCount()
+    {
+        return (uint)await context.Labels.CountAsync();
     }
 
     public async Task Save(LabelEntity label)

@@ -7,10 +7,10 @@ public class Album
     public ulong Id { get; set; }
     
     public ulong? ArtistId { get; set; }
-    public Dictionary<ulong, ArtistRole> CreditArtistIds { get; init; } = [];
-    public ulong? LabelId { get; init; }
-    public List<ulong> GenreIds { get; init; } = [];
-    public List<ulong> InfluenceGenreIds { get; init; } = [];
+    public Dictionary<ulong, ArtistRole> CreditArtistIds { get; set; } = [];
+    public ulong? LabelId { get; set; }
+    public List<ulong> GenreIds { get; set; } = [];
+    public List<ulong> InfluenceGenreIds { get; set; } = [];
     
     public string? ArtworkUrl { get; set; }
     public string? CatalogNumber { get; set; }

@@ -15,7 +15,7 @@ public sealed class ImportLocalSongsService(
     ILoggerFactory loggerFactory,
     ISongManager songManager) : IService
 {
-    private readonly ILogger Logger = loggerFactory.CreateLogger(typeof(ImportLocalSongsService));
+    private readonly ILogger<ImportLocalSongsService> Logger = loggerFactory.CreateLogger<ImportLocalSongsService>();
     
     public async Task Execute(
         List<string> folderPaths, 
@@ -32,11 +32,11 @@ public sealed class ImportLocalSongsService(
         if (0 == fileNumbers)
         {
             Logger.Warn($"⚠️ No audio file found in folders {string.Join(',', folderPaths)}");
-            progressListener.UpdateProgress(1, 1);
+            progressListener.UpdateProgress(1, 1, null);
             return;
         }
         
-        progressListener.UpdateProgress(0, fileNumbers);
+        progressListener.UpdateProgress(0, fileNumbers, null);
         var fileProgressCount = 0;
             
         var songs = new List<Song>();
@@ -54,14 +54,14 @@ public sealed class ImportLocalSongsService(
             }
             
             var progress = Interlocked.Increment(ref fileProgressCount);
-            progressListener.UpdateProgress(progress, fileNumbers);
+            progressListener.UpdateProgress(progress, fileNumbers, filePath);
         }).ToList();
         
         await Task.WhenAll(tasks);
 
         await songManager.SaveAll(songs);
         
-        progressListener.UpdateProgress(1, 1);
+        progressListener.UpdateProgress(0, 0, null);
         Logger.Info($"Finished importing {fileProgressCount} audio files in {benchmark.Elapsed.TotalMilliseconds} ms.");
     }
     

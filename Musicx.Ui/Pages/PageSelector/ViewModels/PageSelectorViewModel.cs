@@ -13,20 +13,23 @@ namespace Musicx.Ui.Pages.PageSelector.ViewModels;
 
 public class PageSelectorViewModel
 {
-    private readonly ILogger Logger;
+    private readonly ILogger<PageSelectorViewModel> Logger;
     
     public ICommand BrowseLocalLibraryCommand { get; }
     private ImportLocalSongsService ImportLocalSongsService { get; }
 
     private readonly IViewModelNavigator ViewModelNavigator;
     private LocalLibraryViewModel _localLibraryVm;
+    
+    private IProgressListener _progressListener;
 
     public PageSelectorViewModel(
         ILoggerFactory loggerFactory, 
         ISongManager songManager,
         ImportLocalSongsService importLocalSongsService,
         IViewModelNavigator viewModelNavigator,
-        LocalLibraryViewModel localLibraryVm)
+        LocalLibraryViewModel localLibraryVm,
+        IProgressListener progressListener)
     {
         var existingSong = songManager.FindAll();
         if (existingSong.Result.Any())
@@ -34,11 +37,12 @@ public class PageSelectorViewModel
             viewModelNavigator.ChangeViewModel(localLibraryVm);
         }
         
-        Logger = loggerFactory.CreateLogger(typeof(PageSelectorViewModel));
+        Logger = loggerFactory.CreateLogger<PageSelectorViewModel>();
         BrowseLocalLibraryCommand = new RelayCommand(async () => await BrowseLocalLibrary());
         ImportLocalSongsService = importLocalSongsService;
         ViewModelNavigator = viewModelNavigator;
         _localLibraryVm = localLibraryVm;
+        _progressListener = progressListener;
     }
 
     private async Task BrowseLocalLibrary()
@@ -51,8 +55,12 @@ public class PageSelectorViewModel
         
         if (true == fileBrowse.ShowDialog())
         {
-            await ImportLocalSongsService.Execute(fileBrowse.FolderNames.ToList(), [".mp3"], new ProgressListener());
-            ViewModelNavigator.ChangeViewModel(_localLibraryVm);
+            await Task.Run(async () =>
+            {
+                await ImportLocalSongsService.Execute(fileBrowse.FolderNames.ToList(), [".mp3"],
+                    _progressListener);
+                ViewModelNavigator.ChangeViewModel(_localLibraryVm);
+            });
         }
     }
     
@@ -60,13 +68,5 @@ public class PageSelectorViewModel
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-    
-    class ProgressListener : IProgressListener
-    {
-        public void UpdateProgress(int progress, int total)
-        {
-
-        }
     }
 }

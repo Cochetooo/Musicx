@@ -6,7 +6,7 @@ namespace Musicx.Ui.UIComponents.AudioPlayer.Models;
 public partial class AudioPlayerData : ObservableObject
 {
     [ObservableProperty] private double _volume;
-    [ObservableProperty] private Song? song;
+    [ObservableProperty] private Song? _song;
     [ObservableProperty] private ShuffleMode _shuffleMode;
     [ObservableProperty] private RepeatMode _repeatMode;
 }

@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using Musicx.Core.Models;
+﻿using Musicx.Core.Models;
+using Musicx.Ui.UIComponents.AudioPlayer.Models;
 
-namespace Musicx.Ui.UIComponents.AudioPlayer.Models;
+namespace Musicx.Ui.UIComponents.AudioPlayer.Services;
 
 public class AudioQueueService
 {
@@ -92,7 +92,7 @@ public class AudioQueueService
             return;
         }
 
-        if (AudioQueue.QueueIndex >= AudioQueue.Songs.Count || AudioQueue.QueueIndex < 0)
+        if (index >= AudioQueue.Songs.Count || index < 0)
         {
             return;
         }

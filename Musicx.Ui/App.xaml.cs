@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Musicx.Core.Logging;
 using Musicx.Data;
 using Musicx.Infrastructure;
+using Musicx.Infrastructure.Listeners;
 using Musicx.Ui.Core;
 using Musicx.Ui.Main.ViewModels;
 using Musicx.Ui.Main.Views;
@@ -10,6 +11,7 @@ using Musicx.Ui.Pages.LocalLibrary.ViewModels;
 using Musicx.Ui.Pages.LocalLibrary.Views;
 using Musicx.Ui.Pages.PageSelector.ViewModels;
 using Musicx.Ui.Pages.PageSelector.Views;
+using Musicx.Ui.UIComponents.AppInfoBar.ViewModels;
 using Musicx.Ui.UIComponents.AudioPlayer.ViewModels;
 using ViewModelNavigator = Musicx.Ui.Core.ViewModelNavigator;
 
@@ -24,7 +26,7 @@ public partial class App
     
     public static AppDbContext DbContext { get; private set; }
 
-    private static ILogger Logger;
+    private static ILogger<App> Logger;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -67,7 +69,7 @@ public partial class App
         using (var serviceProvider = services.BuildServiceProvider())
         {
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            Logger = loggerFactory.CreateLogger(typeof(DependencyInjection));
+            Logger = loggerFactory.CreateLogger<App>();
         
             AppDomain.CurrentDomain.FirstChanceException += (_, eventArgs) =>
             {
@@ -76,11 +78,14 @@ public partial class App
         }
         
         // 🔹 Ajout des services UI
+        services.AddSingleton<IProgressListener, ProgressListener>();
         
         // 🔹 Ajout des view models
         Logger.Info("⛏️ Loading View Models...");
         services.AddSingleton<IViewModelNavigator, ViewModelNavigator>();
         services.AddSingleton<MainWindowViewModel>();
+
+        services.AddSingleton<AppInfoViewModel>();
         services.AddSingleton<AudioPlayerViewModel>();
         services.AddSingleton<LocalLibraryViewModel>();
         

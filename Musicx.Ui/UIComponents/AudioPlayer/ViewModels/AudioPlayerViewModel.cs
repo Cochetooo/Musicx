@@ -6,13 +6,14 @@ using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Ui.Pages.LocalLibrary.ViewModels;
 using Musicx.Ui.UIComponents.AudioPlayer.Models;
+using Musicx.Ui.UIComponents.AudioPlayer.Services;
 using RelayCommand = CommunityToolkit.Mvvm.Input.RelayCommand;
 
 namespace Musicx.Ui.UIComponents.AudioPlayer.ViewModels;
 
 public partial class AudioPlayerViewModel : ObservableObject
 {
-    private readonly ILogger Logger;
+    private readonly ILogger<AudioPlayerViewModel> Logger;
     
     [ObservableProperty] private Song? _currentTrack;
 
@@ -39,7 +40,7 @@ public partial class AudioPlayerViewModel : ObservableObject
 
     public AudioPlayerViewModel(LocalLibraryViewModel localLibraryViewModel, ILoggerFactory loggerFactory)
     {
-        Logger = loggerFactory.CreateLogger(typeof(AudioPlayerViewModel));
+        Logger = loggerFactory.CreateLogger<AudioPlayerViewModel>();
 
         _audioPlayerService = new AudioPlayerService(localLibraryViewModel.Songs);
         
@@ -50,6 +51,9 @@ public partial class AudioPlayerViewModel : ObservableObject
             Interval = TimeSpan.FromSeconds(1)
         };
         _currentTrackPositionTimer.Tick += CurrentTrackPositionUpdateTimer_Tick;
+        
+        _audioPlayerService.TrackResumed += () => _currentTrackPositionTimer.Start();
+        _audioPlayerService.TrackPaused += () => _currentTrackPositionTimer.Stop();
         
         LoadCommands();
 
@@ -97,7 +101,6 @@ public partial class AudioPlayerViewModel : ObservableObject
         Logger.Debug($"ℹ️ Selected song: {_localLibraryViewModel.SelectedSong.Title}");
         
         AudioPlayerService.SetQueue(_localLibraryViewModel.Songs, _localLibraryViewModel.Songs.IndexOf(_localLibraryViewModel.SelectedSong));
-        AudioPlayerService.TogglePlaying();
         CurrentTrackLength = AudioPlayerService.GetLengthInSeconds();
         CurrentTrack = _localLibraryViewModel.SelectedSong;
     }
