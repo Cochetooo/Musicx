@@ -4,9 +4,9 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
-using Musicx.Data.Mappers;
 using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
+using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 
@@ -14,6 +14,7 @@ public interface IGenreManager : IManager<Genre>;
 
 public class GenreManager(IGenreRepository genreRepository, 
     IGenreCache genreCache,
+    IGenreMapper genreMapper,
     ILoggerFactory loggerFactory) : IGenreManager
 {
     private readonly ILogger<GenreManager> Logger = loggerFactory.CreateLogger<GenreManager>();
@@ -22,8 +23,13 @@ public class GenreManager(IGenreRepository genreRepository,
     public async Task<Genre?> FindById(ulong id)
     {
         var entity = await genreRepository.FindById(id);
+
+        if (null == entity)
+        {
+            return null;
+        }
         
-        return entity?.ToDto();
+        return genreMapper.ToDto(entity);
     }
     
     /// 📜 Récupérer tous les genres sous forme de DTOs
@@ -35,8 +41,16 @@ public class GenreManager(IGenreRepository genreRepository,
         var entities = await genreRepository.FindAll(skip, take, entityFilter);
         
         return entities
-            .Select(a => a.ToDto())
-            .OfType<Genre>()
+            .Select(genreMapper.ToDto)
+            .ToList();
+    }
+    
+    public async Task<List<Genre>> FindIn(List<ulong> ids)
+    {
+        var entities = await genreRepository.FindIn(ids);
+        
+        return entities
+            .Select(genreMapper.ToDto)
             .ToList();
     }
     
@@ -52,14 +66,15 @@ public class GenreManager(IGenreRepository genreRepository,
         
         var genres = await genreRepository.FindAll(filter:
             a => a.Name == genre.Name);
-        
-        var existingGenre = genres.FirstOrDefault().ToDto();
-        if (null != existingGenre)
+
+        if (0 < genres.Count)
         {
+            var existingGenre = genreMapper.ToDto(genres.First());
             genreCache.Add(key, existingGenre);
+            return existingGenre;
         }
-        
-        return existingGenre;
+
+        return null;
     }
 
     public async Task<uint> GetCount()
@@ -68,27 +83,25 @@ public class GenreManager(IGenreRepository genreRepository,
     }
 
     /// 🆕 Sauvegarder un genre à partir d’un DTO
-    public async Task Save(Genre genre)
+    public async Task<ulong> Save(Genre genre)
     {
-        var entity = new GenreEntity();
-        entity.FromDto(genre);
+        var entity = genreMapper.ToEntity(genre);
         
-        await genreRepository.Save(entity);
+        return await genreRepository.Save(entity);
     }
     
     /// 🆕 Sauvegarder un genre à partir d’un DTO
-    public async Task SaveAll(IList<Genre> genres)
+    public async Task<List<ulong>> SaveAll(IList<Genre> genres)
     {
         var entities = new List<GenreEntity>();
         
         foreach (var genre in genres)
         {
-            var entity = new GenreEntity();
-            entity.FromDto(genre);
+            var entity = genreMapper.ToEntity(genre);
             entities.Add(entity);
         }
         
-        await genreRepository.SaveAll(entities);
+        return await genreRepository.SaveAll(entities);
     }
     
     /// ❌ Supprimer un genre

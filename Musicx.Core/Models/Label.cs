@@ -6,6 +6,8 @@ public class Label
 
     public List<ulong> AlbumIds { get; set; } = [];
     
+    public List<Album> Albums { get; set; } = [];
+    
     public string? Description { get; set; }
     public string Name { get; set; } = string.Empty;
 }

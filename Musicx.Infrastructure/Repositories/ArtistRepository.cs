@@ -21,7 +21,27 @@ public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory
 
     public async Task<ArtistEntity?> FindById(ulong id)
     {
-        return await context.Artists.FindAsync(id);
+        var artist = await context.Artists.FirstOrDefaultAsync(a => a.Id == id);
+
+        if (artist is BandArtistEntity)
+        {
+            return await context.Artists
+                .OfType<BandArtistEntity>()
+                .Include(b => b.Members)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+        
+        if (artist is PersonArtistEntity)
+        {
+            return await context.Artists
+                .OfType<PersonArtistEntity>()
+                .Include(p => p.Bands)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        return artist;
     }
 
     public async Task<List<ArtistEntity>> FindAll(int skip = 0, int count = 100,
@@ -33,11 +53,55 @@ public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory
         {
             query = query.Where(filter);
         }
+
+        var bandQuery = query
+            .OfType<BandArtistEntity>()
+            .Include(b => b.Members);
         
-        return await query
+        var personQuery = query
+            .OfType<PersonArtistEntity>()
+            .Include(p => p.Bands);
+        
+        // Récupérer les résultats séparément
+        var bands = await bandQuery
             .AsNoTracking()
             .Skip(skip)
             .Take(count)
+            .ToListAsync();
+
+        var persons = await personQuery
+            .AsNoTracking()
+            .Skip(skip)
+            .Take(count)
+            .ToListAsync();
+
+        // Combiner les deux listes en mémoire
+        var combined = bands.Concat(persons.Cast<ArtistEntity>()).ToList();
+
+        return combined;
+    }
+    
+    public async Task<List<ArtistEntity>> FindIn(IList<ulong> ids)
+    {
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+        
+        var query = context.Artists.AsQueryable()
+            .Where(a => ids.Contains(a.Id));
+        
+        var bandQuery = query
+            .OfType<BandArtistEntity>()
+            .Include(b => b.Members);
+        
+        var personQuery = query
+            .OfType<PersonArtistEntity>()
+            .Include(p => p.Bands);
+        
+        return await bandQuery
+            .Concat<ArtistEntity>(personQuery)
+            .AsNoTracking()
             .ToListAsync();
     }
     
@@ -46,14 +110,39 @@ public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory
         return (uint)await context.Artists.CountAsync();
     }
 
-    public async Task Save(ArtistEntity artist)
-    {
-        await SaveAll([artist]);
-    }
-
-    public async Task SaveAll(IList<ArtistEntity> artists)
+    public async Task<ulong> Save(ArtistEntity artist)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
+
+        try
+        {
+            if (0 == artist.Id)
+            {
+                context.Artists.Add(artist);
+            }
+            else
+            {
+                context.Artists.Update(artist);
+            }
+            
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return artist.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.Fatal($"❌ Failed saving", ex);
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<List<ulong>> SaveAll(IList<ArtistEntity> artists)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+
+        var ids = new List<ulong>();
 
         try
         {
@@ -67,10 +156,14 @@ public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory
                 {
                     context.Artists.Update(artist);
                 }
+                
+                ids.Add(artist.Id);
             }
 
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+
+            return ids;
         }
         catch (Exception ex)
         {

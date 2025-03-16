@@ -1,84 +1,69 @@
-﻿using Musicx.Core.Models;
+﻿using System.Collections.Immutable;
+using Musicx.Core.Models;
 using Musicx.Ui.UIComponents.AudioPlayer.Models;
 
 namespace Musicx.Ui.UIComponents.AudioPlayer.Services;
 
 public class AudioQueueService
 {
-    public readonly AudioQueue AudioQueue;
-
-    public AudioQueueService()
-    {
-        AudioQueue = new AudioQueue();
-
-        AudioQueue.Songs.CollectionChanged += (_,_) =>
-        {
-            AudioQueue.QueueDuration = AudioQueue.Songs
-                .Select(s => s.Duration)
-                .Sum();
-        };
-    }
+    private readonly AudioQueue _queue = new();
 
     public void Clear()
     {
-        AudioQueue.Songs.Clear();
+        _queue.Songs.Clear();
         SetIndex(-1);
     }
     
-    public bool IsLastSong() => AudioQueue.QueueIndex == AudioQueue.Songs.Count - 1;
+    public bool IsLastSong() => _queue.Index == _queue.Songs.Count - 1;
 
-    public void MovePrevious()
+    public void Next()
     {
-        SetIndex(AudioQueue.QueueIndex - 1);
+        if (_queue.Index < _queue.Songs.Count - 1)
+        {
+            SetIndex(_queue.Index + 1);
+        }
+    }
+    
+    public void Previous()
+    {
+        if (_queue.Index > 0)
+        {
+            SetIndex(_queue.Index - 1);
+        }
     }
 
-    public void MoveNext()
+    public void AddSongNext(Song song)
     {
-        SetIndex(AudioQueue.QueueIndex + 1);
+        _queue.Songs.Insert(_queue.Index + 1, song);
     }
 
-    public void QueueNext(Song song)
+    public void AddSongLast(Song song)
     {
-        AudioQueue.Songs.Insert(AudioQueue.QueueIndex + 1, song);
-    }
-
-    public void QueueLast(Song song)
-    {
-        AudioQueue.Songs.Add(song);
+        _queue.Songs.Add(song);
     }
 
     public void Remove(int index)
     {
-        if (index < AudioQueue.QueueIndex)
+        if (index < _queue.Index)
         {
             return;
         }
 
-        if (index == AudioQueue.QueueIndex)
+        if (index == _queue.Index)
         {
-            MoveNext();
+            Next();
         }
         
-        AudioQueue.Songs.RemoveAt(index);
-    }
-
-    public void RepeatSong()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Shuffle()
-    {
-        throw new NotImplementedException();
+        _queue.Songs.RemoveAt(index);
     }
 
     public void SetQueue(ICollection<Song> songs, int index)
     {
-        AudioQueue.Songs.Clear();
+        _queue.Songs.Clear();
         
         foreach (var song in songs)
         {
-            AudioQueue.Songs.Add(song);
+            _queue.Songs.Add(song);
         }
 
         SetIndex(index);
@@ -86,29 +71,33 @@ public class AudioQueueService
 
     public void SetIndex(int index)
     {
-        if (0 == AudioQueue.Songs.Count)
+        if (index >= 0 && index < _queue.Songs.Count)
         {
-            AudioQueue.QueueIndex = -1;
-            return;
+            _queue.Index = index;
+            AudioEventBus.Instance.TriggerSongChanged(_queue.Songs[index]);
         }
-
-        if (index >= AudioQueue.Songs.Count || index < 0)
-        {
-            return;
-        }
-            
-        AudioQueue.QueueIndex = index;
-        AudioQueue.OnIndexChanged(index);
     }
+
+    public void ToggleShuffle()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ToggleRepeat()
+    {
+        throw new NotImplementedException();
+    }
+    
+    public ImmutableList<Song> Songs => _queue.Songs.ToImmutableList();
     
     public Song? this[int index]
     {
         get {
-            if (index < 0 || index >= AudioQueue.Songs.Count) {
+            if (index < 0 || index >= _queue.Songs.Count) {
                 return null;
             }
 
-            return AudioQueue.Songs[index];
+            return _queue.Songs[index];
         }
     }
 }

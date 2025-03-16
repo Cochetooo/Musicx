@@ -48,7 +48,7 @@ public sealed class ImportLocalSongsService(
                 var song = await readAudioFileService.ExecuteAsync(filePath);
                 songs.Add(song);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Logger.Warn($"⚠️ Could not read audio file: {filePath}");
             }

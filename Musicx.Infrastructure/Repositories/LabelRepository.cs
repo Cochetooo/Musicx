@@ -35,19 +35,57 @@ public class LabelRepository(AppDbContext context, ILoggerFactory loggerFactory)
             .ToListAsync();
     }
     
+    public async Task<List<LabelEntity>> FindIn(IList<ulong> ids)
+    {
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+        
+        return await context.Labels
+            .Where(s => ids.Contains(s.Id))
+            .AsNoTracking()
+            .ToListAsync();
+    }
+    
     public async Task<uint> GetCount()
     {
         return (uint)await context.Labels.CountAsync();
     }
 
-    public async Task Save(LabelEntity label)
-    {
-        await SaveAll([label]);
-    }
-
-    public async Task SaveAll(IList<LabelEntity> labels)
+    public async Task<ulong> Save(LabelEntity label)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
+
+        try
+        {
+            if (0 == label.Id)
+            {
+                context.Labels.Add(label);
+            }
+            else
+            {
+                context.Labels.Update(label);
+            }
+            
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return label.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.Fatal($"❌ Failed saving", ex);
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<List<ulong>> SaveAll(IList<LabelEntity> labels)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+
+        var ids = new List<ulong>();
 
         try
         {
@@ -61,10 +99,14 @@ public class LabelRepository(AppDbContext context, ILoggerFactory loggerFactory)
                 {
                     context.Labels.Update(label);
                 }
+                
+                ids.Add(label.Id);
             }
 
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+
+            return ids;
         }
         catch (Exception ex)
         {

@@ -7,11 +7,11 @@ using Artist = Musicx.Core.Models.Artist;
 
 namespace Musicx.Infrastructure.Services.ExternalApi;
 
-internal sealed class LastFmHandler(string apiUrl, string apiKey) : ExternalApiHandler(apiUrl), IService
+internal sealed class LastFmHandler(string apiUrl) : ExternalApiHandler(apiUrl), IService
 {
     private readonly ILog Logger = LogManager.GetLogger(typeof(LastFmHandler));
 
-    private readonly string ApiKey = apiKey;
+    private readonly string apiKey = "";
     
     public override async Task<Song> FetchSong(Song song)
     {
@@ -33,7 +33,7 @@ internal sealed class LastFmHandler(string apiUrl, string apiKey) : ExternalApiH
             LastFmApiMethod.FetchSong,
             new Dictionary<string, string>
             {
-                { "api_key", ApiKey },
+                { "api_key", apiKey },
                 { "artist", artist.Name },
                 { "track", song.Title },
             }
@@ -65,7 +65,7 @@ internal sealed class LastFmHandler(string apiUrl, string apiKey) : ExternalApiH
             LastFmApiMethod.FetchAlbum,
             new Dictionary<string, string>
             {
-                { "api_key", ApiKey },
+                { "api_key", apiKey },
                 { "artist", artist.Name },
                 { "album", album.Name },
             }
@@ -94,7 +94,7 @@ internal sealed class LastFmHandler(string apiUrl, string apiKey) : ExternalApiH
             LastFmApiMethod.FetchArtist,
             new Dictionary<string, string>
             {
-                { "api_key", ApiKey },
+                { "api_key", apiKey },
                 { "artist", artist.Name },
             }
         );

@@ -1,14 +1,20 @@
 using log4net;
+using Musicx.Core.Interfaces;
+using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Loaders;
+using Musicx.Infrastructure.Managers;
 
-namespace Musicx.Data.Mappers;
+namespace Musicx.Infrastructure.Mappers;
 
-public static class ArtistMapper
+public interface IArtistMapper : IMapper<Artist, ArtistEntity>;
+
+public class ArtistMapper(ILoggerFactory loggerFactory) : IArtistMapper
 {
-    public static readonly ILog Logger = LogManager.GetLogger(typeof(ArtistMapper));
+    private readonly ILogger<ArtistMapper> Logger = loggerFactory.CreateLogger<ArtistMapper>();
     
-    public static Artist ToDto(this ArtistEntity entity)
+    public Artist ToDto(ArtistEntity entity)
     {
         switch (entity)
         {
@@ -17,7 +23,7 @@ public static class ArtistMapper
                 // On récupère les identifiants des relations (Lazy Loading pour les relations Many-to-Many)
                 var memberIds = bandArtistEntity.Members?.Select(g => g.PersonId).ToList() ?? new List<ulong>();
         
-                return new BandArtist()
+                var bandArtist = new BandArtist
                 {
                     Id = bandArtistEntity.Id,
             
@@ -28,13 +34,15 @@ public static class ArtistMapper
                     Name = bandArtistEntity.Name,
                     SplitDate = bandArtistEntity.SplitDate
                 };
+                
+                return bandArtist;
             }
             case PersonArtistEntity personArtistEntity:
             {
                 // On récupère les identifiants des relations (Lazy Loading pour les relations Many-to-Many)
                 var bandIds = personArtistEntity.Bands?.Select(g => g.BandId).ToList() ?? new List<ulong>();
         
-                return new PersonArtist()
+                var personArtist = new PersonArtist
                 {
                     Id = personArtistEntity.Id,
             
@@ -46,6 +54,8 @@ public static class ArtistMapper
                     FirstName = personArtistEntity.FirstName,
                     Name = personArtistEntity.Name,
                 };
+
+                return personArtist;
             }
             default:
                 Logger.Warn($"⚠️ Entity is not inheriting BandArtistEntity or PersonArtistEntity: {entity.GetType().Name}");
@@ -53,36 +63,44 @@ public static class ArtistMapper
         }
     }
     
-    public static void FromDto(this ArtistEntity entity, Artist dto) 
+    public ArtistEntity ToEntity(Artist dto)
     {
+        ArtistEntity entity;
+
+        if (dto is PersonArtist personDto)
+        {
+            entity = new PersonArtistEntity();
+            
+            var personEntity = (PersonArtistEntity)entity;
+            
+            personEntity.BirthDate = personDto.BirthDate;
+            personEntity.DeathDate = personDto.DeathDate;
+            personEntity.FirstName = personDto.FirstName;
+            
+            personEntity.Discriminator = "Person";
+        }
+        else if (dto is BandArtist bandDto)
+        {
+            entity = new BandArtistEntity();
+            
+            var bandEntity = (BandArtistEntity)entity;
+            bandEntity.SplitDate = bandDto.SplitDate;
+            bandEntity.FormationDate = bandDto.FormationDate;
+
+            bandEntity.Discriminator = "Band";
+        }
+        else
+        {
+            Logger.Error($"❌ DTO ({dto.GetType().Name}) not compatible!");
+            throw new InvalidCastException();
+        }
+                
         entity.Id = dto.Id;
         
         entity.ArtworkUrl = dto.ArtworkUrl;
         entity.Country = dto.Country;
         entity.Name = dto.Name;
 
-        if (dto is PersonArtist personDto && entity is PersonArtistEntity personArtistEntity)
-        {
-            personArtistEntity.Bands = [];
-            
-            personArtistEntity.BirthDate = personDto.BirthDate;
-            personArtistEntity.DeathDate = personDto.DeathDate;
-            personArtistEntity.FirstName = personDto.FirstName;
-            
-            personArtistEntity.Discriminator = "Person";
-        }
-        else if (dto is BandArtist bandDto && entity is BandArtistEntity bandArtistEntity)
-        {
-            bandArtistEntity.Members = [];
-            
-            bandArtistEntity.SplitDate = bandDto.SplitDate;
-            bandArtistEntity.FormationDate = bandDto.FormationDate;
-
-            bandArtistEntity.Discriminator = "Band";
-        }
-        else
-        {
-            Logger.Error($"❌ Entity ({entity.GetType().Name}) and DTO ({dto.GetType().Name}) not compatible!");
-        }
+        return entity;
     }
 }

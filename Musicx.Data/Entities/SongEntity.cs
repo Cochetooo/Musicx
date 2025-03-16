@@ -17,17 +17,13 @@ public class SongEntity
 
     // Relation avec l'album
     public ulong? AlbumId { get; set; }
-    [ForeignKey(nameof(AlbumId))]
-    public virtual AlbumEntity? Album { get; set; }
 
     // Relation avec l'artiste principal
     public ulong? ArtistId { get; set; }
-    [ForeignKey(nameof(ArtistId))]
-    public virtual ArtistEntity? Artist { get; set; }
 
     // Relations Many-to-Many pour les genres et influences
-    public virtual List<SongGenreEntity> Genres { get; set; } = new();
-    public virtual List<SongInfluenceGenreEntity> InfluenceGenres { get; set; } = new();
+    public virtual List<SongGenreEntity> Genres { get; set; } = [];
+    public virtual List<SongInfluenceGenreEntity> InfluenceGenres { get; set; } = [];
 
     // Propriétés audio
     [Required]
@@ -59,12 +55,7 @@ public class SongEntity
 public class SongGenreEntity
 {
     public ulong SongId { get; set; }
-    [ForeignKey(nameof(SongId))]
-    public virtual SongEntity Song { get; set; } = null!;
-    
     public ulong GenreId { get; set; }
-    [ForeignKey(nameof(GenreId))]
-    public virtual GenreEntity Genre { get; set; } = null!;
 }
 
 [Table("SongInfluenceGenres")]
@@ -72,10 +63,5 @@ public class SongGenreEntity
 public class SongInfluenceGenreEntity
 {
     public ulong SongId { get; set; }
-    [ForeignKey(nameof(SongId))]
-    public virtual SongEntity Song { get; set; } = null!;
-    
     public ulong GenreId { get; set; }
-    [ForeignKey(nameof(GenreId))]
-    public virtual GenreEntity Genre { get; set; } = null!;
 }

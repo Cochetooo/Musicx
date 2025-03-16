@@ -24,10 +24,5 @@ public class GenreEntity
 public class GenreParentEntity
 {
     public ulong ParentId { get; set; }
-    [ForeignKey(nameof(ParentId))]
-    public virtual GenreEntity Parent { get; set; } = null!;
-    
     public ulong ChildId { get; set; }
-    [ForeignKey(nameof(ChildId))]
-    public virtual GenreEntity Child { get; set; } = null!;
 }

@@ -10,7 +10,7 @@
              d:DesignHeight="80">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="400" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -65,7 +65,7 @@
                            Command="{Binding BackwardCommand}" />
                 
                 <!-- Play Button -->
-                <ui:Button Icon="{ui:SymbolIcon Play24, FontSize={StaticResource AudioPlayerIconWidth}}" 
+                <ui:Button Icon="{Binding PlaybackIcon}" 
                            Appearance="Transparent"
                            Command="{Binding PlaybackCommand}" />
                 
@@ -88,7 +88,6 @@
             <StackPanel Orientation="Horizontal">
                 <ui:TextBlock Uid="TrackTimeTextBlock" Text="{Binding CurrentTrackPosition, Converter={StaticResource SecondsToTimeConverter}}" Margin="0,0,5,0" />
                 <Slider Uid="TrackTimeSlider" 
-                        IsEnabled="False" 
                         Minimum="0"
                         Maximum="{Binding CurrentTrackLength, Mode=OneWay}" 
                         Width="400"

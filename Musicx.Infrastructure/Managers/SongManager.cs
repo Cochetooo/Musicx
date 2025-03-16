@@ -3,9 +3,9 @@ using Musicx.Core.Interfaces;
 using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
-using Musicx.Data.Mappers;
 using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
+using Musicx.Infrastructure.Mappers;
 using Musicx.Infrastructure.Repositories;
 
 namespace Musicx.Infrastructure.Managers;
@@ -14,6 +14,7 @@ public interface ISongManager : IManager<Song>;
 
 public class SongManager(ISongRepository songRepository, 
     ISongCache songCache,
+    ISongMapper songMapper,
     ILoggerFactory loggerFactory) : ISongManager
 {
     private readonly ILogger<SongManager> Logger = loggerFactory.CreateLogger<SongManager>();
@@ -22,8 +23,13 @@ public class SongManager(ISongRepository songRepository,
     public async Task<Song?> FindById(ulong id)
     {
         var entity = await songRepository.FindById(id);
+
+        if (null == entity)
+        {
+            return null;
+        }
         
-        return entity?.ToDto();
+        return songMapper.ToDto(entity);
     }
     
     /// 📜 Récupérer tous les songs sous forme de DTOs
@@ -35,8 +41,16 @@ public class SongManager(ISongRepository songRepository,
         var entities = await songRepository.FindAll(skip, take, entityFilter);
         
         return entities
-            .Select(a => a.ToDto())
-            .OfType<Song>()
+            .Select(songMapper.ToDto)
+            .ToList();
+    }
+
+    public async Task<List<Song>> FindIn(List<ulong> ids)
+    {
+        var entities = await songRepository.FindIn(ids);
+        
+        return entities
+            .Select(songMapper.ToDto)
             .ToList();
     }
     
@@ -52,14 +66,15 @@ public class SongManager(ISongRepository songRepository,
         
         var songs = await songRepository.FindAll(filter:
             a => a.Title == song.Title && a.Duration == song.Duration && a.TrackNumber == song.TrackNumber);
-        
-        var existingSong = songs.FirstOrDefault().ToDto();
-        if (null != existingSong)
+
+        if (0 < songs.Count)
         {
+            var existingSong = songMapper.ToDto(songs.First());
             songCache.Add(key, existingSong);
+            return existingSong;
         }
-        
-        return existingSong;
+
+        return null;
     }
 
     public async Task<uint> GetCount()
@@ -68,27 +83,25 @@ public class SongManager(ISongRepository songRepository,
     }
 
     /// 🆕 Sauvegarder un song à partir d’un DTO
-    public async Task Save(Song song)
+    public async Task<ulong> Save(Song song)
     {
-        var entity = new SongEntity();
-        entity.FromDto(song);
+        var entity = songMapper.ToEntity(song);
         
-        await songRepository.Save(entity);
+        return await songRepository.Save(entity);
     }
     
     /// 🆕 Sauvegarder un song à partir d’un DTO
-    public async Task SaveAll(IList<Song> songs)
+    public async Task<List<ulong>> SaveAll(IList<Song> songs)
     {
         var entities = new List<SongEntity>();
         
         foreach (var song in songs)
         {
-            var entity = new SongEntity();
-            entity.FromDto(song);
+            var entity = songMapper.ToEntity(song);
             entities.Add(entity);
         }
         
-        await songRepository.SaveAll(entities);
+        return await songRepository.SaveAll(entities);
     }
     
     /// ❌ Supprimer un song

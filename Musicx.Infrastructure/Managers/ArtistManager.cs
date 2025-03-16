@@ -4,9 +4,9 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
-using Musicx.Data.Mappers;
 using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
+using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 
@@ -14,6 +14,7 @@ public interface IArtistManager : IManager<Artist>;
 
 public class ArtistManager(IArtistRepository artistRepository, 
     IArtistCache artistCache,
+    IArtistMapper artistMapper,
     ILoggerFactory loggerFactory) : IArtistManager
 {
     private readonly ILogger<ArtistManager> Logger = loggerFactory.CreateLogger<ArtistManager>();
@@ -22,8 +23,13 @@ public class ArtistManager(IArtistRepository artistRepository,
     public async Task<Artist?> FindById(ulong id)
     {
         var entity = await artistRepository.FindById(id);
+
+        if (null == entity)
+        {
+            return null;
+        }
         
-        return entity?.ToDto();
+        return artistMapper.ToDto(entity);
     }
     
     /// 📜 Récupérer tous les artists sous forme de DTOs
@@ -35,8 +41,16 @@ public class ArtistManager(IArtistRepository artistRepository,
         var entities = await artistRepository.FindAll(skip, take, entityFilter);
         
         return entities
-            .Select(a => a.ToDto())
-            .OfType<Artist>()
+            .Select(artistMapper.ToDto)
+            .ToList();
+    }
+    
+    public async Task<List<Artist>> FindIn(List<ulong> ids)
+    {
+        var entities = await artistRepository.FindIn(ids);
+        
+        return entities
+            .Select(artistMapper.ToDto)
             .ToList();
     }
     
@@ -52,14 +66,15 @@ public class ArtistManager(IArtistRepository artistRepository,
         
         var artists = await artistRepository.FindAll(filter:
             a => a.Name == artist.Name);
-        
-        var existingArtist = artists.FirstOrDefault().ToDto();
-        if (null != existingArtist)
+
+        if (0 < artists.Count)
         {
+            var existingArtist = artistMapper.ToDto(artists.First());
             artistCache.Add(key, existingArtist);
+            return existingArtist;
         }
-        
-        return existingArtist;
+
+        return null;
     }
 
     public async Task<uint> GetCount()
@@ -68,48 +83,30 @@ public class ArtistManager(IArtistRepository artistRepository,
     }
 
     /// 🆕 Sauvegarder un artist à partir d’un DTO
-    public async Task Save(Artist artist)
+    public async Task<ulong> Save(Artist artist)
     {
-        var entity = CreateEntityFromDto(artist);
-        entity.FromDto(artist);
+        var entity = artistMapper.ToEntity(artist);
         
-        await artistRepository.Save(entity);
+        return await artistRepository.Save(entity);
     }
     
     /// 🆕 Sauvegarder un artist à partir d’un DTO
-    public async Task SaveAll(IList<Artist> artists)
+    public async Task<List<ulong>> SaveAll(IList<Artist> artists)
     {
         var entities = new List<ArtistEntity>();
         
         foreach (var artist in artists)
         {
-            var entity = CreateEntityFromDto(artist);
-            entity.FromDto(artist);
+            var entity = artistMapper.ToEntity(artist);
             entities.Add(entity);
         }
         
-        await artistRepository.SaveAll(entities);
+        return await artistRepository.SaveAll(entities);
     }
     
     /// ❌ Supprimer un artist
     public async Task Delete(ulong id)
     {
         await artistRepository.Delete(id);
-    }
-
-    private ArtistEntity CreateEntityFromDto(Artist artist)
-    {
-        if (artist is BandArtist)
-        {
-            return new BandArtistEntity();
-        }
-        
-        if (artist is PersonArtist)
-        {
-            return new PersonArtistEntity();
-        }
-
-        Logger.Error($"❌ Artist DTO is of type {artist.GetType().Name}! Cannot create entity.");
-        throw new InvalidCastException();
     }
 }

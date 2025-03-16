@@ -36,29 +36,5 @@ public class AppDbContext : DbContext
             .HasDiscriminator<string>("Discriminator")
             .HasValue<BandArtistEntity>("Band")
             .HasValue<PersonArtistEntity>("Person");
-        
-        modelBuilder.Entity<GenreParentEntity>()
-            .HasOne(gp => gp.Parent)
-            .WithMany(g => g.Children)
-            .HasForeignKey(gp => gp.ParentId)
-            .OnDelete(DeleteBehavior.Restrict);
-        
-        modelBuilder.Entity<GenreParentEntity>()
-            .HasOne(gp => gp.Child)
-            .WithMany(g => g.Parents)
-            .HasForeignKey(gp => gp.ChildId)
-            .OnDelete(DeleteBehavior.Restrict);
-        
-        modelBuilder.Entity<PersonBandEntity>()
-            .HasOne(pb => pb.Band)
-            .WithMany(p => p.Members)
-            .HasForeignKey(pb => pb.BandId)
-            .OnDelete(DeleteBehavior.Restrict);
-        
-        modelBuilder.Entity<PersonBandEntity>()
-            .HasOne(pb => pb.Person)
-            .WithMany(b => b.Bands)
-            .HasForeignKey(pb => pb.PersonId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

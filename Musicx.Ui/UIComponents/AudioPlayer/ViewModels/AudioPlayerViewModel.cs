@@ -2,11 +2,13 @@
 using System.Windows.Input;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Ui.Pages.LocalLibrary.ViewModels;
 using Musicx.Ui.UIComponents.AudioPlayer.Models;
 using Musicx.Ui.UIComponents.AudioPlayer.Services;
+using Wpf.Ui.Controls;
 using RelayCommand = CommunityToolkit.Mvvm.Input.RelayCommand;
 
 namespace Musicx.Ui.UIComponents.AudioPlayer.ViewModels;
@@ -16,13 +18,18 @@ public partial class AudioPlayerViewModel : ObservableObject
     private readonly ILogger<AudioPlayerViewModel> Logger;
     
     [ObservableProperty] private Song? _currentTrack;
-
     [ObservableProperty] private double _currentTrackLength;
     [ObservableProperty] private double _currentTrackPosition;
     [ObservableProperty] private float _currentVolume;
     
-    [ObservableProperty] private AudioPlayerService _audioPlayerService;
+    private readonly AudioPlayerService _audioPlayerService;
+    private readonly AudioQueueService _audioQueueService;
     private readonly DispatcherTimer _currentTrackPositionTimer;
+
+    private static readonly SymbolIcon PlayIcon = new(SymbolRegular.Play24) { FontSize = 24 };
+    private static readonly SymbolIcon PauseIcon = new(SymbolRegular.Pause24) { FontSize = 24 };
+    
+    [ObservableProperty] private SymbolIcon _playbackIcon = PlayIcon;
     
     public ICommand ShuffleModeCommand { get; private set; }
     public ICommand PreviousCommand { get; private set; }
@@ -31,19 +38,22 @@ public partial class AudioPlayerViewModel : ObservableObject
     public ICommand ForwardCommand { get; private set; }
     public ICommand NextCommand { get; private set; }
     public ICommand RepeatModeCommand { get; private set; }
-    
     public ICommand TrackControlMouseDownCommand { get; private set; }
     public ICommand TrackControlMouseUpCommand { get; private set; }
     public ICommand VolumeControlValueChangedCommand { get; private set; }
     
     private readonly LocalLibraryViewModel _localLibraryViewModel;
 
-    public AudioPlayerViewModel(LocalLibraryViewModel localLibraryViewModel, ILoggerFactory loggerFactory)
+    public AudioPlayerViewModel(
+        LocalLibraryViewModel localLibraryViewModel, 
+        AudioPlayerService audioPlayerService,
+        AudioQueueService audioQueueService,
+        ILoggerFactory loggerFactory)
     {
         Logger = loggerFactory.CreateLogger<AudioPlayerViewModel>();
 
-        _audioPlayerService = new AudioPlayerService(localLibraryViewModel.Songs);
-        
+        _audioPlayerService = audioPlayerService;
+        _audioQueueService = audioQueueService;
         _localLibraryViewModel = localLibraryViewModel;
 
         _currentTrackPositionTimer = new DispatcherTimer
@@ -52,8 +62,11 @@ public partial class AudioPlayerViewModel : ObservableObject
         };
         _currentTrackPositionTimer.Tick += CurrentTrackPositionUpdateTimer_Tick;
         
-        _audioPlayerService.TrackResumed += () => _currentTrackPositionTimer.Start();
-        _audioPlayerService.TrackPaused += () => _currentTrackPositionTimer.Stop();
+        _audioPlayerService.TrackResumed += _audioPlayer_TrackResumed;
+        _audioPlayerService.TrackPaused += _audioPlayer_TrackPaused;
+        AudioEventBus.Instance.SongChanged += _audioPlayer_TrackChanged;
+        
+        WeakReferenceMessenger.Default.Register<PlayAudioMessage>(this, (_,m) => Play(m.song));
         
         LoadCommands();
 
@@ -69,28 +82,24 @@ public partial class AudioPlayerViewModel : ObservableObject
         ForwardCommand = new RelayCommand(Forward);
         NextCommand = new RelayCommand(Next);
         RepeatModeCommand = new RelayCommand(RepeatMode);
-        
         TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown);
         TrackControlMouseUpCommand = new RelayCommand(TrackControlMouseUp);
         VolumeControlValueChangedCommand = new RelayCommand(VolumeControlValueChanged);
     }
 
-    private void ShuffleMode()
-    {
-        AudioPlayerService.Shuffle();
-    }
-
-    private void Previous()
-    {
-        AudioPlayerService.Previous();
-    }
-
-    private void Backward()
-    {
-        AudioPlayerService.Seek(AudioPlayerService.GetPositionInSeconds() - 30);
-    }
+    // Gestion de la file d'attente via AudioQueueService
+    private void ShuffleMode() => _audioQueueService.ToggleShuffle();
+    private void Previous() => _audioQueueService.Previous();
+    private void Next() => _audioQueueService.Next();
+    private void RepeatMode() => _audioQueueService.ToggleRepeat();
     
-    private void TogglePlayback()
+    // Gestion de la lecture via AudioPlayerService
+    private void Backward() => _audioPlayerService.Seek(_audioPlayerService.GetPositionInSeconds() - 30);
+    private void TogglePlayback() => _audioPlayerService.TogglePlaying();
+    private void Forward() => _audioPlayerService.Seek(_audioPlayerService.GetPositionInSeconds() + 30);
+    private void VolumeControlValueChanged() => _audioPlayerService.SetVolume(CurrentVolume);
+
+    private void Play(Song song)
     {
         if (null == _localLibraryViewModel.SelectedSong)
         {
@@ -100,44 +109,39 @@ public partial class AudioPlayerViewModel : ObservableObject
         
         Logger.Debug($"ℹ️ Selected song: {_localLibraryViewModel.SelectedSong.Title}");
         
-        AudioPlayerService.SetQueue(_localLibraryViewModel.Songs, _localLibraryViewModel.Songs.IndexOf(_localLibraryViewModel.SelectedSong));
-        CurrentTrackLength = AudioPlayerService.GetLengthInSeconds();
-        CurrentTrack = _localLibraryViewModel.SelectedSong;
+        _audioQueueService.SetQueue(_localLibraryViewModel.Songs, _localLibraryViewModel.Songs.IndexOf(_localLibraryViewModel.SelectedSong));
     }
-    
-    private void Forward()
-    {
-        AudioPlayerService.Seek(AudioPlayerService.GetPositionInSeconds() + 30);
-    }
-    
-    private void Next()
-    {
-        AudioPlayerService.Next();
-    }
-    
-    private void RepeatMode()
-    {
-        AudioPlayerService.ToggleRepeat();
-    }
-    
-    private void TrackControlMouseDown()
-    {
-        AudioPlayerService.Pause();
-    }
+
+    private void TrackControlMouseDown() => _audioPlayerService.Pause();
     
     private void TrackControlMouseUp()
     {
-        AudioPlayerService.SetPosition(CurrentTrackPosition);
-        AudioPlayerService.Resume();
+        _audioPlayerService.SetPosition(CurrentTrackPosition);
+        _audioPlayerService.Resume();
     }
-    
-    private void VolumeControlValueChanged()
+
+    private void _audioPlayer_TrackResumed()
     {
-        AudioPlayerService.SetVolume(CurrentVolume);
+        _currentTrackPositionTimer.Start();
+        PlaybackIcon = PauseIcon;
+    }
+
+    private void _audioPlayer_TrackPaused()
+    {
+        _currentTrackPositionTimer.Stop();
+        PlaybackIcon = PlayIcon;
+    }
+
+    private void _audioPlayer_TrackChanged(Song newTrack)
+    {
+        CurrentTrack = newTrack;
+        CurrentTrackLength = _audioPlayerService.GetLengthInSeconds();
     }
 
     private void CurrentTrackPositionUpdateTimer_Tick(object? sender, EventArgs e)
     {
-        CurrentTrackPosition = AudioPlayerService.GetPositionInSeconds();
+        CurrentTrackPosition = _audioPlayerService.GetPositionInSeconds();
     }
 }
+
+public record PlayAudioMessage(Song song);

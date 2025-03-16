@@ -30,19 +30,22 @@
                   SelectedValue="{Binding SelectedSong}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="#" Binding="{Binding TrackNumber}" />
+                <DataGridTextColumn Header="Artist" Binding="{Binding Artist.Name}" />
+                <DataGridTextColumn Header="Album" Binding="{Binding Album.Name}" />
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
-                <DataGridTextColumn Header="Duration" Binding="{Binding Duration, Converter={StaticResource SecondsToTimeConverter}}" />
                 <DataGridTextColumn Header="Genre" Binding="{Binding GeneratedGenreName}" />
-                <DataGridTextColumn Header="BitRate (kbps)" Binding="{Binding BitRate}" />
-                <DataGridTextColumn Header="SampleRate (Hz)" Binding="{Binding SampleRate}" />
-                <DataGridTextColumn Header="Format" Binding="{Binding AudioFormat}" />
+                <DataGridTextColumn Header="Year" Binding="{Binding Album.ReleaseDate, Converter={StaticResource DateTimeConverter}}" />
+                <DataGridTextColumn Header="Duration" Binding="{Binding Duration, Converter={StaticResource SecondsToTimeConverter}}" />
             </DataGrid.Columns>
+            <DataGrid.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DoubleClickCommand}" />
+            </DataGrid.InputBindings>
         </DataGrid>
         
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-            <Button Content="⬅️ Précédent" Command="{Binding PreviousPageCommand}" 
+            <Button Content="◃ Previous" Command="{Binding PreviousPageCommand}" 
                     IsEnabled="{Binding CanGoPrevious}" Margin="5"/>
-            <Button Content="Suivant ➡️" Command="{Binding NextPageCommand}" 
+            <Button Content="Next ▹" Command="{Binding NextPageCommand}" 
                     IsEnabled="{Binding CanGoNext}" Margin="5"/>
         </StackPanel>
     </Grid>

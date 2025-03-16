@@ -8,8 +8,10 @@ using Musicx.Core.Models;
 using Musicx.Data;
 using Musicx.Data.Entities;
 using Musicx.Infrastructure.Caches;
+using Musicx.Infrastructure.Loaders;
 using Musicx.Infrastructure.Logging;
 using Musicx.Infrastructure.Managers;
+using Musicx.Infrastructure.Mappers;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Infrastructure.Services;
 using Musicx.Infrastructure.Services.Audio;
@@ -63,6 +65,21 @@ public static class DependencyInjection
         services.AddScoped<ISongManager, SongManager>();
         services.AddScoped<ILabelManager, LabelManager>();
         services.AddScoped<IGenreManager, GenreManager>();
+        
+        // 🔹 Ajout des mappers
+        Logger.Info("⛏️ Loading Infrastructure Loaders...");
+        services.AddScoped<ISongLoader, SongLoader>();
+        services.AddScoped<IArtistLoader, ArtistLoader>();
+        services.AddScoped<IAlbumLoader, AlbumLoader>();
+        services.AddScoped<IGenreLoader, GenreLoader>();
+        
+        // 🔹 Ajout des mappers
+        Logger.Info("⛏️ Loading Infrastructure Mappers...");
+        services.AddScoped<ISongMapper, SongMapper>();
+        services.AddScoped<IArtistMapper, ArtistMapper>();
+        services.AddScoped<IAlbumMapper, AlbumMapper>();
+        services.AddScoped<IGenreMapper, GenreMapper>();
+        services.AddScoped<ILabelMapper, LabelMapper>();
 
         return services;
     }

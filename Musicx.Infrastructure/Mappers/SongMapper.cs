@@ -1,15 +1,22 @@
 using log4net;
+using Musicx.Core.Interfaces;
+using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Loaders;
+using Musicx.Infrastructure.Managers;
+using Musicx.Infrastructure.Repositories;
 
-namespace Musicx.Data.Mappers;
+namespace Musicx.Infrastructure.Mappers;
 
-public static class SongMapper
+public interface ISongMapper : IMapper<Song, SongEntity>;
+
+public class SongMapper(ILoggerFactory loggerFactory) : ISongMapper
 {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(SongMapper));
+    private readonly ILogger<SongMapper> Logger = loggerFactory.CreateLogger<SongMapper>();
     
     // Mappage de l'entité vers le DTO
-    public static Song ToDto(this SongEntity songEntity)
+    public Song ToDto(SongEntity songEntity)
     {
         // Mappage des genres et des genres d'influence
         var genres = songEntity.Genres.Select(g => g.GenreId).ToList();
@@ -42,8 +49,10 @@ public static class SongMapper
     }
 
     // Mappage du DTO vers l'entité
-    public static void FromDto(this SongEntity entity, Song songDto)
+    public SongEntity ToEntity(Song songDto)
     {
+        var entity = new SongEntity();
+        
         var genres = songDto.GenreIds.Select(genreId => new SongGenreEntity
         {
             GenreId = genreId
@@ -73,5 +82,7 @@ public static class SongMapper
         entity.TrackNumber = songDto.TrackNumber;
         entity.CreatedAt = songDto.CreatedAt;
         entity.UpdatedAt = songDto.UpdatedAt;
+
+        return entity;
     }
 }

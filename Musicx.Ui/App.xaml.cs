@@ -12,6 +12,7 @@ using Musicx.Ui.Pages.LocalLibrary.Views;
 using Musicx.Ui.Pages.PageSelector.ViewModels;
 using Musicx.Ui.Pages.PageSelector.Views;
 using Musicx.Ui.UIComponents.AppInfoBar.ViewModels;
+using Musicx.Ui.UIComponents.AudioPlayer.Services;
 using Musicx.Ui.UIComponents.AudioPlayer.ViewModels;
 using ViewModelNavigator = Musicx.Ui.Core.ViewModelNavigator;
 
@@ -79,6 +80,8 @@ public partial class App
         
         // 🔹 Ajout des services UI
         services.AddSingleton<IProgressListener, ProgressListener>();
+        services.AddSingleton<AudioPlayerService>();
+        services.AddSingleton<AudioQueueService>();
         
         // 🔹 Ajout des view models
         Logger.Info("⛏️ Loading View Models...");
@@ -91,13 +94,9 @@ public partial class App
         
         // Factory-based injection
         services.AddPageFactory<PageSelectorViewModel>();
-
         
         // 🔹 Ajout des views
         Logger.Info("⛏️ Loading Views...");
-        services.AddTransient<PageSelectorView>();
-        services.AddTransient<LocalLibraryView>();
-        
         services.AddSingleton<MainWindowView>();
     }
 }

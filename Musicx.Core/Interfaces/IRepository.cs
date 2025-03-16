@@ -4,8 +4,8 @@ namespace Musicx.Core.Interfaces;
 
 public interface IRepository<T> where T : class
 {
-    Task Save(T model);
-    Task SaveAll(IList<T> models);
+    Task<ulong> Save(T model);
+    Task<List<ulong>> SaveAll(IList<T> models);
 
     Task Delete(ulong id);
 
@@ -13,4 +13,5 @@ public interface IRepository<T> where T : class
 
     Task<T?> FindById(ulong id);
     Task<List<T>> FindAll(int skip = 0, int take = 100, Expression<Func<T, bool>>? filter = null);
+    Task<List<T>> FindIn(IList<ulong> ids);
 }

@@ -1,15 +1,21 @@
 using log4net;
+using Musicx.Core.Interfaces;
+using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Loaders;
+using Musicx.Infrastructure.Managers;
 
-namespace Musicx.Data.Mappers;
+namespace Musicx.Infrastructure.Mappers;
 
-public static class GenreMapper
+public interface IGenreMapper : IMapper<Genre, GenreEntity>;
+
+public class GenreMapper(ILoggerFactory loggerFactory) : IGenreMapper
 {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(GenreMapper));
+    private readonly ILogger<GenreMapper> Logger = loggerFactory.CreateLogger<GenreMapper>();
     
     // Mappage de l'entité vers le DTO
-    public static Genre ToDto(this GenreEntity genreEntity)
+    public Genre ToDto(GenreEntity genreEntity)
     {
         var genreDto = new Genre
         {
@@ -25,10 +31,13 @@ public static class GenreMapper
     }
 
     // Mappage du DTO vers l'entité
-    public static void FromDto(this GenreEntity entity, Genre genreDto)
+    public GenreEntity ToEntity(Genre genreDto)
     {
-        entity.Id = genreDto.Id;
-        entity.Name = genreDto.Name;
+        var entity = new GenreEntity
+        {
+            Id = genreDto.Id,
+            Name = genreDto.Name
+        };
 
         // Mappage des Parents et des Children (en créant les relations Many-to-Many)
         entity.Parents = genreDto.ParentIds.Select(parentId => new GenreParentEntity
@@ -42,5 +51,7 @@ public static class GenreMapper
             ParentId = entity.Id,  // Relier ce parent à cet enfant
             ChildId = childId
         }).ToList();
+
+        return entity;
     }
 }

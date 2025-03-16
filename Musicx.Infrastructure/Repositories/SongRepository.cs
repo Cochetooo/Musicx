@@ -15,13 +15,20 @@ public class SongRepository(AppDbContext context, ILoggerFactory loggerFactory) 
 
     public async Task<SongEntity?> FindById(ulong id)
     {
-        return await context.Songs.FindAsync(id);
+        return await context.Songs
+            .Include(s => s.Genres)
+            .Include(s => s.InfluenceGenres)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == id);
     }
 
     public async Task<List<SongEntity>> FindAll(int skip = 0, int count = 100,
         Expression<Func<SongEntity, bool>>? filter = null)
     {
-        var query = context.Songs.AsQueryable();
+        var query = context.Songs
+            .Include(s => s.Genres)
+            .Include(s => s.InfluenceGenres)
+            .AsQueryable();
 
         if (null != filter)
         {
@@ -34,20 +41,60 @@ public class SongRepository(AppDbContext context, ILoggerFactory loggerFactory) 
             .Take(count)
             .ToListAsync();
     }
+
+    public async Task<List<SongEntity>> FindIn(IList<ulong> ids)
+    {
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+        
+        return await context.Songs
+            .Where(s => ids.Contains(s.Id))
+            .Include(s => s.Genres)
+            .Include(s => s.InfluenceGenres)
+            .AsNoTracking()
+            .ToListAsync();
+    }
     
     public async Task<uint> GetCount()
     {
         return (uint)await context.Songs.CountAsync();
     }
 
-    public async Task Save(SongEntity song)
-    {
-        await SaveAll([song]);
-    }
-
-    public async Task SaveAll(IList<SongEntity> songs)
+    public async Task<ulong> Save(SongEntity song)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
+
+        try
+        {
+            if (0 == song.Id)
+            {
+                context.Songs.Add(song);
+            }
+            else
+            {
+                context.Songs.Update(song);
+            }
+            
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return song.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.Fatal($"❌ Failed saving", ex);
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<List<ulong>> SaveAll(IList<SongEntity> songs)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+
+        var ids = new List<ulong>();
 
         try
         {
@@ -61,10 +108,14 @@ public class SongRepository(AppDbContext context, ILoggerFactory loggerFactory) 
                 {
                     context.Songs.Update(song);
                 }
+                
+                ids.Add(song.Id);
             }
 
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+
+            return ids;
         }
         catch (Exception ex)
         {

@@ -5,9 +5,9 @@ using Musicx.Core.Logging;
 using Musicx.Infrastructure.Repositories;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
-using Musicx.Data.Mappers;
 using Musicx.Infrastructure.Caches;
 using Musicx.Infrastructure.Helpers;
+using Musicx.Infrastructure.Mappers;
 
 namespace Musicx.Infrastructure.Managers;
 
@@ -15,6 +15,7 @@ public interface IAlbumManager : IManager<Album>;
 
 public class AlbumManager(IAlbumRepository albumRepository,
     IAlbumCache albumCache,
+    IAlbumMapper albumMapper,
     ILoggerFactory loggerFactory) : IAlbumManager
 {
     private readonly ILogger<AlbumManager> Logger = loggerFactory.CreateLogger<AlbumManager>();
@@ -23,8 +24,13 @@ public class AlbumManager(IAlbumRepository albumRepository,
     public async Task<Album?> FindById(ulong id)
     {
         var entity = await albumRepository.FindById(id);
+
+        if (null == entity)
+        {
+            return null;
+        }
         
-        return entity?.ToDto();
+        return albumMapper.ToDto(entity);
     }
     
     /// 📜 Récupérer tous les albums sous forme de DTOs
@@ -36,8 +42,16 @@ public class AlbumManager(IAlbumRepository albumRepository,
         var entities = await albumRepository.FindAll(skip, take, entityFilter);
         
         return entities
-            .Select(a => a.ToDto())
-            .OfType<Album>()
+            .Select(albumMapper.ToDto)
+            .ToList();
+    }
+    
+    public async Task<List<Album>> FindIn(List<ulong> ids)
+    {
+        var entities = await albumRepository.FindIn(ids);
+        
+        return entities
+            .Select(albumMapper.ToDto)
             .ToList();
     }
 
@@ -53,14 +67,15 @@ public class AlbumManager(IAlbumRepository albumRepository,
         
         var albums = await albumRepository.FindAll(filter:
             a => a.Name == album.Name && a.CatalogNumber == album.CatalogNumber);
-        
-        var existingAlbum = albums.FirstOrDefault().ToDto();
-        if (null != existingAlbum)
+
+        if (0 < albums.Count)
         {
+            var existingAlbum = albumMapper.ToDto(albums.First());
             albumCache.Add(key, existingAlbum);
+            return existingAlbum;
         }
-        
-        return existingAlbum;
+
+        return null;
     }
 
     public async Task<uint> GetCount()
@@ -69,27 +84,25 @@ public class AlbumManager(IAlbumRepository albumRepository,
     }
 
     /// 🆕 Sauvegarder un album à partir d’un DTO
-    public async Task Save(Album album)
+    public async Task<ulong> Save(Album album)
     {
-        var entity = new AlbumEntity();
-        entity.FromDto(album);
+        var entity = albumMapper.ToEntity(album);
         
-        await albumRepository.Save(entity);
+        return await albumRepository.Save(entity);
     }
     
     /// 🆕 Sauvegarder un album à partir d’un DTO
-    public async Task SaveAll(IList<Album> albums)
+    public async Task<List<ulong>> SaveAll(IList<Album> albums)
     {
         var entities = new List<AlbumEntity>();
         
         foreach (var album in albums)
         {
-            var entity = new AlbumEntity();
-            entity.FromDto(album);
+            var entity = albumMapper.ToEntity(album);
             entities.Add(entity);
         }
         
-        await albumRepository.SaveAll(entities);
+        return await albumRepository.SaveAll(entities);
     }
     
     /// ❌ Supprimer un album

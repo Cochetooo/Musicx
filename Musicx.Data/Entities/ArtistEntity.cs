@@ -44,10 +44,5 @@ public class PersonArtistEntity : ArtistEntity
 public class PersonBandEntity
 {
     public ulong PersonId { get; set; }
-    [ForeignKey(nameof(PersonId))] 
-    public virtual PersonArtistEntity Person { get; set; } = null!;
-    
     public ulong BandId { get; set; }
-    [ForeignKey(nameof(BandId))]
-    public virtual BandArtistEntity Band { get; set; } = null!;
 }

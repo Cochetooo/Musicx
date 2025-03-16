@@ -1,6 +1,7 @@
 using log4net;
 using Musicx.Core.Logging;
 using NAudio.CoreAudioApi;
+using TagLib.Id3v2;
 
 namespace Musicx.Infrastructure.Helpers;
 
@@ -34,18 +35,29 @@ public static class AudioTagHelper
     public static string? ReadCustomTag(string filePath, string key)
     {
         using var file = TagLib.File.Create(filePath);
+        
+        TagLib.Tag? tag = null;
 
-        if (file.Tag is TagLib.Ogg.XiphComment oggTag)
+// Essayer d'abord ID3v2, puis Ogg XiphComment
+        foreach (var tagType in new[] { TagLib.TagTypes.Id3v2, TagLib.TagTypes.Xiph })
+        {
+            tag = file.GetTag(tagType);
+            if (tag != null) break; // Sortir dès qu'on trouve un tag valide
+        }
+
+        if (tag is TagLib.Ogg.XiphComment oggTag)
         {
             return oggTag.GetField(key)?.FirstOrDefault();
         }
-        if (file.Tag is TagLib.Id3v2.Tag id3v2Tag)
+        if (tag is TagLib.Id3v2.Tag id3v2Tag)
         {
-            var frame = TagLib.Id3v2.TextInformationFrame.Get(id3v2Tag, key, false);
+            var frame = id3v2Tag
+                .GetFrames<TextInformationFrame>()
+                .FirstOrDefault(f => f.Text.Length > 1 && f.Text[0] == key);
             return frame?.Text?.FirstOrDefault();
         }
         
-        Logger.Warn($"⚠️ No tag {key} found in file {filePath}");
+        Logger.Warn($"⚠️ No tag {key} found in file {filePath}, available types: {file.TagTypes}");
         return null;
     }
 }

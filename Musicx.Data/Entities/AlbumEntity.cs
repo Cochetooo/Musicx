@@ -14,13 +14,9 @@ public class AlbumEntity
 
     // Relation avec l'Artiste principal
     public ulong? ArtistId { get; set; }
-    [ForeignKey(nameof(ArtistId))]
-    public virtual ArtistEntity? Artist { get; set; }
 
     // Relation avec le Label
     public ulong? LabelId { get; set; }
-    [ForeignKey(nameof(LabelId))]
-    public virtual LabelEntity? Label { get; set; }
 
     // Relations Many-to-Many avec Lazy Loading
     public virtual List<AlbumGenreEntity> Genres { get; set; } = new();
@@ -44,12 +40,7 @@ public class AlbumEntity
 public class AlbumGenreEntity
 {
     public ulong AlbumId { get; set; }
-    [ForeignKey(nameof(AlbumId))]
-    public virtual AlbumEntity Album { get; set; } = null!;
-    
     public ulong GenreId { get; set; }
-    [ForeignKey(nameof(GenreId))]
-    public virtual GenreEntity Genre { get; set; } = null!;
 }
 
 [Table("AlbumInfluenceGenres")]
@@ -57,10 +48,5 @@ public class AlbumGenreEntity
 public class AlbumInfluenceGenreEntity
 {
     public ulong AlbumId { get; set; }
-    [ForeignKey(nameof(AlbumId))]
-    public virtual AlbumEntity Album { get; set; } = null!;
-    
     public ulong GenreId { get; set; }
-    [ForeignKey(nameof(GenreId))]
-    public virtual GenreEntity Genre { get; set; } = null!;
 }

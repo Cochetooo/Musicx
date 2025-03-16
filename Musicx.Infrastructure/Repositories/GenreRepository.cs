@@ -15,13 +15,20 @@ public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory)
 
     public async Task<GenreEntity?> FindById(ulong id)
     {
-        return await context.Genres.FindAsync(id);
+        return await context.Genres
+            .Include(g => g.Parents)
+            .Include(g => g.Children)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(g => g.Id == id);
     }
 
     public async Task<List<GenreEntity>> FindAll(int skip = 0, int count = 100,
         Expression<Func<GenreEntity, bool>>? filter = null)
     {
-        var query = context.Genres.AsQueryable();
+        var query = context.Genres
+            .Include(g => g.Parents)
+            .Include(g => g.Children)
+            .AsQueryable();
 
         if (null != filter)
         {
@@ -35,19 +42,59 @@ public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory)
             .ToListAsync();
     }
     
+    public async Task<List<GenreEntity>> FindIn(IList<ulong> ids)
+    {
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+        
+        return await context.Genres
+            .Where(s => ids.Contains(s.Id))
+            .Include(s => s.Parents)
+            .Include(s => s.Children)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+    
     public async Task<uint> GetCount()
     {
         return (uint)await context.Genres.CountAsync();
     }
 
-    public async Task Save(GenreEntity genre)
-    {
-        await SaveAll([genre]);
-    }
-
-    public async Task SaveAll(IList<GenreEntity> genres)
+    public async Task<ulong> Save(GenreEntity genre)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
+
+        try
+        {
+            if (0 == genre.Id)
+            {
+                context.Genres.Add(genre);
+            }
+            else
+            {
+                context.Genres.Update(genre);
+            }
+            
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return genre.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.Fatal($"❌ Failed saving", ex);
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<List<ulong>> SaveAll(IList<GenreEntity> genres)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+
+        var ids = new List<ulong>();
 
         try
         {
@@ -61,10 +108,14 @@ public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory)
                 {
                     context.Genres.Update(genre);
                 }
+                
+                ids.Add(genre.Id);
             }
 
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+
+            return ids;
         }
         catch (Exception ex)
         {

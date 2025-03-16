@@ -16,5 +16,5 @@ public class LabelEntity
     public string Name { get; set; } = string.Empty;
 
     // Relation avec Album (un Label peut avoir plusieurs albums)
-    public virtual List<AlbumEntity> Albums { get; set; } = new();
+    public List<ulong> AlbumIds { get; set; } = [];
 }

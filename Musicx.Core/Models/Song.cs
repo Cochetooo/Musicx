@@ -14,6 +14,11 @@ public class Song
     public List<ulong> GenreIds { get; set; } = [];
     public List<ulong> InfluenceGenreIds { get; set; } = [];
     
+    public Album? Album { get; set; }
+    public Artist? Artist { get; set; }
+    public List<Genre> Genres { get; set; } = [];
+    public List<Genre> InfluenceGenres { get; set; } = [];
+    
     public AudioFormatType AudioFormat { get; set; } = AudioFormatType.Unknown;
     public int BitRate { get; set; }
     public uint? DiscNumber { get; set; }

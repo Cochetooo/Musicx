@@ -1,21 +1,27 @@
 using log4net;
+using Musicx.Core.Interfaces;
+using Musicx.Core.Logging;
 using Musicx.Core.Models;
 using Musicx.Data.Entities;
+using Musicx.Infrastructure.Loaders;
+using Musicx.Infrastructure.Managers;
 
-namespace Musicx.Data.Mappers;
+namespace Musicx.Infrastructure.Mappers;
 
-public static class AlbumMapper
+public interface IAlbumMapper : IMapper<Album, AlbumEntity>;
+
+public class AlbumMapper(ILoggerFactory loggerFactory) : IAlbumMapper
 {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(AlbumMapper));
+    private readonly ILogger<AlbumMapper> Logger = loggerFactory.CreateLogger<AlbumMapper>();
     
     // Mappage de l'entité vers le DTO
-    public static Album ToDto(this AlbumEntity albumEntity)
+    public Album ToDto(AlbumEntity albumEntity)
     {
         // On récupère les identifiants des relations (Lazy Loading pour les relations Many-to-Many)
         var genreIds = albumEntity.Genres?.Select(g => g.GenreId).ToList() ?? [];
         var influenceGenreIds = albumEntity.InfluenceGenres?.Select(g => g.GenreId).ToList() ?? [];
 
-        return new Album
+        var albumDto = new Album
         {
             Id = albumEntity.Id,
             
@@ -32,11 +38,15 @@ public static class AlbumMapper
             ReleaseType = albumEntity.ReleaseType,
             TrackTotal = albumEntity.TrackTotal,
         };
+
+        return albumDto;
     }
 
     // Mappage du DTO vers l'entité
-    public static void FromDto(this AlbumEntity entity, Album albumDto)
+    public AlbumEntity ToEntity(Album albumDto)
     {
+        var entity = new AlbumEntity();
+        
         // On crée les entités de relation pour chaque liste d'ID
         var genres = albumDto.GenreIds.Select(genreId => new AlbumGenreEntity { GenreId = genreId }).ToList();
         var influenceGenres = albumDto.InfluenceGenreIds.Select(genreId => new AlbumInfluenceGenreEntity { GenreId = genreId }).ToList();
@@ -55,5 +65,8 @@ public static class AlbumMapper
         entity.ReleaseDate = albumDto.ReleaseDate;
         entity.ReleaseType = albumDto.ReleaseType;
         entity.TrackTotal = albumDto.TrackTotal;
+
+        return entity;
     }
+
 }

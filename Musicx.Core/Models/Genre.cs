@@ -6,6 +6,9 @@ public class Genre
 
     public List<ulong> ParentIds { get; set; } = [];
     public List<ulong> ChildIds { get; set; } = [];
+
+    public List<Genre> Parents { get; set; } = [];
+    public List<Genre> Children { get; set; } = [];
     
     public string Name { get; set; } = string.Empty;
 }

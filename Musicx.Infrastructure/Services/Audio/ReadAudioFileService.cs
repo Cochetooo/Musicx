@@ -54,7 +54,7 @@ public class ReadAudioFileService(ISongManager songManager,
         var existingSong = await songManager.FindExisting(song);
         if (null != existingSong)
         {
-            Logger.Info($"ℹ️ Found existing song with id {existingSong.Id}.");
+            Logger.Debug($"ℹ️ Found existing song with id {existingSong.Id}.");
             song.Id = existingSong.Id;
             
             song.ArtistId = existingSong.ArtistId;
@@ -65,8 +65,10 @@ public class ReadAudioFileService(ISongManager songManager,
         else
         {
             var album = await ReadAlbum(file, song);
-
-            var artist = await ReadArtist(file, song);
+            song.AlbumId = album.Id;
+            
+            var artist = await ReadArtist(file);
+            song.ArtistId = artist.Id;
             
             Logger.Debug($"ℹ️ Creating new song, album id : {album.Id} artist id: {artist.Id}");
         }
@@ -78,17 +80,23 @@ public class ReadAudioFileService(ISongManager songManager,
     {
         Logger.Debug("➕ Reading Album Data");
         
-        Logger.Warn("⚠️ Artwork Url, Catalog Number, Release Date and Album Type not set. Please fix later.");
-
         var album = new Album
         {
-            ArtworkUrl = "",
+            ArtworkUrl = AudioTagHelper.ReadCustomTag(song.Filepath, "ALBUM ARTWORK URL"),
             CatalogNumber = AudioTagHelper.ReadCustomTag(song.Filepath, "CATALOGNUMBER"),
             DiscTotal = file.Tag.DiscCount,
             Name = string.IsNullOrEmpty(file.Tag.Album) ? "Unknown" : file.Tag.Album,
-            ReleaseDate = DateTime.MinValue,
+            ReleaseDate = new DateTime((int) file.Tag.Year, 1, 1),
             TrackTotal = file.Tag.TrackCount,
         };
+        
+        Enum.TryParse(typeof(ReleaseType), AudioTagHelper.ReadCustomTag(song.Filepath, "ALBUM TYPE"), true,
+            out var result);
+
+        if (result is ReleaseType releaseType)
+        {
+            album.ReleaseType = releaseType;
+        }
         
         var existingAlbum = await albumManager.FindExisting(album);
 
@@ -104,14 +112,13 @@ public class ReadAudioFileService(ISongManager songManager,
         }
         else
         {
-            Logger.Warn("⚠️ Does not allow to update the existing album. Please fix later");
-            await albumManager.Save(album);
+            album.Id = await albumManager.Save(album);
         }
 
         return album;
     }
 
-    private async Task<Artist> ReadArtist(File file, Song song)
+    private async Task<Artist> ReadArtist(File file)
     {
         Logger.Debug("➕ Reading Artist Data");
         
@@ -132,8 +139,7 @@ public class ReadAudioFileService(ISongManager songManager,
         }
         else
         {
-            Logger.Warn("⚠️ Does not allow to update the existing artist. Please fix later");
-            await artistManager.Save(artist);
+            artist.Id = await artistManager.Save(artist);
         }
         
         return artist;

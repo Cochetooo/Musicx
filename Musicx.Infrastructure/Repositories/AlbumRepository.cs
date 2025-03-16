@@ -16,13 +16,20 @@ public class AlbumRepository(AppDbContext context, ILoggerFactory loggerFactory)
 
     public async Task<AlbumEntity?> FindById(ulong id)
     {
-        return await context.Albums.FindAsync(id);
+        return await context.Albums
+            .Include(a => a.Genres)
+            .Include(a => a.InfluenceGenres)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Id == id);
     }
 
     public async Task<List<AlbumEntity>> FindAll(int skip = 0, int count = 100,
         Expression<Func<AlbumEntity, bool>>? filter = null)
     {
-        var query = context.Albums.AsQueryable();
+        var query = context.Albums
+            .Include(a => a.Genres)
+            .Include(a => a.InfluenceGenres)
+            .AsQueryable();
 
         if (null != filter)
         {
@@ -35,20 +42,60 @@ public class AlbumRepository(AppDbContext context, ILoggerFactory loggerFactory)
             .Take(count)
             .ToListAsync();
     }
+    
+    public async Task<List<AlbumEntity>> FindIn(IList<ulong> ids)
+    {
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+        
+        return await context.Albums
+            .Where(s => ids.Contains(s.Id))
+            .Include(s => s.Genres)
+            .Include(s => s.InfluenceGenres)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 
     public async Task<uint> GetCount()
     {
         return (uint)await context.Albums.CountAsync();
     }
 
-    public async Task Save(AlbumEntity album)
-    {
-        await SaveAll([album]);
-    }
-
-    public async Task SaveAll(IList<AlbumEntity> albums)
+    public async Task<ulong> Save(AlbumEntity album)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
+
+        try
+        {
+            if (0 == album.Id)
+            {
+                context.Albums.Add(album);
+            }
+            else
+            {
+                context.Albums.Update(album);
+            }
+            
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return album.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.Fatal($"❌ Failed saving", ex);
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<List<ulong>> SaveAll(IList<AlbumEntity> albums)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+
+        var ids = new List<ulong>();
 
         try
         {
@@ -62,10 +109,14 @@ public class AlbumRepository(AppDbContext context, ILoggerFactory loggerFactory)
                 {
                     context.Albums.Update(album);
                 }
+                
+                ids.Add(album.Id);
             }
 
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+
+            return ids;
         }
         catch (Exception ex)
         {

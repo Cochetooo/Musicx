@@ -8,108 +8,64 @@ namespace Musicx.Ui.UIComponents.AudioPlayer.Services;
 
 public class AudioPlayerService
 {
-    public enum PlaybackStopTypes
-    {
-        PlaybackStoppedByUser, PlaybackStoppedReachingEndOfFile
-    }
-    
-    public PlaybackStopTypes PlaybackStopType { get; set; }
-
     private AudioFileReader? _audioFileReader;
     private DirectSoundOut? _output;
+    private WaveChannel32? _waveChannel;
     
-    private AudioQueueService _audioQueueService;
-    private AudioPlayerData _audioPlayerData;
+    public bool IsMuted { get; private set; }
+    private float _previousVolume = 1.0f;
 
     public event Action? TrackResumed;
     public event Action? TrackPaused;
     public event Action? TrackMuted;
-    public event Action? TrackPositionChanged;
-    public event Action? MediaChanged;
 
-    public AudioPlayerService(ObservableCollection<Song> songs)
+    public AudioPlayerService()
     {
-        PlaybackStopType = PlaybackStopTypes.PlaybackStoppedReachingEndOfFile;
-
-        _audioQueueService = new AudioQueueService();
-        _audioPlayerData = new AudioPlayerData();
-        
-        _audioQueueService.SetQueue(songs, 0);
-
-        _audioQueueService.AudioQueue.IndexChanged += (sender, args) =>
-        {
-            _audioPlayerData.Song = _audioQueueService[args.NewIndex];
-            UpdateSong();
-            MediaChanged?.Invoke();
-        };
+        AudioEventBus.Instance.SongChanged += OnSongChanged;
     }
-    
-    public void ClearQueue() => _audioQueueService.Clear();
-    public void QueueLast(Song song) => _audioQueueService.QueueLast(song);
-    public void QueueNext(Song song) => _audioQueueService.QueueNext(song);
-    public void SetCurrentTrackByIndex(int index) => _audioQueueService.SetIndex(index);
-    public void SetQueue(ICollection<Song> songs, int index) => _audioQueueService.SetQueue(songs, index);
-    public long GetTotalQueueDurationInSeconds() => _audioQueueService.AudioQueue.QueueDuration;
 
-    public void UpdateSong()
+    private void OnSongChanged(Song newSong)
     {
-        if (null == _audioPlayerData.Song)
-        {
-            return;
-        }
-        
-        var filePath = _audioPlayerData.Song.Filepath;
+        Play(newSong.Filepath);
+    }
 
-        _output?.Stop();
-        
+    private void Play(string filePath)
+    {
+        Stop();
+        var previousVolume = _waveChannel?.Volume ?? 1.0f;
         _audioFileReader = new AudioFileReader(filePath);
+        _waveChannel = new WaveChannel32(_audioFileReader) { PadWithZeroes = false };
+        _output = new DirectSoundOut();
+        _output.Init(_waveChannel);
+        SetVolume(previousVolume);
         
-        _output = new DirectSoundOut(200);
-        _audioFileReader = new AudioFileReader(filePath);
-        
-        var wc = new WaveChannel32(_audioFileReader)
-        {
-            PadWithZeroes = false
-        };
-        
-        _output?.Init(wc);
         Resume();
     }
 
     public void Mute()
     {
-        throw new NotImplementedException();
-    }
-
-    public void Next()
-    {
-        switch (_audioPlayerData.RepeatMode)
+        if (null == _waveChannel)
         {
-            case RepeatMode.NoRepeat: 
-                _audioQueueService.MoveNext();
-                break;
-            
-            case RepeatMode.QueueRepeat:
-                if (_audioQueueService.IsLastSong())
-                {
-                    _audioQueueService.SetIndex(0);
-                }
-                else
-                {
-                    _audioQueueService.MoveNext();
-                }
-
-                break;
-            
-            case RepeatMode.SongRepeat:
-                _audioQueueService.RepeatSong();
-                break;
+            return;
         }
+        
+        if (IsMuted)
+        {
+            _waveChannel.Volume = _previousVolume;
+        }
+        else
+        {
+            _previousVolume = _waveChannel.Volume;
+            _waveChannel.Volume = 0;
+        }
+        
+        IsMuted = !IsMuted;
+        TrackMuted?.Invoke();
     }
 
     public void Pause()
     {
-        var startVolume = GetVolume();
+        /* var startVolume = GetVolume();
 
         var volumeAnimation = new DoubleAnimation()
         {
@@ -123,19 +79,11 @@ public class AudioPlayerService
         {
             _output?.Pause();
             SetVolume(startVolume);
-        };
+        }; */
+
+        _output?.Pause();
         
         TrackPaused?.Invoke();
-    }
-
-    public void Previous()
-    {
-        _audioQueueService.MovePrevious();
-    }
-
-    public void Remove(int index)
-    {
-        _audioQueueService.Remove(index);
     }
 
     public void Resume()
@@ -146,18 +94,20 @@ public class AudioPlayerService
 
     public void Seek(double seconds)
     {
-        throw new NotImplementedException();
-    }
+        if (null == _audioFileReader || seconds < 0)
+        {
+            return;
+        }
 
-    public void Shuffle()
-    {
-        _audioQueueService.Shuffle();
+        long newPosition = (long)(seconds * _audioFileReader.WaveFormat.AverageBytesPerSecond);
+        newPosition = Math.Min(newPosition, _audioFileReader.Length);
+        
+        _audioFileReader.Position = newPosition;
     }
 
     public void Stop()
     {
         _output?.Stop();
-        _audioQueueService.Clear();
     }
 
     public void TogglePlaying()
@@ -169,17 +119,6 @@ public class AudioPlayerService
         }
 
         Resume();
-    }
-
-    public void ToggleRepeat()
-    {
-        _audioPlayerData.RepeatMode = _audioPlayerData.RepeatMode switch
-        {
-            RepeatMode.NoRepeat => RepeatMode.QueueRepeat,
-            RepeatMode.QueueRepeat => RepeatMode.SongRepeat,
-            RepeatMode.SongRepeat => RepeatMode.NoRepeat,
-            _ => throw new ArgumentOutOfRangeException()
-        };
     }
 
     public bool IsPlaying()
@@ -202,16 +141,6 @@ public class AudioPlayerService
         return null != _audioFileReader ? _audioFileReader.CurrentTime.TotalSeconds : 0;
     }
 
-    public float GetVolume()
-    {
-        if (null != _audioFileReader)
-        {
-            return _audioFileReader.Volume;
-        }
-
-        return 1;
-    }
-
     public void SetPosition(double value)
     {
         if (null != _audioFileReader)
@@ -222,9 +151,9 @@ public class AudioPlayerService
 
     public void SetVolume(float value)
     {
-        if (null != _audioFileReader)
+        if (null != _waveChannel)
         {
-            _audioFileReader.Volume = value;
+            _waveChannel.Volume = value;
         }
     }
 }

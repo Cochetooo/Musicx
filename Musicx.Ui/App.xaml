@@ -17,6 +17,7 @@
              <converters:SecondsToTimeConverter x:Key="SecondsToTimeConverter" />
              <converters:FloatToPercentageConverter x:Key="FloatToPercentageConverter" />
              <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+             <converters:DateTimeConverter x:Key="DateTimeConverter" />
          </ResourceDictionary>
     </Application.Resources>
 </Application>
