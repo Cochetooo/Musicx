@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <Folder Include="Assets\Images\Logo\" />
+      <Folder Include="Locales\" />
       <Folder Include="Modals\" />
       <Folder Include="Pages\Encyclopedia\" />
       <Folder Include="Pages\Friends\" />

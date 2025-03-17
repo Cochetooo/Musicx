@@ -10,14 +10,16 @@
                  <ui:ThemesDictionary Theme="Dark" />
                  <ui:ControlsDictionary />
                  
-                 <ResourceDictionary Source="Themes/ClassicTheme.xaml" />
+                 <ResourceDictionary Source="Themes/BaseTheme.xaml" />
              </ResourceDictionary.MergedDictionaries>
+             
              <core:ViewModelLocator x:Key="Locator" />
-             <converters:ViewModelToViewConverter x:Key="ViewModelToViewConverter" />
-             <converters:SecondsToTimeConverter x:Key="SecondsToTimeConverter" />
-             <converters:FloatToPercentageConverter x:Key="FloatToPercentageConverter" />
+             
              <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
              <converters:DateTimeConverter x:Key="DateTimeConverter" />
+             <converters:FloatToPercentageConverter x:Key="FloatToPercentageConverter" />
+             <converters:SecondsToTimeConverter x:Key="SecondsToTimeConverter" />
+             <converters:ViewModelToViewConverter x:Key="ViewModelToViewConverter" />
          </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -3,6 +3,12 @@
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:converters="clr-namespace:Musicx.Ui.Converters">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
+    <converters:SliderTrackFillConverter x:Key="SliderTrackFillConverter" />
+    
     <FontFamily x:Key="PrimaryFontFamily">pack://application:,,,/Assets/Fonts/SpaceGrotesk-VariableFont_wght.ttf#Space Grotesk</FontFamily>
     
     <LinearDoubleKeyFrame x:Key="EaseIn" />
@@ -35,7 +41,9 @@
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}" />
     </Style>
     
-    <Style TargetType="StackPanel" BasedOn="{StaticResource ContainerMargin}" />
+    <Style TargetType="Slider" BasedOn="{StaticResource {x:Type Slider}}">
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
     
     <Style TargetType="ui:TextBlock" BasedOn="{StaticResource ContainerMargin}">
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}" />
