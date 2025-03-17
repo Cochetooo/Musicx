@@ -31,7 +31,7 @@ public partial class LocalLibraryViewModel : ObservableObject
     [ObservableProperty] private bool _canGoPrevious = true;
     
     [ObservableProperty] private int _currentPage = 0;
-    private const int PageSize = 10000;
+    private const int PageSize = 1000;
     
     public ICommand LoadedCommand { get; }
     public ICommand NextPageCommand { get; }

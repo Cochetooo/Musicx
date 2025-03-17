@@ -64,6 +64,7 @@ public partial class AudioPlayerViewModel : ObservableObject
         
         _audioPlayerService.TrackResumed += _audioPlayer_TrackResumed;
         _audioPlayerService.TrackPaused += _audioPlayer_TrackPaused;
+        _audioPlayerService.TrackEnded += _audioPlayer_TrackEnded;
         AudioEventBus.Instance.SongChanged += _audioPlayer_TrackChanged;
         
         WeakReferenceMessenger.Default.Register<PlayAudioMessage>(this, (_,m) => Play(m.song));
@@ -136,6 +137,11 @@ public partial class AudioPlayerViewModel : ObservableObject
     {
         CurrentTrack = newTrack;
         CurrentTrackLength = _audioPlayerService.GetLengthInSeconds();
+    }
+    
+    private void _audioPlayer_TrackEnded()
+    {
+        Next();
     }
 
     private void CurrentTrackPositionUpdateTimer_Tick(object? sender, EventArgs e)

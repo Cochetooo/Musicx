@@ -18,6 +18,7 @@ public class AudioPlayerService
     public event Action? TrackResumed;
     public event Action? TrackPaused;
     public event Action? TrackMuted;
+    public event Action? TrackEnded;
 
     public AudioPlayerService()
     {
@@ -29,6 +30,14 @@ public class AudioPlayerService
         Play(newSong.Filepath);
     }
 
+    private void OnPlaybackFinished(object? sender, StoppedEventArgs e)
+    {
+        if (null == e.Exception)
+        {
+            TrackEnded?.Invoke();
+        }
+    }
+
     private void Play(string filePath)
     {
         Stop();
@@ -37,6 +46,8 @@ public class AudioPlayerService
         _waveChannel = new WaveChannel32(_audioFileReader) { PadWithZeroes = false };
         _output = new DirectSoundOut(100);
         _output.Init(_waveChannel);
+        _output.PlaybackStopped += OnPlaybackFinished;
+        
         SetVolume(previousVolume);
         
         Resume();
@@ -105,9 +116,18 @@ public class AudioPlayerService
         _audioFileReader.Position = newPosition;
     }
 
-    public void Stop()
+    private void Stop()
     {
-        _output?.Stop();
+        if (null != _output)
+        {
+            _output.Stop();
+            _output.PlaybackStopped -= OnPlaybackFinished;
+            _output.Dispose();
+            _output = null;
+        }
+        
+        _audioFileReader?.Dispose();
+        _audioFileReader = null;
     }
 
     public void TogglePlaying()

@@ -30,11 +30,11 @@
                   SelectedValue="{Binding SelectedSong}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="#" Binding="{Binding TrackNumber}" />
-                <DataGridTextColumn Header="Artist" Binding="{Binding Artist.Name}" />
-                <DataGridTextColumn Header="Album" Binding="{Binding Album.Name}" />
+                <DataGridTextColumn Header="Artist" FontWeight="Bold" Binding="{Binding Artist.Name}" />
+                <DataGridTextColumn Header="Album" FontWeight="Bold" Binding="{Binding Album.Name}" />
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
-                <DataGridTextColumn Header="Genre" Binding="{Binding GeneratedGenreName}" />
-                <DataGridTextColumn Header="Year" Binding="{Binding Album.ReleaseDate, Converter={StaticResource DateTimeConverter}}" />
+                <DataGridTextColumn Header="Genre" FontStyle="Italic" Binding="{Binding GeneratedGenreName}" />
+                <DataGridTextColumn Header="Year" FontWeight="Bold" Binding="{Binding Album.ReleaseDate, Converter={StaticResource DateTimeConverter}}" />
                 <DataGridTextColumn Header="Duration" Binding="{Binding Duration, Converter={StaticResource SecondsToTimeConverter}}" />
             </DataGrid.Columns>
             <DataGrid.InputBindings>
