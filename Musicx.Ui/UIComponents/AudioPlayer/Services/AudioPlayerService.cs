@@ -35,7 +35,7 @@ public class AudioPlayerService
         var previousVolume = _waveChannel?.Volume ?? 1.0f;
         _audioFileReader = new AudioFileReader(filePath);
         _waveChannel = new WaveChannel32(_audioFileReader) { PadWithZeroes = false };
-        _output = new DirectSoundOut();
+        _output = new DirectSoundOut(100);
         _output.Init(_waveChannel);
         SetVolume(previousVolume);
         
