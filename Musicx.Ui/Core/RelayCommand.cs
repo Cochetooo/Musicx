@@ -4,8 +4,8 @@ namespace Musicx.Ui.Core;
 
 public class RelayCommand : ICommand
 {
-    private readonly Func<Task> _execute;
     private readonly Func<bool>? _canExecute;
+    private readonly Func<Task> _execute;
 
     public RelayCommand(Func<Task> execute, Func<bool>? canExecute = null)
     {

@@ -14,13 +14,10 @@ namespace Musicx.Ui.Pages.PageSelector.ViewModels;
 public class PageSelectorViewModel
 {
     private readonly ILogger<PageSelectorViewModel> Logger;
-    
-    public ICommand BrowseLocalLibraryCommand { get; }
-    private ImportLocalSongsService ImportLocalSongsService { get; }
 
     private readonly IViewModelNavigator ViewModelNavigator;
     private LocalLibraryViewModel _localLibraryVm;
-    
+
     private IProgressListener _progressListener;
 
     public PageSelectorViewModel(
@@ -45,6 +42,9 @@ public class PageSelectorViewModel
         _progressListener = progressListener;
     }
 
+    public ICommand BrowseLocalLibraryCommand { get; }
+    private ImportLocalSongsService ImportLocalSongsService { get; }
+
     private async Task BrowseLocalLibrary()
     {
         var fileBrowse = new OpenFolderDialog()
@@ -63,8 +63,9 @@ public class PageSelectorViewModel
             });
         }
     }
-    
+
     public event PropertyChangedEventHandler? PropertyChanged;
+
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

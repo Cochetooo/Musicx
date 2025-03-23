@@ -8,7 +8,7 @@ namespace Musicx.Infrastructure.Helpers;
 public static class AudioTagHelper
 {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(AudioTagHelper));
-    
+
     public static void WriteCustomTag(string filePath, string tagKey, string tagValue)
     {
         using var file = TagLib.File.Create(filePath);

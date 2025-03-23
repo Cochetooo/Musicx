@@ -11,7 +11,7 @@ public interface ILabelMapper : IMapper<Label, LabelEntity>;
 public class LabelMapper(ILoggerFactory loggerFactory) : ILabelMapper
 {
     private readonly ILogger<LabelMapper> Logger = loggerFactory.CreateLogger<LabelMapper>();
-    
+
     // Mappage de l'entité vers le DTO
     public Label ToDto(LabelEntity labelEntity)
     {

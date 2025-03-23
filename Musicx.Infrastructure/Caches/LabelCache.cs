@@ -10,9 +10,9 @@ public interface ILabelCache
 
 public class LabelCache : ILabelCache
 {
-    private readonly Dictionary<string, Label> _cache = new();
     private const int MaxCacheSize = 1000;
-    
+    private readonly Dictionary<string, Label> _cache = new();
+
     public Label? Get(string key) => _cache.TryGetValue(key, out var label) ? label : null;
 
     public void Add(string key, Label label)

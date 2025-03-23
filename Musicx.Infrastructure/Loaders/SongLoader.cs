@@ -20,7 +20,7 @@ public class SongLoader(
     {
         return albumId.HasValue ? await albumManager.FindById(albumId.Value) : null;
     }
-    
+
     public async Task<Artist?> LoadArtist(ulong? artistId)
     {
         return artistId.HasValue ? await artistManager.FindById(artistId.Value) : null;

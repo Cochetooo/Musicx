@@ -18,7 +18,7 @@ public class LabelManager(ILabelRepository labelRepository,
     ILoggerFactory loggerFactory) : ILabelManager
 {
     private readonly ILogger<LabelManager> Logger = loggerFactory.CreateLogger<LabelManager>();
-    
+
     /// 🔍 Récupérer un label sous forme de DTO
     public async Task<Label?> FindById(ulong id)
     {
@@ -31,7 +31,7 @@ public class LabelManager(ILabelRepository labelRepository,
         
         return labelMapper.ToDto(entity);
     }
-    
+
     /// 📜 Récupérer tous les labels sous forme de DTOs
     public async Task<List<Label>> FindAll(int skip = 0, int take = 100,
         Expression<Func<Label, bool>>? filter = null)
@@ -44,7 +44,7 @@ public class LabelManager(ILabelRepository labelRepository,
             .Select(labelMapper.ToDto)
             .ToList();
     }
-    
+
     public async Task<List<Label>> FindIn(List<ulong> ids)
     {
         var entities = await labelRepository.FindIn(ids);
@@ -53,7 +53,7 @@ public class LabelManager(ILabelRepository labelRepository,
             .Select(labelMapper.ToDto)
             .ToList();
     }
-    
+
     public async Task<Label?> FindExisting(Label label)
     {
         var key = $"{label.Name}";
@@ -89,7 +89,7 @@ public class LabelManager(ILabelRepository labelRepository,
         
         return await labelRepository.Save(entity);
     }
-    
+
     /// 🆕 Sauvegarder un label à partir d’un DTO
     public async Task<List<ulong>> SaveAll(IList<Label> labels)
     {
@@ -103,7 +103,7 @@ public class LabelManager(ILabelRepository labelRepository,
         
         return await labelRepository.SaveAll(entities);
     }
-    
+
     /// ❌ Supprimer un label
     public async Task Delete(ulong id)
     {

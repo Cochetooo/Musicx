@@ -17,7 +17,7 @@ public class ReadAudioFileService(ISongManager songManager,
     ILoggerFactory loggerFactory) : IService
 {
     private readonly ILogger<ReadAudioFileService> Logger = loggerFactory.CreateLogger<ReadAudioFileService>();
-    
+
     public async Task<Song> ExecuteAsync(string filePath)
     {
         Logger.Debug("⛏️ Executing ReadAudioFile");

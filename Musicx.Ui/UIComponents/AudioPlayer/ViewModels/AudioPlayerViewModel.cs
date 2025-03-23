@@ -15,34 +15,22 @@ namespace Musicx.Ui.UIComponents.AudioPlayer.ViewModels;
 
 public partial class AudioPlayerViewModel : ObservableObject
 {
-    private readonly ILogger<AudioPlayerViewModel> Logger;
-    
-    [ObservableProperty] private Song? _currentTrack;
-    [ObservableProperty] private double _currentTrackLength;
-    [ObservableProperty] private double _currentTrackPosition;
-    [ObservableProperty] private float _currentVolume;
-    
+    private static readonly SymbolIcon PlayIcon = new(SymbolRegular.Play24) { FontSize = 24 };
+    private static readonly SymbolIcon PauseIcon = new(SymbolRegular.Pause24) { FontSize = 24 };
+
     private readonly AudioPlayerService _audioPlayerService;
     private readonly AudioQueueService _audioQueueService;
     private readonly DispatcherTimer _currentTrackPositionTimer;
 
-    private static readonly SymbolIcon PlayIcon = new(SymbolRegular.Play24) { FontSize = 24 };
-    private static readonly SymbolIcon PauseIcon = new(SymbolRegular.Pause24) { FontSize = 24 };
-    
-    [ObservableProperty] private SymbolIcon _playbackIcon = PlayIcon;
-    
-    public ICommand ShuffleModeCommand { get; private set; }
-    public ICommand PreviousCommand { get; private set; }
-    public ICommand BackwardCommand { get; private set; }
-    public ICommand PlaybackCommand { get; private set; }
-    public ICommand ForwardCommand { get; private set; }
-    public ICommand NextCommand { get; private set; }
-    public ICommand RepeatModeCommand { get; private set; }
-    public ICommand TrackControlMouseDownCommand { get; private set; }
-    public ICommand TrackControlMouseUpCommand { get; private set; }
-    public ICommand VolumeControlValueChangedCommand { get; private set; }
-    
     private readonly LocalLibraryViewModel _localLibraryViewModel;
+    private readonly ILogger<AudioPlayerViewModel> Logger;
+
+    [ObservableProperty] private Song? _currentTrack;
+    [ObservableProperty] private double _currentTrackLength;
+    [ObservableProperty] private double _currentTrackPosition;
+    [ObservableProperty] private float _currentVolume;
+
+    [ObservableProperty] private SymbolIcon _playbackIcon = PlayIcon;
 
     public AudioPlayerViewModel(
         LocalLibraryViewModel localLibraryViewModel, 
@@ -74,6 +62,17 @@ public partial class AudioPlayerViewModel : ObservableObject
         CurrentVolume = 1;
     }
 
+    public ICommand ShuffleModeCommand { get; private set; }
+    public ICommand PreviousCommand { get; private set; }
+    public ICommand BackwardCommand { get; private set; }
+    public ICommand PlaybackCommand { get; private set; }
+    public ICommand ForwardCommand { get; private set; }
+    public ICommand NextCommand { get; private set; }
+    public ICommand RepeatModeCommand { get; private set; }
+    public ICommand TrackControlMouseDownCommand { get; private set; }
+    public ICommand TrackControlMouseUpCommand { get; private set; }
+    public ICommand VolumeControlValueChangedCommand { get; private set; }
+
     private void LoadCommands()
     {
         ShuffleModeCommand = new RelayCommand(ShuffleMode);
@@ -93,7 +92,7 @@ public partial class AudioPlayerViewModel : ObservableObject
     private void Previous() => _audioQueueService.Previous();
     private void Next() => _audioQueueService.Next();
     private void RepeatMode() => _audioQueueService.ToggleRepeat();
-    
+
     // Gestion de la lecture via AudioPlayerService
     private void Backward() => _audioPlayerService.Seek(_audioPlayerService.GetPositionInSeconds() - 30);
     private void TogglePlayback() => _audioPlayerService.TogglePlaying();
@@ -114,7 +113,7 @@ public partial class AudioPlayerViewModel : ObservableObject
     }
 
     private void TrackControlMouseDown() => _audioPlayerService.Pause();
-    
+
     private void TrackControlMouseUp()
     {
         _audioPlayerService.SetPosition(CurrentTrackPosition);
@@ -138,7 +137,7 @@ public partial class AudioPlayerViewModel : ObservableObject
         CurrentTrack = newTrack;
         CurrentTrackLength = _audioPlayerService.GetLengthInSeconds();
     }
-    
+
     private void _audioPlayer_TrackEnded()
     {
         Next();

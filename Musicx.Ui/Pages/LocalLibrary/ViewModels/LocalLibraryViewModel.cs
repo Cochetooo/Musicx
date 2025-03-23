@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
@@ -17,26 +18,26 @@ namespace Musicx.Ui.Pages.LocalLibrary.ViewModels;
 
 public partial class LocalLibraryViewModel : ObservableObject
 {
-    private readonly ILogger<LocalLibraryViewModel> Logger;
-    private readonly ISongManager _songManager;
+    private const int PageSize = 1000;
     private readonly ISongLoader _songLoader;
-
-    [ObservableProperty]
-    private ObservableCollection<Song> _songs = [];
-    
-    [ObservableProperty]
-    private Song? _selectedSong;
+    private readonly ISongManager _songManager;
+    private readonly ILogger<LocalLibraryViewModel> Logger;
 
     [ObservableProperty] private bool _canGoNext = true;
     [ObservableProperty] private bool _canGoPrevious = true;
-    
+
     [ObservableProperty] private int _currentPage = 0;
-    private const int PageSize = 1000;
-    
-    public ICommand LoadedCommand { get; }
-    public ICommand NextPageCommand { get; }
-    public ICommand PreviousPageCommand { get; }
-    public ICommand DoubleClickCommand { get; }
+
+    [ObservableProperty] 
+    private string _searchText;
+
+    private CancellationTokenSource? _searchTextCts;
+
+    [ObservableProperty]
+    private Song? _selectedSong;
+
+    [ObservableProperty]
+    private ObservableCollection<Song> _songs = [];
 
     public LocalLibraryViewModel(ILoggerFactory loggerFactory, 
         ISongManager songManager,
@@ -52,15 +53,20 @@ public partial class LocalLibraryViewModel : ObservableObject
         DoubleClickCommand = new RelayCommand(async () => await OnSongDoubleClick());
     }
 
+    public ICommand LoadedCommand { get; }
+    public ICommand NextPageCommand { get; }
+    public ICommand PreviousPageCommand { get; }
+    public ICommand DoubleClickCommand { get; }
+
     private async Task OnComponentLoaded()
     {
         await LoadSongs();
     }
 
-    private async Task LoadSongs()
+    private async Task LoadSongs(Expression<Func<Song, bool>>? filter = null)
     {
-        Logger.Info("⛏️ Loading songs...");
-        var listSongs = await _songManager.FindAll(CurrentPage * PageSize, PageSize);
+        Logger.Debug("⛏️ Loading songs...");
+        var listSongs = await _songManager.FindAll(CurrentPage * PageSize, PageSize, filter);
         
         Songs.Clear();
         foreach (var song in listSongs)
@@ -73,7 +79,7 @@ public partial class LocalLibraryViewModel : ObservableObject
         CanGoPrevious = CurrentPage > 0;
         CanGoNext = Songs.Count == PageSize;
         
-        Logger.Info("✅ Songs loaded successfully!");
+        Logger.Debug("✅ Songs loaded successfully!");
     }
 
     private Task OnSongDoubleClick()
@@ -84,6 +90,34 @@ public partial class LocalLibraryViewModel : ObservableObject
         }
 
         return Task.CompletedTask;
+    }
+
+    partial void OnSearchTextChanged(string value)
+    {
+        PerformSearchAsync(value);
+    }
+
+    private async void PerformSearchAsync(string value)
+    {
+        if (null != _searchTextCts)
+        {
+            await _searchTextCts.CancelAsync();
+        }
+        
+        _searchTextCts = new CancellationTokenSource();
+        var token = _searchTextCts.Token;
+
+        try
+        {
+            await Task.Delay(300, token);
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+            
+            await LoadSongs(s => s.Title.Contains(value, StringComparison.OrdinalIgnoreCase));
+        }
+        catch (TaskCanceledException) { }
     }
 
     private void NextPage()

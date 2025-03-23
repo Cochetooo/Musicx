@@ -18,7 +18,7 @@ public class GenreManager(IGenreRepository genreRepository,
     ILoggerFactory loggerFactory) : IGenreManager
 {
     private readonly ILogger<GenreManager> Logger = loggerFactory.CreateLogger<GenreManager>();
-    
+
     /// 🔍 Récupérer un genre sous forme de DTO
     public async Task<Genre?> FindById(ulong id)
     {
@@ -31,7 +31,7 @@ public class GenreManager(IGenreRepository genreRepository,
         
         return genreMapper.ToDto(entity);
     }
-    
+
     /// 📜 Récupérer tous les genres sous forme de DTOs
     public async Task<List<Genre>> FindAll(int skip = 0, int take = 100,
         Expression<Func<Genre, bool>>? filter = null)
@@ -44,7 +44,7 @@ public class GenreManager(IGenreRepository genreRepository,
             .Select(genreMapper.ToDto)
             .ToList();
     }
-    
+
     public async Task<List<Genre>> FindIn(List<ulong> ids)
     {
         var entities = await genreRepository.FindIn(ids);
@@ -53,7 +53,7 @@ public class GenreManager(IGenreRepository genreRepository,
             .Select(genreMapper.ToDto)
             .ToList();
     }
-    
+
     public async Task<Genre?> FindExisting(Genre genre)
     {
         var key = $"{genre.Name}";
@@ -89,7 +89,7 @@ public class GenreManager(IGenreRepository genreRepository,
         
         return await genreRepository.Save(entity);
     }
-    
+
     /// 🆕 Sauvegarder un genre à partir d’un DTO
     public async Task<List<ulong>> SaveAll(IList<Genre> genres)
     {
@@ -103,7 +103,7 @@ public class GenreManager(IGenreRepository genreRepository,
         
         return await genreRepository.SaveAll(entities);
     }
-    
+
     /// ❌ Supprimer un genre
     public async Task Delete(ulong id)
     {

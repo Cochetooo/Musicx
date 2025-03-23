@@ -23,11 +23,10 @@ namespace Musicx.Ui;
 /// </summary>
 public partial class App
 {
-    public static IServiceProvider ServiceProvider { get; set; }
-    
-    public static AppDbContext DbContext { get; private set; }
-
     private static ILogger<App> Logger;
+    public static IServiceProvider ServiceProvider { get; set; }
+
+    public static AppDbContext DbContext { get; private set; }
 
     protected override void OnStartup(StartupEventArgs e)
     {

@@ -30,9 +30,8 @@
                     FontWeight="Bold" 
                     FontSize="20" 
                     Text="{Binding CurrentTrack.Title, Mode=OneWay}"
-                    TextWrapping="NoWrap">
-                </ui:TextBlock>
-                
+                    TextWrapping="NoWrap" />
+
                 <ui:TextBlock 
                     FontSize="16" 
                     FontStyle="Italic"

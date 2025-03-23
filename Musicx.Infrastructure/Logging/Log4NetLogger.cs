@@ -24,6 +24,6 @@ public class Log4NetLoggerFactory : ILoggerFactory
         var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly()!);
         XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
     }
-    
+
     public ILogger<T> CreateLogger<T>() => new Log4NetLogger<T>();
 }

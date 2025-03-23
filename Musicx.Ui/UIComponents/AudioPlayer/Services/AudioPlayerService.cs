@@ -10,20 +10,20 @@ public class AudioPlayerService
 {
     private AudioFileReader? _audioFileReader;
     private DirectSoundOut? _output;
-    private WaveChannel32? _waveChannel;
-    
-    public bool IsMuted { get; private set; }
     private float _previousVolume = 1.0f;
-
-    public event Action? TrackResumed;
-    public event Action? TrackPaused;
-    public event Action? TrackMuted;
-    public event Action? TrackEnded;
+    private WaveChannel32? _waveChannel;
 
     public AudioPlayerService()
     {
         AudioEventBus.Instance.SongChanged += OnSongChanged;
     }
+
+    public bool IsMuted { get; private set; }
+
+    public event Action? TrackResumed;
+    public event Action? TrackPaused;
+    public event Action? TrackMuted;
+    public event Action? TrackEnded;
 
     private void OnSongChanged(Song newSong)
     {

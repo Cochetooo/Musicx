@@ -18,7 +18,7 @@ public class ArtistManager(IArtistRepository artistRepository,
     ILoggerFactory loggerFactory) : IArtistManager
 {
     private readonly ILogger<ArtistManager> Logger = loggerFactory.CreateLogger<ArtistManager>();
-    
+
     /// 🔍 Récupérer un artist sous forme de DTO
     public async Task<Artist?> FindById(ulong id)
     {
@@ -31,7 +31,7 @@ public class ArtistManager(IArtistRepository artistRepository,
         
         return artistMapper.ToDto(entity);
     }
-    
+
     /// 📜 Récupérer tous les artists sous forme de DTOs
     public async Task<List<Artist>> FindAll(int skip = 0, int take = 100,
         Expression<Func<Artist, bool>>? filter = null)
@@ -44,7 +44,7 @@ public class ArtistManager(IArtistRepository artistRepository,
             .Select(artistMapper.ToDto)
             .ToList();
     }
-    
+
     public async Task<List<Artist>> FindIn(List<ulong> ids)
     {
         var entities = await artistRepository.FindIn(ids);
@@ -53,7 +53,7 @@ public class ArtistManager(IArtistRepository artistRepository,
             .Select(artistMapper.ToDto)
             .ToList();
     }
-    
+
     public async Task<Artist?> FindExisting(Artist artist)
     {
         var key = $"{artist.Name}";
@@ -89,7 +89,7 @@ public class ArtistManager(IArtistRepository artistRepository,
         
         return await artistRepository.Save(entity);
     }
-    
+
     /// 🆕 Sauvegarder un artist à partir d’un DTO
     public async Task<List<ulong>> SaveAll(IList<Artist> artists)
     {
@@ -103,7 +103,7 @@ public class ArtistManager(IArtistRepository artistRepository,
         
         return await artistRepository.SaveAll(entities);
     }
-    
+
     /// ❌ Supprimer un artist
     public async Task Delete(ulong id)
     {

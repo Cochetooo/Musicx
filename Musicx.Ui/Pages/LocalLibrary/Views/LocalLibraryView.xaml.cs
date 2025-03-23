@@ -13,7 +13,7 @@ public partial class LocalLibraryView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void SongDataGrid_DoubleClick(object sender, MouseButtonEventArgs e)
     {
         if (SongDataGrid.SelectedItem is Song selectedSong)

@@ -42,7 +42,7 @@ public class AlbumRepository(AppDbContext context, ILoggerFactory loggerFactory)
             .Take(count)
             .ToListAsync();
     }
-    
+
     public async Task<List<AlbumEntity>> FindIn(IList<ulong> ids)
     {
         if (ids.Count == 0)

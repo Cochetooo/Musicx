@@ -13,7 +13,7 @@ public interface IGenreMapper : IMapper<Genre, GenreEntity>;
 public class GenreMapper(ILoggerFactory loggerFactory) : IGenreMapper
 {
     private readonly ILogger<GenreMapper> Logger = loggerFactory.CreateLogger<GenreMapper>();
-    
+
     // Mappage de l'entité vers le DTO
     public Genre ToDto(GenreEntity genreEntity)
     {

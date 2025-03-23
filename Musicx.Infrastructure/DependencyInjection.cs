@@ -22,7 +22,7 @@ namespace Musicx.Infrastructure;
 public static class DependencyInjection
 {
     private static ILogger<object> Logger;
-    
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<ILoggerFactory, Log4NetLoggerFactory>();

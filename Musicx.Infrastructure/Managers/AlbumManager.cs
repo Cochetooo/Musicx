@@ -19,7 +19,7 @@ public class AlbumManager(IAlbumRepository albumRepository,
     ILoggerFactory loggerFactory) : IAlbumManager
 {
     private readonly ILogger<AlbumManager> Logger = loggerFactory.CreateLogger<AlbumManager>();
-    
+
     /// 🔍 Récupérer un album sous forme de DTO
     public async Task<Album?> FindById(ulong id)
     {
@@ -32,7 +32,7 @@ public class AlbumManager(IAlbumRepository albumRepository,
         
         return albumMapper.ToDto(entity);
     }
-    
+
     /// 📜 Récupérer tous les albums sous forme de DTOs
     public async Task<List<Album>> FindAll(int skip = 0, int take = 100,
         Expression<Func<Album, bool>>? filter = null)
@@ -45,7 +45,7 @@ public class AlbumManager(IAlbumRepository albumRepository,
             .Select(albumMapper.ToDto)
             .ToList();
     }
-    
+
     public async Task<List<Album>> FindIn(List<ulong> ids)
     {
         var entities = await albumRepository.FindIn(ids);
@@ -90,7 +90,7 @@ public class AlbumManager(IAlbumRepository albumRepository,
         
         return await albumRepository.Save(entity);
     }
-    
+
     /// 🆕 Sauvegarder un album à partir d’un DTO
     public async Task<List<ulong>> SaveAll(IList<Album> albums)
     {
@@ -104,7 +104,7 @@ public class AlbumManager(IAlbumRepository albumRepository,
         
         return await albumRepository.SaveAll(entities);
     }
-    
+
     /// ❌ Supprimer un album
     public async Task Delete(ulong id)
     {

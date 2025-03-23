@@ -41,7 +41,7 @@ public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory)
             .Take(count)
             .ToListAsync();
     }
-    
+
     public async Task<List<GenreEntity>> FindIn(IList<ulong> ids)
     {
         if (ids.Count == 0)
@@ -56,7 +56,7 @@ public class GenreRepository(AppDbContext context, ILoggerFactory loggerFactory)
             .AsNoTracking()
             .ToListAsync();
     }
-    
+
     public async Task<uint> GetCount()
     {
         return (uint)await context.Genres.CountAsync();

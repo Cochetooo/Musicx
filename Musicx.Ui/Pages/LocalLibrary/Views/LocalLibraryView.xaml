@@ -3,23 +3,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              DataContext="{Binding LocalLibraryVm, Source={StaticResource Locator}}"
              mc:Ignorable="d"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="*" d:DesignWidth="*">
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Loaded">
             <b:InvokeCommandAction Command="{Binding LoadedCommand}" />
         </b:EventTrigger>
     </b:Interaction.Triggers>
     
-    <Grid>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <DataGrid Grid.Row="0"
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <ui:TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                        Width="500" 
+                        PlaceholderText="Search songs..."/>
+        </StackPanel>
+        
+        <DataGrid Grid.Row="1"
                   x:Name="SongDataGrid" ItemsSource="{Binding Songs}" 
                   AutoGenerateColumns="False"
                   EnableRowVirtualization="True"
@@ -27,7 +35,8 @@
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   IsReadOnly="True"
                   SelectionMode="Single"
-                  SelectedValue="{Binding SelectedSong}">
+                  SelectedValue="{Binding SelectedSong}"
+                  Margin="0, 10, 0, 0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="#" Binding="{Binding TrackNumber}" />
                 <DataGridTextColumn Header="Artist" FontWeight="Bold" Binding="{Binding Artist.Name}" />
@@ -42,7 +51,7 @@
             </DataGrid.InputBindings>
         </DataGrid>
         
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <Button Content="◃ Previous" Command="{Binding PreviousPageCommand}" 
                     IsEnabled="{Binding CanGoPrevious}" Margin="5"/>
             <Button Content="Next ▹" Command="{Binding NextPageCommand}" 

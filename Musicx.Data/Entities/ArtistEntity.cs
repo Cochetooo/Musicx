@@ -10,13 +10,13 @@ public abstract class ArtistEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public ulong Id { get; set; }
-    
+
     public string? ArtworkUrl { get; set; }
     public string? Country { get; set; }
 
     [Required]
     public string Name { get; set; } = string.Empty;
-    
+
     public string Discriminator { get; set; } = string.Empty;
 }
 

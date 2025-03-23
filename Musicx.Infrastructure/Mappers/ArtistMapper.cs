@@ -13,7 +13,7 @@ public interface IArtistMapper : IMapper<Artist, ArtistEntity>;
 public class ArtistMapper(ILoggerFactory loggerFactory) : IArtistMapper
 {
     private readonly ILogger<ArtistMapper> Logger = loggerFactory.CreateLogger<ArtistMapper>();
-    
+
     public Artist ToDto(ArtistEntity entity)
     {
         switch (entity)
@@ -62,7 +62,7 @@ public class ArtistMapper(ILoggerFactory loggerFactory) : IArtistMapper
                 throw new InvalidCastException();
         }
     }
-    
+
     public ArtistEntity ToEntity(Artist dto)
     {
         ArtistEntity entity;

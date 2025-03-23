@@ -7,7 +7,7 @@ namespace Musicx.Infrastructure.Helpers;
 public class ModuleConfiguration(ILoggerFactory loggerFactory, IConfiguration configuration) : IModuleConfiguration
 {
     private ILogger<ModuleConfiguration> Logger = loggerFactory.CreateLogger<ModuleConfiguration>();
-    
+
     public T GetValue<T>(string key)
     {
         string? value = configuration[key];

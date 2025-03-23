@@ -28,24 +28,24 @@ public class SongEntity
     // Propriétés audio
     [Required]
     public AudioFormatType AudioFormat { get; set; } = AudioFormatType.Unknown;
-    
+
     [Required]
     public int BitRate { get; set; }
-    
+
     public uint? DiscNumber { get; set; }
-    
+
     [Required]
     public long Duration { get; set; }
-    
+
     [Required]
     public string Filepath { get; set; } = string.Empty;
-    
+
     public string? GeneratedGenreName { get; set; }
     public string? Lyrics { get; set; }
-    
+
     [Required]
     public int SampleRate { get; set; }
-    
+
     public string Title { get; set; } = string.Empty;
     public uint? TrackNumber { get; set; }
 }

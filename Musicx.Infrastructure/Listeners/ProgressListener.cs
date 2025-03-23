@@ -12,10 +12,10 @@ public interface IProgressListener
 
 public partial class ProgressListener : ObservableObject, IProgressListener
 {
+    [ObservableProperty] private object? _parameters;
     [ObservableProperty] private int _progress;
     [ObservableProperty] private int _total;
-    [ObservableProperty] private object? _parameters;
-    
+
     public void UpdateProgress(int progress, int total, object? parameters)
     {
         Progress = progress;

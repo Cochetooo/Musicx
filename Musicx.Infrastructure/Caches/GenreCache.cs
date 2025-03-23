@@ -10,9 +10,9 @@ public interface IGenreCache
 
 public class GenreCache : IGenreCache
 {
-    private readonly Dictionary<string, Genre> _cache = new();
     private const int MaxCacheSize = 2000;
-    
+    private readonly Dictionary<string, Genre> _cache = new();
+
     public Genre? Get(string key) => _cache.TryGetValue(key, out var genre) ? genre : null;
 
     public void Add(string key, Genre genre)

@@ -10,9 +10,9 @@ public interface IArtistCache
 
 public class ArtistCache : IArtistCache
 {
-    private readonly Dictionary<string, Artist> _cache = new();
     private const int MaxCacheSize = 1000;
-    
+    private readonly Dictionary<string, Artist> _cache = new();
+
     public Artist? Get(string key) => _cache.TryGetValue(key, out var artist) ? artist : null;
 
     public void Add(string key, Artist artist)

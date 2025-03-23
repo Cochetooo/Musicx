@@ -8,12 +8,25 @@ public class AudioQueueService
 {
     private readonly AudioQueue _queue = new();
 
+    public ImmutableList<Song> Songs => _queue.Songs.ToImmutableList();
+
+    public Song? this[int index]
+    {
+        get {
+            if (index < 0 || index >= _queue.Songs.Count) {
+                return null;
+            }
+
+            return _queue.Songs[index];
+        }
+    }
+
     public void Clear()
     {
         _queue.Songs.Clear();
         SetIndex(-1);
     }
-    
+
     public bool IsLastSong() => _queue.Index == _queue.Songs.Count - 1;
 
     public void Next()
@@ -23,7 +36,7 @@ public class AudioQueueService
             SetIndex(_queue.Index + 1);
         }
     }
-    
+
     public void Previous()
     {
         if (_queue.Index > 0)
@@ -86,18 +99,5 @@ public class AudioQueueService
     public void ToggleRepeat()
     {
         throw new NotImplementedException();
-    }
-    
-    public ImmutableList<Song> Songs => _queue.Songs.ToImmutableList();
-    
-    public Song? this[int index]
-    {
-        get {
-            if (index < 0 || index >= _queue.Songs.Count) {
-                return null;
-            }
-
-            return _queue.Songs[index];
-        }
     }
 }

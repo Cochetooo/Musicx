@@ -16,7 +16,7 @@ public sealed class ImportLocalSongsService(
     ISongManager songManager) : IService
 {
     private readonly ILogger<ImportLocalSongsService> Logger = loggerFactory.CreateLogger<ImportLocalSongsService>();
-    
+
     public async Task Execute(
         List<string> folderPaths, 
         List<string> acceptedFormats,
@@ -64,7 +64,7 @@ public sealed class ImportLocalSongsService(
         progressListener.UpdateProgress(0, 0, null);
         Logger.Info($"Finished importing {fileProgressCount} audio files in {benchmark.Elapsed.TotalMilliseconds} ms.");
     }
-    
+
     private List<string> GetAudioFiles(List<string> folderPaths, List<string> acceptedFormats)
     {
         // Simule la récupération des fichiers audio

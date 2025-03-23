@@ -56,7 +56,7 @@ public class SongRepository(AppDbContext context, ILoggerFactory loggerFactory) 
             .AsNoTracking()
             .ToListAsync();
     }
-    
+
     public async Task<uint> GetCount()
     {
         return (uint)await context.Songs.CountAsync();

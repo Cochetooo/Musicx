@@ -7,12 +7,11 @@ namespace Musicx.Ui.UIComponents.AppInfoBar.ViewModels;
 
 public partial class AppInfoViewModel : ObservableObject
 {
-    [ObservableProperty] private string _rightContentText;
+    private readonly ProgressListener _progressListener;
+    [ObservableProperty] private bool _isProgressVisible;
     [ObservableProperty] private string _leftContentText;
     [ObservableProperty] private double _progressValue;
-    [ObservableProperty] private bool _isProgressVisible;
-    
-    private readonly ProgressListener _progressListener;
+    [ObservableProperty] private string _rightContentText;
 
     public AppInfoViewModel(ISongManager songManager, IProgressListener progressListener)
     {

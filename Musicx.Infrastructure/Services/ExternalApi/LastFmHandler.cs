@@ -9,10 +9,9 @@ namespace Musicx.Infrastructure.Services.ExternalApi;
 
 internal sealed class LastFmHandler(string apiUrl) : ExternalApiHandler(apiUrl), IService
 {
+    private readonly string apiKey = "";
     private readonly ILog Logger = LogManager.GetLogger(typeof(LastFmHandler));
 
-    private readonly string apiKey = "";
-    
     public override async Task<Song> FetchSong(Song song)
     {
         Logger.Debug($"⛏️ Fetching LastFm Song: {song.Title}");

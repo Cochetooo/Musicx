@@ -13,7 +13,7 @@ public interface IAlbumMapper : IMapper<Album, AlbumEntity>;
 public class AlbumMapper(ILoggerFactory loggerFactory) : IAlbumMapper
 {
     private readonly ILogger<AlbumMapper> Logger = loggerFactory.CreateLogger<AlbumMapper>();
-    
+
     // Mappage de l'entité vers le DTO
     public Album ToDto(AlbumEntity albumEntity)
     {
@@ -68,5 +68,4 @@ public class AlbumMapper(ILoggerFactory loggerFactory) : IAlbumMapper
 
         return entity;
     }
-
 }

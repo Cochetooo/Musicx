@@ -80,7 +80,7 @@ public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory
 
         return combined;
     }
-    
+
     public async Task<List<ArtistEntity>> FindIn(IList<ulong> ids)
     {
         if (ids.Count == 0)
@@ -104,7 +104,7 @@ public class ArtistRepository(AppDbContext context, ILoggerFactory loggerFactory
             .AsNoTracking()
             .ToListAsync();
     }
-    
+
     public async Task<uint> GetCount()
     {
         return (uint)await context.Artists.CountAsync();

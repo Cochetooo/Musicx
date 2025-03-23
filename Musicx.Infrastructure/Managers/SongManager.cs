@@ -18,7 +18,7 @@ public class SongManager(ISongRepository songRepository,
     ILoggerFactory loggerFactory) : ISongManager
 {
     private readonly ILogger<SongManager> Logger = loggerFactory.CreateLogger<SongManager>();
-    
+
     /// 🔍 Récupérer un song sous forme de DTO
     public async Task<Song?> FindById(ulong id)
     {
@@ -31,7 +31,7 @@ public class SongManager(ISongRepository songRepository,
         
         return songMapper.ToDto(entity);
     }
-    
+
     /// 📜 Récupérer tous les songs sous forme de DTOs
     public async Task<List<Song>> FindAll(int skip = 0, int take = 100,
         Expression<Func<Song, bool>>? filter = null)
@@ -53,7 +53,7 @@ public class SongManager(ISongRepository songRepository,
             .Select(songMapper.ToDto)
             .ToList();
     }
-    
+
     public async Task<Song?> FindExisting(Song song)
     {
         var key = $"{song.Title}|{song.Duration}|{song.TrackNumber}";
@@ -89,7 +89,7 @@ public class SongManager(ISongRepository songRepository,
         
         return await songRepository.Save(entity);
     }
-    
+
     /// 🆕 Sauvegarder un song à partir d’un DTO
     public async Task<List<ulong>> SaveAll(IList<Song> songs)
     {
@@ -103,7 +103,7 @@ public class SongManager(ISongRepository songRepository,
         
         return await songRepository.SaveAll(entities);
     }
-    
+
     /// ❌ Supprimer un song
     public async Task Delete(ulong id)
     {

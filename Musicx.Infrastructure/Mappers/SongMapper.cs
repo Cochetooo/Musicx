@@ -14,7 +14,7 @@ public interface ISongMapper : IMapper<Song, SongEntity>;
 public class SongMapper(ILoggerFactory loggerFactory) : ISongMapper
 {
     private readonly ILogger<SongMapper> Logger = loggerFactory.CreateLogger<SongMapper>();
-    
+
     // Mappage de l'entité vers le DTO
     public Song ToDto(SongEntity songEntity)
     {

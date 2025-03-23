@@ -7,7 +7,7 @@ namespace Musicx.Infrastructure.Services.ExternalApi;
 public abstract class ExternalApiHandler(string apiUrl)
 {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ExternalApiHandler));
-    
+
     protected readonly string ApiUrl = apiUrl;
 
     public abstract Task<Song> FetchSong(Song song);

@@ -6,6 +6,6 @@ namespace Musicx.Ui.UIComponents.AudioPlayer.Models;
 
 public class AudioQueue
 {
-    public ObservableCollection<Song> Songs = [];
     public int Index;
+    public ObservableCollection<Song> Songs = [];
 }

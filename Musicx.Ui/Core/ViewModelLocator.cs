@@ -10,13 +10,13 @@ namespace Musicx.Ui.Core;
 public class ViewModelLocator
 {
     public static IServiceProvider ServiceProvider { get; set; } = null!;
-    
+
     public MainWindowViewModel MainWindowViewModel => ServiceProvider.GetRequiredService<MainWindowViewModel>();
-    
+
     public PageSelectorViewModel PageSelectorVm => ServiceProvider.GetRequiredService<PageSelectorViewModel>();
-    
+
     public LocalLibraryViewModel LocalLibraryVm => ServiceProvider.GetRequiredService<LocalLibraryViewModel>();
-    
+
     // Ui Components
     public AppInfoViewModel AppInfoVm => ServiceProvider.GetRequiredService<AppInfoViewModel>();
     public AudioPlayerViewModel AudioPlayerVm => ServiceProvider.GetRequiredService<AudioPlayerViewModel>();
