@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Musicx.Application.Api\Musicx.Application.Api.csproj" />
+      <ProjectReference Include="..\Musicx.Application.Common\Musicx.Application.Common.csproj" />
+      <ProjectReference Include="..\Musicx.Domain\Musicx.Domain.csproj" />
+      <ProjectReference Include="..\Musicx.Infrastructure.Common\Musicx.Infrastructure.Common.csproj" />
+    </ItemGroup>
+
+</Project>
