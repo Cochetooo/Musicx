@@ -1,5 +1,5 @@
-using Musicx.Application.Common.Interfaces.Persistence;
-using Musicx.Domain.Entities;
+using Musicx.Application.Shared.Interfaces.Persistence;
+using Musicx.Domain.Models;
 
 namespace Musicx.Application.Desktop.Specifications;
 

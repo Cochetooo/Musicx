@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
-using Musicx.Application.Common.Interfaces.Common;
+using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
+using Musicx.Domain.Models;
 
 namespace Musicx.Application.Desktop.UseCases.LocalLibrary;
 
@@ -43,7 +44,9 @@ public sealed class UcImportLocalSongs(
         var successfulFileCount = 0;
         var failedFileCount = 0;
         
-        var songs = new ConcurrentBag<LocalSongDto>();
+        var songs = new ConcurrentBag<Song>();
+        var albumsByName = new ConcurrentDictionary<string, Album>();
+        var artistsByName = new ConcurrentDictionary<string, Artist>();
 
         // Create multithreaded tasks
         var tasks = audioFiles.Select(async filePath =>
@@ -51,15 +54,46 @@ public sealed class UcImportLocalSongs(
             try
             {
                 var readAudioFileResponse = await readAudioFile.ExecuteAsync(
-                    new ReadAudioFileRequest(filePath)
+                    new ReadAudioFileRequest(filePath, request.AutoCheck)
                 );
+
+                var song = readAudioFileResponse.Song;
+                var album = readAudioFileResponse.Album;
+                var artist = readAudioFileResponse.Artist;
                 
-                songs.Add(readAudioFileResponse.LocalSong);
+                _logger.Info($"➕ Adding : {artist.Name} - {album.Name} - {song.Title}");
+
+                if (!artistsByName.TryGetValue(artist.Name, out var existingArtist))
+                {
+                    _logger.Debug($"ℹ️ Creating new artist: {artist.Name}");
+                    artistsByName[artist.Name] = artist;
+                }
+                else
+                {
+                    artist = existingArtist;
+                }
+
+                if (!albumsByName.TryGetValue(album.Name, out var existingAlbum))
+                {
+                    _logger.Debug($"ℹ️ Creating new album: {album.Name}");
+                    albumsByName[album.Name] = album;
+                }
+                else
+                {
+                    album = existingAlbum;
+                }
+
+                song.Artist = artist;
+                song.Album = album;
+                album.Artist = artist;
+                
+                songs.Add(song);
+                
                 Interlocked.Increment(ref successfulFileCount);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.Warn($"⚠️ Could not read audio file: {filePath}");
+                _logger.Fatal($"❌ Could not read audio file: {filePath}", ex);
                 Interlocked.Increment(ref failedFileCount);
             }
             
@@ -68,8 +102,13 @@ public sealed class UcImportLocalSongs(
         }).ToList();
         
         await Task.WhenAll(tasks);
+        
+        _logger.Info($"ℹ️ Success: {successfulFileCount} | Failed: {failedFileCount} | TOTAL: {fileProgressCount}");
 
-        await persistLocalSongs.ExecuteAsync(new PersistLocalSongsRequest(songs));
+        await persistLocalSongs.ExecuteAsync(new PersistLocalSongsRequest(
+            songs, 
+            albumsByName.Values, 
+            artistsByName.Values));
         
         request.ProgressListener.UpdateProgress(0, 0, null);
         _logger.Debug("✅ ImportLocalSongs success!");

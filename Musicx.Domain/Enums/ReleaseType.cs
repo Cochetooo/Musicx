@@ -16,5 +16,6 @@ public enum ReleaseType
     MixTape,
     Single,
     Soundtrack,
+    Unknown,
     VideoClip
 }

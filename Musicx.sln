@@ -4,27 +4,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Tests", "Musicx.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Domain", "Musicx.Domain\Musicx.Domain.csproj", "{E1C87931-DCD1-42EF-B76F-48111B7FE873}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Infrastructure.Desktop", "Musicx.Infrastructure.Desktop\Musicx.Infrastructure.Desktop.csproj", "{877516C8-D1DB-46A6-8DD3-E8D960AB1BF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Infrastructure", "Musicx.Infrastructure\Musicx.Infrastructure.csproj", "{877516C8-D1DB-46A6-8DD3-E8D960AB1BF0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Presentation.Web", "Musicx.Presentation.Web\Musicx.Presentation.Web.csproj", "{3C598D42-819D-4099-8980-D8A0CA4C6DEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Presentation.Desktop", "Musicx.Presentation.Desktop\Musicx.Presentation.Desktop.csproj", "{45EE0889-BB3F-4EDD-86A5-08C7CA89D850}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Infrastructure.Web", "Musicx.Infrastructure.Web\Musicx.Infrastructure.Web.csproj", "{B7C6A7BF-98E0-4FFA-9E4A-04BE5913669A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Infrastructure.Common", "Musicx.Infrastructure.Common\Musicx.Infrastructure.Common.csproj", "{A634EF4A-181D-494E-B468-506F3A905E84}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Infrastructure.Api", "Musicx.Infrastructure.Api\Musicx.Infrastructure.Api.csproj", "{570CE75E-4C75-43A4-8DCB-AE0A049BDE55}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Presentation.Api", "Musicx.Presentation.Api\Musicx.Presentation.Api.csproj", "{9BAE9632-AA59-4DA7-AFDB-AFBF52207FE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Application.Common", "Musicx.Application.Common\Musicx.Application.Common.csproj", "{0D51EF16-4790-4072-A9BB-1357BD0A63DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Application.Shared", "Musicx.Application.Shared\Musicx.Application.Shared.csproj", "{0D51EF16-4790-4072-A9BB-1357BD0A63DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Application.Desktop", "Musicx.Application.Desktop\Musicx.Application.Desktop.csproj", "{469A43FF-C33F-4765-AD85-8D6A37297085}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Application.Web", "Musicx.Application.Web\Musicx.Application.Web.csproj", "{16707D81-88AA-488A-BADE-12B33021D675}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Application.Api", "Musicx.Application.Api\Musicx.Application.Api.csproj", "{209CA191-0DC8-4607-9094-3AC91B36C67A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Presentation.Desktop", "Musicx.Presentation.Desktop\Musicx.Presentation.Desktop.csproj", "{2B4FAD6A-9251-4835-A50E-A6D2E2A7216C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Contracts", "Musicx.Contracts\Musicx.Contracts.csproj", "{DB93C20B-5A7E-4112-9E39-ECAA405E20B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,22 +42,6 @@ Global
 		{3C598D42-819D-4099-8980-D8A0CA4C6DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C598D42-819D-4099-8980-D8A0CA4C6DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C598D42-819D-4099-8980-D8A0CA4C6DEF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45EE0889-BB3F-4EDD-86A5-08C7CA89D850}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45EE0889-BB3F-4EDD-86A5-08C7CA89D850}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45EE0889-BB3F-4EDD-86A5-08C7CA89D850}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45EE0889-BB3F-4EDD-86A5-08C7CA89D850}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B7C6A7BF-98E0-4FFA-9E4A-04BE5913669A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B7C6A7BF-98E0-4FFA-9E4A-04BE5913669A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B7C6A7BF-98E0-4FFA-9E4A-04BE5913669A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B7C6A7BF-98E0-4FFA-9E4A-04BE5913669A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A634EF4A-181D-494E-B468-506F3A905E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A634EF4A-181D-494E-B468-506F3A905E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A634EF4A-181D-494E-B468-506F3A905E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A634EF4A-181D-494E-B468-506F3A905E84}.Release|Any CPU.Build.0 = Release|Any CPU
-		{570CE75E-4C75-43A4-8DCB-AE0A049BDE55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{570CE75E-4C75-43A4-8DCB-AE0A049BDE55}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{570CE75E-4C75-43A4-8DCB-AE0A049BDE55}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{570CE75E-4C75-43A4-8DCB-AE0A049BDE55}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9BAE9632-AA59-4DA7-AFDB-AFBF52207FE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BAE9632-AA59-4DA7-AFDB-AFBF52207FE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BAE9632-AA59-4DA7-AFDB-AFBF52207FE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -80,9 +58,13 @@ Global
 		{16707D81-88AA-488A-BADE-12B33021D675}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16707D81-88AA-488A-BADE-12B33021D675}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16707D81-88AA-488A-BADE-12B33021D675}.Release|Any CPU.Build.0 = Release|Any CPU
-		{209CA191-0DC8-4607-9094-3AC91B36C67A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{209CA191-0DC8-4607-9094-3AC91B36C67A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{209CA191-0DC8-4607-9094-3AC91B36C67A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{209CA191-0DC8-4607-9094-3AC91B36C67A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B4FAD6A-9251-4835-A50E-A6D2E2A7216C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B4FAD6A-9251-4835-A50E-A6D2E2A7216C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B4FAD6A-9251-4835-A50E-A6D2E2A7216C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B4FAD6A-9251-4835-A50E-A6D2E2A7216C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB93C20B-5A7E-4112-9E39-ECAA405E20B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB93C20B-5A7E-4112-9E39-ECAA405E20B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB93C20B-5A7E-4112-9E39-ECAA405E20B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB93C20B-5A7E-4112-9E39-ECAA405E20B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

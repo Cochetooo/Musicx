@@ -1,10 +1,11 @@
-using Musicx.Application.Common.Interfaces.Common;
+using Musicx.Application.Shared.Interfaces.Common;
 
 namespace Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 
 public sealed record ImportLocalSongsRequest(
     List<string> FolderPaths,
     List<string> AcceptedFormats,
+    bool AutoCheck,
     IProgressListener ProgressListener) : BaseRequest;
 
 public sealed record ImportLocalSongsResponse(

@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="API\" />
+      <Folder Include="Shared\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Musicx.Application.Shared\Musicx.Application.Shared.csproj" />
+      <ProjectReference Include="..\Musicx.Application.Desktop\Musicx.Application.Desktop.csproj" />
+      <ProjectReference Include="..\Musicx.Domain\Musicx.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="log4net" Version="3.0.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.4" />
+      <PackageReference Include="z440.atl.core" Version="6.22.0" />
+    </ItemGroup>
+
+</Project>
