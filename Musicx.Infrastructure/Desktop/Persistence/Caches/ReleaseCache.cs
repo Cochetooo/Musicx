@@ -4,7 +4,7 @@ using Musicx.Domain.Models;
 
 namespace Musicx.Infrastructure.Persistence.Caches;
 
-public class ReleaseCache(IAppConfiguration appConfiguration) : IReleaseCache
+internal sealed class ReleaseCache(IAppConfiguration appConfiguration) : IReleaseCache
 {
     private readonly int _maxCacheSize = appConfiguration.GetValue<int>("Persistence.CacheMaxSizes.Release");
     private readonly Dictionary<string, Release> _cache = new();

@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Presentation.Desktop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Contracts", "Musicx.Contracts\Musicx.Contracts.csproj", "{DB93C20B-5A7E-4112-9E39-ECAA405E20B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musicx.Application.Api", "Musicx.Application.Api\Musicx.Application.Api.csproj", "{C273EDBA-C3F1-4DCD-B7BE-1A5075F95FAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{DB93C20B-5A7E-4112-9E39-ECAA405E20B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB93C20B-5A7E-4112-9E39-ECAA405E20B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB93C20B-5A7E-4112-9E39-ECAA405E20B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C273EDBA-C3F1-4DCD-B7BE-1A5075F95FAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C273EDBA-C3F1-4DCD-B7BE-1A5075F95FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C273EDBA-C3F1-4DCD-B7BE-1A5075F95FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C273EDBA-C3F1-4DCD-B7BE-1A5075F95FAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

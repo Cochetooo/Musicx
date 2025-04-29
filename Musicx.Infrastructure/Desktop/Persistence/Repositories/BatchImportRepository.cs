@@ -31,7 +31,7 @@ internal sealed class BatchImportRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Could not persist batch.", ex);
+            _logger.Fatal("❌ Could not persist batch.", ex);
             await transaction.RollbackAsync();
             throw;
         }

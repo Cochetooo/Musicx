@@ -7,7 +7,7 @@ namespace Musicx.Infrastructure.Persistence;
 /// Database context for local songs.
 /// </summary>
 /// <since>0.6.0</since>
-public class AppDbContext : DbContext
+internal sealed class AppDbContext : DbContext
 {
     public DbSet<Album> Albums { get; set; }
     public DbSet<Artist> Artists { get; set; }

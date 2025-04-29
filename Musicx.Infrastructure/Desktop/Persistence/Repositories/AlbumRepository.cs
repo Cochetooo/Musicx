@@ -8,26 +8,26 @@ using Musicx.Domain.Models;
 
 namespace Musicx.Infrastructure.Persistence.Repositories;
 
-public class ReleaseRepository(
+internal sealed class AlbumRepository(
     AppDbContext context,
-    IReleaseCache releaseCache,
-    ILoggerFactory loggerFactory) : IReleaseRepository
+    IAlbumCache albumCache,
+    ILoggerFactory loggerFactory) : IAlbumRepository
 {
-    private readonly ILogger<ReleaseRepository> _logger = loggerFactory.CreateLogger<ReleaseRepository>();
+    private readonly ILogger<AlbumRepository> _logger = loggerFactory.CreateLogger<AlbumRepository>();
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Release : {id}");
+        _logger.Db($"📄 Delete Album : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
-            var release = await context.Releases.FindAsync(id);
+            var album = await context.Albums.FindAsync(id);
 
-            if (null != release)
+            if (null != album)
             {
-                context.Releases.Remove(release);
+                context.Albums.Remove(album);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -40,27 +40,27 @@ public class ReleaseRepository(
         }
     }
 
-    public async Task<Release?> FindByIdAsync(long id, IQuerySpecification<Release>? releaseQuerySpecification = null)
+    public async Task<Album?> FindByIdAsync(long id, IQuerySpecification<Album>? albumQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Release : {id}");
+        _logger.Db($"📄 Find By Id Album : {id}");
         
-        var releaseSet = context.Releases;
-        GetIncludes(releaseSet, releaseQuerySpecification);
+        var albumSet = context.Albums;
+        GetIncludes(albumSet, albumQuerySpecification);
         
-        return await releaseSet
+        return await albumSet
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
-    public async Task<List<Release>> FindAsync(int skip = 0, int take = 100, Expression<Func<Release, bool>>? filter = null,
-        IQuerySpecification<Release>? releaseQuerySpecification = null)
+    public async Task<List<Album>> FindAsync(int skip = 0, int take = 100, Expression<Func<Album, bool>>? filter = null,
+        IQuerySpecification<Album>? albumQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Release");
+        _logger.Db($"📄 Find Album");
         
-        var releaseSet = context.Releases;
+        var albumSet = context.Albums;
         
-        GetIncludes(releaseSet, releaseQuerySpecification);
-        var query = releaseSet.AsQueryable();
+        GetIncludes(albumSet, albumQuerySpecification);
+        var query = albumSet.AsQueryable();
 
         if (null != filter)
         {
@@ -74,22 +74,22 @@ public class ReleaseRepository(
             .ToListAsync();
     }
 
-    public async Task<List<Release>> FindIn(IEnumerable<long> ids, IQuerySpecification<Release>? releaseQuerySpecification = null)
+    public async Task<List<Album>> FindIn(IEnumerable<long> ids, IQuerySpecification<Album>? albumQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Release");
+        _logger.Db("📄 Find In Album");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
-        if (!enumerable.Any())
+        if (0 == enumerable.Length)
         {
             _logger.Debug("ℹ️ Empty List in Find In");
             return [];
         }
         
-        var releaseSet = context.Releases;
-        GetIncludes(releaseSet, releaseQuerySpecification);
+        var albumSet = context.Albums;
+        GetIncludes(albumSet, albumQuerySpecification);
         
-        return await releaseSet
+        return await albumSet
             .Where(s => enumerable.Contains(s.Id))
             .AsNoTracking()
             .ToListAsync();
@@ -97,12 +97,12 @@ public class ReleaseRepository(
 
     public async Task<int> GetCountAsync()
     {
-        return await context.Releases.CountAsync();
+        return await context.Albums.CountAsync();
     }
 
-    public async Task<long> SaveAsync(Release entity)
+    public async Task<long> SaveAsync(Album entity)
     {
-        _logger.Db("📄 Save Release");
+        _logger.Db("📄 Save Album");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -110,11 +110,11 @@ public class ReleaseRepository(
         {
             if (0 == entity.Id)
             {
-                context.Releases.Add(entity);
+                context.Albums.Add(entity);
             }
             else
             {
-                context.Releases.Update(entity);
+                context.Albums.Update(entity);
             }
 
             await context.SaveChangesAsync();
@@ -130,9 +130,9 @@ public class ReleaseRepository(
         }
     }
 
-    public async Task<List<long>> SaveAllAsync(IEnumerable<Release> entities)
+    public async Task<List<long>> SaveAllAsync(IEnumerable<Album> entities)
     {
-        _logger.Db("📄 SaveAll Release");
+        _logger.Db("📄 SaveAll Album");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -140,18 +140,18 @@ public class ReleaseRepository(
 
         try
         {
-            foreach (var release in entities)
+            foreach (var album in entities)
             {
-                if (0 == release.Id)
+                if (0 == album.Id)
                 {
-                    context.Releases.Add(release);
+                    context.Albums.Add(album);
                 }
                 else
                 {
-                    context.Releases.Update(release);
+                    context.Albums.Update(album);
                 }
                 
-                ids.Add(release.Id);
+                ids.Add(album.Id);
             }
 
             await context.SaveChangesAsync();
@@ -167,23 +167,28 @@ public class ReleaseRepository(
         }
     }
 
-    private void GetIncludes(in DbSet<Release> releaseSet, IQuerySpecification<Release>? querySpecification = null)
+    private void GetIncludes(in DbSet<Album> albumSet, IQuerySpecification<Album>? querySpecification = null)
     {
         if (null == querySpecification)
         {
             return;
         }
         
-        var releaseQuerySpecification = (ReleaseQuerySpecification)querySpecification;
+        var albumQuerySpecification = (AlbumQuerySpecification)querySpecification;
 
-        if (releaseQuerySpecification.IncludeAlbum)
+        if (albumQuerySpecification.IncludeArtist)
         {
-            releaseSet.Include(s => s.Album);
+            albumSet.Include(s => s.Artist);
         }
 
-        if (releaseQuerySpecification.IncludeLabel)
+        if (albumQuerySpecification.IncludePrimaryGenres)
         {
-            releaseSet.Include(s => s.Label);
+            albumSet.Include(s => s.PrimaryGenres);
+        }
+
+        if (albumQuerySpecification.IncludeInfluenceGenres)
+        {
+            albumSet.Include(s => s.InfluenceGenres);
         }
     }
 }

@@ -8,26 +8,26 @@ using Musicx.Domain.Models;
 
 namespace Musicx.Infrastructure.Persistence.Repositories;
 
-public class GenreRepository(
+internal sealed class ArtistRepository(
     AppDbContext context,
-    IGenreCache genreCache,
-    ILoggerFactory loggerFactory) : IGenreRepository
+    IArtistCache artistCache,
+    ILoggerFactory loggerFactory) : IArtistRepository
 {
-    private readonly ILogger<GenreRepository> _logger = loggerFactory.CreateLogger<GenreRepository>();
+    private readonly ILogger<ArtistRepository> _logger = loggerFactory.CreateLogger<ArtistRepository>();
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Genre : {id}");
+        _logger.Db($"📄 Delete Artist : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
-            var genre = await context.Genres.FindAsync(id);
+            var artist = await context.Artists.FindAsync(id);
 
-            if (null != genre)
+            if (null != artist)
             {
-                context.Genres.Remove(genre);
+                context.Artists.Remove(artist);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -40,27 +40,27 @@ public class GenreRepository(
         }
     }
 
-    public async Task<Genre?> FindByIdAsync(long id, IQuerySpecification<Genre>? genreQuerySpecification = null)
+    public async Task<Artist?> FindByIdAsync(long id, IQuerySpecification<Artist>? artistQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Genre : {id}");
+        _logger.Db($"📄 Find By Id Artist : {id}");
         
-        var genreSet = context.Genres;
-        GetIncludes(genreSet, genreQuerySpecification);
+        var artistSet = context.Artists;
+        GetIncludes(artistSet, artistQuerySpecification);
         
-        return await genreSet
+        return await artistSet
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
-    public async Task<List<Genre>> FindAsync(int skip = 0, int take = 100, Expression<Func<Genre, bool>>? filter = null,
-        IQuerySpecification<Genre>? genreQuerySpecification = null)
+    public async Task<List<Artist>> FindAsync(int skip = 0, int take = 100, Expression<Func<Artist, bool>>? filter = null,
+        IQuerySpecification<Artist>? artistQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Genre");
+        _logger.Db($"📄 Find Artist");
         
-        var genreSet = context.Genres;
+        var artistSet = context.Artists;
         
-        GetIncludes(genreSet, genreQuerySpecification);
-        var query = genreSet.AsQueryable();
+        GetIncludes(artistSet, artistQuerySpecification);
+        var query = artistSet.AsQueryable();
 
         if (null != filter)
         {
@@ -74,22 +74,22 @@ public class GenreRepository(
             .ToListAsync();
     }
 
-    public async Task<List<Genre>> FindIn(IEnumerable<long> ids, IQuerySpecification<Genre>? genreQuerySpecification = null)
+    public async Task<List<Artist>> FindIn(IEnumerable<long> ids, IQuerySpecification<Artist>? artistQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Genre");
+        _logger.Db("📄 Find In Artist");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
-        if (!enumerable.Any())
+        if (0 == enumerable.Length)
         {
             _logger.Debug("ℹ️ Empty List in Find In");
             return [];
         }
         
-        var genreSet = context.Genres;
-        GetIncludes(genreSet, genreQuerySpecification);
+        var artistSet = context.Artists;
+        GetIncludes(artistSet, artistQuerySpecification);
         
-        return await genreSet
+        return await artistSet
             .Where(s => enumerable.Contains(s.Id))
             .AsNoTracking()
             .ToListAsync();
@@ -97,12 +97,12 @@ public class GenreRepository(
 
     public async Task<int> GetCountAsync()
     {
-        return await context.Genres.CountAsync();
+        return await context.Artists.CountAsync();
     }
 
-    public async Task<long> SaveAsync(Genre entity)
+    public async Task<long> SaveAsync(Artist entity)
     {
-        _logger.Db("📄 Save Genre");
+        _logger.Db("📄 Save Artist");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -110,11 +110,11 @@ public class GenreRepository(
         {
             if (0 == entity.Id)
             {
-                context.Genres.Add(entity);
+                context.Artists.Add(entity);
             }
             else
             {
-                context.Genres.Update(entity);
+                context.Artists.Update(entity);
             }
 
             await context.SaveChangesAsync();
@@ -130,9 +130,9 @@ public class GenreRepository(
         }
     }
 
-    public async Task<List<long>> SaveAllAsync(IEnumerable<Genre> entities)
+    public async Task<List<long>> SaveAllAsync(IEnumerable<Artist> entities)
     {
-        _logger.Db("📄 SaveAll Genre");
+        _logger.Db("📄 SaveAll Artist");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -140,18 +140,18 @@ public class GenreRepository(
 
         try
         {
-            foreach (var genre in entities)
+            foreach (var artist in entities)
             {
-                if (0 == genre.Id)
+                if (0 == artist.Id)
                 {
-                    context.Genres.Add(genre);
+                    context.Artists.Add(artist);
                 }
                 else
                 {
-                    context.Genres.Update(genre);
+                    context.Artists.Update(artist);
                 }
                 
-                ids.Add(genre.Id);
+                ids.Add(artist.Id);
             }
 
             await context.SaveChangesAsync();
@@ -167,23 +167,15 @@ public class GenreRepository(
         }
     }
 
-    private void GetIncludes(in DbSet<Genre> genreSet, IQuerySpecification<Genre>? querySpecification = null)
+    private void GetIncludes(in DbSet<Artist> artistSet, IQuerySpecification<Artist>? querySpecification = null)
     {
         if (null == querySpecification)
         {
             return;
         }
         
-        var genreQuerySpecification = (GenreQuerySpecification)querySpecification;
+        var artistQuerySpecification = (ArtistQuerySpecification)querySpecification;
 
-        if (genreQuerySpecification.IncludeChildren)
-        {
-            genreSet.Include(g => g.Children);
-        }
-
-        if (genreQuerySpecification.IncludeParents)
-        {
-            genreSet.Include(g => g.Parents);
-        }
+        
     }
 }

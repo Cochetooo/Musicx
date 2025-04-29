@@ -8,26 +8,26 @@ using Musicx.Domain.Models;
 
 namespace Musicx.Infrastructure.Persistence.Repositories;
 
-public class SongRepository(
+internal sealed class LabelRepository(
     AppDbContext context,
-    ISongCache songCache,
-    ILoggerFactory loggerFactory) : ISongRepository
+    ILabelCache labelCache,
+    ILoggerFactory loggerFactory) : ILabelRepository
 {
-    private readonly ILogger<SongRepository> _logger = loggerFactory.CreateLogger<SongRepository>();
+    private readonly ILogger<LabelRepository> _logger = loggerFactory.CreateLogger<LabelRepository>();
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Song : {id}");
+        _logger.Db($"📄 Delete Label : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
-            var song = await context.Songs.FindAsync(id);
+            var label = await context.Labels.FindAsync(id);
 
-            if (null != song)
+            if (null != label)
             {
-                context.Songs.Remove(song);
+                context.Labels.Remove(label);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -40,27 +40,27 @@ public class SongRepository(
         }
     }
 
-    public async Task<Song?> FindByIdAsync(long id, IQuerySpecification<Song>? songQuerySpecification = null)
+    public async Task<Label?> FindByIdAsync(long id, IQuerySpecification<Label>? labelQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Song : {id}");
+        _logger.Db($"📄 Find By Id Label : {id}");
         
-        var songSet = context.Songs;
-        GetIncludes(songSet, songQuerySpecification);
+        var labelSet = context.Labels;
+        GetIncludes(labelSet, labelQuerySpecification);
         
-        return await songSet
+        return await labelSet
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
-    public async Task<List<Song>> FindAsync(int skip = 0, int take = 100, Expression<Func<Song, bool>>? filter = null,
-        IQuerySpecification<Song>? songQuerySpecification = null)
+    public async Task<List<Label>> FindAsync(int skip = 0, int take = 100, Expression<Func<Label, bool>>? filter = null,
+        IQuerySpecification<Label>? labelQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Song");
+        _logger.Db($"📄 Find Label");
         
-        var songSet = context.Songs;
+        var labelSet = context.Labels;
         
-        GetIncludes(songSet, songQuerySpecification);
-        var query = songSet.AsQueryable();
+        GetIncludes(labelSet, labelQuerySpecification);
+        var query = labelSet.AsQueryable();
 
         if (null != filter)
         {
@@ -74,22 +74,22 @@ public class SongRepository(
             .ToListAsync();
     }
 
-    public async Task<List<Song>> FindIn(IEnumerable<long> ids, IQuerySpecification<Song>? songQuerySpecification = null)
+    public async Task<List<Label>> FindIn(IEnumerable<long> ids, IQuerySpecification<Label>? labelQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Song");
+        _logger.Db("📄 Find In Label");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
-        if (!enumerable.Any())
+        if (0 == enumerable.Length)
         {
             _logger.Debug("ℹ️ Empty List in Find In");
             return [];
         }
         
-        var songSet = context.Songs;
-        GetIncludes(songSet, songQuerySpecification);
+        var labelSet = context.Labels;
+        GetIncludes(labelSet, labelQuerySpecification);
         
-        return await songSet
+        return await labelSet
             .Where(s => enumerable.Contains(s.Id))
             .AsNoTracking()
             .ToListAsync();
@@ -97,12 +97,12 @@ public class SongRepository(
 
     public async Task<int> GetCountAsync()
     {
-        return await context.Songs.CountAsync();
+        return await context.Labels.CountAsync();
     }
 
-    public async Task<long> SaveAsync(Song entity)
+    public async Task<long> SaveAsync(Label entity)
     {
-        _logger.Db("📄 Save Song");
+        _logger.Db("📄 Save Label");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -110,11 +110,11 @@ public class SongRepository(
         {
             if (0 == entity.Id)
             {
-                context.Songs.Add(entity);
+                context.Labels.Add(entity);
             }
             else
             {
-                context.Songs.Update(entity);
+                context.Labels.Update(entity);
             }
 
             await context.SaveChangesAsync();
@@ -130,9 +130,9 @@ public class SongRepository(
         }
     }
 
-    public async Task<List<long>> SaveAllAsync(IEnumerable<Song> entities)
+    public async Task<List<long>> SaveAllAsync(IEnumerable<Label> entities)
     {
-        _logger.Db("📄 SaveAll Song");
+        _logger.Db("📄 SaveAll Label");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -140,18 +140,18 @@ public class SongRepository(
 
         try
         {
-            foreach (var song in entities)
+            foreach (var label in entities)
             {
-                if (0 == song.Id)
+                if (0 == label.Id)
                 {
-                    context.Songs.Add(song);
+                    context.Labels.Add(label);
                 }
                 else
                 {
-                    context.Songs.Update(song);
+                    context.Labels.Update(label);
                 }
                 
-                ids.Add(song.Id);
+                ids.Add(label.Id);
             }
 
             await context.SaveChangesAsync();
@@ -167,41 +167,18 @@ public class SongRepository(
         }
     }
 
-    private void GetIncludes(in DbSet<Song> songSet, IQuerySpecification<Song>? querySpecification = null)
+    private void GetIncludes(in DbSet<Label> labelSet, IQuerySpecification<Label>? querySpecification = null)
     {
         if (null == querySpecification)
         {
             return;
         }
         
-        var songQuerySpecification = (SongQuerySpecification)querySpecification;
+        var labelQuerySpecification = (LabelQuerySpecification)querySpecification;
 
-        if (songQuerySpecification.IncludeArtist)
+        if (labelQuerySpecification.IncludeReleases)
         {
-            songSet.Include(s => s.Artist);
-        }
-
-        if (songQuerySpecification.IncludeAlbum)
-        {
-            if (songQuerySpecification.IncludeAlbumArtist)
-            {
-                songSet.Include(s => s.Album)
-                    .ThenInclude(a => a.Artist);
-            }
-            else
-            {
-                songSet.Include(s => s.Album);
-            }
-        }
-
-        if (songQuerySpecification.IncludePrimaryGenres)
-        {
-            songSet.Include(s => s.PrimaryGenres);
-        }
-
-        if (songQuerySpecification.IncludeInfluenceGenres)
-        {
-            songSet.Include(s => s.InfluenceGenres);
+            labelSet.Include(s => s.Releases);
         }
     }
 }

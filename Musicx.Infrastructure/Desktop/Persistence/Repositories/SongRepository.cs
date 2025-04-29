@@ -8,26 +8,26 @@ using Musicx.Domain.Models;
 
 namespace Musicx.Infrastructure.Persistence.Repositories;
 
-public class AlbumRepository(
+internal sealed class SongRepository(
     AppDbContext context,
-    IAlbumCache albumCache,
-    ILoggerFactory loggerFactory) : IAlbumRepository
+    ISongCache songCache,
+    ILoggerFactory loggerFactory) : ISongRepository
 {
-    private readonly ILogger<AlbumRepository> _logger = loggerFactory.CreateLogger<AlbumRepository>();
+    private readonly ILogger<SongRepository> _logger = loggerFactory.CreateLogger<SongRepository>();
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Album : {id}");
+        _logger.Db($"📄 Delete Song : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
-            var album = await context.Albums.FindAsync(id);
+            var song = await context.Songs.FindAsync(id);
 
-            if (null != album)
+            if (null != song)
             {
-                context.Albums.Remove(album);
+                context.Songs.Remove(song);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -40,27 +40,27 @@ public class AlbumRepository(
         }
     }
 
-    public async Task<Album?> FindByIdAsync(long id, IQuerySpecification<Album>? albumQuerySpecification = null)
+    public async Task<Song?> FindByIdAsync(long id, IQuerySpecification<Song>? songQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Album : {id}");
+        _logger.Db($"📄 Find By Id Song : {id}");
         
-        var albumSet = context.Albums;
-        GetIncludes(albumSet, albumQuerySpecification);
+        var songSet = context.Songs;
+        GetIncludes(songSet, songQuerySpecification);
         
-        return await albumSet
+        return await songSet
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
-    public async Task<List<Album>> FindAsync(int skip = 0, int take = 100, Expression<Func<Album, bool>>? filter = null,
-        IQuerySpecification<Album>? albumQuerySpecification = null)
+    public async Task<List<Song>> FindAsync(int skip = 0, int take = 100, Expression<Func<Song, bool>>? filter = null,
+        IQuerySpecification<Song>? songQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Album");
+        _logger.Db($"📄 Find Song");
         
-        var albumSet = context.Albums;
+        var songSet = context.Songs;
         
-        GetIncludes(albumSet, albumQuerySpecification);
-        var query = albumSet.AsQueryable();
+        GetIncludes(songSet, songQuerySpecification);
+        var query = songSet.AsQueryable();
 
         if (null != filter)
         {
@@ -74,22 +74,22 @@ public class AlbumRepository(
             .ToListAsync();
     }
 
-    public async Task<List<Album>> FindIn(IEnumerable<long> ids, IQuerySpecification<Album>? albumQuerySpecification = null)
+    public async Task<List<Song>> FindIn(IEnumerable<long> ids, IQuerySpecification<Song>? songQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Album");
+        _logger.Db("📄 Find In Song");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
-        if (!enumerable.Any())
+        if (0 == enumerable.Length)
         {
             _logger.Debug("ℹ️ Empty List in Find In");
             return [];
         }
         
-        var albumSet = context.Albums;
-        GetIncludes(albumSet, albumQuerySpecification);
+        var songSet = context.Songs;
+        GetIncludes(songSet, songQuerySpecification);
         
-        return await albumSet
+        return await songSet
             .Where(s => enumerable.Contains(s.Id))
             .AsNoTracking()
             .ToListAsync();
@@ -97,12 +97,12 @@ public class AlbumRepository(
 
     public async Task<int> GetCountAsync()
     {
-        return await context.Albums.CountAsync();
+        return await context.Songs.CountAsync();
     }
 
-    public async Task<long> SaveAsync(Album entity)
+    public async Task<long> SaveAsync(Song entity)
     {
-        _logger.Db("📄 Save Album");
+        _logger.Db("📄 Save Song");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -110,11 +110,11 @@ public class AlbumRepository(
         {
             if (0 == entity.Id)
             {
-                context.Albums.Add(entity);
+                context.Songs.Add(entity);
             }
             else
             {
-                context.Albums.Update(entity);
+                context.Songs.Update(entity);
             }
 
             await context.SaveChangesAsync();
@@ -130,9 +130,9 @@ public class AlbumRepository(
         }
     }
 
-    public async Task<List<long>> SaveAllAsync(IEnumerable<Album> entities)
+    public async Task<List<long>> SaveAllAsync(IEnumerable<Song> entities)
     {
-        _logger.Db("📄 SaveAll Album");
+        _logger.Db("📄 SaveAll Song");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -140,18 +140,18 @@ public class AlbumRepository(
 
         try
         {
-            foreach (var album in entities)
+            foreach (var song in entities)
             {
-                if (0 == album.Id)
+                if (0 == song.Id)
                 {
-                    context.Albums.Add(album);
+                    context.Songs.Add(song);
                 }
                 else
                 {
-                    context.Albums.Update(album);
+                    context.Songs.Update(song);
                 }
                 
-                ids.Add(album.Id);
+                ids.Add(song.Id);
             }
 
             await context.SaveChangesAsync();
@@ -167,28 +167,41 @@ public class AlbumRepository(
         }
     }
 
-    private void GetIncludes(in DbSet<Album> albumSet, IQuerySpecification<Album>? querySpecification = null)
+    private void GetIncludes(in DbSet<Song> songSet, IQuerySpecification<Song>? querySpecification = null)
     {
         if (null == querySpecification)
         {
             return;
         }
         
-        var albumQuerySpecification = (AlbumQuerySpecification)querySpecification;
+        var songQuerySpecification = (SongQuerySpecification)querySpecification;
 
-        if (albumQuerySpecification.IncludeArtist)
+        if (songQuerySpecification.IncludeArtist)
         {
-            albumSet.Include(s => s.Artist);
+            songSet.Include(s => s.Artist);
         }
 
-        if (albumQuerySpecification.IncludePrimaryGenres)
+        if (songQuerySpecification.IncludeAlbum)
         {
-            albumSet.Include(s => s.PrimaryGenres);
+            if (songQuerySpecification.IncludeAlbumArtist)
+            {
+                songSet.Include(s => s.Album)
+                    .ThenInclude(a => a.Artist);
+            }
+            else
+            {
+                songSet.Include(s => s.Album);
+            }
         }
 
-        if (albumQuerySpecification.IncludeInfluenceGenres)
+        if (songQuerySpecification.IncludePrimaryGenres)
         {
-            albumSet.Include(s => s.InfluenceGenres);
+            songSet.Include(s => s.PrimaryGenres);
+        }
+
+        if (songQuerySpecification.IncludeInfluenceGenres)
+        {
+            songSet.Include(s => s.InfluenceGenres);
         }
     }
 }

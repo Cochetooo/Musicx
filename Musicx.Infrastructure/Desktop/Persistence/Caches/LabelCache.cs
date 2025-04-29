@@ -4,7 +4,7 @@ using Musicx.Domain.Models;
 
 namespace Musicx.Infrastructure.Persistence.Caches;
 
-public class LabelCache(IAppConfiguration appConfiguration) : ILabelCache
+internal sealed class LabelCache(IAppConfiguration appConfiguration) : ILabelCache
 {
     private readonly int _maxCacheSize = appConfiguration.GetValue<int>("Persistence.CacheMaxSizes.Label");
     private readonly Dictionary<string, Label> _cache = new();

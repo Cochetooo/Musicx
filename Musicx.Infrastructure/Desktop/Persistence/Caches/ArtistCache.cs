@@ -4,7 +4,7 @@ using Musicx.Domain.Models;
 
 namespace Musicx.Infrastructure.Persistence.Caches;
 
-public class ArtistCache(IAppConfiguration appConfiguration) : IArtistCache
+internal sealed class ArtistCache(IAppConfiguration appConfiguration) : IArtistCache
 {
     private readonly int _maxCacheSize = appConfiguration.GetValue<int>("Persistence.CacheMaxSizes.Artist");
     private readonly Dictionary<string, Artist> _cache = new();
