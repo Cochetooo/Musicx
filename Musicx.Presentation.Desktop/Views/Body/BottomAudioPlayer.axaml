@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Musicx.Presentation.Desktop.Views.Body.BottomAudioPlayer">
+    
+    <Border Background="#202020D0" Height="100" CornerRadius="20" Padding="10" BoxShadow="5 5 10 0 DarkGray">
+        <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+            <!-- Left: Album info -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+                <Image Width="64" Height="64"/>
+                <StackPanel>
+                    <TextBlock Text="Titre du morceau" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="Nom de l'artiste" FontSize="12" Foreground="#CCCCCC"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Middle: Playback controls -->
+            <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Spacing="5">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+                    <Button Content="⏮" Width="32" Height="32"/>
+                    <Button Content="⏪" Width="32" Height="32"/>
+                    <Button Content="▶️" Width="48" Height="48"/>
+                    <Button Content="⏩" Width="32" Height="32"/>
+                    <Button Content="⏭" Width="32" Height="32"/>
+                </StackPanel>
+                <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+                    <TextBlock Grid.Column="0" Text="1:23" Margin="4" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="50" Margin="4"/>
+                    <TextBlock Grid.Column="2" Text="3:45" Margin="4" VerticalAlignment="Center"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- Right: Options -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+                <ToggleButton Content="🔀" ToolTip.Tip="Aléatoire" Width="32" Height="32"/>
+                <ComboBox Width="80" SelectedIndex="0">
+                    <ComboBoxItem Content="NoRepeat"/>
+                    <ComboBoxItem Content="Repeat"/>
+                    <ComboBoxItem Content="Repeat Song"/>
+                </ComboBox>
+                <ToggleButton Content="➡️" ToolTip.Tip="Afficher/Masquer la droite" Width="32" Height="32"/>
+                <ToggleButton Content="🔇" ToolTip.Tip="Mute" Width="32" Height="32"/>
+                <Slider Minimum="0" Maximum="100" Value="75" Width="80"/>
+                <TextBlock Text="75" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+    
+</UserControl>

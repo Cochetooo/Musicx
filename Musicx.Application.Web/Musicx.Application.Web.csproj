@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Musicx.Domain\Musicx.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Interfaces\" />
+    </ItemGroup>
+
 </Project>

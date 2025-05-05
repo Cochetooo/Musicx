@@ -1,19 +1,23 @@
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InArtist : BaseModel
-{
-    public string? ArtworkUrl { get; set; }
-    public string? Country { get; set; }
-    public string Discriminator { get; set; } = null!;
-    public string Name { get; set; } = null!;
+public sealed record InArtist(
+    // Primary Key
+    long Id,
     
-    public ICollection<long> MemberIds { get; set; } = new List<long>();
-    public DateTime? FormationDate { get; set; }
-    public DateTime? SplitDate { get; set; }
+    // Required Columns
+    string Discriminator,
+    string Name,
     
-    public ICollection<long> BandIds { get; set; } = new List<long>();
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public DateTime? BirthDate { get; set; }
-    public DateTime? DeathDate { get; set; }
-}
+    // Optional Relationships
+    IReadOnlyList<long>? MemberIds,
+    IReadOnlyList<long>? BandIds,
+    
+    // Optional Columns
+    string? ArtworkUrl,
+    string? Country,
+    DateTime? FormationDate,
+    DateTime? SplitDate,
+    string? FirstName,
+    string? LastName,
+    DateTime? BirthDate,
+    DateTime? DeathDate);

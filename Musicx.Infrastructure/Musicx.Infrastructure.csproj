@@ -7,14 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Api\" />
+      <Folder Include="Api\Persistence\Repositories\" />
       <Folder Include="Desktop\" />
       <Folder Include="Shared\" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Musicx.Application.Api\Musicx.Application.Api.csproj" />
       <ProjectReference Include="..\Musicx.Application.Shared\Musicx.Application.Shared.csproj" />
       <ProjectReference Include="..\Musicx.Application.Desktop\Musicx.Application.Desktop.csproj" />
+      <ProjectReference Include="..\Musicx.Application.Web\Musicx.Application.Web.csproj" />
       <ProjectReference Include="..\Musicx.Domain\Musicx.Domain.csproj" />
     </ItemGroup>
 
@@ -26,6 +28,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.4" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
       <PackageReference Include="z440.atl.core" Version="6.22.0" />
     </ItemGroup>
 

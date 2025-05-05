@@ -1,19 +1,19 @@
-using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Desktop.Interfaces.Persistence;
+using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Domain.Models;
 
-namespace Musicx.Infrastructure.Persistence.Caches;
+namespace Musicx.Infrastructure.Desktop.Persistence.Caches;
 
-internal sealed class SongCache(IAppConfiguration appConfiguration) : ISongCache
+internal sealed class SongCache : ISongCache
 {
-    private readonly int _maxCacheSize = appConfiguration.GetValue<int>("Persistence.CacheMaxSizes.Song");
+    private const int MaxCacheSize = 10_000;
     private readonly Dictionary<string, Song> _cache = new();
 
     public Song? Get(string key) => _cache.TryGetValue(key, out var song) ? song : null;
 
     public void Add(string key, Song song)
     {
-        if (_cache.Count >= _maxCacheSize)
+        if (_cache.Count >= MaxCacheSize)
         {
             _cache.Remove(_cache.Keys.First());
         }

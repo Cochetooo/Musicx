@@ -1,21 +1,27 @@
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InSong : BaseModel
-{
-    public long? AlbumId { get; set; }
-    public long? ArtistId { get; set; }
-    public ICollection<long> PrimaryGenreIds { get; set; } = new List<long>();
-    public ICollection<long> InfluenceGenreIds { get; set; } = new List<long>();
+public sealed record InSong(
+    // Primary Key
+    long Id,
     
-    public int? DiscNumber { get; set; }
-    public long? Duration { get; set; }
-    public string? Lyrics { get; set; }
-    public string Title { get; set; } = null!;
-    public int? TrackNumber { get; set; }
+    // Required Relationships
+    IReadOnlyList<long> PrimaryGenreIds,
+    IReadOnlyList<long> InfluenceGenreIds,
     
-    public ushort? BitRate { get; set; }
-    public string? FilePath { get; set; } = null!;
-    public string? Format { get; set; }
-    public double? SampleRate { get; set; }
-    public double? VolumeModifier { get; set; }
-}
+    // Required Columns
+    string Title,
+
+    // Optional Relationships
+    long? AlbumId,
+    long? ArtistId,
+    
+    // Optional Columns
+    int? DiscNumber,
+    long? Duration,
+    string? Lyrics,
+    int? TrackNumber,
+    ushort? BitRate,
+    string? FilePath,
+    string? Format,
+    double? SampleRate,
+    double? VolumeModifier);

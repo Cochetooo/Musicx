@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Musicx.Domain.Models;
 
-namespace Musicx.Infrastructure.Persistence;
+namespace Musicx.Infrastructure.Desktop.Persistence;
 
 /// <summary>
 /// Database context for local songs.

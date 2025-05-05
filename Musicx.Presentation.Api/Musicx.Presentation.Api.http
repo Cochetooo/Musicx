@@ -1,6 +1,6 @@
-@Musicx.Presentation.Api_HostAddress = http://localhost:5115
+@Musicx_Presentation_Api_HostAddress = http://localhost:5115
 
-GET {{Musicx.Presentation.Api_HostAddress}}/weatherforecast/
+GET {{Musicx_Presentation_Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

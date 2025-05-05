@@ -3,10 +3,13 @@
         xmlns:vm="using:Musicx.Presentation.Desktop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:body="clr-namespace:Musicx.Presentation.Desktop.Views.Body"
+        xmlns:views="clr-namespace:Musicx.Presentation.Desktop.Views"
+        mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
         x:Class="Musicx.Presentation.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Width="1280" Height="800" Background="#1E1E1E"
+        Icon="/Assets/Images/Logo/Logo500.png"
         Title="Musicx.Presentation.Desktop">
 
     <Design.DataContext>
@@ -15,6 +18,28 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Top bar -->
+        <views:MainTitleBar Grid.Row="0"/>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,2,*,2,Auto" Margin="10">
+            <!-- Sidebar Left -->
+            <body:SidebarLeft Grid.Column="0" x:Name="LeftSidebar"/>
+            
+            <GridSplitter Grid.Column="1" Background="DarkGray" ResizeDirection="Columns"/>
+
+            <!-- Main Content -->
+            <body:MainContent x:Name="MainContent" Grid.Column="2" Margin="10,0"/>
+            
+            <GridSplitter Grid.Column="3" Background="DarkGray" ResizeDirection="Columns"/>
+
+            <!-- Sidebar Right -->
+            <body:SidebarRight x:Name="RightSidebar" Grid.Column="4"/>
+        </Grid>
+
+        <!-- Bottom Audio Player -->
+        <body:BottomAudioPlayer Grid.Row="2" Margin="10,10,10,10"/>
+    </Grid>
 
 </Window>

@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="60"
+             x:Class="Musicx.Presentation.Desktop.Views.MainTitleBar">
+    
+    <Border Background="#40FFFFFF" CornerRadius="0,0,12,12" Padding="10" Effect="{DynamicResource DropShadowEffect}">
+        <DockPanel VerticalAlignment="Center">
+            <!-- Left Section -->
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Spacing="8" Margin="0,0,10,0">
+                <Button Width="32" Height="32" Background="Transparent">
+                    <Image Source="avares://Musicx.Presentation.Desktop/Assets/Images/Logo/Logo500.png" Width="24" Height="24"/>
+                </Button>
+                <Button Content="&lt;" Width="40" Height="40"/>
+                <Button Content="&gt;" Width="40" Height="40"/>
+                <Border Width="300" Height="40" CornerRadius="16" Background="#20FFFFFF" VerticalAlignment="Center" Padding="8" Margin="8,0,0,0">
+                    <DockPanel>
+                        <!-- <Image Source="avares://YourApp/Assets/search_icon.png" Width="16" Height="16" Margin="0,0,4,0"/> -->
+                        <TextBox Watermark="Search..." BorderThickness="0" Background="Transparent"/>
+                    </DockPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Middle Section -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                <Button Width="40" Height="40" CornerRadius="20" Content="📅" ToolTip.Tip="Événements"/>
+                <Button Width="40" Height="40" CornerRadius="20" Content="📊" ToolTip.Tip="Statistiques"/>
+                <Menu>
+                    <MenuItem Header="👤" Width="40" Height="40" CornerRadius="20">
+                        <MenuItem Header="Mon Profil"/>
+                        <MenuItem Header="Déconnexion"/>
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
+        </DockPanel>
+    </Border>
+    
+</UserControl>

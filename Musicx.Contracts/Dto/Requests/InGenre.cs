@@ -1,8 +1,12 @@
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InGenre : BaseModel
-{
-    public ICollection<long> ChildIds { get; set; } = new List<long>();
-    public ICollection<long> ParentIds { get; set; } = new List<long>();
-    public string Name { get; set; } = null!;
-}
+public sealed record InGenre(
+    // Primary Key
+    long Id,
+    
+    // Required Relationships
+    IReadOnlyList<long> ChildIds,
+    IReadOnlyList<long> ParentIds,
+    
+    // Required Columns
+    string Name);

@@ -1,11 +1,13 @@
 namespace Musicx.Contracts.Dto.Responses;
 
-public sealed class OutSong : BaseModel
+public sealed class OutSong
 {
+    public long Id { get; set; }
+    
     public OutAlbum? Album { get; set; }
     public OutArtist? Artist { get; set; }
-    public ICollection<OutGenre> PrimaryGenres { get; set; } = new List<OutGenre>();
-    public ICollection<OutGenre> InfluenceGenres { get; set; } = new List<OutGenre>();
+    public IReadOnlyList<OutGenre> PrimaryGenres { get; set; } = new List<OutGenre>();
+    public IReadOnlyList<OutGenre> InfluenceGenres { get; set; } = new List<OutGenre>();
     
     public int? DiscNumber { get; set; }
     public long? Duration { get; set; }

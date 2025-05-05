@@ -1,11 +1,11 @@
 using ATL;
-using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
+using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Domain.Enums;
 using Musicx.Domain.Models;
 
-namespace Musicx.Infrastructure.Services.LocalLibrary;
+namespace Musicx.Infrastructure.Desktop.Services.LocalLibrary;
 
 public class UcReadAudioFile(
     ILoggerFactory loggerFactory) : IReadAudioFileUseCase

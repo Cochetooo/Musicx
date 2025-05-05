@@ -1,12 +1,12 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Musicx.Application.Shared.Interfaces.Common;
-using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Specifications;
+using Musicx.Application.Shared.Interfaces.Common;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Domain.Models;
 
-namespace Musicx.Infrastructure.Persistence.Repositories;
+namespace Musicx.Infrastructure.Desktop.Persistence.Repositories;
 
 internal sealed class SongRepository(
     AppDbContext context,
@@ -167,7 +167,7 @@ internal sealed class SongRepository(
         }
     }
 
-    private void GetIncludes(in DbSet<Song> songSet, IQuerySpecification<Song>? querySpecification = null)
+    private static void GetIncludes(in DbSet<Song> songSet, IQuerySpecification<Song>? querySpecification = null)
     {
         if (null == querySpecification)
         {

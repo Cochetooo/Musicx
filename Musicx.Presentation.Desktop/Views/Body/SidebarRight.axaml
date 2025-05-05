@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Musicx.Presentation.Desktop.Views.Body.SidebarRight">
+    
+    <Grid Width="300" MinWidth="150" MaxWidth="500" IsVisible="False">
+        <Border CornerRadius="20" Background="#2B2B2B" Padding="10"  BoxShadow="5 5 10 0 DarkGray">
+            <DockPanel>
+                <!-- Selector -->
+                <ComboBox x:Name="SidebarRightSelector" Margin="0 0 0 10">
+                    <ComboBoxItem Content="Queue"/>
+                    <ComboBoxItem Content="Friend Activity"/>
+                    <ComboBoxItem Content="Edit Mode"/>
+                </ComboBox>
+
+                <!-- Content -->
+                <ContentControl x:Name="SidebarRightContent"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+    
+</UserControl>

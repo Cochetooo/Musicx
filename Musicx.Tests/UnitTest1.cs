@@ -20,7 +20,7 @@ public class Tests
         var services = new ServiceCollection();
 
         services
-            .AddApplication()
+            .AddMusicxDesktopApp()
             .AddMusicxInfrastructure()
             .AddMusicxDesktop();
         

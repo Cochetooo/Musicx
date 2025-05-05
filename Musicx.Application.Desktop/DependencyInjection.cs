@@ -9,7 +9,7 @@ public static class DependencyInjection
     /// <summary>
     /// Add application module services and use cases.
     /// </summary>
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IServiceCollection AddMusicxDesktopApp(this IServiceCollection services)
     {
         // Non external framework dependant use cases
         services.AddScoped<IImportLocalSongsUseCase, UcImportLocalSongs>();

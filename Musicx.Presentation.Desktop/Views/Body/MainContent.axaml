@@ -1,0 +1,7 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Musicx.Presentation.Desktop.Views.Body.MainContent">
+    <Border Background="#3A3A3A" CornerRadius="20" Padding="10" BoxShadow="5 5 10 0 DarkGray">
+        <ContentControl x:Name="MainContentArea"/>
+    </Border>
+</UserControl>
