@@ -1,21 +1,21 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Musicx.Presentation.Desktop.Views.Body.SidebarLeft">
-    
-    <Grid Width="300" MinWidth="150" MaxWidth="500">
-        <Border CornerRadius="20" Background="#2B2B2B" Padding="10" BoxShadow="5 5 10 0 DarkGray">
-            <DockPanel>
-                <!-- Selector -->
-                <ComboBox x:Name="SidebarSelector" Margin="0 0 0 10">
-                    <ComboBoxItem Content="Playlists"/>
-                    <ComboBoxItem Content="My Artists"/>
-                    <ComboBoxItem Content="My Genres"/>
-                </ComboBox>
 
-                <!-- Content -->
-                <ContentControl x:Name="SidebarContent"/>
-            </DockPanel>
-        </Border>
-    </Grid>
+    <DockPanel>
+        <!-- Selector -->
+        <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Column="0" Text="Playlists" Classes="Header" />
+            
+            <ComboBox Grid.Column="1" x:Name="SidebarSelector" Margin="0 0 0 10" BorderThickness="0" Background="Transparent">
+                <ComboBoxItem Content="Playlists"/>
+                <ComboBoxItem Content="My Artists"/>
+                <ComboBoxItem Content="My Genres"/>
+            </ComboBox>
+        </Grid>
+
+        <!-- Content -->
+        <ContentControl x:Name="SidebarContent"/>
+    </DockPanel>
     
 </UserControl>

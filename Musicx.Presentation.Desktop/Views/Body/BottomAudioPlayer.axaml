@@ -1,48 +1,90 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Musicx.Presentation.Desktop.Views.Body.BottomAudioPlayer">
+             xmlns:avalonia="https://github.com/projektanker/icons.avalonia"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Musicx.Presentation.Desktop.Views.Body.BottomAudioPlayer"
+             mc:Ignorable="d"
+             d:DesignWidth="1400" d:DesignHeight="128">
     
-    <Border Background="#202020D0" Height="100" CornerRadius="20" Padding="10" BoxShadow="5 5 10 0 DarkGray">
-        <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-            <!-- Left: Album info -->
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
-                <Image Width="64" Height="64"/>
-                <StackPanel>
-                    <TextBlock Text="Titre du morceau" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="Nom de l'artiste" FontSize="12" Foreground="#CCCCCC"/>
-                </StackPanel>
+    <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+        <!-- Left: Album info -->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+            <Image Width="128" Height="128"/>
+            <StackPanel>
+                <TextBlock Text="Titre du morceau" Classes="Header" />
+                <TextBlock Text="Nom de l'artiste" Classes="Secondary" />
             </StackPanel>
+        </StackPanel>
 
-            <!-- Middle: Playback controls -->
-            <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Spacing="5">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
-                    <Button Content="⏮" Width="32" Height="32"/>
-                    <Button Content="⏪" Width="32" Height="32"/>
-                    <Button Content="▶️" Width="48" Height="48"/>
-                    <Button Content="⏩" Width="32" Height="32"/>
-                    <Button Content="⏭" Width="32" Height="32"/>
-                </StackPanel>
-                <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-                    <TextBlock Grid.Column="0" Text="1:23" Margin="4" VerticalAlignment="Center"/>
-                    <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="50" Margin="4"/>
-                    <TextBlock Grid.Column="2" Text="3:45" Margin="4" VerticalAlignment="Center"/>
-                </Grid>
+        <!-- Middle: Playback controls -->
+        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Spacing="5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+                <Button>
+                    <Button.Content>
+                        <avalonia:Icon Value="fa-solid fa-caret-left" />
+                    </Button.Content>
+                </Button>
+                
+                <Button>
+                    <Button.Content>
+                        <avalonia:Icon Value="fa-solid fa-backward" />
+                    </Button.Content>
+                </Button>
+                
+                <Button Width="48" Height="48">
+                    <Button.Content>
+                        <avalonia:Icon Value="fa-solid fa-play" FontSize="24" />
+                    </Button.Content>
+                </Button>
+                
+                <Button>
+                    <Button.Content>
+                        <avalonia:Icon Value="fa-solid fa-forward" />
+                    </Button.Content>
+                </Button>
+                
+                <Button>
+                    <Button.Content>
+                        <avalonia:Icon Value="fa-solid fa-caret-right" />
+                    </Button.Content>
+                </Button>
             </StackPanel>
+            <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+                <TextBlock Grid.Column="0" Text="1:23" Margin="4" VerticalAlignment="Center"/>
+                <Slider Grid.Column="1" Width="300" Minimum="0" Maximum="100" Value="50" Margin="4"/>
+                <TextBlock Grid.Column="2" Text="3:45" Margin="4" VerticalAlignment="Center"/>
+            </Grid>
+        </StackPanel>
 
-            <!-- Right: Options -->
-            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
-                <ToggleButton Content="🔀" ToolTip.Tip="Aléatoire" Width="32" Height="32"/>
-                <ComboBox Width="80" SelectedIndex="0">
-                    <ComboBoxItem Content="NoRepeat"/>
-                    <ComboBoxItem Content="Repeat"/>
-                    <ComboBoxItem Content="Repeat Song"/>
-                </ComboBox>
-                <ToggleButton Content="➡️" ToolTip.Tip="Afficher/Masquer la droite" Width="32" Height="32"/>
-                <ToggleButton Content="🔇" ToolTip.Tip="Mute" Width="32" Height="32"/>
-                <Slider Minimum="0" Maximum="100" Value="75" Width="80"/>
-                <TextBlock Text="75" VerticalAlignment="Center"/>
-            </StackPanel>
-        </Grid>
-    </Border>
+        <!-- Right: Options -->
+        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+            <ToggleButton ToolTip.Tip="Aléatoire">
+                <ToggleButton.Content>
+                    <avalonia:Icon Value="fa-solid fa-shuffle" />
+                </ToggleButton.Content>
+            </ToggleButton>
+            
+            <Button ToolTip.Tip="Mode de répétition">
+                <Button.Content>
+                    <avalonia:Icon Value="fa-solid fa-repeat" />
+                </Button.Content>
+            </Button>
+            
+            <ToggleButton ToolTip.Tip="Afficher/Masquer la section droite">
+                <ToggleButton.Content>
+                    <avalonia:Icon Value="fa-solid fa-list-ul" />
+                </ToggleButton.Content>
+            </ToggleButton>
+            
+            <ToggleButton ToolTip.Tip="Activer/Désactiver le son">
+                <ToggleButton.Content>
+                    <avalonia:Icon Value="fa-solid fa-volume-high" />
+                </ToggleButton.Content>
+            </ToggleButton>
+            <Slider Minimum="0" Maximum="100" Value="75" Width="100"/>
+            <TextBlock Text="75" VerticalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
     
 </UserControl>

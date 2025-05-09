@@ -1,28 +1,4 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- Gradients -->
-    <LinearGradientBrush x:Key="MainGradient" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Offset="0" Color="#FF6A00"/>
-        <GradientStop Offset="1" Color="#EE0979"/>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="GlassBackground" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#40FFFFFF" Offset="0"/>
-        <GradientStop Color="#20FFFFFF" Offset="1"/>
-    </LinearGradientBrush>
-
-    <!-- Card Style -->
-    <Style x:Key="NeumorphicCard" Selector="Border">
-        <Setter Property="BoxShadow" Value="5 5 10 0 DarkGray" />
-        <Setter Property="CornerRadius" Value="20"/>
-        <Setter Property="Background" Value="{StaticResource GlassBackground}"/>
-    </Style>
-
-    <!-- Rounded Button Style -->
-    <Style x:Key="RoundButton" Selector="Button">
-        <Setter Property="CornerRadius" Value="20"/>
-        <Setter Property="Width" Value="40"/>
-        <Setter Property="Height" Value="40"/>
-        <Setter Property="Background" Value="#30FFFFFF"/>
-    </Style>
+    <FontFamily x:Key="PrimaryFont">avares://Musicx.Presentation.Desktop/Assets/Fonts/#Space Grotesk</FontFamily>
 </ResourceDictionary>

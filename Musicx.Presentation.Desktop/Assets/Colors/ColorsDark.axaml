@@ -1,0 +1,34 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Foreground colors -->
+    <SolidColorBrush x:Key="PrimaryText">#fcffff</SolidColorBrush>
+    <SolidColorBrush x:Key="DisabledText">#cccfcf</SolidColorBrush>
+    
+    <!-- Background Colors -->
+    <SolidColorBrush x:Key="Primary">#2266ca</SolidColorBrush>
+    <SolidColorBrush x:Key="Secondary">#3399fa</SolidColorBrush>
+    
+    <SolidColorBrush x:Key="Danger">#c84534</SolidColorBrush>
+    <SolidColorBrush x:Key="Info">#22abb8</SolidColorBrush>
+    <SolidColorBrush x:Key="Success">#22b888</SolidColorBrush>
+    <SolidColorBrush x:Key="Warning">#ffe333</SolidColorBrush>
+    
+    <SolidColorBrush x:Key="White">#0a1010</SolidColorBrush>
+    <SolidColorBrush x:Key="LighterGray">#1f2b2b</SolidColorBrush>
+    <SolidColorBrush x:Key="LightGray">#273434</SolidColorBrush>
+    <SolidColorBrush x:Key="Gray">#637575</SolidColorBrush>
+    <SolidColorBrush x:Key="DarkGray">#96a5a5</SolidColorBrush>
+    <SolidColorBrush x:Key="DarkerGray">#becfcf</SolidColorBrush>
+    <SolidColorBrush x:Key="Black">#f2ffff</SolidColorBrush>
+    
+    <!-- Gradients -->
+    <LinearGradientBrush x:Key="LighterBackground" StartPoint="50%,0%" EndPoint="50%,100%" >
+        <GradientStop Color="#0b1212" Offset="0.0" />
+        <GradientStop Color="#252b2b" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="LightBackground" StartPoint="50%,0%" EndPoint="50%,100%" >
+        <GradientStop Color="#1a2222" Offset="0.0" />
+        <GradientStop Color="#2a3434" Offset="1.0" />
+    </LinearGradientBrush>
+</ResourceDictionary>
