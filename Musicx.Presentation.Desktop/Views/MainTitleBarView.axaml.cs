@@ -4,12 +4,11 @@ using Musicx.Presentation.Desktop.ViewModels;
 
 namespace Musicx.Presentation.Desktop.Views;
 
-public partial class MainWindow : Window
+public partial class MainTitleBarView : UserControl
 {
-    public MainWindow()
+    public MainTitleBarView()
     {
         InitializeComponent();
-
-        DataContext = App.Services.GetRequiredService<MainWindowViewModel>();
+        DataContext = App.Services.GetRequiredService<MainTitleBarViewModel>();
     }
 }

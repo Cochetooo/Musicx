@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Musicx.Presentation.Desktop.Views.Body;
 
-public partial class MainContent : UserControl
+public partial class BottomAudioPlayerView : UserControl
 {
-    public MainContent()
+    public BottomAudioPlayerView()
     {
         InitializeComponent();
     }

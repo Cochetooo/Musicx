@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Musicx.Presentation.Desktop.Views.Body;
 
-public partial class SidebarLeft : UserControl
+public partial class SidebarLeftView : UserControl
 {
-    public SidebarLeft()
+    public SidebarLeftView()
     {
         InitializeComponent();
     }

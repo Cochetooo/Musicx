@@ -13,16 +13,10 @@
         Width="1440" Height="900"
         Icon="/Assets/Images/Logo/Logo500.png"
         Title="Musicx.Presentation.Desktop">
-
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
     
     <Grid RowDefinitions="Auto,*,Auto" Background="Transparent">
             <!-- Top bar -->
-            <views:MainTitleBar Grid.Row="0" Margin="10" x:Name="MainTitleBar" />
+            <views:MainTitleBarView Grid.Row="0" Margin="10" x:Name="MainTitleBar" />
 
             <!-- Main Content Area -->
             <Grid Grid.Row="1" Margin="10">
@@ -36,27 +30,27 @@
             
                 <!-- Sidebar Left -->
                 <Border Grid.Column="0" Styles="" MaxWidth="500" MinWidth="150" Padding="10" Background="{DynamicResource LighterBackground}" Margin="5,0" Classes="Card">
-                    <body:SidebarLeft x:Name="LeftSidebar"/>
+                    <body:SidebarLeftView x:Name="LeftSidebar"/>
                 </Border>
             
                 <GridSplitter Grid.Column="1" Margin="5,0" Width="4" Background="{DynamicResource LightGray}" ResizeDirection="Columns"/>
 
                 <!-- Main Content -->
                 <Border Grid.Column="2" Padding="10" Background="{DynamicResource LightBackground}" Margin="5,0" Classes="Card">
-                    <body:MainContent x:Name="MainContent" />
+                    <ContentControl Content="{Binding CurrentViewModel}"/>
                 </Border>
             
                 <GridSplitter Grid.Column="3" Width="4" Background="{DynamicResource LightGray}" ResizeDirection="Columns" Margin="5,0" />
 
                 <!-- Sidebar Right -->
                 <Border Grid.Column="4" Padding="10" MaxWidth="500" Background="{DynamicResource LighterBackground}" Margin="5,0" Classes="Card">
-                    <body:SidebarRight x:Name="RightSidebar" />
+                    <body:SidebarRightView x:Name="RightSidebar" />
                 </Border>
             </Grid>
 
             <!-- Bottom Audio Player -->
             <Border Grid.Row="2" Padding="10" Background="Transparent" Margin="10" Classes="Card">
-                <body:BottomAudioPlayer />
+                <body:BottomAudioPlayerView />
             </Border>
         </Grid>
 

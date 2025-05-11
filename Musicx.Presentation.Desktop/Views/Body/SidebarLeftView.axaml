@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Musicx.Presentation.Desktop.Views.Body.SidebarLeftView">
+
+    <DockPanel>
+        <!-- Selector -->
+        <Menu VerticalAlignment="Top">
+            <MenuItem>
+                <MenuItem.Header>
+                    <TextBlock Text="Playlists" Classes="Header" />
+                </MenuItem.Header>
+                
+                <MenuItem Header="Playlists" />
+                <MenuItem Header="My Artists" />
+                <MenuItem Header="My Genres" />
+            </MenuItem>
+        </Menu>
+
+        <!-- Content -->
+        <ContentControl x:Name="SidebarContent"/>
+    </DockPanel>
+    
+</UserControl>

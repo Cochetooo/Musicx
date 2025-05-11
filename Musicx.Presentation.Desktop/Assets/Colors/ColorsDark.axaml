@@ -22,13 +22,13 @@
     <SolidColorBrush x:Key="Black">#f2ffff</SolidColorBrush>
     
     <!-- Gradients -->
-    <LinearGradientBrush x:Key="LighterBackground" StartPoint="50%,0%" EndPoint="50%,100%" >
-        <GradientStop Color="#0b1212" Offset="0.0" />
-        <GradientStop Color="#252b2b" Offset="1.0" />
+    <LinearGradientBrush x:Key="LighterBackground" StartPoint="0%,50%" EndPoint="100%,50%" >
+        <GradientStop Color="#131516" Offset="0.0" />
+        <GradientStop Color="#2b2d2f" Offset="1.0" />
     </LinearGradientBrush>
     
-    <LinearGradientBrush x:Key="LightBackground" StartPoint="50%,0%" EndPoint="50%,100%" >
-        <GradientStop Color="#1a2222" Offset="0.0" />
-        <GradientStop Color="#2a3434" Offset="1.0" />
+    <LinearGradientBrush x:Key="LightBackground" StartPoint="0%,50%" EndPoint="100%,50%" >
+        <GradientStop Color="#232526" Offset="0.0" />
+        <GradientStop Color="#414345" Offset="1.0" />
     </LinearGradientBrush>
 </ResourceDictionary>

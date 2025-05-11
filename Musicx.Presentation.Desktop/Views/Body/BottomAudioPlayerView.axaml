@@ -3,7 +3,7 @@
              xmlns:avalonia="https://github.com/projektanker/icons.avalonia"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             x:Class="Musicx.Presentation.Desktop.Views.Body.BottomAudioPlayer"
+             x:Class="Musicx.Presentation.Desktop.Views.Body.BottomAudioPlayerView"
              mc:Ignorable="d"
              d:DesignWidth="1400" d:DesignHeight="128">
     
@@ -18,7 +18,7 @@
         </StackPanel>
 
         <!-- Middle: Playback controls -->
-        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Spacing="5">
+        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch" Margin="20,0" Spacing="5">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
                 <Button>
                     <Button.Content>
@@ -52,7 +52,7 @@
             </StackPanel>
             <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
                 <TextBlock Grid.Column="0" Text="1:23" Margin="4" VerticalAlignment="Center"/>
-                <Slider Grid.Column="1" Width="300" Minimum="0" Maximum="100" Value="50" Margin="4"/>
+                <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="50" Margin="4"/>
                 <TextBlock Grid.Column="2" Text="3:45" Margin="4" VerticalAlignment="Center"/>
             </Grid>
         </StackPanel>
@@ -82,7 +82,7 @@
                     <avalonia:Icon Value="fa-solid fa-volume-high" />
                 </ToggleButton.Content>
             </ToggleButton>
-            <Slider Minimum="0" Maximum="100" Value="75" Width="100"/>
+            <Slider Minimum="0" Maximum="100" Value="75" Width="150"/>
             <TextBlock Text="75" VerticalAlignment="Center"/>
         </StackPanel>
     </Grid>
