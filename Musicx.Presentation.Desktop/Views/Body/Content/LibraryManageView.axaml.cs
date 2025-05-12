@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Musicx.Presentation.Desktop.ViewModels.Body.Content;
 

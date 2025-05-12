@@ -15,6 +15,7 @@ public interface IBatchImportRepository
     /// <param name="albums">List of albums retrieved</param>
     /// <param name="artists">List of artists retrieved</param>
     /// <returns></returns>
+    /// <since>0.6.1</since>
     Task PersistBatchAsync(
         IEnumerable<Song> songs,
         IEnumerable<Album> albums,

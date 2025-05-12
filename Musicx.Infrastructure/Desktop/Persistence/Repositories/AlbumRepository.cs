@@ -181,6 +181,11 @@ internal sealed class AlbumRepository(
             albumSet.Include(s => s.Artist);
         }
 
+        if (albumQuerySpecification.IncludeReleases)
+        {
+            albumSet.Include(s => s.Releases);
+        }
+
         if (albumQuerySpecification.IncludePrimaryGenres)
         {
             albumSet.Include(s => s.PrimaryGenres);
