@@ -1,6 +1,6 @@
-﻿namespace Musicx.Application.Api.Interfaces.UseCases;
+﻿namespace Musicx.Application.Web.Interfaces.UseCases;
 
-public interface ISaveUseCase<T> where T : class
+public interface ISaveUseCase<in T> where T : class
 {
     Task ExecuteAsync(T entity);
     void Execute(T entity);

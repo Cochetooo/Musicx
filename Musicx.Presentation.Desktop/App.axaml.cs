@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml.Templates;
 using Microsoft.Extensions.DependencyInjection;
 using Musicx.Infrastructure;
 using Musicx.Presentation.Desktop.Services;
@@ -19,7 +20,7 @@ namespace Musicx.Presentation.Desktop;
 public partial class App : Avalonia.Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
-    
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -33,13 +34,23 @@ public partial class App : Avalonia.Application
         
         Services = serviceCollection.BuildServiceProvider();
         
+        DataTemplates.Add(Services.GetRequiredService<ViewLocator>());
+
+        var vm = Services.GetRequiredService<MainWindowViewModel>();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
+
+            var mainWindow = new MainWindow
+            {
+                DataContext = vm,
+            };
             
-            var mainWindow = Services.GetRequiredService<MainWindow>();
+            var windowProvider = Services.GetRequiredService<IWindowProvider>() as WindowProvider;
+            windowProvider?.SetWindow(mainWindow);
+
             desktop.MainWindow = mainWindow;
         }
 
@@ -64,24 +75,22 @@ public partial class App : Avalonia.Application
         services
             .AddMusicxInfrastructure()
             .AddMusicxDesktop();
-
+        
+        // 🔹 Providers / Services
+        services.AddSingleton<IWindowProvider, WindowProvider>();
+        services.AddSingleton<IContentViewProvider, ContentViewProvider>();
+        
+        // 🔹 View services
         services.AddSingleton<ViewLocator>();
-
-        services.AddSingleton<MainWindow>();
+        
+        // 🔹 View models
         services.AddSingleton<MainWindowViewModel>();
         
         services.AddSingleton<MainTitleBarViewModel>();
         services.AddSingleton<SidebarLeftViewModel>();
         services.AddSingleton<SidebarRightViewModel>();
         services.AddSingleton<BottomAudioPlayerViewModel>();
-
-        services.AddSingleton<LibraryManageView>();
+        
         services.AddSingleton<LibraryManageViewModel>();
-        
-        services.AddSingleton<Func<Window>>(() => ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-            ? desktop.MainWindow!
-            : throw new InvalidOperationException("No main window"));
-        
-        services.AddSingleton<IWindowProvider, WindowProvider>();
     }
 }

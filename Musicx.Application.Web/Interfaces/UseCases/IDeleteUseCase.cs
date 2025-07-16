@@ -1,4 +1,4 @@
-﻿namespace Musicx.Application.Api.Interfaces.UseCases;
+﻿namespace Musicx.Application.Web.Interfaces.UseCases;
 
 public interface IDeleteUseCase<T> where T : class
 {

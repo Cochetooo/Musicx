@@ -9,6 +9,5 @@ public partial class MainTitleBarView : UserControl
     public MainTitleBarView()
     {
         InitializeComponent();
-        DataContext = App.Services.GetRequiredService<MainTitleBarViewModel>();
     }
 }

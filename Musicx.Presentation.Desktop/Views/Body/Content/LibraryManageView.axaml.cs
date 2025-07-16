@@ -10,7 +10,5 @@ public partial class LibraryManageView : UserControl
     public LibraryManageView()
     {
         InitializeComponent();
-
-        DataContext = App.Services.GetRequiredService<LibraryManageViewModel>();
     }
 }

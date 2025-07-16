@@ -1,0 +1,52 @@
+﻿@inherits LayoutComponentBase
+
+<Layout>
+    <Layout>
+        <LayoutContent>
+            <Bar
+                CollapseMode="BarCollapseMode.Small"
+                Breakpoint="Breakpoint.Desktop"
+                NavigationBreakpoint="Breakpoint.Tablet"
+                Background="Background.Dark"
+                ThemeContrast="ThemeContrast.Dark">
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To="#">
+                            <BarIcon IconName="IconName.Music"/>
+                            <b>MUSICX</b>
+                        </BarLink>
+                    </BarItem>
+                </BarBrand>
+                <BarMenu>
+                    <BarStart>
+                        <BarItem>
+                            <BarLink To="/">Home</BarLink>
+                        </BarItem>
+                    </BarStart>
+                    <BarEnd>
+                        <BarItem>
+                            <BarDropdown>
+                                <BarDropdownToggle>More</BarDropdownToggle>
+                                <BarDropdownMenu>
+                                    <BarDropdownItem>
+                                        <BarLink To="/Admin">Admin Dashboard</BarLink>
+                                    </BarDropdownItem>
+                                </BarDropdownMenu>
+                            </BarDropdown>
+                        </BarItem>
+                        <BarItem>
+                            <Button Color="Color.Primary">Sign up</Button>
+                            <Button Color="Color.Secondary">Log in</Button>
+                        </BarItem>
+                    </BarEnd>
+                </BarMenu>
+            </Bar>
+        </LayoutContent>
+    </Layout>
+    
+    <Layout>
+        <LayoutContent Padding="Padding.Is3.OnAll">
+            @Body
+        </LayoutContent>
+    </Layout>
+</Layout>

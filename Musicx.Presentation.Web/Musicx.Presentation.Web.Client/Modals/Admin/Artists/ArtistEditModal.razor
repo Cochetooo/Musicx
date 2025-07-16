@@ -1,0 +1,26 @@
+@using Musicx.Contracts.Dto.Responses
+<Modal @bind-Visible="IsModalVisible">
+    <ModalContent Centered>
+        
+    </ModalContent>
+</Modal>
+
+@code {
+
+    private bool IsModalVisible { get; set; }
+    
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public List<OutArtist> SelectedArtists { get; set; } = [];
+
+    public void Show()
+    {
+        IsModalVisible = true;
+    }
+
+    private void Hide()
+    {
+        IsModalVisible = false;
+    }
+
+}

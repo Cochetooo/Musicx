@@ -6,5 +6,12 @@
              mc:Ignorable="d" d:DesignWidth="1250" d:DesignHeight="850"
              x:DataType="content:LibraryManageViewModel"
              x:Class="Musicx.Presentation.Desktop.Views.Body.Content.LibraryManageView">
-    Welcome Avalonia!
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <TextBlock Text="" />
+    </Grid>
 </UserControl>

@@ -1,6 +1,0 @@
-@Musicx_Presentation_Api_HostAddress = http://localhost:5115
-
-GET {{Musicx_Presentation_Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

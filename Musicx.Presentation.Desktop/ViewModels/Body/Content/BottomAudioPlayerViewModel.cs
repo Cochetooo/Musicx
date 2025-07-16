@@ -2,7 +2,7 @@ using ReactiveUI;
 
 namespace Musicx.Presentation.Desktop.ViewModels.Body.Content;
 
-public sealed class BottomAudioPlayerViewModel : ReactiveObject
+public sealed class BottomAudioPlayerViewModel : ViewModelBase
 {
     
 }

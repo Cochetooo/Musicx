@@ -11,24 +11,24 @@ using ReactiveUI;
 
 namespace Musicx.Presentation.Desktop.ViewModels;
 
-public sealed class MainTitleBarViewModel : ReactiveObject
+public sealed class MainTitleBarViewModel : ViewModelBase
 {
-    private readonly Window _window;
-    private readonly MainWindowViewModel _mainWindow;
+    private readonly IContentViewProvider _contentViewProvider;
 
-    public MainTitleBarViewModel(MainWindowViewModel mainWindow)
+    public MainTitleBarViewModel(
+        IWindowProvider windowProvider,
+        IContentViewProvider contentViewProvider)
     {
-        _mainWindow = mainWindow;
-        _window = mainWindow.Window;
+        _contentViewProvider = contentViewProvider;
         
         // Menu Commands
         OpenLibraryManageCommand = ReactiveCommand.Create(OpenLibraryManage);
         
         // Window Commands
-        MinimizeCommand = ReactiveCommand.Create(Minimize);
-        ToggleMaximizeCommand = ReactiveCommand.Create(ToggleMaximize);
-        CloseCommand = ReactiveCommand.Create(Close);
-        StartDragCommand = ReactiveCommand.Create<PointerPressedEventArgs>(StartDrag);
+        MinimizeCommand = ReactiveCommand.Create(windowProvider.Minimize);
+        ToggleMaximizeCommand = ReactiveCommand.Create(windowProvider.ToggleMaximize);
+        CloseCommand = ReactiveCommand.Create(windowProvider.Close);
+        StartDragCommand = ReactiveCommand.Create<PointerPressedEventArgs>(windowProvider.StartDrag);
     }
     
     #region Menu Commands
@@ -37,7 +37,7 @@ public sealed class MainTitleBarViewModel : ReactiveObject
 
     private void OpenLibraryManage()
     {
-        _mainWindow.CurrentViewModel = App.Services.GetRequiredService<LibraryManageViewModel>();
+        _contentViewProvider.SwitchTo(App.Services.GetRequiredService<LibraryManageViewModel>());
     }
     
     #endregion
@@ -45,21 +45,9 @@ public sealed class MainTitleBarViewModel : ReactiveObject
     #region Window Commands
     
     public ICommand MinimizeCommand { get; }
-    
-    private void Minimize() => _window.WindowState = WindowState.Minimized;
-    
     public ICommand ToggleMaximizeCommand { get; }
-    
-    private void ToggleMaximize() => _window.WindowState = _window.WindowState == WindowState.Maximized 
-        ? WindowState.Normal 
-        : WindowState.Maximized;
-    
     public ICommand CloseCommand { get; }
-    
-    private void Close() => _window.Close();
     public ICommand StartDragCommand { get; }
-    
-    private void StartDrag(PointerPressedEventArgs e) => _window.BeginMoveDrag(e);
     
     #endregion
 }

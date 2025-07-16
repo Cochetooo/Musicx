@@ -1,4 +1,4 @@
-﻿namespace Musicx.Application.Api.Interfaces.UseCases;
+﻿namespace Musicx.Application.Web.Interfaces.UseCases;
 
 public interface IListUseCase<T> where T : class
 {

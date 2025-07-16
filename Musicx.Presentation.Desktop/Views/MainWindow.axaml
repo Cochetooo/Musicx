@@ -16,7 +16,7 @@
     
     <Grid RowDefinitions="Auto,*,Auto" Background="Transparent">
             <!-- Top bar -->
-            <views:MainTitleBarView Grid.Row="0" Margin="10" x:Name="MainTitleBar" />
+            <views:MainTitleBarView Grid.Row="0" Margin="10" DataContext="{Binding MainTitleBarViewModel}" />
 
             <!-- Main Content Area -->
             <Grid Grid.Row="1" Margin="10">
@@ -30,7 +30,7 @@
             
                 <!-- Sidebar Left -->
                 <Border Grid.Column="0" Styles="" MaxWidth="500" MinWidth="150" Padding="10" Background="{DynamicResource LighterBackground}" Margin="5,0" Classes="Card">
-                    <body:SidebarLeftView x:Name="LeftSidebar"/>
+                    <body:SidebarLeftView DataContext="{Binding SidebarLeftViewModel}"/>
                 </Border>
             
                 <GridSplitter Grid.Column="1" Margin="5,0" Width="4" Background="{DynamicResource LightGray}" ResizeDirection="Columns"/>
@@ -44,13 +44,13 @@
 
                 <!-- Sidebar Right -->
                 <Border Grid.Column="4" Padding="10" MaxWidth="500" Background="{DynamicResource LighterBackground}" Margin="5,0" Classes="Card">
-                    <body:SidebarRightView x:Name="RightSidebar" />
+                    <body:SidebarRightView DataContext="{Binding SidebarRightViewModel}" />
                 </Border>
             </Grid>
 
             <!-- Bottom Audio Player -->
             <Border Grid.Row="2" Padding="10" Background="Transparent" Margin="10" Classes="Card">
-                <body:BottomAudioPlayerView />
+                <body:BottomAudioPlayerView DataContext="{Binding BottomAudioPlayerViewModel}" />
             </Border>
         </Grid>
 
