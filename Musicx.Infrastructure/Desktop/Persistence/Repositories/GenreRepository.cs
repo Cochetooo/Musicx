@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
@@ -11,13 +12,13 @@ namespace Musicx.Infrastructure.Desktop.Persistence.Repositories;
 internal sealed class GenreRepository(
     AppDbContext context,
     IGenreCache genreCache,
-    ILoggerFactory loggerFactory) : IGenreRepository
+    ILoggerProvider loggerProvider) : IGenreRepository
 {
-    private readonly ILogger<GenreRepository> _logger = loggerFactory.CreateLogger<GenreRepository>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(GenreRepository));
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Genre : {id}");
+        _logger.LogDebug($"📄 Delete Genre : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -34,7 +35,7 @@ internal sealed class GenreRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Could not delete id {id}", ex);
+            _logger.LogCritical($"❌ Could not delete id {id}", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -42,7 +43,7 @@ internal sealed class GenreRepository(
 
     public async Task<Genre?> FindByIdAsync(long id, IQuerySpecification<Genre>? genreQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Genre : {id}");
+        _logger.LogDebug($"📄 Find By Id Genre : {id}");
         
         var genreSet = context.Genres;
         GetIncludes(genreSet, genreQuerySpecification);
@@ -55,7 +56,7 @@ internal sealed class GenreRepository(
     public async Task<List<Genre>> FindAsync(int skip = 0, int take = 100, Expression<Func<Genre, bool>>? filter = null,
         IQuerySpecification<Genre>? genreQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Genre");
+        _logger.LogDebug($"📄 Find Genre");
         
         var genreSet = context.Genres;
         
@@ -76,13 +77,13 @@ internal sealed class GenreRepository(
 
     public async Task<List<Genre>> FindIn(IEnumerable<long> ids, IQuerySpecification<Genre>? genreQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Genre");
+        _logger.LogDebug("📄 Find In Genre");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
         if (0 == enumerable.Length)
         {
-            _logger.Debug("ℹ️ Empty List in Find In");
+            _logger.LogDebug("ℹ️ Empty List in Find In");
             return [];
         }
         
@@ -102,7 +103,7 @@ internal sealed class GenreRepository(
 
     public async Task<long> SaveAsync(Genre entity)
     {
-        _logger.Db("📄 Save Genre");
+        _logger.LogDebug("📄 Save Genre");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -124,7 +125,7 @@ internal sealed class GenreRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal("❌ Failed saving.", ex);
+            _logger.LogCritical("❌ Failed saving.", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -132,7 +133,7 @@ internal sealed class GenreRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<Genre> entities)
     {
-        _logger.Db("📄 SaveAll Genre");
+        _logger.LogDebug("📄 SaveAll Genre");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -161,7 +162,7 @@ internal sealed class GenreRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Failed saving", ex);
+            _logger.LogCritical($"❌ Failed saving", ex);
             await transaction.RollbackAsync();
             throw;
         }

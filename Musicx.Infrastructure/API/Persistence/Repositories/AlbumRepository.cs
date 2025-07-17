@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
@@ -10,13 +11,13 @@ namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class AlbumRepository(
     ApiDbContext context,
-    ILoggerFactory loggerFactory) : IAlbumRepository
+    ILoggerProvider loggerProvider) : IAlbumRepository
 {
-    private readonly ILogger<AlbumRepository> _logger = loggerFactory.CreateLogger<AlbumRepository>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumRepository));
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Album : {id}");
+        _logger.LogDebug($"📄 DELETE Album : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -33,7 +34,7 @@ internal sealed class AlbumRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Could not delete id {id}", ex);
+            _logger.LogCritical($"❌ DELETE Album : Could not delete id {id}", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -41,7 +42,7 @@ internal sealed class AlbumRepository(
 
     public async Task<Album?> FindByIdAsync(long id, IQuerySpecification<Album>? albumQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Album : {id}");
+        _logger.LogDebug($"📄 FIND BY ID Album : {id}");
         
         var albumSet = context.Albums;
         GetIncludes(albumSet, albumQuerySpecification);
@@ -54,7 +55,7 @@ internal sealed class AlbumRepository(
     public async Task<List<Album>> FindAsync(int skip = 0, int take = 100, Expression<Func<Album, bool>>? filter = null,
         IQuerySpecification<Album>? albumQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Album");
+        _logger.LogDebug($"📄 FIND Album");
         
         var albumSet = context.Albums;
         
@@ -75,13 +76,13 @@ internal sealed class AlbumRepository(
 
     public async Task<List<Album>> FindIn(IEnumerable<long> ids, IQuerySpecification<Album>? albumQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Album");
+        _logger.LogDebug("📄 FIND IN Album");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
         if (0 == enumerable.Length)
         {
-            _logger.Debug("ℹ️ Empty List in Find In");
+            _logger.LogDebug("ℹ️ FIND IN Album : No entry found.");
             return [];
         }
         
@@ -101,7 +102,7 @@ internal sealed class AlbumRepository(
 
     public async Task<long> SaveAsync(Album entity)
     {
-        _logger.Db("📄 Save Album");
+        _logger.LogDebug($"📄 SAVE Album : {entity.Name}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -123,7 +124,7 @@ internal sealed class AlbumRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal("❌ Failed saving.", ex);
+            _logger.LogCritical("❌ SAVE Album : Could not persist.", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -131,7 +132,7 @@ internal sealed class AlbumRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<Album> entities)
     {
-        _logger.Db("📄 SaveAll Album");
+        _logger.LogDebug("📄 SAVE ALL Album");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -160,7 +161,7 @@ internal sealed class AlbumRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Failed saving", ex);
+            _logger.LogCritical($"❌ SAVE ALL Album : Could not persist.", ex);
             await transaction.RollbackAsync();
             throw;
         }

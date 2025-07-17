@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Domain.Models;
@@ -5,10 +6,10 @@ using Musicx.Domain.Models;
 namespace Musicx.Infrastructure.Desktop.Persistence.Repositories;
 
 internal sealed class BatchImportRepository(
-    ILoggerFactory loggerFactory,
+    ILoggerProvider loggerProvider,
     AppDbContext dbContext) : IBatchImportRepository
 {
-    private readonly ILogger<BatchImportRepository> _logger = loggerFactory.CreateLogger<BatchImportRepository>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(BatchImportRepository));
     
     public async Task PersistBatchAsync(IEnumerable<Song> songs, IEnumerable<Album> albums, IEnumerable<Artist> artists)
     {
@@ -16,7 +17,7 @@ internal sealed class BatchImportRepository(
         var albumList = albums.ToList();
         var artistList = artists.ToList();
         
-        _logger.Db($"📄 Batch Import : {songList.Count}");
+        _logger.LogDebug($"📄 Batch Import : {songList.Count}");
         
         await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
@@ -31,7 +32,7 @@ internal sealed class BatchImportRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal("❌ Could not persist batch.", ex);
+            _logger.LogCritical("❌ Could not persist batch.", ex);
             await transaction.RollbackAsync();
             throw;
         }

@@ -1,24 +1,256 @@
-<Modal @bind-Visible="IsModalVisible">
+@using System.Globalization
+@using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests
+@using Musicx.Presentation.Web.Client.Pages.Admin
+
+@inject IFetchArtistInfoUseCase UcFetchArtistInfo
+@inject ILoggerProvider LoggerProvider
+@inject ISaveUseCase<InArtist> UcSave 
+
+<Modal @ref="_modalRef">
     <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Add new artist</ModalTitle>
+            <CloseButton Clicked="Hide" />
+        </ModalHeader>
         
+        <ModalBody>
+            <Fields>
+                <!-- First Row -->
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Name (*)
+                    </FieldLabel>
+                    <FieldBody>
+                        <Validation Validator="ValidateNonEmptyField">
+                            <TextEdit @bind-Text="@_artist.Name" Placeholder="ABBA..." KeyDown="UpdateArtwork">
+                                <ValidationNone>⚠️ Please enter a name</ValidationNone>
+                                <ValidationSuccess>✅ Valid name</ValidationSuccess>
+                            </TextEdit>
+                        </Validation>
+                    </FieldBody>
+                </Field>
+                
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Country
+                    </FieldLabel>
+                    <FieldBody>
+                        <Validation Validator="ValidateNonEmptyField">
+                            <Select TValue="string" @bind-SelectedValue="@_artist.Country">
+                                @foreach (var country in _countries)
+                                {
+                                    <SelectItem Value="@country">@country</SelectItem>
+                                }
+                                
+                                <ValidationNone>⚠️ Please select a country</ValidationNone>
+                                <ValidationSuccess>✅ Valid country</ValidationSuccess>
+                            </Select>
+                        </Validation>
+                    </FieldBody>
+                </Field>
+                
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Artwork
+                    </FieldLabel>
+                    <FieldBody>
+                        @if (null == _artist.ArtworkUrl || _isLoading)
+                        {
+                            <SpinKit Type="SpinKitType.Pulse" Color="gray" />
+                        }
+                        else
+                        {
+                            <Image Source="@_artist.ArtworkUrl" />
+                        }
+                    </FieldBody>
+                </Field>
+                
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Type (*)
+                    </FieldLabel>
+                    <FieldBody>
+                        <Select TValue="string" @bind-SelectedValue="_artist.Discriminator">
+                            <SelectItem Value="@("Artist")">Generic</SelectItem>
+                            <SelectItem Value="@("BandArtist")">Band</SelectItem>
+                            <SelectItem Value="@("PersonArtist")">Person</SelectItem>
+                        </Select>
+                    </FieldBody>
+                </Field>
+                
+                @if (_artist.Discriminator == "BandArtist")
+                {
+                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                        <FieldLabel>
+                            Formation Date
+                        </FieldLabel>
+                        <FieldBody>
+                            <DatePicker TValue="DateTime?" @bind-Date="@_artist.FormationDate" />
+                        </FieldBody>
+                    </Field>
+                    
+                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                        <FieldLabel>
+                            Split Date
+                        </FieldLabel>
+                        <FieldBody>
+                            <DatePicker TValue="DateTime?" @bind-Date="@_artist.SplitDate" />
+                        </FieldBody>
+                    </Field>
+                } 
+                else if (_artist.Discriminator == "PersonArtist")
+                {
+                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                        <FieldLabel>
+                            First Name
+                        </FieldLabel>
+                        <FieldBody>
+                            <Validation Validator="ValidateNonEmptyField">
+                                <TextEdit @bind-Text="@_artist.FirstName" Placeholder="James...">
+                                    <ValidationNone>⚠️ Please enter a first name</ValidationNone>
+                                    <ValidationSuccess>✅ Valid first name</ValidationSuccess>
+                                </TextEdit>
+                            </Validation>
+                        </FieldBody>
+                    </Field>
+                    
+                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                        <FieldLabel>
+                            Last Name
+                        </FieldLabel>
+                        <FieldBody>
+                            <Validation Validator="ValidateNonEmptyField">
+                                <TextEdit @bind-Text="@_artist.LastName" Placeholder="Hetfield...">
+                                    <ValidationNone>⚠️ Please enter a name</ValidationNone>
+                                    <ValidationSuccess>✅ Valid name</ValidationSuccess>
+                                </TextEdit>
+                            </Validation>
+                        </FieldBody>
+                    </Field>
+                    
+                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                        <FieldLabel>
+                            Birth Date
+                        </FieldLabel>
+                        <FieldBody>
+                            <DatePicker TValue="DateTime?" @bind-Date="@_artist.BirthDate" />
+                        </FieldBody>
+                    </Field>
+                    
+                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                        <FieldLabel>
+                            Death Date
+                        </FieldLabel>
+                        <FieldBody>
+                            <DatePicker TValue="DateTime?" @bind-Date="@_artist.DeathDate" />
+                        </FieldBody>
+                    </Field>
+                }
+            </Fields>
+        </ModalBody>
+        
+        <ModalFooter>
+            <Button Color="Color.Primary" Clicked="Create" Disabled="@_isConfirmable">Create</Button>
+            <Button Color="Color.Secondary" Clicked="Hide">Close</Button>
+        </ModalFooter>
     </ModalContent>
 </Modal>
 
 @code {
 
-    private bool IsModalVisible { get; set; }
+    private ILogger _logger = null!;
+    
+    private InArtist _artist;
+
+    private bool _isLoading;
+    private bool _isConfirmable;
+
+    private CancellationTokenSource? _artworkCts;
+
+    private List<string> _countries = [];
+
+    private Modal _modalRef;
     
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
 
+    protected override void OnInitialized()
+    {
+        _logger = LoggerProvider.CreateLogger(nameof(ArtistAddModal));
+
+        _artist = new InArtist
+        {
+            Discriminator = "Artist"
+        };
+
+        _countries = CultureInfo
+            .GetCultures(CultureTypes.SpecificCultures)
+            .Select(ci => new RegionInfo(ci.Name).EnglishName)
+            .Distinct()
+            .OrderBy(name => name)
+            .ToList();
+    }
+
+    private async Task Create()
+    {
+        await UcSave.ExecuteAsync(_artist);
+        await OnSave.InvokeAsync();
+        Hide();
+    }
+
     public void Show()
     {
-        IsModalVisible = true;
+        _modalRef.Show();
     }
 
     private void Hide()
     {
-        IsModalVisible = false;
+        _modalRef.Hide();
+    }
+
+    private void ValidateNonEmptyField(ValidatorEventArgs e)
+    {
+        _isConfirmable = string.IsNullOrWhiteSpace(Convert.ToString(e.Value));
+        
+        e.Status = _isConfirmable
+            ? ValidationStatus.None
+            : ValidationStatus.Success;
+    }
+
+    private async Task UpdateArtwork(KeyboardEventArgs obj)
+    {
+        _isLoading = false;
+        _artworkCts?.Cancel();
+        _artworkCts?.Dispose();
+
+        _artworkCts = new CancellationTokenSource();
+
+        if (string.IsNullOrWhiteSpace(_artist.Name))
+        {
+            return;
+        }
+
+        try
+        {
+            await Task.Delay(1000, _artworkCts.Token);
+            _isLoading = true;
+            var response = await UcFetchArtistInfo.ExecuteAsync(new FetchArtistInfoRequest(
+                Name: _artist.Name,
+                CancellationToken: _artworkCts.Token));
+
+            if (null == response.Artist)
+            {
+                _logger.LogWarning($"⚠️ Artist not found: {_artist.Name}");
+                return;
+            }
+            
+            _logger.LogInformation("ℹ️ Retrieved Artwork Url : " + response.Artist.ArtworkUrl);
+            _artist.ArtworkUrl = response.Artist.ArtworkUrl;
+            _isLoading = false;
+            StateHasChanged();
+        } catch (TaskCanceledException) {}
     }
 
 }

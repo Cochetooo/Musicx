@@ -1,4 +1,5 @@
 using ATL;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Utilities;
@@ -8,13 +9,13 @@ using Musicx.Domain.Models;
 namespace Musicx.Infrastructure.Desktop.Services.LocalLibrary;
 
 public class UcReadAudioFile(
-    ILoggerFactory loggerFactory) : IReadAudioFileUseCase
+    ILoggerProvider loggerProvider) : IReadAudioFileUseCase
 {
-    private readonly ILogger<UcReadAudioFile> _logger = loggerFactory.CreateLogger<UcReadAudioFile>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcReadAudioFile));
     
     public async Task<ReadAudioFileResponse> ExecuteAsync(ReadAudioFileRequest request)
     {
-        _logger.Debug("⛏️ Execute : ReadAudioFile");
+        _logger.LogDebug("⛏️ Execute : ReadAudioFile");
 
         var track = new Track(request.FilePath);
         
@@ -22,7 +23,7 @@ public class UcReadAudioFile(
         Album album;
         Artist artist;
         
-        _logger.Warn("⚠️ Lyrics synchronization and Audio Format are not yet supported.");
+        _logger.LogWarning("⚠️ Lyrics synchronization and Audio Format are not yet supported.");
 
         // If AutoCheck is on, we retrieve information with the API
         if (request.AutoCheck)
@@ -64,7 +65,7 @@ public class UcReadAudioFile(
             };
         }
 
-        _logger.Debug("✅ ReadAudioFile success!");
+        _logger.LogDebug("✅ ReadAudioFile success!");
         return new ReadAudioFileResponse(
             song, 
             album, 

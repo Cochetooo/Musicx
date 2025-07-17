@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Domain.Models;
@@ -12,10 +13,10 @@ namespace Musicx.Application.Desktop.UseCases.LocalLibrary;
 public sealed class UcImportLocalSongs(
     IReadAudioFileUseCase readAudioFile,
     IPersistLocalSongsUseCase persistLocalSongs,
-    ILoggerFactory loggerFactory
+    ILoggerProvider loggerProvider
     ) : IImportLocalSongsUseCase
 {
-    private readonly ILogger<UcImportLocalSongs> _logger = loggerFactory.CreateLogger<UcImportLocalSongs>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcImportLocalSongs));
     
     /// <summary>
     /// Retrieve audio files from all the library folder paths, then import each files found
@@ -24,7 +25,7 @@ public sealed class UcImportLocalSongs(
     /// <since>0.3.0</since>
     public async Task<ImportLocalSongsResponse> ExecuteAsync(ImportLocalSongsRequest request)
     {
-        _logger.Debug("⛏️ Execute : ImportLocalSongs");
+        _logger.LogDebug("⛏️ Execute : ImportLocalSongs");
         
         // Retrieve audio files from all the library folder paths.
         var audioFiles = GetFilesWithSpecifiedFormats(request.FolderPaths, request.AcceptedFormats);
@@ -33,7 +34,7 @@ public sealed class UcImportLocalSongs(
         // If there is no file found, no need to pursue the operation.
         if (0 == fileNumbers)
         {
-            _logger.Warn($"⚠️ No audio file found in folders {string.Join(',', request.FolderPaths)}");
+            _logger.LogWarning($"⚠️ No audio file found in folders {string.Join(',', request.FolderPaths)}");
             request.ProgressListener.UpdateProgress(1, 1, null);
             return new ImportLocalSongsResponse(0, 0, 0);
         }
@@ -61,11 +62,11 @@ public sealed class UcImportLocalSongs(
                 var album = readAudioFileResponse.Album;
                 var artist = readAudioFileResponse.Artist;
                 
-                _logger.Info($"➕ Adding : {artist.Name} - {album.Name} - {song.Title}");
+                _logger.LogInformation($"➕ Adding : {artist.Name} - {album.Name} - {song.Title}");
 
                 if (!artistsByName.TryGetValue(artist.Name, out var existingArtist))
                 {
-                    _logger.Debug($"ℹ️ Creating new artist: {artist.Name}");
+                    _logger.LogDebug($"ℹ️ Creating new artist: {artist.Name}");
                     artistsByName[artist.Name] = artist;
                 }
                 else
@@ -75,7 +76,7 @@ public sealed class UcImportLocalSongs(
 
                 if (!albumsByName.TryGetValue(album.Name, out var existingAlbum))
                 {
-                    _logger.Debug($"ℹ️ Creating new album: {album.Name}");
+                    _logger.LogDebug($"ℹ️ Creating new album: {album.Name}");
                     albumsByName[album.Name] = album;
                 }
                 else
@@ -93,7 +94,7 @@ public sealed class UcImportLocalSongs(
             }
             catch (Exception ex)
             {
-                _logger.Fatal($"❌ Could not read audio file: {filePath}", ex);
+                _logger.LogCritical($"❌ Could not read audio file: {filePath}", ex);
                 Interlocked.Increment(ref failedFileCount);
             }
             
@@ -103,7 +104,7 @@ public sealed class UcImportLocalSongs(
         
         await Task.WhenAll(tasks);
         
-        _logger.Info($"ℹ️ Success: {successfulFileCount} | Failed: {failedFileCount} | TOTAL: {fileProgressCount}");
+        _logger.LogInformation($"ℹ️ Success: {successfulFileCount} | Failed: {failedFileCount} | TOTAL: {fileProgressCount}");
 
         await persistLocalSongs.ExecuteAsync(new PersistLocalSongsRequest(
             songs, 
@@ -111,7 +112,7 @@ public sealed class UcImportLocalSongs(
             artistsByName.Values));
         
         request.ProgressListener.UpdateProgress(0, 0, null);
-        _logger.Debug("✅ ImportLocalSongs success!");
+        _logger.LogDebug("✅ ImportLocalSongs success!");
 
         return new ImportLocalSongsResponse
         (

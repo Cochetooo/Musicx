@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
@@ -11,13 +12,13 @@ namespace Musicx.Infrastructure.Desktop.Persistence.Repositories;
 internal sealed class ArtistRepository(
     AppDbContext context,
     IArtistCache artistCache,
-    ILoggerFactory loggerFactory) : IArtistRepository
+    ILoggerProvider loggerProvider) : IArtistRepository
 {
-    private readonly ILogger<ArtistRepository> _logger = loggerFactory.CreateLogger<ArtistRepository>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ArtistRepository));
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Artist : {id}");
+        _logger.LogDebug($"📄 Delete Artist : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -34,7 +35,7 @@ internal sealed class ArtistRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Could not delete id {id}", ex);
+            _logger.LogCritical($"❌ Could not delete id {id}", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -42,7 +43,7 @@ internal sealed class ArtistRepository(
 
     public async Task<Artist?> FindByIdAsync(long id, IQuerySpecification<Artist>? artistQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Artist : {id}");
+        _logger.LogDebug($"📄 Find By Id Artist : {id}");
         
         var artistSet = context.Artists;
         GetIncludes(artistSet, artistQuerySpecification);
@@ -55,7 +56,7 @@ internal sealed class ArtistRepository(
     public async Task<List<Artist>> FindAsync(int skip = 0, int take = 100, Expression<Func<Artist, bool>>? filter = null,
         IQuerySpecification<Artist>? artistQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Artist");
+        _logger.LogDebug($"📄 Find Artist");
         
         var artistSet = context.Artists;
         
@@ -76,13 +77,13 @@ internal sealed class ArtistRepository(
 
     public async Task<List<Artist>> FindIn(IEnumerable<long> ids, IQuerySpecification<Artist>? artistQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Artist");
+        _logger.LogDebug("📄 Find In Artist");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
         if (0 == enumerable.Length)
         {
-            _logger.Debug("ℹ️ Empty List in Find In");
+            _logger.LogDebug("ℹ️ Empty List in Find In");
             return [];
         }
         
@@ -102,7 +103,7 @@ internal sealed class ArtistRepository(
 
     public async Task<long> SaveAsync(Artist entity)
     {
-        _logger.Db("📄 Save Artist");
+        _logger.LogDebug("📄 Save Artist");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -124,7 +125,7 @@ internal sealed class ArtistRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal("❌ Failed saving.", ex);
+            _logger.LogCritical("❌ Failed saving.", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -132,7 +133,7 @@ internal sealed class ArtistRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<Artist> entities)
     {
-        _logger.Db("📄 SaveAll Artist");
+        _logger.LogDebug("📄 SaveAll Artist");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -161,7 +162,7 @@ internal sealed class ArtistRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Failed saving", ex);
+            _logger.LogCritical($"❌ Failed saving", ex);
             await transaction.RollbackAsync();
             throw;
         }

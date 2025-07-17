@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Presentation.Desktop.ViewModels;
 using ReactiveUI;
@@ -11,9 +12,9 @@ public interface IContentViewProvider
 }
 
 public sealed class ContentViewProvider(
-    ILoggerFactory loggerFactory) : ReactiveObject, IContentViewProvider
+    ILoggerProvider loggerProvider) : ReactiveObject, IContentViewProvider
 {
-    private readonly ILogger<ContentViewProvider> _logger = loggerFactory.CreateLogger<ContentViewProvider>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ContentViewProvider));
 
     private ViewModelBase? _content;
     public ViewModelBase? Content
@@ -26,7 +27,7 @@ public sealed class ContentViewProvider(
     {
         if (null == content)
         {
-            _logger.Warn("⚠️ View model is null.");
+            _logger.LogWarning("⚠️ View model is null.");
             return;
         }
 

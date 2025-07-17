@@ -1,23 +1,25 @@
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed record InAlbum(
+public sealed class InAlbum
+{
     // Primary Key
-    long Id,
+    public long Id { get; set; }
     
     // Required Relationships
-    IReadOnlyList<long> ReleaseIds,
-    IReadOnlyList<long> PrimaryGenreIds,
-    IReadOnlyList<long> InfluenceGenreIds,
+    public IReadOnlyList<long> ReleaseIds { get; set; } = [];
+    public IReadOnlyList<long> PrimaryGenreIds { get; set; } = [];
+    public IReadOnlyList<long> InfluenceGenreIds { get; set; } = [];
     
     // Required Columns
-    string Name,
+    public string Name { get; set; } = string.Empty;
 
     // Optional Relationships
-    long? ArtistId,
+    public long? ArtistId { get; set; }
     
     // Optional Columns
-    string? ArtworkUrl,
-    int? DiscTotal,
-    DateTime? ReleaseDate,
-    string? ReleaseType,
-    int? TrackTotal);
+    public string? ArtworkUrl { get; set; } = string.Empty;
+    public int? DiscTotal { get; set; }
+    public DateTime? ReleaseDate { get; set; } = DateTime.MinValue;
+    public string? ReleaseType { get; set; } = string.Empty;
+    public int? TrackTotal { get; set; }
+}

@@ -1,6 +1,6 @@
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed record InRelease(
+public sealed class InRelease(
     // Primary Key
     long Id,
     

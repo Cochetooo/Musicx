@@ -2,35 +2,57 @@ using System.Reflection;
 using log4net;
 using log4net.Config;
 using log4net.Core;
+using log4net.Repository;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Common;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Musicx.Infrastructure.Shared.Logging;
 
-internal class Log4NetLogger<T> : ILogger<T>
+public sealed class Log4NetLogger(string categoryName) : ILogger
 {
-    private readonly ILog _logger = LogManager.GetLogger(typeof(T));
-    private static readonly Level DbLevel = new(10_000, "DB");
+    private readonly ILog _logger = LogManager.GetLogger(categoryName);
 
-    public void Db(object message)
-    {
-        _logger.Logger.Log(typeof(T), DbLevel, message, null);
-    }
-    public void Debug(object message) => _logger.Debug(message);
-    public void Info(object message) => _logger.Info(message);
-    public void Warn(object message) => _logger.Warn(message);
-    public void Error(object message) => _logger.Error(message);
-    public void Fatal(object message) => _logger.Fatal(message);
-    public void Fatal(object message, Exception exception) => _logger.Fatal(message, exception);
-}
+    private static readonly Level DbLevel = new Level(10_000, "DB");
 
-internal class Log4NetLoggerFactory : ILoggerFactory
-{
-    public Log4NetLoggerFactory()
+    public IDisposable BeginScope<TState>(TState state) => null!;
+    public bool IsEnabled(LogLevel logLevel) => true;
+
+    public void Log<TState>(
+        LogLevel logLevel,
+        EventId eventId,
+        TState state,
+        Exception exception,
+        Func<TState, Exception, string> formatter)
     {
-        var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        var logRepository = LogManager.GetRepository(assembly);
-        XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+        var message = formatter(state, exception);
+
+        switch (logLevel)
+        {
+            case LogLevel.Trace:
+            case LogLevel.Debug:
+                _logger.Debug(message);
+                break;
+            case LogLevel.Information:
+                _logger.Info(message);
+                break;
+            case LogLevel.Warning:
+                _logger.Warn(message);
+                break;
+            case LogLevel.Error:
+                _logger.Error(message);
+                break;
+            case LogLevel.Critical:
+                _logger.Fatal(message);
+                break;
+            default:
+                _logger.Info(message);
+                break;
+        }
     }
-    
-    public ILogger<T> CreateLogger<T>() => new Log4NetLogger<T>();
+
+    public void Db(string message)
+    {
+        _logger.Logger.Log(typeof(Log4NetLogger), DbLevel, message, null);
+    }
 }

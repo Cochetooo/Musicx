@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
@@ -10,13 +11,13 @@ namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class SongRepository(
     ApiDbContext context,
-    ILoggerFactory loggerFactory) : ISongRepository
+    ILoggerProvider loggerProvider) : ISongRepository
 {
-    private readonly ILogger<SongRepository> _logger = loggerFactory.CreateLogger<SongRepository>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(SongRepository));
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Song : {id}");
+        _logger.LogDebug($"📄 DELETE Song : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -33,7 +34,7 @@ internal sealed class SongRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Could not delete id {id}", ex);
+            _logger.LogCritical($"❌ DELETE Song : Could not delete id {id}", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -41,7 +42,7 @@ internal sealed class SongRepository(
 
     public async Task<Song?> FindByIdAsync(long id, IQuerySpecification<Song>? songQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Song : {id}");
+        _logger.LogDebug($"📄 FIND BY ID Song : {id}");
         
         var songSet = context.Songs;
         GetIncludes(songSet, songQuerySpecification);
@@ -54,7 +55,7 @@ internal sealed class SongRepository(
     public async Task<List<Song>> FindAsync(int skip = 0, int take = 100, Expression<Func<Song, bool>>? filter = null,
         IQuerySpecification<Song>? songQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Song");
+        _logger.LogDebug($"📄 FIND Song");
         
         var songSet = context.Songs;
         
@@ -75,13 +76,13 @@ internal sealed class SongRepository(
 
     public async Task<List<Song>> FindIn(IEnumerable<long> ids, IQuerySpecification<Song>? songQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Song");
+        _logger.LogDebug("📄 FIND IN Song");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
         if (0 == enumerable.Length)
         {
-            _logger.Debug("ℹ️ Empty List in Find In");
+            _logger.LogDebug("ℹ️ FIND IN Song : No entry found.");
             return [];
         }
         
@@ -101,7 +102,7 @@ internal sealed class SongRepository(
 
     public async Task<long> SaveAsync(Song entity)
     {
-        _logger.Db("📄 Save Song");
+        _logger.LogDebug($"📄 SAVE Song : {entity.Title}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -123,7 +124,7 @@ internal sealed class SongRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal("❌ Failed saving.", ex);
+            _logger.LogCritical("❌ SAVE Song : Could not persist.", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -131,7 +132,7 @@ internal sealed class SongRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<Song> entities)
     {
-        _logger.Db("📄 SaveAll Song");
+        _logger.LogDebug("📄 SAVE ALL Song");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -160,7 +161,7 @@ internal sealed class SongRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Failed saving", ex);
+            _logger.LogCritical($"❌ SAVE ALL Song : Could not persist.", ex);
             await transaction.RollbackAsync();
             throw;
         }

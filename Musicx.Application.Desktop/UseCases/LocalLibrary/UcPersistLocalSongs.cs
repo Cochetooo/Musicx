@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
@@ -5,21 +6,21 @@ using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 namespace Musicx.Application.Desktop.UseCases.LocalLibrary;
 
 public class UcPersistLocalSongs(
-    ILoggerFactory loggerFactory,
+    ILoggerProvider loggerProvider,
     IBatchImportRepository batchImportRepository) : IPersistLocalSongsUseCase
 {
-    private readonly ILogger<UcPersistLocalSongs> _logger = loggerFactory.CreateLogger<UcPersistLocalSongs>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcPersistLocalSongs));
     
     public async Task<PersistLocalSongsResponse> ExecuteAsync(PersistLocalSongsRequest request)
     {
-        _logger.Debug("⛏️ Execute : PersistLocalSongs");
+        _logger.LogDebug("⛏️ Execute : PersistLocalSongs");
 
         await batchImportRepository.PersistBatchAsync(
             request.Songs,
             request.Albums,
             request.Artists);
         
-        _logger.Debug("✅ PersistLocalSongs success!");
+        _logger.LogDebug("✅ PersistLocalSongs success!");
 
         return new PersistLocalSongsResponse();
     }

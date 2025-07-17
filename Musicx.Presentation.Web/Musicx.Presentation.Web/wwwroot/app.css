@@ -36,3 +36,20 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.table tbody td,
+.table thead th {
+    height: auto;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    line-height: 1.2rem;
+}
+
+.table thead th {
+    font-weight: bold;
+}
+
+* {
+    font-family: "Space Grotesk", "Helvetica Neue", sans-serif;
+    font-optical-sizing: auto;
+}

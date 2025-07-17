@@ -9,7 +9,10 @@ public static class DependencyInjection
     public static IServiceCollection AddFrontFramework(this IServiceCollection services)
     {
         services
-            .AddBlazorise()
+            .AddBlazorise(options =>
+            {
+                options.Immediate = true;
+            })
             .AddMaterialProviders()
             .AddMaterialIcons();
         

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <base href="/"/>
     <link rel="icon" type="image/png" href="favicon.png" />
+    <title>Musicx</title>
     
     <!-- Font family -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,16 +23,17 @@
     <link href="_content/Blazorise/blazorise.css?v=1.8.0.0" rel="stylesheet" />
     <link href="_content/Blazorise.Material/blazorise.material.css?v=1.8.0.0" rel="stylesheet" />
     <link href="_content/Blazorise.Icons.Material/blazorise.icons.material.css?v=1.8.0.0" rel="stylesheet" />
+    <link href="_content/Blazorise.SpinKit/blazorise.spinkit.css" rel="stylesheet" />
     
     <link rel="stylesheet" href="@Assets["app.css"]"/>
     <link rel="stylesheet" href="@Assets["Musicx.Presentation.Web.styles.css"]"/>
     
     <ImportMap/>
-    <HeadOutlet @rendermode="InteractiveWebAssembly"/>
+    <HeadOutlet @rendermode="@(new InteractiveWebAssemblyRenderMode(prerender: false))"/>
 </head>
 
 <body>
-<Routes @rendermode="InteractiveWebAssembly"/>
+<Routes @rendermode="@(new InteractiveWebAssemblyRenderMode(prerender: false))"/>
 <script src="_framework/blazor.web.js"></script>
 
 <!-- Blazorise dependencies -->
@@ -41,6 +43,7 @@
 
 <script src="js/material.min.js"></script>
 <script src="_content/Blazorise.Material/blazorise.material.js?v=1.8.0.0"></script>
+<script src="_content/Blazorise.Animate/blazorise.animate.js?v=1.8.0.0"></script>
 
 </body>
 

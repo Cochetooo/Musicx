@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
@@ -10,13 +11,13 @@ namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class LabelRepository(
     ApiDbContext context,
-    ILoggerFactory loggerFactory) : ILabelRepository
+    ILoggerProvider loggerProvider) : ILabelRepository
 {
-    private readonly ILogger<LabelRepository> _logger = loggerFactory.CreateLogger<LabelRepository>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(LabelRepository));
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Label : {id}");
+        _logger.LogDebug($"📄 DELETE Label : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -33,7 +34,7 @@ internal sealed class LabelRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Could not delete id {id}", ex);
+            _logger.LogCritical($"❌ DELETE Label : Could not delete id {id}", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -41,7 +42,7 @@ internal sealed class LabelRepository(
 
     public async Task<Label?> FindByIdAsync(long id, IQuerySpecification<Label>? labelQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Label : {id}");
+        _logger.LogDebug($"📄 FIND BY ID Label : {id}");
         
         var labelSet = context.Labels;
         GetIncludes(labelSet, labelQuerySpecification);
@@ -54,7 +55,7 @@ internal sealed class LabelRepository(
     public async Task<List<Label>> FindAsync(int skip = 0, int take = 100, Expression<Func<Label, bool>>? filter = null,
         IQuerySpecification<Label>? labelQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Label");
+        _logger.LogDebug($"📄 FIND Label");
         
         var labelSet = context.Labels;
         
@@ -75,13 +76,13 @@ internal sealed class LabelRepository(
 
     public async Task<List<Label>> FindIn(IEnumerable<long> ids, IQuerySpecification<Label>? labelQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Label");
+        _logger.LogDebug("📄 FIND IN Label");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
         if (0 == enumerable.Length)
         {
-            _logger.Debug("ℹ️ Empty List in Find In");
+            _logger.LogDebug("ℹ️ FIND IN Label : No entry found.");
             return [];
         }
         
@@ -101,7 +102,7 @@ internal sealed class LabelRepository(
 
     public async Task<long> SaveAsync(Label entity)
     {
-        _logger.Db("📄 Save Label");
+        _logger.LogDebug($"📄 SAVE Label : {entity.Name}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -123,7 +124,7 @@ internal sealed class LabelRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal("❌ Failed saving.", ex);
+            _logger.LogCritical("❌ SAVE Label : Could not persist.", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -131,7 +132,7 @@ internal sealed class LabelRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<Label> entities)
     {
-        _logger.Db("📄 SaveAll Label");
+        _logger.LogDebug("📄 SAVE ALL Label");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -160,7 +161,7 @@ internal sealed class LabelRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Failed saving", ex);
+            _logger.LogCritical($"❌ SAVE ALL Label : Could not persist.", ex);
             await transaction.RollbackAsync();
             throw;
         }

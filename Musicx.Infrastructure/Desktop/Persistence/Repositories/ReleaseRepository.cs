@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
@@ -11,13 +12,13 @@ namespace Musicx.Infrastructure.Desktop.Persistence.Repositories;
 internal sealed class ReleaseRepository(
     AppDbContext context,
     IReleaseCache releaseCache,
-    ILoggerFactory loggerFactory) : IReleaseRepository
+    ILoggerProvider loggerProvider) : IReleaseRepository
 {
-    private readonly ILogger<ReleaseRepository> _logger = loggerFactory.CreateLogger<ReleaseRepository>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ReleaseRepository));
     
     public async Task DeleteAsync(long id)
     {
-        _logger.Db($"📄 Delete Release : {id}");
+        _logger.LogDebug($"📄 Delete Release : {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -34,7 +35,7 @@ internal sealed class ReleaseRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Could not delete id {id}", ex);
+            _logger.LogCritical($"❌ Could not delete id {id}", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -42,7 +43,7 @@ internal sealed class ReleaseRepository(
 
     public async Task<Release?> FindByIdAsync(long id, IQuerySpecification<Release>? releaseQuerySpecification = null)
     {
-        _logger.Db($"📄 Find By Id Release : {id}");
+        _logger.LogDebug($"📄 Find By Id Release : {id}");
         
         var releaseSet = context.Releases;
         GetIncludes(releaseSet, releaseQuerySpecification);
@@ -55,7 +56,7 @@ internal sealed class ReleaseRepository(
     public async Task<List<Release>> FindAsync(int skip = 0, int take = 100, Expression<Func<Release, bool>>? filter = null,
         IQuerySpecification<Release>? releaseQuerySpecification = null)
     {
-        _logger.Db($"📄 Find Release");
+        _logger.LogDebug($"📄 Find Release");
         
         var releaseSet = context.Releases;
         
@@ -76,13 +77,13 @@ internal sealed class ReleaseRepository(
 
     public async Task<List<Release>> FindIn(IEnumerable<long> ids, IQuerySpecification<Release>? releaseQuerySpecification = null)
     {
-        _logger.Db("📄 Find In Release");
+        _logger.LogDebug("📄 Find In Release");
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
         if (0 == enumerable.Length)
         {
-            _logger.Debug("ℹ️ Empty List in Find In");
+            _logger.LogDebug("ℹ️ Empty List in Find In");
             return [];
         }
         
@@ -102,7 +103,7 @@ internal sealed class ReleaseRepository(
 
     public async Task<long> SaveAsync(Release entity)
     {
-        _logger.Db("📄 Save Release");
+        _logger.LogDebug("📄 Save Release");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -124,7 +125,7 @@ internal sealed class ReleaseRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal("❌ Failed saving.", ex);
+            _logger.LogCritical("❌ Failed saving.", ex);
             await transaction.RollbackAsync();
             throw;
         }
@@ -132,7 +133,7 @@ internal sealed class ReleaseRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<Release> entities)
     {
-        _logger.Db("📄 SaveAll Release");
+        _logger.LogDebug("📄 SaveAll Release");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -161,7 +162,7 @@ internal sealed class ReleaseRepository(
         }
         catch (Exception ex)
         {
-            _logger.Fatal($"❌ Failed saving", ex);
+            _logger.LogCritical($"❌ Failed saving", ex);
             await transaction.RollbackAsync();
             throw;
         }

@@ -1,27 +1,44 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Application.Shared.Interfaces.Common;
+using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
+using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
+using Musicx.Application.Web.Interfaces.UseCases;
+using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Persistence;
 using Musicx.Infrastructure.Desktop.Persistence;
 using Musicx.Infrastructure.Desktop.Persistence.Caches;
 using Musicx.Infrastructure.Desktop.Persistence.Repositories;
 using Musicx.Infrastructure.Desktop.Services.LocalLibrary;
 using Musicx.Infrastructure.Shared.Logging;
+using Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
+using Musicx.Infrastructure.Shared.UseCases.ExternalMusicData;
+using Musicx.Infrastructure.Web.UseCases;
 
 namespace Musicx.Infrastructure;
 
 public static class DependencyInjection
 {
+    public static ILoggingBuilder AddLog4Net(this ILoggingBuilder builder, string configFile = "log4net.config")
+    {
+        builder.AddProvider(new Log4NetLoggerProvider(configFile));
+        return builder;
+    }
+    
     /// <summary>
     /// Add common module services and use cases.
     /// </summary>
     public static IServiceCollection AddMusicxInfrastructure(this IServiceCollection services)
     {
-        // Logger
-        services.AddSingleton<ILoggerFactory, Log4NetLoggerFactory>();
+        // Providers
+        services.AddScoped<IExternalMusicDataProvider, LastFmApiProvider>();
+
+        // Use cases
+        services.AddScoped<IFetchArtistInfoUseCase, UcFetchArtistInfo>();
         
         return services;
     }
@@ -74,6 +91,8 @@ public static class DependencyInjection
         services.AddScoped<Application.Api.Interfaces.Persistence.IReleaseRepository, API.Persistence.Repositories.ReleaseRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.ILabelRepository, API.Persistence.Repositories.LabelRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IGenreRepository, API.Persistence.Repositories.GenreRepository>();
+
+        services.AddMusicxWeb();
         
         return services;
     }
@@ -83,6 +102,9 @@ public static class DependencyInjection
     /// </summary>
     public static IServiceCollection AddMusicxWeb(this IServiceCollection services)
     {
+        services.AddScoped(typeof(ISaveUseCase<>), typeof(UcSave<>));
+        services.AddScoped(typeof(IListUseCase<>), typeof(UcList<>));
+        
         return services;
     }
 }

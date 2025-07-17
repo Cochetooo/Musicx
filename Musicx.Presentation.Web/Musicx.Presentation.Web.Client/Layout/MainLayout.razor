@@ -1,52 +1,48 @@
 ﻿@inherits LayoutComponentBase
 
 <Layout>
-    <Layout>
-        <LayoutContent>
-            <Bar
-                CollapseMode="BarCollapseMode.Small"
-                Breakpoint="Breakpoint.Desktop"
-                NavigationBreakpoint="Breakpoint.Tablet"
-                Background="Background.Dark"
-                ThemeContrast="ThemeContrast.Dark">
-                <BarBrand>
+    <LayoutHeader Fixed>
+        <Bar
+            CollapseMode="BarCollapseMode.Small"
+            Breakpoint="Breakpoint.Desktop"
+            NavigationBreakpoint="Breakpoint.Tablet"
+            Background="Background.Dark"
+            ThemeContrast="ThemeContrast.Dark">
+            <BarBrand>
+                <BarItem>
+                    <BarLink To="#">
+                        <BarIcon IconName="IconName.Music"/>
+                        <Text TextColor="TextColor.White" TextWeight="TextWeight.Bold">MUSICX</Text>
+                    </BarLink>
+                </BarItem>
+            </BarBrand>
+            <BarMenu>
+                <BarStart>
                     <BarItem>
-                        <BarLink To="#">
-                            <BarIcon IconName="IconName.Music"/>
-                            <b>MUSICX</b>
-                        </BarLink>
+                        <BarLink To="/">Home</BarLink>
                     </BarItem>
-                </BarBrand>
-                <BarMenu>
-                    <BarStart>
-                        <BarItem>
-                            <BarLink To="/">Home</BarLink>
-                        </BarItem>
-                    </BarStart>
-                    <BarEnd>
-                        <BarItem>
-                            <BarDropdown>
-                                <BarDropdownToggle>More</BarDropdownToggle>
-                                <BarDropdownMenu>
-                                    <BarDropdownItem>
-                                        <BarLink To="/Admin">Admin Dashboard</BarLink>
-                                    </BarDropdownItem>
-                                </BarDropdownMenu>
-                            </BarDropdown>
-                        </BarItem>
-                        <BarItem>
-                            <Button Color="Color.Primary">Sign up</Button>
-                            <Button Color="Color.Secondary">Log in</Button>
-                        </BarItem>
-                    </BarEnd>
-                </BarMenu>
-            </Bar>
-        </LayoutContent>
-    </Layout>
+                </BarStart>
+                <BarEnd>
+                    <BarItem>
+                        <BarDropdown>
+                            <BarDropdownToggle>More</BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem>
+                                    <BarLink To="/Admin">Admin Dashboard</BarLink>
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+                    </BarItem>
+                    <BarItem>
+                        <Button Color="Color.Primary">Sign up</Button>
+                        <Button Color="Color.Secondary">Log in</Button>
+                    </BarItem>
+                </BarEnd>
+            </BarMenu>
+        </Bar>
+    </LayoutHeader>
     
-    <Layout>
-        <LayoutContent Padding="Padding.Is3.OnAll">
-            @Body
-        </LayoutContent>
-    </Layout>
+    <LayoutContent Padding="Padding.Is3">
+        @Body
+    </LayoutContent>
 </Layout>

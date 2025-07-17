@@ -2,14 +2,24 @@ using Blazorise;
 using Blazorise.Icons.Material;
 using Blazorise.Material;
 using Musicx.Infrastructure;
+using Musicx.Infrastructure.Shared.Logging;
+using Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
 using Musicx.Presentation.Web.Client;
 using Musicx.Presentation.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+builder.Logging.AddLog4Net();
+
 // Add blazor services
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddHttpClient<LastFmApiProvider>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Apis:LastFm:BaseUrl"]!);
+});
 
 // Add application infrastructure
 builder.Services
@@ -19,7 +29,7 @@ builder.Services
 // Add Swagger
 builder.Services
     .AddEndpointsApiExplorer()
-    .AddSwaggerGen();
+    .AddOpenApi();
 
 // Add Front-end
 builder.Services
@@ -35,8 +45,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
 }
 else
 {
@@ -44,6 +53,9 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.MapStaticAssets();
+app.MapControllers();
 
 app.UseHttpsRedirection();
 
@@ -53,7 +65,5 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Musicx.Presentation.Web.Client._Imports).Assembly);
-
-app.MapControllers();
 
 app.Run();

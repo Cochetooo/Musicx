@@ -23,6 +23,8 @@ public static class ArtistMapper
                 artistDto.Discriminator = "Person";
                 
                 artistDto.Bands = personArtist.Bands.Select(b => new OutArtist { Id = b.Id, Name = b.Name }).ToList();
+                artistDto.FirstName = personArtist.FirstName;
+                artistDto.LastName = personArtist.LastName;
                 artistDto.BirthDate = personArtist.BirthDate;
                 artistDto.DeathDate = personArtist.DeathDate;
                 break;
@@ -69,6 +71,8 @@ public static class ArtistMapper
                 ArtworkUrl = artistDto.ArtworkUrl,
                 Country = artistDto.Country,
                 Bands = artistDto.BandIds!.Select(m => new BandArtist { Id = m }).ToList(),
+                FirstName = artistDto.FirstName,
+                LastName = artistDto.LastName,
                 BirthDate = artistDto.BirthDate,
                 DeathDate = artistDto.DeathDate
             },

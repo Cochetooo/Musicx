@@ -1,12 +1,12 @@
 @page "/Admin/Artists"
 @using Musicx.Application.Shared.Interfaces.Common
+@using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 @using Musicx.Presentation.Web.Client.Models
 
-@inject ILoggerFactory LoggerFactory
-
-<PageTitle>Admin - Manage Artists</PageTitle>
+@inject ILoggerProvider LoggerProvider
+@inject IListUseCase<OutArtist> UcList
 
 <Breadcrumb Margin="Margin.Is2.FromBottom">
     <BreadcrumbItem>
@@ -21,28 +21,31 @@
 </Breadcrumb>
 
 <Card Margin="Margin.Is4.OnY">
+    <CardHeader>
+        <CardTitle>Artist Management</CardTitle>
+    </CardHeader>
     <CardBody>
         <div class="container-fluid" style="display: flex; flex-direction: column;">
             <div class="d-flex justify-content-between align-items-center p-3">
-                <TextEdit 
-                    @bind-Text="@_searchDataGrid" Placeholder="Search..." 
-                    KeyDown="KeyDownSearchInput" Margin="Margin.Is2.FromEnd" />
-                
+                <TextEdit
+                    @bind-Text="@_searchDataGrid" Placeholder="Search..."
+                    KeyDown="KeyDownSearchInput" Margin="Margin.Is2.FromEnd"/>
+
                 <div class="d-flex">
                     <Button Color="Color.Primary" Clicked="ApplySearchFilters">Apply</Button>
                 </div>
             </div>
-            
+
             <div class="d-flex justify-content-between align-items-center p-3">
                 <Div ElementId="#DataGrid-Refresh">
                     <Animate Anchor="#DataGrid-Refresh" Auto Animation="Animations.SlideRight" DelayMilliseconds="300">
                         <Button Clicked="LoadData" Color="Color.Primary" class="mr-2">
-                            <Icon Name="IconName.Sync" />
+                            <Icon Name="IconName.Sync"/>
                             Refresh
                         </Button>
                     </Animate>
                 </Div>
-                
+
                 <Div class="d-flex" ElementId="#DataGrid-Actions">
                     <Animate Anchor="#DataGrid-Actions" Auto Animation="Animations.SlideLeft" DelayMilliseconds="300">
                         @if (_viewMode == ViewMode.Normal)
@@ -70,12 +73,12 @@
                     </Animate>
                 </Div>
             </div>
-            
+
             <Div class="flex-grow-1 overflow-auto" ElementId="#DataGrid-Animate">
                 <Animate Anchor="#DataGrid-Animate" Auto Animation="Animations.ZoomIn" DelayMilliseconds="500">
                     <DataGrid TItem="OutArtist"
-                              Data="_filteredArtists"
-                              @bind-SelectedRows="@_selectedArtists"
+                              Data="_artists"
+                              @bind-SelectedRows="@_filteredArtists"
                               SelectionMode="DataGridSelectionMode.Multiple"
                               ShowPager
                               Resizable
@@ -86,22 +89,22 @@
                         {
                             <DataGridMultiSelectColumn Width="30px"/>
                         }
-                        
-                        <DataGridColumn Field="@nameof(OutArtist.Name)" Caption="Name" />
+
+                        <DataGridColumn Field="@nameof(OutArtist.Name)" Caption="Name"/>
                         <DataGridColumn Field="@nameof(OutArtist.ArtworkUrl)" Caption="Artwork">
                             <DisplayTemplate>
                                 @if (context.ArtworkUrl is not null)
                                 {
-                                    <Image Source="@context.ArtworkUrl" Loading Fluid />
+                                    <Image Style="width: 24px; height: 24px;" Source="@context.ArtworkUrl" Loading Fluid/>
                                 }
                             </DisplayTemplate>
                         </DataGridColumn>
-                        <DataGridColumn Field="@nameof(OutArtist.Country)" Caption="Country" />
-                        <DataGridColumn Field="@nameof(OutArtist.Discriminator)" Caption="Type" />
+                        <DataGridColumn Field="@nameof(OutArtist.Country)" Caption="Country"/>
+                        <DataGridColumn Field="@nameof(OutArtist.Discriminator)" Caption="Type"/>
                         <DataGridColumn Caption="Edit">
                             <DisplayTemplate>
                                 <Button Color="Color.Link" Size="Size.Small" Clicked="@(() => ShowEditModal(context))">
-                                    <Icon Name="IconName.Pen" />
+                                    <Icon Name="IconName.Pen"/>
                                 </Button>
                             </DisplayTemplate>
                         </DataGridColumn>
@@ -138,34 +141,42 @@
 </Modal>
 
 @code {
-
+    
     private ViewMode _viewMode = ViewMode.Normal;
-
+    
     private ArtistAddModal? _artistAddModal;
     private ArtistEditModal? _artistEditModal;
     private Modal? _confirmDeleteModal;
 
-    private ILogger<Artist> _logger = null!;
+    private ILogger _logger = null!;
 
     private List<OutArtist> _artists = [];
     private List<OutArtist> _filteredArtists = [];
     private List<OutArtist> _selectedArtists = [];
 
     private string _searchDataGrid = null!;
-
-    protected override async Task OnInitializedAsync()
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _logger = LoggerFactory.CreateLogger<Artist>();
+        if (!firstRender)
+        {
+            return;
+        }
         
-        _logger.Info("📜 Current Page : /Artist");
-
-        //await LoadData();
+        _logger = LoggerProvider.CreateLogger(nameof(Artist));
+        
+        _logger.LogInformation("📜 Current Page : /Artist");
+        
+        await LoadData();
     }
 
     private async Task LoadData()
     {
-        _logger.Info("🔄️ ArtistPage : UPDATE Data");
+        _logger.LogInformation("🔄️ ArtistPage : UPDATE Data");
+
+        _artists = await UcList.ExecuteAsync(take: 100);
         _filteredArtists = new List<OutArtist>(_artists);
+        
         StateHasChanged();
     }
 
@@ -219,7 +230,7 @@
 
     private void ApplySearchFilters()
     {
-        _logger.Debug($"🔎 ArtistPage : Apply Search Filters: {_searchDataGrid}");
+        _logger.LogDebug($"🔎 ArtistPage : Apply Search Filters: {_searchDataGrid}");
 
         var keywords = string.IsNullOrWhiteSpace(_searchDataGrid)
             ? []

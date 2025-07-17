@@ -3,14 +3,15 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Presentation.Desktop.ViewModels;
 
 namespace Musicx.Presentation.Desktop;
 
-public class ViewLocator(ILoggerFactory loggerFactory) : IDataTemplate
+public class ViewLocator(ILoggerProvider loggerProvider) : IDataTemplate
 {
-    private readonly ILogger<ViewLocator> _logger = loggerFactory.CreateLogger<ViewLocator>();
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ViewLocator));
     
     public Control? Build(object? param)
     {
@@ -19,7 +20,7 @@ public class ViewLocator(ILoggerFactory loggerFactory) : IDataTemplate
 
         var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
         
-        _logger.Debug($"📒 View model {param.GetType().FullName!} is searching for view {name}");
+        _logger.LogDebug($"📒 View model {param.GetType().FullName!} is searching for view {name}");
         
         var type = AppDomain.CurrentDomain
             .GetAssemblies()
@@ -28,11 +29,11 @@ public class ViewLocator(ILoggerFactory loggerFactory) : IDataTemplate
 
         if (type != null)
         {
-            _logger.Info("✅ Found view : " + type.FullName);
+            _logger.LogInformation("✅ Found view : " + type.FullName);
             return (Control)Activator.CreateInstance(type)!;
         }
 
-        _logger.Warn("⚠️ View has not been found: " + name);
+        _logger.LogWarning("⚠️ View has not been found: " + name);
         return new TextBlock { Text = "Not Found: " + name };
     }
 
