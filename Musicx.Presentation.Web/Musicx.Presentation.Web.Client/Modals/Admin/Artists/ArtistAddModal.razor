@@ -1,12 +1,14 @@
 @using System.Globalization
-@using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData
+@using System.Text.Json
+@using System.Text.RegularExpressions
 @using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Enums
 @using Musicx.Contracts.Dto.Requests
-@using Musicx.Presentation.Web.Client.Pages.Admin
+@using Musicx.Contracts.Dto.Responses
 
-@inject IFetchArtistInfoUseCase UcFetchArtistInfo
 @inject ILoggerProvider LoggerProvider
 @inject ISaveUseCase<InArtist> UcSave 
+@inject HttpClient Http
 
 <Modal @ref="_modalRef">
     <ModalContent Centered>
@@ -24,7 +26,7 @@
                     </FieldLabel>
                     <FieldBody>
                         <Validation Validator="ValidateNonEmptyField">
-                            <TextEdit @bind-Text="@_artist.Name" Placeholder="ABBA..." KeyDown="UpdateArtwork">
+                            <TextEdit Placeholder="ABBA..." TextChanged="NameTextChanged">
                                 <ValidationNone>⚠️ Please enter a name</ValidationNone>
                                 <ValidationSuccess>✅ Valid name</ValidationSuccess>
                             </TextEdit>
@@ -37,17 +39,18 @@
                         Country
                     </FieldLabel>
                     <FieldBody>
-                        <Validation Validator="ValidateNonEmptyField">
-                            <Select TValue="string" @bind-SelectedValue="@_artist.Country">
-                                @foreach (var country in _countries)
-                                {
-                                    <SelectItem Value="@country">@country</SelectItem>
-                                }
-                                
-                                <ValidationNone>⚠️ Please select a country</ValidationNone>
-                                <ValidationSuccess>✅ Valid country</ValidationSuccess>
-                            </Select>
-                        </Validation>
+                        <Autocomplete 
+                                      TItem="string"
+                                      TValue="string" 
+                                      Data="@_countries"
+                                      Placeholder="Search country..."
+                                      Filter="AutocompleteFilter.StartsWith"
+                                      FreeTyping
+                                      TextField="@((item) => item)"
+                                      ValueField="@((item) => item)"
+                                      @bind-SelectedValue="@_artist.Country">
+                            <NotFoundContent>Sorry, @context was not found!</NotFoundContent>
+                        </Autocomplete>
                     </FieldBody>
                 </Field>
                 
@@ -56,13 +59,16 @@
                         Artwork
                     </FieldLabel>
                     <FieldBody>
-                        @if (null == _artist.ArtworkUrl || _isLoading)
+                        @if (_isLoading)
                         {
                             <SpinKit Type="SpinKitType.Pulse" Color="gray" />
                         }
                         else
                         {
-                            <Image Source="@_artist.ArtworkUrl" />
+                            if (null != _artist.ArtworkUrl)
+                            {
+                                <Image Style="width: 96px; height: 96px" Source="@_artist.ArtworkUrl" />
+                            }
                         }
                     </FieldBody>
                 </Field>
@@ -72,15 +78,15 @@
                         Type (*)
                     </FieldLabel>
                     <FieldBody>
-                        <Select TValue="string" @bind-SelectedValue="_artist.Discriminator">
-                            <SelectItem Value="@("Artist")">Generic</SelectItem>
-                            <SelectItem Value="@("BandArtist")">Band</SelectItem>
-                            <SelectItem Value="@("PersonArtist")">Person</SelectItem>
+                        <Select TValue="ArtistDiscriminator" @bind-SelectedValue="_artist.Discriminator">
+                            <SelectItem Value="@(ArtistDiscriminator.Artist)">Generic</SelectItem>
+                            <SelectItem Value="@(ArtistDiscriminator.BandArtist)">Band</SelectItem>
+                            <SelectItem Value="@(ArtistDiscriminator.PersonArtist)">Person</SelectItem>
                         </Select>
                     </FieldBody>
                 </Field>
                 
-                @if (_artist.Discriminator == "BandArtist")
+                @if (_artist.Discriminator == ArtistDiscriminator.BandArtist)
                 {
                     <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
                         <FieldLabel>
@@ -100,7 +106,7 @@
                         </FieldBody>
                     </Field>
                 } 
-                else if (_artist.Discriminator == "PersonArtist")
+                else if (_artist.Discriminator == ArtistDiscriminator.PersonArtist)
                 {
                     <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
                         <FieldLabel>
@@ -182,12 +188,24 @@
 
         _artist = new InArtist
         {
-            Discriminator = "Artist"
+            Discriminator = ArtistDiscriminator.Artist
         };
 
         _countries = CultureInfo
             .GetCultures(CultureTypes.SpecificCultures)
-            .Select(ci => new RegionInfo(ci.Name).EnglishName)
+            .Select(culture =>
+            {
+                try
+                {
+                    return new RegionInfo(culture.Name);
+                }
+                catch
+                {
+                    return null;
+                }
+            })
+            .Where(region => region != null && Regex.IsMatch(region!.TwoLetterISORegionName, "^[A-Z]{2}$"))
+            .Select(region => region!.EnglishName)
             .Distinct()
             .OrderBy(name => name)
             .ToList();
@@ -219,9 +237,10 @@
             : ValidationStatus.Success;
     }
 
-    private async Task UpdateArtwork(KeyboardEventArgs obj)
+    private async Task UpdateArtwork()
     {
-        _isLoading = false;
+        _isLoading = true;
+        StateHasChanged();
         _artworkCts?.Cancel();
         _artworkCts?.Dispose();
 
@@ -229,28 +248,52 @@
 
         if (string.IsNullOrWhiteSpace(_artist.Name))
         {
+            _isLoading = false;
             return;
         }
 
         try
         {
             await Task.Delay(1000, _artworkCts.Token);
-            _isLoading = true;
-            var response = await UcFetchArtistInfo.ExecuteAsync(new FetchArtistInfoRequest(
-                Name: _artist.Name,
-                CancellationToken: _artworkCts.Token));
 
-            if (null == response.Artist)
+            var content = await Http.GetStringAsync(
+                $"api/external/artist?name={Uri.EscapeDataString(_artist.Name)}",
+                _artworkCts.Token
+            );
+
+            var response = JsonSerializer.Deserialize<OutArtist?>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (null == response)
             {
                 _logger.LogWarning($"⚠️ Artist not found: {_artist.Name}");
+                _isLoading = false;
                 return;
             }
-            
-            _logger.LogInformation("ℹ️ Retrieved Artwork Url : " + response.Artist.ArtworkUrl);
-            _artist.ArtworkUrl = response.Artist.ArtworkUrl;
+
+            _logger.LogInformation("ℹ️ Retrieved Artwork Url : " + response.ArtworkUrl);
+            _artist.ArtworkUrl = response.ArtworkUrl;
             _isLoading = false;
             StateHasChanged();
-        } catch (TaskCanceledException) {}
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("❌ Error while retrieving artwork : " + ex.Message);
+            _isLoading = false;
+        }
+    }
+
+    private async Task NameTextChanged(string newValue)
+    {
+        _artist.Name = newValue;
+
+        await UpdateArtwork();
     }
 
 }

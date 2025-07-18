@@ -7,6 +7,8 @@ using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Domain.Models;
 using Musicx.Infrastructure.Shared.Exceptions;
+using Musicx.Infrastructure.Shared.Helpers;
+using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
@@ -37,6 +39,33 @@ internal sealed class ArtistRepository(
         {
             await transaction.RollbackAsync();
             throw new RepositoryException($"❌ Could not delete id {id}", ex, _logger);
+        }
+    }
+
+    public async Task DeleteAllAsync(IEnumerable<long> ids)
+    {
+        var stringIds = string.Join(",", ids);
+
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        
+        try
+        {
+            var deleteAllSql = "DELETE FROM \"Artists\" WHERE \"Id\" IN (@ids)";
+
+            var parameters = new List<NpgsqlParameter>
+            {
+                new("@Ids", stringIds)
+            };
+
+            _logger.LogDebug(SqlDebugHelper.InterpolateQuery(deleteAllSql, parameters));
+            
+            await context.Database.ExecuteSqlRawAsync(deleteAllSql, parameters.Cast<object>().ToArray());
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw new RepositoryException($"📜❌ Could not delete ids {stringIds}", ex, _logger);
         }
     }
 

@@ -17,6 +17,13 @@ public interface IRepository<T>
     /// <param name="id">The unique identifier of the entity.</param>
     /// <since>0.6.0</since>
     Task DeleteAsync(long id);
+    
+    /// <summary>
+    /// Delete a collection of entities.
+    /// </summary>
+    /// <param name="ids">The unique identifiers of the entities to be deleted</param>
+    /// <since>0.6.2</since>
+    Task DeleteAllAsync(IEnumerable<long> ids);
 
     /// <summary>
     /// Retrieve an entity by his unique identifier.

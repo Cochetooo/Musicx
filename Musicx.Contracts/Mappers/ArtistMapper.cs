@@ -1,3 +1,4 @@
+using Musicx.Contracts.Dto.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Domain.Models;
@@ -20,7 +21,7 @@ public static class ArtistMapper
         switch (artist)
         {
             case PersonArtist personArtist:
-                artistDto.Discriminator = "Person";
+                artistDto.Discriminator = ArtistDiscriminator.PersonArtist;
                 
                 artistDto.Bands = personArtist.Bands.Select(b => new OutArtist { Id = b.Id, Name = b.Name }).ToList();
                 artistDto.FirstName = personArtist.FirstName;
@@ -29,14 +30,14 @@ public static class ArtistMapper
                 artistDto.DeathDate = personArtist.DeathDate;
                 break;
             case BandArtist bandArtist:
-                artistDto.Discriminator = "Band";
+                artistDto.Discriminator = ArtistDiscriminator.BandArtist;
                 
                 artistDto.Members = bandArtist.Members.Select(m => new OutArtist { Id = m.Id, Name = m.Name }).ToList();
                 artistDto.FormationDate = bandArtist.FormationDate;
                 artistDto.SplitDate = bandArtist.SplitDate;
                 break;
             default:
-                artistDto.Discriminator = "Artist";
+                artistDto.Discriminator = ArtistDiscriminator.Artist;
                 break;
         }
         
@@ -45,16 +46,36 @@ public static class ArtistMapper
     
     public static Artist ToEntity(this InArtist artistDto)
     {
+        if (null != artistDto.FormationDate && artistDto.FormationDate.Value.Kind != DateTimeKind.Utc)
+        {
+            artistDto.FormationDate = artistDto.FormationDate.Value.ToUniversalTime();
+        }
+        
+        if (null != artistDto.SplitDate && artistDto.SplitDate.Value.Kind != DateTimeKind.Utc)
+        {
+            artistDto.SplitDate = artistDto.SplitDate.Value.ToUniversalTime();
+        }
+        
+        if (null != artistDto.BirthDate && artistDto.BirthDate.Value.Kind != DateTimeKind.Utc)
+        {
+            artistDto.BirthDate = artistDto.BirthDate.Value.ToUniversalTime();
+        }
+        
+        if (null != artistDto.DeathDate && artistDto.DeathDate.Value.Kind != DateTimeKind.Utc)
+        {
+            artistDto.DeathDate = artistDto.DeathDate.Value.ToUniversalTime();
+        }
+        
         return artistDto.Discriminator switch
         {
-            "Artist" => new Artist
+            ArtistDiscriminator.Artist => new Artist
             {
                 Id = artistDto.Id,
                 Name = artistDto.Name,
                 ArtworkUrl = artistDto.ArtworkUrl,
                 Country = artistDto.Country
             },
-            "Band" => new BandArtist
+            ArtistDiscriminator.BandArtist => new BandArtist
             {
                 Id = artistDto.Id,
                 Name = artistDto.Name,
@@ -64,7 +85,7 @@ public static class ArtistMapper
                 FormationDate = artistDto.FormationDate,
                 SplitDate = artistDto.SplitDate
             },
-            "Person" => new PersonArtist
+            ArtistDiscriminator.PersonArtist => new PersonArtist
             {
                 Id = artistDto.Id,
                 Name = artistDto.Name,

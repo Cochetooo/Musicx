@@ -1,3 +1,5 @@
+using Musicx.Contracts.Dto.Enums;
+
 namespace Musicx.Contracts.Dto.Requests;
 
 public sealed class InArtist
@@ -6,7 +8,7 @@ public sealed class InArtist
     public long Id { get; set; }
     
     // Required Columns
-    public string Discriminator { get; set; } = string.Empty;
+    public ArtistDiscriminator Discriminator { get; set; }
     public string Name { get; set; } = string.Empty;
     
     // Optional Relationships
@@ -14,12 +16,12 @@ public sealed class InArtist
     public IReadOnlyList<long>? BandIds { get; set; } = [];
     
     // Optional Columns
-    public string? ArtworkUrl { get; set; } = string.Empty;
-    public string? Country { get; set; } = string.Empty;
-    public DateTime? FormationDate { get; set; } = System.DateTime.MinValue;
-    public DateTime? SplitDate { get; set; } = System.DateTime.MinValue;
-    public string? FirstName { get; set; } = string.Empty;
-    public string? LastName { get; set; } = string.Empty;
-    public DateTime? BirthDate { get; set; } = System.DateTime.MinValue;
-    public DateTime? DeathDate { get; set; } = System.DateTime.MinValue;
+    public string? ArtworkUrl { get; set; }
+    public string? Country { get; set; }
+    public DateTime? FormationDate { get; set; }
+    public DateTime? SplitDate { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public DateTime? BirthDate { get; set; }
+    public DateTime? DeathDate { get; set; }
 }

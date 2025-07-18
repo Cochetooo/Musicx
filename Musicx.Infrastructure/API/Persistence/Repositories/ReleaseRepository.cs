@@ -40,6 +40,11 @@ internal sealed class ReleaseRepository(
         }
     }
 
+    public async Task DeleteAllAsync(IEnumerable<long> ids)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Release?> FindByIdAsync(long id, IQuerySpecification<Release>? releaseQuerySpecification = null)
     {
         _logger.LogDebug($"📄 FIND BY ID Release : {id}");

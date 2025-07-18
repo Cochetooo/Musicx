@@ -41,6 +41,11 @@ internal sealed class SongRepository(
         }
     }
 
+    public Task DeleteAllAsync(IEnumerable<long> ids)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Song?> FindByIdAsync(long id, IQuerySpecification<Song>? songQuerySpecification = null)
     {
         _logger.LogDebug($"📄 Find By Id Song : {id}");

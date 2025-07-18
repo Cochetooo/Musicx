@@ -4,11 +4,11 @@ using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
 
-public sealed class CompositeExternalMusicDataProvider(
+public sealed class ExternalMusicDataService(
     IEnumerable<IExternalMusicDataProvider> providers,
     ILoggerProvider loggerProvider) : IExternalMusicDataProvider
 {
-    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(CompositeExternalMusicDataProvider));
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ExternalMusicDataService));
     
     public async Task<OutArtist?> GetArtistInfoAsync(string name, CancellationToken ct = default)
     {
@@ -16,6 +16,7 @@ public sealed class CompositeExternalMusicDataProvider(
         {
             try
             {
+                _logger.LogDebug("🔌 Get Artist Info : Try with " + provider.GetType().Name);
                 var result = await provider.GetArtistInfoAsync(name, ct);
                 if (null != result)
                 {

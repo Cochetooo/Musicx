@@ -13,8 +13,8 @@ public sealed class ArtistController(IArtistRepository artistRepository,
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ArtistController));
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete([FromQuery] long id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] long id)
     {
         _logger.LogInformation($"🌍🏳️ API : DELETE artists ({id})");
 
@@ -31,17 +31,42 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         }
     }
 
-    [HttpGet("by-id")]
-    public async Task<ActionResult<OutArtist>> FindById([FromQuery] long id)
+    [HttpDelete("by-ids")]
+    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids)
+    {
+        var stringIds = string.Join(",", ids);
+        _logger.LogInformation($"🌍🏳️ API : DELETE ALL artists ({stringIds})");
+
+        try
+        {
+            await artistRepository.DeleteAllAsync(ids);
+                    
+            _logger.LogInformation($"🌍✅ API : DELETE artists ({stringIds}) - SUCCESS");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OutArtist>> FindById([FromRoute] long id)
     {
         _logger.LogInformation($"🌍🏳️ API : FIND BY ID artists ({id})");
 
         try
         {
             var artist = await artistRepository.FindByIdAsync(id);
+
+            if (null == artist)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND BY ID artists ({id}) - NOT FOUND");
+                return NoContent();
+            }
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID artists ({id}) - SUCCESS");
-            return Ok(artist);
+            return Ok(artist.ToDto());
         }
         catch (Exception ex)
         {
@@ -50,16 +75,20 @@ public sealed class ArtistController(IArtistRepository artistRepository,
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OutArtist>>> Find()
+    public async Task<ActionResult<IEnumerable<OutArtist>>> Find(
+        [FromQuery] int skip = 0,
+        [FromQuery] int take = 100, 
+        [FromQuery] string filter = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND artists");
 
         try
         {
-            var artists = await artistRepository.FindAsync();
+            var artists = await artistRepository.FindAsync(skip, take, a => 
+                string.IsNullOrWhiteSpace(filter) || a.Name.Contains(filter));
             
             _logger.LogInformation($"🌍✅ API : FIND artists - SUCCESS");
-            return Ok(artists);
+            return Ok(artists.Select(a => a.ToDto()));
         }
         catch (Exception ex)
         {
@@ -83,7 +112,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
             var artists = await artistRepository.FindIn(ids);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID artists ({stringIds}) - SUCCESS");
-            return Ok(artists);
+            return Ok(artists.Select(a => a.ToDto()));
         }
         catch (Exception ex)
         {
@@ -123,6 +152,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         }
         catch (Exception ex)
         {
+            _logger.LogError($"❌ API : SAVE artists - ERROR: {ex.Message}");
             return BadRequest(ex);
         }
     }

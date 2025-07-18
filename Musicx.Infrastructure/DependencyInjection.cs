@@ -32,10 +32,30 @@ public static class DependencyInjection
     /// <summary>
     /// Add common module services and use cases.
     /// </summary>
-    public static IServiceCollection AddMusicxInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddMusicxInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Providers
+        services.AddScoped<HttpClient>();
+        /* services.AddHttpClient<IExternalMusicDataProvider, LastFmApiProvider>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["Apis:LastFm:BaseUrl"]!);
+        });
+
+        services.AddHttpClient<IExternalMusicDataProvider, DeezerApiProvider>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["Apis:Deezer:BaseUrl"]!);
+        });
+
+        services.AddHttpClient<IExternalMusicDataProvider, ItunesApiProvider>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["Apis:Itunes:BaseUrl"]!);
+        }); */
+
         services.AddScoped<IExternalMusicDataProvider, LastFmApiProvider>();
+        services.AddScoped<IExternalMusicDataProvider, DeezerApiProvider>();
+        services.AddScoped<IExternalMusicDataProvider, ItunesApiProvider>();
+
+        services.AddScoped<ExternalMusicDataService>();
 
         // Use cases
         services.AddScoped<IFetchArtistInfoUseCase, UcFetchArtistInfo>();
@@ -103,6 +123,7 @@ public static class DependencyInjection
     public static IServiceCollection AddMusicxWeb(this IServiceCollection services)
     {
         services.AddScoped(typeof(ISaveUseCase<>), typeof(UcSave<>));
+        services.AddScoped(typeof(IDeleteUseCase<>), typeof(UcDelete<>));
         services.AddScoped(typeof(IListUseCase<>), typeof(UcList<>));
         
         return services;

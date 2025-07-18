@@ -40,6 +40,11 @@ internal sealed class GenreRepository(
         }
     }
 
+    public async Task DeleteAllAsync(IEnumerable<long> ids)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Genre?> FindByIdAsync(long id, IQuerySpecification<Genre>? genreQuerySpecification = null)
     {
         _logger.LogDebug($"📄 FIND BY ID Genre : {id}");

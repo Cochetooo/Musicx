@@ -1,0 +1,59 @@
+﻿@page "/SearchResult/{searchText}"
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Responses
+
+@inject NavigationManager NavigationManager
+@inject IListUseCase<OutArtist> UcListArtist
+
+<Breadcrumb Margin="Margin.Is2.FromBottom">
+    <BreadcrumbItem>
+        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        <BreadcrumbLink To="#">Search Results</BreadcrumbLink>
+    </BreadcrumbItem>
+</Breadcrumb>
+
+<Card Margin="Margin.Is4.OnY">
+    <CardHeader>
+        Search Results
+    </CardHeader>
+    <CardBody>
+        <h3>Artists</h3>
+        <ListGroup Flush>
+            @foreach (var artist in _artistsResult)
+            {
+                <ListGroupItem>
+                    <Image Style="width: 96px; height: 96px" Source="@artist.ArtworkUrl" />
+                    <Text TextWeight="TextWeight.Bold" TextColor="TextColor.Primary">@artist.Name</Text>
+                </ListGroupItem>
+            }
+        </ListGroup>
+    </CardBody>
+</Card>
+
+@code {
+
+    [Parameter] public string? SearchText { get; set; }
+
+    private List<OutArtist> _artistsResult = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await UpdateResults();
+    }
+
+    private async Task UpdateResults()
+    {
+        _artistsResult = await UcListArtist.ExecuteAsync(
+            filter: SearchText);
+        
+        StateHasChanged();
+    }
+
+}

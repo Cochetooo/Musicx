@@ -40,6 +40,11 @@ internal sealed class AlbumRepository(
         }
     }
 
+    public async Task DeleteAllAsync(IEnumerable<long> ids)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Album?> FindByIdAsync(long id, IQuerySpecification<Album>? albumQuerySpecification = null)
     {
         _logger.LogDebug($"📄 FIND BY ID Album : {id}");

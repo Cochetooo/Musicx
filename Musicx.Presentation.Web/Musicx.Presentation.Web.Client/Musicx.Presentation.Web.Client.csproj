@@ -11,6 +11,7 @@
     <ItemGroup>
         <PackageReference Include="Blazorise" Version="1.8.0" />
         <PackageReference Include="Blazorise.Animate" Version="1.8.0" />
+        <PackageReference Include="Blazorise.Components" Version="1.8.0" />
         <PackageReference Include="Blazorise.DataGrid" Version="1.8.0" />
         <PackageReference Include="Blazorise.Icons.Material" Version="1.8.0" />
         <PackageReference Include="Blazorise.Material" Version="1.8.0" />
@@ -27,7 +28,6 @@
 
     <ItemGroup>
       <Content Remove="appsettings.Client.json" />
-      <None Include="appsettings.Client.json" />
     </ItemGroup>
 
 </Project>

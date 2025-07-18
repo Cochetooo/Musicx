@@ -1,12 +1,14 @@
 @page "/Admin/Artists"
 @using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 @using Musicx.Presentation.Web.Client.Models
 
 @inject ILoggerProvider LoggerProvider
 @inject IListUseCase<OutArtist> UcList
+@inject IDeleteUseCase<InArtist> UcDelete
 
 <Breadcrumb Margin="Margin.Is2.FromBottom">
     <BreadcrumbItem>
@@ -77,8 +79,8 @@
             <Div class="flex-grow-1 overflow-auto" ElementId="#DataGrid-Animate">
                 <Animate Anchor="#DataGrid-Animate" Auto Animation="Animations.ZoomIn" DelayMilliseconds="500">
                     <DataGrid TItem="OutArtist"
-                              Data="_artists"
-                              @bind-SelectedRows="@_filteredArtists"
+                              Data="_filteredArtists"
+                              @bind-SelectedRows="@_selectedArtists"
                               SelectionMode="DataGridSelectionMode.Multiple"
                               ShowPager
                               Resizable
@@ -90,8 +92,7 @@
                             <DataGridMultiSelectColumn Width="30px"/>
                         }
 
-                        <DataGridColumn Field="@nameof(OutArtist.Name)" Caption="Name"/>
-                        <DataGridColumn Field="@nameof(OutArtist.ArtworkUrl)" Caption="Artwork">
+                        <DataGridColumn Field="@nameof(OutArtist.ArtworkUrl)" Caption="#">
                             <DisplayTemplate>
                                 @if (context.ArtworkUrl is not null)
                                 {
@@ -99,8 +100,15 @@
                                 }
                             </DisplayTemplate>
                         </DataGridColumn>
+                        <DataGridColumn Field="@nameof(OutArtist.Name)" Caption="Name"/>
                         <DataGridColumn Field="@nameof(OutArtist.Country)" Caption="Country"/>
                         <DataGridColumn Field="@nameof(OutArtist.Discriminator)" Caption="Type"/>
+                        <DataGridColumn Field="@nameof(OutArtist.FormationDate)" Caption="Formation Date"/>
+                        <DataGridColumn Field="@nameof(OutArtist.SplitDate)" Caption="Split Date"/>
+                        <DataGridColumn Field="@nameof(OutArtist.FirstName)" Caption="First Name"/>
+                        <DataGridColumn Field="@nameof(OutArtist.LastName)" Caption="Last Name"/>
+                        <DataGridColumn Field="@nameof(OutArtist.BirthDate)" Caption="Birth Date"/>
+                        <DataGridColumn Field="@nameof(OutArtist.DeathDate)" Caption="Death Date"/>
                         <DataGridColumn Caption="Edit">
                             <DisplayTemplate>
                                 <Button Color="Color.Link" Size="Size.Small" Clicked="@(() => ShowEditModal(context))">
@@ -185,7 +193,7 @@
         _artistAddModal?.Show();
     }
 
-    private async Task ShowEditModal(OutArtist artist)
+    private void ShowEditModal(OutArtist artist)
     {
         _selectedArtists.Clear();
         _selectedArtists.Add(artist);
@@ -195,6 +203,11 @@
 
     private async Task DeleteData()
     {
+        foreach (var artist in _selectedArtists)
+        {
+            await UcDelete.ExecuteAsync(artist.Id);
+        }
+        
         await HideDeleteModal();
         await LoadData();
         EnableNormalMode();

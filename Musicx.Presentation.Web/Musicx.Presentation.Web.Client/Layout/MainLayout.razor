@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
+@inject NavigationManager NavigationManager
+
 <Layout>
     <LayoutHeader Fixed>
         <Bar
@@ -20,6 +22,12 @@
                 <BarStart>
                     <BarItem>
                         <BarLink To="/">Home</BarLink>
+                    </BarItem>
+                    <BarItem>
+                        <TextEdit Placeholder="Search..." @bind-Text="_searchText" KeyDown="SearchKeyDown" />
+                    </BarItem>
+                    <BarItem>
+                        <Button Color="Color.Primary" Clicked="Search">Search</Button>
                     </BarItem>
                 </BarStart>
                 <BarEnd>
@@ -46,3 +54,22 @@
         @Body
     </LayoutContent>
 </Layout>
+
+@code {
+
+    private string _searchText;
+    
+    private void SearchKeyDown(KeyboardEventArgs keyEvent)
+    {
+        if (keyEvent.Key == "Enter")
+        {
+            Search();
+        }
+    }
+
+    private void Search()
+    {
+        NavigationManager.NavigateTo("/SearchResult/" + _searchText);
+    }
+    
+}

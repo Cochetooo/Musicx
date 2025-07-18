@@ -27,6 +27,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.6" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
       <PackageReference Include="z440.atl.core" Version="6.22.0" />

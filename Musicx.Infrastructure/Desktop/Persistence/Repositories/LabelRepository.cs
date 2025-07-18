@@ -41,6 +41,11 @@ internal sealed class LabelRepository(
         }
     }
 
+    public Task DeleteAllAsync(IEnumerable<long> ids)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Label?> FindByIdAsync(long id, IQuerySpecification<Label>? labelQuerySpecification = null)
     {
         _logger.LogDebug($"📄 Find By Id Label : {id}");

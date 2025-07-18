@@ -19,13 +19,15 @@ public sealed class LastFmApiProvider(
 
     public async Task<OutArtist?> GetArtistInfoAsync(string name, CancellationToken ct = default)
     {
-        var endpoint = $"{configuration["Apis:LastFm:BaseUrl"]}?method=artist.getinfo&artist={name}&api_key={_apiKey}&format=json";
+        return null;
+        
+        var endpoint = $"?method=artist.getinfo&artist={name}&api_key={_apiKey}&format=json";
         _logger.LogInformation($"🌍🏳️ LAST FM : GET {endpoint}");
 
         try
         {
             var response = await httpClient.GetStringAsync(endpoint, ct);
-            _logger.LogInformation(response);
+            _logger.LogDebug(response);
             
             var lastFmSearchArtist = JsonSerializer.Deserialize<LastFmSearchArtist.RootObject>(response);
 

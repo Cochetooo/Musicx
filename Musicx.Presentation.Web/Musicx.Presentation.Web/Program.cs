@@ -16,14 +16,9 @@ builder.Logging.AddLog4Net();
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddHttpClient<LastFmApiProvider>(client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["Apis:LastFm:BaseUrl"]!);
-});
-
 // Add application infrastructure
 builder.Services
-    .AddMusicxInfrastructure()
+    .AddMusicxInfrastructure(builder.Configuration)
     .AddMusicxApi(builder.Configuration);
 
 // Add Swagger

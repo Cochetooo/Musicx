@@ -1,3 +1,5 @@
+using Musicx.Contracts.Dto.Enums;
+
 namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutArtist
@@ -6,7 +8,7 @@ public sealed class OutArtist
     
     public string? ArtworkUrl { get; set; }
     public string? Country { get; set; }
-    public string Discriminator { get; set; } = null!;
+    public ArtistDiscriminator Discriminator { get; set; }
     public string Name { get; set; } = null!;
     
     public IReadOnlyList<OutArtist>? Members { get; set; }

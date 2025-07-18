@@ -1,10 +1,11 @@
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
+using Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
 
 namespace Musicx.Infrastructure.Shared.UseCases.ExternalMusicData;
 
 public sealed class UcFetchArtistInfo(
-    IExternalMusicDataProvider externalMusicDataProvider) : IFetchArtistInfoUseCase
+    ExternalMusicDataService externalMusicDataProvider) : IFetchArtistInfoUseCase
 {
     public async Task<FetchArtistInfoResponse> ExecuteAsync(FetchArtistInfoRequest request)
     {

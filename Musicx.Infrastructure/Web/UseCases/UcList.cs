@@ -21,6 +21,11 @@ public sealed class UcList<T>(
     {
         var modelName = typeof(T).Name.OutModelToEntity();
         var endpoint = $"/api/{modelName}?skip={skip}&take={take}";
+
+        if (null != filter)
+        {
+            endpoint += $"&filter={filter}";
+        }
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
@@ -33,6 +38,8 @@ public sealed class UcList<T>(
             _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
             return [];
         }
+        
+        _logger.LogInformation($"🌍✅ GET {endpoint} - SUCCESS");
 
         return json;
     }

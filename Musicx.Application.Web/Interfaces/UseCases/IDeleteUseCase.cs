@@ -2,6 +2,6 @@
 
 public interface IDeleteUseCase<T> where T : class
 {
-    Task ExecuteAsync(int id);
-    void Execute(int id);
+    Task ExecuteAsync(long id);
+    void Execute(long id);
 }

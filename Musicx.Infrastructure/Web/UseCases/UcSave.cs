@@ -23,6 +23,8 @@ public sealed class UcSave<T>(
         
         var json = JsonSerializer.Serialize(entity);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
+        
+        _logger.LogInformation("ℹ️ Content sent:\n" + content);
 
         var response = await httpClient.PostAsync(endpoint, content);
 
