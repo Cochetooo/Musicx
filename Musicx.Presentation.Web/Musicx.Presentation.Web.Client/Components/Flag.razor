@@ -1,0 +1,18 @@
+@using System.Globalization
+@using ISO3166
+
+<span class="fi fi-@GetCountryCode(CountryName).ToLower()"></span>
+
+@code {
+
+    [Parameter] public string CountryName { get; set; } = null!;
+
+    private string GetCountryCode(string countryName)
+    {
+        var match = Country.List.FirstOrDefault(c =>
+            c.Name.Equals(countryName, StringComparison.InvariantCultureIgnoreCase));
+
+        return match?.TwoLetterCode ?? "";
+    }
+
+}

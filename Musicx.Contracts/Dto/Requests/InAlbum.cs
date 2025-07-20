@@ -1,3 +1,5 @@
+using Musicx.Domain.Enums;
+
 namespace Musicx.Contracts.Dto.Requests;
 
 public sealed class InAlbum
@@ -17,9 +19,9 @@ public sealed class InAlbum
     public long? ArtistId { get; set; }
     
     // Optional Columns
-    public string? ArtworkUrl { get; set; } = string.Empty;
+    public string? ArtworkUrl { get; set; }
     public int? DiscTotal { get; set; }
-    public DateTime? ReleaseDate { get; set; } = DateTime.MinValue;
-    public string? ReleaseType { get; set; } = string.Empty;
+    public DateTime? ReleaseDate { get; set; }
+    public ReleaseType? ReleaseType { get; set; }
     public int? TrackTotal { get; set; }
 }

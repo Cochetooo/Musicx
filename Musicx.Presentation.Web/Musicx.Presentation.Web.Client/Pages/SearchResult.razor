@@ -1,6 +1,9 @@
 ﻿@page "/SearchResult/{searchText}"
 @using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Enums
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Domain.Models
+@using Musicx.Presentation.Web.Client.Components
 
 @inject NavigationManager NavigationManager
 @inject IListUseCase<OutArtist> UcListArtist
@@ -16,16 +19,43 @@
 
 <Card Margin="Margin.Is4.OnY">
     <CardHeader>
-        Search Results
+        <Heading Size="HeadingSize.Is5" TextWeight="TextWeight.Light" TextColor="TextColor.Muted">Search Results</Heading>
     </CardHeader>
     <CardBody>
-        <h3>Artists</h3>
+        <Heading Size="HeadingSize.Is4">Artists</Heading>
         <ListGroup Flush>
             @foreach (var artist in _artistsResult)
             {
                 <ListGroupItem>
-                    <Image Style="width: 96px; height: 96px" Source="@artist.ArtworkUrl" />
-                    <Text TextWeight="TextWeight.Bold" TextColor="TextColor.Primary">@artist.Name</Text>
+                    <Div Flex="Flex.JustifyContent.Start">
+                        <Image Style="width: 64px; height: 64px; border-radius:5px" Source="@artist.ArtworkUrl" />
+                        <Div Margin="Margin.Is3.OnX">
+                            <Heading TextWeight="TextWeight.Bold" Size="HeadingSize.Is5">
+                                <Blazorise.Link To="@($"/Artist/{artist.Id}")" TextColor="TextColor.Primary">
+                                    @artist.Name
+                                </Blazorise.Link>
+                            </Heading>
+
+                            <Paragraph TextSize="TextSize.Small" TextColor="TextColor.Muted">
+                                @if (artist.Discriminator == ArtistDiscriminator.Band)
+                                {
+                                    <Text>Band from <Flag CountryName="@artist.Country" /></Text>
+                                    if (null != artist.FormationDate)
+                                    {
+                                        <Text> since @artist.FormationDate.Value.Year</Text>
+                                    }
+                                } 
+                                else
+                                {
+                                    <Text>Artist from <Flag CountryName="@artist.Country" /></Text>
+                                    if (null != artist.BirthDate)
+                                    {
+                                        <Text> born in @artist.BirthDate.Value.Year</Text>
+                                    }
+                                }
+                            </Paragraph>
+                        </Div>
+                    </Div>
                 </ListGroupItem>
             }
         </ListGroup>
@@ -38,19 +68,15 @@
 
     private List<OutArtist> _artistsResult = [];
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnParametersSetAsync()
     {
-        if (!firstRender)
-        {
-            return;
-        }
-
         await UpdateResults();
     }
 
     private async Task UpdateResults()
     {
         _artistsResult = await UcListArtist.ExecuteAsync(
+            take: 10,
             filter: SearchText);
         
         StateHasChanged();

@@ -1,8 +1,13 @@
+using Musicx.Domain.Enums;
+
 namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutAlbum
 {
     public long Id { get; set; }
+    
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     
     public OutArtist? Artist { get; set; }
     public ICollection<OutRelease> Releases { get; set; } = new List<OutRelease>();
@@ -13,6 +18,6 @@ public sealed class OutAlbum
     public int? DiscTotal { get; set; }
     public string Name { get; set; } = null!;
     public DateTime? ReleaseDate { get; set; }
-    public string? ReleaseType { get; set; }
+    public ReleaseType? ReleaseType { get; set; }
     public int? TrackTotal { get; set; }
 }

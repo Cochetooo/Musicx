@@ -1,0 +1,236 @@
+@using System.Text.Json
+@using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Mappers
+@using Musicx.Domain.Enums
+
+@inject ILoggerProvider LoggerProvider
+@inject ISaveUseCase<InAlbum> UcSave
+@inject HttpClient Http
+
+<Modal @ref="_modalRef">
+    <ModalContent Size="ModalSize.Large" Centered>
+        <ModalHeader>
+            <ModalTitle>Add new album</ModalTitle>
+            <CloseButton Clicked="Hide" />
+        </ModalHeader>
+        
+        <ModalBody>
+            <Fields>
+                <Field ColumnSize="ColumnSize.Is4.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Artist (*)
+                    </FieldLabel>
+                    <FieldBody>
+                        @if (_artist != null)
+                        {
+                            <TextEdit Disabled @bind-Text="_artist.Name"/>
+                        }
+                    </FieldBody>
+                </Field>
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Name (*)
+                    </FieldLabel>
+                    <FieldBody>
+                        <Validation Validator="ValidateNonEmptyField">
+                            <TextEdit
+                                Placeholder="Here Comes the Sun..." TextChanged="NameTextChanged"
+                                @ref="_nameTextEdit">
+                                <ValidationNone>⚠️ Please enter a name</ValidationNone>
+                                <ValidationSuccess>✅ Valid name</ValidationSuccess>
+                            </TextEdit>
+                        </Validation>
+                    </FieldBody>
+                </Field>
+                
+                <Field ColumnSize="ColumnSize.Is2.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Artwork
+                    </FieldLabel>
+                    <FieldBody>
+                        @if (_isLoading)
+                        {
+                            <SpinKit Type="SpinKitType.Pulse" Color="gray" />
+                        }
+                        else
+                        {
+                            if (null != _album.ArtworkUrl)
+                            {
+                                <Image Style="width: 96px; height: 96px" Source="@_album.ArtworkUrl" />
+                            }
+                        }
+                    </FieldBody>
+                </Field>
+                <Field ColumnSize="ColumnSize.Is4.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Release Type
+                    </FieldLabel>
+                    <FieldBody>
+                        <Select TValue="ReleaseType?"
+                                @bind-SelectedValue="_album.ReleaseType">
+                            <SelectItem>-</SelectItem>
+                            @foreach (var releaseType in Enum.GetValues<ReleaseType>())
+                            {
+                                <SelectItem Value="@releaseType">@releaseType.ToString()</SelectItem>
+                            }
+                        </Select>
+                    </FieldBody>
+                </Field>
+                <Field ColumnSize="ColumnSize.Is4.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Release Date
+                    </FieldLabel>
+                    <FieldBody>
+                        <DatePicker TValue="DateTime?" @bind-Date="@_album.ReleaseDate" />
+                    </FieldBody>
+                </Field>
+                <Field ColumnSize="ColumnSize.Is2.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Number of Discs
+                    </FieldLabel>
+                    <FieldBody>
+                        <NumericPicker @bind-Value="_album.DiscTotal" />
+                    </FieldBody>
+                </Field>
+                <Field ColumnSize="ColumnSize.Is2.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Number of Tracks
+                    </FieldLabel>
+                    <FieldBody>
+                        <NumericPicker @bind-Value="_album.TrackTotal" />
+                    </FieldBody>
+                </Field>
+            </Fields>
+        </ModalBody>
+        
+        <ModalFooter>
+            <Button Color="Color.Primary" Clicked="Save" Disabled="@_isConfirmable">Save</Button>
+            <Button Color="Color.Secondary" Clicked="Hide">Close</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+
+    private ILogger _logger = null!;
+    
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private OutArtist? _artist;
+    private InAlbum _album = null!;
+
+    private bool _isLoading;
+    private bool _isConfirmable;
+
+    private TextEdit _nameTextEdit = null!;
+
+    private CancellationTokenSource? _artworkCts;
+
+    private Modal _modalRef = null!;
+
+    protected override void OnInitialized()
+    {
+        _logger = LoggerProvider.CreateLogger(nameof(AlbumEditModal));
+
+        _album = new InAlbum();
+    }
+
+    private async Task Save()
+    {
+        await UcSave.ExecuteAsync(_album);
+        await OnSave.InvokeAsync();
+        Hide();
+    }
+
+    public void Show(OutArtist artist, OutAlbum? album = null)
+    {
+        if (null != album)
+        {
+            _album = album.ToRaw();
+            _nameTextEdit.Text = _album.Name;
+            StateHasChanged();
+        }
+        
+        _artist = artist;
+        _album.ArtistId = _artist.Id;
+        _modalRef.Show();
+    }
+    
+    private void Hide()
+    {
+        _modalRef.Hide();
+    }
+
+    private async Task UpdateArtwork()
+    {
+        _isLoading = true;
+        StateHasChanged();
+        _artworkCts?.Cancel();
+        _artworkCts?.Dispose();
+
+        _artworkCts = new CancellationTokenSource();
+
+        if (string.IsNullOrWhiteSpace(_album.Name))
+        {
+            _isLoading = false;
+            return;
+        }
+
+        try
+        {
+            await Task.Delay(2000, _artworkCts.Token);
+
+            var content = await Http.GetStringAsync(
+                $"api/external/album?name={Uri.EscapeDataString(_album.Name)}&artist={Uri.EscapeDataString(_artist.Name)}",
+                _artworkCts.Token
+            );
+
+            var response = JsonSerializer.Deserialize<OutAlbum?>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            
+            if (null == response)
+            {
+                _logger.LogWarning($"⚠️ Album not found: {_album.Name}");
+                _isLoading = false;
+                return;
+            }
+            
+            _logger.LogInformation("ℹ️ Retrieved Artwork Url : " + response.ArtworkUrl);
+            _album.ArtworkUrl = response.ArtworkUrl;
+            _isLoading = false;
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("❌ Error while retrieving artwork : " + ex.Message);
+            _isLoading = false;
+        }
+    }
+    
+    private void ValidateNonEmptyField(ValidatorEventArgs e)
+    {
+        _isConfirmable = string.IsNullOrWhiteSpace(Convert.ToString(e.Value));
+        
+        e.Status = _isConfirmable
+            ? ValidationStatus.None
+            : ValidationStatus.Success;
+    }
+    
+    private async Task NameTextChanged(string newValue)
+    {
+        _album.Name = newValue;
+
+        await UpdateArtwork();
+    }
+
+}

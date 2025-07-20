@@ -2,5 +2,5 @@
 
 public enum ArtistDiscriminator
 {
-    Artist, BandArtist, PersonArtist
+    Artist, Band, Person
 }

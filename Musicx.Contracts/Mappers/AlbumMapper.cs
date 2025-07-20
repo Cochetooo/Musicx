@@ -7,9 +7,12 @@ namespace Musicx.Contracts.Mappers;
 
 public static class AlbumMapper
 {
-    public static OutAlbum ToDto(this Album album) => new OutAlbum
+    public static OutAlbum ToDto(this Album album) => new()
     {
         Id = album.Id,
+        
+        CreatedAt = album.CreatedAt,
+        UpdatedAt = album.UpdatedAt,
         
         Artist = album.Artist?.ToDto(),
         
@@ -21,21 +24,17 @@ public static class AlbumMapper
         DiscTotal = album.DiscTotal,
         Name = album.Name,
         ReleaseDate = album.ReleaseDate,
-        ReleaseType = album.ReleaseType.ToString(),
+        ReleaseType = album.ReleaseType,
         TrackTotal = album.TrackTotal
     };
 
     public static Album ToEntity(this InAlbum albumDto)
     {
-        var releaseType = Enum.TryParse<ReleaseType>(albumDto.ReleaseType, out var cReleaseType)
-            ? cReleaseType
-            : ReleaseType.Unknown;
-
         return new Album
         {
             Id = albumDto.Id,
 
-            Artist = albumDto.ArtistId is null ? null : new Artist { Id = albumDto.ArtistId.Value },
+            ArtistId = albumDto.ArtistId,
 
             Releases = albumDto.ReleaseIds.Select(id => new Release { Id = id }).ToList(),
             PrimaryGenres = albumDto.PrimaryGenreIds.Select(id => new Genre { Id = id }).ToList(),
@@ -45,8 +44,23 @@ public static class AlbumMapper
             DiscTotal = albumDto.DiscTotal,
             Name = albumDto.Name,
             ReleaseDate = albumDto.ReleaseDate,
-            ReleaseType = releaseType,
+            ReleaseType = albumDto.ReleaseType,
             TrackTotal = albumDto.TrackTotal
         };
     }
+
+    public static InAlbum ToRaw(this OutAlbum album) => new()
+    {
+        Id = album.Id,
+        ArtistId = album.Artist?.Id ?? null,
+        ReleaseIds = album.Releases.Select(r => r.Id).ToList(),
+        PrimaryGenreIds = album.PrimaryGenres.Select(g => g.Id).ToList(),
+        InfluenceGenreIds = album.InfluenceGenres.Select(g => g.Id).ToList(),
+        ArtworkUrl = album.ArtworkUrl,
+        DiscTotal = album.DiscTotal,
+        Name = album.Name,
+        ReleaseDate = album.ReleaseDate,
+        ReleaseType = album.ReleaseType,
+        TrackTotal = album.TrackTotal
+    };
 }

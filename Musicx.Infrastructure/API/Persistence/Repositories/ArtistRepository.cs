@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Net.Mime;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
@@ -78,6 +79,7 @@ internal sealed class ArtistRepository(
         
         return await artistSet
             .AsNoTracking()
+            .OrderBy(x => x.Name)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
@@ -100,6 +102,7 @@ internal sealed class ArtistRepository(
             .AsNoTracking()
             .Skip(skip)
             .Take(take)
+            .OrderBy(x => x.Name)
             .ToListAsync();
     }
 
@@ -121,6 +124,7 @@ internal sealed class ArtistRepository(
         return await artistSet
             .Where(s => enumerable.Contains(s.Id))
             .AsNoTracking()
+            .OrderBy(x => x.Name)
             .ToListAsync();
     }
 
@@ -131,20 +135,29 @@ internal sealed class ArtistRepository(
 
     public async Task<long> SaveAsync(Artist entity)
     {
-        _logger.LogDebug($"📄 SQL : INSERT INTO artists (name, artwork_url, country) " +
-                         $"VALUES ('{entity.Name}', '{entity.ArtworkUrl}', '{entity.Country}')");
-        
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
             if (0 == entity.Id)
             {
+                _logger.LogDebug($"📄 SQL : INSERT INTO artists (name, artwork_url, country) " +
+                                 $"VALUES ('{entity.Name}', '{entity.ArtworkUrl}', '{entity.Country}')");
+                
+                entity.CreatedAt = DateTime.Now;
+                entity.UpdatedAt = DateTime.Now;
+                
                 context.Artists.Add(entity);
             }
             else
             {
+                _logger.LogDebug($"📄 SQL : UPDATE artists SET Name={entity.Name}, " +
+                                 $"ArtworkUrl={entity.ArtworkUrl}, Country={entity.Country}" +
+                                 $"WHERE Id = {entity.Id}");
+                
+                entity.UpdatedAt = DateTime.Now;
                 context.Artists.Update(entity);
+                context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
             }
 
             await context.SaveChangesAsync();

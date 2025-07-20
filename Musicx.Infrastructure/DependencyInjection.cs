@@ -8,6 +8,7 @@ using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Application.Web.Interfaces.UseCases;
+using Musicx.Application.Web.Interfaces.UseCases.Specifics;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Persistence;
 using Musicx.Infrastructure.Desktop.Persistence;
@@ -18,6 +19,7 @@ using Musicx.Infrastructure.Shared.Logging;
 using Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
 using Musicx.Infrastructure.Shared.UseCases.ExternalMusicData;
 using Musicx.Infrastructure.Web.UseCases;
+using Musicx.Infrastructure.Web.UseCases.Specifics;
 
 namespace Musicx.Infrastructure;
 
@@ -59,6 +61,7 @@ public static class DependencyInjection
 
         // Use cases
         services.AddScoped<IFetchArtistInfoUseCase, UcFetchArtistInfo>();
+        services.AddScoped<IFetchAlbumInfoUseCase, UcFetchAlbumInfo>();
         
         return services;
     }
@@ -101,6 +104,7 @@ public static class DependencyInjection
     public static IServiceCollection AddMusicxApi(this IServiceCollection services, IConfiguration configuration)
     {
         // Database
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         services.AddDbContext<DbContext, ApiDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
         
@@ -122,9 +126,12 @@ public static class DependencyInjection
     /// </summary>
     public static IServiceCollection AddMusicxWeb(this IServiceCollection services)
     {
+        services.AddScoped(typeof(IGetUseCase<>), typeof(UcGet<>));
         services.AddScoped(typeof(ISaveUseCase<>), typeof(UcSave<>));
         services.AddScoped(typeof(IDeleteUseCase<>), typeof(UcDelete<>));
         services.AddScoped(typeof(IListUseCase<>), typeof(UcList<>));
+        
+        services.AddScoped<IGetAlbumByArtistUseCase, UcGetAlbumByArtist>();
         
         return services;
     }

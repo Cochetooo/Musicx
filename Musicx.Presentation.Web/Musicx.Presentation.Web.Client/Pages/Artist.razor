@@ -1,0 +1,273 @@
+@page "/Artist/{id}"
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Contracts.Dto.Enums
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Domain.Enums
+@using Musicx.Infrastructure.Web.UseCases.Specifics
+@using Musicx.Presentation.Web.Client.Components
+@using Musicx.Presentation.Web.Client.Modals.Admin.Albums
+
+@inject IGetUseCase<OutArtist> UcGet
+@inject IGetAlbumByArtistUseCase UcGetAlbums
+@inject ILoggerProvider LoggerProvider
+
+@if (null == _artist)
+{
+    <SpinKit Type="SpinKitType.Pulse" />
+}
+else
+{
+    <Card Margin="Margin.Is4.OnY">
+        <CardHeader Padding="Padding.Is3.OnX">
+            <Heading Size="HeadingSize.Is4" TextWeight="TextWeight.Bold">@_artist.Name</Heading>
+        </CardHeader>
+        <CardBody>
+            <Row Margin="Margin.Is3.OnX">
+                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is2">
+                    <Image Style="border-radius:10px; height:auto; width: 100%;" Source="@_artist.ArtworkUrl" />
+                </Column>
+                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3">
+                    <Button Color="Color.Secondary">
+                        <Icon Name="IconName.UserPlus" Margin="Margin.Is2.OnX" />
+                        Follow
+                    </Button>
+                </Column>
+                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is6.Is1.WithOffset">
+                    <Card>
+                        <CardBody>
+                            <CardTitle Size="5">
+                                Details
+                            </CardTitle>
+                            <ListGroup Flush>
+                                @if (_artist.Discriminator == ArtistDiscriminator.Band)
+                                {
+                                    if (null != _artist.FormationDate)
+                                    {
+                                        <ListGroupItem>
+                                            <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                                Formed
+                                            </Paragraph>
+                                            <Blazorise.Text TextWeight="TextWeight.Bold">
+                                                @_artist.FormationDate.Value.ToString("dd/MM/yyyy")
+                                            </Blazorise.Text>
+                                        </ListGroupItem>
+                                    }
+
+                                    if (null != _artist.SplitDate)
+                                    {
+                                        <ListGroupItem>
+                                            <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                                Split
+                                            </Paragraph>
+                                            <Blazorise.Text TextWeight="TextWeight.Bold">
+                                                @_artist.SplitDate.Value.ToString("dd/MM/yyyy")
+                                            </Blazorise.Text>
+                                        </ListGroupItem>
+                                    }
+                                }
+                                @if (_artist.Discriminator == ArtistDiscriminator.Person)
+                                {
+                                    if (null != _artist.BirthDate)
+                                    {
+                                        <ListGroupItem>
+                                            <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                                Born
+                                            </Paragraph>
+                                            <Blazorise.Text TextWeight="TextWeight.Bold">
+                                                @_artist.BirthDate.Value.ToString("dd/MM/yyyy")
+                                            </Blazorise.Text>
+                                        </ListGroupItem>
+                                    }
+
+                                    if (null != _artist.DeathDate)
+                                    {
+                                        <ListGroupItem>
+                                            <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                                Died
+                                            </Paragraph>
+                                            <Blazorise.Text TextWeight="TextWeight.Bold">
+                                                @_artist.DeathDate.Value.ToString("dd/MM/yyyy")
+                                            </Blazorise.Text>
+                                        </ListGroupItem>
+                                    }
+                                }
+                                <ListGroupItem>
+                                    <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                        Country
+                                    </Paragraph>
+                                    <Blazorise.Text TextWeight="TextWeight.Bold">
+                                        <Flag CountryName="@_artist.Country"/> @_artist.Country
+                                    </Blazorise.Text>
+                                </ListGroupItem>
+                            </ListGroup>
+                        </CardBody>
+                    </Card>
+                </Column>
+            </Row>
+            <Row Margin="Margin.Is3.OnX">
+                <Column ColumnSize="ColumnSize.Is3" Padding="Padding.Is3.OnAll">
+                    <Button Clicked="AddAlbumShowModal" Color="Color.Success">
+                        <Icon Name="IconName.PlusCircle" Margin="Margin.Is2.OnX" />
+                        Add Album
+                    </Button>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is9" Padding="Padding.Is3.OnAll">
+                    <Card>
+                        <CardBody>
+                            <CardTitle Size="4">Releases</CardTitle>
+                            <Div Flex="Flex.AlignItems.Start">
+                                <Fields>
+                                    <Field>
+                                        <FieldLabel>Release Type</FieldLabel>
+                                        <FieldBody>
+                                            <Buttons>
+                                                @foreach (var releaseType in Enum.GetValues<ReleaseType>())
+                                                {
+                                                    <Button Color="Color.Primary">@releaseType.ToString()</Button>
+                                                }
+                                            </Buttons>
+                                        </FieldBody>
+                                    </Field>
+                                </Fields>
+                            </Div>
+                            <Div Class="d-flex flex-wrap gap-3">
+                                @foreach (var album in _artistAlbums)
+                                {
+                                    <Div class="p-1" Style="width: 150px;">
+                                        <Figure Size="FigureSize.Is128x128">
+                                            <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
+                                                         Rounded />
+                                            <FigureCaption>
+                                                <Blazorise.Text TextSize="TextSize.Medium" TextWeight="TextWeight.Bold">
+                                                    @switch (album.ReleaseType)
+                                                    {
+                                                        case ReleaseType.Compilation:
+                                                            <span class="text-warning">@album.Name</span>
+                                                            break;
+                                                        case ReleaseType.Ep:
+                                                            <span class="text-black-primary">@album.Name</span>
+                                                            break;
+                                                        case ReleaseType.Lp:
+                                                            <span class="text-primary">@album.Name</span>
+                                                            break;
+                                                        case ReleaseType.Single:
+                                                            <span class="text-danger">@album.Name</span>
+                                                            break;
+                                                        case ReleaseType.AdditionalRelease:
+                                                        case ReleaseType.Bootleg:
+                                                        case ReleaseType.DjMix:
+                                                        case ReleaseType.Live:
+                                                        case ReleaseType.MixTape:
+                                                        case ReleaseType.Soundtrack:
+                                                        case ReleaseType.Unknown:
+                                                        case ReleaseType.VideoClip:
+                                                        case null:
+                                                            <span class="text-muted">@album.Name</span>
+                                                            break;
+                                                        default:
+                                                            throw new ArgumentOutOfRangeException();
+                                                    }
+                                                </Blazorise.Text>
+                                                @if (null != album.ReleaseDate)
+                                                {
+                                                    <Blazorise.Text TextColor="TextColor.Muted">
+                                                        <br/>@album.ReleaseDate.Value.Year
+                                                    </Blazorise.Text>
+                                                }
+                                            </FigureCaption>
+                                        </Figure>
+                                    </Div>
+                                }
+                            </Div>
+                        </CardBody>
+                    </Card>
+                </Column>
+            </Row>
+        </CardBody>
+    </Card>
+}
+
+<AlbumEditModal @ref="_albumEditModal" OnSave="OnQuitModal" />
+
+@code {
+
+    [Parameter] public string? Id { get; set; }
+
+    private ILogger _logger = null!;
+
+    private AlbumEditModal? _albumEditModal;
+
+    private OutArtist? _artist;
+    private List<OutAlbum> _artistAlbums = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        _logger = LoggerProvider.CreateLogger(nameof(Artist));
+        _logger.LogInformation($"📜 Current Page : /Artist/{Id}");
+
+        await LoadArtist();
+    }
+
+    private async Task LoadArtist()
+    {
+        if (null == Id)
+        {
+            _logger.LogError("❌ Id is null");
+            return;
+        }
+
+        try
+        {
+            _artist = await UcGet.ExecuteAsync(long.Parse(Id));
+        }
+        catch
+        {
+            _logger.LogError("❌ Id is not valid");
+            return;
+        }
+
+        if (null == _artist)
+        {
+            _logger.LogError("❌ Artist is not found");
+            return;
+        }
+        
+        _logger.LogInformation($"✅ Found artist: {_artist.Name}");
+        StateHasChanged();
+
+        try
+        {
+            _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id);
+        }
+        catch
+        {
+            _logger.LogError("❌ Error while retrieving albums");
+            return;
+        }
+        
+        _logger.LogInformation($"✅ Retrieved albums ({_artistAlbums.Count})");
+        StateHasChanged();
+    }
+
+    private void AddAlbumShowModal()
+    {
+        if (null == _artist)
+        {
+            _logger.LogError("❌ Artist is null.");
+            return;
+        }
+        
+        _albumEditModal?.Show(_artist);
+    }
+
+    private async Task OnQuitModal()
+    {
+        await LoadArtist();
+    }
+}

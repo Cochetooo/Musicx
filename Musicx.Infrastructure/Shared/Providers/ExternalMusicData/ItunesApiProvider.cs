@@ -16,4 +16,7 @@ public sealed class ItunesApiProvider(
 
     public async Task<OutArtist?> GetArtistInfoAsync(string name, CancellationToken ct = default)
         => null;
+
+    public async Task<OutAlbum?> GetAlbumInfoAsync(string name, string artist, CancellationToken ct = default)
+        => null;
 }

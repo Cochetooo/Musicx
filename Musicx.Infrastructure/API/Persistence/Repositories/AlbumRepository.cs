@@ -6,6 +6,9 @@ using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Domain.Models;
+using Musicx.Infrastructure.Shared.Exceptions;
+using Musicx.Infrastructure.Shared.Helpers;
+using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
@@ -17,7 +20,7 @@ internal sealed class AlbumRepository(
     
     public async Task DeleteAsync(long id)
     {
-        _logger.LogDebug($"📄 DELETE Album : {id}");
+        _logger.LogDebug($"📄 SQL : DELETE FROM albums WHERE id = {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -34,33 +37,69 @@ internal sealed class AlbumRepository(
         }
         catch (Exception ex)
         {
-            _logger.LogCritical($"❌ DELETE Album : Could not delete id {id}", ex);
             await transaction.RollbackAsync();
-            throw;
+            throw new RepositoryException($"❌ Could not delete id {id}", ex, _logger);
         }
     }
 
     public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
-        throw new NotImplementedException();
+        var stringIds = string.Join(",", ids);
+
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        
+        try
+        {
+            var deleteAllSql = "DELETE FROM \"Albums\" WHERE \"Id\" IN (@ids)";
+
+            var parameters = new List<NpgsqlParameter>
+            {
+                new("@Ids", stringIds)
+            };
+
+            _logger.LogDebug(SqlDebugHelper.InterpolateQuery(deleteAllSql, parameters));
+            
+            await context.Database.ExecuteSqlRawAsync(deleteAllSql, parameters.Cast<object>().ToArray());
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw new RepositoryException($"📜❌ Could not delete ids {stringIds}", ex, _logger);
+        }
     }
 
     public async Task<Album?> FindByIdAsync(long id, IQuerySpecification<Album>? albumQuerySpecification = null)
     {
-        _logger.LogDebug($"📄 FIND BY ID Album : {id}");
+        _logger.LogDebug($"📄 SQL : SELECT * FROM albums WHERE id = {id}");
         
         var albumSet = context.Albums;
         GetIncludes(albumSet, albumQuerySpecification);
         
         return await albumSet
             .AsNoTracking()
+            .OrderBy(x => x.Name)
             .FirstOrDefaultAsync(s => s.Id == id);
+    }
+    
+    public async Task<List<Album>> FindByArtistIdAsync(long artistId)
+    {
+        _logger.LogDebug($"📄 SQL : SELECT * FROM albums WHERE artist_id = {artistId}");
+        
+        var albumSet = context.Albums;
+        
+        return await albumSet
+            .AsNoTracking()
+            .OrderBy(x => x.ReleaseDate)
+                .ThenBy(x => x.Name)
+            .Where(s => s.ArtistId != null && s.ArtistId == artistId)
+            .ToListAsync();
     }
 
     public async Task<List<Album>> FindAsync(int skip = 0, int take = 100, Expression<Func<Album, bool>>? filter = null,
         IQuerySpecification<Album>? albumQuerySpecification = null)
     {
-        _logger.LogDebug($"📄 FIND Album");
+        _logger.LogDebug("📄 SQL : SELECT * FROM albums");
         
         var albumSet = context.Albums;
         
@@ -76,12 +115,13 @@ internal sealed class AlbumRepository(
             .AsNoTracking()
             .Skip(skip)
             .Take(take)
+            .OrderBy(x => x.Name)
             .ToListAsync();
     }
 
     public async Task<List<Album>> FindIn(IEnumerable<long> ids, IQuerySpecification<Album>? albumQuerySpecification = null)
     {
-        _logger.LogDebug("📄 FIND IN Album");
+        _logger.LogDebug("📄 SQL : SELECT * FROM albums WHERE id IN ({Ids})", string.Join(",", ids));
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
@@ -97,6 +137,7 @@ internal sealed class AlbumRepository(
         return await albumSet
             .Where(s => enumerable.Contains(s.Id))
             .AsNoTracking()
+            .OrderBy(x => x.Name)
             .ToListAsync();
     }
 
@@ -107,19 +148,29 @@ internal sealed class AlbumRepository(
 
     public async Task<long> SaveAsync(Album entity)
     {
-        _logger.LogDebug($"📄 SAVE Album : {entity.Name}");
-        
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
             if (0 == entity.Id)
             {
+                _logger.LogDebug($"📄 SQL : INSERT INTO albums (name, artwork_url, artist_id...) " +
+                                 $"VALUES ('{entity.Name}', '{entity.ArtworkUrl}', '{entity.ArtistId}')");
+                
+                entity.CreatedAt = DateTime.Now;
+                entity.UpdatedAt = DateTime.Now;
+
                 context.Albums.Add(entity);
             }
             else
             {
+                _logger.LogDebug($"📄 SQL : UPDATE artists SET Name={entity.Name}, " +
+                                 $"ArtworkUrl={entity.ArtworkUrl}, ReleaseDate={entity.ReleaseDate}" +
+                                 $"WHERE Id = {entity.Id}");
+                
+                entity.UpdatedAt = DateTime.Now;
                 context.Albums.Update(entity);
+                context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
             }
 
             await context.SaveChangesAsync();
@@ -129,9 +180,8 @@ internal sealed class AlbumRepository(
         }
         catch (Exception ex)
         {
-            _logger.LogCritical("❌ SAVE Album : Could not persist.", ex);
             await transaction.RollbackAsync();
-            throw;
+            throw new RepositoryException("❌ SAVE Album : Could not persist.", ex, _logger);
         }
     }
 
@@ -166,9 +216,8 @@ internal sealed class AlbumRepository(
         }
         catch (Exception ex)
         {
-            _logger.LogCritical($"❌ SAVE ALL Album : Could not persist.", ex);
             await transaction.RollbackAsync();
-            throw;
+            throw new RepositoryException("❌ SAVE ALL Artist : Could not persist", ex, _logger);
         }
     }
 

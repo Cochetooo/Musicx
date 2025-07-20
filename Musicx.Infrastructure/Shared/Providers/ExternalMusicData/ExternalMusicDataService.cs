@@ -33,4 +33,28 @@ public sealed class ExternalMusicDataService(
         _logger.LogWarning($"⚠️ Get Artist Info : Null response returned, not a single api provider found results for: {name}");
         return null;
     }
+
+    public async Task<OutAlbum?> GetAlbumInfoAsync(string name, string artist, CancellationToken ct = default)
+    {
+        foreach (var provider in providers)
+        {
+            try
+            {
+                _logger.LogDebug("🔌 Get Album Info : Try with " + provider.GetType().Name);
+                var result = await provider.GetAlbumInfoAsync(name, artist, ct);
+                if (null != result)
+                {
+                    return result;
+                }
+            }
+            catch
+            {
+                _logger.LogError("❌ Get Album Info : An error occured during search.");
+                return null;
+            }
+        }
+
+        _logger.LogWarning($"⚠️ Get Album Info : Null response returned, not a single api provider found results for: {name}");
+        return null;
+    }
 }

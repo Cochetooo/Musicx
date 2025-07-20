@@ -41,7 +41,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         {
             await artistRepository.DeleteAllAsync(ids);
                     
-            _logger.LogInformation($"🌍✅ API : DELETE artists ({stringIds}) - SUCCESS");
+            _logger.LogInformation($"🌍✅ API : DELETE ALL artists ({stringIds}) - SUCCESS");
             return Ok();
         }
         catch (Exception ex)
@@ -85,7 +85,8 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         try
         {
             var artists = await artistRepository.FindAsync(skip, take, a => 
-                string.IsNullOrWhiteSpace(filter) || a.Name.Contains(filter));
+                string.IsNullOrWhiteSpace(filter) 
+                || a.Name.ToLower().StartsWith(filter.ToLower()));
             
             _logger.LogInformation($"🌍✅ API : FIND artists - SUCCESS");
             return Ok(artists.Select(a => a.ToDto()));

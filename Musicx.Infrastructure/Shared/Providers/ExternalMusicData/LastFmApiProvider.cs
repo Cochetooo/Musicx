@@ -18,10 +18,11 @@ public sealed class LastFmApiProvider(
         ?? throw new NullReferenceException("❌ Apis:LastFm:ApiKey is null");
 
     public async Task<OutArtist?> GetArtistInfoAsync(string name, CancellationToken ct = default)
+        => null;
+
+    public async Task<OutAlbum?> GetAlbumInfoAsync(string name, string artist, CancellationToken ct = default)
     {
-        return null;
-        
-        var endpoint = $"?method=artist.getinfo&artist={name}&api_key={_apiKey}&format=json";
+        var endpoint = $"{configuration["Apis:LastFm:BaseUrl"]}?method=album.getinfo&artist={artist}&album={name}&api_key={_apiKey}&format=json";
         _logger.LogInformation($"🌍🏳️ LAST FM : GET {endpoint}");
 
         try
@@ -29,22 +30,22 @@ public sealed class LastFmApiProvider(
             var response = await httpClient.GetStringAsync(endpoint, ct);
             _logger.LogDebug(response);
             
-            var lastFmSearchArtist = JsonSerializer.Deserialize<LastFmSearchArtist.RootObject>(response);
+            var lastFmSearchAlbum = JsonSerializer.Deserialize<LastFmSearchAlbum.RootObject>(response);
 
-            if (null == lastFmSearchArtist)
+            if (null == lastFmSearchAlbum)
             {
-                _logger.LogWarning($"⚠️ LAST FM : No entry searching artist for: {name}");
+                _logger.LogWarning($"⚠️ LAST FM : No entry searching album for: {name}");
                 return null;
             }
 
-            var artist = new OutArtist
+            var album = new OutAlbum
             {
                 Name = name,
-                ArtworkUrl = lastFmSearchArtist.artist.image[2]._text,
+                ArtworkUrl = lastFmSearchAlbum.album.image[4]._text,
             };
             
             _logger.LogInformation($"🌍✅ LAST FM : GET {endpoint} - SUCCESS");
-            return artist;
+            return album;
         }
         catch (Exception ex)
         {

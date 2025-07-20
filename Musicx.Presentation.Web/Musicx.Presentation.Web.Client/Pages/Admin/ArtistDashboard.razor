@@ -1,10 +1,12 @@
-@page "/Admin/Artists"
+@page "/Admin/ArtistDashboard"
+@using System.Net.Mime
 @using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 @using Musicx.Presentation.Web.Client.Models
+@using Musicx.Presentation.Web.Client.Components
 
 @inject ILoggerProvider LoggerProvider
 @inject IListUseCase<OutArtist> UcList
@@ -40,7 +42,7 @@
 
             <div class="d-flex justify-content-between align-items-center p-3">
                 <Div ElementId="#DataGrid-Refresh">
-                    <Animate Anchor="#DataGrid-Refresh" Auto Animation="Animations.SlideRight" DelayMilliseconds="300">
+                    <Animate Anchor="#DataGrid-Refresh" Auto Animation="Animations.FadeIn" DelayMilliseconds="300">
                         <Button Clicked="LoadData" Color="Color.Primary" class="mr-2">
                             <Icon Name="IconName.Sync"/>
                             Refresh
@@ -49,7 +51,7 @@
                 </Div>
 
                 <Div class="d-flex" ElementId="#DataGrid-Actions">
-                    <Animate Anchor="#DataGrid-Actions" Auto Animation="Animations.SlideLeft" DelayMilliseconds="300">
+                    <Animate Anchor="#DataGrid-Actions" Auto Animation="Animations.FadeIn" DelayMilliseconds="300">
                         @if (_viewMode == ViewMode.Normal)
                         {
                             <Button Clicked="ShowAddModal" Color="Color.Success" class="mr-2">
@@ -77,7 +79,7 @@
             </div>
 
             <Div class="flex-grow-1 overflow-auto" ElementId="#DataGrid-Animate">
-                <Animate Anchor="#DataGrid-Animate" Auto Animation="Animations.ZoomIn" DelayMilliseconds="500">
+                <Animate Anchor="#DataGrid-Animate" Auto Animation="Animations.FadeIn" DelayMilliseconds="400">
                     <DataGrid TItem="OutArtist"
                               Data="_filteredArtists"
                               @bind-SelectedRows="@_selectedArtists"
@@ -87,35 +89,75 @@
                               ResizeMode="TableResizeMode.Header"
                               PageSize="20"
                               Responsive>
-                        @if (_viewMode == ViewMode.Delete)
-                        {
-                            <DataGridMultiSelectColumn Width="30px"/>
-                        }
+                        <DataGridColumns>
+                            @if (_viewMode == ViewMode.Delete)
+                            {
+                                <DataGridMultiSelectColumn Width="30px"/>
+                            }
 
-                        <DataGridColumn Field="@nameof(OutArtist.ArtworkUrl)" Caption="#">
-                            <DisplayTemplate>
-                                @if (context.ArtworkUrl is not null)
-                                {
-                                    <Image Style="width: 24px; height: 24px;" Source="@context.ArtworkUrl" Loading Fluid/>
-                                }
-                            </DisplayTemplate>
-                        </DataGridColumn>
-                        <DataGridColumn Field="@nameof(OutArtist.Name)" Caption="Name"/>
-                        <DataGridColumn Field="@nameof(OutArtist.Country)" Caption="Country"/>
-                        <DataGridColumn Field="@nameof(OutArtist.Discriminator)" Caption="Type"/>
-                        <DataGridColumn Field="@nameof(OutArtist.FormationDate)" Caption="Formation Date"/>
-                        <DataGridColumn Field="@nameof(OutArtist.SplitDate)" Caption="Split Date"/>
-                        <DataGridColumn Field="@nameof(OutArtist.FirstName)" Caption="First Name"/>
-                        <DataGridColumn Field="@nameof(OutArtist.LastName)" Caption="Last Name"/>
-                        <DataGridColumn Field="@nameof(OutArtist.BirthDate)" Caption="Birth Date"/>
-                        <DataGridColumn Field="@nameof(OutArtist.DeathDate)" Caption="Death Date"/>
-                        <DataGridColumn Caption="Edit">
-                            <DisplayTemplate>
-                                <Button Color="Color.Link" Size="Size.Small" Clicked="@(() => ShowEditModal(context))">
-                                    <Icon Name="IconName.Pen"/>
-                                </Button>
-                            </DisplayTemplate>
-                        </DataGridColumn>
+                            <DataGridColumn Field="@nameof(OutArtist.ArtworkUrl)" Caption="#">
+                                <DisplayTemplate>
+                                    @if (context.ArtworkUrl is not null)
+                                    {
+                                        <Image Style="width: 24px; height: 24px;" Source="@context.ArtworkUrl" Loading />
+                                    }
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                            <DataGridColumn Field="@nameof(OutArtist.Name)" Caption="Name"/>
+                            <DataGridColumn Field="@nameof(OutArtist.Country)" Caption="Country">
+                                <DisplayTemplate>
+                                    <Flag CountryName="@context.Country" />
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                            <DataGridColumn Field="@nameof(OutArtist.Discriminator)" Caption="Type"/>
+                            <DataGridColumn Field="@nameof(OutArtist.FormationDate)" Caption="Formation Date">
+                                <DisplayTemplate>
+                                    @if (null != context.FormationDate)
+                                    {
+                                        @context.FormationDate.Value.ToString("dd-MM-yyyy")
+                                    }
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                            <DataGridColumn Field="@nameof(OutArtist.SplitDate)" Caption="Split Date">
+                                <DisplayTemplate>
+                                    @if (null != context.SplitDate)
+                                    {
+                                        @context.SplitDate.Value.ToString("dd-MM-yyyy")
+                                    }
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                            <DataGridColumn Field="@nameof(OutArtist.FirstName)" Caption="First Name"/>
+                            <DataGridColumn Field="@nameof(OutArtist.LastName)" Caption="Last Name"/>
+                            <DataGridColumn Field="@nameof(OutArtist.BirthDate)" Caption="Birth Date">
+                                <DisplayTemplate>
+                                    @if (null != context.BirthDate)
+                                    {
+                                        @context.BirthDate.Value.ToString("dd-MM-yyyy")
+                                    }
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                            <DataGridColumn Field="@nameof(OutArtist.DeathDate)" Caption="Death Date">
+                                <DisplayTemplate>
+                                    @if (null != context.DeathDate)
+                                    {
+                                        @context.DeathDate.Value.ToString("dd-MM-yyyy")
+                                    }
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                            <DataGridColumn Field="@nameof(OutArtist.CreatedAt)" Caption="Created At"/>
+                            <DataGridColumn Field="@nameof(OutArtist.UpdatedAt)" Caption="Last Modification"/>
+                            <DataGridColumn Caption="Edit">
+                                <DisplayTemplate>
+                                    <Button Color="Color.Link" Size="Size.Small" Clicked="@(() => ShowEditModal(context))">
+                                        <Icon Name="IconName.Pen"/>
+                                    </Button>
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                        </DataGridColumns>
+
+                        <LoadingTemplate>
+                            <SpinKit Type="SpinKitType.Pulse"/>
+                        </LoadingTemplate>
                     </DataGrid>
                 </Animate>
             </Div>
@@ -123,8 +165,7 @@
     </CardBody>
 </Card>
 
-<ArtistAddModal @ref="_artistAddModal" OnSave="OnQuitModal" />
-<ArtistEditModal @ref="_artistEditModal" OnSave="OnQuitModal" SelectedArtists="@_selectedArtists" />
+<ArtistEditModal @ref="_artistEditModal" OnSave="OnQuitModal" />
 
 <Modal @ref="_confirmDeleteModal">
     <ModalContent Centered>
@@ -152,7 +193,6 @@
     
     private ViewMode _viewMode = ViewMode.Normal;
     
-    private ArtistAddModal? _artistAddModal;
     private ArtistEditModal? _artistEditModal;
     private Modal? _confirmDeleteModal;
 
@@ -171,9 +211,9 @@
             return;
         }
         
-        _logger = LoggerProvider.CreateLogger(nameof(Artist));
+        _logger = LoggerProvider.CreateLogger(nameof(ArtistDashboard));
         
-        _logger.LogInformation("📜 Current Page : /Artist");
+        _logger.LogInformation("📜 Current Page : /Admin/ArtistDashboard");
         
         await LoadData();
     }
@@ -190,7 +230,7 @@
 
     private void ShowAddModal()
     {
-        _artistAddModal?.Show();
+        _artistEditModal?.Show();
     }
 
     private void ShowEditModal(OutArtist artist)
@@ -198,7 +238,7 @@
         _selectedArtists.Clear();
         _selectedArtists.Add(artist);
 
-        _artistEditModal?.Show();
+        _artistEditModal?.Show(artist);
     }
 
     private async Task DeleteData()

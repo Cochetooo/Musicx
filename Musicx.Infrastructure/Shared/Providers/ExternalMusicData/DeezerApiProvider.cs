@@ -53,4 +53,7 @@ public sealed class DeezerApiProvider(
             return null;
         }
     }
+
+    public async Task<OutAlbum?> GetAlbumInfoAsync(string name, string artist, CancellationToken ct = default)
+        => null;
 }

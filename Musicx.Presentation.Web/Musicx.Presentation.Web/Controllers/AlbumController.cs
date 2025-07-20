@@ -1,0 +1,208 @@
+using Microsoft.AspNetCore.Mvc;
+using Musicx.Application.Api.Interfaces.Persistence;
+using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Mappers;
+
+namespace Musicx.Presentation.Web.Controllers;
+
+[ApiController]
+[Route("api/albums")]
+public sealed class AlbumController(IAlbumRepository albumRepository,
+    ILoggerProvider loggerProvider) : ControllerBase
+{
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumController));
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] long id)
+    {
+        _logger.LogInformation($"🌍🏳️ API : DELETE albums ({id})");
+
+        try
+        {
+            await albumRepository.DeleteAsync(id);
+                    
+            _logger.LogInformation($"🌍✅ API : DELETE albums ({id}) - SUCCESS");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+
+    [HttpDelete("by-ids")]
+    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids)
+    {
+        var stringIds = string.Join(",", ids);
+        _logger.LogInformation($"🌍🏳️ API : DELETE ALL albums ({stringIds})");
+
+        try
+        {
+            await albumRepository.DeleteAllAsync(ids);
+                    
+            _logger.LogInformation($"🌍✅ API : DELETE ALL artists ({stringIds}) - SUCCESS");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OutAlbum>> FindById([FromRoute] long id)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND BY ID albums ({id})");
+
+        try
+        {
+            var album = await albumRepository.FindByIdAsync(id);
+
+            if (null == album)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND BY ID albums ({id}) - NOT FOUND");
+                return NoContent();
+            }
+            
+            _logger.LogInformation($"🌍✅ API : FIND BY ID albums ({id}) - SUCCESS");
+            return Ok(album.ToDto());
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
+    [HttpGet("by-artist/{artistId}")]
+    public async Task<ActionResult<OutAlbum>> FindByArtistId([FromRoute] long artistId)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND BY ARTIST albums ({artistId})");
+
+        try
+        {
+            var albums = await albumRepository.FindByArtistIdAsync(artistId);
+
+            if (0 == albums.Count)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND BY ARTIST albums ({artistId}) - NOT FOUND");
+                return NoContent();
+            }
+            
+            _logger.LogInformation($"🌍✅ API : FIND BY ARTIST albums ({artistId}) - SUCCESS");
+            return Ok(albums.Select(x => x.ToDto()).ToList());
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<OutArtist>>> Find(
+        [FromQuery] int skip = 0,
+        [FromQuery] int take = 100, 
+        [FromQuery] string filter = "")
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND albums");
+
+        try
+        {
+            var albums = await albumRepository.FindAsync(skip, take, a => 
+                string.IsNullOrWhiteSpace(filter) 
+                || a.Name.ToLower().StartsWith(filter.ToLower()));
+            
+            if (0 == albums.Count)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND albums - NOT FOUND");
+                return NoContent();
+            }
+            
+            _logger.LogInformation($"🌍✅ API : FIND albums - SUCCESS");
+            return Ok(albums.Select(a => a.ToDto()));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
+    [HttpGet("by-ids")]
+    public async Task<ActionResult<IEnumerable<OutArtist>>> FindIn([FromQuery] long[] ids)
+    {
+        var stringIds = string.Join(',', ids);
+        _logger.LogInformation($"🌍🏳️ API : FIND BY ID albums ({stringIds})");
+        
+        if (ids.Length == 0)
+        {
+            return BadRequest("❌ You must provide at least one ID.");
+        }
+
+        try
+        {
+            var albums = await albumRepository.FindIn(ids);
+            
+            _logger.LogInformation($"🌍✅ API : FIND BY ID albums ({stringIds}) - SUCCESS");
+            return Ok(albums.Select(a => a.ToDto()));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+
+    [HttpGet("count")]
+    public async Task<ActionResult<int>> GetCount()
+    {
+        _logger.LogInformation($"🌍🏳️ API : COUNT albums");
+        
+        try
+        {
+            var count = await albumRepository.GetCountAsync();
+            
+            _logger.LogInformation($"🌍✅ API : COUNT albums - SUCCESS");
+            return Ok(count);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Save([FromBody] InAlbum albumDto)
+    {
+        _logger.LogInformation($"🌍🏳️ API : SAVE albums");
+
+        try
+        {
+            await albumRepository.SaveAsync(albumDto.ToEntity());
+
+            _logger.LogInformation($"🌍✅ API : SAVE albums - SUCCESS");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"❌ API : SAVE albums - ERROR: {ex.Message}");
+            return BadRequest(ex);
+        }
+    }
+    
+    [HttpPost("save-all")]
+    public async Task<IActionResult> SaveAll([FromBody] IEnumerable<InAlbum> albumsDto)
+    {
+        _logger.LogInformation($"🌍🏳️ API : SAVE ALL albums");
+
+        try
+        {
+            await albumRepository.SaveAllAsync(albumsDto.Select(x => x.ToEntity()));
+
+            _logger.LogInformation($"🌍✅ API : SAVE ALL albums - SUCCESS");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+}

@@ -11,38 +11,40 @@
             Background="Background.Dark"
             ThemeContrast="ThemeContrast.Dark">
             <BarBrand>
-                <BarItem>
+                <BarItem Margin="Margin.Is2.OnX">
                     <BarLink To="#">
-                        <BarIcon IconName="IconName.Music"/>
+                        <BarIcon TextColor="TextColor.White" IconName="IconName.Music"/>
                         <Text TextColor="TextColor.White" TextWeight="TextWeight.Bold">MUSICX</Text>
                     </BarLink>
                 </BarItem>
             </BarBrand>
             <BarMenu>
                 <BarStart>
-                    <BarItem>
+                    <BarItem Margin="Margin.Is2.OnX">
                         <BarLink To="/">Home</BarLink>
                     </BarItem>
-                    <BarItem>
+                    <BarItem Margin="Margin.Is2.OnX">
                         <TextEdit Placeholder="Search..." @bind-Text="_searchText" KeyDown="SearchKeyDown" />
                     </BarItem>
-                    <BarItem>
-                        <Button Color="Color.Primary" Clicked="Search">Search</Button>
+                    <BarItem Margin="Margin.Is2.OnX">
+                        <Button Color="Color.Primary" Clicked="Search" Disabled="@string.IsNullOrEmpty(_searchText)">OK!</Button>
                     </BarItem>
                 </BarStart>
                 <BarEnd>
-                    <BarItem>
+                    <BarItem Margin="Margin.Is2.OnX">
                         <BarDropdown>
                             <BarDropdownToggle>More</BarDropdownToggle>
                             <BarDropdownMenu>
                                 <BarDropdownItem>
-                                    <BarLink To="/Admin">Admin Dashboard</BarLink>
+                                    <BarLink To="/Admin/ArtistDashboard">Artist Dashboard</BarLink>
                                 </BarDropdownItem>
                             </BarDropdownMenu>
                         </BarDropdown>
                     </BarItem>
-                    <BarItem>
+                    <BarItem Margin="Margin.Is2.OnX">
                         <Button Color="Color.Primary">Sign up</Button>
+                    </BarItem>
+                    <BarItem>
                         <Button Color="Color.Secondary">Log in</Button>
                     </BarItem>
                 </BarEnd>
@@ -69,7 +71,7 @@
 
     private void Search()
     {
-        NavigationManager.NavigateTo("/SearchResult/" + _searchText);
+        NavigationManager.NavigateTo($"/SearchResult/{_searchText}");
     }
     
 }
