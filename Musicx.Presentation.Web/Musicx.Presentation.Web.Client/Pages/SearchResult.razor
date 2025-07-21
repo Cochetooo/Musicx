@@ -7,6 +7,7 @@
 
 @inject NavigationManager NavigationManager
 @inject IListUseCase<OutArtist> UcListArtist
+@inject IListUseCase<OutAlbum> UcListAlbum
 
 <Breadcrumb Margin="Margin.Is2.FromBottom">
     <BreadcrumbItem>
@@ -59,6 +60,42 @@
                 </ListGroupItem>
             }
         </ListGroup>
+        <CardText Italic TextColor="TextColor.Muted">@_artistsResult.Count result(s) found.</CardText>
+        
+        <Divider />
+        
+        <Heading Size="HeadingSize.Is4">Albums</Heading>
+        <ListGroup Flush>
+            @foreach (var album in _albumsResult)
+            {
+                <ListGroupItem>
+                    <Div Flex="Flex.JustifyContent.Start">
+                        <Image Style="width: 64px; height: 64px; border-radius:5px" Source="@album.ArtworkUrl" />
+                        <Div Margin="Margin.Is3.OnX">
+                            <Heading TextWeight="TextWeight.Bold" Size="HeadingSize.Is5">
+                                <Blazorise.Link To="@($"/Album/{album.Id}")" TextColor="TextColor.Primary">
+                                    @album.Name
+                                </Blazorise.Link>
+                            </Heading>
+
+                            <Paragraph TextSize="TextSize.Small" TextColor="TextColor.Muted">
+                                @if (album.Artist is not null)
+                                {
+                                    <Text>By 
+                                        <Blazorise.Link To="@($"/Artist/{album.Artist.Id}")"
+                                                             TextColor="TextColor.Dark"
+                                                             TextWeight="TextWeight.Bold">
+                                            @album.Artist.Name
+                                        </Blazorise.Link>
+                                    </Text>
+                                }
+                            </Paragraph>
+                        </Div>
+                    </Div>
+                </ListGroupItem>
+            }
+        </ListGroup>
+        <CardText Italic TextColor="TextColor.Muted">@_albumsResult.Count result(s) found.</CardText>
     </CardBody>
 </Card>
 
@@ -67,6 +104,7 @@
     [Parameter] public string? SearchText { get; set; }
 
     private List<OutArtist> _artistsResult = [];
+    private List<OutAlbum> _albumsResult = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -77,7 +115,15 @@
     {
         _artistsResult = await UcListArtist.ExecuteAsync(
             take: 10,
-            filter: SearchText);
+            filter: SearchText
+        );
+        
+        StateHasChanged();
+
+        _albumsResult = await UcListAlbum.ExecuteAsync(
+            take: 10,
+            filter: SearchText
+        );
         
         StateHasChanged();
     }

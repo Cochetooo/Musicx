@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
+using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.Shared.Models.ExternalMusicData;
 
@@ -36,10 +37,24 @@ public sealed class DeezerApiProvider(
                 return null;
             }
 
+            DeezerSearchArtist.Data bestData = deezerSearchArtist.data[0];
+            int bestScore = int.MaxValue;
+
+            foreach (var data in deezerSearchArtist.data)
+            {
+                var score = StringHelper.LevenshteinDistance(data.artist.name.ToLower(), name.ToLower());
+
+                if (score < bestScore)
+                {
+                    bestScore = score;
+                    bestData = data;
+                }
+            }
+
             var artist = new OutArtist
             {
                 Name = name,
-                ArtworkUrl = deezerSearchArtist.data[0].artist.picture_big
+                ArtworkUrl = bestData.artist.picture_big
             };
                         
             _logger.LogDebug("ℹ️ DEEZER : Artwork Url Info : " + artist.ArtworkUrl);

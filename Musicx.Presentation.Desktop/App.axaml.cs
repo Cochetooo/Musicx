@@ -73,7 +73,7 @@ public partial class App : Avalonia.Application
     private void ConfigureServices(IServiceCollection services)
     {
         services
-            .AddMusicxInfrastructure()
+            //.AddMusicxInfrastructure()
             .AddMusicxDesktop();
         
         // 🔹 Providers / Services

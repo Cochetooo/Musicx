@@ -23,6 +23,12 @@ public sealed class UcGetAlbumByArtist(
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
         var response = await httpClient.GetStringAsync(endpoint);
+
+        if (string.IsNullOrWhiteSpace(response))
+        {
+            _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
+            return [];
+        }
         
         var json = JsonSerializer.Deserialize<List<OutAlbum>>(response, options);
 

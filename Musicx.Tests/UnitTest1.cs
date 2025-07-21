@@ -19,9 +19,9 @@ public class Tests
     {
         var services = new ServiceCollection();
 
-        services
+        services 
             .AddMusicxDesktopApp()
-            .AddMusicxInfrastructure()
+            //.AddMusicxInfrastructure()
             .AddMusicxDesktop();
         
         var provider = services.BuildServiceProvider();

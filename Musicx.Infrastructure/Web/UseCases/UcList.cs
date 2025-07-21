@@ -28,20 +28,28 @@ public sealed class UcList<T>(
         }
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
-        
-        var response = await httpClient.GetStringAsync(endpoint);
-        
-        var json = JsonSerializer.Deserialize<List<T>>(response, options);
 
-        if (null == json)
+        try
         {
-            _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
+            var response = await httpClient.GetStringAsync(endpoint);
+
+            var json = JsonSerializer.Deserialize<List<T>>(response, options);
+            
+            if (null == json)
+            {
+                _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
+                return [];
+            }
+        
+            _logger.LogInformation($"🌍✅ GET {endpoint} - SUCCESS");
+
+            return json;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : An error has occured: {ex.Message}");
             return [];
         }
-        
-        _logger.LogInformation($"🌍✅ GET {endpoint} - SUCCESS");
-
-        return json;
     }
 
     public List<T> Execute(int skip = 0, int take = 200, string? filter = null)

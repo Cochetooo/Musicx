@@ -64,7 +64,7 @@
                         }
                     </FieldBody>
                 </Field>
-                <Field ColumnSize="ColumnSize.Is4.OnDesktop.Is12.OnMobile">
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
                     <FieldLabel>
                         Release Type
                     </FieldLabel>
@@ -79,28 +79,12 @@
                         </Select>
                     </FieldBody>
                 </Field>
-                <Field ColumnSize="ColumnSize.Is4.OnDesktop.Is12.OnMobile">
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
                     <FieldLabel>
                         Release Date
                     </FieldLabel>
                     <FieldBody>
                         <DatePicker TValue="DateTime?" @bind-Date="@_album.ReleaseDate" />
-                    </FieldBody>
-                </Field>
-                <Field ColumnSize="ColumnSize.Is2.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Number of Discs
-                    </FieldLabel>
-                    <FieldBody>
-                        <NumericPicker @bind-Value="_album.DiscTotal" />
-                    </FieldBody>
-                </Field>
-                <Field ColumnSize="ColumnSize.Is2.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Number of Tracks
-                    </FieldLabel>
-                    <FieldBody>
-                        <NumericPicker @bind-Value="_album.TrackTotal" />
                     </FieldBody>
                 </Field>
             </Fields>
