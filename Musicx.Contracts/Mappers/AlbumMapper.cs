@@ -22,6 +22,7 @@ public static class AlbumMapper
         
         ArtworkUrl = album.ArtworkUrl,
         DiscTotal = album.DiscTotal,
+        IsFarRight = album.IsFarRight,
         Name = album.Name,
         ReleaseDate = album.ReleaseDate,
         ReleaseType = album.ReleaseType,
@@ -42,6 +43,7 @@ public static class AlbumMapper
 
             ArtworkUrl = albumDto.ArtworkUrl,
             DiscTotal = albumDto.DiscTotal,
+            IsFarRight = albumDto.IsFarRight,
             Name = albumDto.Name,
             ReleaseDate = albumDto.ReleaseDate,
             ReleaseType = albumDto.ReleaseType,
@@ -58,6 +60,7 @@ public static class AlbumMapper
         InfluenceGenreIds = album.InfluenceGenres.Select(g => g.Id).ToList(),
         ArtworkUrl = album.ArtworkUrl,
         DiscTotal = album.DiscTotal,
+        IsFarRight = album.IsFarRight,
         Name = album.Name,
         ReleaseDate = album.ReleaseDate,
         ReleaseType = album.ReleaseType,

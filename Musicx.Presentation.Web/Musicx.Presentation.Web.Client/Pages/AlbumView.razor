@@ -1,0 +1,158 @@
+@page "/Album/{id}"
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Responses
+
+@inject IGetUseCase<OutAlbum> UcGet
+@inject ILoggerProvider LoggerProvider
+
+<Breadcrumb Margin="Margin.Is2.FromBottom">
+    <BreadcrumbItem>
+        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        <BreadcrumbLink To="#">Albums</BreadcrumbLink>
+    </BreadcrumbItem>
+    @if (null == _album)
+    {
+        <BreadcrumbItem>
+            <BreadcrumbLink To="#">-</BreadcrumbLink>
+        </BreadcrumbItem>
+    }
+    else
+    {
+        <BreadcrumbItem>
+            <BreadcrumbLink To="#">@_album.Name</BreadcrumbLink>
+        </BreadcrumbItem>
+    }
+</Breadcrumb>
+
+@if (null == _album)
+{
+    <SpinKit Type="SpinKitType.Pulse" />
+}
+else
+{
+    <Card Margin="Margin.Is4.OnY">
+        <CardHeader Padding="Padding.Is3.OnX">
+            <Heading Size="HeadingSize.Is4" TextWeight="TextWeight.Bold">@_album.Name</Heading>
+            @if (_album.Artist is not null)
+            {
+                <Blazorise.Link To="@($"/Artist/{_album.Artist.Id}")">
+                    <Heading Size="HeadingSize.Is6" TextWeight="TextWeight.SemiBold" TextColor="TextColor.Muted">
+                        @_album.Artist.Name
+                    </Heading>
+                </Blazorise.Link>
+            }
+        </CardHeader>
+        <CardBody>
+            <Row Margin="Margin.Is3.OnX">
+                @if (_album.IsFarRight.HasValue && _album.IsFarRight.Value)
+                {
+                    <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is12">
+                        <Jumbotron Background="Background.Danger" Margin="Margin.Is3">
+                            <JumbotronTitle Size="JumbotronTitleSize.Is4">National Socialist Content</JumbotronTitle>
+                            <JumbotronSubtitle>
+                                This release is marked with the "national socialist" tag.<br/>
+                                We do not endorse or support any of the associated ideologies.<br/>
+                                Our role is solely to document and archive all forms of musical expression,
+                                regardless of their origin or context.
+                            </JumbotronSubtitle>
+                        </Jumbotron>
+                    </Column>
+                }
+                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3">
+                    <Image Style="border-radius:10px; height:auto; width: 100%;" Source="@_album.ArtworkUrl"/>
+                </Column>
+                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is9">
+                    <Card>
+                        <CardBody>
+                            <CardTitle Size="5">
+                                Details
+                            </CardTitle>
+                            <ListGroup Flush>
+                                @if (null != _album.Artist)
+                                {
+                                    <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                        Artist
+                                    </Paragraph>
+                                    <Blazorise.Text TextWeight="TextWeight.Bold">
+                                        @_album.Artist.Name
+                                    </Blazorise.Text>
+                                }
+                                
+                                @if (null != _album.ReleaseDate)
+                                {
+                                    <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                        Release Date
+                                    </Paragraph>
+                                    <Blazorise.Text TextWeight="TextWeight.Bold">
+                                        @_album.ReleaseDate.Value.ToString("dd/MM/yyyy")
+                                    </Blazorise.Text>
+                                }
+                                
+                                @if (null != _album.ReleaseType)
+                                {
+                                    <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                        Release Type
+                                    </Paragraph>
+                                    <Blazorise.Text TextWeight="TextWeight.Bold">
+                                        @_album.ReleaseType.Value.ToString()
+                                    </Blazorise.Text>
+                                }
+                            </ListGroup>
+                        </CardBody>
+                    </Card>
+                </Column>
+            </Row>
+        </CardBody>
+    </Card>
+}
+
+@code {
+
+    [Parameter] public string? Id { get; set; }
+
+    private ILogger _logger = null!;
+
+    private OutAlbum? _album;
+    private List<OutSong> _albumSongs = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        _logger = LoggerProvider.CreateLogger(nameof(AlbumView));
+
+        await LoadAlbum();
+    }
+
+    private async Task LoadAlbum()
+    {
+        if (string.IsNullOrWhiteSpace(Id))
+        {
+            _logger.LogError("❌ Album ID is null or empty.");
+            return;
+        }
+        
+        if (!long.TryParse(Id, out var albumId))
+        {
+            _logger.LogError("❌ Invalid Album ID format: {Id}", Id);
+            return;
+        }
+
+        _album = await UcGet.ExecuteAsync(albumId, "artist");
+        
+        if (_album is null)
+        {
+            _logger.LogError("⚠️ No album found for ID: {Id}", Id);
+            return;
+        }
+        
+        _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
+        StateHasChanged();
+    }
+
+}

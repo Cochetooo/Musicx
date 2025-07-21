@@ -12,6 +12,27 @@
 @inject IGetAlbumByArtistUseCase UcGetAlbums
 @inject ILoggerProvider LoggerProvider
 
+<Breadcrumb Margin="Margin.Is2.FromBottom">
+    <BreadcrumbItem>
+        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        <BreadcrumbLink To="#">Artists</BreadcrumbLink>
+    </BreadcrumbItem>
+    @if (null == _artist)
+    {
+        <BreadcrumbItem>
+            <BreadcrumbLink To="#">-</BreadcrumbLink>
+        </BreadcrumbItem>
+    }
+    else
+    {
+        <BreadcrumbItem>
+            <BreadcrumbLink To="#">@_artist.Name</BreadcrumbLink>
+        </BreadcrumbItem>
+    }
+</Breadcrumb>
+
 @if (null == _artist)
 {
     <SpinKit Type="SpinKitType.Pulse" />
@@ -141,48 +162,50 @@ else
                                             out var value) && value)
                                     {
                                         <Div class="p-1" Style="width: 150px;">
-                                            <Figure Size="FigureSize.Is128x128">
-                                                <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
-                                                             Rounded />
-                                                <FigureCaption>
-                                                    <Blazorise.Text TextSize="TextSize.Medium">
-                                                        @switch (album.ReleaseType)
-                                                        {
-                                                            case ReleaseType.Compilation:
-                                                                <span class="text-danger">@album.Name</span>
-                                                                break;
-                                                            case ReleaseType.Ep:
-                                                                <span class="text-success">@album.Name</span>
-                                                                break;
-                                                            case ReleaseType.Lp:
-                                                                <span style="text-decoration: underline" class="text-primary font-weight-bold">@album.Name</span>
-                                                                break;
-                                                            case ReleaseType.Single:
-                                                                <span class="text-warning">@album.Name</span>
-                                                                break;
-                                                            case ReleaseType.AdditionalRelease:
-                                                            case ReleaseType.Bootleg:
-                                                            case ReleaseType.DjMix:
-                                                            case ReleaseType.Live:
-                                                            case ReleaseType.MixTape:
-                                                            case ReleaseType.Soundtrack:
-                                                            case ReleaseType.Unknown:
-                                                            case ReleaseType.VideoClip:
-                                                            case null:
-                                                                <span class="text-muted">@album.Name</span>
-                                                                break;
-                                                            default:
-                                                                throw new ArgumentOutOfRangeException();
-                                                        }
-                                                    </Blazorise.Text>
-                                                    @if (null != album.ReleaseDate)
-                                                    {
-                                                        <Blazorise.Text TextColor="TextColor.Muted">
-                                                            <br/>@album.ReleaseDate.Value.Year
+                                            <Blazorise.Link To="@($"/Album/{album.Id}")">
+                                                <Figure Size="FigureSize.Is128x128">
+                                                    <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
+                                                                 Rounded/>
+                                                    <FigureCaption>
+                                                        <Blazorise.Text TextSize="TextSize.Medium">
+                                                            @switch (album.ReleaseType)
+                                                            {
+                                                                case ReleaseType.Compilation:
+                                                                    <span class="text-warning">@album.Name</span>
+                                                                    break;
+                                                                case ReleaseType.Ep:
+                                                                    <span class="text-primary">@album.Name</span>
+                                                                    break;
+                                                                case ReleaseType.Lp:
+                                                                    <span class="text-dark font-weight-bolder">@album.Name</span>
+                                                                    break;
+                                                                case ReleaseType.Single:
+                                                                    <span class="text-secondary">@album.Name</span>
+                                                                    break;
+                                                                case ReleaseType.AdditionalRelease:
+                                                                case ReleaseType.Bootleg:
+                                                                case ReleaseType.DjMix:
+                                                                case ReleaseType.Live:
+                                                                case ReleaseType.MixTape:
+                                                                case ReleaseType.Soundtrack:
+                                                                case ReleaseType.Unknown:
+                                                                case ReleaseType.VideoClip:
+                                                                case null:
+                                                                    <span class="text-muted">@album.Name</span>
+                                                                    break;
+                                                                default:
+                                                                    throw new ArgumentOutOfRangeException();
+                                                            }
                                                         </Blazorise.Text>
-                                                    }
-                                                </FigureCaption>
-                                            </Figure>
+                                                        @if (null != album.ReleaseDate)
+                                                        {
+                                                            <Blazorise.Text TextColor="TextColor.Muted">
+                                                                <br/>@album.ReleaseDate.Value.Year
+                                                            </Blazorise.Text>
+                                                        }
+                                                    </FigureCaption>
+                                                </Figure>
+                                            </Blazorise.Link>
                                         </Div>
                                     }
                                 }
@@ -222,7 +245,7 @@ else
             return;
         }
 
-        _logger = LoggerProvider.CreateLogger(nameof(Artist));
+        _logger = LoggerProvider.CreateLogger(nameof(ArtistView));
 
         await LoadArtist();
     }

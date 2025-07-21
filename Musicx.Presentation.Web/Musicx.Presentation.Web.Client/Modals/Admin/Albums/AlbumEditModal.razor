@@ -87,6 +87,14 @@
                         <DatePicker TValue="DateTime?" @bind-Date="@_album.ReleaseDate" />
                     </FieldBody>
                 </Field>
+                <Field ColumnSize="ColumnSize.Is12">
+                    <FieldLabel>
+                        National Socialist Content
+                    </FieldLabel>
+                    <FieldBody>
+                        <Check TValue="bool?" @bind-Checked="_album.IsFarRight" />
+                    </FieldBody>
+                </Field>
             </Fields>
         </ModalBody>
         

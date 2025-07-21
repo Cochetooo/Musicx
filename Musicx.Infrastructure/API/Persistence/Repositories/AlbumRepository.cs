@@ -73,8 +73,10 @@ internal sealed class AlbumRepository(
     {
         _logger.LogDebug($"📄 SQL : SELECT * FROM albums WHERE id = {id}");
         
-        var albumSet = context.Albums;
-        GetIncludes(albumSet, albumQuerySpecification);
+        var albumSet = context.Albums
+            .AsQueryable();
+        
+        albumSet = GetIncludes(albumSet, albumQuerySpecification);
         
         return await albumSet
             .AsNoTracking()
@@ -82,11 +84,14 @@ internal sealed class AlbumRepository(
             .FirstOrDefaultAsync(s => s.Id == id);
     }
     
-    public async Task<List<Album>> FindByArtistIdAsync(long artistId)
+    public async Task<List<Album>> FindByArtistIdAsync(long artistId, IQuerySpecification<Album>? albumQuerySpecification = null)
     {
         _logger.LogDebug($"📄 SQL : SELECT * FROM albums WHERE artist_id = {artistId}");
         
-        var albumSet = context.Albums;
+        var albumSet = context.Albums
+            .AsQueryable();
+        
+        albumSet = GetIncludes(albumSet, albumQuerySpecification);
         
         return await albumSet
             .AsNoTracking()
@@ -101,17 +106,17 @@ internal sealed class AlbumRepository(
     {
         _logger.LogDebug("📄 SQL : SELECT * FROM albums");
         
-        var albumSet = context.Albums;
+        var albumSet = context.Albums
+            .AsQueryable();
         
-        GetIncludes(albumSet, albumQuerySpecification);
-        var query = albumSet.AsQueryable();
+        albumSet = GetIncludes(albumSet, albumQuerySpecification);
 
         if (null != filter)
         {
-            query = query.Where(filter);
+            albumSet = albumSet.Where(filter);
         }
         
-        return await query
+        return await albumSet
             .AsNoTracking()
             .Skip(skip)
             .Take(take)
@@ -221,28 +226,26 @@ internal sealed class AlbumRepository(
         }
     }
 
-    private static void GetIncludes(in DbSet<Album> albumSet, IQuerySpecification<Album>? querySpecification = null)
+    private static IQueryable<Album> GetIncludes(IQueryable<Album> query, IQuerySpecification<Album>? querySpecification = null)
     {
-        if (null == querySpecification)
-        {
-            return;
-        }
-        
-        var albumQuerySpecification = (AlbumQuerySpecification)querySpecification;
+        if (querySpecification is not AlbumQuerySpecification albumQuerySpecification)
+            return query;
 
         if (albumQuerySpecification.IncludeArtist)
         {
-            albumSet.Include(s => s.Artist);
+            query = query.Include(s => s.Artist);
         }
 
         if (albumQuerySpecification.IncludePrimaryGenres)
         {
-            albumSet.Include(s => s.PrimaryGenres);
+            query = query.Include(s => s.PrimaryGenres);
         }
 
         if (albumQuerySpecification.IncludeInfluenceGenres)
         {
-            albumSet.Include(s => s.InfluenceGenres);
+            query = query.Include(s => s.InfluenceGenres);
         }
+
+        return query;
     }
 }

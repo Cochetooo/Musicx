@@ -14,6 +14,7 @@ public class Album
 {
     public string artist { get; set; }
     public string mbid { get; set; }
+    [JsonConverter(typeof(ObjectOrStringConverter<Tags>))]
     public Tags tags { get; set; }
     public string playcount { get; set; }
     public Image[] image { get; set; }

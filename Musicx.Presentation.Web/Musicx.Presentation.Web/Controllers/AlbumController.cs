@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence;
+using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Mappers;
@@ -51,13 +52,21 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<OutAlbum>> FindById([FromRoute] long id)
+    public async Task<ActionResult<OutAlbum>> FindById([FromRoute] long id, [FromQuery] string query)
     {
-        _logger.LogInformation($"🌍🏳️ API : FIND BY ID albums ({id})");
+        _logger.LogInformation($"🌍🏳️ API : FIND BY ID albums ({id} & includes = {query})");
 
         try
         {
-            var album = await albumRepository.FindByIdAsync(id);
+            var querySpecification = new AlbumQuerySpecification
+            {
+                IncludeArtist = query.Contains("artist"),
+                IncludePrimaryGenres = query.Contains("genre"),
+                IncludeInfluenceGenres = query.Contains("genre"),
+                IncludeReleases = query.Contains("release")
+            };
+            
+            var album = await albumRepository.FindByIdAsync(id, querySpecification);
 
             if (null == album)
             {
@@ -75,13 +84,21 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
     
     [HttpGet("by-artist/{artistId}")]
-    public async Task<ActionResult<OutAlbum>> FindByArtistId([FromRoute] long artistId)
+    public async Task<ActionResult<OutAlbum>> FindByArtistId([FromRoute] long artistId, [FromQuery] string query = "")
     {
-        _logger.LogInformation($"🌍🏳️ API : FIND BY ARTIST albums ({artistId})");
+        _logger.LogInformation($"🌍🏳️ API : FIND BY ARTIST albums ({artistId} & includes = {query})");
 
         try
         {
-            var albums = await albumRepository.FindByArtistIdAsync(artistId);
+            var querySpecification = new AlbumQuerySpecification
+            {
+                IncludeArtist = query.Contains("artist"),
+                IncludePrimaryGenres = query.Contains("genre"),
+                IncludeInfluenceGenres = query.Contains("genre"),
+                IncludeReleases = query.Contains("release")
+            };
+            
+            var albums = await albumRepository.FindByArtistIdAsync(artistId, querySpecification);
 
             if (0 == albums.Count)
             {
@@ -102,15 +119,25 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     public async Task<ActionResult<IEnumerable<OutArtist>>> Find(
         [FromQuery] int skip = 0,
         [FromQuery] int take = 100, 
-        [FromQuery] string filter = "")
+        [FromQuery] string filter = "",
+        [FromQuery] string query = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND albums");
 
         try
         {
+            var querySpecification = new AlbumQuerySpecification
+            {
+                IncludeArtist = query.Contains("artist"),
+                IncludePrimaryGenres = query.Contains("genre"),
+                IncludeInfluenceGenres = query.Contains("genre"),
+                IncludeReleases = query.Contains("release")
+            };
+            
             var albums = await albumRepository.FindAsync(skip, take, a => 
                 string.IsNullOrWhiteSpace(filter) 
-                || a.Name.ToLower().StartsWith(filter.ToLower()));
+                || a.Name.ToLower().StartsWith(filter.ToLower()),
+                querySpecification);
             
             if (0 == albums.Count)
             {

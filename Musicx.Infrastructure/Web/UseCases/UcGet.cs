@@ -17,10 +17,10 @@ public sealed class UcGet<T>(
         PropertyNameCaseInsensitive = true
     };
     
-    public async Task<T?> ExecuteAsync(long id)
+    public async Task<T?> ExecuteAsync(long id, string query = "")
     {
         var modelName = typeof(T).Name.OutModelToEntity();
-        var endpoint = $"/api/{modelName}/{id}";
+        var endpoint = $"/api/{modelName}/{id}?query={query}";
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
@@ -38,7 +38,7 @@ public sealed class UcGet<T>(
         return json;
     }
 
-    public T? Execute(long id)
+    public T? Execute(long id, string query = "")
     {
         throw new NotImplementedException();
     }
