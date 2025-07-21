@@ -24,4 +24,5 @@ public sealed class InSong(
     string? FilePath,
     string? Format,
     double? SampleRate,
+    string? Type,
     double? VolumeModifier);

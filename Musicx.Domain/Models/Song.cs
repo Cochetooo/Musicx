@@ -4,6 +4,8 @@ namespace Musicx.Domain.Models;
 
 public sealed class Song : BaseModel
 {
+    public long? AlbumId { get; set; }
+    public long? ArtistId { get; set; }
     public Album? Album { get; set; }
     public Artist? Artist { get; set; }
     public ICollection<Genre> PrimaryGenres { get; set; } = new List<Genre>();
@@ -14,6 +16,7 @@ public sealed class Song : BaseModel
     public string? Lyrics { get; set; }
     public string Title { get; set; } = null!;
     public int? TrackNumber { get; set; }
+    public SongType? Type { get; set; }
     
     public ushort? BitRate { get; set; }
     public string? FilePath { get; set; }

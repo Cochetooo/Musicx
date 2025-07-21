@@ -1,3 +1,5 @@
+using Musicx.Domain.Enums;
+
 namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutSong
@@ -14,10 +16,11 @@ public sealed class OutSong
     public string? Lyrics { get; set; }
     public string Title { get; set; } = null!;
     public int? TrackNumber { get; set; }
+    public SongType? Type { get; set; }
     
     public ushort? BitRate { get; set; }
     public string? FilePath { get; set; } = null!;
-    public string? Format { get; set; }
+    public AudioFormatType? Format { get; set; }
     public double? SampleRate { get; set; }
     public double? VolumeModifier { get; set; }
 }

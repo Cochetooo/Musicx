@@ -13,6 +13,7 @@ public sealed class Album : BaseModel
     
     public string? ArtworkUrl { get; set; }
     public int? DiscTotal { get; set; }
+    public bool? IsFarRight { get; set; }
     public string Name { get; set; } = null!;
     public DateTime? ReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }

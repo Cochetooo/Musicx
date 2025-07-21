@@ -21,6 +21,7 @@ public sealed class InAlbum
     // Optional Columns
     public string? ArtworkUrl { get; set; }
     public int? DiscTotal { get; set; }
+    public bool? IsFarRight { get; set; }
     public DateTime? ReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }
     public int? TrackTotal { get; set; }
