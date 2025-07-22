@@ -29,32 +29,29 @@ public static class AlbumMapper
         TrackTotal = album.TrackTotal
     };
 
-    public static Album ToEntity(this InAlbum albumDto)
+    public static Album ToEntity(this InAlbum albumDto) => new()
     {
-        return new Album
-        {
-            Id = albumDto.Id,
+        Id = albumDto.Id,
 
-            ArtistId = albumDto.ArtistId,
+        ArtistId = albumDto.ArtistId,
 
-            Releases = albumDto.ReleaseIds.Select(id => new Release { Id = id }).ToList(),
-            PrimaryGenres = albumDto.PrimaryGenreIds.Select(id => new Genre { Id = id }).ToList(),
-            InfluenceGenres = albumDto.InfluenceGenreIds.Select(id => new Genre { Id = id }).ToList(),
+        Releases = albumDto.ReleaseIds.Select(id => new Release { Id = id }).ToList(),
+        PrimaryGenres = albumDto.PrimaryGenreIds.Select(id => new Genre { Id = id }).ToList(),
+        InfluenceGenres = albumDto.InfluenceGenreIds.Select(id => new Genre { Id = id }).ToList(),
 
-            ArtworkUrl = albumDto.ArtworkUrl,
-            DiscTotal = albumDto.DiscTotal,
-            IsFarRight = albumDto.IsFarRight,
-            Name = albumDto.Name,
-            ReleaseDate = albumDto.ReleaseDate,
-            ReleaseType = albumDto.ReleaseType,
-            TrackTotal = albumDto.TrackTotal
-        };
-    }
+        ArtworkUrl = albumDto.ArtworkUrl,
+        DiscTotal = albumDto.DiscTotal,
+        IsFarRight = albumDto.IsFarRight,
+        Name = albumDto.Name,
+        ReleaseDate = albumDto.ReleaseDate,
+        ReleaseType = albumDto.ReleaseType,
+        TrackTotal = albumDto.TrackTotal
+    };
 
     public static InAlbum ToRaw(this OutAlbum album) => new()
     {
         Id = album.Id,
-        ArtistId = album.Artist?.Id ?? null,
+        ArtistId = album.Artist?.Id,
         ReleaseIds = album.Releases.Select(r => r.Id).ToList(),
         PrimaryGenreIds = album.PrimaryGenres.Select(g => g.Id).ToList(),
         InfluenceGenreIds = album.InfluenceGenres.Select(g => g.Id).ToList(),

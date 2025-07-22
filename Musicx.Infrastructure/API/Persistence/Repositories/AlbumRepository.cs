@@ -136,8 +136,10 @@ internal sealed class AlbumRepository(
             return [];
         }
         
-        var albumSet = context.Albums;
-        GetIncludes(albumSet, albumQuerySpecification);
+        var albumSet = context.Albums
+            .AsQueryable();
+        
+        albumSet = GetIncludes(albumSet, albumQuerySpecification);
         
         return await albumSet
             .Where(s => enumerable.Contains(s.Id))

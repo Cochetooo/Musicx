@@ -2,6 +2,7 @@
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Components
+@using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 
 @inject IGetUseCase<OutAlbum> UcGet
 @inject ILoggerProvider LoggerProvider
@@ -46,9 +47,9 @@ else
             }
         </CardHeader>
         <CardBody>
-            <Row Margin="Margin.Is3.OnX">
-                @if (_album.IsFarRight.HasValue && _album.IsFarRight.Value)
-                {
+            @if (_album.IsFarRight.HasValue && _album.IsFarRight.Value)
+            {
+                <Row Padding="Padding.Is3.OnAll">
                     <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is12">
                         <Jumbotron Background="Background.Warning" Margin="Margin.Is3">
                             <JumbotronTitle Size="JumbotronTitleSize.Is4">National Socialist Content</JumbotronTitle>
@@ -60,7 +61,9 @@ else
                             </JumbotronSubtitle>
                         </Jumbotron>
                     </Column>
-                }
+                </Row>
+            }
+            <Row Margin="Margin.Is3.OnX">
                 <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3">
                     <Image Style="border-radius:10px; height:auto; width: 100%;" Source="@_album.ArtworkUrl"/>
                 </Column>
@@ -82,7 +85,7 @@ else
                                         </DescriptorValue>
                                     </Descriptor>
                                 }
-                                
+
                                 @if (null != _album.ReleaseDate)
                                 {
                                     <Descriptor>
@@ -94,7 +97,7 @@ else
                                         </DescriptorValue>
                                     </Descriptor>
                                 }
-                                
+
                                 @if (null != _album.ReleaseType)
                                 {
                                     <Descriptor>
@@ -111,15 +114,25 @@ else
                     </Card>
                 </Column>
             </Row>
+            <Row Margin="Margin.Is3.OnAll">
+                <Button Clicked="EditTrackListShowModal" Color="Color.Success">
+                    <Icon Name="IconName.Edit" Margin="Margin.Is2.OnX"/>
+                    Edit Track List
+                </Button>
+            </Row>
         </CardBody>
     </Card>
 }
+
+<AlbumTrackListEditModal @ref="_trackListEditModal" OnSave="OnQuitModal" />
 
 @code {
 
     [Parameter] public string? Id { get; set; }
 
     private ILogger _logger = null!;
+
+    private AlbumTrackListEditModal? _trackListEditModal;
 
     private OutAlbum? _album;
     private List<OutSong> _albumSongs = [];
@@ -160,6 +173,22 @@ else
         
         _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
         StateHasChanged();
+    }
+
+    private void EditTrackListShowModal()
+    {
+        if (null == _album)
+        {
+            _logger.LogError("❌ Cannot edit tracklist: album is null.");
+            return;
+        }
+        
+        _trackListEditModal?.Show(_album);
+    }
+
+    private async Task OnQuitModal()
+    {
+        await LoadAlbum();
     }
 
 }

@@ -293,7 +293,6 @@ else
         
     }
     
-    
     private async Task UpdateChartAsync()
     {
         await _historyChart.Clear();
@@ -312,6 +311,7 @@ else
         
         await _historyChart.AddLabelsDatasetsAndUpdate(labels, dataset);
     }
+    
     private void CalculateReleasesPerYear()
     {
         if (null == _artist)

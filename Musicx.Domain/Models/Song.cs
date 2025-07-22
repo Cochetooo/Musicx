@@ -8,6 +8,7 @@ public sealed class Song : BaseModel
     public long? ArtistId { get; set; }
     public Album? Album { get; set; }
     public Artist? Artist { get; set; }
+    
     public ICollection<Genre> PrimaryGenres { get; set; } = new List<Genre>();
     public ICollection<Genre> InfluenceGenres { get; set; } = new List<Genre>();
     

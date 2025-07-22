@@ -5,6 +5,9 @@ using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Domain.Models;
+using Musicx.Infrastructure.Shared.Exceptions;
+using Musicx.Infrastructure.Shared.Helpers;
+using Npgsql;
 using ISongRepository = Musicx.Application.Api.Interfaces.Persistence.ISongRepository;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
@@ -17,7 +20,7 @@ internal sealed class SongRepository(
     
     public async Task DeleteAsync(long id)
     {
-        _logger.LogDebug($"📄 DELETE Song : {id}");
+        _logger.LogDebug($"📄 SQL : DELETE FROM songs WHERE id = {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -34,54 +37,83 @@ internal sealed class SongRepository(
         }
         catch (Exception ex)
         {
-            _logger.LogCritical($"❌ DELETE Song : Could not delete id {id}", ex);
             await transaction.RollbackAsync();
-            throw;
+            throw new RepositoryException($"❌ Could not delete id {id}", ex, _logger);
         }
     }
 
-    public Task DeleteAllAsync(IEnumerable<long> ids)
+    public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
-        throw new NotImplementedException();
+        var stringIds = string.Join(",", ids);
+
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        
+        try
+        {
+            var deleteAllSql = "DELETE FROM \"Songs\" WHERE \"Id\" IN (@ids)";
+
+            var parameters = new List<NpgsqlParameter>
+            {
+                new("@Ids", stringIds)
+            };
+
+            _logger.LogDebug(SqlDebugHelper.InterpolateQuery(deleteAllSql, parameters));
+            
+            await context.Database.ExecuteSqlRawAsync(deleteAllSql, parameters.Cast<object>().ToArray());
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw new RepositoryException($"📜❌ Could not delete ids {stringIds}", ex, _logger);
+        }
     }
 
     public async Task<Song?> FindByIdAsync(long id, IQuerySpecification<Song>? songQuerySpecification = null)
     {
-        _logger.LogDebug($"📄 FIND BY ID Song : {id}");
+        _logger.LogDebug($"📄 SQL : SELECT * FROM songs WHERE id = {id}");
         
-        var songSet = context.Songs;
-        GetIncludes(songSet, songQuerySpecification);
+        var songSet = context.Songs
+            .AsQueryable();
+        
+        songSet = GetIncludes(songSet, songQuerySpecification);
         
         return await songSet
             .AsNoTracking()
+            .OrderBy(x => x.DiscNumber)
+            .ThenBy(x => x.TrackNumber)
+            .ThenBy(x => x.Title)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
     public async Task<List<Song>> FindAsync(int skip = 0, int take = 100, Expression<Func<Song, bool>>? filter = null,
         IQuerySpecification<Song>? songQuerySpecification = null)
     {
-        _logger.LogDebug($"📄 FIND Song");
+        _logger.LogDebug($"📄 SQL : SELECT * FROM songs");
         
-        var songSet = context.Songs;
+        var songSet = context.Songs
+            .AsQueryable();
         
-        GetIncludes(songSet, songQuerySpecification);
-        var query = songSet.AsQueryable();
+        songSet = GetIncludes(songSet, songQuerySpecification);
 
         if (null != filter)
         {
-            query = query.Where(filter);
+            songSet = songSet.Where(filter);
         }
         
-        return await query
+        return await songSet
             .AsNoTracking()
             .Skip(skip)
             .Take(take)
+            .OrderBy(x => x.DiscNumber)
+            .ThenBy(x => x.TrackNumber)
+            .ThenBy(x => x.Title)
             .ToListAsync();
     }
 
     public async Task<List<Song>> FindIn(IEnumerable<long> ids, IQuerySpecification<Song>? songQuerySpecification = null)
     {
-        _logger.LogDebug("📄 FIND IN Song");
+        _logger.LogDebug("📄 SQL : SELECT * FROM songs WHERE id IN ({Ids})", string.Join(",", ids));
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
@@ -107,19 +139,29 @@ internal sealed class SongRepository(
 
     public async Task<long> SaveAsync(Song entity)
     {
-        _logger.LogDebug($"📄 SAVE Song : {entity.Title}");
-        
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
             if (0 == entity.Id)
             {
+                _logger.LogDebug($"📄 SQL : INSERT INTO songs (title, album_id, artist_id...) " +
+                                 $"VALUES ('{entity.Title}', '{entity.AlbumId}', '{entity.ArtistId}')");
+
+                entity.CreatedAt = DateTime.Now;
+                entity.UpdatedAt = DateTime.Now;
+                
                 context.Songs.Add(entity);
             }
             else
             {
+                _logger.LogDebug($"📄 SQL : UPDATE artists SET Title={entity.Title}" +
+                                 $"WHERE Id = {entity.Id}");
+                
+                entity.UpdatedAt = DateTime.Now;
+                
                 context.Songs.Update(entity);
+                context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
             }
 
             await context.SaveChangesAsync();
@@ -129,9 +171,8 @@ internal sealed class SongRepository(
         }
         catch (Exception ex)
         {
-            _logger.LogCritical("❌ SAVE Song : Could not persist.", ex);
             await transaction.RollbackAsync();
-            throw;
+            throw new RepositoryException("❌ SAVE Album : Could not persist.", ex, _logger);
         }
     }
 
@@ -166,47 +207,44 @@ internal sealed class SongRepository(
         }
         catch (Exception ex)
         {
-            _logger.LogCritical($"❌ SAVE ALL Song : Could not persist.", ex);
             await transaction.RollbackAsync();
-            throw;
+            throw new RepositoryException("❌ SAVE ALL Artist : Could not persist", ex, _logger);
         }
     }
 
-    private static void GetIncludes(in DbSet<Song> songSet, IQuerySpecification<Song>? querySpecification = null)
+    private static IQueryable<Song> GetIncludes(IQueryable<Song> query, IQuerySpecification<Song>? querySpecification = null)
     {
-        if (null == querySpecification)
-        {
-            return;
-        }
-        
-        var songQuerySpecification = (SongQuerySpecification)querySpecification;
+        if (querySpecification is not SongQuerySpecification songQuerySpecification)
+            return query;
 
         if (songQuerySpecification.IncludeArtist)
         {
-            songSet.Include(s => s.Artist);
+            query = query.Include(s => s.Artist);
         }
 
         if (songQuerySpecification.IncludeAlbum)
         {
             if (songQuerySpecification.IncludeAlbumArtist)
             {
-                songSet.Include(s => s.Album)
+                query = query.Include(s => s.Album)
                     .ThenInclude(a => a.Artist);
             }
             else
             {
-                songSet.Include(s => s.Album);
+                query = query.Include(s => s.Album);
             }
         }
 
         if (songQuerySpecification.IncludePrimaryGenres)
         {
-            songSet.Include(s => s.PrimaryGenres);
+            query = query.Include(s => s.PrimaryGenres);
         }
 
         if (songQuerySpecification.IncludeInfluenceGenres)
         {
-            songSet.Include(s => s.InfluenceGenres);
+            query = query.Include(s => s.InfluenceGenres);
         }
+
+        return query;
     }
 }

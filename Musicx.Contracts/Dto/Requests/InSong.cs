@@ -1,28 +1,33 @@
+using Musicx.Domain.Enums;
+
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InSong(
+public sealed class InSong
+{
     // Primary Key
-    long Id,
-    
-    // Required Relationships
-    IReadOnlyList<long> PrimaryGenreIds,
-    IReadOnlyList<long> InfluenceGenreIds,
-    
+    public long Id { get; set; }
+
+        // Required Relationships
+    public IReadOnlyList<long> PrimaryGenreIds { get; set; } = [];
+    public IReadOnlyList<long> InfluenceGenreIds { get; set; } = [];
+
     // Required Columns
-    string Title,
+    public string Title { get; set; } = string.Empty;
 
     // Optional Relationships
-    long? AlbumId,
-    long? ArtistId,
-    
+    public long? AlbumId { get; set; }
+    public long? ArtistId { get; set; }
+
     // Optional Columns
-    int? DiscNumber,
-    long? Duration,
-    string? Lyrics,
-    int? TrackNumber,
-    ushort? BitRate,
-    string? FilePath,
-    string? Format,
-    double? SampleRate,
-    string? Type,
-    double? VolumeModifier);
+    public int? DiscNumber { get; set; }
+    public long? Duration { get; set; }
+    public string? Lyrics { get; set; }
+    public int? TrackNumber { get; set; }
+    public SongType? Type { get; set; }
+    
+    public ushort? BitRate { get; set; }
+    public string? FilePath { get; set; }
+    public AudioFormatType? Format { get; set; }
+    public double? SampleRate { get; set; }
+    public double? VolumeModifier { get; set; }
+}
