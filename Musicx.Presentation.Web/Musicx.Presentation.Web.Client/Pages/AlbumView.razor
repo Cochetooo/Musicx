@@ -1,6 +1,7 @@
 @page "/Album/{id}"
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Presentation.Web.Client.Components
 
 @inject IGetUseCase<OutAlbum> UcGet
 @inject ILoggerProvider LoggerProvider
@@ -49,13 +50,13 @@ else
                 @if (_album.IsFarRight.HasValue && _album.IsFarRight.Value)
                 {
                     <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is12">
-                        <Jumbotron Background="Background.Danger" Margin="Margin.Is3">
+                        <Jumbotron Background="Background.Warning" Margin="Margin.Is3">
                             <JumbotronTitle Size="JumbotronTitleSize.Is4">National Socialist Content</JumbotronTitle>
                             <JumbotronSubtitle>
-                                This release is marked with the "national socialist" tag.<br/>
+                                ⚠️ This release is marked with the "national socialist" tag.<br/>
                                 We do not endorse or support any of the associated ideologies.<br/>
                                 Our role is solely to document and archive all forms of musical expression,
-                                regardless of their origin or context.
+                                regardless of their origin or context. ⚠️
                             </JumbotronSubtitle>
                         </Jumbotron>
                     </Column>
@@ -72,32 +73,38 @@ else
                             <ListGroup Flush>
                                 @if (null != _album.Artist)
                                 {
-                                    <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
-                                        Artist
-                                    </Paragraph>
-                                    <Blazorise.Text TextWeight="TextWeight.Bold">
-                                        @_album.Artist.Name
-                                    </Blazorise.Text>
+                                    <Descriptor>
+                                        <DescriptorLabel>
+                                            Artist
+                                        </DescriptorLabel>
+                                        <DescriptorValue>
+                                            @_album.Artist.Name
+                                        </DescriptorValue>
+                                    </Descriptor>
                                 }
                                 
                                 @if (null != _album.ReleaseDate)
                                 {
-                                    <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
-                                        Release Date
-                                    </Paragraph>
-                                    <Blazorise.Text TextWeight="TextWeight.Bold">
-                                        @_album.ReleaseDate.Value.ToString("dd/MM/yyyy")
-                                    </Blazorise.Text>
+                                    <Descriptor>
+                                        <DescriptorLabel>
+                                            Release Date
+                                        </DescriptorLabel>
+                                        <DescriptorValue>
+                                            @_album.ReleaseDate.Value.ToString("dd/MM/yyyy")
+                                        </DescriptorValue>
+                                    </Descriptor>
                                 }
                                 
                                 @if (null != _album.ReleaseType)
                                 {
-                                    <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
-                                        Release Type
-                                    </Paragraph>
-                                    <Blazorise.Text TextWeight="TextWeight.Bold">
-                                        @_album.ReleaseType.Value.ToString()
-                                    </Blazorise.Text>
+                                    <Descriptor>
+                                        <DescriptorLabel>
+                                            Release Type
+                                        </DescriptorLabel>
+                                        <DescriptorValue>
+                                            @_album.ReleaseType.Value.ToString()
+                                        </DescriptorValue>
+                                    </Descriptor>
                                 }
                             </ListGroup>
                         </CardBody>

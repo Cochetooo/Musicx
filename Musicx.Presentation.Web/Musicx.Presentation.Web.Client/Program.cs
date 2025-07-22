@@ -10,6 +10,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Services.AddFrontFramework();
 
+builder.Logging.SetMinimumLevel(LogLevel.Warning);
+
 builder.Services
     .AddMusicxWeb();
 

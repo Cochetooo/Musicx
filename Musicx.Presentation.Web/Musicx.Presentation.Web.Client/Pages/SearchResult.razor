@@ -122,7 +122,8 @@
 
         _albumsResult = await UcListAlbum.ExecuteAsync(
             take: 10,
-            filter: SearchText
+            filter: SearchText,
+            query: "artist"
         );
         
         StateHasChanged();

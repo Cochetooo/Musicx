@@ -40,22 +40,27 @@
 else
 {
     <Card Margin="Margin.Is4.OnY">
-        <CardHeader Padding="Padding.Is3.OnX">
-            <Heading Size="HeadingSize.Is4" TextWeight="TextWeight.Bold">@_artist.Name</Heading>
+        <CardHeader Background="Background.Secondary" Flex="Flex.JustifyContent.Between.OnDesktop"
+                    Padding="Padding.Is3.OnX">
+            <Heading Size="HeadingSize.Is1" 
+                     VerticalAlignment="VerticalAlignment.Middle"
+                     TextWeight="TextWeight.Bold" TextColor="TextColor.White">
+                @_artist.Name
+            </Heading>
+        
+            <Image Style="width: 200px; border-radius:10px; box-shadow: 10px 10px 20px #116298,
+             -10px -10px 20px #1578ba" Source="@_artist.ArtworkUrl" />
         </CardHeader>
         <CardBody>
             <Row Margin="Margin.Is3.OnX">
-                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is2">
-                    <Image Style="border-radius:10px; height:auto; width: 100%;" Source="@_artist.ArtworkUrl" />
-                </Column>
-                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3">
-                    <Button Color="Color.Secondary">
-                        <Icon Name="IconName.UserPlus" Margin="Margin.Is2.OnX" />
-                        Follow
-                    </Button>
-                </Column>
-                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is6.Is1.WithOffset">
+                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3.OnDesktop">
                     <Card>
+                        <CardHeader>
+                            <Button Color="Color.Secondary">
+                                <Icon Name="IconName.UserPlus" Margin="Margin.Is2.OnX" />
+                                Follow
+                            </Button>
+                        </CardHeader>
                         <CardBody>
                             <CardTitle Size="5">
                                 Details
@@ -65,75 +70,67 @@ else
                                 {
                                     if (null != _artist.FormationDate)
                                     {
-                                        <ListGroupItem>
-                                            <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                        <Descriptor>
+                                            <DescriptorLabel>
                                                 Formed
-                                            </Paragraph>
-                                            <Blazorise.Text TextWeight="TextWeight.Bold">
+                                            </DescriptorLabel>
+                                            <DescriptorValue>
                                                 @_artist.FormationDate.Value.ToString("dd/MM/yyyy")
-                                            </Blazorise.Text>
-                                        </ListGroupItem>
+                                            </DescriptorValue>
+                                        </Descriptor>
                                     }
 
                                     if (null != _artist.SplitDate)
                                     {
-                                        <ListGroupItem>
-                                            <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                        <Descriptor>
+                                            <DescriptorLabel>
                                                 Split
-                                            </Paragraph>
-                                            <Blazorise.Text TextWeight="TextWeight.Bold">
+                                            </DescriptorLabel>
+                                            <DescriptorValue>
                                                 @_artist.SplitDate.Value.ToString("dd/MM/yyyy")
-                                            </Blazorise.Text>
-                                        </ListGroupItem>
+                                            </DescriptorValue>
+                                        </Descriptor>
                                     }
                                 }
                                 @if (_artist.Discriminator == ArtistDiscriminator.Person)
                                 {
                                     if (null != _artist.BirthDate)
                                     {
-                                        <ListGroupItem>
-                                            <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                        <Descriptor>
+                                            <DescriptorLabel>
                                                 Born
-                                            </Paragraph>
-                                            <Blazorise.Text TextWeight="TextWeight.Bold">
+                                            </DescriptorLabel>
+                                            <DescriptorValue>
                                                 @_artist.BirthDate.Value.ToString("dd/MM/yyyy")
-                                            </Blazorise.Text>
-                                        </ListGroupItem>
+                                            </DescriptorValue>
+                                        </Descriptor>
                                     }
 
                                     if (null != _artist.DeathDate)
                                     {
-                                        <ListGroupItem>
-                                            <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                        <Descriptor>
+                                            <DescriptorLabel>
                                                 Died
-                                            </Paragraph>
-                                            <Blazorise.Text TextWeight="TextWeight.Bold">
+                                            </DescriptorLabel>
+                                            <DescriptorValue>
                                                 @_artist.DeathDate.Value.ToString("dd/MM/yyyy")
-                                            </Blazorise.Text>
-                                        </ListGroupItem>
+                                            </DescriptorValue>
+                                        </Descriptor>
                                     }
                                 }
-                                <ListGroupItem>
-                                    <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+                                <Descriptor>
+                                    <DescriptorLabel>
                                         Country
-                                    </Paragraph>
-                                    <Blazorise.Text TextWeight="TextWeight.Bold">
+                                    </DescriptorLabel>
+                                    <DescriptorValue>
                                         <Flag CountryName="@_artist.Country"/> @_artist.Country
-                                    </Blazorise.Text>
-                                </ListGroupItem>
+                                    </DescriptorValue>
+                                </Descriptor>
                             </ListGroup>
                         </CardBody>
                     </Card>
                 </Column>
-            </Row>
-            <Row Margin="Margin.Is3.OnX">
-                <Column ColumnSize="ColumnSize.Is3" Padding="Padding.Is3.OnAll">
-                    <Button Clicked="AddAlbumShowModal" Color="Color.Success">
-                        <Icon Name="IconName.PlusCircle" Margin="Margin.Is2.OnX" />
-                        Add Album
-                    </Button>
-                </Column>
-                <Column ColumnSize="ColumnSize.Is9" Padding="Padding.Is3.OnAll">
+                <Column ColumnSize="ColumnSize.Is9.OnDesktop" Padding="Padding.Is3.OnAll">
                     <Card>
                         <CardBody>
                             <CardTitle Size="4">Releases</CardTitle>
@@ -210,6 +207,10 @@ else
                                     }
                                 }
                             </Div>
+                            <Button Clicked="AddAlbumShowModal" Color="Color.Success">
+                                <Icon Name="IconName.PlusCircle" Margin="Margin.Is2.OnX" />
+                                New Release
+                            </Button>
                         </CardBody>
                         <CardFooter>
                             <CardText>Release History</CardText>
@@ -288,6 +289,8 @@ else
      
         CalculateReleasesPerYear();
         await UpdateChartAsync();
+
+        
     }
     
     

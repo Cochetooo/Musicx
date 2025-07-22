@@ -32,4 +32,8 @@
       <Content Remove="appsettings.Client.json" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Modals\Admin\Songs\" />
+    </ItemGroup>
+
 </Project>

@@ -1,0 +1,98 @@
+@using System.Data
+@using Musicx.Contracts.Dto.Requests
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Domain.Enums
+<Modal @ref="_modalRef">
+    <ModalContent Size="ModalSize.Large" Centered>
+        <ModalHeader>
+            <ModalTitle>Track List Editing</ModalTitle>
+            <CloseButton Clicked="Hide" />
+        </ModalHeader>
+        
+        <ModalBody>
+            <Fields>
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop">
+                    <FieldLabel>
+                        Artist
+                    </FieldLabel>
+                    <FieldBody>
+                        @if (_album is { Artist: not null })
+                        {
+                            <TextEdit Disabled @bind-Text="_album.Artist.Name"/>
+                        }
+                    </FieldBody>
+                </Field>
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop">
+                    <FieldLabel>
+                        Album (*)
+                    </FieldLabel>
+                    <FieldBody>
+                        @if (_album != null)
+                        {
+                            <TextEdit Disabled @bind-Text="_album.Name"/>
+                        }
+                    </FieldBody>
+                </Field>
+            </Fields>
+            
+            <Divider />
+            
+            <Table Narrow>
+                <TableHeader ThemeContrast="ThemeContrast.Dark">
+                    <TableRow>
+                        <TableHeaderCell>#</TableHeaderCell>
+                        <TableHeaderCell>Name</TableHeaderCell>
+                        <TableHeaderCell>Duration</TableHeaderCell>
+                        <TableHeaderCell>Type</TableHeaderCell>
+                        <TableHeaderCell>-</TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @foreach (var song in _songs)
+                    {
+                        <TableRow>
+                            <TableRowHeader>
+                                <TextEdit />
+                            </TableRowHeader>
+                            <TableRowCell><TextEdit /></TableRowCell>
+                            <TableRowCell><TextEdit /></TableRowCell>
+                            <TableRowCell>
+                                <Select TValue="SongType">
+                                    @foreach (var songType in Enum.GetValues<SongType>())
+                                    {
+                                        <SelectItem Value="@songType">@songType.ToString()</SelectItem>
+                                    }
+                                </Select>
+                            </TableRowCell>
+                            <TableRowCell>
+                                <Button Color="Color.Danger" Clicked="@(() => DeleteRow(song))">
+                                    <Icon Name="IconName.Delete" />
+                                </Button>
+                            </TableRowCell>
+                        </TableRow>
+                    }
+                </TableBody>
+                <Button Color="Color.Info" Clicked="@(() => AddRow())">
+                    <Icon Name="IconName.PlusSquare" />
+                </Button>
+            </Table>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+@code {
+
+    private OutAlbum? _album;
+    private List<InSong> _songs = [];
+
+    private void DeleteRow(InSong song)
+    {
+        _songs.Remove(song);
+    }
+
+    private void AddRow()
+    {
+        _songs.Add(new InSong());
+    }
+
+}

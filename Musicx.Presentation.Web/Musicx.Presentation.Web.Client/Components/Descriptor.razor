@@ -1,0 +1,15 @@
+<ListGroupItem>
+    <Paragraph Margin="Margin.Is2.OnY" TextColor="TextColor.Muted">
+        @DescriptorLabel
+    </Paragraph>
+    <Blazorise.Text TextWeight="TextWeight.Bold">
+        @DescriptorValue
+    </Blazorise.Text>
+</ListGroupItem>
+
+@code {
+
+    [Parameter, EditorRequired] public RenderFragment? DescriptorLabel { get; set; }
+    [Parameter, EditorRequired] public RenderFragment? DescriptorValue { get; set; }
+
+}

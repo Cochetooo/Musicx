@@ -17,10 +17,10 @@ public sealed class UcList<T>(
         PropertyNameCaseInsensitive = true
     };
     
-    public async Task<List<T>> ExecuteAsync(int skip = 0, int take = 200, string? filter = null)
+    public async Task<List<T>> ExecuteAsync(int skip = 0, int take = 200, string? filter = null, string query = "")
     {
         var modelName = typeof(T).Name.OutModelToEntity();
-        var endpoint = $"/api/{modelName}?skip={skip}&take={take}";
+        var endpoint = $"/api/{modelName}?skip={skip}&take={take}&query={query}";
 
         if (null != filter)
         {
@@ -52,7 +52,7 @@ public sealed class UcList<T>(
         }
     }
 
-    public List<T> Execute(int skip = 0, int take = 200, string? filter = null)
+    public List<T> Execute(int skip = 0, int take = 200, string? filter = null, string query = "")
     {
         throw new NotImplementedException();
     }
