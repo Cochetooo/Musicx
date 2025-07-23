@@ -2,6 +2,7 @@
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Mappers
 @using Musicx.Domain.Enums
+@using Musicx.Domain.Models
 
 @inject ILoggerProvider LoggerProvider
 
@@ -38,12 +39,12 @@
                 </Field>
             </Fields>
             
-            <Divider />
+            <Divider Margin="Margin.Is2.OnY" />
             
-            <Table Narrow>
-                <TableHeader ThemeContrast="ThemeContrast.Dark">
+            <Table Narrow Borderless Margin="Margin.Is2.OnY">
+                <TableHeader>
                     <TableRow>
-                        <TableHeaderCell>#</TableHeaderCell>
+                        <TableHeaderCell Width="@Width.Px(50)">#</TableHeaderCell>
                         <TableHeaderCell>Name</TableHeaderCell>
                         <TableHeaderCell>Duration</TableHeaderCell>
                         <TableHeaderCell>Type</TableHeaderCell>
@@ -54,13 +55,18 @@
                     @foreach (var song in _songs)
                     {
                         <TableRow>
-                            <TableRowHeader>
-                                <TextEdit />
+                            <TableRowHeader Width="@Width.Px(50)">
+                                <NumericPicker TValue="int?" @bind-Value="song.TrackNumber" />
                             </TableRowHeader>
-                            <TableRowCell><TextEdit /></TableRowCell>
-                            <TableRowCell><TextEdit /></TableRowCell>
                             <TableRowCell>
-                                <Select TValue="SongType">
+                                <TextEdit @bind-Text="song.Title"/>
+                            </TableRowCell>
+                            <TableRowCell>
+                                <TimeEdit TValue="long?" @bind-Time="song.Duration"/>
+                            </TableRowCell>
+                            <TableRowCell>
+                                <Select TValue="SongType?"
+                                        @bind-SelectedValue="song.Type">
                                     @foreach (var songType in Enum.GetValues<SongType>())
                                     {
                                         <SelectItem Value="@songType">@songType.ToString()</SelectItem>
@@ -75,10 +81,11 @@
                         </TableRow>
                     }
                 </TableBody>
-                <Button Color="Color.Info" Clicked="@(() => AddRow())">
-                    <Icon Name="IconName.PlusSquare" />
-                </Button>
             </Table>
+            
+            <Button Color="Color.Info" Clicked="@(() => AddRow())">
+                <Icon Name="IconName.Add" />
+            </Button>
         </ModalBody>
     </ModalContent>
 </Modal>
@@ -91,7 +98,7 @@
     [Parameter] public EventCallback OnClose { get; set; }
 
     private OutAlbum? _album;
-    private List<InSong> _songs = [];
+    private readonly List<InSong> _songs = [];
 
     private Modal _modalRef = null!;
 
