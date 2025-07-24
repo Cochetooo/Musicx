@@ -67,7 +67,7 @@
     
     private void SearchKeyDown(KeyboardEventArgs keyEvent)
     {
-        if (keyEvent.Key == "Enter")
+        if (!string.IsNullOrWhiteSpace(_searchText) && keyEvent.Key == "Enter")
         {
             Search();
         }
