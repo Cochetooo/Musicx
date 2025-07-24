@@ -1,0 +1,57 @@
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Infrastructure.Web.UseCases
+
+@inject IFindInUseCase<OutGenre> UcFindIn
+
+<TreeView @ref="_treeView"
+          Nodes="Genres"
+          GetChildNodesAsync="LoadChildrenAsync"
+          HasChildNodes="@(g => g.Children.Count != 0)"
+          Virtualize>
+    <NodeContent>
+        <Badge Style="@GetColor(context)" Margin="Margin.Is2.OnY">
+            @if (Checkable)
+            {
+                <Check Margin="Margin.Is2.FromEnd" 
+                       TValue="bool"
+                       Checked="@SelectedGenres.Contains(context)"
+                       CheckedChanged="@(check => OnCheckChanged(context, check))"/>
+            }
+            
+            @context.Name
+        </Badge>
+    </NodeContent>
+</TreeView>
+
+@code {
+
+    private TreeView<OutGenre> _treeView { get; set; }
+
+    [Parameter] public List<OutGenre> SelectedGenres { get; set; } = [];
+    [Parameter] public EventCallback<List<OutGenre>> SelectedGenresChanged { get; set; }
+    [Parameter] public IReadOnlyList<OutGenre> Genres { get; set; } = [];
+    [Parameter] public bool Checkable { get; set; }
+
+    private async Task<IEnumerable<OutGenre>> LoadChildrenAsync(OutGenre genre)
+        => await UcFindIn.ExecuteAsync(genre.Children.Select(g => g.Id));
+
+    private string GetColor(OutGenre genre)
+        => $"background-color: {genre.Color ?? "#80858a"}";
+
+    private async Task OnCheckChanged(OutGenre genre, bool isChecked)
+    {
+        if (isChecked)
+        {
+            if (!SelectedGenres.Contains(genre))
+                SelectedGenres.Add(genre);
+        }
+        else
+        {
+            SelectedGenres.Remove(genre);
+        }
+
+        await SelectedGenresChanged.InvokeAsync(SelectedGenres);
+    }
+
+}

@@ -1,16 +1,13 @@
-@page "/Admin/ArtistDashboard"
-@using System.Net.Mime
-@using Musicx.Application.Shared.Interfaces.Common
+@page "/Admin/GenreDashboard"
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Presentation.Web.Client.Modals.Admin.Artists
+@using Musicx.Presentation.Web.Client.Modals.Admin.Genres
 @using Musicx.Presentation.Web.Client.Models
-@using Musicx.Presentation.Web.Client.Components
 
 @inject ILoggerProvider LoggerProvider
-@inject IListUseCase<OutArtist> UcList
-@inject IDeleteUseCase<InArtist> UcDelete
+@inject IListUseCase<OutGenre> UcList
+@inject IDeleteUseCase<InGenre> UcDelete
 
 <Breadcrumb Margin="Margin.Is2.FromBottom">
     <BreadcrumbItem>
@@ -20,14 +17,15 @@
         <BreadcrumbLink To="/Admin">Administration</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbItem>
-        <BreadcrumbLink To="#">Manage Artists</BreadcrumbLink>
+        <BreadcrumbLink To="#">Manage Genres</BreadcrumbLink>
     </BreadcrumbItem>
 </Breadcrumb>
 
 <Card Margin="Margin.Is4.OnY">
     <CardHeader>
-        <CardTitle>Artist Management</CardTitle>
+        <CardTitle>Genre Management</CardTitle>
     </CardHeader>
+    
     <CardBody>
         <div class="container-fluid" style="display: flex; flex-direction: column;">
             <div class="d-flex justify-content-between align-items-center p-3">
@@ -80,9 +78,9 @@
 
             <Div class="flex-grow-1 overflow-auto" ElementId="#DataGrid-Animate">
                 <Animate Anchor="#DataGrid-Animate" Auto Animation="Animations.FadeIn" DelayMilliseconds="400">
-                    <DataGrid TItem="OutArtist"
-                              Data="_filteredArtists"
-                              @bind-SelectedRows="@_selectedArtists"
+                    <DataGrid TItem="OutGenre"
+                              Data="_filteredGenres"
+                              @bind-SelectedRows="@_selectedGenres"
                               SelectionMode="DataGridSelectionMode.Multiple"
                               ShowPager
                               Resizable
@@ -95,58 +93,12 @@
                             {
                                 <DataGridMultiSelectColumn Width="30px"/>
                             }
-
-                            <DataGridColumn Field="@nameof(OutArtist.ArtworkUrl)" Caption="#">
-                                <DisplayTemplate>
-                                    @if (context.ArtworkUrl is not null)
-                                    {
-                                        <Image Style="width: 24px; height: 24px; border-radius: 12px" Source="@context.ArtworkUrl"  Loading />
-                                    }
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Field="@nameof(OutArtist.Name)" Caption="Name"/>
-                            <DataGridColumn Field="@nameof(OutArtist.Country)" Caption="Country">
-                                <DisplayTemplate>
-                                    <Flag CountryName="@context.Country" />
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Field="@nameof(OutArtist.Discriminator)" Caption="Type"/>
-                            <DataGridColumn Field="@nameof(OutArtist.FormationDate)" Caption="Formation Date">
-                                <DisplayTemplate>
-                                    @if (null != context.FormationDate)
-                                    {
-                                        @context.FormationDate.Value.ToString("dd-MM-yyyy")
-                                    }
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Field="@nameof(OutArtist.SplitDate)" Caption="Split Date">
-                                <DisplayTemplate>
-                                    @if (null != context.SplitDate)
-                                    {
-                                        @context.SplitDate.Value.ToString("dd-MM-yyyy")
-                                    }
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Field="@nameof(OutArtist.FirstName)" Caption="First Name"/>
-                            <DataGridColumn Field="@nameof(OutArtist.LastName)" Caption="Last Name"/>
-                            <DataGridColumn Field="@nameof(OutArtist.BirthDate)" Caption="Birth Date">
-                                <DisplayTemplate>
-                                    @if (null != context.BirthDate)
-                                    {
-                                        @context.BirthDate.Value.ToString("dd-MM-yyyy")
-                                    }
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Field="@nameof(OutArtist.DeathDate)" Caption="Death Date">
-                                <DisplayTemplate>
-                                    @if (null != context.DeathDate)
-                                    {
-                                        @context.DeathDate.Value.ToString("dd-MM-yyyy")
-                                    }
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Field="@nameof(OutArtist.CreatedAt)" Caption="Created At"/>
-                            <DataGridColumn Field="@nameof(OutArtist.UpdatedAt)" Caption="Last Modification"/>
+                            
+                            <DataGridColumn Field="@nameof(OutGenre.Name)" Caption="Name"/>
+                            <DataGridColumn Field="@nameof(OutGenre.Description)" Caption="Description" />
+                            <DataGridColumn Field="@nameof(OutGenre.Color)" Caption="Color"/>
+                            <DataGridColumn Field="@nameof(OutGenre.CreatedAt)" Caption="Created At"/>
+                            <DataGridColumn Field="@nameof(OutGenre.UpdatedAt)" Caption="Last Modification"/>
                             <DataGridColumn Caption="Edit">
                                 <DisplayTemplate>
                                     <Button Color="Color.Link" Size="Size.Small" Clicked="@(() => ShowEditModal(context))">
@@ -166,7 +118,7 @@
     </CardBody>
 </Card>
 
-<ArtistEditModal @ref="_artistEditModal" OnSave="OnQuitModal" />
+<GenreEditModal @ref="_genreEditModal" OnSave="OnQuitModal" />
 
 <Modal @ref="_confirmDeleteModal">
     <ModalContent Centered>
@@ -175,11 +127,11 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <span>Are you sure you want to delete these artists?</span>
+            <span>Are you sure you want to delete these genres?</span>
             <UnorderedList>
-                @foreach (var artist in _selectedArtists)
+                @foreach (var genre in _selectedGenres)
                 {
-                    <UnorderedListItem>@artist.Name</UnorderedListItem>
+                    <UnorderedListItem>@genre.Name</UnorderedListItem>
                 }
             </UnorderedList>
         </ModalBody>
@@ -194,14 +146,14 @@
     
     private ViewMode _viewMode = ViewMode.Normal;
     
-    private ArtistEditModal? _artistEditModal;
+    private GenreEditModal? _genreEditModal;
     private Modal? _confirmDeleteModal;
 
     private ILogger _logger = null!;
 
-    private List<OutArtist> _artists = [];
-    private List<OutArtist> _filteredArtists = [];
-    private List<OutArtist> _selectedArtists = [];
+    private List<OutGenre> _genres = [];
+    private List<OutGenre> _filteredGenres = [];
+    private List<OutGenre> _selectedGenres = [];
 
     private string _searchDataGrid = null!;
     
@@ -219,32 +171,32 @@
 
     private async Task LoadData()
     {
-        _logger.LogInformation("🔄️ ArtistDashboard : UPDATE Data");
+        _logger.LogInformation("🔄️ GenreDashboard : UPDATE Data");
 
-        _artists = await UcList.ExecuteAsync(take: 100);
-        _filteredArtists = new List<OutArtist>(_artists);
+        _genres = await UcList.ExecuteAsync(take: 100);
+        _filteredGenres = new List<OutGenre>(_genres);
         
         StateHasChanged();
     }
 
     private void ShowAddModal()
     {
-        _artistEditModal?.Show();
+        _genreEditModal?.Show();
     }
 
-    private void ShowEditModal(OutArtist artist)
+    private void ShowEditModal(OutGenre genre)
     {
-        _selectedArtists.Clear();
-        _selectedArtists.Add(artist);
+        _selectedGenres.Clear();
+        _selectedGenres.Add(genre);
 
-        _artistEditModal?.Show(artist);
+        _genreEditModal?.Show(genre);
     }
 
     private async Task DeleteData()
     {
-        foreach (var artist in _selectedArtists)
+        foreach (var genre in _selectedGenres)
         {
-            await UcDelete.ExecuteAsync(artist.Id);
+            await UcDelete.ExecuteAsync(genre.Id);
         }
         
         await HideDeleteModal();
@@ -254,13 +206,13 @@
 
     private void EnableDeleteMode()
     {
-        _selectedArtists.Clear();
+        _selectedGenres.Clear();
         _viewMode = ViewMode.Delete;
     }
     
     private void EnableNormalMode()
     {
-        _selectedArtists.Clear();
+        _selectedGenres.Clear();
         _viewMode = ViewMode.Normal;
     }
 
@@ -282,13 +234,13 @@
 
     private void ApplySearchFilters()
     {
-        _logger.LogDebug($"🔎 ArtistDashboard : Apply Search Filters: {_searchDataGrid}");
+        _logger.LogDebug($"🔎 GenreDashboard : Apply Search Filters: {_searchDataGrid}");
 
         var keywords = string.IsNullOrWhiteSpace(_searchDataGrid)
             ? []
             : _searchDataGrid.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-        _filteredArtists = _artists
+        _filteredGenres = _genres
             .Where(a =>
                 keywords.Length == 0
                 || keywords.All(keyword =>

@@ -155,7 +155,9 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
     
     [HttpGet("by-ids")]
-    public async Task<ActionResult<IEnumerable<OutArtist>>> FindIn([FromQuery] long[] ids)
+    public async Task<ActionResult<IEnumerable<OutArtist>>> FindIn(
+        [FromQuery] long[] ids,
+        [FromQuery] string query = "")
     {
         var stringIds = string.Join(',', ids);
         _logger.LogInformation($"🌍🏳️ API : FIND BY ID albums ({stringIds})");
@@ -167,7 +169,15 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
 
         try
         {
-            var albums = await albumRepository.FindIn(ids);
+            var querySpecification = new AlbumQuerySpecification
+            {
+                IncludeArtist = query.Contains("artist"),
+                IncludePrimaryGenres = query.Contains("genre"),
+                IncludeInfluenceGenres = query.Contains("genre"),
+                IncludeReleases = query.Contains("release")
+            };
+            
+            var albums = await albumRepository.FindIn(ids, querySpecification);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID albums ({stringIds}) - SUCCESS");
             return Ok(albums.Select(a => a.ToDto()));

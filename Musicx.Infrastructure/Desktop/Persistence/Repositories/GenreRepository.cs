@@ -182,7 +182,7 @@ internal sealed class GenreRepository(
         
         var genreQuerySpecification = (GenreQuerySpecification)querySpecification;
 
-        if (genreQuerySpecification.IncludeChildren)
+        /*if (genreQuerySpecification.IncludeChildren)
         {
             genreSet.Include(g => g.Children);
         }
@@ -190,6 +190,6 @@ internal sealed class GenreRepository(
         if (genreQuerySpecification.IncludeParents)
         {
             genreSet.Include(g => g.Parents);
-        }
+        }*/
     }
 }

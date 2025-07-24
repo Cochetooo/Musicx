@@ -1,0 +1,132 @@
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Mappers
+@using Musicx.Presentation.Web.Client.Components
+
+@inject ILoggerProvider LoggerProvider
+@inject ISaveUseCase<InGenre> UcSave
+@inject IListUseCase<OutGenre> UcList
+
+<Modal @ref="_modalRef">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Edit genre</ModalTitle>
+            <CloseButton Clicked="Hide" />
+        </ModalHeader>
+        
+        <ModalBody>
+            <Fields>
+                <!-- First Row -->
+                <Field ColumnSize="ColumnSize.Is9.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Name (*)
+                    </FieldLabel>
+                    <FieldBody>
+                        <Validation Validator="ValidateNonEmptyField">
+                            <TextEdit 
+                                Placeholder="Death Metal..."
+                                @bind-Text="_genre.Name"
+                                Disabled="@(_genre.Id != 0)">
+                                <ValidationNone>⚠️ Please enter a name</ValidationNone>
+                                <ValidationSuccess>✅ Valid name</ValidationSuccess>
+                            </TextEdit>
+                        </Validation>
+                    </FieldBody>
+                </Field>
+                
+                <Field ColumnSize="ColumnSize.Is3.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Color
+                    </FieldLabel>
+                    <FieldBody>
+                        <ColorPicker @bind-Color="@_genre.Color" />
+                    </FieldBody>
+                </Field>
+                
+                <Field ColumnSize="ColumnSize.Is12">
+                    <FieldLabel>
+                        Description
+                    </FieldLabel>
+                    <FieldBody>
+                        <MemoEdit Rows="6" @bind-Text="_genre.Description" />
+                    </FieldBody>
+                </Field>
+            </Fields>
+            
+            <Divider />
+            
+            <Heading Size="HeadingSize.Is5">Parent Genres</Heading>
+            <GenreList Genres="@_genres" Checkable @bind-SelectedGenres="_selectedParents" />
+        </ModalBody>
+        
+        <ModalFooter>
+            <Button Color="Color.Primary" Clicked="Save" Disabled="@_isConfirmable">Save</Button>
+            <Button Color="Color.Secondary" Clicked="Hide">Close</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+
+    private ILogger _logger = null!;
+    
+    private InGenre _genre = null!;
+
+    private List<OutGenre> _genres = [];
+    private List<OutGenre> _selectedParents = [];
+    
+    private bool _isConfirmable;
+
+    private Modal _modalRef;
+    
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+        
+        _logger = LoggerProvider.CreateLogger(nameof(GenreEditModal));
+
+        _genre = new InGenre();
+        _genres = await UcList.ExecuteAsync();
+    }
+
+    private async Task Save()
+    {
+        _genre.ParentIds = _selectedParents.Select(g => g.Id).ToList();
+        await UcSave.ExecuteAsync(_genre);
+        await OnSave.InvokeAsync();
+        Hide();
+    }
+
+    public void Show(OutGenre? genre = null)
+    {
+        if (null != genre)
+        {
+            _genre = genre.ToRaw();
+            StateHasChanged();
+        }
+        
+        _modalRef.Show();
+    }
+
+    private void Hide()
+    {
+        _modalRef.Hide();
+    }
+
+    private void ValidateNonEmptyField(ValidatorEventArgs e)
+    {
+        _isConfirmable = string.IsNullOrWhiteSpace(Convert.ToString(e.Value));
+        
+        e.Status = _isConfirmable
+            ? ValidationStatus.None
+            : ValidationStatus.Success;
+    }
+
+}

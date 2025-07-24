@@ -6,6 +6,9 @@ using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Domain.Models;
+using Musicx.Infrastructure.Shared.Exceptions;
+using Musicx.Infrastructure.Shared.Helpers;
+using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
@@ -17,7 +20,7 @@ internal sealed class GenreRepository(
     
     public async Task DeleteAsync(long id)
     {
-        _logger.LogDebug($"📄 DELETE Genre : {id}");
+        _logger.LogDebug($"📄 SQL : DELETE FROM genres WHERE id = {id}");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -34,54 +37,79 @@ internal sealed class GenreRepository(
         }
         catch (Exception ex)
         {
-            _logger.LogCritical($"❌ DELETE Genre : Could not delete id {id}", ex);
             await transaction.RollbackAsync();
-            throw;
+            throw new RepositoryException($"❌ Could not delete id {id}", ex, _logger);
         }
     }
 
     public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
-        throw new NotImplementedException();
+        var stringIds = string.Join(",", ids);
+
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        
+        try
+        {
+            var deleteAllSql = "DELETE FROM \"Genres\" WHERE \"Id\" IN (@ids)";
+
+            var parameters = new List<NpgsqlParameter>
+            {
+                new("@Ids", stringIds)
+            };
+
+            _logger.LogDebug(SqlDebugHelper.InterpolateQuery(deleteAllSql, parameters));
+            
+            await context.Database.ExecuteSqlRawAsync(deleteAllSql, parameters.Cast<object>().ToArray());
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw new RepositoryException($"📜❌ Could not delete ids {stringIds}", ex, _logger);
+        }
     }
 
     public async Task<Genre?> FindByIdAsync(long id, IQuerySpecification<Genre>? genreQuerySpecification = null)
     {
-        _logger.LogDebug($"📄 FIND BY ID Genre : {id}");
+        _logger.LogDebug($"📄 SQL : SELECT * FROM genres WHERE id = {id}");
         
-        var genreSet = context.Genres;
-        GetIncludes(genreSet, genreQuerySpecification);
+        var genreSet = context.Genres
+            .AsQueryable();
+        
+        genreSet = GetIncludes(genreSet, genreQuerySpecification);
         
         return await genreSet
             .AsNoTracking()
+            .OrderBy(g => g.Name)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
     public async Task<List<Genre>> FindAsync(int skip = 0, int take = 100, Expression<Func<Genre, bool>>? filter = null,
         IQuerySpecification<Genre>? genreQuerySpecification = null)
     {
-        _logger.LogDebug($"📄 FIND Genre");
+        _logger.LogDebug("📄 SQL : SELECT * FROM genres");
         
-        var genreSet = context.Genres;
+        var genreSet = context.Genres
+            .AsQueryable();
         
-        GetIncludes(genreSet, genreQuerySpecification);
-        var query = genreSet.AsQueryable();
+        genreSet = GetIncludes(genreSet, genreQuerySpecification);
 
         if (null != filter)
         {
-            query = query.Where(filter);
+            genreSet = genreSet.Where(filter);
         }
         
-        return await query
+        return await genreSet
             .AsNoTracking()
             .Skip(skip)
             .Take(take)
+            .OrderBy(g => g.Name)
             .ToListAsync();
     }
 
     public async Task<List<Genre>> FindIn(IEnumerable<long> ids, IQuerySpecification<Genre>? genreQuerySpecification = null)
     {
-        _logger.LogDebug("📄 FIND IN Genre");
+        _logger.LogDebug("📄 SQL : SELECT * FROM genres WHERE id IN ({Ids})", string.Join(",", ids));
 
         var enumerable = ids as long[] ?? ids.ToArray();
         
@@ -91,12 +119,15 @@ internal sealed class GenreRepository(
             return [];
         }
         
-        var genreSet = context.Genres;
-        GetIncludes(genreSet, genreQuerySpecification);
+        var genreSet = context.Genres
+            .AsQueryable();
+        
+        genreSet = GetIncludes(genreSet, genreQuerySpecification);
         
         return await genreSet
             .Where(s => enumerable.Contains(s.Id))
             .AsNoTracking()
+            .OrderBy(g => g.Name)
             .ToListAsync();
     }
 
@@ -107,19 +138,28 @@ internal sealed class GenreRepository(
 
     public async Task<long> SaveAsync(Genre entity)
     {
-        _logger.LogDebug($"📄 SAVE Genre : {entity.Name}");
-        
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
             if (0 == entity.Id)
             {
+                _logger.LogDebug($"📄 SQL : INSERT INTO genres (name) " +
+                                 $"VALUES ('{entity.Name}')");
+                
+                entity.CreatedAt = DateTime.Now;
+                entity.UpdatedAt = DateTime.Now;
+                
                 context.Genres.Add(entity);
             }
             else
             {
+                _logger.LogDebug($"📄 SQL : UPDATE genres SET Name={entity.Name} " +
+                                 $"WHERE Id = {entity.Id}");
+                
+                entity.UpdatedAt = DateTime.Now;
                 context.Genres.Update(entity);
+                context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
             }
 
             await context.SaveChangesAsync();
@@ -129,9 +169,8 @@ internal sealed class GenreRepository(
         }
         catch (Exception ex)
         {
-            _logger.LogCritical("❌ SAVE Genre : Could not persist.", ex);
             await transaction.RollbackAsync();
-            throw;
+            throw new RepositoryException("❌ SAVE Album : Could not persist.", ex, _logger);
         }
     }
 
@@ -172,23 +211,21 @@ internal sealed class GenreRepository(
         }
     }
 
-    private static void GetIncludes(in DbSet<Genre> genreSet, IQuerySpecification<Genre>? querySpecification = null)
+    private static IQueryable<Genre> GetIncludes(IQueryable<Genre> query, IQuerySpecification<Genre>? querySpecification = null)
     {
-        if (null == querySpecification)
-        {
-            return;
-        }
-        
-        var genreQuerySpecification = (GenreQuerySpecification)querySpecification;
+        if (querySpecification is not GenreQuerySpecification genreQuerySpecification)
+            return query;
 
         if (genreQuerySpecification.IncludeChildren)
         {
-            genreSet.Include(g => g.Children);
+            query = query.Include(s => s.ChildIds);
         }
 
         if (genreQuerySpecification.IncludeParents)
         {
-            genreSet.Include(g => g.Parents);
+            query = query.Include(s => s.ParentIds);
         }
+
+        return query;
     }
 }

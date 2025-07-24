@@ -1,12 +1,18 @@
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InGenre(
+public sealed class InGenre
+{
     // Primary Key
-    long Id,
+    public long Id { get; set; }
     
     // Required Relationships
-    IReadOnlyList<long> ChildIds,
-    IReadOnlyList<long> ParentIds,
+    public IReadOnlyList<long> ChildIds { get; set; } = [];
+    public IReadOnlyList<long> ParentIds { get; set; } = [];
     
     // Required Columns
-    string Name);
+    public string Name { get; set; } = null!;
+    
+    // Optional Columns
+    public string? Description { get; set; }
+    public string? Color { get; set; }
+}

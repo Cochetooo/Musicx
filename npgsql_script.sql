@@ -145,7 +145,9 @@ create table public."Genres"
             primary key,
     "CreatedAt"     timestamp without time zone,
     "UpdatedAt"     timestamp without time zone,
-    "Name"          text not null
+    "Name"          text not null,
+    "Description"   text,
+    "Color"         varchar(7)
 );
 
 alter table public."Genres"
