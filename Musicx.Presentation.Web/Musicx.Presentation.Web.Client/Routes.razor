@@ -1,4 +1,4 @@
-﻿<ThemeProvider Theme="@theme">
+﻿<ThemeProvider Theme="@_darkTheme">
     <Router AppAssembly="typeof(Program).Assembly">
         <Found Context="routeData">
             <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)"/>
@@ -9,8 +9,22 @@
 
 @code {
 
-    private Theme theme = new Theme
+    private readonly Theme _darkTheme = new()
     {
+        BackgroundOptions = new ThemeBackgroundOptions
+        {
+            Primary = "#0baad6",
+            Secondary = "#136da9",
+            Success = "#1ed67a",
+            Info = "#87becc",
+            Danger = "#c9163a",
+            Warning = "#d4ca11",
+        },
+        /* BodyOptions = new ThemeBodyOptions
+        {
+            BackgroundColor = "#242a30",
+            TextColor = "#fdfdfd"
+        }, */
         ColorOptions = new ThemeColorOptions
         {
             Primary = "#0baad6",
@@ -27,16 +41,7 @@
             Success = "#1ed67a",
             Info = "#87becc",
             Danger = "#c9163a",
-            Warning = "#d4ca11"
-        },
-        BackgroundOptions = new ThemeBackgroundOptions
-        {
-            Primary = "#0baad6",
-            Secondary = "#136da9",
-            Success = "#1ed67a",
-            Info = "#87becc",
-            Danger = "#c9163a",
-            Warning = "#d4ca11"
+            Warning = "#d4ca11",
         },
     };
 

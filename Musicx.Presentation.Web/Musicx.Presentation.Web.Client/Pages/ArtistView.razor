@@ -43,7 +43,9 @@ else
         <CardHeader Background="Background.Secondary" Flex="Flex.JustifyContent.Between.OnDesktop"
                     Padding="Padding.Is3.OnX">
             <Heading Size="HeadingSize.Is1" 
-                     VerticalAlignment="VerticalAlignment.Middle"
+                     Padding="Padding.Is5.FromStart.OnDesktop"
+                     Italic
+                     Flex="Flex.AlignItems.Center"
                      TextWeight="TextWeight.Bold" TextColor="TextColor.White">
                 @_artist.Name
             </Heading>
@@ -134,7 +136,7 @@ else
                     <Card>
                         <CardBody>
                             <CardTitle Size="4">Releases</CardTitle>
-                            <Div Flex="Flex.AlignItems.Start">
+                            <Div Flex="Flex.JustifyContent.Between">
                                 <Fields>
                                     <Field>
                                         <FieldLabel>Release Type</FieldLabel>
@@ -144,70 +146,145 @@ else
                                                 {
                                                     <Button Color="Color.Primary"
                                                             Clicked="@(() => ToggleReleaseType(releaseType))"
-                                                            Outline="@(!releaseType.Value)"
-                                                            >@releaseType.Key.ToString()</Button>
+                                                            Outline="@(!releaseType.Value)">
+                                                        @releaseType.Key.ToString()
+                                                    </Button>
                                                 }
                                             </Buttons>
                                         </FieldBody>
                                     </Field>
                                 </Fields>
+                                
+                                <Div>
+                                    <Button Color="Color.Primary"
+                                            Clicked="@(() => ToggleListView(true))"
+                                            Outline="@(!_isReleasesListView)">
+                                        <Icon Name="IconName.List" />
+                                    </Button>
+                                    
+                                    <Button Color="Color.Primary"
+                                            Clicked="@(() => ToggleListView(false))"
+                                            Outline="@(_isReleasesListView)">
+                                        <Icon Name="IconName.GripVertical" />
+                                    </Button>
+                                </Div>
                             </Div>
                             <Div Class="d-flex flex-wrap gap-3">
-                                @foreach (var album in _artistAlbums)
+                                @if (_isReleasesListView)
                                 {
-                                    if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
-                                            out var value) && value)
-                                    {
-                                        <Div class="p-1" Style="width: 150px;">
-                                            <Blazorise.Link To="@($"/Album/{album.Id}")">
-                                                <Figure Size="FigureSize.Is128x128">
-                                                    <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
-                                                                 Rounded/>
-                                                    <FigureCaption>
-                                                        <Blazorise.Text TextSize="TextSize.Medium">
-                                                            @switch (album.ReleaseType)
-                                                            {
-                                                                case ReleaseType.Compilation:
-                                                                    <span class="text-warning">@album.Name</span>
-                                                                    break;
-                                                                case ReleaseType.Ep:
-                                                                    <span class="text-primary">@album.Name</span>
-                                                                    break;
-                                                                case ReleaseType.Lp:
-                                                                    <span class="text-dark font-weight-bolder">@album.Name</span>
-                                                                    break;
-                                                                case ReleaseType.Single:
-                                                                    <span class="text-secondary">@album.Name</span>
-                                                                    break;
-                                                                case ReleaseType.AdditionalRelease:
-                                                                case ReleaseType.Bootleg:
-                                                                case ReleaseType.DjMix:
-                                                                case ReleaseType.Live:
-                                                                case ReleaseType.MixTape:
-                                                                case ReleaseType.Soundtrack:
-                                                                case ReleaseType.Unknown:
-                                                                case ReleaseType.VideoClip:
-                                                                case null:
-                                                                    <span class="text-muted">@album.Name</span>
-                                                                    break;
-                                                                default:
-                                                                    throw new ArgumentOutOfRangeException();
-                                                            }
-                                                        </Blazorise.Text>
-                                                        @if (null != album.ReleaseDate)
-                                                        {
-                                                            <Blazorise.Text TextColor="TextColor.Muted">
-                                                                <br/>@album.ReleaseDate.Value.Year
+                                    <ListGroup Flush>
+                                        @foreach (var album in _artistAlbums)
+                                        {
+                                            if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
+                                                    out var value) && value)
+                                            {
+                                                <Blazorise.Link To="@($"/Album/{album.Id}")">
+                                                    <ListGroupItem Flex="Flex.JustifyContent.Start.AlignItems.Start">
+                                                        <Figure Size="FigureSize.Is48x48">
+                                                            <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
+                                                                         Style="box-shadow:  6px 6px 16px #9d9d9d, -6px -6px 16px #ffffff;"
+                                                                         Rounded/>
+                                                        </Figure>
+                                                        
+                                                        <Div Margin="Margin.Is2.FromStart">
+                                                            <Blazorise.Text TextSize="TextSize.Small">
+                                                                @switch (album.ReleaseType)
+                                                                {
+                                                                    case ReleaseType.Ep:
+                                                                        <span class="text-primary font-italic">@album.Name</span>
+                                                                        break;
+                                                                    case ReleaseType.Lp:
+                                                                        <span class="text-secondary font-weight-bolder">@album.Name</span>
+                                                                        break;
+                                                                    case ReleaseType.Single:
+                                                                        <span class="text-primary">@album.Name</span>
+                                                                        break;
+                                                                    case ReleaseType.AdditionalRelease:
+                                                                    case ReleaseType.Bootleg:
+                                                                    case ReleaseType.DjMix:
+                                                                    case ReleaseType.Live:
+                                                                    case ReleaseType.MixTape:
+                                                                    case ReleaseType.Soundtrack:
+                                                                    case ReleaseType.Unknown:
+                                                                    case ReleaseType.VideoClip:
+                                                                    case ReleaseType.Compilation:
+                                                                    case null:
+                                                                        <span class="text-muted">@album.Name</span>
+                                                                        break;
+                                                                    default:
+                                                                        throw new ArgumentOutOfRangeException();
+                                                                }
                                                             </Blazorise.Text>
-                                                        }
-                                                    </FigureCaption>
-                                                </Figure>
-                                            </Blazorise.Link>
-                                        </Div>
+                                                            @if (null != album.ReleaseDate)
+                                                            {
+                                                                <Blazorise.Text TextColor="TextColor.Muted">
+                                                                    <br/>@album.ReleaseDate.Value.Year
+                                                                </Blazorise.Text>
+                                                            }
+                                                        </Div>
+                                                    </ListGroupItem>
+                                                </Blazorise.Link>
+                                            }
+                                        }
+                                    </ListGroup>
+                                }
+                                else
+                                {
+                                    @foreach (var album in _artistAlbums)
+                                    {
+                                        if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
+                                                out var value) && value)
+                                        {
+                                            <Div class="p-1" Style="width: 150px;">
+                                                <Blazorise.Link To="@($"/Album/{album.Id}")">
+                                                    <Figure Size="FigureSize.Is128x128">
+                                                        <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
+                                                                     Style="box-shadow:  6px 6px 16px #9d9d9d, -6px -6px 16px #ffffff;"
+                                                                     Rounded/>
+                                                        <FigureCaption>
+                                                            <Blazorise.Text TextSize="TextSize.Small">
+                                                                @switch (album.ReleaseType)
+                                                                {
+                                                                    case ReleaseType.Ep:
+                                                                        <span class="text-primary font-italic">@album.Name</span>
+                                                                        break;
+                                                                    case ReleaseType.Lp:
+                                                                        <span class="text-secondary font-weight-bolder">@album.Name</span>
+                                                                        break;
+                                                                    case ReleaseType.Single:
+                                                                        <span class="text-primary">@album.Name</span>
+                                                                        break;
+                                                                    case ReleaseType.AdditionalRelease:
+                                                                    case ReleaseType.Bootleg:
+                                                                    case ReleaseType.DjMix:
+                                                                    case ReleaseType.Live:
+                                                                    case ReleaseType.MixTape:
+                                                                    case ReleaseType.Soundtrack:
+                                                                    case ReleaseType.Unknown:
+                                                                    case ReleaseType.VideoClip:
+                                                                    case ReleaseType.Compilation:
+                                                                    case null:
+                                                                        <span class="text-muted">@album.Name</span>
+                                                                        break;
+                                                                    default:
+                                                                        throw new ArgumentOutOfRangeException();
+                                                                }
+                                                            </Blazorise.Text>
+                                                            @if (null != album.ReleaseDate)
+                                                            {
+                                                                <Blazorise.Text TextColor="TextColor.Muted">
+                                                                    <br/>@album.ReleaseDate.Value.Year
+                                                                </Blazorise.Text>
+                                                            }
+                                                        </FigureCaption>
+                                                    </Figure>
+                                                </Blazorise.Link>
+                                            </Div>
+                                        }
                                     }
                                 }
                             </Div>
-                            <Button Clicked="AddAlbumShowModal" Color="Color.Success">
+                            <Button Clicked="AddAlbumShowModal" Margin="Margin.Is2.FromTop" Color="Color.Success">
                                 <Icon Name="IconName.PlusCircle" Margin="Margin.Is2.OnX" />
                                 New Release
                             </Button>
@@ -238,6 +315,7 @@ else
     private List<OutAlbum> _artistAlbums = [];
     private Dictionary<ReleaseType, bool> _availableReleaseTypes = [];
     private Dictionary<int, int> _releaseCountPerYears = [];
+    private bool _isReleasesListView;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -283,14 +361,12 @@ else
             .Where(s => s.ReleaseType.HasValue)
             .Select(s => s.ReleaseType!.Value)
             .Distinct()
-            .ToDictionary(r => r, _ => true);
+            .ToDictionary(r => r, r => r is ReleaseType.Lp);
         
         StateHasChanged();
      
         CalculateReleasesPerYear();
         await UpdateChartAsync();
-
-        
     }
     
     private async Task UpdateChartAsync()
@@ -321,7 +397,11 @@ else
         }
         
         var albumsWithDate = _artistAlbums
-            .Where(a => a.ReleaseDate.HasValue)
+            .Where(a => a is
+            {
+                ReleaseDate: not null, 
+                ReleaseType: ReleaseType.Lp or ReleaseType.Ep
+            })
             .ToList();
 
         if (0 == albumsWithDate.Count)
@@ -341,6 +421,11 @@ else
         _releaseCountPerYears = Enumerable
             .Range(minYear, maxYear - minYear + 1)
             .ToDictionary(year => year, year => grouped.TryGetValue(year, out var value) ? value : 0);
+    }
+
+    private void ToggleListView(bool newValue)
+    {
+        _isReleasesListView = newValue;
     }
     
     private void ToggleReleaseType(KeyValuePair<ReleaseType, bool> releaseType)
