@@ -1,0 +1,46 @@
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Domain.Enums
+
+<Blazorise.Text TextSize="TextSize.Small">
+    @switch (Album.ReleaseType)
+    {
+        case ReleaseType.Ep:
+            <span class="text-primary font-italic">@Album.Name</span>
+            break;
+        case ReleaseType.Lp:
+            <span class="text-secondary font-weight-bolder">@Album.Name</span>
+            break;
+        case ReleaseType.Single:
+            <span class="text-primary">@Album.Name</span>
+            break;
+        case ReleaseType.AdditionalRelease:
+        case ReleaseType.Bootleg:
+        case ReleaseType.DjMix:
+        case ReleaseType.Live:
+        case ReleaseType.MixTape:
+        case ReleaseType.Soundtrack:
+        case ReleaseType.Unknown:
+        case ReleaseType.VideoClip:
+        case ReleaseType.Compilation:
+        case null:
+            <span class="text-muted">@Album.Name</span>
+            break;
+        default:
+            throw new ArgumentOutOfRangeException();
+    }
+</Blazorise.Text>
+
+@if (null != Album.ReleaseDate)
+{
+    <Blazorise.Text 
+        TextSize="TextSize.ExtraSmall" 
+        TextColor="TextColor.Muted">
+        <br/>@Album.ReleaseDate.Value.Year
+    </Blazorise.Text>
+}
+
+@code {
+
+    [Parameter] public OutAlbum Album { get; set; }
+
+}

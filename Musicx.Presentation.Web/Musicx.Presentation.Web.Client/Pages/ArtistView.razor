@@ -46,7 +46,7 @@ else
                      Padding="Padding.Is5.FromStart.OnDesktop"
                      Italic
                      Flex="Flex.AlignItems.Center"
-                     TextWeight="TextWeight.Bold" TextColor="TextColor.White">
+                     Style="font-weight: 900" TextColor="TextColor.White">
                 @_artist.Name
             </Heading>
         
@@ -182,45 +182,12 @@ else
                                                     <ListGroupItem Flex="Flex.JustifyContent.Start.AlignItems.Start">
                                                         <Figure Size="FigureSize.Is48x48">
                                                             <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
-                                                                         Style="box-shadow:  6px 6px 16px #9d9d9d, -6px -6px 16px #ffffff;"
+                                                                         Class="neumorphism-shadow-default"
                                                                          Rounded/>
                                                         </Figure>
                                                         
                                                         <Div Margin="Margin.Is2.FromStart">
-                                                            <Blazorise.Text TextSize="TextSize.Small">
-                                                                @switch (album.ReleaseType)
-                                                                {
-                                                                    case ReleaseType.Ep:
-                                                                        <span class="text-primary font-italic">@album.Name</span>
-                                                                        break;
-                                                                    case ReleaseType.Lp:
-                                                                        <span class="text-secondary font-weight-bolder">@album.Name</span>
-                                                                        break;
-                                                                    case ReleaseType.Single:
-                                                                        <span class="text-primary">@album.Name</span>
-                                                                        break;
-                                                                    case ReleaseType.AdditionalRelease:
-                                                                    case ReleaseType.Bootleg:
-                                                                    case ReleaseType.DjMix:
-                                                                    case ReleaseType.Live:
-                                                                    case ReleaseType.MixTape:
-                                                                    case ReleaseType.Soundtrack:
-                                                                    case ReleaseType.Unknown:
-                                                                    case ReleaseType.VideoClip:
-                                                                    case ReleaseType.Compilation:
-                                                                    case null:
-                                                                        <span class="text-muted">@album.Name</span>
-                                                                        break;
-                                                                    default:
-                                                                        throw new ArgumentOutOfRangeException();
-                                                                }
-                                                            </Blazorise.Text>
-                                                            @if (null != album.ReleaseDate)
-                                                            {
-                                                                <Blazorise.Text TextColor="TextColor.Muted">
-                                                                    <br/>@album.ReleaseDate.Value.Year
-                                                                </Blazorise.Text>
-                                                            }
+                                                            <AlbumListQuickInfo Album="album" />
                                                         </Div>
                                                     </ListGroupItem>
                                                 </Blazorise.Link>
@@ -239,43 +206,10 @@ else
                                                 <Blazorise.Link To="@($"/Album/{album.Id}")">
                                                     <Figure Size="FigureSize.Is128x128">
                                                         <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
-                                                                     Style="box-shadow:  6px 6px 16px #9d9d9d, -6px -6px 16px #ffffff;"
+                                                                     Class="neumorphism-shadow-default"
                                                                      Rounded/>
                                                         <FigureCaption>
-                                                            <Blazorise.Text TextSize="TextSize.Small">
-                                                                @switch (album.ReleaseType)
-                                                                {
-                                                                    case ReleaseType.Ep:
-                                                                        <span class="text-primary font-italic">@album.Name</span>
-                                                                        break;
-                                                                    case ReleaseType.Lp:
-                                                                        <span class="text-secondary font-weight-bolder">@album.Name</span>
-                                                                        break;
-                                                                    case ReleaseType.Single:
-                                                                        <span class="text-primary">@album.Name</span>
-                                                                        break;
-                                                                    case ReleaseType.AdditionalRelease:
-                                                                    case ReleaseType.Bootleg:
-                                                                    case ReleaseType.DjMix:
-                                                                    case ReleaseType.Live:
-                                                                    case ReleaseType.MixTape:
-                                                                    case ReleaseType.Soundtrack:
-                                                                    case ReleaseType.Unknown:
-                                                                    case ReleaseType.VideoClip:
-                                                                    case ReleaseType.Compilation:
-                                                                    case null:
-                                                                        <span class="text-muted">@album.Name</span>
-                                                                        break;
-                                                                    default:
-                                                                        throw new ArgumentOutOfRangeException();
-                                                                }
-                                                            </Blazorise.Text>
-                                                            @if (null != album.ReleaseDate)
-                                                            {
-                                                                <Blazorise.Text TextColor="TextColor.Muted">
-                                                                    <br/>@album.ReleaseDate.Value.Year
-                                                                </Blazorise.Text>
-                                                            }
+                                                            <AlbumListQuickInfo Album="album" />
                                                         </FigureCaption>
                                                     </Figure>
                                                 </Blazorise.Link>

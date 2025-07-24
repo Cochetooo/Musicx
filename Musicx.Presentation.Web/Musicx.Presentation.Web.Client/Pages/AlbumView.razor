@@ -36,7 +36,7 @@ else
 {
     <Card Margin="Margin.Is4.OnY">
         <CardHeader Padding="Padding.Is3.OnX">
-            <Heading Size="HeadingSize.Is4" TextWeight="TextWeight.Bold">@_album.Name</Heading>
+            <Heading Size="HeadingSize.Is4" Style="font-weight: 900">@_album.Name</Heading>
             @if (_album.Artist is not null)
             {
                 <Blazorise.Link To="@($"/Artist/{_album.Artist.Id}")">
@@ -65,7 +65,9 @@ else
             }
             <Row Margin="Margin.Is3.OnX">
                 <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3">
-                    <Image Style="border-radius:10px; height:auto; width: 100%;" Source="@_album.ArtworkUrl"/>
+                    <Image Style="border-radius:10px; height:auto; width: 100%;" 
+                           Class="neumorphism-shadow-default" 
+                           Source="@_album.ArtworkUrl"/>
                 </Column>
                 <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is9">
                     <Card>

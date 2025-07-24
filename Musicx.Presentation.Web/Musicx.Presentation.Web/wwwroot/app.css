@@ -49,7 +49,15 @@ h1:focus {
     font-weight: bold;
 }
 
+.neumorphism-shadow-default {
+    box-shadow: 6px 6px 16px #9d9d9d, -6px -6px 16px #ffffff;
+}
+
 * {
     font-family: "Space Grotesk", "Helvetica Neue", sans-serif;
     font-optical-sizing: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Montserrat", "Helvetica Neue", sans-serif;
 }
