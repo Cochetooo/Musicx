@@ -22,7 +22,9 @@ public sealed class LastFmApiProvider(
 
     public async Task<OutAlbum?> GetAlbumInfoAsync(string name, string artist, CancellationToken ct = default)
     {
-        var endpoint = $"{configuration["Apis:LastFm:BaseUrl"]}?method=album.getinfo&artist={artist}&album={name}&api_key={_apiKey}&format=json";
+        var endpoint = $"{configuration["Apis:LastFm:BaseUrl"]}?method=album.getinfo&artist={Uri.EscapeDataString(artist)}" +
+                       $"&album={Uri.EscapeDataString(name)}&api_key={_apiKey}&format=json";
+        
         _logger.LogInformation($"🌍🏳️ LAST FM : GET {endpoint}");
 
         try
