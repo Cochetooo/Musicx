@@ -5,8 +5,10 @@
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Mappers
 @using Musicx.Domain.Enums
+@using Musicx.Presentation.Web.Client.Components
 
 @inject ILoggerProvider LoggerProvider
+@inject IListUseCase<OutGenre> UcListGenres
 @inject ISaveUseCase<InAlbum> UcSave
 @inject HttpClient Http
 
@@ -87,6 +89,85 @@
                         <DatePicker TValue="DateTime?" @bind-Date="@_album.ReleaseDate" />
                     </FieldBody>
                 </Field>
+                
+                <Divider />
+                
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Primary Genres
+                    </FieldLabel>
+                    <FieldBody>
+                        <Div Flex="Flex.JustifyContent.Between" Margin="Margin.Is2.FromBottom">
+                            <Autocomplete TItem="OutGenre"
+                                          TValue="OutGenre"
+                                          Data="@_availableGenres"
+                                          TextField="@(( item ) => item.Name)"
+                                          ValueField="@((item) => item)"
+                                          @bind-SelectedText="@_selectedPrimaryText"
+                                          @bind-SelectedValue="@_selectedPrimaryGenre"
+                                          Placeholder="Search a genre..."
+                                          Filter="AutocompleteFilter.StartsWith">
+                                <NotFoundContent>Sorry... @context was not found !</NotFoundContent>
+                            </Autocomplete>
+                            
+                            <Button Clicked="AddPrimaryGenre" Disabled="@(_selectedPrimaryGenre is null)">
+                                <Icon Name="IconName.Add" />
+                            </Button>
+                        </Div>
+                        
+                        <ListGroup>
+                            @foreach (var genre in _primaryGenres)
+                            {
+                                <ListGroupItem Flex="Flex.JustifyContent.Between">
+                                    <GenreBadge Genre="@genre" />
+                                    <Button Outline Clicked="@(() => OnDeletePrimaryGenre(genre))">
+                                        <Icon Name="IconName.Times" />
+                                    </Button>
+                                </ListGroupItem>
+                            }
+                        </ListGroup>
+                    </FieldBody>
+                </Field>
+                
+                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
+                    <FieldLabel>
+                        Influence Genres
+                    </FieldLabel>
+                    <FieldBody>
+                        <Div Flex="Flex.JustifyContent.Between" Margin="Margin.Is2.FromBottom">
+                            <Autocomplete TItem="OutGenre"
+                                          TValue="OutGenre"
+                                          Data="@_availableGenres"
+                                          TextField="@(( item ) => item.Name)"
+                                          ValueField="@((item) => item)"
+                                          @bind-SelectedText="@_selectedInfluenceText"
+                                          @bind-SelectedValue="@_selectedInfluenceGenre"
+                                          Placeholder="Search a genre..."
+                                          Filter="AutocompleteFilter.StartsWith">
+                                <NotFoundContent>Sorry... @context was not found !</NotFoundContent>
+                            </Autocomplete>
+                            
+                            <Button Clicked="AddInfluenceGenre" Disabled="@(_selectedInfluenceGenre is null)">
+                                <Icon Name="IconName.Add" />
+                            </Button>
+                        </Div>
+                        
+                        <ListGroup>
+                            @foreach (var genre in _influenceGenres)
+                            {
+                                <ListGroupItem Flex="Flex.JustifyContent.Between">
+                                    <GenreBadge Genre="@genre" />
+                                    <Button Outline Clicked="@(() => OnDeleteInfluenceGenre(genre))">
+                                        <Icon Name="IconName.Times" />
+                                    </Button>
+                                </ListGroupItem>
+                            }
+                        </ListGroup>
+                    </FieldBody>
+                </Field>
+                
+                <Divider />
+                
                 <Field ColumnSize="ColumnSize.Is12">
                     <FieldLabel>
                         National Socialist Content
@@ -114,6 +195,15 @@
 
     private OutArtist? _artist;
     private InAlbum _album = null!;
+    
+    private List<OutGenre> _availableGenres = [];
+    private List<OutGenre> _primaryGenres = [];
+    private List<OutGenre> _influenceGenres = [];
+
+    private string _selectedPrimaryText;
+    private string _selectedInfluenceText;
+    private OutGenre? _selectedPrimaryGenre;
+    private OutGenre? _selectedInfluenceGenre;
 
     private bool _isLoading;
     private bool _isConfirmable;
@@ -124,17 +214,36 @@
 
     private Modal _modalRef = null!;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender)
+        {
+            return;
+        }
+        
         _logger = LoggerProvider.CreateLogger(nameof(AlbumEditModal));
 
         _album = new InAlbum();
+        _availableGenres = await UcListGenres.ExecuteAsync();
     }
 
     private async Task Save()
     {
+        _album.PrimaryGenreIds = _primaryGenres.Select(g => g.Id).ToList();
+        _album.InfluenceGenreIds = _influenceGenres.Select(g => g.Id).ToList();
+        
+        _logger.LogInformation($"⛏️ AlbumEditModal : Persisting primary genres {string.Join(",", _album.PrimaryGenreIds)} " +
+                               $"and influences {string.Join(",", _album.InfluenceGenreIds)}");
+        
         await UcSave.ExecuteAsync(_album);
         await OnSave.InvokeAsync();
+
+        _album.PrimaryGenreIds = [];
+        _album.InfluenceGenreIds = [];
+        
+        _primaryGenres.Clear();
+        _influenceGenres.Clear();
+        
         Hide();
     }
 
@@ -223,6 +332,40 @@
         _album.Name = newValue;
 
         await UpdateArtwork();
+    }
+
+    private void OnDeletePrimaryGenre(OutGenre genre)
+    {
+        _primaryGenres.Remove(genre);
+    }
+
+    private void AddPrimaryGenre()
+    {
+        if (_selectedPrimaryGenre is null)
+        {
+            return;
+        }
+        
+        _primaryGenres.Add(_selectedPrimaryGenre);
+        _selectedPrimaryGenre = null;
+        _selectedPrimaryText = "";
+    }
+    
+    private void OnDeleteInfluenceGenre(OutGenre genre)
+    {
+        _influenceGenres.Remove(genre);
+    }
+
+    private void AddInfluenceGenre()
+    {
+        if (_selectedInfluenceGenre is null)
+        {
+            return;
+        }
+        
+        _influenceGenres.Add(_selectedInfluenceGenre);
+        _selectedInfluenceGenre = null;
+        _selectedInfluenceText = "";
     }
 
 }

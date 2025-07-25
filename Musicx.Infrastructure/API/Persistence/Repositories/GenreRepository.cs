@@ -144,11 +144,21 @@ internal sealed class GenreRepository(
         {
             if (0 == entity.Id)
             {
-                _logger.LogDebug($"📄 SQL : INSERT INTO genres (name) " +
-                                 $"VALUES ('{entity.Name}')");
+                _logger.LogDebug($"📄 SQL : INSERT INTO genres (name, color, parent_ids) " +
+                                 $"VALUES ('{entity.Name}', '{entity.Color}', '{string.Join(",", entity.Parents.Select(p => p.Id))}')");
                 
                 entity.CreatedAt = DateTime.Now;
                 entity.UpdatedAt = DateTime.Now;
+
+                foreach (var parent in entity.Parents)
+                {
+                    context.Attach(parent);
+                }
+
+                foreach (var child in entity.Children)
+                {
+                    context.Attach(child);
+                }
                 
                 context.Genres.Add(entity);
             }
@@ -159,7 +169,11 @@ internal sealed class GenreRepository(
                 
                 entity.UpdatedAt = DateTime.Now;
                 context.Genres.Update(entity);
+                
                 context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
+                
+                context.Entry(entity).Collection(e => e.Parents).IsModified = true;
+                context.Entry(entity).Collection(e => e.Children).IsModified = true;
             }
 
             await context.SaveChangesAsync();
@@ -211,19 +225,19 @@ internal sealed class GenreRepository(
         }
     }
 
-    private static IQueryable<Genre> GetIncludes(IQueryable<Genre> query, IQuerySpecification<Genre>? querySpecification = null)
+    private IQueryable<Genre> GetIncludes(IQueryable<Genre> query, IQuerySpecification<Genre>? querySpecification = null)
     {
         if (querySpecification is not GenreQuerySpecification genreQuerySpecification)
             return query;
-
+        
         if (genreQuerySpecification.IncludeChildren)
         {
-            query = query.Include(s => s.ChildIds);
+            query = query.Include(s => s.Children);
         }
 
         if (genreQuerySpecification.IncludeParents)
         {
-            query = query.Include(s => s.ParentIds);
+            query = query.Include(s => s.Parents);
         }
 
         return query;

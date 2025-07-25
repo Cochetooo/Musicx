@@ -97,7 +97,7 @@ internal sealed class AlbumRepository(
             .AsNoTracking()
             .OrderBy(x => x.ReleaseDate)
                 .ThenBy(x => x.Name)
-            .Where(s => s.ArtistId != null && s.ArtistId == artistId)
+            .Where(s => s.Artist != null && s.Artist.Id == artistId)
             .ToListAsync();
     }
 
@@ -162,10 +162,25 @@ internal sealed class AlbumRepository(
             if (0 == entity.Id)
             {
                 _logger.LogDebug($"📄 SQL : INSERT INTO albums (name, artwork_url, artist_id...) " +
-                                 $"VALUES ('{entity.Name}', '{entity.ArtworkUrl}', '{entity.ArtistId}')");
+                                 $"VALUES ('{entity.Name}', '{entity.ArtworkUrl}', '{entity.Artist?.Id}')");
                 
                 entity.CreatedAt = DateTime.Now;
                 entity.UpdatedAt = DateTime.Now;
+
+                if (entity.Artist is not null)
+                {
+                    context.Attach(entity.Artist);
+                }
+
+                foreach (var primaryGenre in entity.PrimaryGenres)
+                {
+                    context.Attach(primaryGenre);
+                }
+                
+                foreach (var influenceGenre in entity.InfluenceGenres)
+                {
+                    context.Attach(influenceGenre);
+                }
 
                 context.Albums.Add(entity);
             }
@@ -175,9 +190,30 @@ internal sealed class AlbumRepository(
                                  $"ArtworkUrl={entity.ArtworkUrl}, ReleaseDate={entity.ReleaseDate}" +
                                  $"WHERE Id = {entity.Id}");
                 
-                entity.UpdatedAt = DateTime.Now;
-                context.Albums.Update(entity);
-                context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
+                var existingAlbum = await context.Albums
+                    .Include(a => a.PrimaryGenres)
+                    .Include(a => a.InfluenceGenres)
+                    .FirstAsync(s => s.Id == entity.Id);
+
+                existingAlbum.Name = entity.Name;
+                existingAlbum.ArtworkUrl = entity.ArtworkUrl;
+                existingAlbum.ReleaseDate = entity.ReleaseDate;
+                existingAlbum.IsFarRight = entity.IsFarRight;
+                existingAlbum.DiscTotal = entity.DiscTotal;
+                existingAlbum.TrackTotal = entity.TrackTotal;
+                existingAlbum.UpdatedAt = DateTime.Now;
+                
+                existingAlbum.PrimaryGenres.Clear();
+                foreach (var g in entity.PrimaryGenres)
+                {
+                    existingAlbum.PrimaryGenres.Add(context.Attach(g).Entity);
+                }
+                
+                existingAlbum.InfluenceGenres.Clear();
+                foreach (var g in entity.InfluenceGenres)
+                {
+                    existingAlbum.InfluenceGenres.Add(context.Attach(g).Entity);
+                }
             }
 
             await context.SaveChangesAsync();

@@ -10,7 +10,7 @@
           HasChildNodes="@(g => g.Children.Count != 0)"
           Virtualize>
     <NodeContent>
-        <Badge Style="@GetColor(context)" Margin="Margin.Is2.OnY">
+        <Badge Style="@GetColor(context)" Margin="Margin.Is2.FromBottom" TextColor="TextColor.White">
             @if (Checkable)
             {
                 <Check Margin="Margin.Is2.FromEnd" 
@@ -34,7 +34,7 @@
     [Parameter] public bool Checkable { get; set; }
 
     private async Task<IEnumerable<OutGenre>> LoadChildrenAsync(OutGenre genre)
-        => await UcFindIn.ExecuteAsync(genre.Children.Select(g => g.Id));
+        => await UcFindIn.ExecuteAsync(genre.Children.Select(g => g.Id), "children");
 
     private string GetColor(OutGenre genre)
         => $"background-color: {genre.Color ?? "#80858a"}";

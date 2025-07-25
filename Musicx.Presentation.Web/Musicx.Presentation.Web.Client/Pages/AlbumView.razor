@@ -5,6 +5,7 @@
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 
 @inject IGetUseCase<OutAlbum> UcGet
+@inject IFindInUseCase<OutGenre> UcFindInGenres
 @inject ILoggerProvider LoggerProvider
 
 <Breadcrumb Margin="Margin.Is2.FromBottom">
@@ -111,6 +112,40 @@ else
                                         </DescriptorValue>
                                     </Descriptor>
                                 }
+                                
+                                @if (0 != _album.PrimaryGenres.Count)
+                                {
+                                    <Descriptor>
+                                        <DescriptorLabel>
+                                            Genres
+                                        </DescriptorLabel>
+                                        <DescriptorValue>
+                                            <Div Flex="Flex.Wrap">
+                                                @foreach (var genre in _album.PrimaryGenres)
+                                                {
+                                                    <GenreBadge Genre="@genre" />
+                                                }
+                                            </Div>
+                                        </DescriptorValue>
+                                    </Descriptor>
+                                }
+                                
+                                @if (0 != _album.InfluenceGenres.Count)
+                                {
+                                    <Descriptor>
+                                        <DescriptorLabel>
+                                            Influences
+                                        </DescriptorLabel>
+                                        <DescriptorValue>
+                                            <Div Flex="Flex.Wrap">
+                                                @foreach (var genre in _album.InfluenceGenres)
+                                                {
+                                                    <GenreBadge Influence Genre="@genre" />
+                                                }
+                                            </Div>
+                                        </DescriptorValue>
+                                    </Descriptor>
+                                }
                             </ListGroup>
                         </CardBody>
                     </Card>
@@ -165,7 +200,7 @@ else
             return;
         }
 
-        _album = await UcGet.ExecuteAsync(albumId, "artist");
+        _album = await UcGet.ExecuteAsync(albumId, "artist_genre");
         
         if (_album is null)
         {
@@ -174,6 +209,14 @@ else
         }
         
         _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
+        StateHasChanged();
+
+        _album.PrimaryGenres = await UcFindInGenres.ExecuteAsync(_album.PrimaryGenres.Select(g => g.Id).ToList());
+        _logger.LogInformation($"🏷️ Primary genres loaded for {_album.Name} ({_album.Id})");
+        StateHasChanged();
+        
+        _album.InfluenceGenres = await UcFindInGenres.ExecuteAsync(_album.InfluenceGenres.Select(g => g.Id).ToList());
+        _logger.LogInformation($"🏷️ Primary genres loaded for {_album.Name} ({_album.Id})");
         StateHasChanged();
     }
 

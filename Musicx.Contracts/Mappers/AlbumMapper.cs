@@ -16,9 +16,9 @@ public static class AlbumMapper
         
         Artist = album.Artist?.ToDto(),
         
-        Releases = album.Releases.Select(r => new OutRelease { Id = r.Id, CatalogNumber = r.CatalogNumber }).ToList(),
-        PrimaryGenres = album.PrimaryGenres.Select(g => new OutGenre { Id = g.Id, Name = g.Name }).ToList(),
-        InfluenceGenres = album.InfluenceGenres.Select(g => new OutGenre { Id = g.Id, Name = g.Name }).ToList(),
+        Releases = album.Releases.Select(r => new OutRelease { Id = r.Id }).ToList(),
+        PrimaryGenres = album.PrimaryGenres.Select(g => new OutGenre { Id = g.Id }).ToList(),
+        InfluenceGenres = album.InfluenceGenres.Select(g => new OutGenre { Id = g.Id }).ToList(),
         
         ArtworkUrl = album.ArtworkUrl,
         DiscTotal = album.DiscTotal,
@@ -33,11 +33,11 @@ public static class AlbumMapper
     {
         Id = albumDto.Id,
 
-        ArtistId = albumDto.ArtistId,
+        Artist = albumDto.ArtistId is null ? null : ProxyArtist(albumDto.ArtistId.Value),
 
-        Releases = albumDto.ReleaseIds.Select(id => new Release { Id = id }).ToList(),
-        PrimaryGenres = albumDto.PrimaryGenreIds.Select(id => new Genre { Id = id }).ToList(),
-        InfluenceGenres = albumDto.InfluenceGenreIds.Select(id => new Genre { Id = id }).ToList(),
+        Releases = albumDto.ReleaseIds.Select(ProxyRelease).ToList(),
+        PrimaryGenres = albumDto.PrimaryGenreIds.Select(ProxyGenre).ToList(),
+        InfluenceGenres = albumDto.InfluenceGenreIds.Select(ProxyGenre).ToList(),
 
         ArtworkUrl = albumDto.ArtworkUrl,
         DiscTotal = albumDto.DiscTotal,
@@ -62,5 +62,23 @@ public static class AlbumMapper
         ReleaseDate = album.ReleaseDate,
         ReleaseType = album.ReleaseType,
         TrackTotal = album.TrackTotal
+    };
+    
+    private static Artist ProxyArtist(long id) => new()
+    {
+        Id = id,
+        Name = string.Empty
+    };
+    
+    private static Release ProxyRelease(long id) => new()
+    {
+        Id = id,
+        CatalogNumber = string.Empty
+    };
+    
+    private static Genre ProxyGenre(long id) => new()
+    {
+        Id = id,
+        Name = string.Empty
     };
 }

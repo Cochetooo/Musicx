@@ -24,116 +24,100 @@ public sealed class ApiDbContext(DbContextOptions<ApiDbContext> options) : DbCon
             .HasValue<BandArtist>("Band")
             .HasValue<PersonArtist>("Person");
         
-        // Déclaration manuelle de la table de jointure
-        modelBuilder.Entity<AlbumGenre>()
-            .HasKey(ag => new { ag.AlbumId, ag.GenreId, ag.Level });
-
-        modelBuilder.Entity<AlbumGenre>()
-            .HasOne(ag => ag.Album)
-            .WithMany()
-            .HasForeignKey(ag => ag.AlbumId);
-
-        modelBuilder.Entity<AlbumGenre>()
-            .HasOne(ag => ag.Genre)
-            .WithMany()
-            .HasForeignKey(ag => ag.GenreId);
-
-        // PRIMARY genres
+        // 🎵 Album - Primary Genres
         modelBuilder.Entity<Album>()
             .HasMany(a => a.PrimaryGenres)
             .WithMany()
-            .UsingEntity<AlbumGenre>(
+            .UsingEntity<Dictionary<string, object>>(
+                "Album_Genre",
                 j => j
-                    .HasOne(ag => ag.Genre)
+                    .HasOne<Genre>()
                     .WithMany()
-                    .HasForeignKey(ag => ag.GenreId),
+                    .HasForeignKey("GenreId")
+                    .OnDelete(DeleteBehavior.Restrict),
                 j => j
-                    .HasOne(ag => ag.Album)
+                    .HasOne<Album>()
                     .WithMany()
-                    .HasForeignKey(ag => ag.AlbumId),
-                j =>
-                {
-                    j.ToTable("Album_Genre");
-                    j.HasKey(ag => new { ag.AlbumId, ag.GenreId, ag.Level });
-                    j.HasQueryFilter(ag => ag.Level == 0);
-                });
+                    .HasForeignKey("AlbumId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.ToTable("Album_Genre")
+            );
 
-        // INFLUENCE genres
+        // 🎵 Album - Influence Genres
         modelBuilder.Entity<Album>()
             .HasMany(a => a.InfluenceGenres)
             .WithMany()
-            .UsingEntity<AlbumGenre>(
+            .UsingEntity<Dictionary<string, object>>(
+                "Album_Influence",
                 j => j
-                    .HasOne(ag => ag.Genre)
+                    .HasOne<Genre>()
                     .WithMany()
-                    .HasForeignKey(ag => ag.GenreId),
+                    .HasForeignKey("GenreId")
+                    .OnDelete(DeleteBehavior.Restrict),
                 j => j
-                    .HasOne(ag => ag.Album)
+                    .HasOne<Album>()
                     .WithMany()
-                    .HasForeignKey(ag => ag.AlbumId),
-                j =>
-                {
-                    j.ToTable("Album_Genre");
-                    j.HasKey(ag => new { ag.AlbumId, ag.GenreId, ag.Level });
-                    j.HasQueryFilter(ag => ag.Level == 1);
-                });
-        
-        // Déclaration manuelle de la table de jointure
-        modelBuilder.Entity<SongGenre>()
-            .HasKey(ag => new { ag.SongId, ag.GenreId, ag.Level });
+                    .HasForeignKey("AlbumId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.ToTable("Album_Influence")
+            );
 
-        modelBuilder.Entity<SongGenre>()
-            .HasOne(ag => ag.Song)
-            .WithMany()
-            .HasForeignKey(ag => ag.SongId);
-
-        modelBuilder.Entity<SongGenre>()
-            .HasOne(ag => ag.Genre)
-            .WithMany()
-            .HasForeignKey(ag => ag.GenreId);
-
-        // PRIMARY genres
+        // 🎶 Song - Primary Genres
         modelBuilder.Entity<Song>()
-            .HasMany(a => a.PrimaryGenres)
+            .HasMany(s => s.PrimaryGenres)
             .WithMany()
-            .UsingEntity<SongGenre>(
+            .UsingEntity<Dictionary<string, object>>(
+                "Song_Genre",
                 j => j
-                    .HasOne(ag => ag.Genre)
+                    .HasOne<Genre>()
                     .WithMany()
-                    .HasForeignKey(ag => ag.GenreId),
+                    .HasForeignKey("GenreId")
+                    .OnDelete(DeleteBehavior.Restrict),
                 j => j
-                    .HasOne(ag => ag.Song)
+                    .HasOne<Song>()
                     .WithMany()
-                    .HasForeignKey(ag => ag.SongId),
-                j =>
-                {
-                    j.ToTable("Song_Genre");
-                    j.HasKey(ag => new { ag.SongId, ag.GenreId, ag.Level });
-                    j.HasQueryFilter(ag => ag.Level == 0);
-                });
+                    .HasForeignKey("SongId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.ToTable("Song_Genre")
+            );
 
-        // INFLUENCE genres
+        // 🎶 Song - Influence Genres
         modelBuilder.Entity<Song>()
-            .HasMany(a => a.InfluenceGenres)
+            .HasMany(s => s.InfluenceGenres)
             .WithMany()
-            .UsingEntity<SongGenre>(
+            .UsingEntity<Dictionary<string, object>>(
+                "Song_Influence",
                 j => j
-                    .HasOne(ag => ag.Genre)
+                    .HasOne<Genre>()
                     .WithMany()
-                    .HasForeignKey(ag => ag.GenreId),
+                    .HasForeignKey("GenreId")
+                    .OnDelete(DeleteBehavior.Restrict),
                 j => j
-                    .HasOne(ag => ag.Song)
+                    .HasOne<Song>()
                     .WithMany()
-                    .HasForeignKey(ag => ag.SongId),
-                j =>
-                {
-                    j.ToTable("Song_Genre");
-                    j.HasKey(ag => new { ag.SongId, ag.GenreId, ag.Level });
-                    j.HasQueryFilter(ag => ag.Level == 1);
-                });
-        
+                    .HasForeignKey("SongId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.ToTable("Song_Influence")
+            );
+
         modelBuilder.Entity<Genre>()
-            .Ignore(g => g.ParentIds)
-            .Ignore(g => g.ChildIds);
+            .HasMany(g => g.Parents)
+            .WithMany(g => g.Children)
+            .UsingEntity<Dictionary<string, object>>(
+                "ChildrenGenre_ParentGenre",
+                j => j.HasOne<Genre>()
+                    .WithMany()
+                    .HasForeignKey("ParentId")
+                    .OnDelete(DeleteBehavior.Restrict),
+                j => j.HasOne<Genre>()
+                    .WithMany()
+                    .HasForeignKey("ChildrenId")
+                    .OnDelete(DeleteBehavior.Restrict),
+                j =>
+                {
+                    j.HasKey("ParentId", "ChildrenId");
+                    j.ToTable("ChildrenGenre_ParentGenre");
+                }
+            );
     }
 }

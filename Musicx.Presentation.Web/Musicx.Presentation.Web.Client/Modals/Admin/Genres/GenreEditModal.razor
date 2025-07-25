@@ -71,7 +71,7 @@
 
     private ILogger _logger = null!;
     
-    private InGenre _genre = null!;
+    private InGenre _genre = new InGenre();
 
     private List<OutGenre> _genres = [];
     private List<OutGenre> _selectedParents = [];
@@ -91,9 +91,12 @@
         }
         
         _logger = LoggerProvider.CreateLogger(nameof(GenreEditModal));
-
-        _genre = new InGenre();
-        _genres = await UcList.ExecuteAsync();
+        
+        var result = await UcList.ExecuteAsync(query: "parents_children");
+        
+        _genres = result
+            .Where(g => g.Parents.Count == 0)
+            .ToList();
     }
 
     private async Task Save()

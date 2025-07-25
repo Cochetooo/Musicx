@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence;
-using Musicx.Application.Desktop.Specifications;
+using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Mappers;
@@ -88,8 +88,8 @@ public sealed class GenreController(IGenreRepository genreRepository,
         [FromQuery] string filter = "",
         [FromQuery] string query = "")
     {
-        _logger.LogInformation($"🌍🏳️ API : FIND genres");
-
+        _logger.LogInformation($"🌍🏳️ API : FIND genres | includes = {query} & filter = {filter}");
+        
         try
         {
             var querySpecification = new GenreQuerySpecification

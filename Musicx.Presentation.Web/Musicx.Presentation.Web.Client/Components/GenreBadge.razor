@@ -1,0 +1,16 @@
+﻿@using Musicx.Contracts.Dto.Responses
+
+<Badge Style="@GetColor(Genre)" Margin="Margin.Is1" TextColor="TextColor.White" Pill>
+    @Genre.Name
+</Badge>
+
+@code {
+
+    [Parameter] public OutGenre Genre { get; set; } = null!;
+    [Parameter] public bool Influence { get; set; }
+    
+    private string GetColor(OutGenre genre)
+        => $"background-color: {genre.Color ?? "#80858a"};" +
+           (Influence ? " opacity: 0.75; font-style: italic;" : "");
+
+}

@@ -176,7 +176,6 @@ create table public."Song_Genre"
     "SongId"    bigint not null
         constraint "FK_SongGenre_Songs_SongId"
             references public."Songs",
-    "Level"     integer not null,
     "GenreId"   bigint not null
         constraint "FK_SongGenre_Genres_GenreId"
             references public."Genres"
@@ -188,12 +187,27 @@ alter table public."Song_Genre"
 create index "IX_SongGenre_SongId"
     on public."Song_Genre" ("SongId");
 
+create table public."Song_Influence"
+(
+    "SongId"    bigint not null
+        constraint "FK_SongInfluence_Songs_SongId"
+            references public."Songs",
+    "GenreId"   bigint not null
+        constraint "FK_SongInfluence_Genres_GenreId"
+            references public."Genres"
+);
+
+alter table public."Song_Influence"
+    owner to postgres;
+
+create index "IX_SongInfluence_SongId"
+    on public."Song_Influence" ("SongId");
+
 create table public."Album_Genre"
 (
     "AlbumId"    bigint not null
         constraint "FK_AlbumGenre_Albums_AlbumId"
             references public."Albums",
-    "Level"     integer not null,
     "GenreId"   bigint not null
         constraint "FK_AlbumGenre_Genres_GenreId"
             references public."Genres"
@@ -204,3 +218,19 @@ alter table public."Album_Genre"
 
 create index "IX_AlbumGenre_AlbumId"
     on public."Album_Genre" ("AlbumId");
+
+create table public."Album_Influence"
+(
+    "AlbumId"    bigint not null
+        constraint "FK_AlbumInfluence_Albums_AlbumId"
+            references public."Albums",
+    "GenreId"   bigint not null
+        constraint "FK_AlbumInfluence_Genres_GenreId"
+            references public."Genres"
+);
+
+alter table public."Album_Influence"
+    owner to postgres;
+
+create index "IX_AlbumInfluence_AlbumId"
+    on public."Album_Influence" ("AlbumId");

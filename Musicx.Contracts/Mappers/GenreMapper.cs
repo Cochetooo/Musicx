@@ -13,8 +13,8 @@ public static class GenreMapper
         CreatedAt = genre.CreatedAt,
         UpdatedAt = genre.UpdatedAt,
         
-        Parents = genre.ParentIds.Select(g => new OutGenre { Id = g }).ToList(),
-        Children = genre.ChildIds.Select(g => new OutGenre { Id = g }).ToList(),
+        Parents = genre.Parents.Select(g => new OutGenre { Id = g.Id }).ToList(),
+        Children = genre.Children.Select(g => new OutGenre { Id = g.Id }).ToList(),
 
         Name = genre.Name,
         Description = genre.Description,
@@ -25,8 +25,8 @@ public static class GenreMapper
     {
         Id = genreDto.Id,
         
-        ParentIds = genreDto.ParentIds,
-        ChildIds = genreDto.ChildIds,
+        Parents = genreDto.ParentIds.Select(Proxy).ToList(),
+        Children = genreDto.ChildIds.Select(Proxy).ToList(),
 
         Name = genreDto.Name,
         Description = genreDto.Description,
@@ -43,5 +43,11 @@ public static class GenreMapper
         Name = genre.Name,
         Description = genre.Description,
         Color = genre.Color
+    };
+
+    private static Genre Proxy(long id) => new()
+    {
+        Id = id,
+        Name = string.Empty
     };
 }
