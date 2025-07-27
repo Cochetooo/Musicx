@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Musicx.Application.Shared.Utilities;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
 using Musicx.Contracts.Dto.Responses;
 
@@ -10,15 +11,10 @@ public sealed class UcGetAlbumByArtist(
     ILoggerProvider loggerProvider) : IGetAlbumByArtistUseCase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcGetAlbumByArtist));
-
-    private readonly JsonSerializerOptions options = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true
-    };
     
-    public async Task<List<OutAlbum>> ExecuteAsync(long artistId)
+    public async Task<List<OutAlbum>> ExecuteAsync(long artistId, string query = "")
     {
-        var endpoint = $"/api/albums/by-artist/{artistId}";
+        var endpoint = $"/api/albums/by-artist/{artistId}?query={query}";
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
@@ -30,7 +26,7 @@ public sealed class UcGetAlbumByArtist(
             return [];
         }
         
-        var json = JsonSerializer.Deserialize<List<OutAlbum>>(response, options);
+        var json = JsonSerializer.Deserialize<List<OutAlbum>>(response, JsonHelper.OptionsDefault);
 
         if (null == json)
         {
@@ -43,7 +39,7 @@ public sealed class UcGetAlbumByArtist(
         return json;
     }
 
-    public List<OutAlbum> Execute(long artistId)
+    public List<OutAlbum> Execute(long artistId, string query = "")
     {
         throw new NotImplementedException();
     }

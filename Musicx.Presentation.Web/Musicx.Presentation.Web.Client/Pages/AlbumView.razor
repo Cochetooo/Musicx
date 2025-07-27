@@ -77,18 +77,6 @@ else
                                 Details
                             </CardTitle>
                             <ListGroup Flush>
-                                @if (null != _album.Artist)
-                                {
-                                    <Descriptor>
-                                        <DescriptorLabel>
-                                            Artist
-                                        </DescriptorLabel>
-                                        <DescriptorValue>
-                                            @_album.Artist.Name
-                                        </DescriptorValue>
-                                    </Descriptor>
-                                }
-
                                 @if (null != _album.ReleaseDate)
                                 {
                                     <Descriptor>
@@ -156,11 +144,16 @@ else
                     <Icon Name="IconName.Edit" Margin="Margin.Is2.OnX"/>
                     Edit Track List
                 </Button>
+                
+                <Button Clicked="EditAlbumShowModal" Margin="Margin.Is2.FromStart" Color="Color.Secondary">
+                    <Icon Name="IconName.Pen" />
+                </Button>
             </Row>
         </CardBody>
     </Card>
 }
 
+<AlbumEditModal @ref="_albumEditModal" OnSave="OnQuitModal" />
 <AlbumTrackListEditModal @ref="_trackListEditModal" OnSave="OnQuitModal" />
 
 @code {
@@ -169,6 +162,7 @@ else
 
     private ILogger _logger = null!;
 
+    private AlbumEditModal? _albumEditModal;
     private AlbumTrackListEditModal? _trackListEditModal;
 
     private OutAlbum? _album;
@@ -211,13 +205,19 @@ else
         _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
         StateHasChanged();
 
-        _album.PrimaryGenres = await UcFindInGenres.ExecuteAsync(_album.PrimaryGenres.Select(g => g.Id).ToList());
-        _logger.LogInformation($"🏷️ Primary genres loaded for {_album.Name} ({_album.Id})");
-        StateHasChanged();
-        
-        _album.InfluenceGenres = await UcFindInGenres.ExecuteAsync(_album.InfluenceGenres.Select(g => g.Id).ToList());
-        _logger.LogInformation($"🏷️ Primary genres loaded for {_album.Name} ({_album.Id})");
-        StateHasChanged();
+        if (0 < _album.PrimaryGenres.Count)
+        {
+            _album.PrimaryGenres = await UcFindInGenres.ExecuteAsync(_album.PrimaryGenres.Select(g => g.Id).ToList());
+            _logger.LogInformation($"🏷️ Primary genres loaded for {_album.Name} ({_album.Id})");
+            StateHasChanged();
+        }
+
+        if (0 < _album.InfluenceGenres.Count)
+        {
+            _album.InfluenceGenres = await UcFindInGenres.ExecuteAsync(_album.InfluenceGenres.Select(g => g.Id).ToList());
+            _logger.LogInformation($"🏷️ Influence genres loaded for {_album.Name} ({_album.Id})");
+            StateHasChanged();
+        }
     }
 
     private void EditTrackListShowModal()
@@ -229,6 +229,23 @@ else
         }
         
         _trackListEditModal?.Show(_album);
+    }
+
+    private void EditAlbumShowModal()
+    {
+        if (null == _album)
+        {
+            _logger.LogError("❌ Cannot edit album: album is null.");
+            return;
+        }
+        
+        if (null == _album.Artist)
+        {
+            _logger.LogError("⚠️ Cannot edit album: artist is null.");
+            return;
+        }
+        
+        _albumEditModal?.Show(_album.Artist, _album);
     }
 
     private async Task OnQuitModal()

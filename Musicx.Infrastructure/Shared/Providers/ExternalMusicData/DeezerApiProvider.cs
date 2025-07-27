@@ -14,11 +14,6 @@ public sealed class DeezerApiProvider(
     ILoggerProvider loggerProvider) : IExternalMusicDataProvider
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(DeezerApiProvider));
-
-    private readonly JsonSerializerOptions options = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true
-    };
     
     public async Task<OutArtist?> GetArtistInfoAsync(string name, CancellationToken ct = default)
     {
@@ -29,7 +24,7 @@ public sealed class DeezerApiProvider(
         {
             var response = await httpClient.GetStringAsync(endpoint, ct);
             
-            var deezerSearchArtist = JsonSerializer.Deserialize<DeezerSearchArtist.RootObject>(response, options);
+            var deezerSearchArtist = JsonSerializer.Deserialize<DeezerSearchArtist.RootObject>(response, JsonHelper.OptionsDefault);
 
             if (null == deezerSearchArtist || 0 == deezerSearchArtist.data.Length)
             {

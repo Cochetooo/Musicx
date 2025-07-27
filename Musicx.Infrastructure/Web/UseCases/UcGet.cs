@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Musicx.Application.Shared.Utilities;
 using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Infrastructure.Web.Helpers;
 
@@ -12,11 +13,6 @@ public sealed class UcGet<T>(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcGet<T>));
     
-    private readonly JsonSerializerOptions options = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true
-    };
-    
     public async Task<T?> ExecuteAsync(long id, string query = "")
     {
         var modelName = typeof(T).Name.OutModelToEntity();
@@ -25,7 +21,7 @@ public sealed class UcGet<T>(
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
         var response = await httpClient.GetStringAsync(endpoint);
-        var json = JsonSerializer.Deserialize<T>(response, options);
+        var json = JsonSerializer.Deserialize<T>(response, JsonHelper.OptionsDefault);
 
         if (null == json)
         {

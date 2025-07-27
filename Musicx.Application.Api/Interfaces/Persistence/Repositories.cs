@@ -5,7 +5,13 @@ namespace Musicx.Application.Api.Interfaces.Persistence;
 
 public interface IAlbumRepository : IRepository<Album>
 {
-    Task<List<Album>> FindByArtistIdAsync(long artistId, IQuerySpecification<Album>? albumQuerySpecification = null);
+    Task<List<Album>> FindByArtistIdAsync(long artistId, 
+        IQuerySpecification<Album>? albumQuerySpecification = null);
+    Task<List<Album>> FindByGenreIdAsync(long genreId, 
+        int genreOptions,
+        int skip = 0, 
+        int take = 100,
+        IQuerySpecification<Album>? albumQuerySpecification = null);
 }
 public interface IArtistRepository : IRepository<Artist>;
 public interface IGenreRepository : IRepository<Genre>;

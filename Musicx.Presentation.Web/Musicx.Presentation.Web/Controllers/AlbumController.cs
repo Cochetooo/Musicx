@@ -115,6 +115,49 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
         }
     }
     
+    [HttpGet("by-genre/{genreId}")]
+    public async Task<ActionResult<OutAlbum>> FindByGenreId([FromRoute] long genreId, 
+        [FromQuery] int genreOptions,
+        [FromQuery] int skip = 0,
+        [FromQuery] int take = 100,
+        [FromQuery] string query = "")
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND BY GENRE albums ({genreId} " +
+                               $"& genreOptions = {genreOptions} & includes = {query})");
+
+        try
+        {
+            var querySpecification = new AlbumQuerySpecification
+            {
+                IncludeArtist = query.Contains("artist"),
+                IncludePrimaryGenres = query.Contains("genre"),
+                IncludeInfluenceGenres = query.Contains("genre"),
+                IncludeReleases = query.Contains("release")
+            };
+            
+            var albums = await albumRepository.FindByGenreIdAsync(
+                genreId, 
+                genreOptions, 
+                skip, 
+                take, 
+                querySpecification
+            );
+
+            if (0 == albums.Count)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND BY GENRE albums ({genreId}) - NOT FOUND");
+                return NoContent();
+            }
+            
+            _logger.LogInformation($"🌍✅ API : FIND BY GENRE albums ({genreId}) - SUCCESS");
+            return Ok(albums.Select(x => x.ToDto()).ToList());
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OutArtist>>> Find(
         [FromQuery] int skip = 0,

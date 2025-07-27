@@ -9,6 +9,7 @@
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 
 @inject IGetUseCase<OutArtist> UcGet
+@inject IFindInUseCase<OutGenre> UcFindInGenres
 @inject IGetAlbumByArtistUseCase UcGetAlbums
 @inject ILoggerProvider LoggerProvider
 
@@ -179,15 +180,24 @@ else
                                                     out var value) && value)
                                             {
                                                 <Blazorise.Link To="@($"/Album/{album.Id}")">
-                                                    <ListGroupItem Flex="Flex.JustifyContent.Start.AlignItems.Start">
-                                                        <Figure Size="FigureSize.Is48x48">
-                                                            <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
-                                                                         Class="neumorphism-shadow-default"
-                                                                         Rounded/>
-                                                        </Figure>
-                                                        
-                                                        <Div Margin="Margin.Is3.FromStart">
-                                                            <AlbumListQuickInfo Album="album" />
+                                                    <ListGroupItem Flex="Flex.AlignItems.Start.JustifyContent.Between">
+                                                        <Div Class="d-flex">
+                                                            <Figure Size="FigureSize.Is48x48">
+                                                                <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
+                                                                             Class="neumorphism-shadow-default"
+                                                                             Rounded/>
+                                                            </Figure>
+
+                                                            <Div Margin="Margin.Is3.OnX">
+                                                                <AlbumListQuickInfo Album="album"/>
+                                                            </Div>
+                                                        </Div>
+
+                                                        <Div Class="d-flex">
+                                                            @foreach (var genre in album.PrimaryGenres)
+                                                            {
+                                                                <GenreBadge Genre="@genre"/>
+                                                            }
                                                         </Div>
                                                     </ListGroupItem>
                                                 </Blazorise.Link>
@@ -288,7 +298,7 @@ else
         _logger.LogInformation($"✅ Artist loaded: {_artist.Name} ({_artist.Id})");
         StateHasChanged();
         
-        _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id);
+        _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id, "genre");
         _logger.LogInformation("🎵 Retrieved {Count} albums for artist {ArtistId}", _artistAlbums.Count, _artist.Id);
         
         _availableReleaseTypes = _artistAlbums
@@ -301,6 +311,16 @@ else
      
         CalculateReleasesPerYear();
         await UpdateChartAsync();
+        
+        _logger.LogInformation($"✅ Chart created.");
+
+        foreach (var album in _artistAlbums.Where(album => 0 < album.PrimaryGenres.Count))
+        {
+            album.PrimaryGenres = await UcFindInGenres.ExecuteAsync(album.PrimaryGenres.Select(g => g.Id).ToList());
+            StateHasChanged();
+        }
+        
+        _logger.LogInformation($"✅ Album genres loaded.");
     }
     
     private async Task UpdateChartAsync()

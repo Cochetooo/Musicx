@@ -1,5 +1,6 @@
 @using System.Text.Json
 @using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData
+@using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
@@ -59,7 +60,7 @@
                         }
                         else
                         {
-                            if (null != _album.ArtworkUrl)
+                            if (_album is { ArtworkUrl: not null })
                             {
                                 <Image Style="width: 96px; height: 96px" Source="@_album.ArtworkUrl" />
                             }
@@ -200,8 +201,8 @@
     private List<OutGenre> _primaryGenres = [];
     private List<OutGenre> _influenceGenres = [];
 
-    private string _selectedPrimaryText;
-    private string _selectedInfluenceText;
+    private string _selectedPrimaryText = string.Empty;
+    private string _selectedInfluenceText = string.Empty;
     private OutGenre? _selectedPrimaryGenre;
     private OutGenre? _selectedInfluenceGenre;
 
@@ -252,7 +253,10 @@
         if (null != album)
         {
             _album = album.ToRaw();
-            _nameTextEdit.Text = _album.Name;
+            _nameTextEdit.Text = album.Name;
+            _nameTextEdit.Revalidate();
+            _primaryGenres = album.PrimaryGenres.ToList();
+            _influenceGenres = album.InfluenceGenres.ToList();
             StateHasChanged();
         }
         
@@ -290,10 +294,7 @@
                 _artworkCts.Token
             );
 
-            var response = JsonSerializer.Deserialize<OutAlbum?>(content, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var response = JsonSerializer.Deserialize<OutAlbum?>(content, JsonHelper.OptionsDefault);
             
             if (null == response)
             {

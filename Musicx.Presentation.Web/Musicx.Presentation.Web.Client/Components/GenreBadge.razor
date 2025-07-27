@@ -1,6 +1,12 @@
 ﻿@using Musicx.Contracts.Dto.Responses
 
-<Badge Style="@GetColor(Genre)" Margin="Margin.Is1" TextColor="TextColor.White" Pill>
+<Badge Padding="Padding.Is1.OnY.Is2.OnX" 
+       Class="neumorphism-shadow-default montserrat" 
+       Style="@GetColor(Genre)" 
+       TextSize="TextSize.Small" 
+       Margin="Margin.Is1" 
+       TextColor="TextColor.White" 
+       Pill>
     @Genre.Name
 </Badge>
 
@@ -11,6 +17,6 @@
     
     private string GetColor(OutGenre genre)
         => $"background-color: {genre.Color ?? "#80858a"};" +
-           (Influence ? " opacity: 0.75; font-style: italic;" : "");
+           (Influence ? " opacity: 0.7; font-style: italic;" : "font-weight: bold;");
 
 }

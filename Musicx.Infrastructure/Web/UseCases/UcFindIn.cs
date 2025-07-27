@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Musicx.Application.Shared.Utilities;
 using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Infrastructure.Web.Helpers;
 
@@ -12,11 +13,6 @@ public sealed class UcFindIn<T>(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcFindIn<T>));
     
-    private readonly JsonSerializerOptions _options = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-    
     public async Task<List<T>> ExecuteAsync(IEnumerable<long> ids, string query = "")
     {
         var modelName = typeof(T).Name.OutModelToEntity();
@@ -28,7 +24,7 @@ public sealed class UcFindIn<T>(
         {
             var response = await httpClient.GetStringAsync(endpoint);
 
-            var json = JsonSerializer.Deserialize<List<T>>(response, _options);
+            var json = JsonSerializer.Deserialize<List<T>>(response, JsonHelper.OptionsDefault);
             
             if (null == json)
             {
