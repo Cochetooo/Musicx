@@ -6,9 +6,9 @@ namespace Musicx.Contracts.Mappers;
 
 public static class GenreMapper
 {
-    public static OutGenre ToDto(this Genre genre) => new()
+    public static OutGenre FromDicoToGenre(this IDictionary<string, object?> genre) => new()
     {
-        Id = genre.Id,
+        /*Id = genre.Id,
         
         CreatedAt = genre.CreatedAt,
         UpdatedAt = genre.UpdatedAt,
@@ -18,19 +18,7 @@ public static class GenreMapper
 
         Name = genre.Name,
         Description = genre.Description,
-        Color = genre.Color,
-    };
-
-    public static Genre ToEntity(this InGenre genreDto) => new()
-    {
-        Id = genreDto.Id,
-        
-        Parents = genreDto.ParentIds.Select(Proxy).ToList(),
-        Children = genreDto.ChildIds.Select(Proxy).ToList(),
-
-        Name = genreDto.Name,
-        Description = genreDto.Description,
-        Color = genreDto.Color
+        Color = genre.Color,*/
     };
 
     public static InGenre ToRaw(this OutGenre genre) => new()
@@ -43,11 +31,5 @@ public static class GenreMapper
         Name = genre.Name,
         Description = genre.Description,
         Color = genre.Color
-    };
-
-    private static Genre Proxy(long id) => new()
-    {
-        Id = id,
-        Name = string.Empty
     };
 }

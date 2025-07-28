@@ -13,7 +13,7 @@
 @inject ISaveUseCase<InAlbum> UcSave
 @inject HttpClient Http
 
-<Modal @ref="_modalRef">
+<!-- <Modal @ref="_modalRef">
     <ModalContent Size="ModalSize.Large" Centered>
         <ModalHeader>
             <ModalTitle>Album Editing</ModalTitle>
@@ -185,7 +185,7 @@
             <Button Color="Color.Secondary" Clicked="Hide">Close</Button>
         </ModalFooter>
     </ModalContent>
-</Modal>
+</Modal> -->
 
 @code {
 
@@ -255,8 +255,8 @@
             _album = album.ToRaw();
             _nameTextEdit.Text = album.Name;
             _nameTextEdit.Revalidate();
-            _primaryGenres = album.PrimaryGenres.ToList();
-            _influenceGenres = album.InfluenceGenres.ToList();
+            _primaryGenres = album.PrimaryGenres!.ToList();
+            _influenceGenres = album.InfluenceGenres!.ToList();
             StateHasChanged();
         }
         
@@ -290,7 +290,7 @@
             await Task.Delay(2000, _artworkCts.Token);
 
             var content = await Http.GetStringAsync(
-                $"api/external/album?name={Uri.EscapeDataString(_album.Name)}&artist={Uri.EscapeDataString(_artist.Name)}",
+                $"api/external/album?name={Uri.EscapeDataString(_album.Name)}&artist={Uri.EscapeDataString(_artist!.Name)}",
                 _artworkCts.Token
             );
 

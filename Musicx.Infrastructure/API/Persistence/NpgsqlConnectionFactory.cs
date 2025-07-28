@@ -11,7 +11,7 @@ public interface IDbConnectionFactory
 {
     NpgsqlConnection CreateConnection();
     Task ExecuteTransactionAsync(ILogger logger, params (string sql, IReadOnlyList<NpgsqlParameter> parameters)[] commands);
-    Task<List<ExpandoObject>> FetchListDynamicAsync(string sql, IReadOnlyList<NpgsqlParameter> parameters);
+    Task<List<ExpandoObject>> FetchListDynamicAsync(ILogger logger, string sql, IReadOnlyList<NpgsqlParameter> parameters);
 }
 
 public sealed class NpgsqlConnectionFactory(IConfiguration configuration) : IDbConnectionFactory
@@ -20,7 +20,7 @@ public sealed class NpgsqlConnectionFactory(IConfiguration configuration) : IDbC
         ?? throw new NullReferenceException("Musicx database connection string not found");
     
     public NpgsqlConnection CreateConnection()
-        => new NpgsqlConnection(_connectionString);
+        => new(_connectionString);
 
     public async Task ExecuteTransactionAsync(ILogger logger, params (string sql, IReadOnlyList<NpgsqlParameter> parameters)[] commands)
     {
@@ -47,29 +47,39 @@ public sealed class NpgsqlConnectionFactory(IConfiguration configuration) : IDbC
         }
     }
 
-    public async Task<List<ExpandoObject>> FetchListDynamicAsync(string sql, IReadOnlyList<NpgsqlParameter> parameters)
+    public async Task<List<ExpandoObject>> FetchListDynamicAsync(ILogger logger, string sql, IReadOnlyList<NpgsqlParameter> parameters)
     {
+        logger.LogDebug(SqlDebugHelper.InterpolateQuery(sql, parameters));
         var results = new List<ExpandoObject>();
-        
-        await using var conn = CreateConnection();
-        await conn.OpenAsync();
-        
-        await using var command = new NpgsqlCommand(sql, conn);
-        command.Parameters.AddRange(parameters.ToArray());
-        
-        await using var reader = await command.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
+
+        try
         {
-            var obj = new ExpandoObject() as IDictionary<string, object?>;
-            for (var i = 0; i < reader.FieldCount; i++)
+            await using var conn = CreateConnection();
+            await conn.OpenAsync();
+
+            await using var command = new NpgsqlCommand(sql, conn);
+            command.Parameters.AddRange(parameters.ToArray());
+
+            await using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                var name = reader.GetName(i);
-                var value = await reader.IsDBNullAsync(i) ? null : reader.GetValue(i);
-                obj[name] = value;
+                var obj = new ExpandoObject() as IDictionary<string, object?>;
+                for (var i = 0; i < reader.FieldCount; i++)
+                {
+                    var name = reader.GetName(i);
+                    var value = await reader.IsDBNullAsync(i) ? null : reader.GetValue(i);
+                    obj[name] = value;
+                }
+
+                results.Add((ExpandoObject)obj);
             }
-            
-            results.Add((ExpandoObject)obj);
         }
+        catch (Exception ex)
+        {
+            logger.LogCritical("❌ An error has occured while fetching data: " + ex.Message);
+            throw;
+        }
+        
         
         return results;
     }

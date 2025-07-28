@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Common;
+using Musicx.Contracts.Dto.Responses;
 
 
 namespace Musicx.Infrastructure.Desktop.Persistence.Caches;
@@ -8,11 +9,11 @@ namespace Musicx.Infrastructure.Desktop.Persistence.Caches;
 internal sealed class AlbumCache : IAlbumCache
 {
     private const int MaxCacheSize = 1000;
-    private readonly Dictionary<string, Album> _cache = new();
+    private readonly Dictionary<string, OutAlbum> _cache = new();
 
-    public Album? Get(string key) => _cache.TryGetValue(key, out var album) ? album : null;
+    public OutAlbum? Get(string key) => _cache.TryGetValue(key, out var album) ? album : null;
 
-    public void Add(string key, Album album)
+    public void Add(string key, OutAlbum album)
     {
         if (_cache.Count >= MaxCacheSize)
         {

@@ -75,7 +75,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
             }
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID albums ({id}) - SUCCESS");
-            return Ok(album.ToDto());
+            return Ok(album);
         }
         catch (Exception ex)
         {
@@ -107,7 +107,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
             }
             
             _logger.LogInformation($"🌍✅ API : FIND BY ARTIST albums ({artistId}) - SUCCESS");
-            return Ok(albums.Select(x => x.ToDto()).ToList());
+            return Ok(albums);
         }
         catch (Exception ex)
         {
@@ -150,7 +150,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
             }
             
             _logger.LogInformation($"🌍✅ API : FIND BY GENRE albums ({genreId}) - SUCCESS");
-            return Ok(albums.Select(x => x.ToDto()).ToList());
+            return Ok(albums);
         }
         catch (Exception ex)
         {
@@ -189,7 +189,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
             }
             
             _logger.LogInformation($"🌍✅ API : FIND albums - SUCCESS");
-            return Ok(albums.Select(a => a.ToDto()));
+            return Ok(albums);
         }
         catch (Exception ex)
         {
@@ -223,7 +223,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
             var albums = await albumRepository.FindIn(ids, querySpecification);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID albums ({stringIds}) - SUCCESS");
-            return Ok(albums.Select(a => a.ToDto()));
+            return Ok(albums);
         }
         catch (Exception ex)
         {
@@ -256,7 +256,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
 
         try
         {
-            await albumRepository.SaveAsync(albumDto.ToEntity());
+            await albumRepository.SaveAsync(albumDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE albums - SUCCESS");
             return Ok();
@@ -275,7 +275,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
 
         try
         {
-            await albumRepository.SaveAllAsync(albumsDto.Select(x => x.ToEntity()));
+            await albumRepository.SaveAllAsync(albumsDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE ALL albums - SUCCESS");
             return Ok();

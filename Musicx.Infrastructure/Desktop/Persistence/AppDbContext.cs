@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Musicx.Contracts.Dto.Responses;
 
 
 namespace Musicx.Infrastructure.Desktop.Persistence;
@@ -9,12 +10,12 @@ namespace Musicx.Infrastructure.Desktop.Persistence;
 /// <since>0.6.0</since>
 internal sealed class AppDbContext : DbContext
 {
-    public DbSet<Album> Albums { get; set; }
-    public DbSet<Artist> Artists { get; set; }
-    public DbSet<Genre> Genres { get; set; }
-    public DbSet<Label> Labels { get; set; }
-    public DbSet<Release> Releases { get; set; }
-    public DbSet<Song> Songs { get; set; }
+    public DbSet<OutAlbum> Albums { get; set; }
+    public DbSet<OutArtist> Artists { get; set; }
+    public DbSet<OutGenre> Genres { get; set; }
+    public DbSet<OutLabel> Labels { get; set; }
+    public DbSet<OutRelease> Releases { get; set; }
+    public DbSet<OutSong> Songs { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -24,10 +25,7 @@ internal sealed class AppDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Artist>()
-            .HasDiscriminator<string>("Discriminator")
-            .HasValue<BandArtist>("Band")
-            .HasValue<PersonArtist>("Person");
+        
     }
     
     private static string GetDatabasePath()

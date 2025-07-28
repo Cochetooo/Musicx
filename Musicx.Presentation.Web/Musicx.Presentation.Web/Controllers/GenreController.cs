@@ -73,7 +73,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
             }
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID genres ({id}) - SUCCESS");
-            return Ok(genre.ToDto());
+            return Ok(genre);
         }
         catch (Exception ex)
         {
@@ -110,7 +110,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
             }
             
             _logger.LogInformation($"🌍✅ API : FIND genres - SUCCESS");
-            return Ok(genres.Select(a => a.ToDto()));
+            return Ok(genres);
         }
         catch (Exception ex)
         {
@@ -142,7 +142,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
             var genres = await genreRepository.FindIn(ids, querySpecification);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID genres ({stringIds}) - SUCCESS");
-            return Ok(genres.Select(a => a.ToDto()));
+            return Ok(genres);
         }
         catch (Exception ex)
         {
@@ -175,7 +175,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
 
         try
         {
-            await genreRepository.SaveAsync(genreDto.ToEntity());
+            await genreRepository.SaveAsync(genreDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE genres - SUCCESS");
             return Ok();
@@ -194,7 +194,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
 
         try
         {
-            await genreRepository.SaveAllAsync(genresDto.Select(x => x.ToEntity()));
+            await genreRepository.SaveAllAsync(genresDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE ALL genres - SUCCESS");
             return Ok();

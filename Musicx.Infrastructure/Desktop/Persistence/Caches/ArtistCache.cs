@@ -1,5 +1,6 @@
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Common;
+using Musicx.Contracts.Dto.Responses;
 
 
 namespace Musicx.Infrastructure.Desktop.Persistence.Caches;
@@ -7,11 +8,11 @@ namespace Musicx.Infrastructure.Desktop.Persistence.Caches;
 internal sealed class ArtistCache : IArtistCache
 {
     private const int MaxCacheSize = 500;
-    private readonly Dictionary<string, Artist> _cache = new();
+    private readonly Dictionary<string, OutArtist> _cache = new();
 
-    public Artist? Get(string key) => _cache.TryGetValue(key, out var artist) ? artist : null;
+    public OutArtist? Get(string key) => _cache.TryGetValue(key, out var artist) ? artist : null;
 
-    public void Add(string key, Artist artist)
+    public void Add(string key, OutArtist artist)
     {
         if (_cache.Count >= MaxCacheSize)
         {

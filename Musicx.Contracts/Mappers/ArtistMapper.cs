@@ -7,9 +7,9 @@ namespace Musicx.Contracts.Mappers;
 
 public static class ArtistMapper
 {
-    public static OutArtist ToDto(this Artist artist)
+    public static OutArtist FromDicoToArtist(this IDictionary<string, object?> artist)
     {
-        var artistDto = new OutArtist
+        /*var artistDto = new OutArtist
         {
             Id = artist.Id,
             
@@ -19,9 +19,9 @@ public static class ArtistMapper
             Name = artist.Name,
             ArtworkUrl = artist.ArtworkUrl,
             Country = artist.Country,
-        };
+        };*/
 
-        switch (artist)
+        /*switch (artist)
         {
             case PersonArtist personArtist:
                 artistDto.Discriminator = ArtistDiscriminator.Person;
@@ -42,46 +42,9 @@ public static class ArtistMapper
             default:
                 artistDto.Discriminator = ArtistDiscriminator.Artist;
                 break;
-        }
+        }*/
         
-        return artistDto;
-    }
-    
-    public static Artist ToEntity(this InArtist artistDto)
-    {
-        return artistDto.Discriminator switch
-        {
-            ArtistDiscriminator.Artist => new Artist
-            {
-                Id = artistDto.Id,
-                Name = artistDto.Name,
-                ArtworkUrl = artistDto.ArtworkUrl,
-                Country = artistDto.Country
-            },
-            ArtistDiscriminator.Band => new BandArtist
-            {
-                Id = artistDto.Id,
-                Name = artistDto.Name,
-                ArtworkUrl = artistDto.ArtworkUrl,
-                Country = artistDto.Country,
-                Members = artistDto.MemberIds!.Select(m => new PersonArtist { Id = m }).ToList(),
-                FormationDate = artistDto.FormationDate,
-                SplitDate = artistDto.SplitDate
-            },
-            ArtistDiscriminator.Person => new PersonArtist
-            {
-                Id = artistDto.Id,
-                Name = artistDto.Name,
-                ArtworkUrl = artistDto.ArtworkUrl,
-                Country = artistDto.Country,
-                Bands = artistDto.BandIds!.Select(m => new BandArtist { Id = m }).ToList(),
-                FirstName = artistDto.FirstName,
-                LastName = artistDto.LastName,
-                BirthDate = artistDto.BirthDate,
-                DeathDate = artistDto.DeathDate
-            },
-            _ => throw new InvalidCastException("Invalid artist type")
-        };
+        return new OutArtist();
     }
 
     public static InArtist ToRaw(this OutArtist artist) => new()

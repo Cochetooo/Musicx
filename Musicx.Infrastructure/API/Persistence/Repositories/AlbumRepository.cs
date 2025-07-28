@@ -1,18 +1,14 @@
 using System.Linq.Expressions;
-using System.Net.Mime;
-using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
-using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Shared.Options;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Mappers;
-
 using Musicx.Infrastructure.Shared.Exceptions;
 using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
@@ -20,7 +16,6 @@ using Npgsql;
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class AlbumRepository(
-    ApiDbContext context,
     IDbConnectionFactory connectionFactory,
     ILoggerProvider loggerProvider) : IAlbumRepository
 {
@@ -40,7 +35,7 @@ internal sealed class AlbumRepository(
     public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
         var stringIds = string.Join(",", ids);
-        const string sql = "DELETE FROM \"Albums\" WHERE \"Id\" IN (@ids)";
+        const string sql = "DELETE FROM albums WHERE album_id IN (@ids)";
         var parameters = new List<NpgsqlParameter>
         {
             new("@Ids", stringIds)
@@ -52,39 +47,34 @@ internal sealed class AlbumRepository(
     public async Task<OutAlbum?> FindByIdAsync(long id, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
         var sql = DynamicSelect(albumQuerySpecification);
-        sql += " WHERE albums.album_id = @id";
+        sql += " WHERE al0.album_id = @id";
         
         var parameters = new List<NpgsqlParameter>
         {
             new("@id", id)
         };
 
-        var result = await connectionFactory.FetchListDynamicAsync(sql, parameters);
+        var result = await connectionFactory.FetchListDynamicAsync(_logger, sql, parameters);
 
-        if (result.Count > 0)
-        {
-            return null;
-        }
-
-        var json = JsonSerializer.Serialize(result);
-        
-        
+        return result
+            .SingleOrDefault()?
+            .FromDicoToAlbum();
     }
     
     public async Task<List<OutAlbum>> FindByArtistIdAsync(long artistId, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
+        var sql = DynamicSelect(albumQuerySpecification);
+        sql += " WHERE al0.album_artist_id = @artistId ORDER BY al0.album_original_release_date, al0.album_name";
         var parameters = new List<NpgsqlParameter>
         {
             new("@artistId", artistId)
         };
-        var findByArtistSql = DynamicSelect(albumQuerySpecification);
-        findByArtistSql += " WHERE \"ArtistId\" = @artistId ORDER BY \"ReleaseDate\", \"Name\"";
         
-        _logger.LogDebug(SqlDebugHelper.InterpolateQuery(findByArtistSql, parameters));
-        return await context.Albums
-            .FromSqlRaw(findByArtistSql, parameters.Cast<object>().ToArray())
-            .AsNoTracking()
-            .ToListAsync();
+        var result = await connectionFactory.FetchListDynamicAsync(_logger, sql, parameters);
+        
+        return result
+            .Select(x => x.FromDicoToAlbum())
+            .ToList();
     }
     
     public async Task<List<OutAlbum>> FindByGenreIdAsync(long genreId, 
@@ -103,7 +93,7 @@ internal sealed class AlbumRepository(
 
         var joins = new List<string>();
         var whereConditions = new List<string>();
-        var parameters = new List<NpgsqlParameter>()
+        var parameters = new List<NpgsqlParameter>
         {
             new("@genreId", genreId),
             new("@skip", skip),
@@ -112,17 +102,17 @@ internal sealed class AlbumRepository(
 
         if ((genreOptions & GenreOptions.PrimaryGenre) != 0)
         {
-            joins.Add(" INNER JOIN \"Album_Genre\" pg ON pg.\"AlbumId\" = a.\"Id\"");
-            whereConditions.Add("pg.\"GenreId\" = @genreId");
+            joins.Add(" INNER JOIN album_genre pg ON pg.album_genre_album_id = a.album_id");
+            whereConditions.Add("pg.album_genre_genre_id = @genreId");
         }
         
         if ((genreOptions & GenreOptions.InfluenceGenre) != 0)
         {
-            joins.Add(" INNER JOIN \"Album_Influence\" ig ON ig.\"AlbumId\" = a.\"Id\"");
-            whereConditions.Add("ig.\"GenreId\" = @genreId");
+            joins.Add(" INNER JOIN album_influence ig ON ig.album_influence_album_id = a.album_id");
+            whereConditions.Add("ig.album_influence_genre_id = @genreId");
         }
         
-        var findByGenreSql = $"""
+        var sql = $"""
                               SELECT DISTINCT a.*
                               FROM albums a
                               {string.Join("\n", joins)}
@@ -131,34 +121,23 @@ internal sealed class AlbumRepository(
                               OFFSET @skip LIMIT @take
                               """;
         
-        _logger.LogDebug(SqlDebugHelper.InterpolateQuery(findByGenreSql, parameters));
-        return await context.Albums
-            .FromSqlRaw(findByGenreSql, parameters.Cast<object>().ToArray())
-            .AsNoTracking()
-            .ToListAsync();
+        var result = await connectionFactory.FetchListDynamicAsync(_logger, sql, parameters);
+        
+        return result
+            .Select(x => x.FromDicoToAlbum())
+            .ToList();
     }
 
     public async Task<List<OutAlbum>> FindAsync(int skip = 0, int take = 100, Expression<Func<InAlbum, bool>>? filter = null,
         IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
-        _logger.LogDebug("📄 SQL : SELECT * FROM albums");
-        
-        var albumSet = context.Albums
-            .AsQueryable();
-        
-        albumSet = GetIncludes(albumSet, albumQuerySpecification);
+        var sql = DynamicSelect(albumQuerySpecification);
 
-        if (null != filter)
-        {
-            albumSet = albumSet.Where(filter);
-        }
-        
-        return await albumSet
-            .AsNoTracking()
-            .Skip(skip)
-            .Take(take)
-            .OrderBy(x => x.Name)
-            .ToListAsync();
+        var result = await connectionFactory.FetchListDynamicAsync(_logger, sql, []);
+
+        return result
+            .Select(x => x.FromDicoToAlbum())
+            .ToList();
     }
 
     public async Task<List<OutAlbum>> FindIn(IEnumerable<long> ids, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
@@ -170,26 +149,27 @@ internal sealed class AlbumRepository(
         }
         
         var stringIds = string.Join(",", idList);
-        var findInSql = $"SELECT * FROM albums";
-        findInSql = DynamicSelect(findInSql, albumQuerySpecification);
-        findInSql += $" WHERE \"Id\" IN ({stringIds}) ORDER BY \"ReleaseDate\", \"Name\"";
+        var sql = DynamicSelect(albumQuerySpecification);
+        sql += $" WHERE al0.album_id IN ({stringIds}) ORDER BY al0.album_original_release_date, al0.album_name";
         
-        _logger.LogDebug($"📜 SQL : {findInSql}");
-        return await context.Albums
-            .FromSqlRaw(findInSql)
-            .AsNoTracking()
-            .ToListAsync();
+        var result = await connectionFactory.FetchListDynamicAsync(_logger, sql, []);
+        
+        return result
+            .Select(x => x.FromDicoToAlbum())
+            .ToList();
     }
 
     public async Task<int> GetCountAsync()
     {
         const string countSql = "SELECT COUNT(*) FROM albums";
         _logger.LogDebug($"📜 SQL : {countSql}");
-        return await context.Database.ExecuteSqlRawAsync(countSql);
+        return 1;
     }
 
     public async Task<long> SaveAsync(InAlbum entity)
     {
+        throw new NotImplementedException();
+        /*
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
@@ -280,11 +260,13 @@ internal sealed class AlbumRepository(
         {
             await transaction.RollbackAsync();
             throw new RepositoryException("❌ SAVE Album : Could not persist.", ex, _logger);
-        }
+        } */
     }
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<InAlbum> entities)
     {
+        throw new NotImplementedException();
+        /*
         _logger.LogDebug("📄 SAVE ALL Album");
         
         await using var transaction = await context.Database.BeginTransactionAsync();
@@ -316,7 +298,7 @@ internal sealed class AlbumRepository(
         {
             await transaction.RollbackAsync();
             throw new RepositoryException("❌ SAVE ALL Album : Could not persist", ex, _logger);
-        }
+        } */
     }
 
     private static string DynamicSelect(IQuerySpecification<InAlbum>? querySpecification = null)
@@ -337,41 +319,18 @@ internal sealed class AlbumRepository(
 
         if (albumQuerySpecification.IncludePrimaryGenres)
         {
-            selects.Add("pg.*");
-            joins.Add("LEFT JOIN \"Album_Genre\" apg ON al0.\"Id\" = apg.\"AlbumId\"");
-            joins.Add("LEFT JOIN \"Genres\" pg ON apg.\"GenreId\" = pg.\"Id\"");
+            selects.Add("json_agg(pg.*) AS primary_genres");
+            joins.Add("LEFT JOIN album_genre apg ON al0.album_id = apg.album_genre_album_id");
+            joins.Add("LEFT JOIN genres pg ON apg.album_genre_genre_id = pg.genre_id");
         }
 
         if (albumQuerySpecification.IncludeInfluenceGenres)
         {
-            selects.Add("ig.*");
-            joins.Add("LEFT JOIN \"Album_Influence\" aig ON al0.\"Id\" = aig.\"AlbumId\"");
-            joins.Add("LEFT JOIN \"Genres\" ig ON aig.\"GenreId\" = ig.\"Id\"");
+            selects.Add("json_app(ig.*) AS influence_genres");
+            joins.Add("LEFT JOIN album_influence aig ON al0.album_id = aig.album_influence_album_id");
+            joins.Add("LEFT JOIN genres ig ON aig.album_influence_genre_id = ig.genre_id");
         }
 
-        return $"SELECT {string.Join(", ", selects)} FROM \"Albums\" al0 {string.Join(" ", joins)}";
-    }
-
-    private static IQueryable<Album> GetIncludes(IQueryable<Album> query, IQuerySpecification<Album>? querySpecification = null)
-    {
-        if (querySpecification is not AlbumQuerySpecification albumQuerySpecification)
-            return query;
-
-        if (albumQuerySpecification.IncludeArtist)
-        {
-            query = query.Include(s => s.Artist);
-        }
-
-        if (albumQuerySpecification.IncludePrimaryGenres)
-        {
-            query = query.Include(s => s.PrimaryGenres);
-        }
-
-        if (albumQuerySpecification.IncludeInfluenceGenres)
-        {
-            query = query.Include(s => s.InfluenceGenres);
-        }
-
-        return query;
+        return $"SELECT {string.Join(", ", selects)} FROM albums al0 {string.Join(" ", joins)}";
     }
 }

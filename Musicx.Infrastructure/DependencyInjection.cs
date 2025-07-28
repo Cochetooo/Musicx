@@ -83,12 +83,6 @@ public static class DependencyInjection
         services.AddScoped<IGenreCache, GenreCache>();
         
         // Repositories
-        services.AddScoped<ISongRepository, SongRepository>();
-        services.AddScoped<IAlbumRepository, AlbumRepository>();
-        services.AddScoped<IArtistRepository, ArtistRepository>();
-        services.AddScoped<IReleaseRepository, ReleaseRepository>();
-        services.AddScoped<ILabelRepository, LabelRepository>();
-        services.AddScoped<IGenreRepository, GenreRepository>();
         
         services.AddScoped<IBatchImportRepository, BatchImportRepository>();
         
@@ -105,19 +99,12 @@ public static class DependencyInjection
     {
         // Database
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-        services.AddDbContext<DbContext, ApiDbContext>(options =>
-        {
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-            options.EnableSensitiveDataLogging();
-        });
         services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
         
         // Repositories
         services.AddScoped<Application.Api.Interfaces.Persistence.ISongRepository, API.Persistence.Repositories.SongRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumRepository, API.Persistence.Repositories.AlbumRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IArtistRepository, API.Persistence.Repositories.ArtistRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IReleaseRepository, API.Persistence.Repositories.ReleaseRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.ILabelRepository, API.Persistence.Repositories.LabelRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IGenreRepository, API.Persistence.Repositories.GenreRepository>();
 
         services.AddMusicxWeb();

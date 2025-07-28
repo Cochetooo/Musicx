@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Utilities;
+using Musicx.Contracts.Dto.Requests;
 using Musicx.Domain.Enums;
 
 
@@ -19,9 +20,9 @@ public class UcReadAudioFile(
 
         var track = new Track(request.FilePath);
         
-        Song song;
-        Album album;
-        Artist artist;
+        InSong song;
+        InAlbum album;
+        InArtist artist;
         
         _logger.LogWarning("⚠️ Lyrics synchronization and Audio Format are not yet supported.");
 
@@ -32,7 +33,7 @@ public class UcReadAudioFile(
         }
         else
         {
-            song = new Song
+            song = new InSong
             {
                 DiscNumber = track.DiscNumber,
                 Duration = track.Duration,
@@ -47,17 +48,17 @@ public class UcReadAudioFile(
                 VolumeModifier = 0.0
             };
 
-            album = new Album
+            album = new InAlbum
             {
                 ArtworkUrl = track.AdditionalFields.GetValueOrDefault("AlbumArtworkUrl"),
                 DiscTotal = track.DiscTotal,
                 Name = track.Album,
-                OriginalReleaseDate = track.OriginalReleaseDate,
+                ReleaseDate = track.OriginalReleaseDate,
                 ReleaseType = EnumHelper.ParseOrDefault(track.AdditionalFields.GetValueOrDefault("ReleaseType", "Unknown"), ReleaseType.Unknown),
                 TrackTotal = track.TrackTotal
             };
 
-            artist = new Artist
+            artist = new InArtist
             {
                 ArtworkUrl = track.AdditionalFields.GetValueOrDefault("ArtistArtworkUrl"),
                 Country = track.AdditionalFields.GetValueOrDefault("ArtistCountry"),

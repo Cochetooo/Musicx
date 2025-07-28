@@ -66,7 +66,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
             }
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID artists ({id}) - SUCCESS");
-            return Ok(artist.ToDto());
+            return Ok(artist);
         }
         catch (Exception ex)
         {
@@ -89,7 +89,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
                 || a.Name.ToLower().StartsWith(filter.ToLower()));
             
             _logger.LogInformation($"🌍✅ API : FIND artists - SUCCESS");
-            return Ok(artists.Select(a => a.ToDto()));
+            return Ok(artists);
         }
         catch (Exception ex)
         {
@@ -113,7 +113,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
             var artists = await artistRepository.FindIn(ids);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID artists ({stringIds}) - SUCCESS");
-            return Ok(artists.Select(a => a.ToDto()));
+            return Ok(artists);
         }
         catch (Exception ex)
         {
@@ -146,7 +146,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
 
         try
         {
-            await artistRepository.SaveAsync(artistDto.ToEntity());
+            await artistRepository.SaveAsync(artistDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE artists - SUCCESS");
             return Ok();
@@ -165,7 +165,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
 
         try
         {
-            await artistRepository.SaveAllAsync(artistsDto.Select(x => x.ToEntity()));
+            await artistRepository.SaveAllAsync(artistsDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE ALL artists - SUCCESS");
             return Ok();

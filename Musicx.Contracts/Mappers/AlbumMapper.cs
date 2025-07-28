@@ -11,40 +11,40 @@ namespace Musicx.Contracts.Mappers;
 
 public static class AlbumMapper
 {
-    public static OutAlbum ToDto(this IDictionary<string, object?> album) => new()
+    public static OutAlbum FromDicoToAlbum(this IDictionary<string, object?> album) => new() 
     {
-        Id = (long) album["album_id"]!,
+        Id = album.SafeGet<long>("album_id"),
         
-        CreatedAt = (DateTime) album["created_at"]!,
-        UpdatedAt = (DateTime) album["updated_at"]!,
+        CreatedAt = album.SafeGet<DateTime>("album_created_at"),
+        UpdatedAt = album.SafeGet<DateTime>("album_updated_at"),
         
-        Artist = album["artist_id"] != null
+        Artist = album.SafeGet<long?>("album_artist_id") != null
             ? new OutArtist
             {
-                Id = (long) album["artist_id"]!,
-                Name = album["artist_name"]?.ToString() ?? "",
+                Id = album.SafeGet<long>("artist_id"),
+                Name = album.SafeGet<string>("artist_name") ?? "",
             }
             : null,
         
-        Releases = album.ContainsKey("releases")
-            ? JsonSerializer.Deserialize<OutRelease[]>(album["releases"] as string ?? string.Empty)
+        Releases = album.TryGetValue("releases", out var releaseValue)
+            ? JsonSerializer.Deserialize<OutRelease[]>(releaseValue as string ?? string.Empty)
             : [],
         
-        PrimaryGenres = album.ContainsKey("primary_genres")
-            ? JsonSerializer.Deserialize<OutGenre[]>(album["primary_genres"] as string ?? string.Empty)
+        PrimaryGenres = album.TryGetValue("primary_genres", out var primaryGenreValue)
+            ? JsonSerializer.Deserialize<OutGenre[]>(primaryGenreValue as string ?? string.Empty)
             : null,
         
-        InfluenceGenres = album.ContainsKey("influence_genres")
-            ? JsonSerializer.Deserialize<OutGenre[]>(album["influence_genres"] as string ?? string.Empty)
+        InfluenceGenres = album.TryGetValue("influence_genres", out var influenceGenreValue)
+            ? JsonSerializer.Deserialize<OutGenre[]>(influenceGenreValue as string ?? string.Empty)
             : null,
         
-        ArtworkUrl = album["album_artwork_url"]?.ToString(),
-        DiscTotal = (int?)album["album_disc_total"],
-        IsFarRight = (bool) album["album_is_far_right"]!,
-        Name = album["album_name"]?.ToString() ?? "",
-        ReleaseDate = (DateTime?)album["album_original_release_date"],
-        ReleaseType = (ReleaseType?)album["album_release_type"],
-        TrackTotal = (int?)album["album_track_total"],
+        ArtworkUrl = album.SafeGet<string>("album_artwork_url"),
+        DiscTotal = album.SafeGet<int>("album_disc_total"),
+        IsFarRight = album.SafeGet<bool>("album_is_far_right"),
+        Name = album.SafeGet<string>("album_name") ?? "",
+        ReleaseDate = album.SafeGet<DateTime>("album_original_release_date"),
+        ReleaseType = album.SafeGet<ReleaseType>("album_original_release_type"),
+        TrackTotal = album.SafeGet<int>("album_track_total"),
     };
 
     public static InAlbum ToRaw(this OutAlbum album) => new()
