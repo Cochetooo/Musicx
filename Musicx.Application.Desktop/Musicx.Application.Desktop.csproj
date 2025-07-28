@@ -12,7 +12,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Musicx.Application.Shared\Musicx.Application.Shared.csproj" />
-      <ProjectReference Include="..\Musicx.Domain\Musicx.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

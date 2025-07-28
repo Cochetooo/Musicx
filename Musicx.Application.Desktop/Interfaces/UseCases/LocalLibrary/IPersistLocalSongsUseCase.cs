@@ -1,12 +1,13 @@
 using Musicx.Application.Shared.Interfaces.Common;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+
 
 namespace Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 
 public sealed record PersistLocalSongsRequest(
-    IEnumerable<Song> Songs,
-    IEnumerable<Album> Albums,
-    IEnumerable<Artist> Artists) : BaseRequest;
+    IEnumerable<InSong> Songs,
+    IEnumerable<InAlbum> Albums,
+    IEnumerable<InArtist> Artists) : BaseRequest;
 
 public sealed record PersistLocalSongsResponse : BaseResponse;
 

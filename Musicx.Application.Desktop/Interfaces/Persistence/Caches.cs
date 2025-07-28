@@ -1,11 +1,14 @@
+using System.Reflection.Emit;
 using Musicx.Application.Shared.Interfaces.Persistence;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
+
 
 namespace Musicx.Application.Desktop.Interfaces.Persistence;
 
-public interface ISongCache : ICache<Song>;
-public interface IArtistCache : ICache<Artist>;
-public interface IAlbumCache : ICache<Album>;
-public interface IGenreCache : ICache<Genre>;
-public interface IReleaseCache : ICache<Release>;
-public interface ILabelCache : ICache<Label>;
+public interface ISongCache : ICache<OutSong>;
+public interface IArtistCache : ICache<OutArtist>;
+public interface IAlbumCache : ICache<OutAlbum>;
+public interface IGenreCache : ICache<OutGenre>;
+public interface IReleaseCache : ICache<OutRelease>;
+public interface ILabelCache : ICache<OutLabel>;

@@ -1,5 +1,6 @@
 using Musicx.Application.Shared.Interfaces.Common;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+
 
 namespace Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 
@@ -14,8 +15,8 @@ public sealed record ReadAudioFileRequest(
     bool AutoCheck) : BaseRequest;
 
 public sealed record ReadAudioFileResponse(
-    Song Song,
-    Album Album,
-    Artist Artist) : BaseResponse;
+    InSong Song,
+    InAlbum Album,
+    InArtist Artist) : BaseResponse;
 
 public interface IReadAudioFileUseCase : IUseCase<ReadAudioFileRequest, ReadAudioFileResponse>;

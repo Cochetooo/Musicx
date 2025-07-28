@@ -1,4 +1,7 @@
-using Musicx.Domain.Models;
+
+
+using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Application.Desktop.Interfaces.Persistence;
 
@@ -17,7 +20,7 @@ public interface IBatchImportRepository
     /// <returns></returns>
     /// <since>0.6.1</since>
     Task PersistBatchAsync(
-        IEnumerable<Song> songs,
-        IEnumerable<Album> albums,
-        IEnumerable<Artist> artists);
+        IEnumerable<InSong> songs,
+        IEnumerable<InAlbum> albums,
+        IEnumerable<InArtist> artists);
 }

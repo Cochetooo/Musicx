@@ -1,60 +1,59 @@
+using System.Collections.Immutable;
+using System.Dynamic;
+using System.Text.Json;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Helpers;
 using Musicx.Domain.Enums;
-using Musicx.Domain.Models;
+
 
 namespace Musicx.Contracts.Mappers;
 
 public static class AlbumMapper
 {
-    public static OutAlbum ToDto(this Album album) => new()
+    public static OutAlbum ToDto(this IDictionary<string, object?> album) => new()
     {
-        Id = album.Id,
+        Id = (long) album["album_id"]!,
         
-        CreatedAt = album.CreatedAt,
-        UpdatedAt = album.UpdatedAt,
+        CreatedAt = (DateTime) album["created_at"]!,
+        UpdatedAt = (DateTime) album["updated_at"]!,
         
-        Artist = album.Artist?.ToDto(),
+        Artist = album["artist_id"] != null
+            ? new OutArtist
+            {
+                Id = (long) album["artist_id"]!,
+                Name = album["artist_name"]?.ToString() ?? "",
+            }
+            : null,
         
-        Releases = album.Releases.Select(r => new OutRelease { Id = r.Id }).ToList(),
-        PrimaryGenres = album.PrimaryGenres.Select(g => new OutGenre { Id = g.Id }).ToList(),
-        InfluenceGenres = album.InfluenceGenres.Select(g => new OutGenre { Id = g.Id }).ToList(),
+        Releases = album.ContainsKey("releases")
+            ? JsonSerializer.Deserialize<OutRelease[]>(album["releases"] as string ?? string.Empty)
+            : [],
         
-        ArtworkUrl = album.ArtworkUrl,
-        DiscTotal = album.DiscTotal,
-        IsFarRight = album.IsFarRight,
-        Name = album.Name,
-        ReleaseDate = album.ReleaseDate,
-        ReleaseType = album.ReleaseType,
-        TrackTotal = album.TrackTotal
-    };
-
-    public static Album ToEntity(this InAlbum albumDto) => new()
-    {
-        Id = albumDto.Id,
-
-        Artist = albumDto.ArtistId is null ? null : ProxyArtist(albumDto.ArtistId.Value),
-
-        Releases = albumDto.ReleaseIds.Select(ProxyRelease).ToList(),
-        PrimaryGenres = albumDto.PrimaryGenreIds.Select(ProxyGenre).ToList(),
-        InfluenceGenres = albumDto.InfluenceGenreIds.Select(ProxyGenre).ToList(),
-
-        ArtworkUrl = albumDto.ArtworkUrl,
-        DiscTotal = albumDto.DiscTotal,
-        IsFarRight = albumDto.IsFarRight,
-        Name = albumDto.Name,
-        ReleaseDate = albumDto.ReleaseDate,
-        ReleaseType = albumDto.ReleaseType,
-        TrackTotal = albumDto.TrackTotal
+        PrimaryGenres = album.ContainsKey("primary_genres")
+            ? JsonSerializer.Deserialize<OutGenre[]>(album["primary_genres"] as string ?? string.Empty)
+            : null,
+        
+        InfluenceGenres = album.ContainsKey("influence_genres")
+            ? JsonSerializer.Deserialize<OutGenre[]>(album["influence_genres"] as string ?? string.Empty)
+            : null,
+        
+        ArtworkUrl = album["album_artwork_url"]?.ToString(),
+        DiscTotal = (int?)album["album_disc_total"],
+        IsFarRight = (bool) album["album_is_far_right"]!,
+        Name = album["album_name"]?.ToString() ?? "",
+        ReleaseDate = (DateTime?)album["album_original_release_date"],
+        ReleaseType = (ReleaseType?)album["album_release_type"],
+        TrackTotal = (int?)album["album_track_total"],
     };
 
     public static InAlbum ToRaw(this OutAlbum album) => new()
     {
         Id = album.Id,
         ArtistId = album.Artist?.Id,
-        ReleaseIds = album.Releases.Select(r => r.Id).ToList(),
-        PrimaryGenreIds = album.PrimaryGenres.Select(g => g.Id).ToList(),
-        InfluenceGenreIds = album.InfluenceGenres.Select(g => g.Id).ToList(),
+        ReleaseIds = album.Releases?.Select(r => r.Id).ToList(),
+        PrimaryGenreIds = album.PrimaryGenres?.Select(g => g.Id).ToList(),
+        InfluenceGenreIds = album.InfluenceGenres?.Select(g => g.Id).ToList(),
         ArtworkUrl = album.ArtworkUrl,
         DiscTotal = album.DiscTotal,
         IsFarRight = album.IsFarRight,
@@ -62,23 +61,5 @@ public static class AlbumMapper
         ReleaseDate = album.ReleaseDate,
         ReleaseType = album.ReleaseType,
         TrackTotal = album.TrackTotal
-    };
-    
-    private static Artist ProxyArtist(long id) => new()
-    {
-        Id = id,
-        Name = string.Empty
-    };
-    
-    private static Release ProxyRelease(long id) => new()
-    {
-        Id = id,
-        CatalogNumber = string.Empty
-    };
-    
-    private static Genre ProxyGenre(long id) => new()
-    {
-        Id = id,
-        Name = string.Empty
     };
 }

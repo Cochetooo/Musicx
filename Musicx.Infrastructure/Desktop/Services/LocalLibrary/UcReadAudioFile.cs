@@ -4,7 +4,7 @@ using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Domain.Enums;
-using Musicx.Domain.Models;
+
 
 namespace Musicx.Infrastructure.Desktop.Services.LocalLibrary;
 
@@ -52,7 +52,7 @@ public class UcReadAudioFile(
                 ArtworkUrl = track.AdditionalFields.GetValueOrDefault("AlbumArtworkUrl"),
                 DiscTotal = track.DiscTotal,
                 Name = track.Album,
-                ReleaseDate = track.OriginalReleaseDate,
+                OriginalReleaseDate = track.OriginalReleaseDate,
                 ReleaseType = EnumHelper.ParseOrDefault(track.AdditionalFields.GetValueOrDefault("ReleaseType", "Unknown"), ReleaseType.Unknown),
                 TrackTotal = track.TrackTotal
             };

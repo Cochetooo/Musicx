@@ -2,11 +2,8 @@ using Musicx.Contracts.Dto.Enums;
 
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InArtist
+public sealed class InArtist : BaseInputModel
 {
-    // Primary Key
-    public long Id { get; set; }
-    
     // Required Columns
     public ArtistDiscriminator Discriminator { get; set; }
     public string Name { get; set; } = string.Empty;

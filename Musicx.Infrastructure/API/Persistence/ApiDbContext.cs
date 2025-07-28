@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Musicx.Application.Shared.Interfaces.Common;
-using Musicx.Domain.Models;
+
 
 namespace Musicx.Infrastructure.API.Persistence;
 

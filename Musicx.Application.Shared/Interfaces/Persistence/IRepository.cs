@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Application.Shared.Interfaces.Persistence;
 
@@ -8,8 +9,9 @@ namespace Musicx.Application.Shared.Interfaces.Persistence;
 /// </summary>
 /// <typeparam name="T">A class inheriting from BaseEntity</typeparam>
 /// <since>0.6.0</since>
-public interface IRepository<T>
-    where T : BaseModel
+public interface IRepository<TIn, TOut>
+    where TIn : BaseInputModel
+    where TOut : BaseOutputModel
 {
     /// <summary>
     /// Delete an entity.
@@ -32,7 +34,7 @@ public interface IRepository<T>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
     /// <returns>An entity if the identifier has been found in the database, else <b>null</b></returns>
     /// <since>0.6.0</since>
-    Task<T?> FindByIdAsync(long id, IQuerySpecification<T>? songQuerySpecification = null);
+    Task<TOut?> FindByIdAsync(long id, IQuerySpecification<TIn>? songQuerySpecification = null);
     
     /// <summary>
     /// Retrieve all entities that matches filter criteria, or all entities if no filter is specified.
@@ -43,11 +45,11 @@ public interface IRepository<T>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
     /// <returns>A collection of entities as <b>List</b>, empty if no entity has been found matching filter criteria.</returns>
     /// <since>0.6.0</since>
-    Task<List<T>> FindAsync(
+    Task<List<TOut>> FindAsync(
         int skip = 0, 
         int take = 100, 
-        Expression<Func<T, bool>>? filter = null,
-        IQuerySpecification<T>? songQuerySpecification = null);
+        Expression<Func<TIn, bool>>? filter = null,
+        IQuerySpecification<TIn>? songQuerySpecification = null);
 
     /// <summary>
     /// Retrieve entities corresponding to all identifiers prompted.
@@ -56,7 +58,7 @@ public interface IRepository<T>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
     /// <returns>A collection of entities as <b>List</b>, empty if no entity matches the IDs.</returns>
     /// <since>0.6.0</since>
-    Task<List<T>> FindIn(IEnumerable<long> ids, IQuerySpecification<T>? songQuerySpecification = null);
+    Task<List<TOut>> FindIn(IEnumerable<long> ids, IQuerySpecification<TIn>? songQuerySpecification = null);
     
     /// <summary>
     /// Get the number of entities in this table.
@@ -70,7 +72,7 @@ public interface IRepository<T>
     /// <param name="entity">The entity to be persisted</param>
     /// <returns>The id of the entity persisted (can be useful when creating and wanting to retrieve the ID afterwards)</returns>
     /// <since>0.6.0</since>
-    Task<long> SaveAsync(T entity);
+    Task<long> SaveAsync(TIn entity);
 
     /// <summary>
     /// Create or update a collection of entities depending on the ID being set or not for each.
@@ -78,5 +80,5 @@ public interface IRepository<T>
     /// <param name="entities">The entities to be persisted</param>
     /// <returns>A list of the ids of the entities persisted (can be useful when creating and wanting to retrieve the IDs afterwards)</returns>
     /// <since>0.6.0</since>
-    Task<List<long>> SaveAllAsync(IEnumerable<T> entities);
+    Task<List<long>> SaveAllAsync(IEnumerable<TIn> entities);
 }

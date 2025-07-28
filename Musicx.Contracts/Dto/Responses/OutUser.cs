@@ -1,9 +1,7 @@
 namespace Musicx.Contracts.Dto.Responses;
 
-public sealed class OutUser
+public sealed class OutUser : BaseOutputModel
 {
-    public long Id { get; set; }
-    
     public string Email { get; set; } = null!;
     public bool EmailConfirmed { get; set; }
     public string PasswordHash { get; set; } = null!;

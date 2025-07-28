@@ -2,13 +2,8 @@ using Musicx.Domain.Enums;
 
 namespace Musicx.Contracts.Dto.Responses;
 
-public sealed class OutSong
+public sealed class OutSong : BaseOutputModel
 {
-    public long Id { get; set; }
-    
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    
     public OutAlbum? Album { get; set; }
     public OutArtist? Artist { get; set; }
     public IReadOnlyList<OutGenre> PrimaryGenres { get; set; } = new List<OutGenre>();

@@ -1,5 +1,6 @@
 using Musicx.Application.Shared.Interfaces.Persistence;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+
 
 namespace Musicx.Application.Desktop.Specifications;
 
@@ -7,7 +8,7 @@ namespace Musicx.Application.Desktop.Specifications;
 /// Specify the relation to include when retrieving artist from repository.
 /// </summary>
 /// <since>0.6.1</since>
-public class ArtistQuerySpecification : IQuerySpecification<Artist>
+public class ArtistQuerySpecification : IQuerySpecification<InArtist>
 {
     /// <summary>
     /// Include members if this artist is a band.

@@ -2,21 +2,16 @@ using Musicx.Domain.Enums;
 
 namespace Musicx.Contracts.Dto.Responses;
 
-public sealed class OutAlbum
+public sealed class OutAlbum : BaseOutputModel
 {
-    public long Id { get; set; }
-    
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    
     public OutArtist? Artist { get; set; }
-    public ICollection<OutRelease> Releases { get; set; } = new List<OutRelease>();
-    public ICollection<OutGenre> PrimaryGenres { get; set; } = new List<OutGenre>();
-    public ICollection<OutGenre> InfluenceGenres { get; set; } = new List<OutGenre>();
+    public ICollection<OutRelease>? Releases { get; set; }
+    public ICollection<OutGenre>? PrimaryGenres { get; set; }
+    public ICollection<OutGenre>? InfluenceGenres { get; set; }
     
     public string? ArtworkUrl { get; set; }
     public int? DiscTotal { get; set; }
-    public bool? IsFarRight { get; set; }
+    public bool IsFarRight { get; set; }
     public string Name { get; set; } = null!;
     public DateTime? ReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }

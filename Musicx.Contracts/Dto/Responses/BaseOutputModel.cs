@@ -1,6 +1,6 @@
-namespace Musicx.Domain.Models;
+﻿namespace Musicx.Contracts.Dto.Responses;
 
-public class BaseModel
+public class BaseOutputModel
 {
     public long Id { get; set; }
     

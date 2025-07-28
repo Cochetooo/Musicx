@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Musicx.Contracts\Musicx.Contracts.csproj" />
-      <ProjectReference Include="..\Musicx.Domain\Musicx.Domain.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 using Musicx.Application.Shared.Interfaces.Persistence;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+
 
 namespace Musicx.Application.Api.Interfaces.Specifications;
 
@@ -7,7 +8,7 @@ namespace Musicx.Application.Api.Interfaces.Specifications;
 /// Specify the relation to include when retrieving genre from repository.
 /// </summary>
 /// <since>0.6.1</since>
-public record GenreQuerySpecification : IQuerySpecification<Genre>
+public record GenreQuerySpecification : IQuerySpecification<InGenre>
 {
     /// <summary>
     /// Include children genres of this genre.

@@ -1,4 +1,4 @@
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
 
 namespace Musicx.Application.Shared.Interfaces.Persistence;
 
@@ -8,4 +8,4 @@ namespace Musicx.Application.Shared.Interfaces.Persistence;
 /// <typeparam name="T">A base model type</typeparam>
 /// <since>0.6.1</since>
 public interface IQuerySpecification<T>
-    where T : BaseModel;
+    where T : BaseInputModel;

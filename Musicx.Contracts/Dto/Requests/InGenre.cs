@@ -1,10 +1,7 @@
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InGenre
+public sealed class InGenre : BaseInputModel
 {
-    // Primary Key
-    public long Id { get; set; }
-    
     // Required Relationships
     public IReadOnlyList<long> ChildIds { get; set; } = [];
     public IReadOnlyList<long> ParentIds { get; set; } = [];

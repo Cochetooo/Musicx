@@ -1,20 +1,21 @@
 ﻿using Musicx.Application.Shared.Interfaces.Persistence;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Application.Api.Interfaces.Persistence;
 
-public interface IAlbumRepository : IRepository<Album>
+public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
 {
-    Task<List<Album>> FindByArtistIdAsync(long artistId, 
-        IQuerySpecification<Album>? albumQuerySpecification = null);
-    Task<List<Album>> FindByGenreIdAsync(long genreId, 
+    Task<List<OutAlbum>> FindByArtistIdAsync(long artistId, 
+        IQuerySpecification<InAlbum>? albumQuerySpecification = null);
+    Task<List<OutAlbum>> FindByGenreIdAsync(long genreId, 
         int genreOptions,
         int skip = 0, 
         int take = 100,
-        IQuerySpecification<Album>? albumQuerySpecification = null);
+        IQuerySpecification<InAlbum>? albumQuerySpecification = null);
 }
-public interface IArtistRepository : IRepository<Artist>;
-public interface IGenreRepository : IRepository<Genre>;
-public interface ILabelRepository : IRepository<Label>;
-public interface IReleaseRepository : IRepository<Release>;
-public interface ISongRepository : IRepository<Song>;
+public interface IArtistRepository : IRepository<InArtist, OutArtist>;
+public interface IGenreRepository : IRepository<InGenre, OutGenre>;
+public interface ILabelRepository : IRepository<InLabel, OutLabel>;
+public interface IReleaseRepository : IRepository<InRelease, OutRelease>;
+public interface ISongRepository : IRepository<InSong, OutSong>;

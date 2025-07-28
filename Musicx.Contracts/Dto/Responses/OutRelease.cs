@@ -1,9 +1,7 @@
 namespace Musicx.Contracts.Dto.Responses;
 
-public sealed class OutRelease
+public sealed class OutRelease : BaseOutputModel
 {
-    public long Id { get; set; }
-    
     public OutAlbum Album { get; set; } = null!;
     public OutLabel? Label { get; set; }
 

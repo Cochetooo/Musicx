@@ -2,15 +2,12 @@ using Musicx.Domain.Enums;
 
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InAlbum
+public sealed class InAlbum : BaseInputModel
 {
-    // Primary Key
-    public long Id { get; set; }
-    
     // Required Relationships
-    public IReadOnlyList<long> ReleaseIds { get; set; } = [];
-    public IReadOnlyList<long> PrimaryGenreIds { get; set; } = [];
-    public IReadOnlyList<long> InfluenceGenreIds { get; set; } = [];
+    public IReadOnlyList<long>? ReleaseIds { get; set; }
+    public IReadOnlyList<long>? PrimaryGenreIds { get; set; }
+    public IReadOnlyList<long>? InfluenceGenreIds { get; set; }
     
     // Required Columns
     public string Name { get; set; } = string.Empty;
@@ -21,7 +18,7 @@ public sealed class InAlbum
     // Optional Columns
     public string? ArtworkUrl { get; set; }
     public int? DiscTotal { get; set; }
-    public bool? IsFarRight { get; set; }
+    public bool IsFarRight { get; set; }
     public DateTime? ReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }
     public int? TrackTotal { get; set; }

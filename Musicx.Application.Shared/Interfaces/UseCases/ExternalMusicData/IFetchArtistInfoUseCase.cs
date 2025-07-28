@@ -1,6 +1,6 @@
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Contracts.Dto.Responses;
-using Musicx.Domain.Models;
+
 
 namespace Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 

@@ -1,14 +1,14 @@
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InLabel(
-    // Primary Key
-    long Id,
-    
+public sealed class InLabel : BaseInputModel
+{
     // Required Relationships
-    IReadOnlyList<long> ReleaseIds,
+    public IReadOnlyList<long> ReleaseIds { get; set; } = [];
     
     // Required Columns
-    string Name,
+    public string Name { get; set; } = null!;
     
     // Optional Columns
-    string? Description);
+    public string? Description { get; set; }
+}
+    

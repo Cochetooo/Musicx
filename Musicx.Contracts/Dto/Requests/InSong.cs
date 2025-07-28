@@ -2,7 +2,7 @@ using Musicx.Domain.Enums;
 
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InSong
+public sealed class InSong : BaseInputModel
 {
     // Primary Key
     public long Id { get; set; }

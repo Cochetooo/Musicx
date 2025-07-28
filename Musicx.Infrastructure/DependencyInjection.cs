@@ -110,6 +110,7 @@ public static class DependencyInjection
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
             options.EnableSensitiveDataLogging();
         });
+        services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
         
         // Repositories
         services.AddScoped<Application.Api.Interfaces.Persistence.ISongRepository, API.Persistence.Repositories.SongRepository>();

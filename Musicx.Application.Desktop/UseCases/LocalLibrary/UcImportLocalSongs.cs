@@ -2,7 +2,8 @@ using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+
 
 namespace Musicx.Application.Desktop.UseCases.LocalLibrary;
 
@@ -45,9 +46,9 @@ public sealed class UcImportLocalSongs(
         var successfulFileCount = 0;
         var failedFileCount = 0;
         
-        var songs = new ConcurrentBag<Song>();
-        var albumsByName = new ConcurrentDictionary<string, Album>();
-        var artistsByName = new ConcurrentDictionary<string, Artist>();
+        var songs = new ConcurrentBag<InSong>();
+        var albumsByName = new ConcurrentDictionary<string, InAlbum>();
+        var artistsByName = new ConcurrentDictionary<string, InArtist>();
 
         // Create multithreaded tasks
         var tasks = audioFiles.Select(async filePath =>
@@ -84,9 +85,9 @@ public sealed class UcImportLocalSongs(
                     album = existingAlbum;
                 }
 
-                song.Artist = artist;
-                song.Album = album;
-                album.Artist = artist;
+                song.ArtistId = artist.Id;
+                song.AlbumId = album.Id;
+                album.ArtistId = artist.Id;
                 
                 songs.Add(song);
                 

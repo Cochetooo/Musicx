@@ -1,17 +1,16 @@
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InRelease(
-    // Primary Key
-    long Id,
-    
+public sealed class InRelease : BaseInputModel
+{
     // Required Relationships
-    long AlbumId,
+    public long AlbumId { get; set; }
     
     // Required Columns
-    string CatalogNumber,
+    public string CatalogNumber { get; set; } = null!;
 
     // Optional Relationships
-    long? LabelId,
+    public long? LabelId { get; set; }
     
     // Optional Columns
-    DateTime? ReleaseDate);
+    public DateTime? ReleaseDate { get; set; }
+}

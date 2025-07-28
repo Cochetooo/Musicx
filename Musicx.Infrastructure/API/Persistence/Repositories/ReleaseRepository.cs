@@ -5,7 +5,7 @@ using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
-using Musicx.Domain.Models;
+
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 

@@ -2,13 +2,8 @@ using Musicx.Contracts.Dto.Enums;
 
 namespace Musicx.Contracts.Dto.Responses;
 
-public sealed class OutArtist
+public sealed class OutArtist : BaseOutputModel
 {
-    public long Id { get; set; }
-        
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    
     public string? ArtworkUrl { get; set; }
     public string? Country { get; set; }
     public ArtistDiscriminator Discriminator { get; set; }

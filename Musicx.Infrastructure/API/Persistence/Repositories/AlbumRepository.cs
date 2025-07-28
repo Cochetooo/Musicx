@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using System.Net.Mime;
 using System.Text;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
@@ -8,7 +9,10 @@ using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Shared.Options;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Mappers;
+
 using Musicx.Infrastructure.Shared.Exceptions;
 using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
@@ -17,83 +21,63 @@ namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class AlbumRepository(
     ApiDbContext context,
+    IDbConnectionFactory connectionFactory,
     ILoggerProvider loggerProvider) : IAlbumRepository
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumRepository));
     
     public async Task DeleteAsync(long id)
     {
-        const string sql = "DELETE FROM \"Albums\" WHERE \"Id\" = @id";
+        const string sql = "DELETE FROM albums WHERE album_id = @id";
         var parameters = new List<NpgsqlParameter>
         {
             new("@id", id)
         };
-        
-        await using var transaction = await context.Database.BeginTransactionAsync();
 
-        try
-        {
-            _logger.LogDebug(SqlDebugHelper.InterpolateQuery(sql, parameters));
-            await context.Database.ExecuteSqlRawAsync(sql, parameters.Cast<object>().ToArray());
-            await transaction.CommitAsync();
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new RepositoryException($"❌ Could not delete id {id}", ex, _logger);
-        }
+        await connectionFactory.ExecuteTransactionAsync(_logger, (sql, parameters));
     }
 
     public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
         var stringIds = string.Join(",", ids);
-        const string deleteAllSql = "DELETE FROM \"Albums\" WHERE \"Id\" IN (@ids)";
+        const string sql = "DELETE FROM \"Albums\" WHERE \"Id\" IN (@ids)";
         var parameters = new List<NpgsqlParameter>
         {
             new("@Ids", stringIds)
         };
-
-        await using var transaction = await context.Database.BeginTransactionAsync();
         
-        try
-        {
-            _logger.LogDebug(SqlDebugHelper.InterpolateQuery(deleteAllSql, parameters));
-            await context.Database.ExecuteSqlRawAsync(deleteAllSql, parameters.Cast<object>().ToArray());
-            await transaction.CommitAsync();
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new RepositoryException($"📜❌ Could not delete ids {stringIds}", ex, _logger);
-        }
+        await connectionFactory.ExecuteTransactionAsync(_logger, (sql, parameters));
     }
 
-    public async Task<Album?> FindByIdAsync(long id, IQuerySpecification<Album>? albumQuerySpecification = null)
+    public async Task<OutAlbum?> FindByIdAsync(long id, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
-        var findByIdSql = "SELECT * FROM \"Albums\"";
+        var sql = DynamicSelect(albumQuerySpecification);
+        sql += " WHERE albums.album_id = @id";
+        
         var parameters = new List<NpgsqlParameter>
         {
             new("@id", id)
         };
 
-        findByIdSql = AppendJoins(findByIdSql, albumQuerySpecification);
-        findByIdSql += " WHERE \"Albums\".\"Id\" = @id";
+        var result = await connectionFactory.FetchListDynamicAsync(sql, parameters);
+
+        if (result.Count > 0)
+        {
+            return null;
+        }
+
+        var json = JsonSerializer.Serialize(result);
         
-        _logger.LogDebug(SqlDebugHelper.InterpolateQuery(findByIdSql, parameters));
-        return await context.Albums
-            .FromSqlRaw(findByIdSql, parameters.Cast<object>().ToArray())
-            .AsNoTracking()
-            .FirstOrDefaultAsync();
+        
     }
     
-    public async Task<List<Album>> FindByArtistIdAsync(long artistId, IQuerySpecification<Album>? albumQuerySpecification = null)
+    public async Task<List<OutAlbum>> FindByArtistIdAsync(long artistId, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
-        var findByArtistSql = "SELECT * FROM \"Albums\"";
         var parameters = new List<NpgsqlParameter>
         {
             new("@artistId", artistId)
         };
-        findByArtistSql = AppendJoins(findByArtistSql, albumQuerySpecification);
+        var findByArtistSql = DynamicSelect(albumQuerySpecification);
         findByArtistSql += " WHERE \"ArtistId\" = @artistId ORDER BY \"ReleaseDate\", \"Name\"";
         
         _logger.LogDebug(SqlDebugHelper.InterpolateQuery(findByArtistSql, parameters));
@@ -103,11 +87,11 @@ internal sealed class AlbumRepository(
             .ToListAsync();
     }
     
-    public async Task<List<Album>> FindByGenreIdAsync(long genreId, 
+    public async Task<List<OutAlbum>> FindByGenreIdAsync(long genreId, 
         int genreOptions,
         int skip = 0,
         int take = 100,
-        IQuerySpecification<Album>? albumQuerySpecification = null)
+        IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
         const int validMask = GenreOptions.PrimaryGenre | GenreOptions.InfluenceGenre;
 
@@ -140,7 +124,7 @@ internal sealed class AlbumRepository(
         
         var findByGenreSql = $"""
                               SELECT DISTINCT a.*
-                              FROM "Albums" a
+                              FROM albums a
                               {string.Join("\n", joins)}
                               WHERE {string.Join(" OR ", whereConditions)}
                               ORDER BY a."ReleaseDate", a."Name"
@@ -154,8 +138,8 @@ internal sealed class AlbumRepository(
             .ToListAsync();
     }
 
-    public async Task<List<Album>> FindAsync(int skip = 0, int take = 100, Expression<Func<Album, bool>>? filter = null,
-        IQuerySpecification<Album>? albumQuerySpecification = null)
+    public async Task<List<OutAlbum>> FindAsync(int skip = 0, int take = 100, Expression<Func<InAlbum, bool>>? filter = null,
+        IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
         _logger.LogDebug("📄 SQL : SELECT * FROM albums");
         
@@ -177,7 +161,7 @@ internal sealed class AlbumRepository(
             .ToListAsync();
     }
 
-    public async Task<List<Album>> FindIn(IEnumerable<long> ids, IQuerySpecification<Album>? albumQuerySpecification = null)
+    public async Task<List<OutAlbum>> FindIn(IEnumerable<long> ids, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
         var idList = ids.ToArray();
         if (0 == idList.Length)
@@ -186,8 +170,8 @@ internal sealed class AlbumRepository(
         }
         
         var stringIds = string.Join(",", idList);
-        var findInSql = $"SELECT * FROM \"Albums\"";
-        findInSql = AppendJoins(findInSql, albumQuerySpecification);
+        var findInSql = $"SELECT * FROM albums";
+        findInSql = DynamicSelect(findInSql, albumQuerySpecification);
         findInSql += $" WHERE \"Id\" IN ({stringIds}) ORDER BY \"ReleaseDate\", \"Name\"";
         
         _logger.LogDebug($"📜 SQL : {findInSql}");
@@ -199,12 +183,12 @@ internal sealed class AlbumRepository(
 
     public async Task<int> GetCountAsync()
     {
-        const string countSql = "SELECT COUNT(*) FROM \"Albums\"";
+        const string countSql = "SELECT COUNT(*) FROM albums";
         _logger.LogDebug($"📜 SQL : {countSql}");
         return await context.Database.ExecuteSqlRawAsync(countSql);
     }
 
-    public async Task<long> SaveAsync(Album entity)
+    public async Task<long> SaveAsync(InAlbum entity)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -238,7 +222,7 @@ internal sealed class AlbumRepository(
             else
             {
                 _logger.LogDebug($"📄 SQL : UPDATE artists SET Name={entity.Name}, " +
-                                 $"ArtworkUrl={entity.ArtworkUrl}, ReleaseDate={entity.ReleaseDate}" +
+                                 $"ArtworkUrl={entity.ArtworkUrl}, ReleaseDate={entity.OriginalReleaseDate}" +
                                  $"WHERE Id = {entity.Id}");
                 
                 var existingAlbum = await context.Albums
@@ -248,7 +232,7 @@ internal sealed class AlbumRepository(
 
                 existingAlbum.Name = entity.Name;
                 existingAlbum.ArtworkUrl = entity.ArtworkUrl;
-                existingAlbum.ReleaseDate = entity.ReleaseDate;
+                existingAlbum.OriginalReleaseDate = entity.OriginalReleaseDate;
                 existingAlbum.IsFarRight = entity.IsFarRight;
                 existingAlbum.DiscTotal = entity.DiscTotal;
                 existingAlbum.TrackTotal = entity.TrackTotal;
@@ -299,7 +283,7 @@ internal sealed class AlbumRepository(
         }
     }
 
-    public async Task<List<long>> SaveAllAsync(IEnumerable<Album> entities)
+    public async Task<List<long>> SaveAllAsync(IEnumerable<InAlbum> entities)
     {
         _logger.LogDebug("📄 SAVE ALL Album");
         
@@ -335,33 +319,37 @@ internal sealed class AlbumRepository(
         }
     }
 
-    private static string AppendJoins(string baseSql, IQuerySpecification<Album>? querySpecification = null)
+    private static string DynamicSelect(IQuerySpecification<InAlbum>? querySpecification = null)
     {
         if (querySpecification is not AlbumQuerySpecification albumQuerySpecification)
         {
-            return baseSql;
+            return "SELECT al0.* FROM albums al0";
         }
 
-        var stringBuilder = new StringBuilder(baseSql);
+        var selects = new List<string> { "al0.*" };
+        var joins = new List<string>();
 
         if (albumQuerySpecification.IncludeArtist)
         {
-            stringBuilder.Append(" INNER JOIN \"Artists\" ON \"Albums\".\"ArtistId\" = \"Artists\".\"Id\"");
+            selects.Add("ar0.*");
+            joins.Add("INNER JOIN artists ar0 ON al0.album_artist_id = ar0.artist_id");
         }
 
         if (albumQuerySpecification.IncludePrimaryGenres)
         {
-            stringBuilder.Append(" LEFT JOIN \"Album_Genre\" apg ON \"Albums\".\"Id\" = apg.\"AlbumId\"" +
-                                 " LEFT JOIN \"Genres\" pg ON apg.\"GenreId\" = pg.\"Id\"");
+            selects.Add("pg.*");
+            joins.Add("LEFT JOIN \"Album_Genre\" apg ON al0.\"Id\" = apg.\"AlbumId\"");
+            joins.Add("LEFT JOIN \"Genres\" pg ON apg.\"GenreId\" = pg.\"Id\"");
         }
-        
+
         if (albumQuerySpecification.IncludeInfluenceGenres)
         {
-            stringBuilder.Append(" LEFT JOIN \"Album_Influence\" aig ON \"Albums\".\"Id\" = aig.\"AlbumId\" " +
-                                 " LEFT JOIN \"Genres\" ig ON aig.\"GenreId\" = ig.\"Id\"");
+            selects.Add("ig.*");
+            joins.Add("LEFT JOIN \"Album_Influence\" aig ON al0.\"Id\" = aig.\"AlbumId\"");
+            joins.Add("LEFT JOIN \"Genres\" ig ON aig.\"GenreId\" = ig.\"Id\"");
         }
-        
-        return stringBuilder.ToString();
+
+        return $"SELECT {string.Join(", ", selects)} FROM \"Albums\" al0 {string.Join(" ", joins)}";
     }
 
     private static IQueryable<Album> GetIncludes(IQueryable<Album> query, IQuerySpecification<Album>? querySpecification = null)

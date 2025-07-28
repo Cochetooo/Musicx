@@ -1,4 +1,4 @@
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Application.Shared.Interfaces.Persistence;
 
@@ -8,7 +8,7 @@ namespace Musicx.Application.Shared.Interfaces.Persistence;
 /// <typeparam name="T">An entity</typeparam>
 /// <since>0.6.0</since>
 public interface ICache<T>
-    where T : BaseModel
+    where T : BaseOutputModel
 {
     /// <summary>
     /// Get an entity from the cache.

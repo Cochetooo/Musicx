@@ -23,7 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Musicx.Domain\Musicx.Domain.csproj" />
       <ProjectReference Include="..\Musicx.Infrastructure\Musicx.Infrastructure.csproj" />
     </ItemGroup>
 

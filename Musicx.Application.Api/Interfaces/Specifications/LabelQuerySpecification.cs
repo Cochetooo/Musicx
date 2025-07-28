@@ -1,5 +1,6 @@
 using Musicx.Application.Shared.Interfaces.Persistence;
-using Musicx.Domain.Models;
+using Musicx.Contracts.Dto.Requests;
+
 
 namespace Musicx.Application.Api.Interfaces.Specifications;
 
@@ -7,7 +8,7 @@ namespace Musicx.Application.Api.Interfaces.Specifications;
 /// Specify the relation to include when retrieving label from repository.
 /// </summary>
 /// <since>0.6.1</since>
-public class LabelQuerySpecification : IQuerySpecification<Label>
+public class LabelQuerySpecification : IQuerySpecification<InLabel>
 {
     /// <summary>
     /// Include the releases issued by this label.

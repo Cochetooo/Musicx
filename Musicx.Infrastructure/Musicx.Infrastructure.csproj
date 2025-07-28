@@ -16,7 +16,6 @@
       <ProjectReference Include="..\Musicx.Application.Shared\Musicx.Application.Shared.csproj" />
       <ProjectReference Include="..\Musicx.Application.Desktop\Musicx.Application.Desktop.csproj" />
       <ProjectReference Include="..\Musicx.Application.Web\Musicx.Application.Web.csproj" />
-      <ProjectReference Include="..\Musicx.Domain\Musicx.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
