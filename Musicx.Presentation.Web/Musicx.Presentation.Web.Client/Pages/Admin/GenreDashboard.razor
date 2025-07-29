@@ -173,7 +173,7 @@
     {
         _logger.LogInformation("🔄️ GenreDashboard : UPDATE Data");
 
-        _genres = await UcList.ExecuteAsync(take: 100);
+        _genres = await UcList.ExecuteAsync(take: 2000);
         _filteredGenres = new List<OutGenre>(_genres);
         
         StateHasChanged();

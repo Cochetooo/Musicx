@@ -78,7 +78,7 @@
     
     private bool _isConfirmable;
 
-    private Modal _modalRef;
+    private Modal _modalRef = null!;
     
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
@@ -92,10 +92,10 @@
         
         _logger = LoggerProvider.CreateLogger(nameof(GenreEditModal));
         
-        var result = await UcList.ExecuteAsync(query: "parents_children");
+        var result = await UcList.ExecuteAsync(take: 2000, query: "parents_children");
         
         _genres = result
-            .Where(g => g.Parents.Count == 0)
+            .Where(g => g.Parents is null)
             .ToList();
     }
 

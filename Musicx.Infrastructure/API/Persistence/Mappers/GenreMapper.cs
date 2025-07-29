@@ -9,6 +9,12 @@ namespace Musicx.Infrastructure.API.Persistence.Mappers;
 
 public static class GenreMapper
 {
+    private static readonly JsonSerializerOptions GenreMapperJsonOptions = new()
+    {
+        PropertyNamingPolicy = new DbToOutModelPolicy("genre"),
+        PropertyNameCaseInsensitive = true,
+    };
+    
     public static OutGenre FromDicoToGenre(this IDictionary<string, object?> genre) => new()
     {
         Id = genre.SafeGet<long>(GenreColumns.Id),
@@ -17,12 +23,16 @@ public static class GenreMapper
         UpdatedAt = genre.SafeGet<DateTime>(GenreColumns.UpdatedAt),
         
         Parents = genre.TryGetValue("parents", out var parentValue)
-            ? JsonSerializer.Deserialize<OutGenre[]>(parentValue as string ?? string.Empty)
-            : [],
+                && parentValue is JsonElement pvJson
+            ? JsonSerializer.Deserialize<OutGenre[]>(pvJson.GetRawText(),
+                GenreMapperJsonOptions)
+            : null,
         
         Children = genre.TryGetValue("children", out var childValue)
-            ? JsonSerializer.Deserialize<OutGenre[]>(childValue as string ?? string.Empty)
-            : [],
+                && childValue is JsonElement cvJson
+            ? JsonSerializer.Deserialize<OutGenre[]>(cvJson.GetRawText(),
+                GenreMapperJsonOptions)
+            : null,
         
         Color = genre.SafeGet<string>(GenreColumns.Color),
         Description = genre.SafeGet<string>(GenreColumns.Description),

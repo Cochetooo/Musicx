@@ -4,10 +4,10 @@
 
 @inject IFindInUseCase<OutGenre> UcFindIn
 
-<TreeView @ref="_treeView"
+<TreeView @ref="TreeView"
           Nodes="Genres"
           GetChildNodesAsync="LoadChildrenAsync"
-          HasChildNodes="@(g => g.Children.Count != 0)"
+          HasChildNodes="@(g => g.Children is not null)"
           Virtualize>
     <NodeContent>
         <Badge Style="@GetColor(context)" Margin="Margin.Is2.FromBottom" TextColor="TextColor.White">
@@ -26,7 +26,7 @@
 
 @code {
 
-    private TreeView<OutGenre> _treeView { get; set; }
+    private TreeView<OutGenre> TreeView { get; set; } = null!;
 
     [Parameter] public List<OutGenre> SelectedGenres { get; set; } = [];
     [Parameter] public EventCallback<List<OutGenre>> SelectedGenresChanged { get; set; }
@@ -34,7 +34,14 @@
     [Parameter] public bool Checkable { get; set; }
 
     private async Task<IEnumerable<OutGenre>> LoadChildrenAsync(OutGenre genre)
-        => await UcFindIn.ExecuteAsync(genre.Children.Select(g => g.Id), "children");
+    {
+        if (genre.Children != null)
+        {
+            return await UcFindIn.ExecuteAsync(genre.Children.Select(g => g.Id), "children");
+        }
+
+        return [];
+    }
 
     private string GetColor(OutGenre genre)
         => $"background-color: {genre.Color ?? "#80858a"}";

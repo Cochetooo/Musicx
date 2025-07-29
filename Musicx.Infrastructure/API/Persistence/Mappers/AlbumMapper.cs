@@ -11,14 +11,26 @@ namespace Musicx.Infrastructure.API.Persistence.Mappers;
 
 public static class AlbumMapper
 {
-    private static readonly JsonSerializerOptions AlbumMapperJsonOptions = new()
+    private static readonly JsonSerializerOptions GenreMapperJsonOptions = new()
     {
         PropertyNamingPolicy = new DbToOutModelPolicy("genre"),
         PropertyNameCaseInsensitive = true,
     };
-    
-    public static OutAlbum FromDicoToAlbum(this IDictionary<string, object?> album) => new()
-            {
+
+    public static OutAlbum FromDicoToAlbum(this IDictionary<string, object?> album)
+    {
+        var primaryGenres = album.TryGetValue("primary_genres", out var primaryGenreValue)
+                            && primaryGenreValue is not null
+            ? JsonSerializer.Deserialize<OutGenre[]>(primaryGenreValue as string ?? string.Empty,
+                GenreMapperJsonOptions)
+            : null;
+        var result = DebugDeserialization<OutGenre[]>(primaryGenreValue as string ?? string.Empty, GenreMapperJsonOptions);
+        foreach (var genre in result)
+        {
+            Console.WriteLine("result: " + genre.Name + " | " + genre.Id);
+        }
+        
+        return new OutAlbum {
                 Id = album.SafeGet<long>(AlbumColumns.Id),
 
                 CreatedAt = album.SafeGet<DateTime>(AlbumColumns.CreatedAt),
@@ -33,24 +45,17 @@ public static class AlbumMapper
                     },
 
                 Releases = album.TryGetValue("releases", out var releaseValue) 
-                           && releaseValue is not null
-                           && releaseValue.ToString() != "[null]"
-                    ? JsonSerializer.Deserialize<OutRelease[]>(releaseValue as string ?? string.Empty,
-                        AlbumMapperJsonOptions)
+                           && releaseValue is JsonElement rgvJson
+                    ? JsonSerializer.Deserialize<OutRelease[]>(rgvJson.GetRawText(),
+                        GenreMapperJsonOptions)
                     : null,
 
-                PrimaryGenres = album.TryGetValue("primary_genres", out var primaryGenreValue)
-                            && primaryGenreValue is not null
-                            && primaryGenreValue.ToString() != "[null]"
-                    ? JsonSerializer.Deserialize<OutGenre[]>(primaryGenreValue as string ?? string.Empty,
-                        AlbumMapperJsonOptions)
-                    : null,
+                PrimaryGenres = primaryGenres,
 
                 InfluenceGenres = album.TryGetValue("influence_genres", out var influenceGenreValue)
-                              && influenceGenreValue is not null
-                              && influenceGenreValue.ToString() != "[null]"
-                    ? JsonSerializer.Deserialize<OutGenre[]>(influenceGenreValue as string ?? string.Empty,
-                        AlbumMapperJsonOptions)
+                              && influenceGenreValue is JsonElement igvJson
+                    ? JsonSerializer.Deserialize<OutGenre[]>(igvJson.GetRawText(),
+                        GenreMapperJsonOptions)
                     : null,
 
                 ArtworkUrl = album.SafeGet<string>(AlbumColumns.ArtworkUrl),
@@ -64,6 +69,37 @@ public static class AlbumMapper
                 ReleaseType = album.SafeGet<ReleaseType?>(AlbumColumns.ReleaseType),
                 TrackTotal = album.SafeGet<int>(AlbumColumns.TrackTotal),
             };
+    }
+    
+    public static T? DebugDeserialization<T>(string json, JsonSerializerOptions options)
+    {
+        using var doc = JsonDocument.Parse(json);
+
+        Console.WriteLine("---- START DEBUG ----");
+        foreach (var element in doc.RootElement.EnumerateArray())
+        {
+            foreach (var prop in element.EnumerateObject())
+            {
+                var converted = options.PropertyNamingPolicy?.ConvertName(prop.Name);
+                Console.WriteLine($"JSON: {prop.Name} -> Policy: {converted}");
+            }
+        }
+        Console.WriteLine("---- END DEBUG ----");
+
+        try
+        {
+            Console.WriteLine(json);
+            var result = JsonSerializer.Deserialize<T>(json, options);
+            Console.WriteLine("Désérialisation OK.");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("EXCEPTION !");
+            Console.WriteLine(ex);
+            throw;
+        }
+    }
 
     public static InAlbum ToRaw(this OutAlbum album) => new()
     {

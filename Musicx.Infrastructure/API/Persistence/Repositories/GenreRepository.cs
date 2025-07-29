@@ -218,14 +218,14 @@ internal sealed class GenreRepository(
         {
             selects.Add($"json_agg(cg.*) FILTER (WHERE cg.{GenreColumns.Id} IS NOT NULL) AS children");
             joins.Add($"LEFT JOIN childrengenre_parentgenre cgpg ON g0.{GenreColumns.Id} = cgpg.{ChildrenGenreParentGenreColumns.ParentId}");
-            joins.Add($"LEFT JOIN genre cg ON cgpg.{ChildrenGenreParentGenreColumns.ChildId} = cg.{GenreColumns.Id}");
+            joins.Add($"LEFT JOIN genres cg ON cgpg.{ChildrenGenreParentGenreColumns.ChildId} = cg.{GenreColumns.Id}");
         }
         
         if (genreQuerySpecification.IncludeParents)
         {
             selects.Add($"json_agg(pg.*) FILTER (WHERE pg.{GenreColumns.Id} IS NOT NULL) AS parents");
             joins.Add($"LEFT JOIN childrengenre_parentgenre pgcg ON g0.{GenreColumns.Id} = pgcg.{ChildrenGenreParentGenreColumns.ChildId}");
-            joins.Add($"LEFT JOIN genre pg ON pgcg.{ChildrenGenreParentGenreColumns.ParentId} = pg.{GenreColumns.Id}");
+            joins.Add($"LEFT JOIN genres pg ON pgcg.{ChildrenGenreParentGenreColumns.ParentId} = pg.{GenreColumns.Id}");
         }
 
         return $"SELECT {string.Join(", ", selects)} FROM genres g0 {string.Join(" ", joins)}";

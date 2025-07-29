@@ -18,9 +18,10 @@ public sealed class DbToOutModelPolicy : JsonNamingPolicy
             name = name[(_prefixToTrim.Length+1)..];
         }
 
-        return string.Concat(
+        var result = string.Concat(
             name.Split('_', StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => char.ToUpperInvariant(s[0]) + s[1..])
-        );
+                .Select(s => char.ToUpperInvariant(s[0]) + s[1..]));
+
+        return result;
     }
 }
