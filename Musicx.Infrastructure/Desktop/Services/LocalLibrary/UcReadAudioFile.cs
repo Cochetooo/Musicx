@@ -53,7 +53,7 @@ public class UcReadAudioFile(
                 ArtworkUrl = track.AdditionalFields.GetValueOrDefault("AlbumArtworkUrl"),
                 DiscTotal = track.DiscTotal,
                 Name = track.Album,
-                ReleaseDate = track.OriginalReleaseDate,
+                OriginalReleaseDate = track.OriginalReleaseDate,
                 ReleaseType = EnumHelper.ParseOrDefault(track.AdditionalFields.GetValueOrDefault("ReleaseType", "Unknown"), ReleaseType.Unknown),
                 TrackTotal = track.TrackTotal
             };

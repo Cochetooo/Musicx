@@ -2,7 +2,7 @@ using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 
 
-namespace Musicx.Contracts.Mappers;
+namespace Musicx.Infrastructure.API.Persistence.Mappers;
 
 public static class SongMapper
 {

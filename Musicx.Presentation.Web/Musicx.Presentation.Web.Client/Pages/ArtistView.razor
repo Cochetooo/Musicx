@@ -194,9 +194,12 @@ else
                                                         </Div>
 
                                                         <Div Class="d-flex">
-                                                            @foreach (var genre in album.PrimaryGenres)
+                                                            @if (album.PrimaryGenres is not null)
                                                             {
-                                                                <GenreBadge Genre="@genre"/>
+                                                                @foreach (var genre in album.PrimaryGenres)
+                                                                {
+                                                                    <GenreBadge Genre="@genre"/>
+                                                                }
                                                             }
                                                         </Div>
                                                     </ListGroupItem>
@@ -313,11 +316,14 @@ else
         await UpdateChartAsync();
         
         _logger.LogInformation($"✅ Chart created.");
-
-        foreach (var album in _artistAlbums.Where(album => 0 < album.PrimaryGenres.Count))
+        
+        foreach (var album in _artistAlbums)
         {
-            album.PrimaryGenres = await UcFindInGenres.ExecuteAsync(album.PrimaryGenres.Select(g => g.Id).ToList());
-            StateHasChanged();
+            if (album.PrimaryGenres is not null && 0 < album.PrimaryGenres.Count)
+            {
+                album.PrimaryGenres = await UcFindInGenres.ExecuteAsync(album.PrimaryGenres.Select(g => g.Id).ToList());
+                StateHasChanged();
+            }
         }
         
         _logger.LogInformation($"✅ Album genres loaded.");
@@ -353,7 +359,7 @@ else
         var albumsWithDate = _artistAlbums
             .Where(a => a is
             {
-                ReleaseDate: not null, 
+                OriginalReleaseDate: not null, 
                 ReleaseType: ReleaseType.Lp or ReleaseType.Ep
             })
             .ToList();
@@ -365,11 +371,11 @@ else
             return;
         }
 
-        int minYear = albumsWithDate.Min(a => a.ReleaseDate!.Value.Year);
+        int minYear = albumsWithDate.Min(a => a.OriginalReleaseDate!.Value.Year);
         int maxYear = _artist.SplitDate?.Year ?? DateTime.Now.Year;
 
         var grouped = albumsWithDate
-            .GroupBy(a => a.ReleaseDate!.Value.Year)
+            .GroupBy(a => a.OriginalReleaseDate!.Value.Year)
             .ToDictionary(g => g.Key, g => g.Count());
 
         _releaseCountPerYears = Enumerable

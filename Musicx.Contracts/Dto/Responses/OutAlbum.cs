@@ -10,10 +10,13 @@ public sealed class OutAlbum : BaseOutputModel
     public ICollection<OutGenre>? InfluenceGenres { get; set; }
     
     public string? ArtworkUrl { get; set; }
+    public DateTime? BeginRecordDate { get; set; }
     public int? DiscTotal { get; set; }
+    public DateTime? EndRecordDate { get; set; }
     public bool IsFarRight { get; set; }
+    public string? Language { get; set; }
     public string Name { get; set; } = null!;
-    public DateTime? ReleaseDate { get; set; }
+    public DateTime? OriginalReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }
     public int? TrackTotal { get; set; }
 }

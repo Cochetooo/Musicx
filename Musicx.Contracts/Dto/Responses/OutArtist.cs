@@ -6,8 +6,11 @@ public sealed class OutArtist : BaseOutputModel
 {
     public string? ArtworkUrl { get; set; }
     public string? Country { get; set; }
+    public string? Description { get; set; }
     public ArtistDiscriminator Discriminator { get; set; }
     public string Name { get; set; } = null!;
+    public string? Region { get; set; }
+    public string? Town { get; set; }
 
     public IReadOnlyList<OutArtist> Members { get; set; } = [];
     public DateTime? FormationDate { get; set; }

@@ -48,8 +48,8 @@ public interface IRepository<TIn, TOut>
     Task<List<TOut>> FindAsync(
         int skip = 0, 
         int take = 100, 
-        Expression<Func<TIn, bool>>? filter = null,
-        IQuerySpecification<TIn>? songQuerySpecification = null);
+        IQuerySpecification<TIn>? songQuerySpecification = null,
+        string? filter = null);
 
     /// <summary>
     /// Retrieve entities corresponding to all identifiers prompted.

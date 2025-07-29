@@ -87,8 +87,8 @@ internal sealed class SongRepository(
             .FirstOrDefaultAsync(s => s.Id == id);*/
     }
 
-    public async Task<List<OutSong>> FindAsync(int skip = 0, int take = 100, Expression<Func<InSong, bool>>? filter = null,
-        IQuerySpecification<InSong>? songQuerySpecification = null)
+    public async Task<List<OutSong>> FindAsync(int skip = 0, int take = 100,
+        IQuerySpecification<InSong>? songQuerySpecification = null, string? filter = null)
     {
         _logger.LogDebug($"📄 SQL : SELECT * FROM songs");
         return [];

@@ -1,19 +1,17 @@
 @using System.Text.Json
-@using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData
 @using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Contracts.Mappers
 @using Musicx.Domain.Enums
+@using Musicx.Infrastructure.API.Persistence.Mappers
 @using Musicx.Presentation.Web.Client.Components
-
 @inject ILoggerProvider LoggerProvider
 @inject IListUseCase<OutGenre> UcListGenres
 @inject ISaveUseCase<InAlbum> UcSave
 @inject HttpClient Http
 
-<!-- <Modal @ref="_modalRef">
+<Modal @ref="_modalRef">
     <ModalContent Size="ModalSize.Large" Centered>
         <ModalHeader>
             <ModalTitle>Album Editing</ModalTitle>
@@ -87,7 +85,7 @@
                         Release Date
                     </FieldLabel>
                     <FieldBody>
-                        <DatePicker TValue="DateTime?" @bind-Date="@_album.ReleaseDate" />
+                        <DatePicker TValue="DateTime?" @bind-Date="@_album.OriginalReleaseDate" />
                     </FieldBody>
                 </Field>
                 
@@ -174,7 +172,7 @@
                         National Socialist Content
                     </FieldLabel>
                     <FieldBody>
-                        <Check TValue="bool?" @bind-Checked="_album.IsFarRight" />
+                        <Check TValue="bool" @bind-Checked="@_album.IsFarRight" />
                     </FieldBody>
                 </Field>
             </Fields>
@@ -185,7 +183,7 @@
             <Button Color="Color.Secondary" Clicked="Hide">Close</Button>
         </ModalFooter>
     </ModalContent>
-</Modal> -->
+</Modal>
 
 @code {
 
@@ -197,9 +195,9 @@
     private OutArtist? _artist;
     private InAlbum _album = null!;
     
-    private List<OutGenre> _availableGenres = [];
-    private List<OutGenre> _primaryGenres = [];
-    private List<OutGenre> _influenceGenres = [];
+    private IList<OutGenre> _availableGenres = [];
+    private IList<OutGenre> _primaryGenres = [];
+    private IList<OutGenre> _influenceGenres = [];
 
     private string _selectedPrimaryText = string.Empty;
     private string _selectedInfluenceText = string.Empty;
@@ -255,8 +253,8 @@
             _album = album.ToRaw();
             _nameTextEdit.Text = album.Name;
             _nameTextEdit.Revalidate();
-            _primaryGenres = album.PrimaryGenres!.ToList();
-            _influenceGenres = album.InfluenceGenres!.ToList();
+            _primaryGenres = album.PrimaryGenres?.ToList() ?? [];
+            _influenceGenres = album.InfluenceGenres?.ToList() ?? [];
             StateHasChanged();
         }
         

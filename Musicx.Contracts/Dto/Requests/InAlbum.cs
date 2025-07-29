@@ -17,9 +17,12 @@ public sealed class InAlbum : BaseInputModel
     
     // Optional Columns
     public string? ArtworkUrl { get; set; }
+    public DateTime? BeginRecordDate { get; set; }
     public int? DiscTotal { get; set; }
+    public DateTime? EndRecordDate { get; set; }
     public bool IsFarRight { get; set; }
-    public DateTime? ReleaseDate { get; set; }
+    public string? Language { get; set; }
+    public DateTime? OriginalReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }
     public int? TrackTotal { get; set; }
 }

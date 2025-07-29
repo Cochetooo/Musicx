@@ -3,7 +3,6 @@ using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
-using Musicx.Contracts.Mappers;
 
 namespace Musicx.Presentation.Web.Controllers;
 
@@ -177,10 +176,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 IncludeReleases = query.Contains("release")
             };
             
-            var albums = await albumRepository.FindAsync(skip, take, a => 
-                string.IsNullOrWhiteSpace(filter) 
-                || a.Name.ToLower().StartsWith(filter.ToLower()),
-                querySpecification);
+            var albums = await albumRepository.FindAsync(skip, take, querySpecification, filter);
             
             if (0 == albums.Count)
             {

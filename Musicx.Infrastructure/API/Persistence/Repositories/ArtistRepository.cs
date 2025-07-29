@@ -1,138 +1,110 @@
 using System.Linq.Expressions;
-using System.Net.Mime;
-using Microsoft.EntityFrameworkCore;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
-using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
-using Musicx.Infrastructure.Desktop.Persistence;
-using Musicx.Infrastructure.Shared.Exceptions;
-using Musicx.Infrastructure.Shared.Helpers;
+using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Mappers;
 using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class ArtistRepository(
+    IDbConnectionProvider connection,
     ILoggerProvider loggerProvider) : IArtistRepository
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ArtistRepository));
     
     public async Task DeleteAsync(long id)
     {
-        _logger.LogDebug($"📄 SQL : DELETE FROM artists WHERE id = {id}");
-        
-        /*await using var transaction = await context.Database.BeginTransactionAsync();
-
-        try
+        const string sql = $"DELETE FROM artists WHERE {ArtistColumns.Id} = @id";
+        var parameters = new List<NpgsqlParameter>
         {
-            var artist = await context.Artists.FindAsync(id);
+            new("@id", id)
+        };
 
-            if (null != artist)
-            {
-                context.Artists.Remove(artist);
-                await context.SaveChangesAsync();
-                await transaction.CommitAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new RepositoryException($"❌ Could not delete id {id}", ex, _logger);
-        }*/
+        await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
     public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
         var stringIds = string.Join(",", ids);
-
-        /*await using var transaction = await context.Database.BeginTransactionAsync();
+        const string sql = $"DELETE FROM artists WHERE {ArtistColumns.Id} IN (@ids)";
         
-        try
+        var parameters = new List<NpgsqlParameter>
         {
-            var deleteAllSql = "DELETE FROM \"Artists\" WHERE \"Id\" IN (@ids)";
-
-            var parameters = new List<NpgsqlParameter>
-            {
-                new("@Ids", stringIds)
-            };
-
-            _logger.LogDebug(SqlDebugHelper.InterpolateQuery(deleteAllSql, parameters));
-            
-            await context.Database.ExecuteSqlRawAsync(deleteAllSql, parameters.Cast<object>().ToArray());
-            await transaction.CommitAsync();
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new RepositoryException($"📜❌ Could not delete ids {stringIds}", ex, _logger);
-        }*/
+            new("@ids", stringIds)
+        };
+        
+        await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
     public async Task<OutArtist?> FindByIdAsync(long id, IQuerySpecification<InArtist>? artistQuerySpecification = null)
     {
-        _logger.LogDebug($"📄 SQL : SELECT * FROM artists WHERE id = {id}");
-        return null;
+        var sql = new StringBuilder(Select(artistQuerySpecification));
+        sql.Append($" WHERE ar0.{ArtistColumns.Id} = @id");
+        
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@id", id)
+        };
+        
+        var result = await connection.FetchListDynamicAsync(sql.ToString(), parameters);
 
-        /*var artistSet = context.Artists;
-
-        return await artistSet
-            .AsNoTracking()
-            .OrderBy(x => x.Name)
-            .FirstOrDefaultAsync(s => s.Id == id);*/
+        return result
+            .SingleOrDefault()?
+            .FromDicoToArtist();
     }
 
-    public async Task<List<OutArtist>> FindAsync(int skip = 0, int take = 100, Expression<Func<InArtist, bool>>? filter = null,
-        IQuerySpecification<InArtist>? artistQuerySpecification = null)
+    public async Task<List<OutArtist>> FindAsync(int skip = 0, int take = 100,
+        IQuerySpecification<InArtist>? artistQuerySpecification = null, string? filter = null)
     {
-        _logger.LogDebug("📄 SQL : SELECT * FROM artists");
-        return [];
+        var sql = Select(artistQuerySpecification);
+        
+        var parameters = new List<NpgsqlParameter>();
 
-        /*var artistSet = context.Artists;
-
-        var query = artistSet.AsQueryable();
-
-        if (null != filter)
+        if (filter is not null)
         {
-            //query = query.Where(filter);
+            sql += $" WHERE ar0.{ArtistColumns.Name} ILIKE @filter";
+            parameters.Add(new NpgsqlParameter("@filter", $"%{filter}%"));
         }
+        
+        sql += $" ORDER BY ar0.{ArtistColumns.Name} OFFSET @skip LIMIT @take";
+        parameters.Add(new NpgsqlParameter("@skip", skip));
+        parameters.Add(new NpgsqlParameter("@take", take));
 
-        return await query
-            .AsNoTracking()
-            .Skip(skip)
-            .Take(take)
-            .OrderBy(x => x.Name)
-            .ToListAsync();*/
+        var result = await connection.FetchListDynamicAsync(sql, parameters);
+
+        return result
+            .Select(x => x.FromDicoToArtist())
+            .ToList();
     }
 
     public async Task<List<OutArtist>> FindIn(IEnumerable<long> ids, IQuerySpecification<InArtist>? artistQuerySpecification = null)
     {
-        _logger.LogDebug("📄 SQL : SELECT * FROM artists WHERE id IN ({Ids})", string.Join(",", ids));
-
-        return [];
-        /*var enumerable = ids as long[] ?? ids.ToArray();
-
-        if (0 == enumerable.Length)
+        var idList = ids.ToArray();
+        if (0 == idList.Length)
         {
-            _logger.LogDebug("ℹ️ FIND IN Artist : No entry found.");
             return [];
         }
 
-        var artistSet = context.Artists;
+        var stringIds = string.Join(",", idList);
+        var sql = Select(artistQuerySpecification);
+        sql += $" WHERE ar0.{ArtistColumns.Id} IN ({stringIds})" +
+               $" ORDER BY ar0.{ArtistColumns.Name}";
 
-        return await artistSet
-            .Where(s => enumerable.Contains(s.Id))
-            .AsNoTracking()
-            .OrderBy(x => x.Name)
-            .ToListAsync();*/
+        var result = await connection.FetchListDynamicAsync(sql, []);
+        
+        return result
+            .Select(x => x.FromDicoToArtist())
+            .ToList();
     }
 
     public async Task<int> GetCountAsync()
-    {
-        return 1;
-    }
+        => await connection.Count("artists");
 
     public async Task<long> SaveAsync(InArtist entity)
     {
@@ -210,5 +182,15 @@ internal sealed class ArtistRepository(
         }*/
         
         throw new NotImplementedException();
+    }
+
+    private static string Select(IQuerySpecification<InArtist>? querySpecification = null)
+    {
+        if (querySpecification is not ArtistQuerySpecification artistQuerySpecification)
+        {
+            return "SELECT ar0.* FROM artists ar0";
+        }
+
+        return "SELECT ar0.* FROM artists ar0";
     }
 }

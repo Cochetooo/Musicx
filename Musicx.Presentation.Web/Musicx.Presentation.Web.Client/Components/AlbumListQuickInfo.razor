@@ -30,12 +30,12 @@
     }
 </Blazorise.Text>
 
-@if (null != Album.ReleaseDate)
+@if (null != Album.OriginalReleaseDate)
 {
     <Blazorise.Text 
         TextSize="TextSize.ExtraSmall" 
         TextColor="TextColor.Muted">
-        <br/>@Album.ReleaseDate.Value.Year
+        <br/>@Album.OriginalReleaseDate.Value.Year
     </Blazorise.Text>
 }
 

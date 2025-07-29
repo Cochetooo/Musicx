@@ -3,7 +3,6 @@ using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
-using Musicx.Contracts.Mappers;
 
 namespace Musicx.Presentation.Web.Controllers;
 
@@ -98,10 +97,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
                 IncludeParents = query.Contains("parents")
             };
             
-            var genres = await genreRepository.FindAsync(skip, take, a => 
-                string.IsNullOrWhiteSpace(filter) 
-                || a.Name.ToLower().StartsWith(filter.ToLower()),
-                querySpecification);
+            var genres = await genreRepository.FindAsync(skip, take, querySpecification, filter);
             
             if (0 == genres.Count)
             {

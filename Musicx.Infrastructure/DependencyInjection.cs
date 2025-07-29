@@ -99,7 +99,7 @@ public static class DependencyInjection
     {
         // Database
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-        services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
+        services.AddSingleton<IDbConnectionProvider, NpgsqlConnectionProvider>();
         
         // Repositories
         services.AddScoped<Application.Api.Interfaces.Persistence.ISongRepository, API.Persistence.Repositories.SongRepository>();

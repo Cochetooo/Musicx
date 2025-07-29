@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
@@ -7,6 +8,8 @@ using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
 using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
@@ -14,129 +17,101 @@ using Npgsql;
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class GenreRepository(
+    IDbConnectionProvider connection,
     ILoggerProvider loggerProvider) : IGenreRepository
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(GenreRepository));
     
     public async Task DeleteAsync(long id)
     {
-        _logger.LogDebug($"📄 SQL : DELETE FROM genres WHERE id = {id}");
-        
-        /*await using var transaction = await context.Database.BeginTransactionAsync();
+        const string sql = $"DELETE FROM genres WHERE {GenreColumns.Id} = @id";
 
-        try
+        var parameters = new List<NpgsqlParameter>
         {
-            var genre = await context.Genres.FindAsync(id);
+            new("@id", id)
+        };
 
-            if (null != genre)
-            {
-                context.Genres.Remove(genre);
-                await context.SaveChangesAsync();
-                await transaction.CommitAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new RepositoryException($"❌ Could not delete id {id}", ex, _logger);
-        }*/
+        await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
     public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
         var stringIds = string.Join(",", ids);
-
-        /*await using var transaction = await context.Database.BeginTransactionAsync();
+        const string sql = $"DELETE FROM genres WHERE {GenreColumns.Id} IN (@ids)";
         
-        try
+        var parameters = new List<NpgsqlParameter>
         {
-            var deleteAllSql = "DELETE FROM \"Genres\" WHERE \"Id\" IN (@ids)";
-
-            var parameters = new List<NpgsqlParameter>
-            {
-                new("@Ids", stringIds)
-            };
-
-            _logger.LogDebug(SqlDebugHelper.InterpolateQuery(deleteAllSql, parameters));
-            
-            await context.Database.ExecuteSqlRawAsync(deleteAllSql, parameters.Cast<object>().ToArray());
-            await transaction.CommitAsync();
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new RepositoryException($"📜❌ Could not delete ids {stringIds}", ex, _logger);
-        }*/
+            new("@Ids", stringIds)
+        };
+        
+        await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
     public async Task<OutGenre?> FindByIdAsync(long id, IQuerySpecification<InGenre>? genreQuerySpecification = null)
     {
-        _logger.LogDebug($"📄 SQL : SELECT * FROM genres WHERE id = {id}");
-        return null;
+        var sql = new StringBuilder(Select(genreQuerySpecification));
+        sql.Append($" WHERE g0.{GenreColumns.Id} = @id")
+            .Append(GroupBy(genreQuerySpecification));
+        
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@id", id)
+        };
 
-        /*var genreSet = context.Genres
-            .AsQueryable();
+        var result = await connection.FetchListDynamicAsync(sql.ToString(), parameters);
 
-        genreSet = GetIncludes(genreSet, genreQuerySpecification);
-
-        return await genreSet
-            .AsNoTracking()
-            .OrderBy(g => g.Name)
-            .FirstOrDefaultAsync(s => s.Id == id);*/
+        return result
+            .SingleOrDefault()?
+            .FromDicoToGenre();
     }
 
-    public async Task<List<OutGenre>> FindAsync(int skip = 0, int take = 100, Expression<Func<InGenre, bool>>? filter = null,
-        IQuerySpecification<InGenre>? genreQuerySpecification = null)
+    public async Task<List<OutGenre>> FindAsync(int skip = 0, int take = 100,
+        IQuerySpecification<InGenre>? genreQuerySpecification = null, string? filter = null)
     {
-        _logger.LogDebug("📄 SQL : SELECT * FROM genres");
-        return [];
+        var sql = Select(genreQuerySpecification);
+        var parameters = new List<NpgsqlParameter>();
 
-        /*var genreSet = context.Genres
-            .AsQueryable();
-
-        genreSet = GetIncludes(genreSet, genreQuerySpecification);
-
-        if (null != filter)
+        if (filter is not null)
         {
-            genreSet = genreSet.Where(filter);
+            sql += $" WHERE g0.{GenreColumns.Name} ILIKE @filter";
+            parameters.Add(new NpgsqlParameter("@filter", $"%{filter}%"));
         }
+        
+        sql += GroupBy(genreQuerySpecification);
+        sql += $" ORDER BY g0.{GenreColumns.Name} OFFSET @skip LIMIT @take";
+        parameters.Add(new NpgsqlParameter("@skip", skip));
+        parameters.Add(new NpgsqlParameter("@take", take));
 
-        return await genreSet
-            .AsNoTracking()
-            .Skip(skip)
-            .Take(take)
-            .OrderBy(g => g.Name)
-            .ToListAsync();*/
+        var result = await connection.FetchListDynamicAsync(sql, parameters);
+
+        return result
+            .Select(x => x.FromDicoToGenre())
+            .ToList();
     }
 
     public async Task<List<OutGenre>> FindIn(IEnumerable<long> ids, IQuerySpecification<InGenre>? genreQuerySpecification = null)
     {
-        _logger.LogDebug("📄 SQL : SELECT * FROM genres WHERE id IN ({Ids})", string.Join(",", ids));
-        return [];
-        /*var enumerable = ids as long[] ?? ids.ToArray();
-
-        if (0 == enumerable.Length)
+        var idList = ids.ToArray();
+        if (0 == idList.Length)
         {
-            _logger.LogDebug("ℹ️ FIND IN Genre : No entry found.");
             return [];
         }
-
-        var genreSet = context.Genres
-            .AsQueryable();
-
-        genreSet = GetIncludes(genreSet, genreQuerySpecification);
-
-        return await genreSet
-            .Where(s => enumerable.Contains(s.Id))
-            .AsNoTracking()
-            .OrderBy(g => g.Name)
-            .ToListAsync();*/
+        
+        var stringIds = string.Join(",", idList);
+        var sql = Select(genreQuerySpecification);
+        sql += $" WHERE g0.{GenreColumns.Id} IN ({stringIds})" +
+               GroupBy(genreQuerySpecification) +
+               $" ORDER BY g0.{GenreColumns.Name}";
+        
+        var result = await connection.FetchListDynamicAsync(sql, []);
+        
+        return result
+            .Select(x => x.FromDicoToGenre())
+            .ToList();
     }
 
     public async Task<int> GetCountAsync()
-    {
-        return 1;
-    }
+        => await connection.Count("genres");
 
     public async Task<long> SaveAsync(InGenre entity)
     {
@@ -227,5 +202,37 @@ internal sealed class GenreRepository(
             await transaction.RollbackAsync();
             throw;
         }*/
+    }
+
+    private static string Select(IQuerySpecification<InGenre>? querySpecification = null)
+    {
+        if (querySpecification is not GenreQuerySpecification genreQuerySpecification)
+        {
+            return "SELECT g0.* FROM genres g0";
+        }
+
+        var selects = new List<string> { "g0.*" };
+        var joins = new List<string>();
+
+        if (genreQuerySpecification.IncludeChildren)
+        {
+            selects.Add($"json_agg(cg.*) FILTER (WHERE cg.{GenreColumns.Id} IS NOT NULL) AS children");
+            joins.Add($"LEFT JOIN childrengenre_parentgenre cgpg ON g0.{GenreColumns.Id} = cgpg.{ChildrenGenreParentGenreColumns.ParentId}");
+            joins.Add($"LEFT JOIN genre cg ON cgpg.{ChildrenGenreParentGenreColumns.ChildId} = cg.{GenreColumns.Id}");
+        }
+        
+        if (genreQuerySpecification.IncludeParents)
+        {
+            selects.Add($"json_agg(pg.*) FILTER (WHERE pg.{GenreColumns.Id} IS NOT NULL) AS parents");
+            joins.Add($"LEFT JOIN childrengenre_parentgenre pgcg ON g0.{GenreColumns.Id} = pgcg.{ChildrenGenreParentGenreColumns.ChildId}");
+            joins.Add($"LEFT JOIN genre pg ON pgcg.{ChildrenGenreParentGenreColumns.ParentId} = pg.{GenreColumns.Id}");
+        }
+
+        return $"SELECT {string.Join(", ", selects)} FROM genres g0 {string.Join(" ", joins)}";
+    }
+
+    private static string GroupBy(IQuerySpecification<InGenre>? querySpecification = null)
+    {
+        return $" GROUP BY g0.{GenreColumns.Id}";
     }
 }
