@@ -3,16 +3,20 @@ using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Helpers;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 
 namespace Musicx.Infrastructure.API.Persistence.Mappers;
 
 public static class GenreMapper
 {
-    private static readonly JsonSerializerOptions GenreMapperJsonOptions = new()
+    private static readonly JsonSerializerSettings GenreMapperJsonOptions = new()
     {
-        PropertyNamingPolicy = new DbToOutModelPolicy("genre"),
-        PropertyNameCaseInsensitive = true,
+        Converters =
+        {
+            new JsonToOutModelConverter<OutGenre>("genre")
+        }
     };
     
     public static OutGenre FromDicoToGenre(this IDictionary<string, object?> genre) => new()
@@ -23,14 +27,14 @@ public static class GenreMapper
         UpdatedAt = genre.SafeGet<DateTime>(GenreColumns.UpdatedAt),
         
         Parents = genre.TryGetValue("parents", out var parentValue)
-                && parentValue is JsonElement pvJson
-            ? JsonSerializer.Deserialize<OutGenre[]>(pvJson.GetRawText(),
+                && parentValue is not null
+            ? JsonConvert.DeserializeObject<OutGenre[]>(parentValue as string ?? string.Empty,
                 GenreMapperJsonOptions)
             : null,
         
         Children = genre.TryGetValue("children", out var childValue)
-                && childValue is JsonElement cvJson
-            ? JsonSerializer.Deserialize<OutGenre[]>(cvJson.GetRawText(),
+                && childValue is not null
+            ? JsonConvert.DeserializeObject<OutGenre[]>(childValue as string ?? string.Empty,
                 GenreMapperJsonOptions)
             : null,
         

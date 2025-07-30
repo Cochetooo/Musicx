@@ -71,14 +71,25 @@ internal sealed class GenreRepository(
         var sql = Select(genreQuerySpecification);
         var parameters = new List<NpgsqlParameter>();
 
-        if (filter is not null)
+        if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE g0.{GenreColumns.Name} ILIKE @filter";
-            parameters.Add(new NpgsqlParameter("@filter", $"%{filter}%"));
+            sql += $" WHERE similarity(g0.{GenreColumns.Name}, @filter) > 0.4";
+            parameters.Add(new NpgsqlParameter("@filter", filter));
         }
         
         sql += GroupBy(genreQuerySpecification);
-        sql += $" ORDER BY g0.{GenreColumns.Name} OFFSET @skip LIMIT @take";
+        
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            sql += $" ORDER BY similarity(g0.{GenreColumns.Name}, @filter) DESC";
+        }
+        else
+        {
+            sql += $" ORDER BY g0.{GenreColumns.Name}";
+        }
+        
+        sql += " OFFSET @skip LIMIT @take";
+        
         parameters.Add(new NpgsqlParameter("@skip", skip));
         parameters.Add(new NpgsqlParameter("@take", take));
 

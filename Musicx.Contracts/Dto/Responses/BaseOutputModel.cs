@@ -1,4 +1,6 @@
-﻿namespace Musicx.Contracts.Dto.Responses;
+﻿using System.Text.Json.Serialization;
+
+namespace Musicx.Contracts.Dto.Responses;
 
 public abstract class BaseOutputModel
 {

@@ -6,70 +6,65 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Helpers;
 using Musicx.Domain.Enums;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Musicx.Infrastructure.API.Persistence.Mappers;
 
 public static class AlbumMapper
 {
-    private static readonly JsonSerializerOptions GenreMapperJsonOptions = new()
+    private static readonly JsonSerializerSettings GenreMapperJsonOptions = new()
     {
-        PropertyNamingPolicy = new DbToOutModelPolicy("genre"),
-        PropertyNameCaseInsensitive = true,
+        Converters =
+        {
+            new JsonToOutModelConverter<OutGenre>("genre")
+        }
     };
 
-    public static OutAlbum FromDicoToAlbum(this IDictionary<string, object?> album)
+    public static OutAlbum FromDicoToAlbum(this IDictionary<string, object?> album) => new()
     {
-        var primaryGenres = album.TryGetValue("primary_genres", out var primaryGenreValue)
-                            && primaryGenreValue is not null
-            ? JsonSerializer.Deserialize<OutGenre[]>(primaryGenreValue as string ?? string.Empty,
+        Id = album.SafeGet<long>(AlbumColumns.Id),
+
+        CreatedAt = album.SafeGet<DateTime>(AlbumColumns.CreatedAt),
+        UpdatedAt = album.SafeGet<DateTime>(AlbumColumns.UpdatedAt),
+
+        Artist = album.SafeGet<long?>(ArtistColumns.Id) != null
+            ? album.FromDicoToArtist()
+            : new OutArtist
+            {
+                Id = album.SafeGet<long>(AlbumColumns.ArtistId),
+                Name = "",
+            },
+
+        Releases = album.TryGetValue("releases", out var releaseValue)
+                   && releaseValue is not null
+            ? JsonConvert.DeserializeObject<OutRelease[]>(releaseValue as string ?? string.Empty,
                 GenreMapperJsonOptions)
-            : null;
-        var result = DebugDeserialization<OutGenre[]>(primaryGenreValue as string ?? string.Empty, GenreMapperJsonOptions);
-        foreach (var genre in result)
-        {
-            Console.WriteLine("result: " + genre.Name + " | " + genre.Id);
-        }
-        
-        return new OutAlbum {
-                Id = album.SafeGet<long>(AlbumColumns.Id),
+            : null,
 
-                CreatedAt = album.SafeGet<DateTime>(AlbumColumns.CreatedAt),
-                UpdatedAt = album.SafeGet<DateTime>(AlbumColumns.UpdatedAt),
-                
-                Artist = album.SafeGet<long?>(ArtistColumns.Id) != null
-                    ? album.FromDicoToArtist()
-                    : new OutArtist
-                    {
-                        Id = album.SafeGet<long>(AlbumColumns.ArtistId),
-                        Name = "",
-                    },
+        PrimaryGenres = album.TryGetValue("primary_genres", out var primaryGenreValue)
+                        && primaryGenreValue is not null
+            ? JsonConvert.DeserializeObject<OutGenre[]>(primaryGenreValue as string ?? string.Empty,
+                GenreMapperJsonOptions)
+            : null,
 
-                Releases = album.TryGetValue("releases", out var releaseValue) 
-                           && releaseValue is JsonElement rgvJson
-                    ? JsonSerializer.Deserialize<OutRelease[]>(rgvJson.GetRawText(),
-                        GenreMapperJsonOptions)
-                    : null,
+        InfluenceGenres = album.TryGetValue("influence_genres", out var influenceGenreValue)
+                          && influenceGenreValue is not null
+            ? JsonConvert.DeserializeObject<OutGenre[]>(influenceGenreValue as string ?? string.Empty,
+                GenreMapperJsonOptions)
+            : null,
 
-                PrimaryGenres = primaryGenres,
-
-                InfluenceGenres = album.TryGetValue("influence_genres", out var influenceGenreValue)
-                              && influenceGenreValue is JsonElement igvJson
-                    ? JsonSerializer.Deserialize<OutGenre[]>(igvJson.GetRawText(),
-                        GenreMapperJsonOptions)
-                    : null,
-
-                ArtworkUrl = album.SafeGet<string>(AlbumColumns.ArtworkUrl),
-                BeginRecordDate = album.SafeGet<DateTime?>(AlbumColumns.BeginRecordDate),
-                DiscTotal = album.SafeGet<int>(AlbumColumns.DiscTotal),
-                EndRecordDate = album.SafeGet<DateTime?>(AlbumColumns.EndRecordDate),
-                IsFarRight = album.SafeGet<bool>(AlbumColumns.IsFarRight),
-                Language = album.SafeGet<string>(AlbumColumns.Language),
-                Name = album.SafeGet<string>(AlbumColumns.Name) ?? "",
-                OriginalReleaseDate = album.SafeGet<DateTime?>(AlbumColumns.OriginalReleaseDate),
-                ReleaseType = album.SafeGet<ReleaseType?>(AlbumColumns.ReleaseType),
-                TrackTotal = album.SafeGet<int>(AlbumColumns.TrackTotal),
-            };
-    }
+        ArtworkUrl = album.SafeGet<string>(AlbumColumns.ArtworkUrl),
+        BeginRecordDate = album.SafeGet<DateTime?>(AlbumColumns.BeginRecordDate),
+        DiscTotal = album.SafeGet<int>(AlbumColumns.DiscTotal),
+        EndRecordDate = album.SafeGet<DateTime?>(AlbumColumns.EndRecordDate),
+        IsFarRight = album.SafeGet<bool>(AlbumColumns.IsFarRight),
+        Language = album.SafeGet<string>(AlbumColumns.Language),
+        Name = album.SafeGet<string>(AlbumColumns.Name) ?? "",
+        OriginalReleaseDate = album.SafeGet<DateTime?>(AlbumColumns.OriginalReleaseDate),
+        ReleaseType = album.SafeGet<ReleaseType?>(AlbumColumns.ReleaseType),
+        TrackTotal = album.SafeGet<int>(AlbumColumns.TrackTotal),
+    };
     
     public static T? DebugDeserialization<T>(string json, JsonSerializerOptions options)
     {

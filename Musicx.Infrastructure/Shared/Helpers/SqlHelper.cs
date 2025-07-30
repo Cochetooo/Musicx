@@ -77,4 +77,53 @@ public static class SqlHelper
         
         return (sql, parameters);
     }
+    
+    public static (string, List<NpgsqlParameter>) Update(string table, 
+        string whereColumn, long whereId,
+        IDictionary<string, object?> properties)
+    {
+        var setters = new List<string>();
+        var parameters = new List<NpgsqlParameter>();
+
+        foreach (var property in properties)
+        {
+            if (property.Key == "Id")
+            {
+                continue;
+            }
+            
+            var securizedValue = "@" + property.Key;
+            setters.Add($"{property.Key} = {securizedValue}");
+
+            if (property.Value is null)
+            {
+                parameters.Add(new NpgsqlParameter(securizedValue, DBNull.Value));
+            }
+            else
+            {
+                var actualType = Nullable.GetUnderlyingType(property.Value.GetType()) ?? property.Value.GetType();
+
+                if (actualType.IsEnum)
+                {
+                    if (property.Key.Contains("Discriminator", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        parameters.Add(new NpgsqlParameter(securizedValue, property.Value.ToString()));
+                    }
+                    else
+                    {
+                        parameters.Add(new NpgsqlParameter(securizedValue, (int)property.Value));
+                    }
+                }
+                else
+                {
+                    parameters.Add(new NpgsqlParameter(securizedValue, property.Value));
+                }
+            }
+        }
+
+        var sql = $"UPDATE {table} SET {string.Join(", ", setters)} WHERE {whereColumn} = @Id";
+        parameters.Add(new NpgsqlParameter("@Id", whereId));
+        
+        return (sql, parameters);
+    }
 }

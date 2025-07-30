@@ -216,6 +216,7 @@
         {
             _artist = artist.ToRaw();
             _nameTextEdit.Text = _artist.Name;
+            _nameTextEdit.Revalidate();
             StateHasChanged();
         }
         

@@ -8,6 +8,8 @@ using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Mappers;
+using Musicx.Infrastructure.Shared.Exceptions;
+using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
@@ -66,13 +68,20 @@ internal sealed class ArtistRepository(
         
         var parameters = new List<NpgsqlParameter>();
 
-        if (filter is not null)
+        if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE ar0.{ArtistColumns.Name} ILIKE @filter";
-            parameters.Add(new NpgsqlParameter("@filter", $"%{filter}%"));
+            sql += $" WHERE similarity(ar0.{ArtistColumns.Name}, @filter) > 0.4";
+            sql += $" ORDER BY similarity(ar0.{ArtistColumns.Name}, @filter) DESC";
+            
+            parameters.Add(new NpgsqlParameter("@filter", filter));
+        }
+        else
+        {
+            sql += $" ORDER BY ar0.{ArtistColumns.Name}";
         }
         
-        sql += $" ORDER BY ar0.{ArtistColumns.Name} OFFSET @skip LIMIT @take";
+        sql +=  " OFFSET @skip LIMIT @take";
+        
         parameters.Add(new NpgsqlParameter("@skip", skip));
         parameters.Add(new NpgsqlParameter("@take", take));
 
@@ -108,80 +117,67 @@ internal sealed class ArtistRepository(
 
     public async Task<long> SaveAsync(InArtist entity)
     {
-        /*await using var transaction = await context.Database.BeginTransactionAsync();
+        await using var conn = connection.CreateConnection();
+        await conn.OpenAsync();
+        
+        await using var transaction = await conn.BeginTransactionAsync();
 
         try
         {
             if (0 == entity.Id)
             {
-                _logger.LogDebug($"📄 SQL : INSERT INTO artists (name, artwork_url, country) " +
-                                 $"VALUES ('{entity.Name}', '{entity.ArtworkUrl}', '{entity.Country}')");
-                
-                //entity.CreatedAt = DateTime.Now;
-                //entity.UpdatedAt = DateTime.Now;
-                
-                //context.Artists.Add(entity);
+                entity.Id = await Insert(entity, conn, transaction);
             }
             else
             {
-                _logger.LogDebug($"📄 SQL : UPDATE artists SET Name={entity.Name}, " +
-                                 $"ArtworkUrl={entity.ArtworkUrl}, Country={entity.Country}" +
-                                 $"WHERE Id = {entity.Id}");
-                
-                //entity.UpdatedAt = DateTime.Now;
-                context.Artists.Update(entity);
-                context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
+                await Update(entity, conn, transaction);
             }
 
-            await context.SaveChangesAsync();
             await transaction.CommitAsync();
-
-            return entity.Id;
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
             throw new RepositoryException("❌ SAVE Artist : Could not persist.", ex, _logger);
-        }*/
-        throw new NotImplementedException();
+        }
+
+        return entity.Id;
     }
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<InArtist> entities)
     {
-        /*_logger.LogDebug("📄 SAVE ALL Artist");
+        var idList = new List<long>();
         
-        await using var transaction = await context.Database.BeginTransactionAsync();
-
-        var ids = new List<long>();
-
+        await using var conn = connection.CreateConnection();
+        await conn.OpenAsync();
+        
+        await using var transaction = await conn.BeginTransactionAsync();
+        
         try
         {
-            foreach (var artist in entities)
+            foreach (var entity in entities)
             {
-                if (0 == artist.Id)
+                if (0 == entity.Id)
                 {
-                    context.Artists.Add(artist);
+                    entity.Id = await Insert(entity, conn, transaction);
                 }
                 else
                 {
-                    context.Artists.Update(artist);
+                    await Update(entity, conn, transaction);
                 }
                 
-                ids.Add(artist.Id);
+                idList.Add(entity.Id);
             }
-
-            await context.SaveChangesAsync();
+            
             await transaction.CommitAsync();
-
-            return ids;
-        }
+        } 
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE ALL Artist : Could not persist", ex, _logger);
-        }*/
+            throw new RepositoryException("❌ SAVE ALL Artist : Could not persist.", ex, _logger);
+        }
         
-        throw new NotImplementedException();
+        return idList;
     }
 
     private static string Select(IQuerySpecification<InArtist>? querySpecification = null)
@@ -192,5 +188,67 @@ internal sealed class ArtistRepository(
         }
 
         return "SELECT ar0.* FROM artists ar0";
+    }
+
+    private async Task<long> Insert(InArtist entity, NpgsqlConnection conn, NpgsqlTransaction transaction)
+    {
+        var createCommandSql = SqlHelper.Insert("artists",
+            new Dictionary<string, object?>
+            {
+                { ArtistColumns.CreatedAt, DateTime.Now },
+                { ArtistColumns.UpdatedAt, DateTime.Now },
+                { ArtistColumns.ArtworkUrl, entity.ArtworkUrl },
+                { ArtistColumns.Country, entity.Country },
+                { ArtistColumns.Description, entity.Description },
+                { ArtistColumns.Name, entity.Name },
+                { ArtistColumns.Region, entity.Region },
+                { ArtistColumns.Town, entity.Town },
+                { ArtistColumns.Discriminator, entity.Discriminator },
+                { ArtistColumns.FormationDate, entity.FormationDate },
+                { ArtistColumns.SplitDate, entity.SplitDate },
+                { ArtistColumns.FirstName, entity.FirstName },
+                { ArtistColumns.LastName, entity.LastName },
+                { ArtistColumns.BirthDate, entity.BirthDate },
+                { ArtistColumns.DeathDate, entity.DeathDate }
+            }, ArtistColumns.Id);
+        
+        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Item1, createCommandSql.Item2));
+
+        await using var cmd = new NpgsqlCommand(createCommandSql.Item1, conn, transaction);
+        cmd.Parameters.AddRange(createCommandSql.Item2.ToArray());
+        var artistId = (long)(await cmd.ExecuteScalarAsync() ??
+                              throw new NullReferenceException("Could not insert entity."));
+
+        return artistId;
+    }
+    
+    private async Task Update(InArtist entity, NpgsqlConnection conn, NpgsqlTransaction transaction)
+    {
+        var createCommandSql = SqlHelper.Update("artists",
+            ArtistColumns.Id,
+            entity.Id,
+            new Dictionary<string, object?>
+            {
+                { ArtistColumns.UpdatedAt, DateTime.Now },
+                { ArtistColumns.ArtworkUrl, entity.ArtworkUrl },
+                { ArtistColumns.Country, entity.Country },
+                { ArtistColumns.Description, entity.Description },
+                { ArtistColumns.Name, entity.Name },
+                { ArtistColumns.Region, entity.Region },
+                { ArtistColumns.Town, entity.Town },
+                { ArtistColumns.Discriminator, entity.Discriminator },
+                { ArtistColumns.FormationDate, entity.FormationDate },
+                { ArtistColumns.SplitDate, entity.SplitDate },
+                { ArtistColumns.FirstName, entity.FirstName },
+                { ArtistColumns.LastName, entity.LastName },
+                { ArtistColumns.BirthDate, entity.BirthDate },
+                { ArtistColumns.DeathDate, entity.DeathDate }
+            });
+        
+        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Item1, createCommandSql.Item2));
+
+        await using var cmd = new NpgsqlCommand(createCommandSql.Item1, conn, transaction);
+        cmd.Parameters.AddRange(createCommandSql.Item2.ToArray());
+        await cmd.ExecuteScalarAsync();
     }
 }

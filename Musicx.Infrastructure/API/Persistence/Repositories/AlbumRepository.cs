@@ -144,14 +144,25 @@ internal sealed class AlbumRepository(
 
         var parameters = new List<NpgsqlParameter>();
 
-        if (filter is not null)
+        if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE al0.{AlbumColumns.Name} ILIKE @filter";
-            parameters.Add(new NpgsqlParameter("@filter", $"%{filter}%"));
+            sql += $" WHERE similarity(al0.{AlbumColumns.Name}, @filter) > 0.4";
+            parameters.Add(new NpgsqlParameter("@filter", filter));
         }
         
         sql += GroupBy(albumQuerySpecification);
-        sql += $" ORDER BY al0.{AlbumColumns.Name} OFFSET @skip LIMIT @take";
+
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            sql += $" ORDER BY similarity(al0.{AlbumColumns.Name}, @filter) DESC";
+        }
+        else
+        {
+            sql += $" ORDER BY al0.{AlbumColumns.Name}";
+        }
+        
+        sql +=  " OFFSET @skip LIMIT @take";
+        
         parameters.Add(new NpgsqlParameter("@skip", skip));
         parameters.Add(new NpgsqlParameter("@take", take));
 
@@ -245,7 +256,7 @@ internal sealed class AlbumRepository(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE Album : Could not persist.", ex, _logger);
+            throw new RepositoryException("❌ SAVE ALL Album : Could not persist.", ex, _logger);
         }
         
         return idList;
@@ -324,7 +335,7 @@ internal sealed class AlbumRepository(
                 { AlbumColumns.OriginalReleaseDate, entity.OriginalReleaseDate },
                 { AlbumColumns.ReleaseType, entity.ReleaseType },
                 { AlbumColumns.TrackTotal, entity.TrackTotal }
-            }, "album_id");
+            }, AlbumColumns.Id);
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Item1, createCommandSql.Item2));
 
