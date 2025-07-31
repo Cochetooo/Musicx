@@ -8,6 +8,7 @@ using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
@@ -18,6 +19,7 @@ namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class GenreRepository(
     IDbConnectionProvider connection,
+    SqlBuilder<InGenre> builder,
     ILoggerProvider loggerProvider) : IGenreRepository
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(GenreRepository));

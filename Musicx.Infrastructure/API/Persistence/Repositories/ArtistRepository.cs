@@ -6,6 +6,7 @@ using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
@@ -16,6 +17,7 @@ namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class ArtistRepository(
     IDbConnectionProvider connection,
+    SqlBuilder<InArtist> builder,
     ILoggerProvider loggerProvider) : IArtistRepository
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ArtistRepository));
@@ -46,7 +48,7 @@ internal sealed class ArtistRepository(
 
     public async Task<OutArtist?> FindByIdAsync(long id, IQuerySpecification<InArtist>? artistQuerySpecification = null)
     {
-        var sql = new StringBuilder(Select(artistQuerySpecification));
+        var sql = new StringBuilder(builder.BuildSelect(artistQuerySpecification));
         sql.Append($" WHERE ar0.{ArtistColumns.Id} = @id");
         
         var parameters = new List<NpgsqlParameter>
@@ -64,14 +66,14 @@ internal sealed class ArtistRepository(
     public async Task<List<OutArtist>> FindAsync(int skip = 0, int take = 100,
         IQuerySpecification<InArtist>? artistQuerySpecification = null, string? filter = null)
     {
-        var sql = Select(artistQuerySpecification);
+        var sql = builder.BuildSelect(artistQuerySpecification);
         
         var parameters = new List<NpgsqlParameter>();
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
             sql += $" WHERE similarity(ar0.{ArtistColumns.Name}, @filter) > 0.4";
-            sql += $" ORDER BY similarity(ar0.{ArtistColumns.Name}, @filter) DESC";
+            sql += builder.BuildOrderBy($"similarity(ar0.{ArtistColumns.Name}, @filter) DESC");
             
             parameters.Add(new NpgsqlParameter("@filter", filter));
         }
@@ -101,9 +103,9 @@ internal sealed class ArtistRepository(
         }
 
         var stringIds = string.Join(",", idList);
-        var sql = Select(artistQuerySpecification);
+        var sql = builder.BuildSelect(artistQuerySpecification);
         sql += $" WHERE ar0.{ArtistColumns.Id} IN ({stringIds})" +
-               $" ORDER BY ar0.{ArtistColumns.Name}";
+               builder.BuildOrderBy($"ar0.{ArtistColumns.Name}");
 
         var result = await connection.FetchListDynamicAsync(sql, []);
         
@@ -126,11 +128,19 @@ internal sealed class ArtistRepository(
         {
             if (0 == entity.Id)
             {
-                entity.Id = await Insert(entity, conn, transaction);
+                var result = await builder.ExecuteInsert(entity, conn, transaction);
+                if (result is long l)
+                {
+                    entity.Id = l;
+                }
+                else
+                {
+                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
+                }
             }
             else
             {
-                await Update(entity, conn, transaction);
+                await builder.ExecuteUpdate(entity, conn, transaction);
             }
 
             await transaction.CommitAsync();
@@ -159,11 +169,19 @@ internal sealed class ArtistRepository(
             {
                 if (0 == entity.Id)
                 {
-                    entity.Id = await Insert(entity, conn, transaction);
+                    var result = await builder.ExecuteInsert(entity, conn, transaction);
+                    if (result is long l)
+                    {
+                        entity.Id = l;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
+                    }
                 }
                 else
                 {
-                    await Update(entity, conn, transaction);
+                    await builder.ExecuteUpdate(entity, conn, transaction);
                 }
                 
                 idList.Add(entity.Id);
@@ -178,77 +196,5 @@ internal sealed class ArtistRepository(
         }
         
         return idList;
-    }
-
-    private static string Select(IQuerySpecification<InArtist>? querySpecification = null)
-    {
-        if (querySpecification is not ArtistQuerySpecification artistQuerySpecification)
-        {
-            return "SELECT ar0.* FROM artists ar0";
-        }
-
-        return "SELECT ar0.* FROM artists ar0";
-    }
-
-    private async Task<long> Insert(InArtist entity, NpgsqlConnection conn, NpgsqlTransaction transaction)
-    {
-        var createCommandSql = SqlHelper.Insert("artists",
-            new Dictionary<string, object?>
-            {
-                { ArtistColumns.CreatedAt, DateTime.Now },
-                { ArtistColumns.UpdatedAt, DateTime.Now },
-                { ArtistColumns.ArtworkUrl, entity.ArtworkUrl },
-                { ArtistColumns.Country, entity.Country },
-                { ArtistColumns.Description, entity.Description },
-                { ArtistColumns.Name, entity.Name },
-                { ArtistColumns.Region, entity.Region },
-                { ArtistColumns.Town, entity.Town },
-                { ArtistColumns.Discriminator, entity.Discriminator },
-                { ArtistColumns.FormationDate, entity.FormationDate },
-                { ArtistColumns.SplitDate, entity.SplitDate },
-                { ArtistColumns.FirstName, entity.FirstName },
-                { ArtistColumns.LastName, entity.LastName },
-                { ArtistColumns.BirthDate, entity.BirthDate },
-                { ArtistColumns.DeathDate, entity.DeathDate }
-            }, ArtistColumns.Id);
-        
-        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Item1, createCommandSql.Item2));
-
-        await using var cmd = new NpgsqlCommand(createCommandSql.Item1, conn, transaction);
-        cmd.Parameters.AddRange(createCommandSql.Item2.ToArray());
-        var artistId = (long)(await cmd.ExecuteScalarAsync() ??
-                              throw new NullReferenceException("Could not insert entity."));
-
-        return artistId;
-    }
-    
-    private async Task Update(InArtist entity, NpgsqlConnection conn, NpgsqlTransaction transaction)
-    {
-        var createCommandSql = SqlHelper.Update("artists",
-            ArtistColumns.Id,
-            entity.Id,
-            new Dictionary<string, object?>
-            {
-                { ArtistColumns.UpdatedAt, DateTime.Now },
-                { ArtistColumns.ArtworkUrl, entity.ArtworkUrl },
-                { ArtistColumns.Country, entity.Country },
-                { ArtistColumns.Description, entity.Description },
-                { ArtistColumns.Name, entity.Name },
-                { ArtistColumns.Region, entity.Region },
-                { ArtistColumns.Town, entity.Town },
-                { ArtistColumns.Discriminator, entity.Discriminator },
-                { ArtistColumns.FormationDate, entity.FormationDate },
-                { ArtistColumns.SplitDate, entity.SplitDate },
-                { ArtistColumns.FirstName, entity.FirstName },
-                { ArtistColumns.LastName, entity.LastName },
-                { ArtistColumns.BirthDate, entity.BirthDate },
-                { ArtistColumns.DeathDate, entity.DeathDate }
-            });
-        
-        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Item1, createCommandSql.Item2));
-
-        await using var cmd = new NpgsqlCommand(createCommandSql.Item1, conn, transaction);
-        cmd.Parameters.AddRange(createCommandSql.Item2.ToArray());
-        await cmd.ExecuteScalarAsync();
     }
 }

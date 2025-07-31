@@ -11,6 +11,7 @@ using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Persistence;
+using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.Desktop.Persistence;
 using Musicx.Infrastructure.Desktop.Persistence.Caches;
 using Musicx.Infrastructure.Desktop.Persistence.Repositories;
@@ -101,6 +102,11 @@ public static class DependencyInjection
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         services.AddSingleton<IDbConnectionProvider, NpgsqlConnectionProvider>();
         
+        // SQL Builder
+        services.AddScoped(typeof(SqlBuilder<InArtist>), typeof(ArtistSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InAlbum>), typeof(AlbumSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InGenre>), typeof(GenreSqlBuilder));
+
         // Repositories
         services.AddScoped<Application.Api.Interfaces.Persistence.ISongRepository, API.Persistence.Repositories.SongRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumRepository, API.Persistence.Repositories.AlbumRepository>();

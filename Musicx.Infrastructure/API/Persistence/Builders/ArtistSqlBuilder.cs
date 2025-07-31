@@ -1,26 +1,83 @@
-﻿using Musicx.Application.Shared.Interfaces.Persistence;
+﻿using Microsoft.Extensions.Logging;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Builders;
 
-internal sealed class ArtistSqlBuilder : SqlBuilder<InArtist>
+internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilder<InArtist>
 {
-    internal override (string, List<NpgsqlParameter>) BuildInsert(InArtist entity,
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ArtistSqlBuilder));
+    
+    internal override async Task<object?> ExecuteInsert(InArtist entity,
         NpgsqlConnection conn, NpgsqlTransaction? transaction = null)
     {
-        throw new NotImplementedException();
+        var createCommandSql = BuildInsert("artists",
+            new Dictionary<string, object?>
+            {
+                { ArtistColumns.CreatedAt, DateTime.Now },
+                { ArtistColumns.UpdatedAt, DateTime.Now },
+                { ArtistColumns.ArtworkUrl, entity.ArtworkUrl },
+                { ArtistColumns.Country, entity.Country },
+                { ArtistColumns.Description, entity.Description },
+                { ArtistColumns.Name, entity.Name },
+                { ArtistColumns.Region, entity.Region },
+                { ArtistColumns.Town, entity.Town },
+                { ArtistColumns.Discriminator, entity.Discriminator },
+                { ArtistColumns.FormationDate, entity.FormationDate },
+                { ArtistColumns.SplitDate, entity.SplitDate },
+                { ArtistColumns.FirstName, entity.FirstName },
+                { ArtistColumns.LastName, entity.LastName },
+                { ArtistColumns.BirthDate, entity.BirthDate },
+                { ArtistColumns.DeathDate, entity.DeathDate }
+            }, ArtistColumns.Id);
+        
+        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
+
+        await using var cmd = new NpgsqlCommand(createCommandSql.Query, conn, transaction);
+        cmd.Parameters.AddRange(createCommandSql.Parameters.ToArray());
+        var artistId = (long)(await cmd.ExecuteScalarAsync() ??
+                              throw new NullReferenceException("Could not insert entity."));
+
+        return artistId;
     }
 
-    internal override (string, List<NpgsqlParameter>) BuildUpdate(InArtist entity,
+    internal override async Task ExecuteUpdate(InArtist entity,
         NpgsqlConnection conn, NpgsqlTransaction? transaction = null)
     {
-        throw new NotImplementedException();
+        var createCommandSql = BuildUpdate("artists",
+            ArtistColumns.Id,
+            entity.Id,
+            new Dictionary<string, object?>
+            {
+                { ArtistColumns.UpdatedAt, DateTime.Now },
+                { ArtistColumns.ArtworkUrl, entity.ArtworkUrl },
+                { ArtistColumns.Country, entity.Country },
+                { ArtistColumns.Description, entity.Description },
+                { ArtistColumns.Name, entity.Name },
+                { ArtistColumns.Region, entity.Region },
+                { ArtistColumns.Town, entity.Town },
+                { ArtistColumns.Discriminator, entity.Discriminator },
+                { ArtistColumns.FormationDate, entity.FormationDate },
+                { ArtistColumns.SplitDate, entity.SplitDate },
+                { ArtistColumns.FirstName, entity.FirstName },
+                { ArtistColumns.LastName, entity.LastName },
+                { ArtistColumns.BirthDate, entity.BirthDate },
+                { ArtistColumns.DeathDate, entity.DeathDate }
+            });
+        
+        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
+
+        await using var cmd = new NpgsqlCommand(createCommandSql.Query, conn, transaction);
+        cmd.Parameters.AddRange(createCommandSql.Parameters.ToArray());
+        await cmd.ExecuteScalarAsync();
     }
 
     internal override string BuildSelect(IQuerySpecification<InArtist>? spec = null)
     {
-        throw new NotImplementedException();
+        return "SELECT ar0.* FROM artists ar0";
     }
 
     internal override string BuildGroupBy(IQuerySpecification<InArtist>? spec = null)

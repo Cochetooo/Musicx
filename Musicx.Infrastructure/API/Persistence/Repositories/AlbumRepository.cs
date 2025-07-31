@@ -9,6 +9,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Shared.Options;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
@@ -19,6 +20,7 @@ namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class AlbumRepository(
     IDbConnectionProvider connection,
+    SqlBuilder<InAlbum> builder,
     ILoggerProvider loggerProvider) : IAlbumRepository
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumRepository));
@@ -50,9 +52,9 @@ internal sealed class AlbumRepository(
 
     public async Task<OutAlbum?> FindByIdAsync(long id, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
-        var sql = new StringBuilder(Select(albumQuerySpecification));
+        var sql = new StringBuilder(builder.BuildSelect(albumQuerySpecification));
         sql.Append($" WHERE al0.{AlbumColumns.Id} = @id")
-            .Append(GroupBy(albumQuerySpecification));
+            .Append(builder.BuildGroupBy(albumQuerySpecification));
         
         var parameters = new List<NpgsqlParameter>
         {
@@ -68,9 +70,9 @@ internal sealed class AlbumRepository(
     
     public async Task<List<OutAlbum>> FindByArtistIdAsync(long artistId, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
-        var sql = Select(albumQuerySpecification);
+        var sql = builder.BuildSelect(albumQuerySpecification);
         sql += $" WHERE al0.{AlbumColumns.ArtistId} = @artistId" + 
-               GroupBy(albumQuerySpecification) +
+               builder.BuildGroupBy(albumQuerySpecification) +
                $" ORDER BY al0.{AlbumColumns.OriginalReleaseDate}, al0.{AlbumColumns.Name}";
         var parameters = new List<NpgsqlParameter>
         {
@@ -124,8 +126,8 @@ internal sealed class AlbumRepository(
                   FROM albums a
                   {string.Join("\n", joins)}
                   WHERE {string.Join(" OR ", whereConditions)}
-                  {GroupBy(albumQuerySpecification)}
-                  ORDER BY a."ReleaseDate", a."Name"
+                  {builder.BuildGroupBy(albumQuerySpecification)}
+                  {builder.BuildOrderBy($"a.{AlbumColumns.OriginalReleaseDate}", $"a.{AlbumColumns.Name}")}
                   OFFSET @skip LIMIT @take
                   """;
         
@@ -140,7 +142,7 @@ internal sealed class AlbumRepository(
         IQuerySpecification<InAlbum>? albumQuerySpecification = null,
         string? filter = null)
     {
-        var sql = Select(albumQuerySpecification);
+        var sql = builder.BuildSelect(albumQuerySpecification);
 
         var parameters = new List<NpgsqlParameter>();
 
@@ -150,7 +152,7 @@ internal sealed class AlbumRepository(
             parameters.Add(new NpgsqlParameter("@filter", filter));
         }
         
-        sql += GroupBy(albumQuerySpecification);
+        sql += builder.BuildGroupBy(albumQuerySpecification);
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
@@ -182,10 +184,12 @@ internal sealed class AlbumRepository(
         }
         
         var stringIds = string.Join(",", idList);
-        var sql = Select(albumQuerySpecification);
+        var sql = builder.BuildSelect(albumQuerySpecification);
         sql += $" WHERE al0.{AlbumColumns.Id} IN ({stringIds})" +
-               GroupBy(albumQuerySpecification) +
-               $" ORDER BY al0.{AlbumColumns.OriginalReleaseDate}, al0.{AlbumColumns.Name}";
+               builder.BuildGroupBy(albumQuerySpecification) +
+               builder.BuildOrderBy(
+                   $"al0.{AlbumColumns.OriginalReleaseDate}",
+                   $"al0.{AlbumColumns.Name}");
         
         var result = await connection.FetchListDynamicAsync(sql, []);
         
@@ -208,11 +212,19 @@ internal sealed class AlbumRepository(
         {
             if (0 == entity.Id)
             {
-                entity.Id = await Insert(entity, conn, transaction);
+                var result = await builder.ExecuteInsert(entity, conn, transaction);
+                if (result is long l)
+                {
+                    entity.Id = l;
+                }
+                else
+                {
+                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
+                }
             }
             else
             {
-                
+                await builder.ExecuteUpdate(entity, conn, transaction);
             }
             
             await transaction.CommitAsync();
@@ -241,11 +253,19 @@ internal sealed class AlbumRepository(
             {
                 if (0 == entity.Id)
                 {
-                    entity.Id = await Insert(entity, conn, transaction);
+                    var result = await builder.ExecuteInsert(entity, conn, transaction);
+                    if (result is long l)
+                    {
+                        entity.Id = l;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
+                    }
                 }
                 else
                 {
-                
+                    await builder.ExecuteUpdate(entity, conn, transaction);
                 }
                 
                 idList.Add(entity.Id);
@@ -260,140 +280,5 @@ internal sealed class AlbumRepository(
         }
         
         return idList;
-    }
-
-    private static string Select(IQuerySpecification<InAlbum>? querySpecification = null)
-    {
-        if (querySpecification is not AlbumQuerySpecification albumQuerySpecification)
-        {
-            return "SELECT al0.* FROM albums al0";
-        }
-
-        var selects = new List<string> { "al0.*" };
-        var joins = new List<string>();
-
-        if (albumQuerySpecification.IncludeArtist)
-        {
-            selects.Add("ar0.*");
-            joins.Add($"INNER JOIN artists ar0 ON al0.{AlbumColumns.ArtistId} = ar0.{ArtistColumns.Id}");
-        }
-
-        if (albumQuerySpecification.IncludePrimaryGenres)
-        {
-            selects.Add($"json_agg(pg.*) FILTER (WHERE pg.{GenreColumns.Id} IS NOT NULL) AS primary_genres");
-            joins.Add($"LEFT JOIN album_genre apg ON al0.{AlbumColumns.Id} = apg.{AlbumGenreColumns.AlbumId}");
-            joins.Add($"LEFT JOIN genres pg ON apg.{AlbumGenreColumns.GenreId} = pg.{GenreColumns.Id}");
-        }
-
-        if (albumQuerySpecification.IncludeInfluenceGenres)
-        {
-            selects.Add($"json_agg(ig.*) FILTER (WHERE ig.{GenreColumns.Id} IS NOT NULL) AS influence_genres");
-            joins.Add($"LEFT JOIN album_influence aig ON al0.{AlbumColumns.Id} = aig.{AlbumInfluenceColumns.AlbumId}");
-            joins.Add($"LEFT JOIN genres ig ON aig.{AlbumInfluenceColumns.GenreId} = ig.{GenreColumns.Id}");
-        }
-
-        return $"SELECT {string.Join(", ", selects)} FROM albums al0 {string.Join(" ", joins)}";
-    }
-
-    private static string GroupBy(IQuerySpecification<InAlbum>? querySpecification = null)
-    {
-        if (querySpecification is not AlbumQuerySpecification albumQuerySpecification)
-        {
-            return $" GROUP BY al0.{AlbumColumns.Id}";
-        }
-
-        var groupings = new List<string>
-        {
-            $"al0.{AlbumColumns.Id}"
-        };
-
-        if (albumQuerySpecification.IncludeArtist)
-        {
-            groupings.Add($"ar0.{ArtistColumns.Id}");
-        }
-        
-        return $" GROUP BY {string.Join(", ", groupings)}";
-    }
-
-    private async Task<long> Insert(InAlbum entity, NpgsqlConnection conn, NpgsqlTransaction transaction)
-    {
-        long albumId;
-        
-        var createCommandSql = SqlHelper.Insert("albums",
-            new Dictionary<string, object?>
-            {
-                { AlbumColumns.CreatedAt, DateTime.Now },
-                { AlbumColumns.UpdatedAt, DateTime.Now },
-                { AlbumColumns.ArtistId, entity.ArtistId },
-                { AlbumColumns.ArtworkUrl, entity.ArtworkUrl },
-                { AlbumColumns.BeginRecordDate, entity.BeginRecordDate },
-                { AlbumColumns.DiscTotal, entity.DiscTotal },
-                { AlbumColumns.EndRecordDate, entity.EndRecordDate },
-                { AlbumColumns.IsFarRight, entity.IsFarRight },
-                { AlbumColumns.Language, entity.Language },
-                { AlbumColumns.Name, entity.Name },
-                { AlbumColumns.OriginalReleaseDate, entity.OriginalReleaseDate },
-                { AlbumColumns.ReleaseType, entity.ReleaseType },
-                { AlbumColumns.TrackTotal, entity.TrackTotal }
-            }, AlbumColumns.Id);
-        
-        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Item1, createCommandSql.Item2));
-
-        await using (var cmd = new NpgsqlCommand(createCommandSql.Item1, conn, transaction))
-        {
-            cmd.Parameters.AddRange(createCommandSql.Item2.ToArray());
-            albumId = (long)(await cmd.ExecuteScalarAsync() ??
-                             throw new NullReferenceException("Could not insert entity."));
-        }
-        
-        _logger.LogDebug("ℹ️ Id for new entity is : " + albumId);
-
-        if (null != entity.ReleaseIds)
-        {
-            foreach (var release in entity.ReleaseIds)
-            {
-
-            }
-        }
-
-        if (null != entity.PrimaryGenreIds)
-        {
-            foreach (var primaryGenre in entity.PrimaryGenreIds)
-            {
-                var primaryGenreSql = SqlHelper.Insert("album_genre",
-                    new Dictionary<string, object?>
-                    {
-                        { AlbumGenreColumns.AlbumId, albumId },
-                        { AlbumGenreColumns.GenreId, primaryGenre }
-                    });
-                
-                _logger.LogDebug(SqlHelper.InterpolateQuery(primaryGenreSql.Item1, primaryGenreSql.Item2));
-
-                await using var cmd = new NpgsqlCommand(primaryGenreSql.Item1, conn, transaction);
-                cmd.Parameters.AddRange(primaryGenreSql.Item2.ToArray());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        if (null != entity.InfluenceGenreIds)
-        {
-            foreach (var influenceGenre in entity.InfluenceGenreIds)
-            {
-                var influenceGenreSql = SqlHelper.Insert("album_influence",
-                    new Dictionary<string, object?>
-                    {
-                        { AlbumInfluenceColumns.AlbumId, albumId },
-                        { AlbumInfluenceColumns.GenreId, influenceGenre }
-                    });
-                
-                _logger.LogDebug(SqlHelper.InterpolateQuery(influenceGenreSql.Item1, influenceGenreSql.Item2));
-
-                await using var cmd = new NpgsqlCommand(influenceGenreSql.Item1, conn, transaction);
-                cmd.Parameters.AddRange(influenceGenreSql.Item2.ToArray());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-        
-        return albumId;
     }
 }
