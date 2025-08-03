@@ -19,7 +19,7 @@ public sealed class UcGetAlbumByGenre(
         string query = "")
     {
         var endpoint = $"/api/albums/by-genre/{genreId}?" +
-                       $"genre_options={genreOptions}&skip={skip}&take={take}&query={query}";
+                       $"genreOptions={genreOptions}&skip={skip}&take={take}&query={query}";
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         

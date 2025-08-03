@@ -1,7 +1,7 @@
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Domain.Enums
 
-<Blazorise.Text TextSize="TextSize.Small">
+<Blazorise.Text TextSize="@(GetSize())">
     @switch (Album.ReleaseType)
     {
         case ReleaseType.Ep:
@@ -41,6 +41,12 @@
 
 @code {
 
-    [Parameter] public OutAlbum Album { get; set; }
+    [Parameter, EditorRequired] public OutAlbum Album { get; set; } = null!;
+    [Parameter] public bool Bigger { get; set; }
+
+    private IFluentTextSize GetSize()
+        => Bigger
+            ? TextSize.Default
+            : TextSize.Small;
 
 }

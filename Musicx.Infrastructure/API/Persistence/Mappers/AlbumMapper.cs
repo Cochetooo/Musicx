@@ -63,38 +63,10 @@ public static class AlbumMapper
         Name = album.SafeGet<string>(AlbumColumns.Name) ?? "",
         OriginalReleaseDate = album.SafeGet<DateTime?>(AlbumColumns.OriginalReleaseDate),
         ReleaseType = album.SafeGet<ReleaseType?>(AlbumColumns.ReleaseType),
+        SimplifiedGenreColor = album.SafeGet<string>(AlbumColumns.SimplifiedGenreColor),
+        SimplifiedGenreName = album.SafeGet<string>(AlbumColumns.SimplifiedGenreName),
         TrackTotal = album.SafeGet<int>(AlbumColumns.TrackTotal),
     };
-    
-    public static T? DebugDeserialization<T>(string json, JsonSerializerOptions options)
-    {
-        using var doc = JsonDocument.Parse(json);
-
-        Console.WriteLine("---- START DEBUG ----");
-        foreach (var element in doc.RootElement.EnumerateArray())
-        {
-            foreach (var prop in element.EnumerateObject())
-            {
-                var converted = options.PropertyNamingPolicy?.ConvertName(prop.Name);
-                Console.WriteLine($"JSON: {prop.Name} -> Policy: {converted}");
-            }
-        }
-        Console.WriteLine("---- END DEBUG ----");
-
-        try
-        {
-            Console.WriteLine(json);
-            var result = JsonSerializer.Deserialize<T>(json, options);
-            Console.WriteLine("Désérialisation OK.");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("EXCEPTION !");
-            Console.WriteLine(ex);
-            throw;
-        }
-    }
 
     public static InAlbum ToRaw(this OutAlbum album) => new()
     {

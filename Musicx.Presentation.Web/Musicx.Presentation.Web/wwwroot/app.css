@@ -49,10 +49,6 @@ h1:focus {
     font-weight: bold;
 }
 
-.neumorphism-shadow-default {
-    box-shadow: 6px 6px 16px #9d9d9d, -6px -6px 16px #ffffff;
-}
-
 .montserrat {
     font-family: "Montserrat", "Helvetica Neue", sans-serif !important;
 }

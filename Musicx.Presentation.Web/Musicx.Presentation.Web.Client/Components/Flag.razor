@@ -5,7 +5,7 @@
 
 @code {
 
-    [Parameter] public string CountryName { get; set; } = null!;
+    [Parameter, EditorRequired] public string CountryName { get; set; } = null!;
 
     private string GetCountryCode(string countryName)
     {

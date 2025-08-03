@@ -1,0 +1,31 @@
+@page "/Genres"
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Presentation.Web.Client.Components
+
+@inject IListUseCase<OutGenre> UcList
+@inject ILoggerProvider LoggerProvider
+
+<Breadcrumb Margin="Margin.Is2.FromBottom">
+    <BreadcrumbItem>
+        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        <BreadcrumbLink To="#">Genres</BreadcrumbLink>
+    </BreadcrumbItem>
+</Breadcrumb>
+
+<Div Class="genre-grid">
+    @foreach (var genre in _genres.Where(g => g.Parents is null || g.Parents.Count == 0))
+    {
+        <GenreCard Genre="genre" Depth="0" />
+    }
+</Div>
+
+<style>
+    .genre-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+    }
+</style>

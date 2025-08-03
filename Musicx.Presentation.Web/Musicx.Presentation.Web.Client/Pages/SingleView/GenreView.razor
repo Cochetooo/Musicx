@@ -1,0 +1,122 @@
+@page "/Genre/{id}"
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Presentation.Web.Client.Components
+
+@inject ILoggerProvider LoggerProvider
+@inject IGetUseCase<OutGenre> UcGet
+@inject IGetAlbumByGenreUseCase UcAlbumByGenre
+
+<Breadcrumb Margin="Margin.Is2.FromBottom">
+    <BreadcrumbItem>
+        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        <BreadcrumbLink To="#">Genres</BreadcrumbLink>
+    </BreadcrumbItem>
+    @if (null == _genre)
+    {
+        <BreadcrumbItem>
+            <BreadcrumbLink To="#">-</BreadcrumbLink>
+        </BreadcrumbItem>
+    }
+    else
+    {
+        <BreadcrumbItem>
+            <BreadcrumbLink To="#">@_genre.Name</BreadcrumbLink>
+        </BreadcrumbItem>
+    }
+</Breadcrumb>
+
+@if (null == _genre)
+{
+    <SpinKit Type="SpinKitType.Pulse" />
+}
+else
+{
+    <Card Margin="Margin.Is4.OnY">
+        <CardHeader Padding="Padding.Is3.OnX" Style="@GetHeaderStyle()">
+            <Heading Size="HeadingSize.Is1"
+                     Padding="Padding.Is5.FromStart.OnDesktop"
+                     Italic
+                     Flex="Flex.AlignItems.Center"
+                     Style="font-weight: 900" TextColor="TextColor.White">
+                @_genre.Name
+            </Heading>
+        </CardHeader>
+        <CardBody>
+            <Row Margin="Margin.Is3.OnX">
+                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3.OnDesktop">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>
+                                Description
+                            </CardTitle>
+                        </CardHeader>
+                        <CardBody>
+                            @if (_genre.Description is not null)
+                            {
+                                @_genre.Description
+                            }
+                            else
+                            {
+                                <Blazorise.Text Italic TextColor="TextColor.Muted">There is no description yet.</Blazorise.Text>
+                            }
+                        </CardBody>
+                    </Card>
+                </Column>
+                
+                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is9.OnDesktop">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>
+                                Releases
+                            </CardTitle>
+                        </CardHeader>
+                        <CardBody>
+                            <ListGroup>
+                                @foreach (var album in _genreAlbums)
+                                {
+                                    <Div ElementId="#album-list-animate" class="p-1">
+                                        <Animate Anchor="#album-animate" Auto
+                                                 Animation="Animations.FadeRight" DelayMilliseconds="50">
+                                            <Blazorise.Link To="@($"/Album/{album.Id}")">
+                                                <ListGroupItem Flex="Flex.AlignItems.Start.JustifyContent.Between">
+                                                    <Div Class="d-flex">
+                                                        <Figure Size="FigureSize.Is48x48">
+                                                            <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
+                                                                         Class="neumorphism-shadow-default"
+                                                                         Rounded/>
+                                                        </Figure>
+
+                                                        <Div Margin="Margin.Is3.OnX">
+                                                            <AlbumListQuickInfo Album="album"/>
+                                                        </Div>
+                                                    </Div>
+                                                    
+                                                    <Div Class="d-flex">
+                                                        @if (album.PrimaryGenres is not null)
+                                                        {
+                                                            @foreach (var genre in album.PrimaryGenres)
+                                                            {
+                                                                @if (genre.Name != _genre.Name)
+                                                                {
+                                                                    <GenreBadge Genre="@genre"/>
+                                                                }
+                                                            }
+                                                        }
+                                                    </Div>
+                                                </ListGroupItem>
+                                            </Blazorise.Link>
+                                        </Animate>
+                                    </Div>
+                                }
+                            </ListGroup>
+                        </CardBody>
+                    </Card>
+                </Column>
+            </Row>
+        </CardBody>
+    </Card>
+}

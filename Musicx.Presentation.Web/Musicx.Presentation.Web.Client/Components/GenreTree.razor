@@ -1,6 +1,6 @@
+@using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Infrastructure.Web.UseCases
 
 @inject IFindInUseCase<OutGenre> UcFindIn
 
@@ -10,7 +10,7 @@
           HasChildNodes="@(g => g.Children is not null)"
           Virtualize>
     <NodeContent>
-        <Badge Style="@GetColor(context)" Margin="Margin.Is2.FromBottom" TextColor="TextColor.White">
+        <Badge Style="@GetColor(context)" Margin="Margin.Is2.FromBottom" Pill>
             @if (Checkable)
             {
                 <Check Margin="Margin.Is2.FromEnd" 
@@ -44,7 +44,14 @@
     }
 
     private string GetColor(OutGenre genre)
-        => $"background-color: {genre.Color ?? "#80858a"}";
+    {
+        var background = genre.Color ?? ColorHelper.DarkColor;
+        var textColor = ColorHelper.IsColorLight(background)
+            ? ColorHelper.DarkColor
+            : "white";
+        
+        return $"background-color: {background}; color: {textColor}; font-weight: bold;";
+    }
 
     private async Task OnCheckChanged(OutGenre genre, bool isChecked)
     {

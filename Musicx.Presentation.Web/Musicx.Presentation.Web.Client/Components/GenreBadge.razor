@@ -1,22 +1,31 @@
-﻿@using Musicx.Contracts.Dto.Responses
+﻿@using Musicx.Application.Shared.Utilities
+@using Musicx.Contracts.Dto.Responses
 
-<Badge Padding="Padding.Is1.OnY.Is2.OnX" 
-       Class="neumorphism-shadow-default montserrat" 
-       Style="@GetColor(Genre)" 
-       TextSize="TextSize.Small" 
-       Margin="Margin.Is1" 
-       TextColor="TextColor.White" 
-       Pill>
-    @Genre.Name
-</Badge>
+<Blazorise.Link To="@($"/Genre/{@Genre.Id}")">
+    <Badge Padding="Padding.Is1.OnY.Is2.OnX" 
+           Class="neumorphism-shadow-default montserrat" 
+           Style="@GetColor(Genre)" 
+           TextSize="TextSize.Small" 
+           Margin="Margin.Is1" 
+           Pill>
+        @Genre.Name
+    </Badge>
+</Blazorise.Link>
 
 @code {
 
-    [Parameter] public OutGenre Genre { get; set; } = null!;
+    [Parameter, EditorRequired] public OutGenre Genre { get; set; } = null!;
     [Parameter] public bool Influence { get; set; }
-    
+
     private string GetColor(OutGenre genre)
-        => $"background-color: {genre.Color ?? "#80858a"};" +
-           (Influence ? " opacity: 0.7; font-style: italic;" : "font-weight: bold;");
+    {
+        var background = genre.Color ?? ColorHelper.DarkColor;
+        var textColor = ColorHelper.IsColorLight(background)
+            ? ColorHelper.DarkColor
+            : "#ffffff";
+        
+        return $"background-color: {background}; color: {textColor};" +
+               (Influence ? " opacity: 0.7; font-style: italic;" : "font-weight: bold;");
+    }
 
 }

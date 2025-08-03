@@ -18,5 +18,7 @@ public sealed class OutAlbum : BaseOutputModel
     public string Name { get; set; } = null!;
     public DateTime? OriginalReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }
+    public string? SimplifiedGenreColor { get; set; }
+    public string? SimplifiedGenreName { get; set; }
     public int? TrackTotal { get; set; }
 }

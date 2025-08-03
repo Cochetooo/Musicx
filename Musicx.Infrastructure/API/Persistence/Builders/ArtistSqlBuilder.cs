@@ -47,7 +47,7 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
     internal override async Task ExecuteUpdate(InArtist entity,
         NpgsqlConnection conn, NpgsqlTransaction? transaction = null)
     {
-        var createCommandSql = BuildUpdate("artists",
+        var updateCommandSql = BuildUpdate("artists",
             ArtistColumns.Id,
             entity.Id,
             new Dictionary<string, object?>
@@ -68,16 +68,18 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
                 { ArtistColumns.DeathDate, entity.DeathDate }
             });
         
-        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
+        _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 
-        await using var cmd = new NpgsqlCommand(createCommandSql.Query, conn, transaction);
-        cmd.Parameters.AddRange(createCommandSql.Parameters.ToArray());
+        await using var cmd = new NpgsqlCommand(updateCommandSql.Query, conn, transaction);
+        cmd.Parameters.AddRange(updateCommandSql.Parameters.ToArray());
         await cmd.ExecuteScalarAsync();
     }
 
-    internal override string BuildSelect(IQuerySpecification<InArtist>? spec = null)
+    internal override string BuildSelect(IQuerySpecification<InArtist>? spec = null, bool distinct = false)
     {
-        return "SELECT ar0.* FROM artists ar0";
+        return distinct 
+            ? "SELECT DISTINCT ar0.* FROM artists ar0"
+            : "SELECT ar0.* FROM artists ar0";
     }
 
     internal override string BuildGroupBy(IQuerySpecification<InArtist>? spec = null)

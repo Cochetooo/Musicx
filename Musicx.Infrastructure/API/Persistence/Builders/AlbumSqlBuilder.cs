@@ -3,6 +3,7 @@ using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Helpers;
 using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
 
@@ -96,14 +97,91 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 
     internal override async Task ExecuteUpdate(InAlbum entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        throw new NotImplementedException();
+        var updateCommandSql = BuildUpdate("albums",
+            AlbumColumns.Id,
+            entity.Id,
+            new Dictionary<string, object?>
+            {
+                { AlbumColumns.UpdatedAt, DateTime.Now },
+                { AlbumColumns.ArtistId, entity.ArtistId },
+                { AlbumColumns.ArtworkUrl, entity.ArtworkUrl },
+                { AlbumColumns.BeginRecordDate, entity.BeginRecordDate },
+                { AlbumColumns.DiscTotal, entity.DiscTotal },
+                { AlbumColumns.EndRecordDate, entity.EndRecordDate },
+                { AlbumColumns.IsFarRight, entity.IsFarRight },
+                { AlbumColumns.Language, entity.Language },
+                { AlbumColumns.Name, entity.Name },
+                { AlbumColumns.OriginalReleaseDate, entity.OriginalReleaseDate },
+                { AlbumColumns.ReleaseType, entity.ReleaseType },
+                { AlbumColumns.TrackTotal, entity.TrackTotal }
+        });
+        
+        _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
+
+        await using (var cmd = new NpgsqlCommand(updateCommandSql.Query, connection, transaction))
+        {
+            cmd.Parameters.AddRange(updateCommandSql.Parameters.ToArray());
+            await cmd.ExecuteScalarAsync();
+        }
+        
+        if (null != entity.ReleaseIds)
+        {
+            foreach (var release in entity.ReleaseIds)
+            {
+
+            }
+        }
+
+        if (null != entity.PrimaryGenreIds)
+        {
+            foreach (var primaryGenre in entity.PrimaryGenreIds)
+            {
+                var primaryGenreSql = BuildInsert("album_genre",
+                    new Dictionary<string, object?>
+                    {
+                        { AlbumGenreColumns.AlbumId, entity.Id },
+                        { AlbumGenreColumns.GenreId, primaryGenre }
+                    },
+                    conflictAction: SqlConflictAction.Nothing
+                );
+                
+                _logger.LogDebug(SqlHelper.InterpolateQuery(primaryGenreSql.Query, primaryGenreSql.Parameters));
+
+                await using var cmd = new NpgsqlCommand(primaryGenreSql.Query, connection, transaction);
+                cmd.Parameters.AddRange(primaryGenreSql.Parameters.ToArray());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        if (null != entity.InfluenceGenreIds)
+        {
+            foreach (var influenceGenre in entity.InfluenceGenreIds)
+            {
+                var influenceGenreSql = BuildInsert("album_influence",
+                    new Dictionary<string, object?>
+                    {
+                        { AlbumInfluenceColumns.AlbumId, entity.Id },
+                        { AlbumInfluenceColumns.GenreId, influenceGenre }
+                    },
+                    conflictAction: SqlConflictAction.Nothing
+                );
+                
+                _logger.LogDebug(SqlHelper.InterpolateQuery(influenceGenreSql.Query, influenceGenreSql.Parameters));
+
+                await using var cmd = new NpgsqlCommand(influenceGenreSql.Query, connection, transaction);
+                cmd.Parameters.AddRange(influenceGenreSql.Parameters.ToArray());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
     }
 
-    internal override string BuildSelect(IQuerySpecification<InAlbum>? querySpecification = null)
+    internal override string BuildSelect(IQuerySpecification<InAlbum>? querySpecification = null, bool distinct = false)
     {
         if (querySpecification is not AlbumQuerySpecification albumQuerySpecification)
         {
-            return "SELECT al0.* FROM albums al0";
+            return distinct 
+                ? "SELECT DISTINCT al0.* FROM albums al0" 
+                : "SELECT al0.* FROM albums al0";
         }
 
         var selects = new List<string> { "al0.*" };
@@ -129,7 +207,9 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             joins.Add($"LEFT JOIN genres ig ON aig.{AlbumInfluenceColumns.GenreId} = ig.{GenreColumns.Id}");
         }
 
-        return $"SELECT {string.Join(", ", selects)} FROM albums al0 {string.Join(" ", joins)}";
+        return distinct
+            ? $"SELECT DISTINCT {string.Join(", ", selects)} FROM albums al0 {string.Join(" ", joins)}"
+            : $"SELECT {string.Join(", ", selects)} FROM albums al0 {string.Join(" ", joins)}";
     }
 
     internal override string BuildGroupBy(IQuerySpecification<InAlbum>? querySpecification = null)

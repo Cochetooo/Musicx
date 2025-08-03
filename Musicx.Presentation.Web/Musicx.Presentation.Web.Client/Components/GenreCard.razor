@@ -1,0 +1,42 @@
+<Div Class="@GetClasses()"
+     Style="@GetStyle()"
+     @onclick="ToggleExpand">
+    <Paragraph TextAlignment="TextAlignment.Center" TextWeight="TextWeight.Bold">@Genre.Name</Paragraph>
+    
+    @if (IsExpanded && Genre.Children?.Any() == true)
+    {
+        <Div Class="children-container">
+            @foreach (var child in Genre.Children)
+            {
+                <GenreCard Genre="child" Depth="Depth + 1" />
+            }
+        </Div>
+    }
+</Div>
+
+<style>
+    .genre-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 0.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transform-origin: center;
+    }
+    
+    .genre-card:hover {
+        transform: scale(1.1);
+    }
+    
+    .genre-card.expanded {
+        position: relative;
+    }
+    
+    .children-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+</style>

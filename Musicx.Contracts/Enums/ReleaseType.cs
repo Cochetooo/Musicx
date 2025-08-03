@@ -6,16 +6,17 @@ namespace Musicx.Domain.Enums;
 /// <since>0.3.0</since>
 public enum ReleaseType
 {
-    AdditionalRelease,
-    Bootleg,
-    Compilation,
-    DjMix,
-    Ep,
-    Live,
-    Lp,
-    MixTape,
-    Single,
-    Soundtrack,
-    Unknown,
-    VideoClip
+    AdditionalRelease = 0,
+    Bootleg = 1,
+    Compilation = 2,
+    DjMix = 3,
+    Ep = 4,
+    Live = 5,
+    Lp = 6,
+    MixTape = 7,
+    Single = 8,
+    Soundtrack = 9,
+    Unknown = 10,
+    VideoClip = 11,
+    Demo = 12
 }

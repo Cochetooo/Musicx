@@ -1,0 +1,71 @@
+body {
+    scrollbar-color: #55555d transparent;
+}
+
+.btn, .card-link {
+    color: #f5f5f5;
+}
+
+.card {
+    border-radius: 1rem !important;
+}
+
+.card-body, .modal-body {
+    background-color: #10171a;
+}
+
+.card-footer, .modal-footer {
+    background-color: #202828;
+}
+
+.card-header, .modal-header {
+    background-color: #1b2222;
+}
+
+.close {
+    color: #ffffff;
+}
+
+.custom-select, .form-control, .form-control-file {
+    background-color: #555e5e;
+    padding-left: 10px;
+}
+
+.form-control:disabled {
+    color: #cccfcf;
+    padding-left: 5px;
+}
+
+label, .card-text {
+    color: #fdfdfd;
+}
+
+.list-group {
+    background-color: #2b333355;
+    border: 1px solid #ffffff22;
+}
+
+.list-group-item {
+    color: #ffffff;
+}
+
+.neumorphism-shadow-default {
+    box-shadow:  4px 4px 12px #0e1111,
+    -4px -4px 12px #293333;
+}
+
+.page-item.disabled.page-link {
+    color: #444444;
+}
+
+select.custom-select option, select.form-control option {
+    background-color: #555555;
+}
+
+.table tr {
+    background-color: #222828;
+}
+
+.table td, .table th {
+    border-top: 1px solid #454545;
+}

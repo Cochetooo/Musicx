@@ -99,8 +99,26 @@ internal sealed class AlbumRepository(
             throw new ArgumentOutOfRangeException(nameof(genreOptions),
                 $"Invalid genreOptions: {genreOptions}. Must be a combination of GenreOptions.PrimaryGenre (0x1) and/or InfluenceGenre (0x2).");
         }
+        
+        /*
+         * Assure that primary & influence genres are retrieved because this endpoint must need it.
+         */
 
-        var joins = new List<string>();
+        if (albumQuerySpecification is AlbumQuerySpecification albumSpec)
+        {
+            albumSpec.IncludePrimaryGenres = true;
+            albumSpec.IncludeInfluenceGenres = true;
+        }
+        else
+        {
+            albumQuerySpecification = new AlbumQuerySpecification
+            {
+                IncludePrimaryGenres = true,
+                IncludeInfluenceGenres = true
+            };
+        }
+        
+        var sql = builder.BuildSelect(albumQuerySpecification);
         var whereConditions = new List<string>();
         var parameters = new List<NpgsqlParameter>
         {
@@ -111,23 +129,18 @@ internal sealed class AlbumRepository(
 
         if ((genreOptions & GenreOptions.PrimaryGenre) != 0)
         {
-            joins.Add($" INNER JOIN album_genre pg ON pg.{AlbumGenreColumns.AlbumId} = a.{AlbumColumns.Id}");
-            whereConditions.Add($"pg.{AlbumGenreColumns.GenreId} = @genreId");
+            whereConditions.Add($"apg.{AlbumGenreColumns.GenreId} = @genreId");
         }
         
         if ((genreOptions & GenreOptions.InfluenceGenre) != 0)
         {
-            joins.Add($" INNER JOIN album_influence ig ON ig.{AlbumInfluenceColumns.AlbumId} = a.{AlbumColumns.Id}");
-            whereConditions.Add($"ig.{AlbumInfluenceColumns.GenreId} = @genreId");
+            whereConditions.Add($"aig.{AlbumInfluenceColumns.GenreId} = @genreId");
         }
         
-        var sql = $"""
-                  SELECT DISTINCT a.*
-                  FROM albums a
-                  {string.Join("\n", joins)}
-                  WHERE {string.Join(" OR ", whereConditions)}
+        sql += $"""
+                   WHERE {string.Join(" OR ", whereConditions)}
                   {builder.BuildGroupBy(albumQuerySpecification)}
-                  {builder.BuildOrderBy($"a.{AlbumColumns.OriginalReleaseDate}", $"a.{AlbumColumns.Name}")}
+                  {builder.BuildOrderBy($"al0.{AlbumColumns.OriginalReleaseDate}", $"al0.{AlbumColumns.Name}")}
                   OFFSET @skip LIMIT @take
                   """;
         

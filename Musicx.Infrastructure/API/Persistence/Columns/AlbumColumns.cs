@@ -18,5 +18,7 @@ public static class AlbumColumns
     public const string Name = "album_name";
     public const string OriginalReleaseDate = "album_original_release_date";
     public const string ReleaseType = "album_release_type";
+    public const string SimplifiedGenreColor = "album_simplified_genre_color";
+    public const string SimplifiedGenreName = "album_simplified_genre_name";
     public const string TrackTotal = "album_track_total";
 }
