@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using Musicx.Presentation.Web.Client.Components
+@inherits LayoutComponentBase
 
 @inject NavigationManager NavigationManager
 
@@ -34,7 +35,7 @@
                     </BarItem>
                 </BarStart>
                 <BarEnd>
-                    <BarItem Margin="Margin.Is2.OnX">
+                    <BarItem Margin="Margin.Is2.FromEnd">
                         <BarDropdown>
                             <BarDropdownToggle>More</BarDropdownToggle>
                             <BarDropdownMenu>
@@ -47,11 +48,14 @@
                             </BarDropdownMenu>
                         </BarDropdown>
                     </BarItem>
-                    <BarItem Margin="Margin.Is2.OnX">
+                    <BarItem Margin="Margin.Is2.FromEnd">
                         <Button Color="Color.Primary">Sign up</Button>
                     </BarItem>
-                    <BarItem>
+                    <BarItem Margin="Margin.Is2.FromEnd">
                         <Button Color="Color.Secondary">Log in</Button>
+                    </BarItem>
+                    <BarItem Margin="Margin.Is2.FromEnd">
+                        <ChangeTheme />
                     </BarItem>
                 </BarEnd>
             </BarMenu>

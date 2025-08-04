@@ -14,71 +14,75 @@
 
 <Breadcrumb Margin="Margin.Is2.FromBottom">
     <BreadcrumbItem>
-        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
+        <BreadcrumbLink TextColor="TextColor.Secondary" To="/">Musicx</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbItem>
-        <BreadcrumbLink To="/Admin">Administration</BreadcrumbLink>
+        <BreadcrumbLink TextColor="TextColor.Secondary" To="/Admin">Administration</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbItem>
-        <BreadcrumbLink To="#">Manage Artists</BreadcrumbLink>
+        <BreadcrumbLink TextColor="TextColor.Primary" To="#">Manage Artists</BreadcrumbLink>
     </BreadcrumbItem>
 </Breadcrumb>
 
-<Card Margin="Margin.Is4.OnY">
-    <CardHeader>
-        <CardTitle>Artist Management</CardTitle>
+<Card Background="Background.Primary" Border="Border.Primary" Margin="Margin.Is4.OnY">
+    <CardHeader Background="Background.Dark">
+        <CardTitle>
+            <Heading Size="HeadingSize.Is4" TextColor="TextColor.Primary">
+                Artist Management
+            </Heading>
+        </CardTitle>
     </CardHeader>
-    <CardBody>
-        <div class="container-fluid" style="display: flex; flex-direction: column;">
-            <div class="d-flex justify-content-between align-items-center p-3">
+    <CardBody TextColor="TextColor.Primary">
+        <Div Flex="Flex.Column">
+            <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Padding="Padding.Is3">
                 <TextEdit
                     @bind-Text="@_searchDataGrid" Placeholder="Search..."
                     KeyDown="KeyDownSearchInput" Margin="Margin.Is2.FromEnd"/>
 
-                <div class="d-flex">
-                    <Button Color="Color.Primary" Clicked="ApplySearchFilters">Apply</Button>
-                </div>
-            </div>
+                <Div Flex="Flex._">
+                    <Button Color="Color.Info" Clicked="ApplySearchFilters">Apply</Button>
+                </Div>
+            </Div>
 
-            <div class="d-flex justify-content-between align-items-center p-3">
+            <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Padding="Padding.Is3">
                 <Div ElementId="#DataGrid-Refresh">
                     <Animate Anchor="#DataGrid-Refresh" Auto Animation="Animations.FadeIn" DelayMilliseconds="300">
-                        <Button Clicked="LoadData" Color="Color.Primary" class="mr-2">
+                        <Button Clicked="LoadData" Color="Color.Info" Margin="Margin.Is2.FromEnd">
                             <Icon Name="IconName.Sync"/>
                             Refresh
                         </Button>
                     </Animate>
                 </Div>
 
-                <Div class="d-flex" ElementId="#DataGrid-Actions">
+                <Div Flex="Flex._" ElementId="#DataGrid-Actions">
                     <Animate Anchor="#DataGrid-Actions" Auto Animation="Animations.FadeIn" DelayMilliseconds="300">
                         @if (_viewMode == ViewMode.Normal)
                         {
-                            <Button Clicked="ShowAddModal" Color="Color.Success" class="mr-2">
+                            <Button Clicked="ShowAddModal" Color="Color.Success" Margin="Margin.Is2.FromEnd">
                                 <Icon Name="IconName.PlusCircle"/>
                                 Add
                             </Button>
-                            <Button Clicked="EnableDeleteMode" Color="Color.Danger" class="mr-2">
+                            <Button Clicked="EnableDeleteMode" Color="Color.Danger" Margin="Margin.Is2.FromEnd">
                                 <Icon Name="IconName.Delete"/>
                                 Delete
                             </Button>
                         }
                         else if (_viewMode == ViewMode.Delete)
                         {
-                            <Button Clicked="EnableNormalMode" Color="Color.Secondary" class="mr-2">
+                            <Button Clicked="EnableNormalMode" Color="Color.Secondary" Margin="Margin.Is2.FromEnd">
                                 <Icon Name="IconName.Times"/>
                                 Cancel
                             </Button>
-                            <Button Clicked="ShowDeleteModal" Color="Color.Danger" class="mr-2">
+                            <Button Clicked="ShowDeleteModal" Color="Color.Danger" Margin="Margin.Is2.FromEnd">
                                 <Icon Name="IconName.Check"/>
                                 Confirm deletion
                             </Button>
                         }
                     </Animate>
                 </Div>
-            </div>
+            </Div>
 
-            <Div class="flex-grow-1 overflow-auto" ElementId="#DataGrid-Animate">
+            <Div ElementId="#DataGrid-Animate" Flex="Flex.Grow.Is1" Overflow="Overflow.Auto">
                 <Animate Anchor="#DataGrid-Animate" Auto Animation="Animations.FadeIn" DelayMilliseconds="400">
                     <DataGrid TItem="OutArtist"
                               Data="_filteredArtists"
@@ -162,21 +166,21 @@
                     </DataGrid>
                 </Animate>
             </Div>
-        </div>
+        </Div>
     </CardBody>
 </Card>
 
 <ArtistEditModal @ref="_artistEditModal" OnSave="OnQuitModal" />
 
 <Modal @ref="_confirmDeleteModal">
-    <ModalContent Centered>
+    <ModalContent Background="Background.Primary" Centered>
         <ModalHeader>
             <ModalTitle>Deletion</ModalTitle>
             <CloseButton />
         </ModalHeader>
         <ModalBody>
             <span>Are you sure you want to delete these artists?</span>
-            <UnorderedList>
+            <UnorderedList Overflow="Overflow.Scroll">
                 @foreach (var artist in _selectedArtists)
                 {
                     <UnorderedListItem>@artist.Name</UnorderedListItem>

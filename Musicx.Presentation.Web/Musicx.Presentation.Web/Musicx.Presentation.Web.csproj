@@ -24,4 +24,15 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\material-plugins.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\material-plugins.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\material-plugins.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\material-plugins.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\material.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\material.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\material.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\material.min.css.map" />
+    </ItemGroup>
+
 </Project>

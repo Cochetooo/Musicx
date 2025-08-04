@@ -1,4 +1,6 @@
-﻿<ThemeProvider Theme="@_darkTheme">
+﻿@using Blazorise.DeepCloner
+@using Musicx.Presentation.Web.Client.Themes
+<ThemeProvider Theme="@Light.LightTheme.DeepClone()">
     <Router AppAssembly="typeof(Program).Assembly">
         <Found Context="routeData">
             <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)"/>
@@ -13,8 +15,8 @@
     {
         BackgroundOptions = new ThemeBackgroundOptions
         {
-            Secondary = "#0baad6",
-            Primary = "#136da9",
+            Primary = "#0baad6",
+            Secondary = "#136da9",
             Success = "#1ed67a",
             Info = "#87becc",
             Danger = "#c9163a",
@@ -27,8 +29,8 @@
         },
         ColorOptions = new ThemeColorOptions
         {
-            Secondary = "#0baad6",
-            Primary = "#136da9",
+            Primary = "#0baad6",
+            Secondary = "#136da9",
             Success = "#1ed67a",
             Info = "#87becc",
             Danger = "#c9163a",
@@ -45,12 +47,12 @@
         ListGroupItemOptions = new ThemeListGroupItemOptions
         {
             BackgroundLevel = 9,
-            ColorLevel = -6
+            ColorLevel = -6,
         },
         TextColorOptions = new ThemeTextColorOptions
         {
-            Secondary = "#0baad6",
-            Primary = "#136da9",
+            Primary = "#0baad6",
+            Secondary = "#136da9",
             Success = "#1ed67a",
             Info = "#87becc",
             Danger = "#c9163a",

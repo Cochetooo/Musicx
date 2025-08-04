@@ -1,11 +1,7 @@
-using Blazorise;
-using Blazorise.Icons.Material;
-using Blazorise.Material;
 using Musicx.Infrastructure;
-using Musicx.Infrastructure.Shared.Logging;
-using Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
 using Musicx.Presentation.Web.Client;
 using Musicx.Presentation.Web.Components;
+using _Imports = Musicx.Presentation.Web.Client._Imports;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +55,6 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(Musicx.Presentation.Web.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(_Imports).Assembly);
 
 app.Run();

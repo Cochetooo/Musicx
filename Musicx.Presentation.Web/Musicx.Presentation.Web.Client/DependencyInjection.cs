@@ -1,6 +1,6 @@
 using Blazorise;
-using Blazorise.Icons.Material;
-using Blazorise.Material;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 
 namespace Musicx.Presentation.Web.Client;
 
@@ -20,8 +20,8 @@ public static class DependencyInjection
                     "PSd5Dn9jWzlWZm5/dg5oDAMODUJdPzZ6eRdRUzsqeHk4MU1EGVwRdnF2YiZWJn5yVEgFSSM8QFpqLwcSBHxoYTteEX1zWyMK" +
                     "aDMIbmA0EgciHVJpXAJgCARfWWA7aSJ7UXI+B1R3LTF5bxlpAiZOT3k2fwxlM3NBGkkQCnJIPQ9xfA==";
             })
-            .AddMaterialProviders()
-            .AddMaterialIcons();
+            .AddBootstrap5Providers()
+            .AddFontAwesomeIcons();
         
         return services;
     } 

@@ -20,9 +20,9 @@ h1:focus {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
-    }
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
@@ -56,6 +56,7 @@ h1:focus {
 * {
     font-family: "Space Grotesk", "Helvetica Neue", sans-serif;
     font-optical-sizing: auto;
+    scrollbar-color: #767a7d transparent;
 }
 
 h1, h2, h3, h4, h5, h6 {

@@ -13,21 +13,21 @@
 
 <Breadcrumb Margin="Margin.Is2.FromBottom">
     <BreadcrumbItem>
-        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
+        <BreadcrumbLink TextColor="TextColor.Secondary" To="/">Musicx</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbItem>
-        <BreadcrumbLink To="#">Artists</BreadcrumbLink>
+        <BreadcrumbLink TextColor="TextColor.Secondary" To="#">Artists</BreadcrumbLink>
     </BreadcrumbItem>
     @if (null == _artist)
     {
         <BreadcrumbItem>
-            <BreadcrumbLink To="#">-</BreadcrumbLink>
+            <BreadcrumbLink TextColor="TextColor.Primary" To="#">-</BreadcrumbLink>
         </BreadcrumbItem>
     }
     else
     {
         <BreadcrumbItem>
-            <BreadcrumbLink To="#">@_artist.Name</BreadcrumbLink>
+            <BreadcrumbLink TextColor="TextColor.Primary" To="#">@_artist.Name</BreadcrumbLink>
         </BreadcrumbItem>
     }
 </Breadcrumb>
@@ -38,35 +38,33 @@
 }
 else
 {
-    <Card Margin="Margin.Is4.OnY">
-        <CardHeader Background="Background.Secondary" Flex="Flex.JustifyContent.Between.OnDesktop"
-                    Padding="Padding.Is3.OnX">
-            <Heading Size="HeadingSize.Is1" 
-                     Padding="Padding.Is5.FromStart.OnDesktop"
+    <Card Margin="Margin.Is4.OnY" Background="Background.Primary">
+        <CardHeader Background="Background.Secondary" Flex="Flex.JustifyContent.Start.OnDesktop"
+                    Padding="Padding.Is3.OnX">        
+            <Image Style="width: 200px; border-radius:10px" Shadow="Shadow.Small" Source="@_artist.ArtworkUrl" />
+            
+            <Heading Padding="Padding.Is5.FromStart.OnDesktop"
                      Italic
                      Flex="Flex.AlignItems.Center"
-                     Style="font-weight: 900" TextColor="TextColor.White">
+                     Style="font-weight: 900; font-size: 5rem;" TextColor="TextColor.Primary">
                 @_artist.Name
             </Heading>
-        
-            <Image Style="width: 200px; border-radius:10px; box-shadow: 10px 10px 20px #116298,
-             -10px -10px 20px #1578ba" Source="@_artist.ArtworkUrl" />
         </CardHeader>
-        <CardBody>
+        <CardBody TextColor="TextColor.Primary">
             <Row Margin="Margin.Is3.OnX">
                 <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3.OnDesktop">
                     <Card>
-                        <CardHeader>
+                        <CardHeader Background="Background.Primary">
                             <Button Color="Color.Secondary">
                                 <Icon Name="IconName.UserPlus" Margin="Margin.Is2.OnX" />
                                 Follow
                             </Button>
                         </CardHeader>
-                        <CardBody>
-                            <CardTitle Size="5">
+                        <CardBody Background="Background.Primary">
+                            <CardTitle Size="3" TextColor="TextColor.Primary">
                                 Details
                             </CardTitle>
-                            <ListGroup>
+                            <ListGroup Background="Background.Primary" Flush>
                                 @if (_artist.Discriminator == ArtistDiscriminator.Band)
                                 {
                                     if (null != _artist.FormationDate)
@@ -76,7 +74,7 @@ else
                                                 Formed
                                             </DescriptorLabel>
                                             <DescriptorValue>
-                                                @_artist.FormationDate.Value.ToString("dd/MM/yyyy")
+                                                @_artist.FormationDate.Value.ToString("dd / MM / yyyy")
                                             </DescriptorValue>
                                         </Descriptor>
                                     }
@@ -88,7 +86,7 @@ else
                                                 Split
                                             </DescriptorLabel>
                                             <DescriptorValue>
-                                                @_artist.SplitDate.Value.ToString("dd/MM/yyyy")
+                                                @_artist.SplitDate.Value.ToString("dd / MM / yyyy")
                                             </DescriptorValue>
                                         </Descriptor>
                                     }
@@ -102,7 +100,7 @@ else
                                                 Born
                                             </DescriptorLabel>
                                             <DescriptorValue>
-                                                @_artist.BirthDate.Value.ToString("dd/MM/yyyy")
+                                                @_artist.BirthDate.Value.ToString("dd / MM / yyyy")
                                             </DescriptorValue>
                                         </Descriptor>
                                     }
@@ -114,7 +112,7 @@ else
                                                 Died
                                             </DescriptorLabel>
                                             <DescriptorValue>
-                                                @_artist.DeathDate.Value.ToString("dd/MM/yyyy")
+                                                @_artist.DeathDate.Value.ToString("dd / MM / yyyy")
                                             </DescriptorValue>
                                         </Descriptor>
                                     }
@@ -133,19 +131,22 @@ else
                 </Column>
                 <Column ColumnSize="ColumnSize.Is9.OnDesktop" Padding="Padding.Is3.OnAll">
                     <Card>
-                        <CardBody>
-                            <CardTitle Size="4">Releases</CardTitle>
+                        <CardBody Background="Background.Primary">
+                            <CardTitle Size="3" TextColor="TextColor.Primary">
+                                Releases
+                            </CardTitle>
                             <Div Flex="Flex.JustifyContent.Between">
                                 <Fields>
                                     <Field>
-                                        <FieldLabel Margin="Margin.Is1.FromEnd">
-                                            Release Type
+                                        <FieldLabel Margin="Margin.Is2.FromEnd" TextColor="TextColor.Primary">
+                                            Type
                                         </FieldLabel>
                                         <FieldBody>
                                             <Buttons>
                                                 @foreach (var releaseType in _availableReleaseTypes)
                                                 {
-                                                    <Button Color="Color.Primary"
+                                                    <Button Color="Color.Info"
+                                                            TextColor="TextColor.Primary"
                                                             Clicked="@(() => ToggleReleaseType(releaseType))"
                                                             Outline="@(!releaseType.Value)">
                                                         @releaseType.Key.ToString()
@@ -157,36 +158,39 @@ else
                                 </Fields>
                                 
                                 <Div>
-                                    <Button Color="Color.Primary"
+                                    <Button Color="Color.Info"
+                                            TextColor="TextColor.Primary"
                                             Clicked="@(() => ToggleListView(true))"
                                             Outline="@(!_isReleasesListView)">
                                         <Icon Name="IconName.List" />
                                     </Button>
                                     
-                                    <Button Color="Color.Primary"
+                                    <Button Color="Color.Info"
+                                            TextColor="TextColor.Primary"
                                             Clicked="@(() => ToggleListView(false))"
                                             Outline="@(_isReleasesListView)">
                                         <Icon Name="IconName.GripVertical" />
                                     </Button>
                                 </Div>
                             </Div>
-                            <Div Class="d-flex flex-wrap gap-3">
+                            <Div Gap="Gap.Is2" Flex="Flex.Wrap">
                                 @if (_isReleasesListView)
                                 {
-                                    <ListGroup Width="Width.Is100">
+                                    <ListGroup Flush Width="Width.Is100">
                                         @foreach (var album in _artistAlbums)
                                         {
                                             if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
                                                     out var value) && value)
                                             {
-                                                <Div ElementId="#album-list-animate" class="p-1 album-tile">
-                                                    <Animate Anchor="#album-animate" Auto
-                                                             Animation="Animations.FadeRight" DelayMilliseconds="50">
-                                                        <Blazorise.Link To="@($"/Album/{album.Id}")">
-                                                            <ListGroupItem Flex="Flex.AlignItems.Start.JustifyContent.Between">
-                                                                <Div Class="d-flex">
+                                                <ListGroupItem Background="Background.Secondary">
+                                                    <Div ElementId="#album-list-animate" Class="album-tile" Padding="Padding.Is1">
+                                                        <Animate Anchor="#album-animate" Auto
+                                                                 Animation="Animations.FadeRight" DelayMilliseconds="50">
+                                                            <Blazorise.Link To="@($"/Album/{album.Id}")" Flex="Flex.AlignItems.Start.JustifyContent.Between">
+                                                                <Div Flex="Flex._">
                                                                     <Figure Size="FigureSize.Is48x48">
                                                                         <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
+                                                                                     Shadow="Shadow.Default"
                                                                                      Class="neumorphism-shadow-default"
                                                                                      Rounded/>
                                                                     </Figure>
@@ -196,7 +200,7 @@ else
                                                                     </Div>
                                                                 </Div>
 
-                                                                <Div Class="d-flex">
+                                                                <Div Flex="Flex._">
                                                                     @if (album.SimplifiedGenreName is not null && album.SimplifiedGenreColor is not null)
                                                                     {
                                                                         <Badge Padding="Padding.Is1.OnY.Is3.OnX"
@@ -209,10 +213,10 @@ else
                                                                         </Badge>
                                                                     }
                                                                 </Div>
-                                                            </ListGroupItem>
-                                                        </Blazorise.Link>
-                                                    </Animate>
-                                                </Div>
+                                                            </Blazorise.Link>
+                                                        </Animate>
+                                                    </Div>
+                                                </ListGroupItem>
                                             }
                                         }
                                     </ListGroup>
@@ -224,12 +228,14 @@ else
                                         if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
                                                 out var value) && value)
                                         {
-                                            <Div ElementId="#album-animate" class="p-1 album-tile" Style="width: 150px;">
+                                            <Div ElementId="#album-animate" Class="album-tile" Padding="Padding.Is1" 
+                                                 Style="width: 150px;">
                                                 <Animate Anchor="#album-animate" Auto
                                                          Animation="Animations.FlipUp" DelayMilliseconds="50">
                                                     <Blazorise.Link To="@($"/Album/{album.Id}")">
                                                         <Figure Size="FigureSize.Is128x128">
                                                             <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
+                                                                         Shadow="Shadow.Large"
                                                                          Class="neumorphism-shadow-default"
                                                                          Rounded/>
                                                             <FigureCaption>
@@ -248,7 +254,7 @@ else
                                 New Release
                             </Button>
                         </CardBody>
-                        <CardFooter>
+                        <CardFooter Background="Background.Secondary">
                             <CardText>Release History</CardText>
                             <LineChart @ref="_historyChart" Style="max-height: 200px" TItem="int"/>
                         </CardFooter>
