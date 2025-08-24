@@ -1,0 +1,41 @@
+.genre-node {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 400px;
+    max-width: 400px;
+}
+
+.genre-node-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.expand-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.genre-node-children {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-left: 1.5rem;
+    overflow: auto;
+}
+
+.animate-expand {
+    animation: expandAnim 0.2 ease-out;
+}
+
+@keyframes expandAnim {
+    from { opacity: 0; transform: scaleY(0.8); }
+    to { opacity: 1; transform: scaleY(1); }
+}

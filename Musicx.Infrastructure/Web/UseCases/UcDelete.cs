@@ -6,7 +6,7 @@ namespace Musicx.Infrastructure.Web.UseCases;
 
 public sealed class UcDelete<T>(
     HttpClient httpClient,
-    ILoggerProvider loggerProvider
+    ILoggerFactory loggerProvider
     ) : IDeleteUseCase<T> where T : class
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcDelete<T>));

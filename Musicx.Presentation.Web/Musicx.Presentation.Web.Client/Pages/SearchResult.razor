@@ -7,102 +7,89 @@
 @inject IListUseCase<OutArtist> UcListArtist
 @inject IListUseCase<OutAlbum> UcListAlbum
 
-<Breadcrumb Margin="Margin.Is2.FromBottom">
-    <BreadcrumbItem>
-        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
-    </BreadcrumbItem>
-    <BreadcrumbItem>
-        <BreadcrumbLink To="#">Search Results</BreadcrumbLink>
-    </BreadcrumbItem>
-</Breadcrumb>
+<MudBreadcrumbs Items="@_breadcrumb" />
 
-<Card Margin="Margin.Is4.OnY">
-    <CardHeader>
-        <Heading Size="HeadingSize.Is5" TextWeight="TextWeight.Light" TextColor="TextColor.Muted">Search Results</Heading>
-    </CardHeader>
-    <CardBody>
-        <Heading Size="HeadingSize.Is4">Artists</Heading>
-        
+<MudCard>
+    <MudCardHeader>
+        <MudText Typo="Typo.h5" Color="Color.Secondary">Search Results</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <!-- Artists -->
+        <MudText Typo="Typo.h4">Artists</MudText>
+
         @if (0 < _artistsResult.Count)
         {
-            <ListGroup Margin="Margin.Is2.FromBottom">
+            <MudList T="RenderFragment">
                 @foreach (var artist in _artistsResult)
                 {
-                    <ListGroupItem>
-                        <Div Flex="Flex.JustifyContent.Start">
-                            <Image Style="width: 64px; height: 64px; border-radius:5px" Source="@artist.ArtworkUrl" />
-                            <Div Margin="Margin.Is3.OnX">
-                                <Heading TextWeight="TextWeight.Bold" Size="HeadingSize.Is5">
-                                    <Blazorise.Link To="@($"/Artist/{artist.Id}")" TextColor="TextColor.Primary">
-                                        @artist.Name
-                                    </Blazorise.Link>
-                                </Heading>
-
-                                <Paragraph TextSize="TextSize.Small" TextColor="TextColor.Muted">
+                    <MudListItem>
+                        <MudStack Justify="Justify.FlexStart" Row>
+                            <MudImage Src="@artist.ArtworkUrl" Width="64" Height="64"/>
+                            <MudStack>
+                                <MudLink Typo="Typo.h5" Class="montserrat" Style="font-weight: bold;" Href="@($"/Artist/{artist.Id}")">
+                                    @artist.Name
+                                </MudLink>
+                                <MudText Color="Color.Tertiary">
                                     @if (artist.Discriminator == ArtistDiscriminator.Band)
                                     {
-                                        <Text>Band from <Flag CountryName="@artist.Country" /></Text>
+                                        <span>Band from <Flag CountryName="@artist.Country"/></span>
                                         if (null != artist.FormationDate)
                                         {
-                                            <Text> since @artist.FormationDate.Value.Year</Text>
+                                            <span> since @artist.FormationDate.Value.Year</span>
                                         }
-                                    } 
+                                    }
                                     else
                                     {
-                                        <Text>Artist from <Flag CountryName="@artist.Country" /></Text>
+                                        <span>Artist from <Flag CountryName="@artist.Country"/></span>
                                         if (null != artist.BirthDate)
                                         {
-                                            <Text> born in @artist.BirthDate.Value.Year</Text>
+                                            <span> born in @artist.BirthDate.Value.Year</span>
                                         }
                                     }
-                                </Paragraph>
-                            </Div>
-                        </Div>
-                    </ListGroupItem>
+                                </MudText>
+                            </MudStack>
+                        </MudStack>
+                    </MudListItem>
                 }
-            </ListGroup>
+            </MudList>
         }
+
+        <MudText Style="font-style: italic;">@_artistsResult.Count result(s) found.</MudText>
+
+        <MudDivider Class="my-4" />
         
-        <CardText Italic TextColor="TextColor.Muted">@_artistsResult.Count result(s) found.</CardText>
-        
-        <Divider />
-        
-        <Heading Size="HeadingSize.Is4">Albums</Heading>
-        
+        <!-- Albums -->
+        <MudText Typo="Typo.h4">Albums</MudText>
+
         @if (0 < _albumsResult.Count)
         {
-            <ListGroup Margin="Margin.Is2.FromBottom">
+            <MudList T="RenderFragment">
                 @foreach (var album in _albumsResult)
                 {
-                    <ListGroupItem>
-                        <Div Flex="Flex.JustifyContent.Start">
-                            <Image Style="width: 64px; height: 64px; border-radius:5px" Source="@album.ArtworkUrl" />
-                            <Div Margin="Margin.Is3.OnX">
-                                <Heading TextWeight="TextWeight.Bold" Size="HeadingSize.Is5">
-                                    <Blazorise.Link To="@($"/Album/{album.Id}")" TextColor="TextColor.Primary">
-                                        @album.Name
-                                    </Blazorise.Link>
-                                </Heading>
-
-                                <Paragraph TextSize="TextSize.Small" TextColor="TextColor.Muted">
+                    <MudListItem>
+                        <MudStack Justify="Justify.FlexStart" Row>
+                            <MudImage Src="@album.ArtworkUrl" Width="64" Height="64"/>
+                            <MudStack>
+                                <MudLink Typo="Typo.h5" Class="montserrat" Style="font-weight: bold;" Href="@($"/Album/{album.Id}")">
+                                    @album.Name
+                                </MudLink>
+                                <MudText Color="Color.Tertiary">
                                     @if (album.Artist is not null)
                                     {
-                                        <Text>By 
-                                            <Blazorise.Link To="@($"/Artist/{album.Artist.Id}")"
-                                                            TextColor="TextColor.Dark"
-                                                            TextWeight="TextWeight.Bold">
+                                        <span>By 
+                                            <MudLink Href="@($"/Artist/{album.Artist.Id}")">
                                                 @album.Artist.Name
-                                            </Blazorise.Link>
-                                        </Text>
+                                            </MudLink>
+                                        </span>
                                     }
-                                </Paragraph>
-                            </Div>
-                        </Div>
-                    </ListGroupItem>
+                                </MudText>
+                            </MudStack>
+                        </MudStack>
+                    </MudListItem>
                 }
-            </ListGroup>
+            </MudList>
         }
-        
-        <CardText Italic TextColor="TextColor.Muted">@_albumsResult.Count result(s) found.</CardText>
-    </CardBody>
-</Card>
+
+        <MudText Style="font-style: italic;">@_albumsResult.Count result(s) found.</MudText>
+    </MudCardContent>
+</MudCard>

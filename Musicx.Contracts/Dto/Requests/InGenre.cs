@@ -1,3 +1,5 @@
+using Musicx.Contracts.Enums;
+
 namespace Musicx.Contracts.Dto.Requests;
 
 public sealed class InGenre : BaseInputModel
@@ -8,6 +10,7 @@ public sealed class InGenre : BaseInputModel
     
     // Required Columns
     public string Name { get; set; } = null!;
+    public GenreType Type { get; set; }
     
     // Optional Columns
     public string? Description { get; set; }

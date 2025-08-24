@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 
@@ -10,12 +12,19 @@ public partial class AlbumView
 
     private ILogger _logger = null!;
 
-    private AlbumEditModal? _albumEditModal;
-    private AlbumTrackListEditModal? _trackListEditModal;
+    private AlbumEditModal _albumEditModal = null!;
+    private AlbumTrackListEditModal _trackListEditModal = null!;
 
     private OutAlbum? _album;
     private List<OutSong> _albumSongs = [];
 
+    private bool _showDetailedView;
+
+    private readonly List<BreadcrumbItem>? _breadcrumb =
+    [
+        new("Musicx", href: "/"),
+    ];
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
@@ -26,6 +35,16 @@ public partial class AlbumView
         _logger = LoggerProvider.CreateLogger(nameof(AlbumView));
 
         await LoadAlbum();
+
+        if (_breadcrumb is not null && _album is not null)
+        {
+            _breadcrumb.Add(new(_album.Artist?.Name ?? "?",
+                href: _album is { Artist: not null } ? "/Artist/" + _album.Artist.Id : "#"));
+            
+            _breadcrumb.Add(new(_album.Name, href: "#"));
+        }
+        
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadAlbum()
@@ -68,7 +87,7 @@ public partial class AlbumView
         }
     }
 
-    private void EditTrackListShowModal()
+    private async Task EditTrackListShowModal()
     {
         if (null == _album)
         {
@@ -76,10 +95,10 @@ public partial class AlbumView
             return;
         }
         
-        _trackListEditModal?.Show(_album);
+        await _trackListEditModal.Show(_album);
     }
 
-    private void EditAlbumShowModal()
+    private async Task EditAlbumShowModal()
     {
         if (null == _album)
         {
@@ -93,8 +112,14 @@ public partial class AlbumView
             return;
         }
         
-        _albumEditModal?.Show(_album.Artist, _album);
+        await _albumEditModal.Show(_album.Artist, _album);
     }
+    
+    private string GetSimplifiedGenreStyle(OutAlbum album)
+        =>
+            $"background: {album.SimplifiedGenreColor}; color: {(ColorHelper.IsColorLight(album.SimplifiedGenreColor!) 
+                ? ColorHelper.DarkColor 
+                : "white")}; font-weight: bold";
 
     private async Task OnQuitModal()
     {

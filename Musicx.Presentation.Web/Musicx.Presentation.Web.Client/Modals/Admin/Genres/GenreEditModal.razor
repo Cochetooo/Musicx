@@ -1,69 +1,80 @@
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Infrastructure.API.Persistence.Mappers
-@using Musicx.Presentation.Web.Client.Components
+@using Musicx.Contracts.Enums
+@using Musicx.Presentation.Web.Client.Components.GenreTree
 
-@inject ILoggerProvider LoggerProvider
+@inject ILoggerFactory LoggerProvider
 @inject ISaveUseCase<InGenre> UcSave
 @inject IListUseCase<OutGenre> UcList
+@inject IFindInUseCase<OutGenre> UcFindIn
 
-<Modal @ref="_modalRef">
-    <ModalContent Centered>
-        <ModalHeader>
-            <ModalTitle>Edit genre</ModalTitle>
-            <CloseButton Clicked="Hide" />
-        </ModalHeader>
-        
-        <ModalBody>
-            <Fields>
-                <!-- First Row -->
-                <Field ColumnSize="ColumnSize.Is9.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Name (*)
-                    </FieldLabel>
-                    <FieldBody>
-                        <Validation Validator="ValidateNonEmptyField">
-                            <TextEdit 
-                                Placeholder="Death Metal..."
-                                TextChanged="NameTextChanged"
-                                @ref="_nameTextEdit"
-                                Disabled="@(_genre.Id != 0)">
-                                <ValidationNone>⚠️ Please enter a name</ValidationNone>
-                                <ValidationSuccess>✅ Valid name</ValidationSuccess>
-                            </TextEdit>
-                        </Validation>
-                    </FieldBody>
-                </Field>
-                
-                <Field ColumnSize="ColumnSize.Is3.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Color
-                    </FieldLabel>
-                    <FieldBody>
-                        <ColorPicker @bind-Color="@_genre.Color" />
-                    </FieldBody>
-                </Field>
-                
-                <Field ColumnSize="ColumnSize.Is12">
-                    <FieldLabel>
-                        Description
-                    </FieldLabel>
-                    <FieldBody>
-                        <MemoEdit Rows="6" @bind-Text="_genre.Description" />
-                    </FieldBody>
-                </Field>
-            </Fields>
+<MudDialog @ref="_modalRef">
+    <TitleContent>
+        Genre Editing
+    </TitleContent>
+    
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField 
+                    T="string"
+                    TextChanged="@NameTextChanged" 
+                    Disabled="@(_genre.Id != 0)"
+                    Immediate
+                    @ref="_nameTextEdit" Label="Enter a genre..." 
+                    HelperText="Name (*)" Variant="Variant.Text" />
+            </MudItem>
             
-            <Divider />
+            <MudItem xs="12" md="3">
+                <MudSelect
+                    @bind-Value="_genre.Type" T="GenreType"
+                    Label="Type" Placeholder="Select a type"
+                    AdornmentIcon="@Icons.Material.Filled.Label">
+                    @foreach (var genreType in Enum.GetValues<GenreType>())
+                    {
+                        <MudSelectItem T="GenreType" Value="@genreType">@genreType</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
             
-            <Heading Size="HeadingSize.Is5">Parent Genres</Heading>
-            <GenreTree Genres="@_genres" Checkable @bind-SelectedGenres="_selectedParents" />
-        </ModalBody>
-        
-        <ModalFooter>
-            <Button Color="Color.Primary" Clicked="Save" Disabled="@_isConfirmable">Save</Button>
-            <Button Color="Color.Secondary" Clicked="Hide">Close</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+            <MudItem xs="12" md="3">
+                <MudColorPicker
+                    Label="Color"
+                    @bind-Text="_genre.Color"
+                    ImmediateText
+                    Style="@($"color: {_genre.Color}")"
+                    Elevation="4"
+                    ShowAlpha="false"
+                    Placeholder="Select a color"/>
+            </MudItem>
+            
+            <MudItem xs="12">
+                <MudTextField
+                    T="string?"
+                    Label="Description"
+                    Placeholder="Enter a description..."
+                    @bind-Text="_genre.Description"
+                    Lines="6"
+                />
+            </MudItem>
+            
+            <MudItem>
+                <MudText Typo="Typo.h6">Parent Genres</MudText>
+                
+                <GenreTree
+                    RootGenres="@_genres"
+                    TypeFilter="@_genre.Type"
+                    Checkable
+                    SelectedGenresChanged="@SelectedGenresChanged"
+                    LoadChildrenAsync="@LoadChildrenAsync"
+                    />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="@Save">Save</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
+    </DialogActions>
+</MudDialog>

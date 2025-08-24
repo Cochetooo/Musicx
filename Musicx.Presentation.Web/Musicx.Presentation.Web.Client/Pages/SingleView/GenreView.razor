@@ -4,119 +4,87 @@
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Components
 
-@inject ILoggerProvider LoggerProvider
+@inject ILoggerFactory LoggerProvider
 @inject IGetUseCase<OutGenre> UcGet
 @inject IGetAlbumByGenreUseCase UcAlbumByGenre
 
-<Breadcrumb Margin="Margin.Is2.FromBottom">
-    <BreadcrumbItem>
-        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
-    </BreadcrumbItem>
-    <BreadcrumbItem>
-        <BreadcrumbLink To="#">Genres</BreadcrumbLink>
-    </BreadcrumbItem>
-    @if (null == _genre)
-    {
-        <BreadcrumbItem>
-            <BreadcrumbLink To="#">-</BreadcrumbLink>
-        </BreadcrumbItem>
-    }
-    else
-    {
-        <BreadcrumbItem>
-            <BreadcrumbLink To="#">@_genre.Name</BreadcrumbLink>
-        </BreadcrumbItem>
-    }
-</Breadcrumb>
+<MudBreadcrumbs Items="@_breadcrumb" />
 
 @if (null == _genre)
 {
-    <SpinKit Type="SpinKitType.Pulse" />
+    <MudProgressCircular Indeterminate />
 }
 else
 {
-    <Card Background="Background.Primary" Margin="Margin.Is4.OnY">
-        <CardHeader Padding="Padding.Is3.OnX" Style="@GetHeaderStyle()">
-            <Heading Size="HeadingSize.Is1"
-                     Padding="Padding.Is5.FromStart.OnDesktop"
-                     Italic
-                     Flex="Flex.AlignItems.Center"
-                     Style="font-weight: 900" TextColor="TextColor.White">
+    <MudCard Class="my-4">
+        <MudCardHeader Style="@GetHeaderStyle()">
+            <MudText Typo="Typo.h1" Class="pl-5" Style="font-style: italic; font-size: 5rem; font-weight: 800;">
                 @_genre.Name
-            </Heading>
-        </CardHeader>
-        <CardBody>
-            <Row Margin="Margin.Is3.OnX">
-                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3.OnDesktop">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>
-                                Description
-                            </CardTitle>
-                        </CardHeader>
-                        <CardBody>
+            </MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid Class="mx-3">
+                <MudItem xs="12" md="3" Class="pa-3">
+                    <MudCard>
+                        <MudCardHeader>
+                            <MudText Typo="Typo.h4">Description</MudText>
+                        </MudCardHeader>
+                        <MudCardContent>
                             @if (_genre.Description is not null)
                             {
-                                @_genre.Description
+                                <MudText Typo="Typo.body2">
+                                    @_genre.Description
+                                </MudText>
                             }
                             else
                             {
-                                <Blazorise.Text Italic TextColor="TextColor.Muted">There is no description yet.</Blazorise.Text>
+                                <MudText Typo="Typo.body2" Style="font-style: italic">
+                                    There is no description yet.
+                                </MudText>
                             }
-                        </CardBody>
-                    </Card>
-                </Column>
-                
-                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is9.OnDesktop">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>
-                                Releases
-                            </CardTitle>
-                        </CardHeader>
-                        <CardBody>
-                            <ListGroup>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" md="9" Class="pa-3">
+                    <MudCard>
+                        <MudCardHeader>
+                            <MudText Typo="Typo.h4">Releases</MudText>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudList T="RenderFragment" Dense>
                                 @foreach (var album in _genreAlbums)
                                 {
-                                    <Div ElementId="#album-list-animate" class="p-1">
-                                        <Animate Anchor="#album-animate" Auto
-                                                 Animation="Animations.FadeRight" DelayMilliseconds="50">
-                                            <Blazorise.Link To="@($"/Album/{album.Id}")">
-                                                <ListGroupItem Flex="Flex.AlignItems.Start.JustifyContent.Between">
-                                                    <Div Class="d-flex">
-                                                        <Figure Size="FigureSize.Is48x48">
-                                                            <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
-                                                                         Class="neumorphism-shadow-default"
-                                                                         Rounded/>
-                                                        </Figure>
+                                    <MudListItem>
+                                        <MudLink Href="@($"/Album/{album.Id}")">
+                                            <MudStack AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Row>
+                                                <MudStack Justify="Justify.FlexStart" Row>
+                                                    <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
+                                                              Width="48" Height="48"
+                                                              Style="border-radius: 5px"
+                                                              Elevation="25"/>
 
-                                                        <Div Margin="Margin.Is3.OnX">
-                                                            <AlbumListQuickInfo Album="album"/>
-                                                        </Div>
-                                                    </Div>
-                                                    
-                                                    <Div Class="d-flex">
-                                                        @if (album.PrimaryGenres is not null)
+                                                    <AlbumListQuickInfo class="mx-3" Album="@album"/>
+                                                </MudStack>
+
+                                                @if (album.PrimaryGenres is not null)
+                                                {
+                                                    @foreach (var genre in album.PrimaryGenres)
+                                                    {
+                                                        if (genre.Name != _genre.Name)
                                                         {
-                                                            @foreach (var genre in album.PrimaryGenres)
-                                                            {
-                                                                @if (genre.Name != _genre.Name)
-                                                                {
-                                                                    <GenreBadge Genre="@genre"/>
-                                                                }
-                                                            }
+                                                            <GenreBadge Genre="@genre" Clickable />
                                                         }
-                                                    </Div>
-                                                </ListGroupItem>
-                                            </Blazorise.Link>
-                                        </Animate>
-                                    </Div>
+                                                    }
+                                                }
+                                            </MudStack>
+                                        </MudLink>
+                                    </MudListItem>
                                 }
-                            </ListGroup>
-                        </CardBody>
-                    </Card>
-                </Column>
-            </Row>
-        </CardBody>
-    </Card>
+                            </MudList>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
 }

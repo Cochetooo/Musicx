@@ -9,7 +9,7 @@ namespace Musicx.Infrastructure.Web.UseCases;
 
 public sealed class UcSave<T>(
     HttpClient httpClient,
-    ILoggerProvider loggerProvider
+    ILoggerFactory loggerProvider
     ) : ISaveUseCase<T> where T : class
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcSave<T>));

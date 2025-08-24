@@ -1,17 +1,13 @@
-﻿@using Blazorise.DeepCloner
-@using Musicx.Presentation.Web.Client.Themes
-<ThemeProvider Theme="@Light.LightTheme.DeepClone()">
-    <Router AppAssembly="typeof(Program).Assembly">
-        <Found Context="routeData">
-            <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)"/>
-            <FocusOnNavigate RouteData="routeData" Selector="h1"/>
-        </Found>
-    </Router>
-</ThemeProvider>
+﻿<Router AppAssembly="typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)"/>
+        <FocusOnNavigate RouteData="routeData" Selector="h1"/>
+    </Found>
+</Router>
 
 @code {
 
-    private readonly Theme _darkTheme = new()
+    /* private readonly Theme _darkTheme = new()
     {
         BackgroundOptions = new ThemeBackgroundOptions
         {
@@ -60,6 +56,6 @@
             Dark = "#cdcdcd",
             Light = "#111111"
         },
-    };
+    }; */
 
 }

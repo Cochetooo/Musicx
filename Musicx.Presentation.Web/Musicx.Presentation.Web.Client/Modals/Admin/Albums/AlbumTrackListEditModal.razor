@@ -1,11 +1,14 @@
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Domain.Enums
 @using Musicx.Infrastructure.API.Persistence.Mappers
 
-@inject ILoggerProvider LoggerProvider
+@inject ILoggerFactory LoggerProvider
 
-<Modal @ref="_modalRef">
+<MudDialog @ref="_modalRef">
+    
+</MudDialog>
+
+<!-- <Modal @ref="_modalRef">
     <ModalContent Size="ModalSize.Large" Centered>
         <ModalHeader>
             <ModalTitle>Track List Editing</ModalTitle>
@@ -87,4 +90,4 @@
             </Button>
         </ModalBody>
     </ModalContent>
-</Modal>
+</Modal> -->

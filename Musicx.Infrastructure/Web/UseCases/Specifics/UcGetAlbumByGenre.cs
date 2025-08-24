@@ -8,7 +8,7 @@ namespace Musicx.Infrastructure.Web.UseCases.Specifics;
 
 public sealed class UcGetAlbumByGenre(
     HttpClient httpClient,
-    ILoggerProvider loggerProvider) : IGetAlbumByGenreUseCase
+    ILoggerFactory loggerProvider) : IGetAlbumByGenreUseCase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcGetAlbumByGenre));
 

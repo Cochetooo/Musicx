@@ -1,7 +1,7 @@
 using System.Text.Json;
-using Blazorise;
 using ISO3166;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Enums;
 using Musicx.Contracts.Dto.Requests;
@@ -17,15 +17,14 @@ public partial class ArtistEditModal
     private InArtist _artist = null!;
 
     private bool _isLoading;
-    private bool _isConfirmable;
 
-    private TextEdit _nameTextEdit = null!;
+    private MudTextField<string> _nameTextEdit = null!;
 
     private CancellationTokenSource? _artworkCts;
 
     private List<string> _countries = [];
 
-    private Modal _modalRef = null!;
+    private MudDialog _modalRef = null!;
     
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
@@ -50,35 +49,42 @@ public partial class ArtistEditModal
     {
         await UcSave.ExecuteAsync(_artist);
         await OnSave.InvokeAsync();
-        Hide();
+        await Hide();
     }
 
-    public void Show(OutArtist? artist = null)
+    public async Task Show(OutArtist? artist = null)
     {
+        await _modalRef.ShowAsync();
+        
         if (null != artist)
         {
             _artist = artist.ToRaw();
-            _nameTextEdit.Text = _artist.Name;
-            _nameTextEdit.Revalidate();
-            StateHasChanged();
+            await _nameTextEdit.SetText(_artist.Name);
+            // _nameTextEdit.Revalidate();
+            await InvokeAsync(StateHasChanged);
         }
-        
-        _modalRef.Show();
+        else
+        {
+            _artist = new InArtist
+            {
+                Discriminator = ArtistDiscriminator.Artist
+            };
+        }
     }
 
-    private void Hide()
+    private async Task Hide()
     {
-        _modalRef.Hide();
+        await _modalRef.CloseAsync();
     }
 
-    private void ValidateNonEmptyField(ValidatorEventArgs e)
+    /* private void ValidateNonEmptyField(ValidatorEventArgs e)
     {
         _isConfirmable = string.IsNullOrWhiteSpace(Convert.ToString(e.Value));
         
         e.Status = _isConfirmable
             ? ValidationStatus.None
             : ValidationStatus.Success;
-    }
+    } */
 
     private async Task UpdateArtwork()
     {
@@ -134,5 +140,20 @@ public partial class ArtistEditModal
         _artist.Name = newValue;
 
         await UpdateArtwork();
+    }
+    
+    private async Task<IEnumerable<string>>? SearchCountry(string? value, CancellationToken token)
+    {
+        await Task.Delay(5, token);
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return _countries;
+        }
+
+        return _countries.Where(x =>
+            x
+                .ToLower()
+                .Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 }

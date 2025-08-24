@@ -8,7 +8,7 @@ namespace Musicx.Infrastructure.Web.UseCases;
 
 public sealed class UcGet<T>(
     HttpClient httpClient,
-    ILoggerProvider loggerProvider
+    ILoggerFactory loggerProvider
     ) : IGetUseCase<T> where T : class
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcGet<T>));

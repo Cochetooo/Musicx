@@ -22,7 +22,7 @@ public sealed class StyledJsConsoleLogger(string categoryName, IJSRuntime jsRunt
         LogLevel logLevel,
         EventId eventId,
         TState state,
-        Exception exception,
+        Exception? exception,
         Func<TState, Exception?, string> formatter)
     {
         string message = formatter(state, exception);
@@ -32,12 +32,12 @@ public sealed class StyledJsConsoleLogger(string categoryName, IJSRuntime jsRunt
         string logLine = $"[{date}] {level,-5} <{categoryName}> - {message}";
         string css = logLevel switch
         {
-            LogLevel.Trace => "color: blue;",
-            LogLevel.Debug => "color: gray;",
-            LogLevel.Information => "color: green;",
-            LogLevel.Warning => "color: yellow;",
-            LogLevel.Error => "color: red;",
-            LogLevel.Critical => "color: white; background: red; font-weight: bold;",
+            LogLevel.Trace => "color: lightseagreen; font-style: italic;",
+            LogLevel.Debug => "color: lightgrey; font-style: italic;",
+            LogLevel.Information => "color: lightgreen;",
+            LogLevel.Warning => "color: gold;",
+            LogLevel.Error => "color: indianred;",
+            LogLevel.Critical => "color: white; background: indianred; font-weight: bold;",
             _ => "color: black;",
         };
         

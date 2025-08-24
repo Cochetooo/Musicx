@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Enums;
 using Musicx.Contracts.Helpers;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Newtonsoft.Json;
@@ -41,6 +42,7 @@ public static class GenreMapper
         Color = genre.SafeGet<string>(GenreColumns.Color),
         Description = genre.SafeGet<string>(GenreColumns.Description),
         Name = genre.SafeGet<string>(GenreColumns.Name) ?? "",
+        Type = genre.SafeGet<GenreType>(GenreColumns.Type),
     };
 
     public static InGenre ToRaw(this OutGenre genre) => new()
@@ -51,6 +53,8 @@ public static class GenreMapper
         ChildIds = genre.Children?.Select(g => g.Id).ToList(),
 
         Name = genre.Name,
+        Type = genre.Type,
+        
         Description = genre.Description,
         Color = genre.Color
     };

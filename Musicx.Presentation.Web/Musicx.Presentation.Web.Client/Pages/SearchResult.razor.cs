@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Presentation.Web.Client.Pages;
@@ -9,6 +10,12 @@ public partial class SearchResult
 
     private List<OutArtist> _artistsResult = [];
     private List<OutAlbum> _albumsResult = [];
+    
+    private readonly IReadOnlyList<BreadcrumbItem> _breadcrumb = 
+    [
+        new("Musicx", href: "/"),
+        new("Search Results", href: "#")
+    ];
 
     protected override async Task OnParametersSetAsync()
     {

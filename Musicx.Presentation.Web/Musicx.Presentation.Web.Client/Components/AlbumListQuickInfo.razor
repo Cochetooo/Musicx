@@ -1,64 +1,54 @@
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Domain.Enums
+@using Musicx.Contracts.Enums
 
-@switch (Album.ReleaseType)
-{
-    case ReleaseType.Ep:
-        <Blazorise.Text TextSize="@(GetSize())" TextDecoration="TextDecoration.None"
-                        Italic TextColor="TextColor.Primary">
-            @Album.Name
-        </Blazorise.Text>
-        break;
-    case ReleaseType.Lp:
-        <Blazorise.Text TextSize="@(GetSize())" TextDecoration="TextDecoration.None"
-                        TextWeight="TextWeight.Bold" TextColor="TextColor.Info">
-            @Album.Name
-        </Blazorise.Text>
-        break;
-    case ReleaseType.Single:
-        <Blazorise.Text TextSize="@(GetSize())" TextDecoration="TextDecoration.None"
-                        TextColor="TextColor.Secondary">
-            @Album.Name
-        </Blazorise.Text>
-        break;
-    case ReleaseType.AdditionalRelease:
-    case ReleaseType.Bootleg:
-    case ReleaseType.Demo:
-    case ReleaseType.DjMix:
-    case ReleaseType.Live:
-    case ReleaseType.MixTape:
-    case ReleaseType.Soundtrack:
-    case ReleaseType.Unknown:
-    case ReleaseType.VideoClip:
-    case ReleaseType.Compilation:
-    case null:
-        <Blazorise.Text TextSize="@(GetSize())" TextDecoration="TextDecoration.None"
-                        TextColor="TextColor.Muted">
-            @Album.Name
-        </Blazorise.Text>
-        break;
-    default:
-        throw new ArgumentOutOfRangeException();
-}
+<div @attributes="AdditionalAttributes">
+    @switch (Album.ReleaseType)
+    {
+        case ReleaseType.Ep:
+            <MudText Style="font-style: italic;" Color="Color.Secondary">
+                @Album.Name
+            </MudText>
+            break;
+        case ReleaseType.Lp:
+            <MudText Style="font-weight: bold;" Color="Color.Primary">
+                @Album.Name
+            </MudText>
+            break;
+        case ReleaseType.Single:
+            <MudText Color="Color.Secondary">
+                @Album.Name
+            </MudText>
+            break;
+        case ReleaseType.AdditionalRelease:
+        case ReleaseType.Bootleg:
+        case ReleaseType.Demo:
+        case ReleaseType.DjMix:
+        case ReleaseType.Live:
+        case ReleaseType.MixTape:
+        case ReleaseType.Soundtrack:
+        case ReleaseType.Unknown:
+        case ReleaseType.VideoClip:
+        case ReleaseType.Compilation:
+        case null:
+            <MudText Color="Color.Tertiary">
+                @Album.Name
+            </MudText>
+            break;
+        default:
+            throw new ArgumentOutOfRangeException();
+    }
 
-@if (null != Album.OriginalReleaseDate)
-{
-    <Blazorise.Text 
-        TextDecoration="TextDecoration.None"
-        TextSize="TextSize.ExtraSmall" 
-        TextColor="TextColor.Muted">
-        <br/>@Album.OriginalReleaseDate.Value.Year
-    </Blazorise.Text>
-}
+    @if (null != Album.OriginalReleaseDate)
+    {
+        <MudText Color="Color.Secondary" Typo="Typo.body2">@Album.OriginalReleaseDate.Value.Year</MudText>
+    }
+</div>
 
 @code {
 
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = null!;
+    
     [Parameter, EditorRequired] public OutAlbum Album { get; set; } = null!;
-    [Parameter] public bool Bigger { get; set; }
-
-    private IFluentTextSize GetSize()
-        => Bigger
-            ? TextSize.Default
-            : TextSize.Small;
 
 }

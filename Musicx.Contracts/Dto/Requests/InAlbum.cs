@@ -1,4 +1,4 @@
-using Musicx.Domain.Enums;
+using Musicx.Contracts.Enums;
 
 namespace Musicx.Contracts.Dto.Requests;
 

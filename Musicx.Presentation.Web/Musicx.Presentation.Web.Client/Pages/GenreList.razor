@@ -4,9 +4,9 @@
 @using Musicx.Presentation.Web.Client.Components
 
 @inject IListUseCase<OutGenre> UcList
-@inject ILoggerProvider LoggerProvider
+@inject ILoggerFactory LoggerProvider
 
-<Breadcrumb Margin="Margin.Is2.FromBottom">
+<!-- <Breadcrumb Margin="Margin.Is2.FromBottom">
     <BreadcrumbItem>
         <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
     </BreadcrumbItem>
@@ -20,7 +20,7 @@
     {
         <GenreCard Genre="genre" Depth="0" />
     }
-</Div>
+</Div> -->
 
 <style>
     .genre-grid {

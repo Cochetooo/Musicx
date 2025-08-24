@@ -1,5 +1,5 @@
-using Blazorise;
 using Microsoft.AspNetCore.Components.Web;
+using MudBlazor;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Presentation.Web.Client.Modals.Admin.Genres;
 using Musicx.Presentation.Web.Client.Models;
@@ -10,16 +10,23 @@ public partial class GenreDashboard
 {
     private ViewMode _viewMode = ViewMode.Normal;
     
-    private GenreEditModal? _genreEditModal;
-    private Modal? _confirmDeleteModal;
+    private GenreEditModal _genreEditModal = null!;
+    private MudDialog _confirmDeleteModal = null!;
 
     private ILogger _logger = null!;
 
     private List<OutGenre> _genres = [];
     private List<OutGenre> _filteredGenres = [];
-    private List<OutGenre> _selectedGenres = [];
+    private HashSet<OutGenre> _selectedGenres = [];
 
     private string _searchDataGrid = null!;
+
+    private List<BreadcrumbItem> _breadcrumb =
+    [
+        new("Musicx", href: "/"),
+        new("Admin", href: "#"),
+        new("Genre Management", href: "#")
+    ];
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -43,17 +50,17 @@ public partial class GenreDashboard
         await InvokeAsync(StateHasChanged);
     }
 
-    private void ShowAddModal()
+    private async Task ShowAddModal()
     {
-        _genreEditModal?.Show();
+        await _genreEditModal.Show();
     }
 
-    private void ShowEditModal(OutGenre genre)
+    private async Task ShowEditModal(OutGenre genre)
     {
         _selectedGenres.Clear();
         _selectedGenres.Add(genre);
 
-        _genreEditModal?.Show(genre);
+        await _genreEditModal.Show(genre);
     }
 
     private async Task DeleteData()
@@ -80,14 +87,14 @@ public partial class GenreDashboard
         _viewMode = ViewMode.Normal;
     }
 
-    private Task ShowDeleteModal()
+    private async Task ShowDeleteModal()
     {
-        return _confirmDeleteModal!.Show();
+        await _confirmDeleteModal.ShowAsync();
     }
 
-    private Task HideDeleteModal()
+    private async Task HideDeleteModal()
     {
-        return _confirmDeleteModal!.Hide();
+        await _confirmDeleteModal.CloseAsync();
     }
 
     private async Task OnQuitModal()

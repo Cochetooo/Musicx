@@ -1,0 +1,39 @@
+﻿@inject ILoggerFactory LoggerFactory
+
+@if (IsDarkMode)
+{
+    <MudIconButton Color="Color.Inherit" Icon="@Icons.Material.Filled.DarkMode" OnClick="@OnThemeColorChanged" />
+}
+else
+{
+    <MudIconButton Icon="@Icons.Material.Filled.LightMode" OnClick="@OnThemeColorChanged" />
+}
+
+@code {
+    
+    [Parameter] public bool IsDarkMode { get; set; }
+    [Parameter] public EventCallback<bool> IsDarkModeChanged { get; set; }
+    
+    private ILogger _logger = null!;
+    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        _logger = LoggerFactory.CreateLogger(nameof(ThemeModeSwitch));
+    }
+
+    private async Task OnThemeColorChanged()
+    {
+        IsDarkMode = !IsDarkMode;
+
+        _logger.LogInformation("🎨✅ Changed theme to {mode}", IsDarkMode ? "Dark" : "Light");
+
+        // 🔄 Déclenche la mise à jour côté parent
+        await IsDarkModeChanged.InvokeAsync(IsDarkMode);
+    }
+
+}

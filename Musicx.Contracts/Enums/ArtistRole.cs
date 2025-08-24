@@ -1,4 +1,4 @@
-namespace Musicx.Domain.Enums;
+namespace Musicx.Contracts.Enums;
 
 /// <summary>
 /// Enumerate all artist roles for album credits.

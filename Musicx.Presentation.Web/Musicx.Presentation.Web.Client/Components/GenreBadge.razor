@@ -1,32 +1,92 @@
 ﻿@using Musicx.Application.Shared.Utilities
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Enums
 
-<Blazorise.Link To="@($"/Genre/{@Genre.Id}")">
-    <Badge Padding="Padding.Is1.OnY.Is2.OnX" 
-           Class="neumorphism-shadow-default montserrat" 
-           Style="@GetColor(Genre)" 
-           TextSize="TextSize.Small" 
-           TextDecoration="TextDecoration.None"
-           Margin="Margin.Is1" 
-           Pill>
-        @Genre.Name
-    </Badge>
-</Blazorise.Link>
+@if (Clickable)
+{
+    <MudLink Href="@($"/Genre/{Genre.Id}")">
+        @if (Closable)
+        {
+            <MudChip T="string" Icon="@GetChipIcon()" Style="@GetChipStyle(Genre)" Class="@GetChipClass()" OnClose="@OnClose">
+                @GetChipIcon() @Genre.Name
+            </MudChip>
+        }
+        else
+        {
+            <MudChip T="string" Style="@GetChipStyle(Genre)" Class="@GetChipClass()">
+                @GetChipIcon() @Genre.Name
+            </MudChip>
+        }
+    </MudLink>
+}
+else
+{
+    @if (Closable)
+    {
+        <MudChip T="string" Style="@GetChipStyle(Genre)" Class="@GetChipClass()" OnClose="@OnClose">
+            @GetChipIcon() @Genre.Name
+        </MudChip>
+    }
+    else
+    {
+        <MudChip T="string" Style="@GetChipStyle(Genre)" Class="@GetChipClass()">
+            @GetChipIcon() @Genre.Name
+        </MudChip>
+    }
+}
+
 
 @code {
 
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = null!;
+    
     [Parameter, EditorRequired] public OutGenre Genre { get; set; } = null!;
     [Parameter] public bool Influence { get; set; }
+    [Parameter] public bool Closable { get; set; }
+    [Parameter] public bool Clickable { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
 
-    private string GetColor(OutGenre genre)
+    private string GetChipStyle(OutGenre genre)
     {
         var background = genre.Color ?? ColorHelper.DarkColor;
         var textColor = ColorHelper.IsColorLight(background)
             ? ColorHelper.DarkColor
             : "#ffffff";
-        
-        return $"background-color: {background}; color: {textColor};" +
-               (Influence ? " opacity: 0.7; font-style: italic;" : "font-weight: bold;");
-    }
 
+        if (Influence)
+        {
+            return $"background-color:{background}; opacity: 0.75; color:{textColor}; font-style: italic;";
+        }
+        
+        return Genre.Type switch
+        {
+            GenreType.Basic => $"background-color:{background}; color:{textColor}; font-weight:600;",
+            GenreType.Scene => $"border:1px solid {background}; color:{background}; background:transparent; font-style:italic;",
+            GenreType.Movement => $"border:1px dashed {background}; color:{background}; background:transparent;",
+            GenreType.Descriptor => $"background-color:{background}; color:{textColor}; opacity:0.85; border-radius:16px;",
+            _ => $"background-color:{background}; color:{textColor};"
+        };
+    }
+    
+    private string GetChipClass()
+    {
+        return Genre.Type switch
+        {
+            GenreType.Basic => "chip-basic montserrat hover-scale",
+            GenreType.Scene => "chip-scene montserrat hover-fade",
+            GenreType.Movement => "chip-movement montserrat hover-fade",
+            GenreType.Descriptor => "chip-descriptor montserrat hover-pulse",
+            _ => "chip-default montserrat"
+        };
+    }
+    
+    private string GetChipIcon()
+    => Genre.Type switch
+        {
+            GenreType.Scene => Icons.Material.Filled.Language,
+            GenreType.Movement => Icons.Material.Filled.Album,
+            GenreType.Descriptor => Icons.Material.Filled.TheaterComedy,
+            _ => ""
+        };
 }

@@ -5,139 +5,101 @@
 @using Musicx.Presentation.Web.Client.Modals.Admin.Genres
 @using Musicx.Presentation.Web.Client.Models
 
-@inject ILoggerProvider LoggerProvider
+@inject ILoggerFactory LoggerProvider
 @inject IListUseCase<OutGenre> UcList
 @inject IDeleteUseCase<InGenre> UcDelete
 
-<Breadcrumb Margin="Margin.Is2.FromBottom">
-    <BreadcrumbItem>
-        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
-    </BreadcrumbItem>
-    <BreadcrumbItem>
-        <BreadcrumbLink To="/Admin">Administration</BreadcrumbLink>
-    </BreadcrumbItem>
-    <BreadcrumbItem>
-        <BreadcrumbLink To="#">Manage Genres</BreadcrumbLink>
-    </BreadcrumbItem>
-</Breadcrumb>
+<MudBreadcrumbs Items="@_breadcrumb" />
 
-<Card Margin="Margin.Is4.OnY">
-    <CardHeader>
-        <CardTitle>Genre Management</CardTitle>
-    </CardHeader>
+<MudCard Class="py-4">
+    <MudCardHeader>
+        <MudText Typo="Typo.h4">Genre Management</MudText>
+    </MudCardHeader>
     
-    <CardBody>
-        <div class="container-fluid" style="display: flex; flex-direction: column;">
-            <div class="d-flex justify-content-between align-items-center p-3">
-                <TextEdit
-                    @bind-Text="@_searchDataGrid" Placeholder="Search..."
-                    KeyDown="KeyDownSearchInput" Margin="Margin.Is2.FromEnd"/>
-
-                <div class="d-flex">
-                    <Button Color="Color.Primary" Clicked="ApplySearchFilters">Apply</Button>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center p-3">
-                <Div ElementId="#DataGrid-Refresh">
-                    <Animate Anchor="#DataGrid-Refresh" Auto Animation="Animations.FadeIn" DelayMilliseconds="300">
-                        <Button Clicked="LoadData" Color="Color.Primary" class="mr-2">
-                            <Icon Name="IconName.Sync"/>
-                            Refresh
-                        </Button>
-                    </Animate>
-                </Div>
-
-                <Div class="d-flex" ElementId="#DataGrid-Actions">
-                    <Animate Anchor="#DataGrid-Actions" Auto Animation="Animations.FadeIn" DelayMilliseconds="300">
-                        @if (_viewMode == ViewMode.Normal)
-                        {
-                            <Button Clicked="ShowAddModal" Color="Color.Success" class="mr-2">
-                                <Icon Name="IconName.PlusCircle"/>
-                                Add
-                            </Button>
-                            <Button Clicked="EnableDeleteMode" Color="Color.Danger" class="mr-2">
-                                <Icon Name="IconName.Delete"/>
-                                Delete
-                            </Button>
-                        }
-                        else if (_viewMode == ViewMode.Delete)
-                        {
-                            <Button Clicked="EnableNormalMode" Color="Color.Secondary" class="mr-2">
-                                <Icon Name="IconName.Times"/>
-                                Cancel
-                            </Button>
-                            <Button Clicked="ShowDeleteModal" Color="Color.Danger" class="mr-2">
-                                <Icon Name="IconName.Check"/>
-                                Confirm deletion
-                            </Button>
-                        }
-                    </Animate>
-                </Div>
-            </div>
-
-            <Div class="flex-grow-1 overflow-auto" ElementId="#DataGrid-Animate">
-                <Animate Anchor="#DataGrid-Animate" Auto Animation="Animations.FadeIn" DelayMilliseconds="400">
-                    <DataGrid TItem="OutGenre"
-                              Data="_filteredGenres"
-                              @bind-SelectedRows="@_selectedGenres"
-                              SelectionMode="DataGridSelectionMode.Multiple"
-                              ShowPager
-                              Resizable
-                              ResizeMode="TableResizeMode.Header"
-                              PageSize="20"
-                              HeaderThemeContrast="ThemeContrast.Dark"
-                              Responsive>
-                        <DataGridColumns>
-                            @if (_viewMode == ViewMode.Delete)
-                            {
-                                <DataGridMultiSelectColumn Width="30px"/>
-                            }
-                            
-                            <DataGridColumn Field="@nameof(OutGenre.Name)" Caption="Name"/>
-                            <DataGridColumn Field="@nameof(OutGenre.Description)" Caption="Description" />
-                            <DataGridColumn Field="@nameof(OutGenre.Color)" Caption="Color"/>
-                            <DataGridColumn Field="@nameof(OutGenre.CreatedAt)" Caption="Created At"/>
-                            <DataGridColumn Field="@nameof(OutGenre.UpdatedAt)" Caption="Last Modification"/>
-                            <DataGridColumn Caption="Edit">
-                                <DisplayTemplate>
-                                    <Button Color="Color.Link" Size="Size.Small" Clicked="@(() => ShowEditModal(context))">
-                                        <Icon Name="IconName.Pen"/>
-                                    </Button>
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                        </DataGridColumns>
-
-                        <LoadingTemplate>
-                            <SpinKit Type="SpinKitType.Pulse"/>
-                        </LoadingTemplate>
-                    </DataGrid>
-                </Animate>
-            </Div>
-        </div>
-    </CardBody>
-</Card>
+    <MudCardContent>
+        <MudDataGrid T="OutGenre" Items="@_filteredGenres"
+                     RowsPerPage="20" Dense ColumnResizeMode="ResizeMode.Column"
+                     MultiSelection bind-SelectedItems="@_selectedGenres">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Genres</MudText>
+                <MudSpacer />
+                <MudTextField
+                    @bind-Value="_searchDataGrid"
+                    Label="Search"
+                    OnKeyDown="@KeyDownSearchInput"
+                    Class="mr-2"
+                    AdornmentIcon="@Icons.Material.Filled.Search"
+                    Adornment="Adornment.End"
+                    Immediate
+                    Variant="Variant.Outlined" />
+                <MudSpacer />
+                <MudStack Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Row>
+                    @if (_viewMode == ViewMode.Normal)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" Class="mr-2"
+                                       OnClick="@ShowAddModal" />
+                
+                        <MudIconButton Icon="@Icons.Material.Filled.Remove" Color="Color.Error" Class="mr-2"
+                                       OnClick="@EnableDeleteMode" />
+                    }
+                    else if (_viewMode == ViewMode.Delete)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" Class="mr-2"
+                                       OnClick="@EnableNormalMode" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Error" Class="mr-2"
+                                       OnClick="@ShowDeleteModal" />
+                    }
+            
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="@LoadData" />
+                </MudStack>
+            </ToolBarContent>
+            
+            <Columns>
+                <PropertyColumn Property="x => x.Name" />
+                
+                <PropertyColumn Property="x => x.Description" />
+                
+                <PropertyColumn Property="x => x.Color" />
+                
+                <PropertyColumn Property="x => x.CreatedAt" Title="Created At" />
+                
+                <PropertyColumn Property="x => x.UpdatedAt" Title="Last Modification" />
+                
+                <TemplateColumn CellClass="d-flex justify-end">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       OnClick="@(() => ShowEditModal(context.Item))"/>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="OutGenre" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudCardContent>
+</MudCard>
 
 <GenreEditModal @ref="_genreEditModal" OnSave="OnQuitModal" />
 
-<Modal @ref="_confirmDeleteModal">
-    <ModalContent Centered>
-        <ModalHeader>
-            <ModalTitle>Deletion</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <span>Are you sure you want to delete these genres?</span>
-            <UnorderedList>
-                @foreach (var genre in _selectedGenres)
-                {
-                    <UnorderedListItem>@genre.Name</UnorderedListItem>
-                }
-            </UnorderedList>
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary" Clicked="@HideDeleteModal">Close</Button>
-            <Button Color="Color.Primary" Clicked="@DeleteData">Save Changes</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+<MudDialog @ref="_confirmDeleteModal">
+    <TitleContent>
+        Deletion
+    </TitleContent>
+    <DialogContent>
+        <MudText>Are you sure you want to delete these following genres?</MudText>
+        <ul>
+            @foreach (var genre in _selectedGenres)
+            {
+                <li>@genre.Name</li>
+            }
+        </ul>
+    </DialogContent>
+    <DialogActions>
+        <MudButton StartIcon="@Icons.Material.Outlined.Close" Color="Color.Secondary" OnClick="@HideDeleteModal">
+            Cancel
+        </MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Check" Color="Color.Error" OnClick="@DeleteData">
+            Confirm
+        </MudButton>
+    </DialogActions>
+</MudDialog>

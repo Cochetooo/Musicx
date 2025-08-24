@@ -1,8 +1,6 @@
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
 using Musicx.Infrastructure;
-using Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
 using Musicx.Presentation.Web.Client;
 using Musicx.Presentation.Web.Client.Providers;
 
@@ -10,7 +8,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Services.AddFrontFramework();
 
-builder.Logging.SetMinimumLevel(LogLevel.Warning);
+builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 builder.Services
     .AddMusicxWeb();
@@ -27,8 +26,7 @@ var jsRuntime = app.Services.GetRequiredService<IJSRuntime>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 loggerFactory.AddProvider(new StyledJsConsoleLoggerProvider(jsRuntime));
 
-var loggerProvider = app.Services.GetRequiredService<ILoggerProvider>();
-var logger = loggerProvider.CreateLogger(nameof(Program));
+var logger = loggerFactory.CreateLogger(nameof(Program));
 
 logger.LogInformation("🏳️ Started new Client Side Session.");
 

@@ -3,184 +3,132 @@
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Domain.Enums
+@using Musicx.Contracts.Enums
 @using Musicx.Infrastructure.API.Persistence.Mappers
 @using Musicx.Presentation.Web.Client.Components
-@inject ILoggerProvider LoggerProvider
+
+@inject ILoggerFactory LoggerFactory
 @inject IListUseCase<OutGenre> UcListGenres
 @inject ISaveUseCase<InAlbum> UcSave
 @inject HttpClient Http
 
-<Modal @ref="_modalRef">
-    <ModalContent Size="ModalSize.Large" Centered>
-        <ModalHeader>
-            <ModalTitle>Album Editing</ModalTitle>
-            <CloseButton Clicked="Hide" />
-        </ModalHeader>
-        
-        <ModalBody>
-            <Fields>
-                <Field ColumnSize="ColumnSize.Is4.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Artist (*)
-                    </FieldLabel>
-                    <FieldBody>
-                        @if (_artist != null)
+<MudDialog @ref="_modalRef" Class="pa-2">
+    <TitleContent>
+        Album Editing
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12" md="6">
+                <MudTextField
+                    T="string"
+                    TextChanged="@NameTextChanged"
+                    Disabled="@(_album.Id != 0)"
+                    Immediate
+                    @ref="_nameTextEdit" Label="Enter an album..."
+                    HelperText="Name (*)" Variant="Variant.Text"/>
+            </MudItem>
+            
+            <MudItem xs="12" md="3">
+                <MudField Label="Artwork" Variant="Variant.Text">
+                    @if (_isLoading)
+                    {
+                        <MudProgressCircular Color="Color.Default" Indeterminate/>
+                    }
+                    else
+                    {
+                        @if (_album is { ArtworkUrl: not null })
                         {
-                            <TextEdit Disabled @bind-Text="_artist.Name"/>
+                            <MudImage Src="@_album.ArtworkUrl" Alt="@_album.Name" Class="rounded-lg" Elevation="25"
+                                      Width="96" Height="96"/>
                         }
-                    </FieldBody>
-                </Field>
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Name (*)
-                    </FieldLabel>
-                    <FieldBody>
-                        <Validation Validator="ValidateNonEmptyField">
-                            <TextEdit
-                                Placeholder="Here Comes the Sun..." TextChanged="NameTextChanged"
-                                @ref="_nameTextEdit">
-                                <ValidationNone>⚠️ Please enter a name</ValidationNone>
-                                <ValidationSuccess>✅ Valid name</ValidationSuccess>
-                            </TextEdit>
-                        </Validation>
-                    </FieldBody>
-                </Field>
-                
-                <Field ColumnSize="ColumnSize.Is2.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Artwork
-                    </FieldLabel>
-                    <FieldBody>
-                        @if (_isLoading)
-                        {
-                            <SpinKit Type="SpinKitType.Pulse" Color="gray" />
-                        }
-                        else
-                        {
-                            if (_album is { ArtworkUrl: not null })
-                            {
-                                <Image Style="width: 96px; height: 96px" Source="@_album.ArtworkUrl" />
-                            }
-                        }
-                    </FieldBody>
-                </Field>
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Release Type
-                    </FieldLabel>
-                    <FieldBody>
-                        <Select TValue="ReleaseType?"
-                                @bind-SelectedValue="_album.ReleaseType">
-                            <SelectItem>-</SelectItem>
-                            @foreach (var releaseType in Enum.GetValues<ReleaseType>())
-                            {
-                                <SelectItem Value="@releaseType">@releaseType.ToString()</SelectItem>
-                            }
-                        </Select>
-                    </FieldBody>
-                </Field>
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Release Date
-                    </FieldLabel>
-                    <FieldBody>
-                        <DatePicker TValue="DateTime?" @bind-Date="@_album.OriginalReleaseDate" />
-                    </FieldBody>
-                </Field>
-                
-                <Divider />
-                
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Primary Genres
-                    </FieldLabel>
-                    <FieldBody>
-                        <Div Flex="Flex.JustifyContent.Between" Margin="Margin.Is2.FromBottom">
-                            <Autocomplete TItem="OutGenre"
-                                          TValue="OutGenre"
-                                          Data="@_availableGenres"
-                                          TextField="@(( item ) => item.Name)"
-                                          ValueField="@((item) => item)"
-                                          @bind-SelectedText="@_selectedPrimaryText"
-                                          @bind-SelectedValue="@_selectedPrimaryGenre"
-                                          Placeholder="Search a genre..."
-                                          Filter="AutocompleteFilter.StartsWith">
-                                <NotFoundContent>Sorry... @context was not found !</NotFoundContent>
-                            </Autocomplete>
-                            
-                            <Button Clicked="AddPrimaryGenre" Disabled="@(_selectedPrimaryGenre is null)">
-                                <Icon Name="IconName.Add" />
-                            </Button>
-                        </Div>
-                        
-                        <ListGroup>
-                            @foreach (var genre in _primaryGenres)
-                            {
-                                <ListGroupItem Flex="Flex.JustifyContent.Between">
-                                    <GenreBadge Genre="@genre" />
-                                    <Button Outline Clicked="@(() => OnDeletePrimaryGenre(genre))">
-                                        <Icon Name="IconName.Times" />
-                                    </Button>
-                                </ListGroupItem>
-                            }
-                        </ListGroup>
-                    </FieldBody>
-                </Field>
-                
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Influence Genres
-                    </FieldLabel>
-                    <FieldBody>
-                        <Div Flex="Flex.JustifyContent.Between" Margin="Margin.Is2.FromBottom">
-                            <Autocomplete TItem="OutGenre"
-                                          TValue="OutGenre"
-                                          Data="@_availableGenres"
-                                          TextField="@(( item ) => item.Name)"
-                                          ValueField="@((item) => item)"
-                                          @bind-SelectedText="@_selectedInfluenceText"
-                                          @bind-SelectedValue="@_selectedInfluenceGenre"
-                                          Placeholder="Search a genre..."
-                                          Filter="AutocompleteFilter.StartsWith">
-                                <NotFoundContent>Sorry... @context was not found !</NotFoundContent>
-                            </Autocomplete>
-                            
-                            <Button Clicked="AddInfluenceGenre" Disabled="@(_selectedInfluenceGenre is null)">
-                                <Icon Name="IconName.Add" />
-                            </Button>
-                        </Div>
-                        
-                        <ListGroup>
-                            @foreach (var genre in _influenceGenres)
-                            {
-                                <ListGroupItem Flex="Flex.JustifyContent.Between">
-                                    <GenreBadge Genre="@genre" />
-                                    <Button Outline Clicked="@(() => OnDeleteInfluenceGenre(genre))">
-                                        <Icon Name="IconName.Times" />
-                                    </Button>
-                                </ListGroupItem>
-                            }
-                        </ListGroup>
-                    </FieldBody>
-                </Field>
-                
-                <Divider />
-                
-                <Field ColumnSize="ColumnSize.Is12">
-                    <FieldLabel>
-                        National Socialist Content
-                    </FieldLabel>
-                    <FieldBody>
-                        <Check TValue="bool" @bind-Checked="@_album.IsFarRight" />
-                    </FieldBody>
-                </Field>
-            </Fields>
-        </ModalBody>
-        
-        <ModalFooter>
-            <Button Color="Color.Primary" Clicked="Save" Disabled="@_isConfirmable">Save</Button>
-            <Button Color="Color.Secondary" Clicked="Hide">Close</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+                    }
+                </MudField>
+            </MudItem>
+            
+            <MudFlexBreak />
+            
+            <MudItem xs="12" md="4">
+                <MudSelect
+                    @bind-Value="_album.ReleaseType" T="ReleaseType?"
+                    Label="Release Type" Placeholder="Select a type"
+                    AdornmentIcon="@Icons.Material.Filled.Label">
+                    @foreach (var releaseType in Enum.GetValues<ReleaseType>())
+                    {
+                        <MudSelectItem T="ReleaseType?" Value="@releaseType">@releaseType</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <MudDatePicker 
+                    Placeholder="Choose a date..." 
+                    Label="Release Date" 
+                    @bind-Date="@_album.OriginalReleaseDate"/>
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <MudDateRangePicker
+                    @bind-DateRange="_recordingDates"
+                    Placeholder="Choose dates..."
+                    Label="Recording Dates"
+                    PickerVariant="PickerVariant.Inline"/>
+            </MudItem>
+            
+            <MudDivider Class="my-5" />
+            
+            <MudItem xs="12" md="6">
+                <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Row>
+                    <MudAutocomplete
+                        T="OutGenre?"
+                        Dense
+                        Placeholder="Search a genre..."
+                        HelperText="Primary Genres"
+                        @bind-Text="_selectedPrimaryText"
+                        @bind-Value="_selectedPrimaryGenre"
+                        ToStringFunc="@(e => e?.Name ?? "")"
+                        SearchFunc="SearchGenre"/>
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Add"
+                                   Disabled="@(_selectedPrimaryGenre is null)"
+                                   OnClick="@AddPrimaryGenre"/>
+                </MudStack>
+
+                @foreach (var genre in _primaryGenres)
+                {
+                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeletePrimaryGenre(genre))" Class="ma-1"/>
+                }
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Row>
+                    <MudAutocomplete
+                        T="OutGenre?"
+                        Dense
+                        Placeholder="Search a genre..."
+                        HelperText="Influence Genres"
+                        @bind-Text="_selectedInfluenceText"
+                        @bind-Value="_selectedInfluenceGenre"
+                        ToStringFunc="@(e => e?.Name ?? "")"
+                        SearchFunc="SearchGenre"/>
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Add"
+                                   Disabled="@(_selectedInfluenceGenre is null)"
+                                   OnClick="@AddInfluenceGenre"/>
+                </MudStack>
+
+                @foreach (var genre in _influenceGenres)
+                {
+                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))" Class="ma-1"/>
+                }
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Warning"/>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="@Save">Save</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
+    </DialogActions>
+</MudDialog>

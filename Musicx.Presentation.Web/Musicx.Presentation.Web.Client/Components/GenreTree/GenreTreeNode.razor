@@ -1,0 +1,116 @@
+@using Musicx.Application.Shared.Utilities
+@using Musicx.Contracts.Dto.Responses
+<div class="genre-node">
+    <div class="genre-node-header">
+        @if (Expandable)
+        {
+            <button class="expand-btn" @onclick="ToggleExpand">
+                @if (Loading)
+                {
+                    <MudProgressCircular Indeterminate Size="Size.Small" Class="loading-spinner" />
+                } 
+                else if (Expanded)
+                {
+                    <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.ExpandMore" />
+                }
+                else
+                {
+                    <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.ChevronRight" />
+                }
+            </button>
+        }
+        else
+        {
+            <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Remove" />
+        }
+        
+        @if (Checkable)
+        {
+            <MudCheckBox T="bool" Size="Size.Small"
+                         Value="@IsSelected"
+                         ValueChanged="@(async v => await OnSelectionChange(v))" />
+        }
+        
+        <MudChip T="string" Size="Size.Small" Style="@GetColor(Genre)">
+            @Genre.Name
+        </MudChip>
+    </div>
+    
+    @if (Expanded)
+    {
+        <div class="genre-node-children animate-expand">
+            @if (Children != null)
+            {
+                @foreach (var child in Children)
+                {
+                    <GenreTreeNode Genre="child"
+                                   Checkable="Checkable"
+                                   LoadChildrenAsync="LoadChildrenAsync"
+                                   OnSelectionChanged="OnSelectionChanged" />
+                }
+            }
+        </div>
+    }
+</div>
+
+@code {
+
+    [Parameter] public OutGenre Genre { get; set; } = null!;
+    [Parameter] public bool Checkable { get; set; }
+    [Parameter] public Func<OutGenre, Task<IReadOnlyList<OutGenre>>>? LoadChildrenAsync { get; set; }
+    [Parameter] public EventCallback<(OutGenre, bool)> OnSelectionChanged { get; set; }
+    
+    private bool Expanded { get; set; }
+    private bool Loading { get; set; }
+    private bool IsSelected { get; set; }
+    
+    private IReadOnlyList<OutGenre>? Children { get; set; }
+
+    private bool Expandable => Genre.Children?.Any() ?? false;
+
+    private async Task ToggleExpand()
+    {
+        if (!Expandable)
+        {
+            return;
+        }
+
+        if (!Expanded)
+        {
+            Loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            if (LoadChildrenAsync != null)
+            {
+                Children = await LoadChildrenAsync(Genre);
+            }
+            else
+            {
+                Children = Genre.Children;
+            }
+
+            Loading = false;
+            Expanded = true;
+        }
+        else
+        {
+            Expanded = false;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnSelectionChange(bool selected)
+    {
+        IsSelected = selected;
+        await OnSelectionChanged.InvokeAsync((Genre, selected));
+    }
+    
+    private string GetColor(OutGenre? genre)
+    {
+        var background = genre?.Color ?? "#333";
+        var textColor = ColorHelper.IsColorLight(background) ? "#000" : "#fff";
+        return $"background-color:{background}; color:{textColor}; font-weight:bold;";
+    }
+
+}

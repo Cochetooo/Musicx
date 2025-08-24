@@ -1,5 +1,5 @@
-using Blazorise;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Mappers;
@@ -16,7 +16,7 @@ public partial class AlbumTrackListEditModal
     private OutAlbum? _album;
     private readonly List<InSong> _songs = [];
 
-    private Modal _modalRef = null!;
+    private MudDialog _modalRef = null!;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -28,7 +28,7 @@ public partial class AlbumTrackListEditModal
         _logger = LoggerProvider.CreateLogger(nameof(AlbumTrackListEditModal));
     }
 
-    public void Show(OutAlbum album, List<OutSong>? songs = null)
+    public async Task Show(OutAlbum album, List<OutSong>? songs = null)
     {
         if (null != songs)
         {
@@ -42,12 +42,12 @@ public partial class AlbumTrackListEditModal
         
         _album = album;
         EnsureSongData();
-        _modalRef.Show();
+        await _modalRef.ShowAsync();
     }
 
-    private void Hide()
+    private async Task Hide()
     {
-        _modalRef.Hide();
+        await _modalRef.CloseAsync();
     }
 
     private void DeleteRow(InSong song)

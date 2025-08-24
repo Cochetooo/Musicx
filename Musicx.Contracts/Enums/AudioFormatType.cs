@@ -1,4 +1,4 @@
-namespace Musicx.Domain.Enums;
+namespace Musicx.Contracts.Enums;
 
 /// <summary>
 /// Enumerate all existing audio formats.

@@ -1,80 +1,89 @@
 ﻿@using Musicx.Presentation.Web.Client.Components
+@using Musicx.Presentation.Web.Client.Themes
 @inherits LayoutComponentBase
 
 @inject NavigationManager NavigationManager
+@inject ILoggerFactory LoggerFactory
 
-<Layout>
-    <LayoutHeader Fixed>
-        <Bar
-            CollapseMode="BarCollapseMode.Small"
-            Breakpoint="Breakpoint.Desktop"
-            NavigationBreakpoint="Breakpoint.Tablet"
-            Background="Background.Dark"
-            ThemeContrast="ThemeContrast.Dark">
-            <BarBrand>
-                <BarItem Margin="Margin.Is2.OnX">
-                    <BarLink To="#">
-                        <BarIcon TextColor="TextColor.White" IconName="IconName.Music"/>
-                        <Text TextColor="TextColor.White" TextWeight="TextWeight.Bold">MUSICX</Text>
-                    </BarLink>
-                </BarItem>
-            </BarBrand>
-            <BarMenu>
-                <BarStart>
-                    <BarItem Margin="Margin.Is2.OnX">
-                        <BarLink To="/">Home</BarLink>
-                    </BarItem>
-                    <BarItem Margin="Margin.Is2.OnX">
-                        <BarLink To="/Genres">Genres</BarLink>
-                    </BarItem>
-                    <BarItem Margin="Margin.Is2.OnX">
-                        <TextEdit Placeholder="Search..." @bind-Text="_searchText" KeyDown="SearchKeyDown" />
-                    </BarItem>
-                    <BarItem Margin="Margin.Is2.OnX">
-                        <Button Color="Color.Primary" Clicked="Search" Disabled="@string.IsNullOrEmpty(_searchText)">OK!</Button>
-                    </BarItem>
-                </BarStart>
-                <BarEnd>
-                    <BarItem Margin="Margin.Is2.FromEnd">
-                        <BarDropdown>
-                            <BarDropdownToggle>More</BarDropdownToggle>
-                            <BarDropdownMenu>
-                                <BarDropdownItem>
-                                    <BarLink To="/Admin/ArtistDashboard">Artist Dashboard</BarLink>
-                                </BarDropdownItem>
-                                <BarDropdownItem>
-                                    <BarLink To="/Admin/GenreDashboard">Genre Dashboard</BarLink>
-                                </BarDropdownItem>
-                            </BarDropdownMenu>
-                        </BarDropdown>
-                    </BarItem>
-                    <BarItem Margin="Margin.Is2.FromEnd">
-                        <Button Color="Color.Primary">Sign up</Button>
-                    </BarItem>
-                    <BarItem Margin="Margin.Is2.FromEnd">
-                        <Button Color="Color.Secondary">Log in</Button>
-                    </BarItem>
-                    <BarItem Margin="Margin.Is2.FromEnd">
-                        <ChangeTheme />
-                    </BarItem>
-                </BarEnd>
-            </BarMenu>
-        </Bar>
-    </LayoutHeader>
-    
-    <LayoutContent Padding="Padding.Is3">
-        @Body
-    </LayoutContent>
-    
-    <LayoutFooter>
+<MudThemeProvider @bind-IsDarkMode="_isDarkMode" @ref="_mudThemeProvider" Theme="Theme.MainTheme" />
+<MudPopoverProvider />
+<MudDialogProvider
+    CloseButton="true"
+    FullWidth="true"
+    MaxWidth="MaxWidth.Large"
+    />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1" Color="Color.Primary">
+        <!-- Brand -->
+        <MudIconButton Icon="@Icons.Material.Filled.MusicNote" Color="Color.Inherit" Edge="Edge.Start"/>
+        <MudButton Variant="Variant.Text" OnClick="@NavigateHome" Class="mr-4" Color="Color.Inherit">
+            MUSICX
+        </MudButton>
         
-    </LayoutFooter>
-</Layout>
+        <!-- Pages -->
+        <MudLink Href="/Genres" Underline="Underline.None" Typo="Typo.subtitle1" Color="Color.Inherit">Genres</MudLink>
+        
+        <MudSpacer />
+        
+        <!-- Search Box -->
+        <MudTextField Immediate @bind-Value="_searchText" Label="Search" 
+                      OnKeyDown="@SearchKeyDown" Variant="Variant.Filled"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" />
+
+        <MudSpacer/>
+        
+        <!-- Light/Dark Mode Switch -->
+        <ThemeModeSwitch @bind-IsDarkMode="_isDarkMode" />
+
+        <!-- Others Menu -->
+        <MudMenu
+                 Variant="Variant.Text"
+                 Size="Size.Medium"
+                 Color="Color.Inherit"
+                 Icon="@Icons.Material.Filled.MoreVert">
+            
+            <!-- Admin > Artist Dashboard -->
+            <MudMenuItem Href="/Admin/ArtistDashboard"
+                         Icon="@Icons.Material.Filled.Person"
+                         IconColor="Color.Primary"
+                         Label="Artist Dashboard"/>
+
+            <!-- Admin > Genre Dashboard -->
+            <MudMenuItem Href="/Admin/GenreDashboard"
+                         Icon="@Icons.Material.Filled.Piano"
+                         IconColor="Color.Primary"
+                         Label="Genre Dashboard"/>
+        </MudMenu>
+    </MudAppBar>
+    
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 @code {
 
-    private string _searchText;
+    private ILogger _logger = null!;
     
+    private bool _isDarkMode;
+    private MudThemeProvider _mudThemeProvider = null!;
+
+    private string _searchText = string.Empty;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider.GetSystemDarkModeAsync();
+        }
+
+        _logger = LoggerFactory.CreateLogger(nameof(MainLayout));
+    }
+
     private void SearchKeyDown(KeyboardEventArgs keyEvent)
     {
         if (!string.IsNullOrWhiteSpace(_searchText) && keyEvent.Key == "Enter")
@@ -84,8 +93,9 @@
     }
 
     private void Search()
-    {
-        NavigationManager.NavigateTo($"/SearchResult/{_searchText}");
-    }
-    
+        => NavigationManager.NavigateTo($"/SearchResult/{_searchText}");
+
+    private void NavigateHome()
+        => NavigationManager.NavigateTo("/");
+
 }

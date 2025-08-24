@@ -4,7 +4,7 @@ using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Requests;
-using Musicx.Domain.Enums;
+using Musicx.Contracts.Enums;
 
 
 namespace Musicx.Infrastructure.Desktop.Services.LocalLibrary;

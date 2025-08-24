@@ -6,163 +6,108 @@
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Infrastructure.API.Persistence.Mappers
-@inject ILoggerProvider LoggerProvider
+@inject ILoggerFactory LoggerProvider
 @inject ISaveUseCase<InArtist> UcSave 
 @inject HttpClient Http
 
-<Modal @ref="_modalRef">
-    <ModalContent Background="Background.Primary" Centered>
-        <ModalHeader>
-            <ModalTitle>Edit artist</ModalTitle>
-            <CloseButton Clicked="Hide" />
-        </ModalHeader>
-        
-        <ModalBody>
-            <Fields>
-                <!-- First Row -->
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Name (*)
-                    </FieldLabel>
-                    <FieldBody>
-                        <Validation Validator="ValidateNonEmptyField">
-                            <TextEdit 
-                                Placeholder="ABBA..." TextChanged="NameTextChanged" 
-                                Disabled="@(_artist.Id != 0)"
-                                @ref="@_nameTextEdit">
-                                <ValidationNone>⚠️ Please enter a name</ValidationNone>
-                                <ValidationSuccess>✅ Valid name</ValidationSuccess>
-                            </TextEdit>
-                        </Validation>
-                    </FieldBody>
-                </Field>
-                
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Country
-                    </FieldLabel>
-                    <FieldBody>
-                        <Autocomplete 
-                                      TItem="string"
-                                      TValue="string" 
-                                      Data="@_countries"
-                                      Placeholder="Search country..."
-                                      Filter="AutocompleteFilter.StartsWith"
-                                      FreeTyping
-                                      TextField="@((item) => item)"
-                                      ValueField="@((item) => item)"
-                                      @bind-SelectedValue="@_artist.Country">
-                            <NotFoundContent>Sorry, @context was not found!</NotFoundContent>
-                        </Autocomplete>
-                    </FieldBody>
-                </Field>
-                
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Artwork
-                    </FieldLabel>
-                    <FieldBody>
-                        @if (_isLoading)
+<MudDialog @ref="_modalRef" Class="pa-2">
+    <TitleContent>
+        Artist Editing
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField 
+                    T="string"
+                    TextChanged="@NameTextChanged"
+                    Disabled="@(_artist.Id != 0)"
+                    Immediate
+                    @ref="_nameTextEdit" Label="Enter an artist..."
+                    HelperText="Name (*)"
+                    Variant="Variant.Text" />
+            </MudItem>
+            
+            <MudItem xs="12" md="6">
+                <MudAutocomplete
+                    T="string"
+                    Dense
+                    Placeholder="Search country..."
+                    HelperText="Country"
+                    SearchFunc="@SearchCountry"
+                    @bind-Value="_artist.Country"
+                />
+            </MudItem>
+            
+            <MudItem xs="12" md="6">
+                <MudField Label="Artwork" Variant="Variant.Text">
+                    @if (_isLoading)
+                    {
+                        <MudProgressCircular Color="Color.Default" Indeterminate />
+                    }
+                    else
+                    {
+                        @if (null != _artist.ArtworkUrl)
                         {
-                            <SpinKit Type="SpinKitType.Pulse" Color="gray" />
+                            <MudImage Src="@_artist.ArtworkUrl" Alt="@_artist.Name" Class="rounded-lg" Elevation="25"
+                                      Width="96" Height="96" />
                         }
-                        else
-                        {
-                            if (null != _artist.ArtworkUrl)
-                            {
-                                <Image Style="width: 96px; height: 96px" Source="@_artist.ArtworkUrl" />
-                            }
-                        }
-                    </FieldBody>
-                </Field>
+                    }
+                </MudField>
+            </MudItem>
+            
+            <MudItem xs="12" md="6">
+                <MudSelect
+                    @bind-Value="_artist.Discriminator" T="ArtistDiscriminator"
+                    Label="Type (*)" Placeholder="Select a type"
+                    AdornmentIcon="@Icons.Material.Filled.Label">
+                    <MudSelectItem Value="@(ArtistDiscriminator.Artist)">Generic</MudSelectItem>
+                    <MudSelectItem Value="@(ArtistDiscriminator.Band)">Band</MudSelectItem>
+                    <MudSelectItem Value="@(ArtistDiscriminator.Person)">Person</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            
+            <!-- Band -->
+            
+            @if (_artist.Discriminator == ArtistDiscriminator.Band)
+            {
+                <MudItem xs="12" md="6">
+                    <MudDatePicker Label="Formation Date" @bind-Date="@_artist.FormationDate" />
+                </MudItem>
                 
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                    <FieldLabel>
-                        Type (*)
-                    </FieldLabel>
-                    <FieldBody>
-                        <Select TValue="ArtistDiscriminator" @bind-SelectedValue="_artist.Discriminator">
-                            <SelectItem Value="@(ArtistDiscriminator.Artist)">Generic</SelectItem>
-                            <SelectItem Value="@(ArtistDiscriminator.Band)">Band</SelectItem>
-                            <SelectItem Value="@(ArtistDiscriminator.Person)">Person</SelectItem>
-                        </Select>
-                    </FieldBody>
-                </Field>
+                <MudItem xs="12" md="6">
+                    <MudDatePicker Label="Split Date" @bind-Date="@_artist.SplitDate" />
+                </MudItem>
+            } 
+            else if (_artist.Discriminator == ArtistDiscriminator.Person)
+            {
+                <MudItem xs="12" md="6">
+                    <MudTextField
+                        T="string?"
+                        @bind-Text="_artist.FirstName"
+                        Label="First Name"
+                        Placeholder="Enter a first name..."/>
+                </MudItem>
                 
-                @if (_artist.Discriminator == ArtistDiscriminator.Band)
-                {
-                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                        <FieldLabel>
-                            Formation Date
-                        </FieldLabel>
-                        <FieldBody>
-                            <DatePicker TValue="DateTime?" @bind-Date="@_artist.FormationDate" />
-                        </FieldBody>
-                    </Field>
-                    
-                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                        <FieldLabel>
-                            Split Date
-                        </FieldLabel>
-                        <FieldBody>
-                            <DatePicker TValue="DateTime?" @bind-Date="@_artist.SplitDate" />
-                        </FieldBody>
-                    </Field>
-                } 
-                else if (_artist.Discriminator == ArtistDiscriminator.Person)
-                {
-                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                        <FieldLabel>
-                            First Name
-                        </FieldLabel>
-                        <FieldBody>
-                            <Validation Validator="ValidateNonEmptyField">
-                                <TextEdit @bind-Text="@_artist.FirstName" Placeholder="James...">
-                                    <ValidationNone>⚠️ Please enter a first name</ValidationNone>
-                                    <ValidationSuccess>✅ Valid first name</ValidationSuccess>
-                                </TextEdit>
-                            </Validation>
-                        </FieldBody>
-                    </Field>
-                    
-                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                        <FieldLabel>
-                            Last Name
-                        </FieldLabel>
-                        <FieldBody>
-                            <Validation Validator="ValidateNonEmptyField">
-                                <TextEdit @bind-Text="@_artist.LastName" Placeholder="Hetfield...">
-                                    <ValidationNone>⚠️ Please enter a name</ValidationNone>
-                                    <ValidationSuccess>✅ Valid name</ValidationSuccess>
-                                </TextEdit>
-                            </Validation>
-                        </FieldBody>
-                    </Field>
-                    
-                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                        <FieldLabel>
-                            Birth Date
-                        </FieldLabel>
-                        <FieldBody>
-                            <DatePicker TValue="DateTime?" @bind-Date="@_artist.BirthDate" />
-                        </FieldBody>
-                    </Field>
-                    
-                    <Field ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnMobile">
-                        <FieldLabel>
-                            Death Date
-                        </FieldLabel>
-                        <FieldBody>
-                            <DatePicker TValue="DateTime?" @bind-Date="@_artist.DeathDate" />
-                        </FieldBody>
-                    </Field>
-                }
-            </Fields>
-        </ModalBody>
-        
-        <ModalFooter>
-            <Button Color="Color.Primary" Clicked="Save" Disabled="@_isConfirmable">Save</Button>
-            <Button Color="Color.Secondary" Clicked="Hide">Close</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+                <MudItem xs="12" md="6">
+                    <MudTextField
+                        T="string?"
+                        @bind-Text="_artist.LastName"
+                        Label="Last Name"
+                        Placeholder="Enter a last name..."/>
+                </MudItem>
+                
+                <MudItem xs="12" md="6">
+                    <MudDatePicker Label="Birth Date" @bind-Date="@_artist.BirthDate" />
+                </MudItem>
+                
+                <MudItem xs="12" md="6">
+                    <MudDatePicker Label="Death Date" @bind-Date="@_artist.DeathDate" />
+                </MudItem>
+            }
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="@Save">Save</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
+    </DialogActions>
+</MudDialog>

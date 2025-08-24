@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Musicx.Application.Shared.Options;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Responses;
@@ -14,6 +15,12 @@ public partial class GenreView
     private OutGenre? _genre;
     private List<OutAlbum> _genreAlbums = [];
 
+    private readonly List<BreadcrumbItem>? _breadcrumb =
+    [
+        new("Musicx", href: "/"),
+        new("Genres", href: "#")
+    ];
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
@@ -24,6 +31,13 @@ public partial class GenreView
         _logger = LoggerProvider.CreateLogger(nameof(GenreView));
 
         await LoadGenre();
+
+        if (_breadcrumb is not null && _genre is not null)
+        {
+            _breadcrumb.Add(new(_genre.Name, href: "#"));
+        }
+        
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadGenre()

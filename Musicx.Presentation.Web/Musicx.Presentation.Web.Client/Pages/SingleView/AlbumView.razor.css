@@ -1,0 +1,22 @@
+.animation-flip-container {
+    perspective: 1000px;
+    display: inline-block;
+    position: relative;
+}
+
+.animation-flip-card {
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.animation-flip-card.animation-flipped-front {
+    transform: rotateY(0deg);
+}
+
+.animation-flip-card.animation-flipped-back {
+    transform: rotateY(180deg);
+}
+
+.animation-flip-card.animation-flipped-back > * {
+    transform: rotateY(180deg);
+}

@@ -1,82 +1,57 @@
 @page "/Album/{id}"
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 
 @inject IGetUseCase<OutAlbum> UcGet
 @inject IFindInUseCase<OutGenre> UcFindInGenres
-@inject ILoggerProvider LoggerProvider
+@inject ILoggerFactory LoggerProvider
 
-<Breadcrumb Margin="Margin.Is2.FromBottom">
-    <BreadcrumbItem>
-        <BreadcrumbLink To="/">Musicx</BreadcrumbLink>
-    </BreadcrumbItem>
-    <BreadcrumbItem>
-        <BreadcrumbLink To="#">Albums</BreadcrumbLink>
-    </BreadcrumbItem>
-    @if (null == _album)
-    {
-        <BreadcrumbItem>
-            <BreadcrumbLink To="#">-</BreadcrumbLink>
-        </BreadcrumbItem>
-    }
-    else
-    {
-        <BreadcrumbItem>
-            <BreadcrumbLink To="#">@_album.Name</BreadcrumbLink>
-        </BreadcrumbItem>
-    }
-</Breadcrumb>
+<MudBreadcrumbs Items="@_breadcrumb" />
 
 @if (null == _album)
 {
-    <SpinKit Type="SpinKitType.Pulse" />
+    <MudProgressCircular Indeterminate />
 }
 else
 {
-    <Card Margin="Margin.Is4.OnY">
-        <CardHeader Padding="Padding.Is3.OnX">
-            <Heading Size="HeadingSize.Is4" Style="font-weight: 900">@_album.Name</Heading>
-            @if (_album.Artist is not null)
-            {
-                <Blazorise.Link To="@($"/Artist/{_album.Artist.Id}")">
-                    <Heading Size="HeadingSize.Is6" TextWeight="TextWeight.SemiBold" TextColor="TextColor.Muted">
+    <MudCard>
+        <MudCardHeader>
+            <MudStack>
+                <MudText Typo="Typo.h4" Class="montserrat" Style="font-weight: 800">@_album.Name</MudText>
+                @if (_album.Artist is not null)
+                {
+                    <MudLink Typo="Typo.h6" Href="@($"/Artist/{_album.Artist.Id}")">
                         @_album.Artist.Name
-                    </Heading>
-                </Blazorise.Link>
-            }
-        </CardHeader>
-        <CardBody>
+                    </MudLink>
+                }
+            </MudStack>
+        </MudCardHeader>
+        <MudCardContent>
             @if (_album.IsFarRight)
             {
-                <Row Padding="Padding.Is3.OnAll">
-                    <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is12">
-                        <Jumbotron Background="Background.Warning" Margin="Margin.Is3">
-                            <JumbotronTitle Size="JumbotronTitleSize.Is4">National Socialist Content</JumbotronTitle>
-                            <JumbotronSubtitle>
-                                ⚠️ This release is marked with the "national socialist" tag.<br/>
-                                We do not endorse or support any of the associated ideologies.<br/>
-                                Our role is solely to document and archive all forms of musical expression,
-                                regardless of their origin or context. ⚠️
-                            </JumbotronSubtitle>
-                        </Jumbotron>
-                    </Column>
-                </Row>
+                <MudAlert Severity="Severity.Warning">
+                    This release is marked with the "national socialist" tag.<br/>
+                    We do not endorse or support any of the associated ideologies.<br/>
+                    Our role is solely to document and archive all forms of musical expression,
+                    regardless of their origin or context.
+                </MudAlert>
             }
-            <Row Margin="Margin.Is3.OnX">
-                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3">
-                    <Image Style="border-radius:10px; height:auto; width: 100%;" 
-                           Class="neumorphism-shadow-default" 
-                           Source="@_album.ArtworkUrl"/>
-                </Column>
-                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is9">
-                    <Card>
-                        <CardBody>
-                            <CardTitle Size="5">
-                                Details
-                            </CardTitle>
-                            <ListGroup Flush>
+            
+            <MudGrid>
+                <MudItem xs="12" md="3" Class="pa-3">
+                    <MudImage Src="@_album.ArtworkUrl" Elevation="25"
+                              Style="width: 100%; height: auto;" />
+                </MudItem>
+                <MudItem xs="12" md="9" Class="pa-3">
+                    <MudCard>
+                        <MudCardHeader>
+                            <MudText Typo="Typo.h5">Details</MudText>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudList Dense T="RenderFragment">
                                 @if (null != _album.OriginalReleaseDate)
                                 {
                                     <Descriptor>
@@ -88,7 +63,7 @@ else
                                         </DescriptorValue>
                                     </Descriptor>
                                 }
-
+                                
                                 @if (null != _album.ReleaseType)
                                 {
                                     <Descriptor>
@@ -101,56 +76,131 @@ else
                                     </Descriptor>
                                 }
                                 
-                                @if (_album.PrimaryGenres is not null && 0 < _album.PrimaryGenres.Count)
-                                {
-                                    <Descriptor>
-                                        <DescriptorLabel>
-                                            Genres
-                                        </DescriptorLabel>
-                                        <DescriptorValue>
-                                            <Div Flex="Flex.Wrap">
-                                                @foreach (var genre in _album.PrimaryGenres)
-                                                {
-                                                    <GenreBadge Genre="@genre" />
-                                                }
-                                            </Div>
-                                        </DescriptorValue>
-                                    </Descriptor>
-                                }
+                                <MudSwitch @bind-Value="_showDetailedView"
+                                           Color="Color.Primary"
+                                           Label="Show more details"
+                                           ThumbIcon="@Icons.Material.Filled.ViewWeek"
+                                           Class="my-2" />
                                 
-                                @if (_album.InfluenceGenres is not null && 0 < _album.InfluenceGenres.Count)
-                                {
-                                    <Descriptor>
-                                        <DescriptorLabel>
-                                            Influences
-                                        </DescriptorLabel>
-                                        <DescriptorValue>
-                                            <Div Flex="Flex.Wrap">
-                                                @foreach (var genre in _album.InfluenceGenres)
+                                <Descriptor>
+                                    <DescriptorLabel>
+                                        Genres
+                                    </DescriptorLabel>
+                                    <DescriptorValue>
+                                        <div class="animation-flip-container">
+                                            <div class="animation-flip-card @(_showDetailedView ? "animation-flipped-back" : "animation-flipped-front")">
+                                                @if (!_showDetailedView && _album.SimplifiedGenreName is not null && _album.SimplifiedGenreColor is not null)
                                                 {
-                                                    <GenreBadge Influence Genre="@genre" />
+                                                    <MudChip Class="montserrat py-1 px-3 ma-1"
+                                                             Style="@GetSimplifiedGenreStyle(_album)">
+                                                        @_album.SimplifiedGenreName
+                                                    </MudChip>
                                                 }
-                                            </Div>
-                                        </DescriptorValue>
-                                    </Descriptor>
-                                }
-                            </ListGroup>
-                        </CardBody>
-                    </Card>
-                </Column>
-            </Row>
-            <Row Margin="Margin.Is3.OnAll">
-                <Button Clicked="EditTrackListShowModal" Color="Color.Success">
-                    <Icon Name="IconName.Edit" Margin="Margin.Is2.OnX"/>
-                    Edit Track List
-                </Button>
-                
-                <Button Clicked="EditAlbumShowModal" Margin="Margin.Is2.FromStart" Color="Color.Secondary">
-                    <Icon Name="IconName.Pen" />
-                </Button>
-            </Row>
-        </CardBody>
-    </Card>
+                                                else if (_showDetailedView && _album.PrimaryGenres is not null && 0 < _album.PrimaryGenres.Count)
+                                                {
+                                                    <Div class="d-flex flex-wrap gap-2">
+                                                        @foreach (var genre in _album.PrimaryGenres.Where(g => g.Type == GenreType.Basic))
+                                                        {
+                                                            <GenreBadge Genre="@genre" Clickable/>
+                                                        }
+                                                    </Div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </DescriptorValue>
+                                </Descriptor>
+                                
+                                <MudCollapse Expanded="@_showDetailedView">
+                                    @if (_album.InfluenceGenres is not null && 0 < _album.InfluenceGenres.Count)
+                                    {
+                                        <Descriptor>
+                                            <DescriptorLabel>
+                                                Influences
+                                            </DescriptorLabel>
+                                            <DescriptorValue>
+                                                <Div class="d-flex flex-wrap gap-2">
+                                                    @foreach (var genre in _album.InfluenceGenres)
+                                                    {
+                                                        <GenreBadge Genre="@genre" Influence Clickable />
+                                                    }
+                                                </Div>
+                                            </DescriptorValue>
+                                        </Descriptor>
+                                    }
+                                    
+                                    @if (_album.PrimaryGenres is not null && _album.PrimaryGenres.Any(g => g.Type == GenreType.Scene))
+                                    {
+                                        <Descriptor>
+                                            <DescriptorLabel>
+                                                Scenes
+                                            </DescriptorLabel>
+                                            <DescriptorValue>
+                                                <Div class="d-flex flex-wrap gap-2">
+                                                    @foreach (var scene in _album.PrimaryGenres.Where(g => g.Type == GenreType.Scene))
+                                                    {
+                                                        <GenreBadge Genre="@scene" Clickable />
+                                                    }
+                                                </Div>
+                                            </DescriptorValue>
+                                        </Descriptor>
+                                    }
+                                    
+                                    @if (_album.PrimaryGenres is not null && _album.PrimaryGenres.Any(g => g.Type == GenreType.Movement))
+                                    {
+                                        <Descriptor>
+                                            <DescriptorLabel>
+                                                Movements
+                                            </DescriptorLabel>
+                                            <DescriptorValue>
+                                                <Div class="d-flex flex-wrap gap-2">
+                                                    @foreach (var movement in _album.PrimaryGenres.Where(g => g.Type == GenreType.Movement))
+                                                    {
+                                                        <GenreBadge Genre="@movement" Clickable />
+                                                    }
+                                                </Div>
+                                            </DescriptorValue>
+                                        </Descriptor>
+                                    }
+
+                                    @if (_album.PrimaryGenres is not null && _album.PrimaryGenres.Any(g => g.Type == GenreType.Descriptor))
+                                    {
+                                        <Descriptor>
+                                            <DescriptorLabel>
+                                                Descriptors
+                                            </DescriptorLabel>
+                                            <DescriptorValue>
+                                                <Div class="d-flex flex-wrap gap-2">
+                                                    @foreach (var descriptor in _album.PrimaryGenres.Where(g => g.Type == GenreType.Descriptor))
+                                                    {
+                                                        <GenreBadge Genre="@descriptor" />
+                                                    }
+                                                </Div>
+                                            </DescriptorValue>
+                                        </Descriptor>
+                                    }
+                                </MudCollapse>
+                            </MudList>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem Class="ma-3">
+                    <MudButton Variant="Variant.Filled" 
+                               StartIcon="@Icons.Material.Filled.EditNote"
+                               Class="mx-2"
+                               Color="Color.Success"
+                               OnClick="@EditTrackListShowModal">
+                        Edit Track List
+                    </MudButton>
+                    
+                    <MudIconButton Variant="Variant.Filled" 
+                               Icon="@Icons.Material.Filled.Edit"
+                               Class="mx-2"
+                               Color="Color.Secondary"
+                               OnClick="@EditAlbumShowModal" />
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
 }
 
 <AlbumEditModal @ref="_albumEditModal" OnSave="OnQuitModal" />

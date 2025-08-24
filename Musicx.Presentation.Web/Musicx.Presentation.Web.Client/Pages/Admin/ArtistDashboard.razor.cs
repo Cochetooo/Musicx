@@ -1,5 +1,5 @@
-using Blazorise;
 using Microsoft.AspNetCore.Components.Web;
+using MudBlazor;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Presentation.Web.Client.Modals.Admin.Artists;
 using Musicx.Presentation.Web.Client.Models;
@@ -10,16 +10,23 @@ public partial class ArtistDashboard
 {
     private ViewMode _viewMode = ViewMode.Normal;
     
-    private ArtistEditModal? _artistEditModal;
-    private Modal? _confirmDeleteModal;
+    private ArtistEditModal _artistEditModal = null!;
+    private MudDialog _confirmDeleteModal = null!;
 
     private ILogger _logger = null!;
 
     private List<OutArtist> _artists = [];
     private List<OutArtist> _filteredArtists = [];
-    private List<OutArtist> _selectedArtists = [];
+    private HashSet<OutArtist> _selectedArtists = [];
 
     private string _searchDataGrid = null!;
+
+    private List<BreadcrumbItem> _breadcrumb =
+    [
+        new("Musicx", href: "/"),
+        new("Admin", href: "#"),
+        new("Artist Management", href: "#")
+    ];
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -80,14 +87,14 @@ public partial class ArtistDashboard
         _viewMode = ViewMode.Normal;
     }
 
-    private Task ShowDeleteModal()
+    private async Task ShowDeleteModal()
     {
-        return _confirmDeleteModal!.Show();
+        await _confirmDeleteModal.ShowAsync();
     }
 
-    private Task HideDeleteModal()
+    private async Task HideDeleteModal()
     {
-        return _confirmDeleteModal!.Hide();
+        await _confirmDeleteModal.CloseAsync();
     }
 
     private async Task OnQuitModal()

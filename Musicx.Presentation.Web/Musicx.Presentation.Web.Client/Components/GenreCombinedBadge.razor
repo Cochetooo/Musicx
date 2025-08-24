@@ -1,10 +1,8 @@
 @using Musicx.Application.Shared.Utilities
-<Badge Padding="Padding.Is1.OnY.Is3.OnX"
-       Class="neumorphism-shadow-default montserrat"
-       TextSize="TextSize.Small"
-       TextDecoration="TextDecoration.None"
-       Style="@GetGradientStyle(Genres)"
-       Margin="Margin.Is1"
-       Pill>
+
+<MudChip 
+        T="string"
+       Class="montserrat"
+       Style="@GetGradientStyle(Genres)">
     @GenreLabelHelper.MergeGenresFromList(Genres)
-</Badge>
+</MudChip>

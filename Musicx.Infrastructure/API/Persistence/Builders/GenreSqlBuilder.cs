@@ -24,7 +24,8 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { GenreColumns.UpdatedAt, DateTime.Now },
                 { GenreColumns.Color, entity.Color },
                 { GenreColumns.Description, entity.Description },
-                { GenreColumns.Name, entity.Name }
+                { GenreColumns.Name, entity.Name },
+                { GenreColumns.Type, entity.Type }
             },
             returningColumn: GenreColumns.Id);
         
@@ -77,7 +78,8 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { GenreColumns.UpdatedAt, DateTime.Now },
                 { GenreColumns.Color, entity.Color },
                 { GenreColumns.Description, entity.Description },
-                { GenreColumns.Name, entity.Name }
+                { GenreColumns.Name, entity.Name },
+                { GenreColumns.Type, entity.Type }
             });
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));

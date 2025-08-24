@@ -8,7 +8,7 @@ namespace Musicx.Infrastructure.Web.UseCases;
 
 public sealed class UcFindIn<T>(
     HttpClient httpClient,
-    ILoggerProvider loggerProvider
+    ILoggerFactory loggerProvider
     ) : IFindInUseCase<T> where T : class
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcFindIn<T>));

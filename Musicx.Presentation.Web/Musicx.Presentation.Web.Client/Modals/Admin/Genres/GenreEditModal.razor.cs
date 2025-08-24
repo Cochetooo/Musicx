@@ -1,5 +1,5 @@
-using Blazorise;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Mappers;
@@ -14,11 +14,9 @@ public partial class GenreEditModal
 
     private List<OutGenre> _genres = [];
     private List<OutGenre> _selectedParents = [];
-    
-    private bool _isConfirmable;
 
-    private Modal _modalRef = null!;
-    private TextEdit _nameTextEdit = null!;
+    private MudDialog _modalRef = null!;
+    private MudTextField<string> _nameTextEdit = null!;
     
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
@@ -51,41 +49,66 @@ public partial class GenreEditModal
         _genre.ParentIds = _selectedParents.Select(g => g.Id).ToList();
         await UcSave.ExecuteAsync(_genre);
         await OnSave.InvokeAsync();
-        Hide();
+        await Hide();
         
         await Load();
-        _selectedParents.Clear();
     }
 
-    public void Show(OutGenre? genre = null)
+    public async Task Show(OutGenre? genre = null)
     {
+        await _modalRef.ShowAsync();
+
+        Clean();
+        
         if (null != genre)
         {
             _genre = genre.ToRaw();
-            _nameTextEdit.Text = genre.Name;
-            _nameTextEdit.Revalidate();
-            StateHasChanged();
+            await _nameTextEdit.SetText(genre.Name);
+            // _nameTextEdit.Revalidate();
+            await InvokeAsync(StateHasChanged);
         }
-        
-        _modalRef.Show();
     }
 
-    private void Hide()
+    private async Task Hide()
     {
-        _modalRef.Hide();
+        await _modalRef.CloseAsync();
     }
 
-    private void ValidateNonEmptyField(ValidatorEventArgs e)
+    /* private void ValidateNonEmptyField(ValidatorEventArgs e)
     {
         _isConfirmable = string.IsNullOrWhiteSpace(Convert.ToString(e.Value));
         
         e.Status = _isConfirmable
             ? ValidationStatus.None
             : ValidationStatus.Success;
+    } */
+    
+    private async Task<IReadOnlyList<OutGenre>> LoadChildrenAsync(OutGenre genre)
+    {
+        _logger.LogInformation($"🔄️ Loading Server Data for : {genre.Name} | Array count: {genre.Children?.Count}");
+        
+        if (genre.Children is null)
+        {
+            return [];
+        }
+        
+        return await UcFindIn.ExecuteAsync(genre.Children.Select(g => g.Id), "children");
     }
     
     private void NameTextChanged(string newValue)
     {
         _genre.Name = newValue;
+    }
+    
+    private void SelectedGenresChanged(IReadOnlyList<OutGenre> obj)
+    {
+        _selectedParents.Clear();
+        _selectedParents.AddRange(obj);
+    }
+
+    private void Clean()
+    {
+        _selectedParents.Clear();
+        _genre = new InGenre();
     }
 }

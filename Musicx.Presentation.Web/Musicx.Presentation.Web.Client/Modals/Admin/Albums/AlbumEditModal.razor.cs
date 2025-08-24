@@ -1,6 +1,6 @@
 using System.Text.Json;
-using Blazorise;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
@@ -27,14 +27,15 @@ public partial class AlbumEditModal
     private OutGenre? _selectedPrimaryGenre;
     private OutGenre? _selectedInfluenceGenre;
 
-    private bool _isLoading;
-    private bool _isConfirmable;
+    private DateRange? _recordingDates;
 
-    private TextEdit _nameTextEdit = null!;
+    private bool _isLoading;
+
+    private MudTextField<string> _nameTextEdit = null!;
 
     private CancellationTokenSource? _artworkCts;
 
-    private Modal _modalRef = null!;
+    private MudDialog _modalRef = null!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -43,7 +44,7 @@ public partial class AlbumEditModal
             return;
         }
         
-        _logger = LoggerProvider.CreateLogger(nameof(AlbumEditModal));
+        _logger = LoggerFactory.CreateLogger(nameof(AlbumEditModal));
 
         _album = new InAlbum();
         _availableGenres = await UcListGenres.ExecuteAsync(take: 10_000);
@@ -53,6 +54,8 @@ public partial class AlbumEditModal
     {
         _album.PrimaryGenreIds = _primaryGenres.Select(g => g.Id).ToList();
         _album.InfluenceGenreIds = _influenceGenres.Select(g => g.Id).ToList();
+        _album.BeginRecordDate = _recordingDates?.Start;
+        _album.EndRecordDate = _recordingDates?.End;
         
         _logger.LogInformation($"⛏️ AlbumEditModal : Persisting primary genres {string.Join(",", _album.PrimaryGenreIds)} " +
                                $"and influences {string.Join(",", _album.InfluenceGenreIds)}");
@@ -60,35 +63,39 @@ public partial class AlbumEditModal
         await UcSave.ExecuteAsync(_album);
         await OnSave.InvokeAsync();
 
-        _album.PrimaryGenreIds = [];
-        _album.InfluenceGenreIds = [];
+        Clean();
         
-        _primaryGenres.Clear();
-        _influenceGenres.Clear();
-        
-        Hide();
+        await Hide();
     }
 
-    public void Show(OutArtist artist, OutAlbum? album = null)
+    public async Task Show(OutArtist artist, OutAlbum? album = null)
     {
+        _artist = artist;
+        _album.ArtistId = _artist.Id;
+        
+        await _modalRef.ShowAsync();
+        
         if (null != album)
         {
             _album = album.ToRaw();
-            _nameTextEdit.Text = album.Name;
-            _nameTextEdit.Revalidate();
+            await _nameTextEdit.SetText(album.Name);
+            
+            //_nameTextEdit.Revalidate();
             _primaryGenres = album.PrimaryGenres?.ToList() ?? [];
             _influenceGenres = album.InfluenceGenres?.ToList() ?? [];
-            StateHasChanged();
+            
+            _recordingDates = new DateRange(
+                _album.BeginRecordDate,
+                _album.EndRecordDate
+            );
+            
+            await InvokeAsync(StateHasChanged);
         }
-        
-        _artist = artist;
-        _album.ArtistId = _artist.Id;
-        _modalRef.Show();
     }
     
-    private void Hide()
+    private async Task Hide()
     {
-        _modalRef.Hide();
+        await _modalRef.CloseAsync();
     }
 
     private async Task UpdateArtwork()
@@ -140,15 +147,6 @@ public partial class AlbumEditModal
         }
     }
     
-    private void ValidateNonEmptyField(ValidatorEventArgs e)
-    {
-        _isConfirmable = string.IsNullOrWhiteSpace(Convert.ToString(e.Value));
-        
-        e.Status = _isConfirmable
-            ? ValidationStatus.None
-            : ValidationStatus.Success;
-    }
-    
     private async Task NameTextChanged(string newValue)
     {
         _album.Name = newValue;
@@ -188,5 +186,36 @@ public partial class AlbumEditModal
         _influenceGenres.Add(_selectedInfluenceGenre);
         _selectedInfluenceGenre = null;
         _selectedInfluenceText = "";
+    }
+
+    private async Task<IEnumerable<OutGenre>> SearchGenre(string? value, CancellationToken token)
+    {
+        await Task.Delay(5, token);
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return _availableGenres;
+        }
+
+        return _availableGenres.Where(x =>
+            x.Name
+                .ToLower()
+                .Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            && !_primaryGenres.Contains(x)
+            && !_influenceGenres.Contains(x));
+    }
+
+    private void Clean()
+    {
+        _album = new InAlbum
+        {
+            PrimaryGenreIds = [],
+            InfluenceGenreIds = []
+        };
+
+        _primaryGenres.Clear();
+        _influenceGenres.Clear();
+
+        _recordingDates = null;
     }
 }

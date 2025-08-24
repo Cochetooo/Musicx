@@ -1,11 +1,11 @@
-<ListGroupItem Background="Background.Primary">
-    <Paragraph Margin="Margin.Is2.FromBottom" TextColor="TextColor.Muted">
+<MudListItem T="RenderFragment">
+    <MudText Color="Color.Tertiary" Typo="Typo.body2">
         @DescriptorLabel
-    </Paragraph>
-    <Blazorise.Text TextWeight="TextWeight.Bold" TextColor="TextColor.Primary">
+    </MudText>
+    <MudText Color="Color.Primary" Typo="Typo.body1">
         @DescriptorValue
-    </Blazorise.Text>
-</ListGroupItem>
+    </MudText>
+</MudListItem>
 
 @code {
 

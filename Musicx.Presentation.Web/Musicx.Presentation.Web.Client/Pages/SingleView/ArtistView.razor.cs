@@ -1,9 +1,10 @@
-using Blazorise.Charts;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Responses;
-using Musicx.Domain.Enums;
+using Musicx.Contracts.Enums;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
+using Musicx.Presentation.Web.Client.Modals.Admin.Artists;
 
 namespace Musicx.Presentation.Web.Client.Pages.SingleView;
 
@@ -13,14 +14,33 @@ public partial class ArtistView
 
     private ILogger _logger = null!;
 
-    private AlbumEditModal? _albumEditModal;
-    private LineChart<int> _historyChart = null!;
+    private ArtistEditModal _artistEditModal = null!;
+    private AlbumEditModal _albumEditModal = null!;
     
     private OutArtist? _artist;
     private List<OutAlbum> _artistAlbums = [];
     private Dictionary<ReleaseType, bool> _availableReleaseTypes = [];
     private Dictionary<int, int> _releaseCountPerYears = [];
+    
+    private readonly List<ChartSeries> _historySeries = [];
+    private readonly ChartOptions _historyChartOptions = new()
+    {
+        InterpolationOption = InterpolationOption.Periodic,
+        MaxNumYAxisTicks = 20,
+        YAxisTicks = 1
+    };
+    private readonly AxisChartOptions _axisChartOptions = new()
+    {
+        MatchBoundsToSize = true,
+    };
+    private string[] _xAxisChartLabels = [];
+    
     private bool _isReleasesListView;
+    
+    private readonly List<BreadcrumbItem>? _breadcrumb = 
+    [
+        new("Musicx", href: "/"),
+    ];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -32,6 +52,13 @@ public partial class ArtistView
         _logger = LoggerProvider.CreateLogger(nameof(ArtistView));
 
         await LoadArtist();
+
+        if (_breadcrumb is not null && _artist is not null)
+        {
+            _breadcrumb.Add(new(_artist.Name, href: "#"));
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadArtist()
@@ -66,33 +93,31 @@ public partial class ArtistView
             .Where(s => s.ReleaseType.HasValue)
             .Select(s => s.ReleaseType!.Value)
             .Distinct()
-            .ToDictionary(r => r, r => r is ReleaseType.Lp or ReleaseType.MixTape);
+            .ToDictionary(r => r, r => r is ReleaseType.Lp or ReleaseType.MixTape or ReleaseType.Soundtrack);
         
         await InvokeAsync(StateHasChanged);
      
         CalculateReleasesPerYear();
-        await UpdateChartAsync();
+        UpdateChart();
+        
+        await InvokeAsync(StateHasChanged);
         
         _logger.LogInformation($"✅ Chart created.");
     }
     
-    private async Task UpdateChartAsync()
+    private void UpdateChart()
     {
-        await _historyChart.Clear();
-
-        var labels = _releaseCountPerYears.Keys.Select(y => y.ToString()).ToList();
-        var dataset = new LineChartDataset<int>
+        _historySeries.Clear();
+        _historySeries.Add(new ChartSeries
         {
-            Label = "# of releases",
-            Data = _releaseCountPerYears
-                .Select(g => g.Value)
-                .ToList(),
-            Fill = true,
-            PointRadius = 2,
-            CubicInterpolationMode = "monotone"
-        };
+            Name = "# of releases",
+            Data = _releaseCountPerYears.Select(g => (double) g.Value).ToArray()
+        });
         
-        await _historyChart.AddLabelsDatasetsAndUpdate(labels, dataset);
+        _xAxisChartLabels = _releaseCountPerYears
+            .Keys
+            .Select(y => y.ToString())
+            .ToArray();
     }
     
     private void CalculateReleasesPerYear()
@@ -107,7 +132,7 @@ public partial class ArtistView
             .Where(a => a is
             {
                 OriginalReleaseDate: not null, 
-                ReleaseType: ReleaseType.Lp or ReleaseType.Ep or ReleaseType.MixTape
+                ReleaseType: ReleaseType.Lp or ReleaseType.Ep or ReleaseType.MixTape or ReleaseType.Soundtrack
             })
             .ToList();
 
@@ -140,7 +165,28 @@ public partial class ArtistView
         _availableReleaseTypes[releaseType.Key] = !releaseType.Value;
     }
 
-    private void AddAlbumShowModal()
+    private Variant GetVariant(KeyValuePair<ReleaseType, bool> releaseType)
+        => _availableReleaseTypes[releaseType.Key]
+            ? Variant.Filled
+            : Variant.Text;
+    
+    private Variant GetListVariant(bool inverted = false)
+        => _isReleasesListView
+            ? inverted ? Variant.Text : Variant.Filled
+            : inverted ? Variant.Filled : Variant.Text;
+
+    private async Task EditArtistShowModal()
+    {
+        if (null == _artist)
+        {
+            _logger.LogError("❌ Cannot add artist: artist is null.");
+            return;
+        }
+
+        await _artistEditModal.Show(_artist);
+    }
+    
+    private async Task AddAlbumShowModal()
     {
         if (null == _artist)
         {
@@ -148,7 +194,7 @@ public partial class ArtistView
             return;
         }
 
-        _albumEditModal?.Show(_artist);
+        await _albumEditModal.Show(_artist);
     }
 
     private async Task OnQuitModal()

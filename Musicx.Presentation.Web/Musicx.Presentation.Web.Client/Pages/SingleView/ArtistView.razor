@@ -5,274 +5,237 @@
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
+@using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 
 @inject IGetUseCase<OutArtist> UcGet
-@inject IFindInUseCase<OutGenre> UcFindInGenres
 @inject IGetAlbumByArtistUseCase UcGetAlbums
-@inject ILoggerProvider LoggerProvider
+@inject ILoggerFactory LoggerProvider
 
-<Breadcrumb Margin="Margin.Is2.FromBottom">
-    <BreadcrumbItem>
-        <BreadcrumbLink TextColor="TextColor.Secondary" To="/">Musicx</BreadcrumbLink>
-    </BreadcrumbItem>
-    <BreadcrumbItem>
-        <BreadcrumbLink TextColor="TextColor.Secondary" To="#">Artists</BreadcrumbLink>
-    </BreadcrumbItem>
-    @if (null == _artist)
-    {
-        <BreadcrumbItem>
-            <BreadcrumbLink TextColor="TextColor.Primary" To="#">-</BreadcrumbLink>
-        </BreadcrumbItem>
-    }
-    else
-    {
-        <BreadcrumbItem>
-            <BreadcrumbLink TextColor="TextColor.Primary" To="#">@_artist.Name</BreadcrumbLink>
-        </BreadcrumbItem>
-    }
-</Breadcrumb>
+<MudBreadcrumbs Items="@_breadcrumb" />
 
 @if (null == _artist)
 {
-    <SpinKit Type="SpinKitType.Pulse" />
+    <MudProgressCircular Indeterminate />
 }
 else
 {
-    <Card Margin="Margin.Is4.OnY" Background="Background.Primary">
-        <CardHeader Background="Background.Secondary" Flex="Flex.JustifyContent.Start.OnDesktop"
-                    Padding="Padding.Is3.OnX">        
-            <Image Style="width: 200px; border-radius:10px" Shadow="Shadow.Small" Source="@_artist.ArtworkUrl" />
-            
-            <Heading Padding="Padding.Is5.FromStart.OnDesktop"
-                     Italic
-                     Flex="Flex.AlignItems.Center"
-                     Style="font-weight: 900; font-size: 5rem;" TextColor="TextColor.Primary">
+    <MudCard Class="mt-4" Style="background-color: var(--mud-palette-background-gray);">
+        <MudCardHeader>
+            <MudImage Src="@_artist.ArtworkUrl" Elevation="25" Style="width: 200px; border-radius: 10px"/>
+
+            <MudText Typo="Typo.h1" Style="font-weight: 900; font-size: 5rem;" Class="pl-8 montserrat">
                 @_artist.Name
-            </Heading>
-        </CardHeader>
-        <CardBody TextColor="TextColor.Primary">
-            <Row Margin="Margin.Is3.OnX">
-                <Column Padding="Padding.Is3.OnAll" ColumnSize="ColumnSize.Is3.OnDesktop">
-                    <Card>
-                        <CardHeader Background="Background.Primary">
-                            <Button Color="Color.Secondary">
-                                <Icon Name="IconName.UserPlus" Margin="Margin.Is2.OnX" />
-                                Follow
-                            </Button>
-                        </CardHeader>
-                        <CardBody Background="Background.Primary">
-                            <CardTitle Size="3" TextColor="TextColor.Primary">
-                                Details
-                            </CardTitle>
-                            <ListGroup Background="Background.Primary" Flush>
-                                @if (_artist.Discriminator == ArtistDiscriminator.Band)
-                                {
-                                    if (null != _artist.FormationDate)
-                                    {
-                                        <Descriptor>
-                                            <DescriptorLabel>
-                                                Formed
-                                            </DescriptorLabel>
-                                            <DescriptorValue>
-                                                @_artist.FormationDate.Value.ToString("dd / MM / yyyy")
-                                            </DescriptorValue>
-                                        </Descriptor>
-                                    }
+            </MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudTabs Elevation="2" Rounded ApplyEffectsToContainer PanelClass="pa-6" Style="background-color: var(--mud-palette-background);">
+                <MudTabPanel Text="Releases" Icon="@Icons.Material.Filled.LibraryMusic">
+                    <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Row Class="mb-5">
+                        <MudText Typo="Typo.caption">Type</MudText>
 
-                                    if (null != _artist.SplitDate)
-                                    {
-                                        <Descriptor>
-                                            <DescriptorLabel>
-                                                Split
-                                            </DescriptorLabel>
-                                            <DescriptorValue>
-                                                @_artist.SplitDate.Value.ToString("dd / MM / yyyy")
-                                            </DescriptorValue>
-                                        </Descriptor>
-                                    }
-                                }
-                                @if (_artist.Discriminator == ArtistDiscriminator.Person)
-                                {
-                                    if (null != _artist.BirthDate)
-                                    {
-                                        <Descriptor>
-                                            <DescriptorLabel>
-                                                Born
-                                            </DescriptorLabel>
-                                            <DescriptorValue>
-                                                @_artist.BirthDate.Value.ToString("dd / MM / yyyy")
-                                            </DescriptorValue>
-                                        </Descriptor>
-                                    }
+                        <MudStack Spacing="2" Row>
+                            @foreach (var releaseType in _availableReleaseTypes)
+                            {
+                                <MudButton
+                                    Color="Color.Primary"
+                                    OnClick="@(() => ToggleReleaseType(releaseType))"
+                                    Variant="@GetVariant(releaseType)">
+                                    @releaseType.Key.ToString()
+                                </MudButton>
+                            }
+                        </MudStack>
 
-                                    if (null != _artist.DeathDate)
-                                    {
-                                        <Descriptor>
-                                            <DescriptorLabel>
-                                                Died
-                                            </DescriptorLabel>
-                                            <DescriptorValue>
-                                                @_artist.DeathDate.Value.ToString("dd / MM / yyyy")
-                                            </DescriptorValue>
-                                        </Descriptor>
-                                    }
+                        <MudSpacer/>
+
+                        <MudButton OnClick="@AddAlbumShowModal"
+                                   Class="my-5"
+                                   Color="Color.Success"
+                                   Variant="Variant.Filled"
+                                   StartIcon="@Icons.Material.Filled.AddCircle">
+                            New Release
+                        </MudButton>
+
+                        <MudIconButton
+                            Icon="@Icons.Material.Filled.List"
+                            Color="Color.Primary"
+                            OnClick="@(() => ToggleListView(true))"
+                            Variant="@GetListVariant()"/>
+
+                        <MudIconButton
+                            Icon="@Icons.Material.Filled.MoreVert"
+                            Color="Color.Primary"
+                            OnClick="@(() => ToggleListView(false))"
+                            Variant="@GetListVariant(inverted: true)"/>
+                    </MudStack>
+
+                    @if (_isReleasesListView)
+                    {
+                        <MudList T="RenderFragment" Dense>
+                            @foreach (var album in _artistAlbums)
+                            {
+                                if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
+                                        out var value) && value)
+                                {
+                                    <MudListItem Class="album-list">
+                                        <MudLink Href="@($"/Album/{album.Id}")">
+                                            <MudStack AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Row>
+                                                <MudStack Justify="Justify.FlexStart" Row>
+                                                    <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
+                                                              Width="48" Height="48"
+                                                              Class="rounded-lg"
+                                                              Elevation="25"/>
+
+                                                    <AlbumListQuickInfo class="mx-3" Album="@album"/>
+                                                </MudStack>
+
+                                                @if (album.SimplifiedGenreName is not null && album.SimplifiedGenreColor is not null)
+                                                {
+                                                    <MudChip
+                                                        Class="montserrat py-1 px-3 ma-1"
+                                                        Style="@GetSimplifiedGenreStyle(album)">
+                                                        @album.SimplifiedGenreName
+                                                    </MudChip>
+                                                }
+                                            </MudStack>
+                                        </MudLink>
+                                    </MudListItem>
                                 }
+                            }
+                        </MudList>
+                    }
+                    else
+                    {
+                        <Div Class="d-flex flex-wrap gap-2">
+                            @foreach (var album in _artistAlbums)
+                            {
+                                if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
+                                        out var value) && value)
+                                {
+                                    <MudLink Href="@($"/Album/{album.Id}")" Class="album-tile pa-1" Style="width: 150px">
+                                        <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
+                                                  Width="128" Height="128"
+                                                  Class="rounded-lg"
+                                                  Elevation="8"/>
+                                        <AlbumListQuickInfo Album="album"/>
+                                    </MudLink>
+                                }
+                            }
+                        </Div>
+                    }
+                </MudTabPanel>
+                
+                <MudTabPanel Text="Details" Icon="@Icons.Material.Filled.Info">
+                    <MudStack Spacing="5" Row>
+                        <MudButton
+                            Variant="Variant.Filled"
+                            Color="Color.Success"
+                            StartIcon="@Icons.Material.Filled.PersonAdd">
+                            Follow
+                        </MudButton>
+
+                        <MudButton
+                            Variant="Variant.Filled"
+                            Color="Color.Warning"
+                            OnClick="@EditArtistShowModal"
+                            StartIcon="@Icons.Material.Filled.EditNote">
+                            Edit Info
+                        </MudButton>
+                    </MudStack>
+
+                    <MudList T="RenderFragment">
+                        @if (_artist.Discriminator == ArtistDiscriminator.Band)
+                        {
+                            if (null != _artist.FormationDate)
+                            {
                                 <Descriptor>
                                     <DescriptorLabel>
-                                        Country
+                                        Formed
                                     </DescriptorLabel>
                                     <DescriptorValue>
-                                        <Flag CountryName="@_artist.Country"/> @_artist.Country
+                                        @_artist.FormationDate.Value.ToString("dd / MM / yyyy")
                                     </DescriptorValue>
                                 </Descriptor>
-                            </ListGroup>
-                        </CardBody>
-                    </Card>
-                </Column>
-                <Column ColumnSize="ColumnSize.Is9.OnDesktop" Padding="Padding.Is3.OnAll">
-                    <Card>
-                        <CardBody Background="Background.Primary">
-                            <CardTitle Size="3" TextColor="TextColor.Primary">
-                                Releases
-                            </CardTitle>
-                            <Div Flex="Flex.JustifyContent.Between">
-                                <Fields>
-                                    <Field>
-                                        <FieldLabel Margin="Margin.Is2.FromEnd" TextColor="TextColor.Primary">
-                                            Type
-                                        </FieldLabel>
-                                        <FieldBody>
-                                            <Buttons>
-                                                @foreach (var releaseType in _availableReleaseTypes)
-                                                {
-                                                    <Button Color="Color.Info"
-                                                            TextColor="TextColor.Primary"
-                                                            Clicked="@(() => ToggleReleaseType(releaseType))"
-                                                            Outline="@(!releaseType.Value)">
-                                                        @releaseType.Key.ToString()
-                                                    </Button>
-                                                }
-                                            </Buttons>
-                                        </FieldBody>
-                                    </Field>
-                                </Fields>
-                                
-                                <Div>
-                                    <Button Color="Color.Info"
-                                            TextColor="TextColor.Primary"
-                                            Clicked="@(() => ToggleListView(true))"
-                                            Outline="@(!_isReleasesListView)">
-                                        <Icon Name="IconName.List" />
-                                    </Button>
-                                    
-                                    <Button Color="Color.Info"
-                                            TextColor="TextColor.Primary"
-                                            Clicked="@(() => ToggleListView(false))"
-                                            Outline="@(_isReleasesListView)">
-                                        <Icon Name="IconName.GripVertical" />
-                                    </Button>
-                                </Div>
-                            </Div>
-                            <Div Gap="Gap.Is2" Flex="Flex.Wrap">
-                                @if (_isReleasesListView)
-                                {
-                                    <ListGroup Flush Width="Width.Is100">
-                                        @foreach (var album in _artistAlbums)
-                                        {
-                                            if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
-                                                    out var value) && value)
-                                            {
-                                                <ListGroupItem Background="Background.Secondary">
-                                                    <Div ElementId="#album-list-animate" Class="album-tile" Padding="Padding.Is1">
-                                                        <Animate Anchor="#album-animate" Auto
-                                                                 Animation="Animations.FadeRight" DelayMilliseconds="50">
-                                                            <Blazorise.Link To="@($"/Album/{album.Id}")" Flex="Flex.AlignItems.Start.JustifyContent.Between">
-                                                                <Div Flex="Flex._">
-                                                                    <Figure Size="FigureSize.Is48x48">
-                                                                        <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
-                                                                                     Shadow="Shadow.Default"
-                                                                                     Class="neumorphism-shadow-default"
-                                                                                     Rounded/>
-                                                                    </Figure>
+                            }
 
-                                                                    <Div Margin="Margin.Is3.OnX">
-                                                                        <AlbumListQuickInfo Bigger Album="album"/>
-                                                                    </Div>
-                                                                </Div>
+                            if (null != _artist.SplitDate)
+                            {
+                                <Descriptor>
+                                    <DescriptorLabel>
+                                        Split
+                                    </DescriptorLabel>
+                                    <DescriptorValue>
+                                        @_artist.SplitDate.Value.ToString("dd / MM / yyyy")
+                                    </DescriptorValue>
+                                </Descriptor>
+                            }
+                        }
+                        @if (_artist.Discriminator == ArtistDiscriminator.Person)
+                        {
+                            if (null != _artist.BirthDate)
+                            {
+                                <Descriptor>
+                                    <DescriptorLabel>
+                                        Born
+                                    </DescriptorLabel>
+                                    <DescriptorValue>
+                                        @_artist.BirthDate.Value.ToString("dd / MM / yyyy")
+                                    </DescriptorValue>
+                                </Descriptor>
+                            }
 
-                                                                <Div Flex="Flex._">
-                                                                    @if (album.SimplifiedGenreName is not null && album.SimplifiedGenreColor is not null)
-                                                                    {
-                                                                        <Badge Padding="Padding.Is1.OnY.Is3.OnX"
-                                                                               Class="neumorphism-shadow-default montserrat"
-                                                                               TextSize="TextSize.Small"
-                                                                               Style="@GetSimplifiedGenreStyle(album)"
-                                                                               Margin="Margin.Is1"
-                                                                               Pill>
-                                                                            @album.SimplifiedGenreName
-                                                                        </Badge>
-                                                                    }
-                                                                </Div>
-                                                            </Blazorise.Link>
-                                                        </Animate>
-                                                    </Div>
-                                                </ListGroupItem>
-                                            }
-                                        }
-                                    </ListGroup>
-                                }
-                                else
-                                {
-                                    @foreach (var album in _artistAlbums)
-                                    {
-                                        if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
-                                                out var value) && value)
-                                        {
-                                            <Div ElementId="#album-animate" Class="album-tile" Padding="Padding.Is1" 
-                                                 Style="width: 150px;">
-                                                <Animate Anchor="#album-animate" Auto
-                                                         Animation="Animations.FlipUp" DelayMilliseconds="50">
-                                                    <Blazorise.Link To="@($"/Album/{album.Id}")">
-                                                        <Figure Size="FigureSize.Is128x128">
-                                                            <FigureImage Source="@album.ArtworkUrl" AlternateText="@album.Name"
-                                                                         Shadow="Shadow.Large"
-                                                                         Class="neumorphism-shadow-default"
-                                                                         Rounded/>
-                                                            <FigureCaption>
-                                                                <AlbumListQuickInfo Album="album"/>
-                                                            </FigureCaption>
-                                                        </Figure>
-                                                    </Blazorise.Link>
-                                                </Animate>
-                                            </Div>
-                                        }
-                                    }
-                                }
-                            </Div>
-                            <Button Clicked="AddAlbumShowModal" Margin="Margin.Is2.FromTop" Color="Color.Success">
-                                <Icon Name="IconName.PlusCircle" Margin="Margin.Is2.OnX" />
-                                New Release
-                            </Button>
-                        </CardBody>
-                        <CardFooter Background="Background.Secondary">
-                            <CardText>Release History</CardText>
-                            <LineChart @ref="_historyChart" Style="max-height: 200px" TItem="int"/>
-                        </CardFooter>
-                    </Card>
-                </Column>
-            </Row>
-        </CardBody>
-    </Card>
+                            if (null != _artist.DeathDate)
+                            {
+                                <Descriptor>
+                                    <DescriptorLabel>
+                                        Died
+                                    </DescriptorLabel>
+                                    <DescriptorValue>
+                                        @_artist.DeathDate.Value.ToString("dd / MM / yyyy")
+                                    </DescriptorValue>
+                                </Descriptor>
+                            }
+                        }
+                        <Descriptor>
+                            <DescriptorLabel>
+                                Country
+                            </DescriptorLabel>
+                            <DescriptorValue>
+                                <Flag CountryName="@_artist.Country"/> @_artist.Country
+                            </DescriptorValue>
+                        </Descriptor>
+                    </MudList>
+                </MudTabPanel>
+                
+                <MudTabPanel Text="History" Icon="@Icons.Material.Filled.MultilineChart">
+                    <MudChart
+                        ChartType="ChartType.Line"
+                        ChartSeries="@_historySeries"
+                        ChartOptions="@_historyChartOptions"
+                        XAxisLabels="@_xAxisChartLabels"
+                        AxisChartOptions="@_axisChartOptions"/>
+                </MudTabPanel>
+            </MudTabs>
+        </MudCardContent>
+    </MudCard>
 }
 
+<ArtistEditModal @ref="_artistEditModal" OnSave="OnQuitModal" />
 <AlbumEditModal @ref="_albumEditModal" OnSave="OnQuitModal" />
 
 <style>
     .album-tile {
-        transition: transform 0.25s ease-in-out;
+        transition: transform 0.3s ease-in-out;
     }
     
     .album-tile:hover {
         transform: scale(1.1);
+    }
+    
+    .album-list {
+        transition: transform 0.25s ease-in-out;
+    }
+    
+    .album-list:hover {
+        transform: scale(1.03);
     }
 </style>
