@@ -63,8 +63,8 @@ else
         return Genre.Type switch
         {
             GenreType.Basic => $"background-color:{background}; color:{textColor}; font-weight:600;",
-            GenreType.Scene => $"border:1px solid {background}; color:{background}; background:transparent; font-style:italic;",
-            GenreType.Movement => $"border:1px dashed {background}; color:{background}; background:transparent;",
+            GenreType.Scene => $"border:1px solid {background}; color:{background}; background:{textColor}; font-weight: bold",
+            GenreType.Movement => $"border:1px dashed {background}; color:{background}; background:{textColor}; font-weight: bold",
             GenreType.Descriptor => $"background-color:{background}; color:{textColor}; opacity:0.85; border-radius:16px;",
             _ => $"background-color:{background}; color:{textColor};"
         };
