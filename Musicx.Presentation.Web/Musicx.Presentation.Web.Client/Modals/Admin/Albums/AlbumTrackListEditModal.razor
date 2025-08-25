@@ -1,3 +1,5 @@
+@using System.Net.Mime
+@using Musicx.Application.Shared.Utilities
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Infrastructure.API.Persistence.Mappers
@@ -5,7 +7,36 @@
 @inject ILoggerFactory LoggerProvider
 
 <MudDialog @ref="_modalRef">
+    <TitleContent>
+        Track List Editing
+    </TitleContent>
     
+    <DialogContent>
+        <MudGrid Justify="Justify.Center">
+            <MudTable Items="@_songs" Hover Breakpoint="Breakpoint.Sm" T="InSong">
+                <HeaderContent>
+                    <MudTh>#</MudTh>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Genres</MudTh>
+                    <MudTh>Influences</MudTh>
+                    <MudTh>Type</MudTh>
+                    <MudTh>Duration</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="TrackNumber">@context.TrackNumber</MudTd>
+                    <MudTd DataLabel="Name">@context.Title</MudTd>
+                    <MudTd DataLabel="PrimaryGenres">
+                        
+                    </MudTd>
+                    <MudTd DataLabel="InfluenceGenres">
+                        
+                    </MudTd>
+                    <MudTd DataLabel="Type">@context.Type</MudTd>
+                    <MudTd DataLabel="Duration">@context.Duration.FormatDuration()</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudGrid>
+    </DialogContent>
 </MudDialog>
 
 <!-- <Modal @ref="_modalRef">

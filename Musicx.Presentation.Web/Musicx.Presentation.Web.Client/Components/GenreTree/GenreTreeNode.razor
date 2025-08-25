@@ -1,5 +1,5 @@
-@using Musicx.Application.Shared.Utilities
 @using Musicx.Contracts.Dto.Responses
+
 <div class="genre-node">
     <div class="genre-node-header">
         @if (Expandable)
@@ -31,9 +31,7 @@
                          ValueChanged="@(async v => await OnSelectionChange(v))" />
         }
         
-        <MudChip T="string" Size="Size.Small" Style="@GetColor(Genre)">
-            @Genre.Name
-        </MudChip>
+        <GenreBadge Size="Size.Small" Genre="@Genre" />
     </div>
     
     @if (Expanded)
@@ -104,13 +102,6 @@
     {
         IsSelected = selected;
         await OnSelectionChanged.InvokeAsync((Genre, selected));
-    }
-    
-    private string GetColor(OutGenre? genre)
-    {
-        var background = genre?.Color ?? "#333";
-        var textColor = ColorHelper.IsColorLight(background) ? "#000" : "#fff";
-        return $"background-color:{background}; color:{textColor}; font-weight:bold;";
     }
 
 }

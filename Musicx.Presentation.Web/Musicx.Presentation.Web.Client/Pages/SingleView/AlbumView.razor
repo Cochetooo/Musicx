@@ -18,12 +18,12 @@
 else
 {
     <MudCard>
-        <MudCardHeader>
+        <MudCardHeader Class="pa-8">
             <MudStack>
-                <MudText Typo="Typo.h4" Class="montserrat" Style="font-weight: 800">@_album.Name</MudText>
+                <MudText Typo="Typo.h3" Class="montserrat" Style="font-weight: 800">@_album.Name</MudText>
                 @if (_album.Artist is not null)
                 {
-                    <MudLink Typo="Typo.h6" Href="@($"/Artist/{_album.Artist.Id}")">
+                    <MudLink Typo="Typo.h6" Class="ml-5" Href="@($"/Artist/{_album.Artist.Id}")">
                         @_album.Artist.Name
                     </MudLink>
                 }
@@ -41,14 +41,15 @@ else
             }
             
             <MudGrid>
-                <MudItem xs="12" md="3" Class="pa-3">
-                    <MudImage Src="@_album.ArtworkUrl" Elevation="25"
+                <MudItem xs="12" md="3" Class="pa-6">
+                    <MudImage Src="@_album.ArtworkUrl" Elevation="8"
+                              Class="rounded-lg"
                               Style="width: 100%; height: auto;" />
                 </MudItem>
-                <MudItem xs="12" md="9" Class="pa-3">
-                    <MudCard>
+                <MudItem xs="12" md="9" Class="pa-6">
+                    <MudCard Elevation="8" Class="rounded-lg">
                         <MudCardHeader>
-                            <MudText Typo="Typo.h5">Details</MudText>
+                            <MudText Typo="Typo.h5" Class="montserrat ml-3">Details</MudText>
                         </MudCardHeader>
                         <MudCardContent>
                             <MudList Dense T="RenderFragment">
@@ -76,11 +77,19 @@ else
                                     </Descriptor>
                                 }
                                 
-                                <MudSwitch @bind-Value="_showDetailedView"
-                                           Color="Color.Primary"
-                                           Label="Show more details"
-                                           ThumbIcon="@Icons.Material.Filled.ViewWeek"
-                                           Class="my-2" />
+                                @if (null != _album.BeginRecordDate && null != _album.EndRecordDate)
+                                {
+                                    <Descriptor>
+                                        <DescriptorLabel>
+                                            Recording Dates
+                                        </DescriptorLabel>
+                                        <DescriptorValue>
+                                            
+                                        </DescriptorValue>
+                                    </Descriptor>
+                                }
+                                
+                                <MudDivider Class="my-5" />
                                 
                                 <Descriptor>
                                     <DescriptorLabel>
@@ -180,6 +189,12 @@ else
                                     }
                                 </MudCollapse>
                             </MudList>
+                            
+                            <MudSwitch @bind-Value="_showDetailedView"
+                                       Color="Color.Primary"
+                                       Label="Show more details"
+                                       ThumbIcon="@Icons.Material.Filled.ViewWeek"
+                                       Class="my-2" />
                         </MudCardContent>
                     </MudCard>
                 </MudItem>

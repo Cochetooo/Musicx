@@ -7,14 +7,14 @@
     <MudLink Href="@($"/Genre/{Genre.Id}")">
         @if (Closable)
         {
-            <MudChip T="string" Icon="@GetChipIcon()" Style="@GetChipStyle(Genre)" Class="@GetChipClass()" OnClose="@OnClose">
-                @GetChipIcon() @Genre.Name
+            <MudChip T="string" Size="@Size" Icon="@GetChipIcon()" Style="@GetChipStyle(Genre)" Class="@GetChipClass()" OnClose="@OnClose">
+                @Genre.Name
             </MudChip>
         }
         else
         {
-            <MudChip T="string" Style="@GetChipStyle(Genre)" Class="@GetChipClass()">
-                @GetChipIcon() @Genre.Name
+            <MudChip T="string" Size="@Size" Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" Class="@GetChipClass()">
+                @Genre.Name
             </MudChip>
         }
     </MudLink>
@@ -23,14 +23,14 @@ else
 {
     @if (Closable)
     {
-        <MudChip T="string" Style="@GetChipStyle(Genre)" Class="@GetChipClass()" OnClose="@OnClose">
-            @GetChipIcon() @Genre.Name
+        <MudChip T="string" Size="@Size" Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" Class="@GetChipClass()" OnClose="@OnClose">
+            @Genre.Name
         </MudChip>
     }
     else
     {
-        <MudChip T="string" Style="@GetChipStyle(Genre)" Class="@GetChipClass()">
-            @GetChipIcon() @Genre.Name
+        <MudChip T="string" Size="@Size" Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" Class="@GetChipClass()">
+            @Genre.Name
         </MudChip>
     }
 }
@@ -45,6 +45,7 @@ else
     [Parameter] public bool Influence { get; set; }
     [Parameter] public bool Closable { get; set; }
     [Parameter] public bool Clickable { get; set; }
+    [Parameter] public Size Size { get; set; } = Size.Medium;
     [Parameter] public EventCallback OnClose { get; set; }
 
     private string GetChipStyle(OutGenre genre)
@@ -84,6 +85,7 @@ else
     private string GetChipIcon()
     => Genre.Type switch
         {
+            GenreType.Basic => Icons.Material.Filled.Label,
             GenreType.Scene => Icons.Material.Filled.Language,
             GenreType.Movement => Icons.Material.Filled.Album,
             GenreType.Descriptor => Icons.Material.Filled.TheaterComedy,
