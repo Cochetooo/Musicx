@@ -5,17 +5,17 @@
     @switch (Album.ReleaseType)
     {
         case ReleaseType.Ep:
-            <MudText Style="font-style: italic;" Color="Color.Secondary">
+            <MudText Class="quick-album-name" Style="font-style: italic;" Color="Color.Secondary">
                 @Album.Name
             </MudText>
             break;
         case ReleaseType.Lp:
-            <MudText Style="font-weight: bold;" Color="Color.Primary">
+            <MudText Class="quick-album-name" Style="font-weight: bold;" Color="Color.Primary">
                 @Album.Name
             </MudText>
             break;
         case ReleaseType.Single:
-            <MudText Color="Color.Secondary">
+            <MudText Class="quick-album-name" Color="Color.Secondary">
                 @Album.Name
             </MudText>
             break;
@@ -30,7 +30,7 @@
         case ReleaseType.VideoClip:
         case ReleaseType.Compilation:
         case null:
-            <MudText Color="Color.Tertiary">
+            <MudText Class="quick-album-name" Color="Color.Tertiary">
                 @Album.Name
             </MudText>
             break;
@@ -52,3 +52,14 @@
     [Parameter, EditorRequired] public OutAlbum Album { get; set; } = null!;
 
 }
+
+<style>
+    .quick-album-name {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
+    }
+</style>

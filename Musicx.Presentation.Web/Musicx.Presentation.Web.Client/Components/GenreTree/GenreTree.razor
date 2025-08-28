@@ -6,8 +6,8 @@
     @foreach (var genre in RootGenres)
     {
         @if (TypeFilter is null || 
-             ((TypeFilter == GenreType.Descriptor || TypeFilter == GenreType.Scene)
-            && (genre.Type == GenreType.Basic || genre.Type == GenreType.Descriptor || genre.Type == GenreType.Scene))
+             ((TypeFilter == GenreType.Movement || TypeFilter == GenreType.Scene)
+            && (genre.Type == GenreType.Basic || genre.Type == GenreType.Movement || genre.Type == GenreType.Scene))
             || TypeFilter == genre.Type
         )
         {
