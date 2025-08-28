@@ -8,83 +8,103 @@ WITH raw_genres AS (
     WHERE ag.album_genre_album_id = albumId
 ),
 
- split_genres AS (
-     SELECT
-         regexp_replace(regexp_replace(genre_name, '-', ' '), '\s+(\S+)$', '') AS prefix_raw, -- préfixe brut (avec tiret → espace)
-         regexp_replace(regexp_replace(genre_name, '-', ' '), '^.*\s+', '') AS suffix,       -- suffix = dernier mot
-         genre_name
-     FROM raw_genres
- ),
+-- Normalisation du nom (tirets -> espaces, qu'on réutilise partout)
+normed AS (
+ SELECT regexp_replace(genre_name, '-', ' ', 'g') AS norm_name, genre_color
+ FROM raw_genres
+),
 
- abbreviated AS (
-     SELECT
-         -- on abrège uniquement le premier mot du préfixe
-         CASE
-             WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'progressive' THEN 'Prog'
-             WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'alternative' THEN 'Alt.'
-             WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'gothic' THEN 'Goth'
-             WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'melodic' THEN 'Melo'
-             WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'symphonic' THEN 'Sympho'
-             WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'electronic' THEN 'Electro.'
-             WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'industrial' THEN 'Indus'
-             WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'psychedelic' THEN 'Psych.'
-             ELSE split_part(prefix_raw, ' ', 1)
-         END
-         || substr(prefix_raw, length(split_part(prefix_raw, ' ', 1)) + 1) AS abbr_prefix, -- rajoute le reste
-         suffix
-     FROM split_genres
- ),
+-- ✅ Fix: si un seul mot, prefix_raw = '' et suffix = ce mot
+split_genres AS (
+ SELECT
+     CASE
+         WHEN norm_name LIKE '% %'
+             THEN regexp_replace(norm_name, '\s+\S+$', '')
+         ELSE ''                       -- <-- pas de préfixe pour un seul mot
+         END AS prefix_raw,
+     CASE
+         WHEN norm_name LIKE '% %'
+             THEN regexp_replace(norm_name, '^.*\s+', '')
+         ELSE norm_name                -- <-- tout le mot = suffix
+         END AS suffix,
+     norm_name
+ FROM normed
+),
 
- -- Étape 1 : regroupement par préfixe => Alt. Rock/Metal
- grouped_by_prefix AS (
-     SELECT
-         abbr_prefix,
-         string_agg(DISTINCT suffix, '/' ORDER BY suffix) AS joined_suffixes
-     FROM abbreviated
-     GROUP BY abbr_prefix
- ),
+abbreviated AS (
+ SELECT
+     -- On abrège uniquement le 1er mot du préfixe (s’il existe)
+     CASE
+         WHEN prefix_raw = '' THEN ''  -- ✅ pas de préfixe => rien à abréger
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'progressive' THEN 'Prog'     || substr(prefix_raw, length('progressive') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'alternative' THEN 'Alt.'     || substr(prefix_raw, length('alternative') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'gothic'      THEN 'Goth'     || substr(prefix_raw, length('gothic') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'melodic'     THEN 'Melo'     || substr(prefix_raw, length('melodic') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'symphonic'   THEN 'Sympho'   || substr(prefix_raw, length('symphonic') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'electronic'  THEN 'Electro.' || substr(prefix_raw, length('electronic') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'industrial'  THEN 'Indus'    || substr(prefix_raw, length('industrial') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'psychedelic' THEN 'Psych.'   || substr(prefix_raw, length('psychedelic') + 1)
+         ELSE split_part(prefix_raw, ' ', 1) || substr(prefix_raw, length(split_part(prefix_raw, ' ', 1)) + 1)
+         END AS abbr_prefix,
+     suffix
+ FROM split_genres
+),
 
- format_by_prefix AS (
-     SELECT
-         CASE
-             WHEN joined_suffixes IS NULL THEN abbr_prefix
-             ELSE abbr_prefix || ' ' || joined_suffixes
-             END AS simplified,
-         joined_suffixes,
-         abbr_prefix
-     FROM grouped_by_prefix
- ),
+-- Étape 1 : regroupement par préfixe => Alt. Rock/Metal
+grouped_by_prefix AS (
+ SELECT
+     abbr_prefix,
+     string_agg(DISTINCT suffix, '/' ORDER BY suffix) AS joined_suffixes
+ FROM abbreviated
+ GROUP BY abbr_prefix
+),
 
--- Étape 2 : regroupement par suffixe => Alt. / Prog Metal
- split_blocks AS (
-     SELECT
-         CASE
-             WHEN simplified NOT LIKE '% %' THEN ''  -- un seul mot => pas de prefix
-             ELSE regexp_replace(simplified, '\s+(\S+)$', '')
-             END AS prefix_block,
-         CASE
-             WHEN simplified NOT LIKE '% %' THEN simplified  -- un seul mot => tout est suffix
-             ELSE regexp_replace(simplified, '^.*\s+', '')
-             END AS suffix_block
-     FROM format_by_prefix
- ),
+-- ✅ Fix: ne pas insérer d’espace si abbr_prefix = ''
+format_by_prefix AS (
+ SELECT
+     CASE
+         WHEN abbr_prefix = '' THEN joined_suffixes
+         WHEN joined_suffixes IS NULL OR joined_suffixes = '' THEN abbr_prefix
+         ELSE abbr_prefix || ' ' || joined_suffixes
+         END AS simplified,
+     joined_suffixes,
+     abbr_prefix
+ FROM grouped_by_prefix
+),
 
- grouped_by_suffix AS (
-     SELECT
-         suffix_block,
-         string_agg(DISTINCT prefix_block, ' / ' ORDER BY prefix_block) AS joined_prefixes
-     FROM split_blocks
-     GROUP BY suffix_block
- ),
+-- Étape 2 : Alt. / Prog Metal
+split_blocks AS (
+ SELECT
+     CASE
+         WHEN simplified IS NULL OR simplified NOT LIKE '% %'
+             THEN ''                                  -- un seul bloc => pas de préfixe
+         ELSE regexp_replace(simplified, '\s+(\S+)$', '')
+         END AS prefix_block,
+     CASE
+         WHEN simplified IS NULL OR simplified NOT LIKE '% %'
+             THEN COALESCE(simplified, '')            -- tout est suffix
+         ELSE regexp_replace(simplified, '^.*\s+', '')
+         END AS suffix_block
+ FROM format_by_prefix
+),
 
- final_format AS (
-     SELECT
-         CASE
-             WHEN joined_prefixes = '' THEN suffix_block
-             ELSE joined_prefixes || ' ' || suffix_block
-             END AS simplified
-     FROM grouped_by_suffix
- ),
+-- ✅ Fix: ignorer les préfixes vides dans l’agrégation
+grouped_by_suffix AS (
+ SELECT
+     suffix_block,
+     string_agg(DISTINCT NULLIF(prefix_block, ''), ' / ' ORDER BY NULLIF(prefix_block, '')) AS joined_prefixes
+ FROM split_blocks
+ GROUP BY suffix_block
+),
+
+final_format AS (
+ SELECT
+     CASE
+         WHEN COALESCE(joined_prefixes, '') = '' THEN suffix_block
+         ELSE joined_prefixes || ' ' || suffix_block
+         END AS simplified
+ FROM grouped_by_suffix
+),
     
 final_gradient AS (
     SELECT
@@ -93,10 +113,10 @@ final_gradient AS (
 )
 
 UPDATE albums
-SET 
+SET
     album_simplified_genre_name = (
-        SELECT regexp_replace(string_agg(simplified, ' / ' ORDER BY simplified),
-                              '\b(\w+)\s+\1\b', '\1', 'gi')
+        -- ✅ Distinct + trim par sûreté
+        SELECT string_agg(DISTINCT btrim(simplified), ' / ' ORDER BY btrim(simplified))
         FROM final_format
     ),
     album_simplified_genre_color = (
