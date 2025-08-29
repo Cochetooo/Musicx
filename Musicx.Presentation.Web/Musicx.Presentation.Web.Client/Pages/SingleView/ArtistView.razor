@@ -3,9 +3,11 @@
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
 @using Musicx.Contracts.Dto.Enums
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
+@using Musicx.Presentation.Web.Client.Components.GenreDetails
 
 @inject IGetUseCase<OutArtist> UcGet
 @inject IGetAlbumByArtistUseCase UcGetAlbums
@@ -111,13 +113,27 @@ else
                                 if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
                                         out var value) && value)
                                 {
-                                    <MudLink Href="@($"/Album/{album.Id}")" Class="album-tile pa-1" Style="width: 150px">
-                                        <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
-                                                  Width="128" Height="128"
-                                                  Class="rounded-lg"
-                                                  Elevation="8"/>
-                                        <AlbumListQuickInfo Album="album"/>
-                                    </MudLink>
+                                    <div style="width: 150px;" Class="album-tile pa-1">
+                                        <MudTooltip Duration="750"
+                                                    Delay="1000"
+                                                    Placement="Placement.Top"
+                                                    Arrow>
+                                            <ChildContent>
+                                                <MudLink Href="@($"/Album/{album.Id}")">
+                                                    <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
+                                                              Width="128" Height="128"
+                                                              Class="rounded-lg"
+                                                              Elevation="8"/>
+                                                    <AlbumListQuickInfo Album="album"/>
+                                                </MudLink>
+                                            </ChildContent>
+                                            <TooltipContent>
+                                                <MudText Typo="Typo.h6">@album.Name</MudText>
+                                            
+                                                <GenreDetails Album="@album" DetailedView />
+                                            </TooltipContent>
+                                        </MudTooltip>
+                                    </div>
                                 }
                             }
                         </Div>

@@ -51,7 +51,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<OutAlbum>> FindById([FromRoute] long id, [FromQuery] string query)
+    public async Task<ActionResult<OutAlbum>> FindById([FromRoute] long id, [FromQuery] string query = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND BY ID albums ({id} & includes = {query})");
 

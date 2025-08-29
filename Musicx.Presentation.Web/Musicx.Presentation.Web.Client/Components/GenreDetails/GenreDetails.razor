@@ -1,0 +1,110 @@
+﻿@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Enums
+@inject IGetUseCase<OutAlbum> UcGetAlbum
+
+@if (_isLoading)
+{
+    <MudProgressCircular Indeterminate />
+}
+else
+{
+    <Descriptor>
+        <DescriptorLabel>
+            Genres
+        </DescriptorLabel>
+        <DescriptorValue>
+            <div class="animation-flip-container">
+                <div class="animation-flip-card @(DetailedView ? "animation-flipped-back" : "animation-flipped-front")">
+                    @if (!DetailedView && Album.SimplifiedGenreName is not null && Album.SimplifiedGenreColor is not null)
+                    {
+                        <MudChip Class="montserrat py-1 px-3 ma-1"
+                                 T="string?"
+                                 Style="@GetSimplifiedGenreStyle(Album)">
+                            @Album.SimplifiedGenreName
+                        </MudChip>
+                    }
+                    else if (DetailedView && Album.PrimaryGenres is not null && 0 < Album.PrimaryGenres.Count)
+                    {
+                        <Div class="d-flex flex-wrap gap-2">
+                            @foreach (var genre in Album.PrimaryGenres.Where(g => g.Type == GenreType.Basic))
+                            {
+                                <GenreBadge Genre="@genre" Clickable/>
+                            }
+                        </Div>
+                    }
+                </div>
+            </div>
+        </DescriptorValue>
+    </Descriptor>
+
+    <MudCollapse Expanded="@DetailedView">
+        @if (Album.InfluenceGenres is not null && 0 < Album.InfluenceGenres.Count)
+        {
+            <Descriptor>
+                <DescriptorLabel>
+                    Influences
+                </DescriptorLabel>
+                <DescriptorValue>
+                    <Div class="d-flex flex-wrap gap-2">
+                        @foreach (var genre in Album.InfluenceGenres)
+                        {
+                            <GenreBadge Genre="@genre" Influence Clickable />
+                        }
+                    </Div>
+                </DescriptorValue>
+            </Descriptor>
+        }
+        
+        @if (Album.PrimaryGenres is not null && Album.PrimaryGenres.Any(g => g.Type == GenreType.Scene))
+        {
+            <Descriptor>
+                <DescriptorLabel>
+                    Scenes
+                </DescriptorLabel>
+                <DescriptorValue>
+                    <Div class="d-flex flex-wrap gap-2">
+                        @foreach (var scene in Album.PrimaryGenres.Where(g => g.Type == GenreType.Scene))
+                        {
+                            <GenreBadge Genre="@scene" Clickable />
+                        }
+                    </Div>
+                </DescriptorValue>
+            </Descriptor>
+        }
+        
+        @if (Album.PrimaryGenres is not null && Album.PrimaryGenres.Any(g => g.Type == GenreType.Movement))
+        {
+            <Descriptor>
+                <DescriptorLabel>
+                    Movements
+                </DescriptorLabel>
+                <DescriptorValue>
+                    <Div class="d-flex flex-wrap gap-2">
+                        @foreach (var movement in Album.PrimaryGenres.Where(g => g.Type == GenreType.Movement))
+                        {
+                            <GenreBadge Genre="@movement" Clickable />
+                        }
+                    </Div>
+                </DescriptorValue>
+            </Descriptor>
+        }
+
+        @if (Album.PrimaryGenres is not null && Album.PrimaryGenres.Any(g => g.Type == GenreType.Descriptor))
+        {
+            <Descriptor>
+                <DescriptorLabel>
+                    Descriptors
+                </DescriptorLabel>
+                <DescriptorValue>
+                    <Div class="d-flex flex-wrap gap-2">
+                        @foreach (var descriptor in Album.PrimaryGenres.Where(g => g.Type == GenreType.Descriptor))
+                        {
+                            <GenreBadge Genre="@descriptor" />
+                        }
+                    </Div>
+                </DescriptorValue>
+            </Descriptor>
+        }
+    </MudCollapse>
+}

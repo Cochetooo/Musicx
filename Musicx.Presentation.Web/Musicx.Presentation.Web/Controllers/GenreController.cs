@@ -51,7 +51,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<OutGenre>> FindById([FromRoute] long id, [FromQuery] string query)
+    public async Task<ActionResult<OutGenre>> FindById([FromRoute] long id, [FromQuery] string query = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND BY ID genres ({id} & includes = {query})");
 

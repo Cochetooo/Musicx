@@ -4,6 +4,7 @@
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
+@using Musicx.Presentation.Web.Client.Components.GenreDetails
 
 @inject IGetUseCase<OutAlbum> UcGet
 @inject IFindInUseCase<OutGenre> UcFindInGenres
@@ -91,103 +92,7 @@ else
                                 
                                 <MudDivider Class="my-5" />
                                 
-                                <Descriptor>
-                                    <DescriptorLabel>
-                                        Genres
-                                    </DescriptorLabel>
-                                    <DescriptorValue>
-                                        <div class="animation-flip-container">
-                                            <div class="animation-flip-card @(_showDetailedView ? "animation-flipped-back" : "animation-flipped-front")">
-                                                @if (!_showDetailedView && _album.SimplifiedGenreName is not null && _album.SimplifiedGenreColor is not null)
-                                                {
-                                                    <MudChip Class="montserrat py-1 px-3 ma-1"
-                                                             Style="@GetSimplifiedGenreStyle(_album)">
-                                                        @_album.SimplifiedGenreName
-                                                    </MudChip>
-                                                }
-                                                else if (_showDetailedView && _album.PrimaryGenres is not null && 0 < _album.PrimaryGenres.Count)
-                                                {
-                                                    <Div class="d-flex flex-wrap gap-2">
-                                                        @foreach (var genre in _album.PrimaryGenres.Where(g => g.Type == GenreType.Basic))
-                                                        {
-                                                            <GenreBadge Genre="@genre" Clickable/>
-                                                        }
-                                                    </Div>
-                                                }
-                                            </div>
-                                        </div>
-                                    </DescriptorValue>
-                                </Descriptor>
-                                
-                                <MudCollapse Expanded="@_showDetailedView">
-                                    @if (_album.InfluenceGenres is not null && 0 < _album.InfluenceGenres.Count)
-                                    {
-                                        <Descriptor>
-                                            <DescriptorLabel>
-                                                Influences
-                                            </DescriptorLabel>
-                                            <DescriptorValue>
-                                                <Div class="d-flex flex-wrap gap-2">
-                                                    @foreach (var genre in _album.InfluenceGenres)
-                                                    {
-                                                        <GenreBadge Genre="@genre" Influence Clickable />
-                                                    }
-                                                </Div>
-                                            </DescriptorValue>
-                                        </Descriptor>
-                                    }
-                                    
-                                    @if (_album.PrimaryGenres is not null && _album.PrimaryGenres.Any(g => g.Type == GenreType.Scene))
-                                    {
-                                        <Descriptor>
-                                            <DescriptorLabel>
-                                                Scenes
-                                            </DescriptorLabel>
-                                            <DescriptorValue>
-                                                <Div class="d-flex flex-wrap gap-2">
-                                                    @foreach (var scene in _album.PrimaryGenres.Where(g => g.Type == GenreType.Scene))
-                                                    {
-                                                        <GenreBadge Genre="@scene" Clickable />
-                                                    }
-                                                </Div>
-                                            </DescriptorValue>
-                                        </Descriptor>
-                                    }
-                                    
-                                    @if (_album.PrimaryGenres is not null && _album.PrimaryGenres.Any(g => g.Type == GenreType.Movement))
-                                    {
-                                        <Descriptor>
-                                            <DescriptorLabel>
-                                                Movements
-                                            </DescriptorLabel>
-                                            <DescriptorValue>
-                                                <Div class="d-flex flex-wrap gap-2">
-                                                    @foreach (var movement in _album.PrimaryGenres.Where(g => g.Type == GenreType.Movement))
-                                                    {
-                                                        <GenreBadge Genre="@movement" Clickable />
-                                                    }
-                                                </Div>
-                                            </DescriptorValue>
-                                        </Descriptor>
-                                    }
-
-                                    @if (_album.PrimaryGenres is not null && _album.PrimaryGenres.Any(g => g.Type == GenreType.Descriptor))
-                                    {
-                                        <Descriptor>
-                                            <DescriptorLabel>
-                                                Descriptors
-                                            </DescriptorLabel>
-                                            <DescriptorValue>
-                                                <Div class="d-flex flex-wrap gap-2">
-                                                    @foreach (var descriptor in _album.PrimaryGenres.Where(g => g.Type == GenreType.Descriptor))
-                                                    {
-                                                        <GenreBadge Genre="@descriptor" />
-                                                    }
-                                                </Div>
-                                            </DescriptorValue>
-                                        </Descriptor>
-                                    }
-                                </MudCollapse>
+                                <GenreDetails Album="@_album" @bind-DetailedView="@_showDetailedView" />
                             </MudList>
                             
                             <MudSwitch @bind-Value="_showDetailedView"
