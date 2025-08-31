@@ -71,20 +71,6 @@ public partial class AlbumView
         
         _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
         await InvokeAsync(StateHasChanged);
-
-        if (_album.PrimaryGenres is not null && 0 < _album.PrimaryGenres.Count)
-        {
-            _album.PrimaryGenres = await UcFindInGenres.ExecuteAsync(_album.PrimaryGenres.Select(g => g.Id).ToList());
-            _logger.LogInformation($"🏷️ Primary genres loaded for {_album.Name} ({_album.Id})");
-            await InvokeAsync(StateHasChanged);
-        }
-
-        if (_album.InfluenceGenres is not null && 0 < _album.InfluenceGenres.Count)
-        {
-            _album.InfluenceGenres = await UcFindInGenres.ExecuteAsync(_album.InfluenceGenres.Select(g => g.Id).ToList());
-            _logger.LogInformation($"🏷️ Influence genres loaded for {_album.Name} ({_album.Id})");
-            await InvokeAsync(StateHasChanged);
-        }
     }
 
     private async Task EditTrackListShowModal()
