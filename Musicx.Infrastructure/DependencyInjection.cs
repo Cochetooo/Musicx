@@ -128,6 +128,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(IDeleteUseCase<>), typeof(UcDelete<>));
         services.AddScoped(typeof(IListUseCase<>), typeof(UcList<>));
         services.AddScoped(typeof(IFindInUseCase<>), typeof(UcFindIn<>));
+        services.AddScoped(typeof(ICountUseCase<>), typeof(UcCount<>));
         
         services.AddScoped<IGetAlbumByArtistUseCase, UcGetAlbumByArtist>();
         services.AddScoped<IGetAlbumByGenreUseCase, UcGetAlbumByGenre>();

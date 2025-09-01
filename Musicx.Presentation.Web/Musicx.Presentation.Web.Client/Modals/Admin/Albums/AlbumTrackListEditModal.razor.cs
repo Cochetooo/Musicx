@@ -16,6 +16,8 @@ public partial class AlbumTrackListEditModal
     private OutAlbum? _album;
     private readonly List<InSong> _songs = [];
 
+    private TimeSpan? _timeSpanDuration;
+
     private MudDialog _modalRef = null!;
 
     protected override void OnAfterRender(bool firstRender)
@@ -26,6 +28,8 @@ public partial class AlbumTrackListEditModal
         }
 
         _logger = LoggerProvider.CreateLogger(nameof(AlbumTrackListEditModal));
+
+        AddRow();
     }
 
     public async Task Show(OutAlbum album, List<OutSong>? songs = null)
@@ -50,8 +54,13 @@ public partial class AlbumTrackListEditModal
         await _modalRef.CloseAsync();
     }
 
-    private void DeleteRow(InSong song)
+    private void DeleteRow(InSong? song)
     {
+        if (song is null)
+        {
+            return;
+        }
+        
         _songs.Remove(song);
     }
 

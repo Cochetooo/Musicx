@@ -1,0 +1,74 @@
+﻿@using System.Text.RegularExpressions
+<MudTextField 
+    @bind-Value="_text"
+    Label="@Label"
+    Placeholder="mm:ss"
+    Immediate
+    OnInput="@OnInputHandler"
+    Error="@_hasError"
+    ErrorText="Expected format is mm:ss"
+/>
+
+@code {
+
+    [Parameter] public TimeSpan? Value { get; set; }
+    [Parameter] public EventCallback<TimeSpan?> ValueChanged { get; set; }
+    [Parameter] public string Label { get; set; } = "Duration";
+
+    private string _text = string.Empty;
+    private bool _hasError;
+
+    protected override void OnParametersSet()
+    {
+        if (Value.HasValue)
+        {
+            if (Value.Value.TotalHours >= 1)
+            {
+                _text = $"{(int)Value.Value.TotalHours:D2}:{Value.Value.Minutes:D2}:{Value.Value.Seconds:D2}";
+            }
+            else
+            {
+                _text = $"{Value.Value.Minutes:D2}:{Value.Value.Seconds:D2}";
+            }
+        }
+    }
+
+    private async Task OnInputHandler(ChangeEventArgs args)
+    {
+        var raw = new string(args.Value?.ToString()?.Where(char.IsDigit).ToArray()
+                             ?? []);
+
+        string formatted;
+
+        if (raw.Length <= 2)
+        {
+            formatted = "00:" + raw.PadLeft(2, '0');
+        }
+        else if (raw.Length <= 4)
+        {
+            formatted = raw.Substring(0, raw.Length - 2).PadLeft(2, '0')
+                        + ":" + raw[^2..];
+        }
+        else
+        {
+            var h = raw.Substring(0, raw.Length - 4);
+            var m = raw.Substring(raw.Length - 4, 2);
+            var s = raw[^2..];
+            formatted = h.PadLeft(2, '0') + ":" + m + ":" + s;
+        }
+
+        _text = formatted;
+
+        if (TimeSpan.TryParse(formatted, out var ts))
+        {
+            _hasError = false;
+            await ValueChanged.InvokeAsync(ts);
+        }
+        else
+        {
+            _hasError = true;
+        }
+    }
+
+}
+                

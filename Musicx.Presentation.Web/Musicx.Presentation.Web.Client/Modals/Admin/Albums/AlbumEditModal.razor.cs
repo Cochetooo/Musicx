@@ -78,9 +78,7 @@ public partial class AlbumEditModal
         if (null != album)
         {
             _album = album.ToRaw();
-            await _nameTextEdit.SetText(album.Name);
             
-            //_nameTextEdit.Revalidate();
             _primaryGenres = album.PrimaryGenres?.ToList() ?? [];
             _influenceGenres = album.InfluenceGenres?.ToList() ?? [];
             
@@ -90,6 +88,8 @@ public partial class AlbumEditModal
             );
             
             await InvokeAsync(StateHasChanged);
+            
+            await _nameTextEdit.SetText(album.Name);
         }
     }
     

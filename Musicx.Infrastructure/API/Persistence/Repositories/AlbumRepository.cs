@@ -211,7 +211,7 @@ internal sealed class AlbumRepository(
             .ToList();
     }
 
-    public async Task<int> GetCountAsync()
+    public async Task<long> GetCountAsync()
         => await connection.Count("albums");
 
     public async Task<long> SaveAsync(InAlbum entity)

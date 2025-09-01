@@ -123,7 +123,7 @@ internal sealed class GenreRepository(
             .ToList();
     }
 
-    public async Task<int> GetCountAsync()
+    public async Task<long> GetCountAsync()
         => await connection.Count("genres");
 
     public async Task<long> SaveAsync(InGenre entity)

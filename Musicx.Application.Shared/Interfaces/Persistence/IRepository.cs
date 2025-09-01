@@ -64,7 +64,7 @@ public interface IRepository<TIn, TOut>
     /// Get the number of entities in this table.
     /// </summary>
     /// <since>0.6.0</since>
-    Task<int> GetCountAsync();
+    Task<long> GetCountAsync();
     
     /// <summary>
     /// Create or update an entity depending on the ID being set or not.

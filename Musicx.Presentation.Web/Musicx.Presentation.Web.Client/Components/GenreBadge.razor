@@ -7,13 +7,17 @@
     <MudLink Href="@($"/Genre/{Genre.Id}")">
         @if (Closable)
         {
-            <MudChip T="string" Size="@Size" Icon="@GetChipIcon()" Style="@GetChipStyle(Genre)" Class="@GetChipClass()" OnClose="@OnClose">
+            <MudChip T="string" Size="@Size" 
+                     Icon="@GetChipIcon()" Style="@GetChipStyle(Genre)" 
+                     Class="@GetChipClass()" OnClose="@OnClose">
                 @Genre.Name
             </MudChip>
         }
         else
         {
-            <MudChip T="string" Size="@Size" Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" Class="@GetChipClass()">
+            <MudChip T="string" Size="@Size" 
+                     Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
+                     Class="@GetChipClass()">
                 @Genre.Name
             </MudChip>
         }
@@ -23,13 +27,17 @@ else
 {
     @if (Closable)
     {
-        <MudChip T="string" Size="@Size" Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" Class="@GetChipClass()" OnClose="@OnClose">
+        <MudChip T="string" Size="@Size" 
+                 Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
+                 Class="@GetChipClass()" OnClose="@OnClose">
             @Genre.Name
         </MudChip>
     }
     else
     {
-        <MudChip T="string" Size="@Size" Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" Class="@GetChipClass()">
+        <MudChip T="string" Size="@Size" 
+                 Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
+                 Class="@GetChipClass()">
             @Genre.Name
         </MudChip>
     }

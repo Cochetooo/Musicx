@@ -1,3 +1,14 @@
 ﻿@page "/"
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Responses
 
-<h2>Welcome to Musicx!</h2>
+@inject ICountUseCase<OutArtist> UcCountArtists
+@inject ICountUseCase<OutAlbum> UcCountAlbums
+@inject ICountUseCase<OutGenre> UcCountGenres
+
+<MudGrid Class="mt-5">
+    <MudItem xs="12" Style="justify-items: center;">
+        <MudText Typo="Typo.h2" Class="montserrat" Style="font-weight: 800;">Welcome to Musicx!</MudText>
+        <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-disabled)">Counting @_artistCount artists, @_albumCount albums & @_genreCount genres</MudText>
+    </MudItem>
+</MudGrid>

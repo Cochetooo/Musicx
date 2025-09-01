@@ -114,7 +114,7 @@ internal sealed class ArtistRepository(
             .ToList();
     }
 
-    public async Task<int> GetCountAsync()
+    public async Task<long> GetCountAsync()
         => await connection.Count("artists");
 
     public async Task<long> SaveAsync(InArtist entity)

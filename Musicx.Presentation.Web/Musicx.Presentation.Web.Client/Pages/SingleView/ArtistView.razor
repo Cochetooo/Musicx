@@ -128,9 +128,14 @@ else
                                                 </MudLink>
                                             </ChildContent>
                                             <TooltipContent>
-                                                <MudText Typo="Typo.h6">@album.Name</MudText>
+                                                <MudText Typo="Typo.h6" Class="montserrat">@album.Name</MudText>
+                                                
+                                                @if (album.OriginalReleaseDate is not null)
+                                                {
+                                                    <MudText Typo="Typo.caption">@album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")</MudText>
+                                                }
                                             
-                                                <GenreDetails Album="@album" DetailedView />
+                                                <GenreDetails Album="@album" Size="Size.Small" DetailedView />
                                             </TooltipContent>
                                         </MudTooltip>
                                     </div>

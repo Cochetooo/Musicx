@@ -134,7 +134,7 @@ internal sealed class SongRepository(
             .ToListAsync();*/
     }
 
-    public async Task<int> GetCountAsync()
+    public async Task<long> GetCountAsync()
     {
         return 1;
     }

@@ -20,6 +20,7 @@ else
                     {
                         <MudChip Class="montserrat py-1 px-3 ma-1"
                                  T="string?"
+                                 Size="@Size"
                                  Style="@GetSimplifiedGenreStyle(Album)">
                             @Album.SimplifiedGenreName
                         </MudChip>
@@ -29,7 +30,7 @@ else
                         <Div class="d-flex flex-wrap gap-2">
                             @foreach (var genre in Album.PrimaryGenres.Where(g => g.Type == GenreType.Basic))
                             {
-                                <GenreBadge Genre="@genre" Clickable/>
+                                <GenreBadge Genre="@genre" Size="@Size" Clickable/>
                             }
                         </Div>
                     }
@@ -49,7 +50,7 @@ else
                     <Div class="d-flex flex-wrap gap-2">
                         @foreach (var genre in Album.InfluenceGenres)
                         {
-                            <GenreBadge Genre="@genre" Influence Clickable />
+                            <GenreBadge Size="@Size" Genre="@genre" Influence Clickable />
                         }
                     </Div>
                 </DescriptorValue>
@@ -66,7 +67,7 @@ else
                     <Div class="d-flex flex-wrap gap-2">
                         @foreach (var scene in Album.PrimaryGenres.Where(g => g.Type == GenreType.Scene))
                         {
-                            <GenreBadge Genre="@scene" Clickable />
+                            <GenreBadge Size="@Size" Genre="@scene" Clickable />
                         }
                     </Div>
                 </DescriptorValue>
@@ -83,7 +84,7 @@ else
                     <Div class="d-flex flex-wrap gap-2">
                         @foreach (var movement in Album.PrimaryGenres.Where(g => g.Type == GenreType.Movement))
                         {
-                            <GenreBadge Genre="@movement" Clickable />
+                            <GenreBadge Size="@Size" Genre="@movement" Clickable />
                         }
                     </Div>
                 </DescriptorValue>
@@ -100,7 +101,7 @@ else
                     <Div class="d-flex flex-wrap gap-2">
                         @foreach (var descriptor in Album.PrimaryGenres.Where(g => g.Type == GenreType.Descriptor))
                         {
-                            <GenreBadge Genre="@descriptor" />
+                            <GenreBadge Size="@Size" Genre="@descriptor" />
                         }
                     </Div>
                 </DescriptorValue>
