@@ -27,7 +27,7 @@ else
                     }
                     else if (DetailedView && Album.PrimaryGenres is not null && 0 < Album.PrimaryGenres.Count)
                     {
-                        <Div class="d-flex flex-wrap gap-2">
+                        <Div class="d-flex flex-wrap gap-1 mt-1">
                             @foreach (var genre in Album.PrimaryGenres.Where(g => g.Type == GenreType.Basic))
                             {
                                 <GenreBadge Genre="@genre" Size="@Size" Clickable/>
@@ -47,7 +47,7 @@ else
                     Influences
                 </DescriptorLabel>
                 <DescriptorValue>
-                    <Div class="d-flex flex-wrap gap-2">
+                    <Div class="d-flex flex-wrap gap-1 mt-1">
                         @foreach (var genre in Album.InfluenceGenres)
                         {
                             <GenreBadge Size="@Size" Genre="@genre" Influence Clickable />
@@ -64,7 +64,7 @@ else
                     Scenes
                 </DescriptorLabel>
                 <DescriptorValue>
-                    <Div class="d-flex flex-wrap gap-2">
+                    <Div class="d-flex flex-wrap gap-1 mt-1">
                         @foreach (var scene in Album.PrimaryGenres.Where(g => g.Type == GenreType.Scene))
                         {
                             <GenreBadge Size="@Size" Genre="@scene" Clickable />
@@ -81,7 +81,7 @@ else
                     Movements
                 </DescriptorLabel>
                 <DescriptorValue>
-                    <Div class="d-flex flex-wrap gap-2">
+                    <Div class="d-flex flex-wrap gap-1 mt-1">
                         @foreach (var movement in Album.PrimaryGenres.Where(g => g.Type == GenreType.Movement))
                         {
                             <GenreBadge Size="@Size" Genre="@movement" Clickable />
@@ -98,7 +98,7 @@ else
                     Descriptors
                 </DescriptorLabel>
                 <DescriptorValue>
-                    <Div class="d-flex flex-wrap gap-2">
+                    <Div class="d-flex flex-wrap gap-1 mt-1">
                         @foreach (var descriptor in Album.PrimaryGenres.Where(g => g.Type == GenreType.Descriptor))
                         {
                             <GenreBadge Size="@Size" Genre="@descriptor" />

@@ -1,12 +1,5 @@
-@using System.Configuration
-@using System.Net.Mime
-@using Microsoft.EntityFrameworkCore.Diagnostics
-@using Musicx.Application.Shared.Utilities
 @using Musicx.Contracts.Dto.Requests
-@using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
-@using Musicx.Infrastructure.API.Persistence.Mappers
-@using SQLitePCL
 @using Musicx.Presentation.Web.Client.Components.Fields
 
 @inject ILoggerFactory LoggerProvider
@@ -18,11 +11,13 @@
     
     <DialogContent>
         <MudDataGrid T="InSong"
+                     Class="my-3"
+                     ReadOnly="@false"
                      Items="@_songs"
                      Dense
-                     Hover
-                     Elevation="8"
-                     EditMode="DataGridEditMode.Cell">
+                     Bordered
+                     EditMode="DataGridEditMode.Cell"
+                     EditTrigger="DataGridEditTrigger.OnRowClick">
             <Columns>
                 <TemplateColumn>
                     <CellTemplate>
@@ -36,16 +31,16 @@
                 
                 <PropertyColumn Property="x => x.TrackNumber" Title="#"/>
                 <PropertyColumn Property="x => x.Title" Title="Name"/>
-                <PropertyColumn Property="x => x.PrimaryGenreIds" Title="Genres">
+                <TemplateColumn Title="Genres">
                     <EditTemplate>
 
                     </EditTemplate>
-                </PropertyColumn>
-                <PropertyColumn Property="x => x.InfluenceGenreIds" Title="Influences">
+                </TemplateColumn>
+                <TemplateColumn Title="Influences">
                     <EditTemplate>
 
                     </EditTemplate>
-                </PropertyColumn>
+                </TemplateColumn>
                 <PropertyColumn Property="x => x.Type">
                     <EditTemplate>
                         <MudSelect T="SongType?" @bind-Value="context.Item.Type">
