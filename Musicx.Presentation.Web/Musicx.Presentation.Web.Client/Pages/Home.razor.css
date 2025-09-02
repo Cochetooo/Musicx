@@ -1,0 +1,49 @@
+﻿.home-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modern-carousel {
+    margin-top: 1.5rem;
+    border-radius: 1rem;
+}
+
+.carousel-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.25rem;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.carousel-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+}
+
+/* Bullets modernisés */
+.mud-carousel-bullets .mud-carousel-bullet {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    margin: 0 4px;
+    transition: all 0.3s ease;
+}
+.mud-carousel-bullets .mud-carousel-bullet-active {
+    background: #a855f7; /* violet moderne */
+    transform: scale(1.2);
+}

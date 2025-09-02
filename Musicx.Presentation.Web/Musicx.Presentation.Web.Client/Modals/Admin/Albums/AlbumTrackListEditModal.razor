@@ -20,27 +20,31 @@
                      EditTrigger="DataGridEditTrigger.OnRowClick">
             <Columns>
                 <TemplateColumn>
-                    <CellTemplate>
+                    <EditTemplate>
                         <MudIconButton 
                             Color="Color.Error"
                             Icon="@Icons.Material.Filled.Remove"
                             OnClick="@(() => DeleteRow(context.Item))"
                             />
-                    </CellTemplate>
+                    </EditTemplate>
                 </TemplateColumn>
                 
                 <PropertyColumn Property="x => x.TrackNumber" Title="#"/>
+                
                 <PropertyColumn Property="x => x.Title" Title="Name"/>
+                
                 <TemplateColumn Title="Genres">
                     <EditTemplate>
 
                     </EditTemplate>
                 </TemplateColumn>
+                
                 <TemplateColumn Title="Influences">
                     <EditTemplate>
 
                     </EditTemplate>
                 </TemplateColumn>
+                
                 <PropertyColumn Property="x => x.Type">
                     <EditTemplate>
                         <MudSelect T="SongType?" @bind-Value="context.Item.Type">
@@ -51,6 +55,7 @@
                         </MudSelect>
                     </EditTemplate>
                 </PropertyColumn>
+                
                 <PropertyColumn Property="x => x.Duration" Title="Duration">
                     <EditTemplate>
                         <CstDurationField @bind-Value="_timeSpanDuration"/>

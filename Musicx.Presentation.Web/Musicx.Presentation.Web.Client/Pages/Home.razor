@@ -6,9 +6,51 @@
 @inject ICountUseCase<OutAlbum> UcCountAlbums
 @inject ICountUseCase<OutGenre> UcCountGenres
 
-<MudGrid Class="mt-5">
-    <MudItem xs="12" Style="justify-items: center;">
-        <MudText Typo="Typo.h2" Class="montserrat" Style="font-weight: 800;">Welcome to Musicx!</MudText>
-        <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-disabled)">Counting @_artistCount artists, @_albumCount albums & @_genreCount genres</MudText>
+<MudGrid Class="home-container">
+    <MudItem xs="12" Class="flex-center">
+        <MudCard Class="glass-card pa-6" Style="max-width: 950px; width: 90%; text-align: center;">
+            <MudText Typo="Typo.h1" Class="montserrat" Style="font-weight: 800;">
+                Welcome to Musicx!
+            </MudText>
+            <MudText Typo="Typo.body1" Class="mb-4" Style="color: var(--mud-palette-text-disabled)">
+                Counting @_artistCount artists, @_albumCount albums & @_genreCount genres
+            </MudText>
+            
+            <MudCarousel AutoCycle AutoCycleTime="TimeSpan.FromSeconds(5)"
+                         TData="RenderFragment" Style="height: 150px;"
+                         ShowArrows="@false" ShowBullets>
+                <MudCarouselItem Color="@Color.Primary">
+                    <div class="d-flex" style="height: 100%; justify-items: center; align-items: center;">
+                        <MudText Typo="Typo.h3">🎶 Discover new artists</MudText>
+                    </div>
+                </MudCarouselItem>
+                <MudCarouselItem Color="@Color.Secondary">
+                    <div class="d-flex" style="height: 100%; justify-items: center; align-items: center;">
+                        <MudText Typo="Typo.h3">💿 Explore trending albums</MudText>
+                    </div>
+                </MudCarouselItem>
+                <MudCarouselItem Color="@Color.Tertiary">
+                    <div class="d-flex" style="height: 100%; justify-items: center; align-items: center;">
+                        <MudText Typo="Typo.h3">🎧 Dive into unique genres</MudText>
+                    </div>
+                </MudCarouselItem>
+            </MudCarousel>
+        </MudCard>
     </MudItem>
 </MudGrid>
+
+<style>
+    .home-container {
+        height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .flex-center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
