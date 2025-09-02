@@ -8,6 +8,6 @@ public sealed class InUserAlbumAttribute : BaseInputModel
     public long AlbumId { get; set; }
     
     public short? Rating { get; set; }
-    public CollectionType CollectionType { get; set; }
+    public CollectionType? CollectionType { get; set; }
     public string? Review { get; set; }
 }

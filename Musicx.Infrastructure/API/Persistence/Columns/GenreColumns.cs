@@ -1,6 +1,6 @@
 ﻿namespace Musicx.Infrastructure.API.Persistence.Columns;
 
-public sealed class GenreColumns
+public static class GenreColumns
 {
     public const string Id = "genre_id";
     

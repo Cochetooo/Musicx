@@ -38,6 +38,7 @@ abbreviated AS (
          WHEN prefix_raw = '' THEN ''  -- ✅ pas de préfixe => rien à abréger
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'progressive' THEN 'Prog'     || substr(prefix_raw, length('progressive') + 1)
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'alternative' THEN 'Alt.'     || substr(prefix_raw, length('alternative') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'atmospheric' THEN 'Atmo'     || substr(prefix_raw, length('atmospheric') + 1)
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'gothic'      THEN 'Goth'     || substr(prefix_raw, length('gothic') + 1)
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'melodic'     THEN 'Melo'     || substr(prefix_raw, length('melodic') + 1)
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'symphonic'   THEN 'Sympho'   || substr(prefix_raw, length('symphonic') + 1)

@@ -1,6 +1,6 @@
 ﻿namespace Musicx.Infrastructure.API.Persistence.Columns;
 
-public sealed class ArtistColumns
+public static class ArtistColumns
 {
     public const string Id = "artist_id";
     
