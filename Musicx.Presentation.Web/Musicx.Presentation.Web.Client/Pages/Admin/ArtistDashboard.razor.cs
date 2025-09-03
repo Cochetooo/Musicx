@@ -44,7 +44,7 @@ public partial class ArtistDashboard
     {
         _logger.LogInformation("🔄️ ArtistDashboard : UPDATE Data");
 
-        _artists = await UcList.ExecuteAsync(take: 100);
+        _artists = await UcList.ExecuteAsync(take: 1000);
         _filteredArtists = new List<OutArtist>(_artists);
         
         await InvokeAsync(StateHasChanged);

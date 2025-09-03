@@ -25,14 +25,14 @@ public static class Theme
         {
             Primary = Colors.Teal.Lighten2,
             PrimaryDarken = Colors.Teal.Lighten1,
-            PrimaryLighten = Colors.Teal.Accent2,
+            PrimaryLighten = Colors.Teal.Accent3,
             
-            Secondary = Colors.Teal.Lighten4,
-            SecondaryDarken = Colors.Teal.Lighten3,
-            SecondaryLighten = Colors.Teal.Accent1,
+            Secondary = Colors.Teal.Lighten3,
+            SecondaryDarken = Colors.Teal.Lighten4,
+            SecondaryLighten = Colors.Teal.Accent2,
             
-            Tertiary = Colors.Teal.Lighten5,
-            TertiaryDarken = Colors.Teal.Lighten4,
+            Tertiary = Colors.Teal.Lighten4,
+            TertiaryDarken = Colors.Teal.Lighten5,
             
             TextPrimary = "#fbfbfb"
         },

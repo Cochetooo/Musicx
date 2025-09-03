@@ -8,6 +8,8 @@ public static class ArtistColumns
     public const string UpdatedAt = "artist_updated_at";
     
     public const string ArtworkUrl = "artist_artwork_url";
+    public const string CalculatedGenres = "artist_calculated_genres";
+    public const string CalculatedInfluences = "artist_calculated_influences";
     public const string Country = "artist_country";
     public const string Description = "artist_description";
     public const string Name = "artist_name";

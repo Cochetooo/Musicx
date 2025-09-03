@@ -25,9 +25,21 @@ else
         <MudCardHeader>
             <MudImage Src="@_artist.ArtworkUrl" Elevation="25" Style="width: 200px; border-radius: 10px"/>
 
-            <MudText Typo="Typo.h1" Style="font-weight: 900; font-size: 5rem;" Class="pl-8 montserrat">
-                @_artist.Name
-            </MudText>
+            <MudStack Class="pl-8">
+                <MudText Typo="Typo.h1" Style="font-weight: 900; font-size: 5rem;" Class="montserrat mb-3">
+                    @_artist.Name
+                </MudText>
+                
+                <MudDivider />
+            
+                <MudText Typo="Typo.body2" Style="font-weight: 700;" Color="Color.Secondary" Class="montserrat">
+                    @_artist.CalculatedGenres
+                </MudText>
+            
+                <MudText Typo="Typo.caption" Style="font-style: italic;" Color="Color.Tertiary" Class="montserrat">
+                    @_artist.CalculatedInfluences
+                </MudText>
+            </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <MudTabs Elevation="2" Rounded ApplyEffectsToContainer PanelClass="pa-6" Style="background-color: var(--mud-palette-background);">

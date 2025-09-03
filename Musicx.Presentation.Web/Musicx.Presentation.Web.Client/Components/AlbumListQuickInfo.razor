@@ -6,7 +6,8 @@
     {
         case ReleaseType.Ep:
             <MudText Class="quick-album-name" Style="font-style: italic;" Color="Color.Secondary">
-                @Album.Name
+                @Album.Name 
+                <span class="release-type">[@Album.ReleaseType]</span>
             </MudText>
             break;
         case ReleaseType.Lp:
@@ -16,7 +17,8 @@
             break;
         case ReleaseType.Single:
             <MudText Class="quick-album-name" Color="Color.Secondary">
-                @Album.Name
+                @Album.Name 
+                <span class="release-type">[@Album.ReleaseType]</span>
             </MudText>
             break;
         case ReleaseType.AdditionalRelease:
@@ -31,7 +33,8 @@
         case ReleaseType.Compilation:
         case null:
             <MudText Class="quick-album-name" Color="Color.Tertiary">
-                @Album.Name
+                @Album.Name 
+                <span class="release-type">[@Album.ReleaseType]</span>
             </MudText>
             break;
         default:
@@ -61,5 +64,12 @@
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-word;
+    }
+    
+    .release-type {
+        color: var(--mud-palette-text-disabled); 
+        font-style: normal;
+        font-size: 0.8rem;
+        vertical-align: center;
     }
 </style>

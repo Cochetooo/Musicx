@@ -29,13 +29,24 @@
                                 <MudLink Typo="Typo.h5" Class="montserrat" Style="font-weight: bold;" Href="@($"/Artist/{artist.Id}")">
                                     @artist.Name
                                 </MudLink>
-                                <MudText Color="Color.Tertiary">
+                                @if (artist.CalculatedGenres is not null)
+                                {
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                        @artist.CalculatedGenres
+                                    </MudText>
+                                }
+                                <MudText Typo="Typo.subtitle2" Color="Color.Tertiary">
                                     @if (artist.Discriminator == ArtistDiscriminator.Band)
                                     {
                                         <span>Band from <Flag CountryName="@artist.Country"/></span>
                                         if (null != artist.FormationDate)
                                         {
                                             <span> since @artist.FormationDate.Value.Year</span>
+                                        }
+
+                                        if (null != artist.SplitDate)
+                                        {
+                                            <span> until @artist.SplitDate.Value.Year</span>
                                         }
                                     }
                                     else
@@ -44,6 +55,10 @@
                                         if (null != artist.BirthDate)
                                         {
                                             <span> born in @artist.BirthDate.Value.Year</span>
+                                        }
+                                        if (null != artist.DeathDate)
+                                        {
+                                            <span> died @artist.DeathDate.Value.Year</span>
                                         }
                                     }
                                 </MudText>
