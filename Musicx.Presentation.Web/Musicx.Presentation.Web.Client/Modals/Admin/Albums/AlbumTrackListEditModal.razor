@@ -1,8 +1,11 @@
+@using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.Fields
+@using SQLitePCL
 
 @inject ILoggerFactory LoggerProvider
+@inject ISaveAllUseCase<InSong> UcSaveAll
 
 <MudDialog @ref="_modalRef">
     <TitleContent>
@@ -23,13 +26,14 @@
                     <EditTemplate>
                         <MudIconButton 
                             Color="Color.Error"
+                            Disabled="@(_songs.Count < 2)"
                             Icon="@Icons.Material.Filled.Remove"
                             OnClick="@(() => DeleteRow(context.Item))"
                         />
                     </EditTemplate>
                 </TemplateColumn>
                 
-                <PropertyColumn Property="x => x.TrackNumber" Title="#"/>
+                <PropertyColumn Property="x => x.TrackNumber" CellStyle="max-width: 80px;" Title="#"/>
                 
                 <PropertyColumn Property="x => x.Title" Title="Name"/>
                 
@@ -47,10 +51,12 @@
                 
                 <PropertyColumn Property="x => x.Type">
                     <EditTemplate>
-                        <MudSelect T="SongType?" @bind-Value="context.Item.Type">
+                        <MudSelect T="SongType?" @bind-Value="context.Item.Type"
+                                   Placeholder="Select a type" 
+                                   AdornmentIcon="@Icons.Material.Filled.Label">
                             @foreach (var type in Enum.GetValues<SongType>())
                             {
-                                <MudSelectItem Value="@type">@type.ToString()</MudSelectItem>
+                                <MudSelectItem T="SongType?" Value="@type">@type</MudSelectItem>
                             }
                         </MudSelect>
                     </EditTemplate>
@@ -58,7 +64,10 @@
                 
                 <PropertyColumn Property="x => x.Duration" Title="Duration">
                     <EditTemplate>
-                        <CstDurationField @bind-Value="_timeSpanDuration"/>
+                        <MudTextField @bind-Value="context.Item.Duration"
+                                      Mask="@(new PatternMask("00:00"))"
+                                      Placeholder="mm:ss"
+                                      Variant="Variant.Filled" />
                     </EditTemplate>
                 </PropertyColumn>
             </Columns>
@@ -76,87 +85,3 @@
         <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
     </DialogActions>
 </MudDialog>
-
-<!-- <Modal @ref="_modalRef">
-    <ModalContent Size="ModalSize.Large" Centered>
-        <ModalHeader>
-            <ModalTitle>Track List Editing</ModalTitle>
-            <CloseButton Clicked="Hide" />
-        </ModalHeader>
-        
-        <ModalBody>
-            <Fields>
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop">
-                    <FieldLabel>
-                        Artist
-                    </FieldLabel>
-                    <FieldBody>
-                        @if (_album is { Artist: not null })
-                        {
-                            <TextEdit Disabled @bind-Text="_album.Artist.Name"/>
-                        }
-                    </FieldBody>
-                </Field>
-                <Field ColumnSize="ColumnSize.Is6.OnDesktop">
-                    <FieldLabel>
-                        Album (*)
-                    </FieldLabel>
-                    <FieldBody>
-                        @if (_album != null)
-                        {
-                            <TextEdit Disabled @bind-Text="_album.Name"/>
-                        }
-                    </FieldBody>
-                </Field>
-            </Fields>
-            
-            <Divider Margin="Margin.Is2.OnY" />
-            
-            <Table Narrow Borderless Margin="Margin.Is2.OnY">
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderCell Width="@Width.Px(50)">#</TableHeaderCell>
-                        <TableHeaderCell>Name</TableHeaderCell>
-                        <TableHeaderCell>Duration</TableHeaderCell>
-                        <TableHeaderCell>Type</TableHeaderCell>
-                        <TableHeaderCell>-</TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    @foreach (var song in _songs)
-                    {
-                        <TableRow>
-                            <TableRowHeader Width="@Width.Px(50)">
-                                <NumericPicker TValue="int?" @bind-Value="song.TrackNumber" />
-                            </TableRowHeader>
-                            <TableRowCell>
-                                <TextEdit @bind-Text="song.Title"/>
-                            </TableRowCell>
-                            <TableRowCell>
-                                <TimeEdit TValue="long?" @bind-Time="song.Duration"/>
-                            </TableRowCell>
-                            <TableRowCell>
-                                <Select TValue="SongType?"
-                                        @bind-SelectedValue="song.Type">
-                                    @foreach (var songType in Enum.GetValues<SongType>())
-                                    {
-                                        <SelectItem Value="@songType">@songType.ToString()</SelectItem>
-                                    }
-                                </Select>
-                            </TableRowCell>
-                            <TableRowCell>
-                                <Button Color="Color.Danger" Clicked="@(() => DeleteRow(song))">
-                                    <Icon Name="IconName.Delete" />
-                                </Button>
-                            </TableRowCell>
-                        </TableRow>
-                    }
-                </TableBody>
-            </Table>
-            
-            <Button Color="Color.Info" Clicked="@(() => AddRow())">
-                <Icon Name="IconName.Add" />
-            </Button>
-        </ModalBody>
-    </ModalContent>
-</Modal> -->

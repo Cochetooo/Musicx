@@ -28,29 +28,35 @@ public partial class AlbumTrackListEditModal
         }
 
         _logger = LoggerProvider.CreateLogger(nameof(AlbumTrackListEditModal));
-
-        AddRow();
     }
 
     private async Task Save()
     {
-        
+        EnsureSongData();
+        await UcSaveAll.ExecuteAsync(_songs);
+        await OnSave.InvokeAsync();
+
+        await Hide();
     }
 
     public async Task Show(OutAlbum album, List<OutSong>? songs = null)
     {
+        _songs.Clear();
+        
         if (null != songs)
         {
-            _songs.Clear();
             foreach (var song in songs)
             {
                 _songs.Add(song.ToRaw());
                 StateHasChanged();
             }
         }
+        else
+        {
+            AddRow();
+        }
         
         _album = album;
-        EnsureSongData();
         await _modalRef.ShowAsync();
     }
 
@@ -72,7 +78,6 @@ public partial class AlbumTrackListEditModal
     private void AddRow()
     {
         _songs.Add(new InSong());
-        EnsureSongData();
     }
 
     private void EnsureSongData()

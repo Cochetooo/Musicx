@@ -6,6 +6,8 @@ using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Presentation.Web.Controllers;
 
+[ApiController]
+[Route("api/songs")]
 public sealed class SongController(ISongRepository songRepository,
     ILoggerProvider loggerProvider) : ControllerBase
 {

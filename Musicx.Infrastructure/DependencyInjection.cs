@@ -126,6 +126,7 @@ public static class DependencyInjection
     {
         services.AddScoped(typeof(IGetUseCase<>), typeof(UcGet<>));
         services.AddScoped(typeof(ISaveUseCase<>), typeof(UcSave<>));
+        services.AddScoped(typeof(ISaveAllUseCase<>), typeof(UcSaveAll<>));
         services.AddScoped(typeof(IDeleteUseCase<>), typeof(UcDelete<>));
         services.AddScoped(typeof(IListUseCase<>), typeof(UcList<>));
         services.AddScoped(typeof(IFindInUseCase<>), typeof(UcFindIn<>));

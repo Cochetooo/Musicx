@@ -57,7 +57,7 @@ public partial class AlbumEditModal
         _album.BeginRecordDate = _recordingDates?.Start;
         _album.EndRecordDate = _recordingDates?.End;
         
-        _logger.LogInformation($"⛏️ AlbumEditModal : Persisting primary genres {string.Join(",", _album.PrimaryGenreIds)} " +
+        _logger.LogDebug($"⛏️ AlbumEditModal : Persisting primary genres {string.Join(",", _album.PrimaryGenreIds)} " +
                                $"and influences {string.Join(",", _album.InfluenceGenreIds)}");
         
         await UcSave.ExecuteAsync(_album);

@@ -1,10 +1,9 @@
-﻿@using System.Text.RegularExpressions
-<MudTextField 
+﻿<MudTextField 
     @bind-Value="_text"
     Label="@Label"
     Placeholder="mm:ss"
     Immediate
-    OnInput="@OnInputHandler"
+    OnInternalInputChanged="@OnInputHandler"
     Error="@_hasError"
     ErrorText="Expected format is mm:ss"
 />
