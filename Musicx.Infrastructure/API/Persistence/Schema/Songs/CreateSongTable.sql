@@ -15,12 +15,7 @@ create table public.songs (
     song_lyrics                 text,
     song_title                  text not null,
     song_track_number           integer,
-    song_type                   integer,
-    song_bit_rate               integer,
-    song_file_path              text,
-    song_format                 integer,
-    song_sample_rate            double precision,
-    song_volume_modifier        double precision
+    song_type                   integer
 );
 
 alter table public.songs owner to postgres;

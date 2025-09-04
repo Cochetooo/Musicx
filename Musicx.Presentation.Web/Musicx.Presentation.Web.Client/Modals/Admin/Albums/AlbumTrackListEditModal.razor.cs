@@ -32,6 +32,11 @@ public partial class AlbumTrackListEditModal
         AddRow();
     }
 
+    private async Task Save()
+    {
+        
+    }
+
     public async Task Show(OutAlbum album, List<OutSong>? songs = null)
     {
         if (null != songs)

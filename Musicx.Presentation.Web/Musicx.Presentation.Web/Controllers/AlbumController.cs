@@ -41,7 +41,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
         {
             await albumRepository.DeleteAllAsync(ids);
                     
-            _logger.LogInformation($"🌍✅ API : DELETE ALL artists ({stringIds}) - SUCCESS");
+            _logger.LogInformation($"🌍✅ API : DELETE ALL albums ({stringIds}) - SUCCESS");
             return Ok();
         }
         catch (Exception ex)
@@ -158,7 +158,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OutArtist>>> Find(
+    public async Task<ActionResult<IEnumerable<OutAlbum>>> Find(
         [FromQuery] int skip = 0,
         [FromQuery] int take = 100, 
         [FromQuery] string filter = "",

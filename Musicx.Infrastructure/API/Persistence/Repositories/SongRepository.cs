@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Specifications;
@@ -6,6 +7,9 @@ using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Builders;
+using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
 using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
@@ -14,205 +18,192 @@ using ISongRepository = Musicx.Application.Api.Interfaces.Persistence.ISongRepos
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
 internal sealed class SongRepository(
+    IDbConnectionProvider connection,
+    SqlBuilder<InSong> builder,
     ILoggerProvider loggerProvider) : ISongRepository
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(SongRepository));
     
     public async Task DeleteAsync(long id)
     {
-        _logger.LogDebug($"📄 SQL : DELETE FROM songs WHERE id = {id}");
-        
-        /*await using var transaction = await context.Database.BeginTransactionAsync();
+        const string sql = $"DELETE FROM songs WHERE {SongColumns.Id} = @id";
 
-        try
+        var parameters = new List<NpgsqlParameter>
         {
-            var song = await context.Songs.FindAsync(id);
+            new("@id", id)
+        };
 
-            if (null != song)
-            {
-                context.Songs.Remove(song);
-                await context.SaveChangesAsync();
-                await transaction.CommitAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new RepositoryException($"❌ Could not delete id {id}", ex, _logger);
-        }*/
+        await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
     public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
         var stringIds = string.Join(",", ids);
-
-        /*await using var transaction = await context.Database.BeginTransactionAsync();
+        const string sql = $"DELETE FROM songs WHERE {SongColumns.Id} IN (@ids)";
         
-        try
+        var parameters = new List<NpgsqlParameter>
         {
-            var deleteAllSql = "DELETE FROM \"Songs\" WHERE \"Id\" IN (@ids)";
-
-            var parameters = new List<NpgsqlParameter>
-            {
-                new("@Ids", stringIds)
-            };
-
-            _logger.LogDebug(SqlDebugHelper.InterpolateQuery(deleteAllSql, parameters));
-            
-            await context.Database.ExecuteSqlRawAsync(deleteAllSql, parameters.Cast<object>().ToArray());
-            await transaction.CommitAsync();
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new RepositoryException($"📜❌ Could not delete ids {stringIds}", ex, _logger);
-        }*/
+            new("@Ids", stringIds)
+        };
+        
+        await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
     public async Task<OutSong?> FindByIdAsync(long id, IQuerySpecification<InSong>? songQuerySpecification = null)
     {
-        _logger.LogDebug($"📄 SQL : SELECT * FROM songs WHERE id = {id}");
-        return null;
+        var sql = new StringBuilder(builder.BuildSelect(songQuerySpecification));
+        sql.Append($" WHERE s0.{SongColumns.Id} = @id")
+            .Append(builder.BuildGroupBy(songQuerySpecification));
+        
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@id", id)
+        };
 
-        /*var songSet = context.Songs
-            .AsQueryable();
+        var result = await connection.FetchListDynamicAsync(sql.ToString(), parameters);
 
-        songSet = GetIncludes(songSet, songQuerySpecification);
-
-        return await songSet
-            .AsNoTracking()
-            .OrderBy(x => x.DiscNumber)
-            .ThenBy(x => x.TrackNumber)
-            .ThenBy(x => x.Title)
-            .FirstOrDefaultAsync(s => s.Id == id);*/
+        return result
+            .SingleOrDefault()?
+            .FromDicoToSong();
     }
 
     public async Task<List<OutSong>> FindAsync(int skip = 0, int take = 100,
         IQuerySpecification<InSong>? songQuerySpecification = null, string? filter = null)
     {
-        _logger.LogDebug($"📄 SQL : SELECT * FROM songs");
-        return [];
-        /*var songSet = context.Songs
-            .AsQueryable();
+        var sql = builder.BuildSelect(songQuerySpecification);
+        var parameters = new List<NpgsqlParameter>();
 
-        songSet = GetIncludes(songSet, songQuerySpecification);
-
-        if (null != filter)
+        if (!string.IsNullOrWhiteSpace(filter))
         {
-            songSet = songSet.Where(filter);
+            sql += $" WHERE similarity(s0.{SongColumns.Title}, @filter) > 0.4";
+            parameters.Add(new NpgsqlParameter("@filter", filter));
         }
+        
+        sql += builder.BuildGroupBy(songQuerySpecification);
+        
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            sql += builder.BuildOrderBy($"similarity(s0.{SongColumns.Title}, @filter) DESC");
+        }
+        else
+        {
+            sql += builder.BuildOrderBy($"s0.{SongColumns.Title}");
+        }
+        
+        sql += " OFFSET @skip LIMIT @take";
+        
+        parameters.Add(new NpgsqlParameter("@skip", skip));
+        parameters.Add(new NpgsqlParameter("@take", take));
 
-        return await songSet
-            .AsNoTracking()
-            .Skip(skip)
-            .Take(take)
-            .OrderBy(x => x.DiscNumber)
-            .ThenBy(x => x.TrackNumber)
-            .ThenBy(x => x.Title)
-            .ToListAsync();*/
+        var result = await connection.FetchListDynamicAsync(sql, parameters);
+
+        return result
+            .Select(x => x.FromDicoToSong())
+            .ToList();
     }
 
     public async Task<List<OutSong>> FindIn(IEnumerable<long> ids, IQuerySpecification<InSong>? songQuerySpecification = null)
     {
-        _logger.LogDebug("📄 SQL : SELECT * FROM songs WHERE id IN ({Ids})", string.Join(",", ids));
-
-        return [];
-        /*var enumerable = ids as long[] ?? ids.ToArray();
-
-        if (0 == enumerable.Length)
+        var idList = ids.ToArray();
+        if (0 == idList.Length)
         {
-            _logger.LogDebug("ℹ️ FIND IN Song : No entry found.");
             return [];
         }
-
-        var songSet = context.Songs;
-        GetIncludes(songSet, songQuerySpecification);
-
-        return await songSet
-            .Where(s => enumerable.Contains(s.Id))
-            .AsNoTracking()
-            .ToListAsync();*/
+        
+        var stringIds = string.Join(",", idList);
+        var sql = builder.BuildSelect(songQuerySpecification);
+        sql += $" WHERE s0.{SongColumns.Id} IN ({stringIds})" +
+               builder.BuildGroupBy(songQuerySpecification) +
+               $" ORDER BY s0.{SongColumns.Title}";
+        
+        var result = await connection.FetchListDynamicAsync(sql, []);
+        
+        return result
+            .Select(x => x.FromDicoToSong())
+            .ToList();
     }
 
     public async Task<long> GetCountAsync()
-    {
-        return 1;
-    }
+        => await connection.Count("songs");
 
     public async Task<long> SaveAsync(InSong entity)
     {
-        /*await using var transaction = await context.Database.BeginTransactionAsync();
-
+        await using var conn = connection.CreateConnection();
+        await conn.OpenAsync();
+        
+        await using var transaction = await conn.BeginTransactionAsync();
+        
         try
         {
             if (0 == entity.Id)
             {
-                _logger.LogDebug($"📄 SQL : INSERT INTO songs (title, album_id, artist_id...) " +
-                                 $"VALUES ('{entity.Title}', '{entity.AlbumId}', '{entity.ArtistId}')");
-
-                entity.CreatedAt = DateTime.Now;
-                entity.UpdatedAt = DateTime.Now;
-                
-                context.Songs.Add(entity);
+                var result = await builder.ExecuteInsert(entity, conn, transaction);
+                if (result is long l)
+                {
+                    entity.Id = l;
+                }
+                else
+                {
+                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
+                }
             }
             else
             {
-                _logger.LogDebug($"📄 SQL : UPDATE artists SET Title={entity.Title}" +
-                                 $"WHERE Id = {entity.Id}");
-                
-                entity.UpdatedAt = DateTime.Now;
-                
-                context.Songs.Update(entity);
-                context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
+                await builder.ExecuteUpdate(entity, conn, transaction);
             }
-
-            await context.SaveChangesAsync();
+            
             await transaction.CommitAsync();
-
-            return entity.Id;
-        }
+        } 
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE Album : Could not persist.", ex, _logger);
-        }*/
-        return 1;
+            throw new RepositoryException("❌ SAVE Song : Could not persist.", ex, _logger);
+        }
+        
+        return entity.Id;
     }
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<InSong> entities)
     {
-        _logger.LogDebug("📄 SAVE ALL Song");
+        var idList = new List<long>();
         
-        /*await using var transaction = await context.Database.BeginTransactionAsync();
-
-        var ids = new List<long>();
-
+        await using var conn = connection.CreateConnection();
+        await conn.OpenAsync();
+        
+        await using var transaction = await conn.BeginTransactionAsync();
+        
         try
         {
-            foreach (var song in entities)
+            foreach (var entity in entities)
             {
-                if (0 == song.Id)
+                if (0 == entity.Id)
                 {
-                    context.Songs.Add(song);
+                    var result = await builder.ExecuteInsert(entity, conn, transaction);
+                    if (result is long l)
+                    {
+                        entity.Id = l;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
+                    }
                 }
                 else
                 {
-                    context.Songs.Update(song);
+                    await builder.ExecuteUpdate(entity, conn, transaction);
                 }
                 
-                ids.Add(song.Id);
+                idList.Add(entity.Id);
             }
-
-            await context.SaveChangesAsync();
+            
             await transaction.CommitAsync();
-
-            return ids;
-        }
+        } 
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE ALL Artist : Could not persist", ex, _logger);
-        }*/
-        return [];
+            throw new RepositoryException("❌ SAVE ALL Song : Could not persist.", ex, _logger);
+        }
+        
+        return idList;
     }
 }

@@ -25,7 +25,7 @@
                             Color="Color.Error"
                             Icon="@Icons.Material.Filled.Remove"
                             OnClick="@(() => DeleteRow(context.Item))"
-                            />
+                        />
                     </EditTemplate>
                 </TemplateColumn>
                 
@@ -70,6 +70,11 @@
             </ToolBarContent>
         </MudDataGrid>
     </DialogContent>
+    
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="@Save">Save</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
+    </DialogActions>
 </MudDialog>
 
 <!-- <Modal @ref="_modalRef">

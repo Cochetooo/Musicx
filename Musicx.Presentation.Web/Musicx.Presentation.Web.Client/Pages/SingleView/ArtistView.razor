@@ -90,29 +90,31 @@ else
                                 if (null != album.ReleaseType && _availableReleaseTypes.TryGetValue(album.ReleaseType.Value,
                                         out var value) && value)
                                 {
-                                    <MudListItem Class="album-list">
-                                        <MudLink Href="@($"/Album/{album.Id}")">
-                                            <MudStack AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Row>
-                                                <MudStack Justify="Justify.FlexStart" Row>
-                                                    <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
-                                                              Width="48" Height="48"
-                                                              Class="rounded-lg"
-                                                              Elevation="25"/>
+                                    <div class="album-list">
+                                        <MudListItem>
+                                            <MudLink Href="@($"/Album/{album.Id}")">
+                                                <MudStack AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Row>
+                                                    <MudStack Justify="Justify.FlexStart" Row>
+                                                        <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
+                                                                  Width="48" Height="48"
+                                                                  Class="rounded-lg"
+                                                                  Elevation="25"/>
 
-                                                    <AlbumListQuickInfo class="mx-3" Album="@album"/>
+                                                        <AlbumListQuickInfo class="mx-3" Album="@album"/>
+                                                    </MudStack>
+
+                                                    @if (album.SimplifiedGenreName is not null && album.SimplifiedGenreColor is not null)
+                                                    {
+                                                        <MudChip
+                                                            Class="montserrat py-1 px-3 ma-1"
+                                                            Style="@GetSimplifiedGenreStyle(album)">
+                                                            @album.SimplifiedGenreName
+                                                        </MudChip>
+                                                    }
                                                 </MudStack>
-
-                                                @if (album.SimplifiedGenreName is not null && album.SimplifiedGenreColor is not null)
-                                                {
-                                                    <MudChip
-                                                        Class="montserrat py-1 px-3 ma-1"
-                                                        Style="@GetSimplifiedGenreStyle(album)">
-                                                        @album.SimplifiedGenreName
-                                                    </MudChip>
-                                                }
-                                            </MudStack>
-                                        </MudLink>
-                                    </MudListItem>
+                                            </MudLink>
+                                        </MudListItem>
+                                    </div>
                                 }
                             }
                         </MudList>
@@ -254,21 +256,3 @@ else
 
 <ArtistEditModal @ref="_artistEditModal" OnSave="OnQuitModal" />
 <AlbumEditModal @ref="_albumEditModal" OnSave="OnQuitModal" />
-
-<style>
-    .album-tile {
-        transition: transform 0.3s ease-in-out;
-    }
-    
-    .album-tile:hover {
-        transform: scale(1.1);
-    }
-    
-    .album-list {
-        transition: transform 0.25s ease-in-out;
-    }
-    
-    .album-list:hover {
-        transform: scale(1.03);
-    }
-</style>

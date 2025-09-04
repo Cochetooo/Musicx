@@ -1,0 +1,57 @@
+.album-tile {
+    animation: pop-bounce 0.6s ease-out;
+    transition: transform 0.3s ease-in-out;
+}
+
+.album-tile:hover {
+    transform: scale(1.1);
+}
+
+.album-list {
+    animation: swipe-right 0.6s ease-out;
+    transition: transform 0.25s ease-in-out;
+}
+
+.album-list:hover {
+    transform: scale(1.03);
+}
+
+@keyframes pop-bounce {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    80% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes swipe-right {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    
+    60% {
+        transform: translateX(20px);
+        opacity: 1;
+    }
+    
+    80% {
+        transform: translateX(-5px);
+    }
+    
+    100% {
+        transform: translateX(0);
+    }
+}

@@ -8,8 +8,8 @@ public sealed class InSong : BaseInputModel
     public long Id { get; set; }
 
         // Required Relationships
-    public IReadOnlyList<long> PrimaryGenreIds { get; set; } = [];
-    public IReadOnlyList<long> InfluenceGenreIds { get; set; } = [];
+    public IReadOnlyList<long>? PrimaryGenreIds { get; set; } = [];
+    public IReadOnlyList<long>? InfluenceGenreIds { get; set; } = [];
 
     // Required Columns
     public string Title { get; set; } = string.Empty;
@@ -24,10 +24,4 @@ public sealed class InSong : BaseInputModel
     public string? Lyrics { get; set; }
     public int? TrackNumber { get; set; }
     public SongType? Type { get; set; }
-    
-    public ushort? BitRate { get; set; }
-    public string? FilePath { get; set; }
-    public AudioFormatType? Format { get; set; }
-    public double? SampleRate { get; set; }
-    public double? VolumeModifier { get; set; }
 }

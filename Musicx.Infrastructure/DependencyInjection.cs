@@ -106,6 +106,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(SqlBuilder<InArtist>), typeof(ArtistSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InAlbum>), typeof(AlbumSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InGenre>), typeof(GenreSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InSong>), typeof(SongSqlBuilder));
 
         // Repositories
         services.AddScoped<Application.Api.Interfaces.Persistence.ISongRepository, API.Persistence.Repositories.SongRepository>();

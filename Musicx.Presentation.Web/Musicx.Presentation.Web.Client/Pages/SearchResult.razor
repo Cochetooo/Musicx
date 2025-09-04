@@ -19,46 +19,56 @@
 
         @if (0 < _artistsResult.Count)
         {
-            <MudList T="RenderFragment">
+            <MudList T="RenderFragment" ReadOnly>
                 @foreach (var artist in _artistsResult)
                 {
                     <MudListItem>
                         <MudStack Justify="Justify.FlexStart" Row>
-                            <MudImage Src="@artist.ArtworkUrl" Width="64" Height="64"/>
-                            <MudStack>
-                                <MudLink Typo="Typo.h5" Class="montserrat" Style="font-weight: bold;" Href="@($"/Artist/{artist.Id}")">
+                            <MudImage Src="@artist.ArtworkUrl" 
+                                      Width="96" Height="96"
+                                      Elevation="8"
+                                      Class="rounded-lg"/>
+                            <MudStack Class="ml-4 bg-search-artist rounded-lg py-1 px-5" Spacing="1">
+                                <MudLink Typo="Typo.h5" Class="montserrat mb-1" 
+                                         Color="Color.Inherit"
+                                         Style="font-weight: bold;" Href="@($"/Artist/{artist.Id}")">
                                     @artist.Name
                                 </MudLink>
+                                
                                 @if (artist.CalculatedGenres is not null)
                                 {
                                     <MudText Typo="Typo.body2" Color="Color.Secondary">
                                         @artist.CalculatedGenres
                                     </MudText>
                                 }
-                                <MudText Typo="Typo.subtitle2" Color="Color.Tertiary">
+                                
+                                <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                    <span class="mr-2"><Flag CountryName="@artist.Country"/></span>
+                                    
                                     @if (artist.Discriminator == ArtistDiscriminator.Band)
                                     {
-                                        <span>Band from <Flag CountryName="@artist.Country"/></span>
                                         if (null != artist.FormationDate)
                                         {
-                                            <span> since @artist.FormationDate.Value.Year</span>
+                                            <span>@artist.FormationDate.Value.Year</span>
                                         }
 
+                                        <span> - </span>
                                         if (null != artist.SplitDate)
                                         {
-                                            <span> until @artist.SplitDate.Value.Year</span>
+                                            <span>@artist.SplitDate.Value.Year</span>
                                         }
                                     }
                                     else
                                     {
-                                        <span>Artist from <Flag CountryName="@artist.Country"/></span>
                                         if (null != artist.BirthDate)
                                         {
-                                            <span> born in @artist.BirthDate.Value.Year</span>
+                                            <span>@artist.BirthDate.Value.Year</span>
                                         }
+
+                                        <span> - </span>
                                         if (null != artist.DeathDate)
                                         {
-                                            <span> died @artist.DeathDate.Value.Year</span>
+                                            <span> @artist.DeathDate.Value.Year</span>
                                         }
                                     }
                                 </MudText>
@@ -83,12 +93,15 @@
                 {
                     <MudListItem>
                         <MudStack Justify="Justify.FlexStart" Row>
-                            <MudImage Src="@album.ArtworkUrl" Width="64" Height="64"/>
-                            <MudStack>
+                            <MudImage Src="@album.ArtworkUrl" 
+                                      Width="64" Height="64"
+                                      Elevation="8"
+                                      Class="rounded-lg"/>
+                            <MudStack Spacing="1" Class="ml-4">
                                 <MudLink Typo="Typo.h5" Class="montserrat" Style="font-weight: bold;" Href="@($"/Album/{album.Id}")">
                                     @album.Name
                                 </MudLink>
-                                <MudText Color="Color.Tertiary">
+                                <MudText Color="Color.Tertiary" Typo="Typo.caption">
                                     @if (album.Artist is not null)
                                     {
                                         <span>By 
@@ -108,3 +121,19 @@
         <MudText Style="font-style: italic;">@_albumsResult.Count result(s) found.</MudText>
     </MudCardContent>
 </MudCard>
+
+<style>
+    .bg-search-artist {
+        width: 100%;
+        background: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0.15) 0%,
+            rgba(0, 0, 0, 0.0) 100%
+        );
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .bg-search-artist:hover {
+        transform: scale(1.02);
+    }
+</style>

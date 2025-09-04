@@ -37,15 +37,15 @@ public class UcReadAudioFile(
             {
                 DiscNumber = track.DiscNumber,
                 Duration = track.Duration,
-                FilePath = request.FilePath,
+                //FilePath = request.FilePath,
                 Lyrics = track.Lyrics.UnsynchronizedLyrics,
                 Title = track.Title,
                 TrackNumber = track.TrackNumber,
                 
-                BitRate = (ushort) track.Bitrate,
+                /*BitRate = (ushort) track.Bitrate,
                 Format = AudioFormatType.Unknown,
                 SampleRate = track.SampleRate,
-                VolumeModifier = 0.0
+                VolumeModifier = 0.0*/
             };
 
             album = new InAlbum
