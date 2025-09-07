@@ -4,6 +4,7 @@
 
 @inject ICountUseCase<OutArtist> UcCountArtists
 @inject ICountUseCase<OutAlbum> UcCountAlbums
+@inject ICountUseCase<OutSong> UcCountSongs
 @inject ICountUseCase<OutGenre> UcCountGenres
 
 <MudGrid Class="home-container">
@@ -13,7 +14,7 @@
                 Welcome to Musicx!
             </MudText>
             <MudText Typo="Typo.body1" Class="mb-4" Style="color: var(--mud-palette-text-disabled)">
-                Counting @_artistCount artists, @_albumCount albums & @_genreCount genres
+                Counting @_artistCount artists, @_albumCount albums, @_songCount songs & @_genreCount genres
             </MudText>
             
             <MudCarousel AutoCycle AutoCycleTime="TimeSpan.FromSeconds(4)"

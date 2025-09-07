@@ -21,6 +21,7 @@ public sealed class InAlbum : BaseInputModel
     public int? DiscTotal { get; set; }
     public DateTime? EndRecordDate { get; set; }
     public bool IsFarRight { get; set; }
+    public bool IsNsfw { get; set; }
     public string? Language { get; set; }
     public DateTime? OriginalReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }

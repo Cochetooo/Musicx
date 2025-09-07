@@ -123,7 +123,8 @@
             </MudItem>
 
             <MudItem xs="12">
-                <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Warning"/>
+                <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Primary" />
+                <MudSwitch @bind-Value="_album.IsNsfw" Label="NSFW Content" Color="Color.Primary" />
             </MudItem>
         </MudGrid>
     </DialogContent>

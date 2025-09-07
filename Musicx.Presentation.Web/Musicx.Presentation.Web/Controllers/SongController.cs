@@ -82,6 +82,39 @@ public sealed class SongController(ISongRepository songRepository,
             return BadRequest(ex);
         }
     }
+
+    [HttpGet("by-album/{albumId}")]
+    public async Task<ActionResult<OutSong>> FindByAlbumId([FromRoute] long albumId, [FromQuery] string query = "")
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND BY ALBUM songs ({albumId} & includes = {query})");
+
+        try
+        {
+            var querySpecification = new SongQuerySpecification
+            {
+                IncludeArtist = query.Contains("artist"),
+                IncludeAlbum = query.Contains("album"),
+                IncludeAlbumArtist = query.Contains("alart"),
+                IncludePrimaryGenres = query.Contains("genre"),
+                IncludeInfluenceGenres = query.Contains("genre"),
+            };
+            
+            var songs = await songRepository.FindByAlbumIdAsync(albumId, querySpecification);
+
+            if (0 == songs.Count)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND BY ALBUM songs ({albumId}) - NOT FOUND");
+                return NoContent();
+            }
+            
+            _logger.LogInformation($"🌍✅ API : FIND BY ALBUM songs ({albumId}) - SUCCESS");
+            return Ok(songs);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OutSong>>> Find(

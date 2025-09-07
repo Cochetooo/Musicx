@@ -14,6 +14,7 @@ public static class AlbumColumns
     public const string DiscTotal = "album_disc_total";
     public const string EndRecordDate = "album_end_record_date";
     public const string IsFarRight = "album_is_far_right";
+    public const string IsNsfw = "album_is_nsfw";
     public const string Language = "album_language";
     public const string Name = "album_name";
     public const string OriginalReleaseDate = "album_original_release_date";

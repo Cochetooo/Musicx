@@ -1,5 +1,8 @@
 @page "/Album/{id}"
+
+@using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Application.Web.Interfaces.UseCases.Specifics
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
@@ -7,7 +10,8 @@
 @using Musicx.Presentation.Web.Client.Components.GenreDetails
 
 @inject IGetUseCase<OutAlbum> UcGet
-@inject IFindInUseCase<OutGenre> UcFindInGenres
+@inject IGetAlbumByArtistUseCase UcGetArtistAlbums
+@inject IGetSongByAlbumUseCase UcGetSongs
 @inject ILoggerFactory LoggerProvider
 
 <MudBreadcrumbs Items="@_breadcrumb" />
@@ -21,10 +25,10 @@ else
     <MudCard>
         <MudCardHeader Class="pa-8">
             <MudStack>
-                <MudText Typo="Typo.h3" Class="montserrat" Style="font-weight: 800">@_album.Name</MudText>
+                <MudText Typo="Typo.h2" Class="montserrat" Style="font-weight: 800">@_album.Name</MudText>
                 @if (_album.Artist is not null)
                 {
-                    <MudLink Typo="Typo.h6" Class="ml-5" Href="@($"/Artist/{_album.Artist.Id}")">
+                    <MudLink Typo="Typo.h6" Class="ml-8" Href="@($"/Artist/{_album.Artist.Id}")">
                         @_album.Artist.Name
                     </MudLink>
                 }
@@ -43,10 +47,61 @@ else
             
             <MudGrid>
                 <MudItem xs="12" md="3" Class="pa-6">
-                    <MudImage Src="@_album.ArtworkUrl" Elevation="8"
-                              Class="rounded-lg"
-                              Style="width: 100%; height: auto;" />
+                    <div class="relative cursor-pointer" @onclick="() => _isArtworkRevealed = !_isArtworkRevealed">
+                        <MudImage Src="@_album.ArtworkUrl"
+                                  Elevation="8"
+                                  Class="@($"rounded-lg {(_album.IsNsfw && !_isArtworkRevealed ? "blurred" : "")}")"
+                                  Style="width: 100%; height: auto;" />
+
+                        @if (_album.IsNsfw && !_isArtworkRevealed)
+                        {
+                            <div class="inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white rounded-lg"
+                                 style="position: absolute;">
+                                <MudIcon Icon="@Icons.Material.Filled.VisibilityOff" Size="Size.Large" />
+                                <span class="mt-2 text-sm font-semibold">Sensitive content</span>
+                            </div>
+                        }
+                    </div>
+                    
+                    <MudStack Row Class="mt-3">
+                        @if (_previousAlbum is not null)
+                        {
+                            <MudLink Href="@("/Album/" + _previousAlbum.Id)">
+                                <MudStack AlignItems="AlignItems.Center" Row>
+                                    <MudIcon Icon="@Icons.Material.Filled.ArrowLeft" />
+                                    <MudImage Src="@_previousAlbum.ArtworkUrl"
+                                              Elevation="4"
+                                              Class="rounded"
+                                              Width="24"
+                                              Height="24"/>
+                                    <MudText Typo="Typo.caption" Class="neighbor-album-text">
+                                        @_previousAlbum.Name
+                                    </MudText>
+                                </MudStack>
+                            </MudLink>
+                        }
+                        
+                        <MudSpacer/>
+                        
+                        @if (_nextAlbum is not null)
+                        {
+                            <MudLink Href="@("/Album/" + _nextAlbum.Id)">
+                                <MudStack AlignItems="AlignItems.Center" Row>
+                                    <MudImage Src="@_nextAlbum.ArtworkUrl"
+                                              Elevation="4"
+                                              Class="rounded"
+                                              Width="24"
+                                              Height="24"/>
+                                    <MudText Typo="Typo.caption" Class="neighbor-album-text">
+                                        @_nextAlbum.Name
+                                    </MudText>
+                                    <MudIcon Icon="@Icons.Material.Filled.ArrowRight" />
+                                </MudStack>
+                            </MudLink>
+                        }
+                    </MudStack>
                 </MudItem>
+                
                 <MudItem xs="12" md="9" Class="pa-6">
                     <MudCard Elevation="8" Class="rounded-lg">
                         <MudCardHeader>
@@ -101,22 +156,38 @@ else
                                        ThumbIcon="@Icons.Material.Filled.ViewWeek"
                                        Class="my-2" />
                         </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Filled" 
+                                       StartIcon="@Icons.Material.Filled.EditNote"
+                                       Class="mx-2"
+                                       Color="Color.Success"
+                                       OnClick="@EditTrackListShowModal">
+                                Edit Track List
+                            </MudButton>
+                    
+                            <MudIconButton Variant="Variant.Filled" 
+                                           Icon="@Icons.Material.Filled.Edit"
+                                           Class="mx-2"
+                                           Color="Color.Secondary"
+                                           OnClick="@EditAlbumShowModal" />
+                        </MudCardActions>
                     </MudCard>
                 </MudItem>
-                <MudItem Class="ma-3">
-                    <MudButton Variant="Variant.Filled" 
-                               StartIcon="@Icons.Material.Filled.EditNote"
-                               Class="mx-2"
-                               Color="Color.Success"
-                               OnClick="@EditTrackListShowModal">
-                        Edit Track List
-                    </MudButton>
-                    
-                    <MudIconButton Variant="Variant.Filled" 
-                               Icon="@Icons.Material.Filled.Edit"
-                               Class="mx-2"
-                               Color="Color.Secondary"
-                               OnClick="@EditAlbumShowModal" />
+                <MudItem Class="pa-6" xs="12" md="3">
+                    <MudTable Items="@_albumSongs" ReadOnly
+                              Style="width: 100%" Dense>
+                        <HeaderContent>
+                            <MudTh>#</MudTh>
+                            <MudTh>Title</MudTh>
+                            <MudTh>Duration</MudTh>
+                        </HeaderContent>
+                        
+                        <RowTemplate>
+                            <MudTd Style="max-width: 80px;" DataLabel="#">@context.TrackNumber</MudTd>
+                            <MudTd DataLabel="Title">@context.Title</MudTd>
+                            <MudTd DataLabel="Duration">@context.Duration.FormatDuration()</MudTd>
+                        </RowTemplate>
+                    </MudTable>
                 </MudItem>
             </MudGrid>
         </MudCardContent>
@@ -125,3 +196,17 @@ else
 
 <AlbumEditModal @ref="_albumEditModal" OnSave="OnQuitModal" />
 <AlbumTrackListEditModal @ref="_trackListEditModal" OnSave="OnQuitModal" />
+
+<style>
+    .blurred {
+        filter: blur(10px);
+    }
+
+    .neighbor-album-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>

@@ -55,16 +55,18 @@
             </ToolBarContent>
             
             <Columns>
-                <PropertyColumn Property="x => x.Name" />
-                
-                <PropertyColumn Property="x => x.Description" />
-                
-                <PropertyColumn Property="x => x.Color" />
-                
-                <PropertyColumn Property="x => x.CreatedAt" Title="Created At" />
-                
-                <PropertyColumn Property="x => x.UpdatedAt" Title="Last Modification" />
-                
+                <PropertyColumn Property="x => x.Name"/>
+
+                <PropertyColumn Property="x => x.Description"/>
+
+                <PropertyColumn Property="x => x.Type"/>
+
+                <PropertyColumn Property="x => x.Color"/>
+
+                <PropertyColumn Property="x => x.CreatedAt" Title="Created At"/>
+
+                <PropertyColumn Property="x => x.UpdatedAt" Title="Last Modification"/>
+
                 <TemplateColumn CellClass="d-flex justify-end">
                     <CellTemplate>
                         <MudIconButton Icon="@Icons.Material.Filled.Edit"

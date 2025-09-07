@@ -18,4 +18,11 @@ public interface IArtistRepository : IRepository<InArtist, OutArtist>;
 public interface IGenreRepository : IRepository<InGenre, OutGenre>;
 public interface ILabelRepository : IRepository<InLabel, OutLabel>;
 public interface IReleaseRepository : IRepository<InRelease, OutRelease>;
-public interface ISongRepository : IRepository<InSong, OutSong>;
+
+public interface ISongRepository : IRepository<InSong, OutSong>
+{
+    Task<List<OutSong>> FindByAlbumIdAsync(long albumId,
+        IQuerySpecification<InSong>? songQuerySpecification = null);
+}
+
+public interface IUserRepository : IRepository<InUser, OutUser>;

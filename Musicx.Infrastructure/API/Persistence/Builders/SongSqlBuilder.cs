@@ -3,6 +3,7 @@ using Musicx.Application.Desktop.Specifications;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Helpers;
 using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
 
@@ -120,7 +121,8 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
                     {
                         { SongGenreColumns.SongId, entity.Id },
                         { SongGenreColumns.GenreId, primaryGenre },
-                    });
+                    },
+                    conflictAction: SqlConflictAction.Nothing);
                 
                 _logger.LogDebug(SqlHelper.InterpolateQuery(primaryGenreSql.Query, primaryGenreSql.Parameters));
 
@@ -139,7 +141,8 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
                     {
                         { SongInfluenceColumns.SongId, entity.Id },
                         { SongInfluenceColumns.GenreId, influenceGenre },
-                    });
+                    },
+                    conflictAction: SqlConflictAction.Nothing);
                 
                 _logger.LogDebug(SqlHelper.InterpolateQuery(influenceGenreSql.Query, influenceGenreSql.Parameters));
 

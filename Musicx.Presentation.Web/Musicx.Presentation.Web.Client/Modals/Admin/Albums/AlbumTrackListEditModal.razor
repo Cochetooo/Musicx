@@ -29,27 +29,16 @@
                             Disabled="@(_songs.Count < 2)"
                             Icon="@Icons.Material.Filled.Remove"
                             OnClick="@(() => DeleteRow(context.Item))"
+                            Size="Size.Small"
                         />
                     </EditTemplate>
                 </TemplateColumn>
                 
-                <PropertyColumn Property="x => x.TrackNumber" CellStyle="max-width: 80px;" Title="#"/>
+                <PropertyColumn Property="x => x.TrackNumber" CellStyle="max-width: 40px;" Title="#"/>
                 
                 <PropertyColumn Property="x => x.Title" Title="Name"/>
                 
-                <TemplateColumn Title="Genres">
-                    <EditTemplate>
-
-                    </EditTemplate>
-                </TemplateColumn>
-                
-                <TemplateColumn Title="Influences">
-                    <EditTemplate>
-
-                    </EditTemplate>
-                </TemplateColumn>
-                
-                <PropertyColumn Property="x => x.Type">
+                <PropertyColumn Property="x => x.Type" CellStyle="max-width: 80px;">
                     <EditTemplate>
                         <MudSelect T="SongType?" @bind-Value="context.Item.Type"
                                    Placeholder="Select a type" 
@@ -62,12 +51,11 @@
                     </EditTemplate>
                 </PropertyColumn>
                 
-                <PropertyColumn Property="x => x.Duration" Title="Duration">
+                <PropertyColumn Property="x => x.Duration" Title="Duration"
+                                CellStyle="max-width: 60px">
                     <EditTemplate>
                         <MudTextField @bind-Value="context.Item.Duration"
-                                      Mask="@(new PatternMask("00:00"))"
-                                      Placeholder="mm:ss"
-                                      Variant="Variant.Filled" />
+                                      Placeholder="mm:ss" />
                     </EditTemplate>
                 </PropertyColumn>
             </Columns>

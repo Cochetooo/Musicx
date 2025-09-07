@@ -216,6 +216,12 @@ public partial class AlbumEditModal
         _primaryGenres.Clear();
         _influenceGenres.Clear();
 
+        _selectedPrimaryGenre = null;
+        _selectedPrimaryText = "";
+        
+        _selectedInfluenceGenre = null;
+        _selectedInfluenceText = "";
+
         _recordingDates = null;
     }
 }

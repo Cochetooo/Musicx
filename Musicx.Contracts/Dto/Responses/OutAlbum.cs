@@ -14,6 +14,7 @@ public sealed class OutAlbum : BaseOutputModel
     public int? DiscTotal { get; set; }
     public DateTime? EndRecordDate { get; set; }
     public bool IsFarRight { get; set; }
+    public bool IsNsfw { get; set; }
     public string? Language { get; set; }
     public string Name { get; set; } = null!;
     public DateTime? OriginalReleaseDate { get; set; }

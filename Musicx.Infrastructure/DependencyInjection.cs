@@ -107,12 +107,14 @@ public static class DependencyInjection
         services.AddScoped(typeof(SqlBuilder<InAlbum>), typeof(AlbumSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InGenre>), typeof(GenreSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InSong>), typeof(SongSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InUser>), typeof(UserSqlBuilder));
 
         // Repositories
         services.AddScoped<Application.Api.Interfaces.Persistence.ISongRepository, API.Persistence.Repositories.SongRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumRepository, API.Persistence.Repositories.AlbumRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IArtistRepository, API.Persistence.Repositories.ArtistRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IGenreRepository, API.Persistence.Repositories.GenreRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.IUserRepository, API.Persistence.Repositories.UserRepository>();
 
         services.AddMusicxWeb();
         
@@ -134,6 +136,7 @@ public static class DependencyInjection
         
         services.AddScoped<IGetAlbumByArtistUseCase, UcGetAlbumByArtist>();
         services.AddScoped<IGetAlbumByGenreUseCase, UcGetAlbumByGenre>();
+        services.AddScoped<IGetSongByAlbumUseCase, UcGetSongByAlbum>();
         
         return services;
     }

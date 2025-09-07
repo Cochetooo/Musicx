@@ -17,30 +17,31 @@ public partial class AlbumView
 
     private OutAlbum? _album;
     private List<OutSong> _albumSongs = [];
+    private OutAlbum? _previousAlbum, _nextAlbum;
 
+    private bool _isArtworkRevealed;
     private bool _showDetailedView;
 
     private readonly List<BreadcrumbItem>? _breadcrumb =
     [
-        new("Musicx", href: "/"),
+        
     ];
-    
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+
+    protected override void OnInitialized()
     {
-        if (!firstRender)
-        {
-            return;
-        }
-
         _logger = LoggerProvider.CreateLogger(nameof(AlbumView));
-
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
         await LoadAlbum();
 
         if (_breadcrumb is not null && _album is not null)
         {
+            _breadcrumb.Clear();
+            _breadcrumb.Add(new("Musicx", href: "/"));
             _breadcrumb.Add(new(_album.Artist?.Name ?? "?",
                 href: _album is { Artist: not null } ? "/Artist/" + _album.Artist.Id : "#"));
-            
             _breadcrumb.Add(new(_album.Name, href: "#"));
         }
         
@@ -71,6 +72,36 @@ public partial class AlbumView
         
         _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
         await InvokeAsync(StateHasChanged);
+
+        _albumSongs = await UcGetSongs.ExecuteAsync(_album.Id);
+        _logger.LogInformation($"✅ Album Songs loaded: {_albumSongs.Count}");
+        await InvokeAsync(StateHasChanged);
+
+        _previousAlbum = null;
+        _nextAlbum = null;
+
+        if (_album.Artist is not null)
+        {
+            var artistAlbums = await UcGetArtistAlbums.ExecuteAsync(_album.Artist.Id);
+
+            var currentIndex = artistAlbums.FindIndex(a => a.Id == _album.Id);
+
+            if (currentIndex != -1)
+            {
+                if (currentIndex > 0)
+                {
+                    _previousAlbum = artistAlbums[currentIndex - 1];
+                }
+
+                if (currentIndex < artistAlbums.Count - 1)
+                {
+                    _nextAlbum = artistAlbums[currentIndex + 1];
+                }
+            }
+            
+            _logger.LogInformation($"✅ Previous and Next albums loaded.");
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private async Task EditTrackListShowModal()

@@ -36,15 +36,16 @@ abbreviated AS (
      -- On abrège uniquement le 1er mot du préfixe (s’il existe)
      CASE
          WHEN prefix_raw = '' THEN ''  -- ✅ pas de préfixe => rien à abréger
-         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'progressive' THEN 'Prog'     || substr(prefix_raw, length('progressive') + 1)
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'alternative' THEN 'Alt.'     || substr(prefix_raw, length('alternative') + 1)
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'atmospheric' THEN 'Atmo'     || substr(prefix_raw, length('atmospheric') + 1)
-         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'gothic'      THEN 'Goth'     || substr(prefix_raw, length('gothic') + 1)
-         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'melodic'     THEN 'Melo'     || substr(prefix_raw, length('melodic') + 1)
-         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'symphonic'   THEN 'Sympho'   || substr(prefix_raw, length('symphonic') + 1)
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'electronic'  THEN 'Electro.' || substr(prefix_raw, length('electronic') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'gothic'      THEN 'Goth'     || substr(prefix_raw, length('gothic') + 1)
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'industrial'  THEN 'Indus'    || substr(prefix_raw, length('industrial') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'melodic'     THEN 'Melo'     || substr(prefix_raw, length('melodic') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'progressive' THEN 'Prog'     || substr(prefix_raw, length('progressive') + 1)
          WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'psychedelic' THEN 'Psych.'   || substr(prefix_raw, length('psychedelic') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'technical'   THEN 'Tech'     || substr(prefix_raw, length('technical') + 1)
+         WHEN LOWER(split_part(prefix_raw, ' ', 1)) = 'symphonic'   THEN 'Sympho'   || substr(prefix_raw, length('symphonic') + 1)
          ELSE split_part(prefix_raw, ' ', 1) || substr(prefix_raw, length(split_part(prefix_raw, ' ', 1)) + 1)
          END AS abbr_prefix,
      suffix

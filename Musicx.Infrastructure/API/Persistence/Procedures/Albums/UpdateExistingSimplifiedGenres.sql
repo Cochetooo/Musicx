@@ -1,11 +1,14 @@
-CREATE OR REPLACE FUNCTION refresh_all_artists_calculated_fields()
-    RETURNS void AS
+DO
 $$
-DECLARE
-    r RECORD;
-BEGIN
-    FOR r IN SELECT artist_id FROM artists LOOP
-            PERFORM update_artist_calculated_fields(r.artist_id);
-        END LOOP;
-END;
-$$ LANGUAGE plpgsql;
+    DECLARE
+        a_id INT;
+    BEGIN
+        FOR a_id IN
+            SELECT DISTINCT ag.album_genre_album_id
+            FROM album_genre ag
+                     INNER JOIN albums al ON ag.album_genre_album_id=al.album_id
+            LOOP
+                PERFORM update_album_simplified_genre(a_id);
+            END LOOP;
+    END;
+$$

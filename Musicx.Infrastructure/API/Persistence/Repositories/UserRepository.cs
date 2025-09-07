@@ -1,9 +1,6 @@
-using System.Linq.Expressions;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Musicx.Application.Api.Interfaces.Specifications;
-using Musicx.Application.Shared.Interfaces.Common;
+using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
@@ -11,22 +8,20 @@ using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
-using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
-using ISongRepository = Musicx.Application.Api.Interfaces.Persistence.ISongRepository;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
-internal sealed class SongRepository(
+internal sealed class UserRepository(
     IDbConnectionProvider connection,
-    SqlBuilder<InSong> builder,
-    ILoggerProvider loggerProvider) : ISongRepository
+    SqlBuilder<InUser> builder,
+    ILoggerProvider loggerProvider) : IUserRepository
 {
-    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(SongRepository));
-    
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserRepository));
+
     public async Task DeleteAsync(long id)
     {
-        const string sql = $"DELETE FROM songs WHERE {SongColumns.Id} = @id";
+        const string sql = $"DELETE FROM users WHERE {SongColumns.Id} = @id";
 
         var parameters = new List<NpgsqlParameter>
         {
@@ -39,8 +34,8 @@ internal sealed class SongRepository(
     public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
         var stringIds = string.Join(",", ids);
-        const string sql = $"DELETE FROM songs WHERE {SongColumns.Id} IN (@ids)";
-        
+        const string sql = $"DELETE FROM users WHERE {SongColumns.Id} IN (@ids)";
+
         var parameters = new List<NpgsqlParameter>
         {
             new("@Ids", stringIds)
@@ -49,103 +44,88 @@ internal sealed class SongRepository(
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
-    public async Task<OutSong?> FindByIdAsync(long id, IQuerySpecification<InSong>? songQuerySpecification = null)
+    public async Task<OutUser?> FindByIdAsync(long id, IQuerySpecification<InUser>? userQuerySpecification = null)
     {
-        var sql = new StringBuilder(builder.BuildSelect(songQuerySpecification));
-        sql.Append($" WHERE s0.{SongColumns.Id} = @id")
-            .Append(builder.BuildGroupBy(songQuerySpecification));
-        
+        var sql = new StringBuilder(builder.BuildSelect(userQuerySpecification));
+        sql.Append($" WHERE u0.{UserColumns.Id} = @id")
+            .Append(builder.BuildGroupBy(userQuerySpecification));
+
         var parameters = new List<NpgsqlParameter>
         {
             new("@id", id)
         };
-
+        
         var result = await connection.FetchListDynamicAsync(sql.ToString(), parameters);
 
         return result
             .SingleOrDefault()?
-            .FromDicoToSong();
+            .FromDicoToUser();
     }
 
-    public async Task<List<OutSong>> FindAsync(int skip = 0, int take = 100,
-        IQuerySpecification<InSong>? songQuerySpecification = null, string? filter = null)
+    public async Task<List<OutUser>> FindAsync(int skip = 0, int take = 100,
+        IQuerySpecification<InUser>? userQuerySpecification = null,
+        string? filter = null)
     {
-        var sql = builder.BuildSelect(songQuerySpecification);
+        var sql = builder.BuildSelect(userQuerySpecification);
+
         var parameters = new List<NpgsqlParameter>();
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE similarity(s0.{SongColumns.Title}, @filter) > 0.4";
+            sql += $" WHERE similarity(u0.{UserColumns.Name}, @filter) > 0.4";
             parameters.Add(new NpgsqlParameter("@filter", filter));
         }
         
-        sql += builder.BuildGroupBy(songQuerySpecification);
-        
+        sql += builder.BuildGroupBy(userQuerySpecification);
+
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += builder.BuildOrderBy($"similarity(s0.{SongColumns.Title}, @filter) DESC");
+            sql += $" ORDER BY similarity(u0.{UserColumns.Name}, @filter) DESC";
         }
         else
         {
-            sql += builder.BuildOrderBy($"s0.{SongColumns.Title}");
+            sql += $" ORDER BY u0.{UserColumns.Name}";
         }
-        
+
         sql += " OFFSET @skip LIMIT @take";
         
         parameters.Add(new NpgsqlParameter("@skip", skip));
         parameters.Add(new NpgsqlParameter("@take", take));
-
-        var result = await connection.FetchListDynamicAsync(sql, parameters);
-
-        return result
-            .Select(x => x.FromDicoToSong())
-            .ToList();
-    }
-
-    public async Task<List<OutSong>> FindByAlbumIdAsync(long albumId, IQuerySpecification<InSong>? songQuerySpecification = null)
-    {
-        var sql = builder.BuildSelect(songQuerySpecification);
-        sql += $" WHERE s0.{SongColumns.AlbumId} = @albumId" +
-               builder.BuildGroupBy(songQuerySpecification) +
-               $" ORDER BY s0.{SongColumns.TrackNumber}, s0.{SongColumns.Title}";
-
-        var parameters = new List<NpgsqlParameter>()
-        {
-            new("@albumId", albumId)
-        };
         
         var result = await connection.FetchListDynamicAsync(sql, parameters);
-
+        
         return result
-            .Select(x => x.FromDicoToSong())
+            .Select(x => x.FromDicoToUser())
             .ToList();
     }
 
-    public async Task<List<OutSong>> FindIn(IEnumerable<long> ids, IQuerySpecification<InSong>? songQuerySpecification = null)
+    public async Task<List<OutUser>> FindIn(IEnumerable<long> ids,
+        IQuerySpecification<InUser>? userQuerySpecification = null)
     {
         var idList = ids.ToArray();
         if (0 == idList.Length)
         {
             return [];
         }
-        
+
         var stringIds = string.Join(",", idList);
-        var sql = builder.BuildSelect(songQuerySpecification);
-        sql += $" WHERE s0.{SongColumns.Id} IN ({stringIds})" +
-               builder.BuildGroupBy(songQuerySpecification) +
-               $" ORDER BY s0.{SongColumns.Title}";
-        
+        var sql = builder.BuildSelect(userQuerySpecification);
+        sql += $" WHERE u0.{UserColumns.Id} IN ({stringIds})" +
+               builder.BuildGroupBy(userQuerySpecification) +
+               builder.BuildOrderBy(
+                   $"u0.{UserColumns.Name}");
+
         var result = await connection.FetchListDynamicAsync(sql, []);
-        
+
         return result
-            .Select(x => x.FromDicoToSong())
+            .Select(x => x.FromDicoToUser())
             .ToList();
     }
 
     public async Task<long> GetCountAsync()
-        => await connection.Count("songs");
-
-    public async Task<long> SaveAsync(InSong entity)
+        => await connection.Count("users");
+    
+    public async Task<long> SaveAsync(InUser entity)
     {
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
@@ -176,13 +156,13 @@ internal sealed class SongRepository(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE Song : Could not persist.", ex, _logger);
+            throw new RepositoryException("❌ SAVE User : Could not persist.", ex, _logger);
         }
         
         return entity.Id;
     }
 
-    public async Task<List<long>> SaveAllAsync(IEnumerable<InSong> entities)
+    public async Task<List<long>> SaveAllAsync(IEnumerable<InUser> entities)
     {
         var idList = new List<long>();
         
@@ -220,7 +200,7 @@ internal sealed class SongRepository(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE ALL Song : Could not persist.", ex, _logger);
+            throw new RepositoryException("❌ SAVE ALL User : Could not persist.", ex, _logger);
         }
         
         return idList;
