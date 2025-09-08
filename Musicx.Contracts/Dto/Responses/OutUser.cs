@@ -4,6 +4,7 @@ public sealed class OutUser : BaseOutputModel
 {
     public ICollection<OutRole>? Roles { get; set; }
     
+    public DateTime? BirthDate { get; set; }
     public string Email { get; set; } = string.Empty;
     public bool EmailConfirmed { get; set; }
     public string? GoogleId { get; set; }

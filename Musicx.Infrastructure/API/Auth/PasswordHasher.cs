@@ -1,14 +1,15 @@
 using System.Security.Cryptography;
+using Musicx.Application.Api.Interfaces.Auth;
 
-namespace Musicx.Application.Shared.Utilities;
+namespace Musicx.Infrastructure.API.Auth;
 
-public static class PasswordHasher
+public sealed class PasswordHasher : IPasswordHasher
 {
     private const int SaltBytes = 32;
     private const int KeyBytes = 32;
     private const int Iterations = 200_000;
 
-    public static (string HashBase64, string SaltBase64) HashPassword(string password)
+    public (string HashBase64, string SaltBase64) HashPassword(string password)
     {
         using var rng = RandomNumberGenerator.Create();
         var salt = new byte[SaltBytes];
@@ -20,7 +21,7 @@ public static class PasswordHasher
         return (Convert.ToBase64String(key), Convert.ToBase64String(salt));
     }
 
-    public static bool VerifyPassword(string password, string storedHashBase64, string storedSaltBase64)
+    public bool VerifyPassword(string password, string storedHashBase64, string storedSaltBase64)
     {
         var salt = Convert.FromBase64String(storedSaltBase64);
         var storedHash = Convert.FromBase64String(storedHashBase64);

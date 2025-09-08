@@ -1,6 +1,14 @@
 @using ISO3166
 
-<span class="fi fi-@GetCountryCode(CountryName).ToLower()"></span>
+<MudTooltip>
+    <ChildContent>
+        <span class="fi fi-@GetCountryCode(CountryName).ToLower()"></span>
+    </ChildContent>
+    <TooltipContent>
+        @CountryName
+    </TooltipContent>
+</MudTooltip>
+
 
 @code {
 

@@ -18,9 +18,10 @@ else
                 <div class="animation-flip-card @(DetailedView ? "animation-flipped-back" : "animation-flipped-front")">
                     @if (!DetailedView && Album.SimplifiedGenreName is not null && Album.SimplifiedGenreColor is not null)
                     {
-                        <MudChip Class="montserrat py-1 px-3 ma-1"
+                        <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge"
                                  T="string?"
                                  Size="@Size"
+                                 Label="@true"
                                  Style="@GetSimplifiedGenreStyle(Album)">
                             @Album.SimplifiedGenreName
                         </MudChip>

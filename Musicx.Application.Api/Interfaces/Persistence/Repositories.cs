@@ -25,4 +25,12 @@ public interface ISongRepository : IRepository<InSong, OutSong>
         IQuerySpecification<InSong>? songQuerySpecification = null);
 }
 
-public interface IUserRepository : IRepository<InUser, OutUser>;
+public interface IPermissionRepository : IRepository<InPermission, OutPermission>;
+
+public interface IRoleRepository : IRepository<InRole, OutRole>;
+
+public interface IUserRepository : IRepository<InUser, OutUser>
+{
+    Task<OutUser?> FindByEmailAsync(string email,
+        IQuerySpecification<InUser>? userQuerySpecification = null);
+}

@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Musicx.Application.Shared.Utilities;
 
 public static class ColorHelper
@@ -55,5 +57,25 @@ public static class ColorHelper
         b = (int)Math.Min(255, b + 255 * amount);
 
         return $"#{r:X2}{g:X2}{b:X2}";
+    }
+    
+    public static string ToRgba(string hexColor, double alpha)
+    {
+        var alphaInvariant = alpha.ToString(CultureInfo.InvariantCulture);
+        
+        if (string.IsNullOrWhiteSpace(hexColor))
+            return $"rgba(0,0,0,{alphaInvariant})";
+
+        hexColor = hexColor.TrimStart('#');
+
+        if (hexColor.Length == 6)
+        {
+            var r = Convert.ToInt32(hexColor.Substring(0, 2), 16);
+            var g = Convert.ToInt32(hexColor.Substring(2, 2), 16);
+            var b = Convert.ToInt32(hexColor.Substring(4, 2), 16);
+            return $"rgba({r},{g},{b},{alphaInvariant})";
+        }
+
+        return $"rgba(0,0,0,{alphaInvariant})";
     }
 }

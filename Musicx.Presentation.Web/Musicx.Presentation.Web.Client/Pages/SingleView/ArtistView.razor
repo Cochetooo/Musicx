@@ -21,16 +21,23 @@
 }
 else
 {
-    <MudCard Class="mt-4 glass-card" Style="background-color: var(--mud-palette-background-gray);">
+    <MudCard Class="mt-4 glass-card animate-hover-up" Style="background-color: var(--mud-palette-background-gray);">
         <MudCardHeader>
             <MudImage Src="@_artist.ArtworkUrl" Elevation="25" Style="width: 200px; border-radius: 10px"/>
 
             <MudStack Class="pl-8">
-                <MudText Typo="Typo.h1" Style="font-weight: 900; font-size: 5rem;" Class="montserrat mb-3">
-                    @_artist.Name
+                <MudText Typo="Typo.h1" Style="font-weight: 900; font-size: 5rem;" Class="montserrat mb-1">
+                    @_artist.Name 
                 </MudText>
                 
-                <MudDivider />
+                @if (_artist.Country is not null)
+                {
+                    <MudText Typo="Typo.h5" Class="my-1">
+                        <Flag CountryName="@_artist.Country" />
+                    </MudText>
+                }
+                
+                <MudDivider Class="mt-2"/>
             
                 <MudText Typo="Typo.body2" Style="font-weight: 700;" Color="Color.Secondary" Class="montserrat">
                     @_artist.CalculatedGenres
@@ -106,8 +113,9 @@ else
                                                     @if (album.SimplifiedGenreName is not null && album.SimplifiedGenreColor is not null)
                                                     {
                                                         <MudChip
-                                                            Class="montserrat py-1 px-3 ma-1"
-                                                            Style="@GetSimplifiedGenreStyle(album)">
+                                                            Class="montserrat py-1 px-3 ma-1 genre-badge"
+                                                            Style="@GetSimplifiedGenreStyle(album)"
+                                                            Label="@true">
                                                             @album.SimplifiedGenreName
                                                         </MudChip>
                                                     }

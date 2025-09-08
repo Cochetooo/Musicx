@@ -11,6 +11,7 @@ public sealed class InUser : BaseInputModel
     public IReadOnlyList<long>? RoleIds { get; set; }
     
     // Optional Columns
+    public DateTime? BirthDate { get; set; }
     public string? GoogleId { get; set; }
     public string? LastFmUsername { get; set; }
     public string? PasswordHash { get; set; }

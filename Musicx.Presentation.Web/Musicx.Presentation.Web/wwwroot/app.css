@@ -57,12 +57,20 @@ h1:focus {
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-    transition: all 0.3s ease;
+    transition: box-shadow 0.3s ease;
 }
 
 .glass-card:hover {
-    transform: translateY(-4px);
     box-shadow: 0 12px 36px rgba(0,0,0,0.35);
+}
+
+.genre-badge {
+    box-shadow: var(--mud-elevation-6);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.genre-badge:hover {
+    box-shadow: var(--mud-elevation-12);
 }
 
 * {

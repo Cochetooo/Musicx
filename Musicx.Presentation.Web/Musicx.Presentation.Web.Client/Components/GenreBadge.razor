@@ -9,7 +9,8 @@
         {
             <MudChip T="string" Size="@Size" 
                      Icon="@GetChipIcon()" Style="@GetChipStyle(Genre)" 
-                     Class="@GetChipClass()" OnClose="@OnClose">
+                     Class="@GetChipClass()" OnClose="@OnClose"
+                     Label="@true">
                 @Genre.Name
             </MudChip>
         }
@@ -17,7 +18,8 @@
         {
             <MudChip T="string" Size="@Size" 
                      Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
-                     Class="@GetChipClass()">
+                     Class="@GetChipClass()"
+                     Label="@true">
                 @Genre.Name
             </MudChip>
         }
@@ -29,7 +31,8 @@ else
     {
         <MudChip T="string" Size="@Size" 
                  Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
-                 Class="@GetChipClass()" OnClose="@OnClose">
+                 Class="@GetChipClass()" OnClose="@OnClose"
+                 Label="@true">
             @Genre.Name
         </MudChip>
     }
@@ -37,7 +40,8 @@ else
     {
         <MudChip T="string" Size="@Size" 
                  Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
-                 Class="@GetChipClass()">
+                 Class="@GetChipClass()"
+                 Label="@true">
             @Genre.Name
         </MudChip>
     }
@@ -59,22 +63,26 @@ else
     private string GetChipStyle(OutGenre genre)
     {
         var background = genre.Color ?? ColorHelper.DarkColor;
+        var transparentBackground = ColorHelper.ToRgba(background, 0.5);
+        
         var textColor = ColorHelper.IsColorLight(background)
             ? ColorHelper.DarkColor
             : "#ffffff";
 
+        var gradient = $"linear-gradient(to right, {transparentBackground}, {background} 5%, {background} 95%, {transparentBackground})";
+
         if (Influence)
         {
-            return $"background-color:{background}; opacity: 0.75; color:{textColor}; font-style: italic;";
+            return $"background:{gradient}; opacity: 0.75; color:{textColor}; font-style: italic;";
         }
         
         return Genre.Type switch
         {
-            GenreType.Basic => $"background-color:{background}; color:{textColor}; font-weight:600;",
-            GenreType.Scene => $"border:1px solid {background}; color:{background}; background:{textColor}; font-weight: bold",
-            GenreType.Movement => $"border:1px dashed {background}; color:{background}; background:{textColor}; font-weight: bold",
-            GenreType.Descriptor => $"background-color:{background}; color:{textColor}; opacity:0.85; border-radius:16px;",
-            _ => $"background-color:{background}; color:{textColor};"
+            GenreType.Basic => $"background:{gradient}; color:{textColor}; font-weight:600;",
+            GenreType.Scene => $"border:1px solid {gradient}; color:{textColor}; background:{gradient}; font-weight: bold",
+            GenreType.Movement => $"border:1px dashed {gradient}; color:{textColor}; background:{gradient}; font-weight: bold",
+            GenreType.Descriptor => $"background:{gradient}; color:{textColor}; opacity:0.85; border-radius:16px;",
+            _ => $"background:{gradient}; color:{textColor};"
         };
     }
     
@@ -82,11 +90,11 @@ else
     {
         return Genre.Type switch
         {
-            GenreType.Basic => "chip-basic montserrat hover-scale",
-            GenreType.Scene => "chip-scene montserrat hover-fade",
-            GenreType.Movement => "chip-movement montserrat hover-fade",
-            GenreType.Descriptor => "chip-descriptor montserrat hover-pulse",
-            _ => "chip-default montserrat"
+            GenreType.Basic => "chip-basic montserrat genre-badge animate-hover-up",
+            GenreType.Scene => "chip-scene montserrat genre-badge animate-hover-up",
+            GenreType.Movement => "chip-movement montserrat genre-badge animate-hover-up",
+            GenreType.Descriptor => "chip-descriptor montserrat genre-badge animate-hover-up",
+            _ => "chip-default montserrat animate-hover-up"
         };
     }
     

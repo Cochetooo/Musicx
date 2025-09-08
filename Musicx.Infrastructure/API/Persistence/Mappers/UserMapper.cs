@@ -29,6 +29,7 @@ public static class UserMapper
                 RoleMapperJsonOptions)
             : null,
 
+        BirthDate = user.SafeGet<DateTime>(UserColumns.BirthDate),
         Email = user.SafeGet<string>(UserColumns.Email) ?? "",
         EmailConfirmed = user.SafeGet<bool>(UserColumns.EmailConfirmed),
         Name = user.SafeGet<string>(UserColumns.Name) ?? "",
@@ -44,6 +45,7 @@ public static class UserMapper
 
         RoleIds = user.Roles?.Select(r => r.Id).ToList(),
 
+        BirthDate = user.BirthDate,
         Email = user.Email,
         EmailConfirmed = user.EmailConfirmed,
         Name = user.Name,

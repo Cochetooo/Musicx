@@ -1,6 +1,8 @@
 using Musicx.Infrastructure;
 using Musicx.Presentation.Web.Client;
 using Musicx.Presentation.Web.Components;
+using Musicx.Presentation.Web.Contexts;
+using Musicx.Presentation.Web.Middlewares.Auth;
 using _Imports = Musicx.Presentation.Web.Client._Imports;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,10 +14,16 @@ builder.Logging.AddLog4Net();
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddHttpContextAccessor();
+
 // Add application infrastructure
 builder.Services
     .AddMusicxInfrastructure(builder.Configuration)
     .AddMusicxApi(builder.Configuration);
+
+// Add Api dependencies
+builder.Services
+    .AddScoped<IUserContext, UserContext>();
 
 // Add Swagger
 builder.Services
@@ -44,6 +52,9 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+// Use Middlewares
+app.UseMiddleware<AuthenticationMiddleware>();
 
 app.MapStaticAssets();
 app.MapControllers();

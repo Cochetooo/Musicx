@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Musicx.Application.Api.Interfaces.Auth;
+using Musicx.Application.Api.Services.Auth;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Application.Shared.Interfaces.Common;
@@ -10,6 +12,7 @@ using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Infrastructure.API.Auth;
 using Musicx.Infrastructure.API.Persistence;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.Desktop.Persistence;
@@ -39,20 +42,6 @@ public static class DependencyInjection
     {
         // Providers
         services.AddScoped<HttpClient>();
-        /* services.AddHttpClient<IExternalMusicDataProvider, LastFmApiProvider>(client =>
-        {
-            client.BaseAddress = new Uri(configuration["Apis:LastFm:BaseUrl"]!);
-        });
-
-        services.AddHttpClient<IExternalMusicDataProvider, DeezerApiProvider>(client =>
-        {
-            client.BaseAddress = new Uri(configuration["Apis:Deezer:BaseUrl"]!);
-        });
-
-        services.AddHttpClient<IExternalMusicDataProvider, ItunesApiProvider>(client =>
-        {
-            client.BaseAddress = new Uri(configuration["Apis:Itunes:BaseUrl"]!);
-        }); */
 
         services.AddScoped<IExternalMusicDataProvider, LastFmApiProvider>();
         services.AddScoped<IExternalMusicDataProvider, DeezerApiProvider>();
@@ -115,6 +104,13 @@ public static class DependencyInjection
         services.AddScoped<Application.Api.Interfaces.Persistence.IArtistRepository, API.Persistence.Repositories.ArtistRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IGenreRepository, API.Persistence.Repositories.GenreRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IUserRepository, API.Persistence.Repositories.UserRepository>();
+        
+        // Auth
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<ITokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<ITokenValidator, JwtTokenValidator>();
+        
+        services.AddScoped<IAuthService, AuthService>();
 
         services.AddMusicxWeb();
         

@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Persistence;
@@ -12,16 +12,16 @@ using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
-internal sealed class UserRepository(
+internal sealed class PermissionRepository(
     IDbConnectionProvider connection,
-    SqlBuilder<InUser> builder,
-    ILoggerProvider loggerProvider) : IUserRepository
+    SqlBuilder<InPermission> builder,
+    ILoggerProvider loggerProvider) : IPermissionRepository
 {
-    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserRepository));
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(PermissionRepository));
 
     public async Task DeleteAsync(long id)
     {
-        const string sql = $"DELETE FROM users WHERE {UserColumns.Id} = @id";
+        const string sql = $"DELETE FROM permissions WHERE {PermissionColumns.Id} = @id";
 
         var parameters = new List<NpgsqlParameter>
         {
@@ -34,7 +34,7 @@ internal sealed class UserRepository(
     public async Task DeleteAllAsync(IEnumerable<long> ids)
     {
         var stringIds = string.Join(",", ids);
-        const string sql = $"DELETE FROM users WHERE {UserColumns.Id} IN (@ids)";
+        const string sql = $"DELETE FROM permissions WHERE {PermissionColumns.Id} IN (@ids)";
 
         var parameters = new List<NpgsqlParameter>
         {
@@ -44,11 +44,11 @@ internal sealed class UserRepository(
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
-    public async Task<OutUser?> FindByIdAsync(long id, IQuerySpecification<InUser>? userQuerySpecification = null)
+    public async Task<OutPermission?> FindByIdAsync(long id, IQuerySpecification<InPermission>? permissionQuerySpecification = null)
     {
-        var sql = new StringBuilder(builder.BuildSelect(userQuerySpecification));
-        sql.Append($" WHERE u0.{UserColumns.Id} = @id")
-            .Append(builder.BuildGroupBy(userQuerySpecification));
+        var sql = new StringBuilder(builder.BuildSelect(permissionQuerySpecification));
+        sql.Append($" WHERE p0.{PermissionColumns.Id} = @id")
+            .Append(builder.BuildGroupBy(permissionQuerySpecification));
 
         var parameters = new List<NpgsqlParameter>
         {
@@ -59,50 +59,32 @@ internal sealed class UserRepository(
 
         return result
             .SingleOrDefault()?
-            .FromDicoToUser();
-    }
-    
-    public async Task<OutUser?> FindByEmailAsync(string email, IQuerySpecification<InUser>? userQuerySpecification = null)
-    {
-        var sql = new StringBuilder(builder.BuildSelect(userQuerySpecification));
-        sql.Append($" WHERE u0.{UserColumns.Email} = @email")
-            .Append(builder.BuildGroupBy(userQuerySpecification));
-
-        var parameters = new List<NpgsqlParameter>
-        {
-            new("@email", email)
-        };
-        
-        var result = await connection.FetchListDynamicAsync(sql.ToString(), parameters);
-
-        return result
-            .SingleOrDefault()?
-            .FromDicoToUser();
+            .FromDicoToPermission();
     }
 
-    public async Task<List<OutUser>> FindAsync(int skip = 0, int take = 100,
-        IQuerySpecification<InUser>? userQuerySpecification = null,
+    public async Task<List<OutPermission>> FindAsync(int skip = 0, int take = 100,
+        IQuerySpecification<InPermission>? permissionQuerySpecification = null,
         string? filter = null)
     {
-        var sql = builder.BuildSelect(userQuerySpecification);
+        var sql = builder.BuildSelect(permissionQuerySpecification);
 
         var parameters = new List<NpgsqlParameter>();
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE similarity(u0.{UserColumns.Name}, @filter) > 0.4";
+            sql += $" WHERE similarity(p0.{PermissionColumns.Name}, @filter) > 0.4";
             parameters.Add(new NpgsqlParameter("@filter", filter));
         }
         
-        sql += builder.BuildGroupBy(userQuerySpecification);
+        sql += builder.BuildGroupBy(permissionQuerySpecification);
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" ORDER BY similarity(u0.{UserColumns.Name}, @filter) DESC";
+            sql += $" ORDER BY similarity(p0.{PermissionColumns.Name}, @filter) DESC";
         }
         else
         {
-            sql += $" ORDER BY u0.{UserColumns.Name}";
+            sql += $" ORDER BY p0.{PermissionColumns.Name}";
         }
 
         sql += " OFFSET @skip LIMIT @take";
@@ -113,12 +95,12 @@ internal sealed class UserRepository(
         var result = await connection.FetchListDynamicAsync(sql, parameters);
         
         return result
-            .Select(x => x.FromDicoToUser())
+            .Select(x => x.FromDicoToPermission())
             .ToList();
     }
 
-    public async Task<List<OutUser>> FindIn(IEnumerable<long> ids,
-        IQuerySpecification<InUser>? userQuerySpecification = null)
+    public async Task<List<OutPermission>> FindIn(IEnumerable<long> ids,
+        IQuerySpecification<InPermission>? permissionQuerySpecification = null)
     {
         var idList = ids.ToArray();
         if (0 == idList.Length)
@@ -127,23 +109,23 @@ internal sealed class UserRepository(
         }
 
         var stringIds = string.Join(",", idList);
-        var sql = builder.BuildSelect(userQuerySpecification);
-        sql += $" WHERE u0.{UserColumns.Id} IN ({stringIds})" +
-               builder.BuildGroupBy(userQuerySpecification) +
+        var sql = builder.BuildSelect(permissionQuerySpecification);
+        sql += $" WHERE p0.{PermissionColumns.Id} IN ({stringIds})" +
+               builder.BuildGroupBy(permissionQuerySpecification) +
                builder.BuildOrderBy(
-                   $"u0.{UserColumns.Name}");
+                   $"p0.{PermissionColumns.Name}");
 
         var result = await connection.FetchListDynamicAsync(sql, []);
 
         return result
-            .Select(x => x.FromDicoToUser())
+            .Select(x => x.FromDicoToPermission())
             .ToList();
     }
 
     public async Task<long> GetCountAsync()
-        => await connection.Count("users");
+        => await connection.Count("permissions");
     
-    public async Task<long> SaveAsync(InUser entity)
+    public async Task<long> SaveAsync(InPermission entity)
     {
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
@@ -174,13 +156,13 @@ internal sealed class UserRepository(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE User : Could not persist.", ex, _logger);
+            throw new RepositoryException("❌ SAVE Permission : Could not persist.", ex, _logger);
         }
         
         return entity.Id;
     }
 
-    public async Task<List<long>> SaveAllAsync(IEnumerable<InUser> entities)
+    public async Task<List<long>> SaveAllAsync(IEnumerable<InPermission> entities)
     {
         var idList = new List<long>();
         
@@ -218,7 +200,7 @@ internal sealed class UserRepository(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE ALL User : Could not persist.", ex, _logger);
+            throw new RepositoryException("❌ SAVE ALL Permission : Could not persist.", ex, _logger);
         }
         
         return idList;

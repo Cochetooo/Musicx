@@ -7,6 +7,7 @@ public static class UserColumns
     public const string CreatedAt = "user_created_at";
     public const string UpdatedAt = "user_updated_at";
 
+    public const string BirthDate = "user_birth_date";
     public const string Email = "user_email";
     public const string EmailConfirmed = "user_email_confirmed";
     public const string GoogleId = "user_google_id";
