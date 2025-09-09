@@ -39,11 +39,17 @@
 
         <!-- Others Menu -->
         <MudMenu
-                 Variant="Variant.Text"
-                 Size="Size.Medium"
-                 Color="Color.Inherit"
-                 Icon="@Icons.Material.Filled.MoreVert">
+            Variant="Variant.Text"
+            Size="Size.Medium"
+            Color="Color.Inherit"
+            Icon="@Icons.Material.Filled.MoreVert">
             
+            <!-- User > Signup -->
+            <MudMenuItem Href="/User/Signup"
+                         Icon="@Icons.Material.Filled.PersonAdd"
+                         IconColor="Color.Primary"
+                         Label="Signup"/>
+
             <!-- Admin > Artist Dashboard -->
             <MudMenuItem Href="/Admin/ArtistDashboard"
                          Icon="@Icons.Material.Filled.Person"
@@ -55,6 +61,12 @@
                          Icon="@Icons.Material.Filled.Piano"
                          IconColor="Color.Primary"
                          Label="Genre Dashboard"/>
+            
+            <!-- Admin > Role Dashboard -->
+            <MudMenuItem Href="/Admin/RoleDashboard"
+                         Icon="@Icons.Material.Filled.PersonPin"
+                         IconColor="Color.Primary"
+                         Label="Role Dashboard"/>
         </MudMenu>
     </MudAppBar>
     

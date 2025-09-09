@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -9,7 +10,8 @@ using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Builders;
 
-internal sealed class UserSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilder<InUser>
+internal sealed class UserSqlBuilder(
+    ILoggerProvider loggerProvider) : SqlBuilder<InUser>
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserSqlBuilder));
     
@@ -22,6 +24,7 @@ internal sealed class UserSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
             {
                 { UserColumns.CreatedAt, DateTime.Now },
                 { UserColumns.UpdatedAt, DateTime.Now },
+                { UserColumns.BirthDate, entity.BirthDate },
                 { UserColumns.Email, entity.Email },
                 { UserColumns.EmailConfirmed, entity.EmailConfirmed },
                 { UserColumns.Name, entity.Name },
@@ -78,6 +81,7 @@ internal sealed class UserSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
             new Dictionary<string, object?>
             {
                 { UserColumns.UpdatedAt, DateTime.Now },
+                { UserColumns.BirthDate, entity.BirthDate },
                 { UserColumns.Email, entity.Email },
                 { UserColumns.EmailConfirmed, entity.EmailConfirmed },
                 { UserColumns.Name, entity.Name },
@@ -136,7 +140,7 @@ internal sealed class UserSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
 
         if (userQuerySpecification.IncludeRoles)
         {
-            selects.Add("(SELECT json_agg(pg.*) FROM user_role ur " +
+            selects.Add("(SELECT json_agg(ur.*) FROM user_role ur " +
                         $"JOIN roles r ON ur.{UserRoleColumns.RoleId} = r.{RoleColumns.Id} " +
                         $"WHERE ur.{UserRoleColumns.UserId} = u0.{UserColumns.Id}) AS roles");
         }

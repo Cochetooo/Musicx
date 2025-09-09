@@ -96,6 +96,8 @@ public static class DependencyInjection
         services.AddScoped(typeof(SqlBuilder<InAlbum>), typeof(AlbumSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InGenre>), typeof(GenreSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InSong>), typeof(SongSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InPermission>), typeof(PermissionSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InRole>), typeof(RoleSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InUser>), typeof(UserSqlBuilder));
 
         // Repositories
@@ -103,6 +105,8 @@ public static class DependencyInjection
         services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumRepository, API.Persistence.Repositories.AlbumRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IArtistRepository, API.Persistence.Repositories.ArtistRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IGenreRepository, API.Persistence.Repositories.GenreRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.IPermissionRepository, API.Persistence.Repositories.PermissionRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.IRoleRepository, API.Persistence.Repositories.RoleRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IUserRepository, API.Persistence.Repositories.UserRepository>();
         
         // Auth

@@ -1,0 +1,60 @@
+﻿@page "/User/Signup"
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests
+
+@inject ISaveUseCase<InUser> UcSave
+@inject NavigationManager Navigation
+
+<MudBreadcrumbs Items="@_breadcrumb" />
+
+<MudCard Class="px-8 py-4 animate-hover-up glass-card" Elevation="6">
+    <MudCardHeader>
+        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="width: 100%;">
+            <MudText Typo="Typo.h2" Class="montserrat mb-2" Style="font-weight: 800;">New Account</MudText>
+
+            <MudTextField
+                T="string"
+                Placeholder="Enter a username..."
+                Label="Username"
+                Variant="Variant.Outlined"
+                Immediate
+                Adornment="Adornment.End"
+                AdornmentIcon="@Icons.Material.Filled.Person"
+                @bind-Text="_user.Name"/>
+
+            <MudTextField
+                T="string"
+                Placeholder="Enter your email..."
+                Label="Email"
+                Variant="Variant.Outlined"
+                InputType="InputType.Email"
+                Immediate
+                Adornment="Adornment.End"
+                AdornmentIcon="@Icons.Material.Filled.Mail"
+                @bind-Text="_user.Email"/>
+
+            <MudTextField
+                T="string?"
+                Placeholder="Enter a password..."
+                Label="Password"
+                InputType="@_passwordInput"
+                Variant="Variant.Outlined"
+                Immediate
+                Adornment="Adornment.End"
+                AdornmentIcon="@_passwordInputIcon"
+                AdornmentAriaLabel="Show Password"
+                OnAdornmentClick="@TogglePasswordVisibility"
+                @bind-Text="@_user.Password"/>
+
+            <MudDatePicker Label="Birth Date" 
+                           Variant="Variant.Outlined" 
+                           @bind-Date="_user.BirthDate"/>
+            
+            <MudButton Color="Color.Primary" Size="Size.Large"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       Variant="Variant.Filled" OnClick="@Save">
+                Create New Account
+            </MudButton>
+        </MudStack>
+    </MudCardHeader>
+</MudCard>

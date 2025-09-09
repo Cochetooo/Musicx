@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <Folder Include="Api\Persistence\Repositories\" />
+      <Folder Include="API\Persistence\Schema\_Fixtures\" />
       <Folder Include="Desktop\" />
     </ItemGroup>
 

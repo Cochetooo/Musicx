@@ -14,6 +14,7 @@ public sealed class InUser : BaseInputModel
     public DateTime? BirthDate { get; set; }
     public string? GoogleId { get; set; }
     public string? LastFmUsername { get; set; }
+    public string? Password { get; set; }
     public string? PasswordHash { get; set; }
     public string? PasswordSalt { get; set; }
 }

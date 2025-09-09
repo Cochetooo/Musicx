@@ -1,5 +1,7 @@
 ﻿using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Application.Api.Interfaces.Persistence;
+using Musicx.Application.Api.Interfaces.Specifications;
+using Musicx.Contracts.Dto.Requests;
 
 namespace Musicx.Application.Api.Services.Auth;
 
@@ -8,9 +10,27 @@ public sealed class AuthService(
     IPasswordHasher passwordHasher,
     ITokenGenerator tokenGenerator) : IAuthService
 {
+    public void CreatePasswordHash(ref InUser rawUser)
+    {
+        if (rawUser.Password is null)
+        {
+            throw new NullReferenceException("User Password is null");
+        }
+        
+        var (hash, salt) = passwordHasher.HashPassword(rawUser.Password);
+        
+        rawUser.PasswordHash = hash;
+        rawUser.PasswordSalt = salt;
+        rawUser.Password = null;
+    }
+
     public async Task<string> SignInAsync(string email, string password)
     {
-        var user = await userRepository.FindByEmailAsync(email);
+        var user = await userRepository.FindByEmailAsync(email, new UserQuerySpecification
+        {
+            IncludeRoles = true
+        });
+        
         if (user is null)
         {
             throw new UnauthorizedAccessException("Invalid credentials : User not found");

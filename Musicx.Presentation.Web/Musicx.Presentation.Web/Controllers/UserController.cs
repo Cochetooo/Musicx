@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
@@ -9,6 +10,7 @@ namespace Musicx.Presentation.Web.Controllers;
 [ApiController]
 [Route("api/users")]
 public sealed class UserController(IUserRepository userRepository,
+    IAuthService authService,
     ILoggerProvider loggerProvider) : ControllerBase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserController));
@@ -168,6 +170,10 @@ public sealed class UserController(IUserRepository userRepository,
 
         try
         {
+            // Convert password -> password hash + salt
+            authService.CreatePasswordHash(ref userDto);
+            
+            // Persist
             await userRepository.SaveAsync(userDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE users - SUCCESS");
@@ -194,6 +200,7 @@ public sealed class UserController(IUserRepository userRepository,
         }
         catch (Exception ex)
         {
+            _logger.LogError($"❌ API : SAVE ALL users - ERROR: {ex.Message}");
             return BadRequest(ex);
         }
     }

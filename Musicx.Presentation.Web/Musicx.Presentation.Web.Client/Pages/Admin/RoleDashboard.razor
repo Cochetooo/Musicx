@@ -1,0 +1,46 @@
+﻿@page "/Admin/RoleDashboard"
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests
+@using Musicx.Contracts.Dto.Responses
+
+@inject ILoggerFactory LoggerFactory
+@inject IListUseCase<OutRole> UcList
+@inject ISaveUseCase<InRole> UcSave
+@inject IDeleteUseCase<InRole> UcDelete
+
+<MudBreadcrumbs Items="@_breadcrumb" />
+
+<MudCard Class="py-4">
+    <MudCardHeader>
+        <MudText Typo="Typo.h4">Role Management</MudText>
+    </MudCardHeader>
+    
+    <MudCardContent>
+        <MudGrid>
+            <MudItem xs="12" md="6" Class="pa-3">
+                <MudList T="OutRole?" @bind-SelectedValue="_selectedRole">
+                    @foreach (var role in _roles)
+                    {
+                        <MudListItem Value="@role">
+                            @role.Name
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudItem>
+            
+            <MudItem xs="12" md="6" Class="pa-3">
+                @if (_selectedRole is not null && _selectedRole.Permissions is not null)
+                {
+                    <MudList T="OutPermission?">
+                        @foreach (var permission in _selectedRole.Permissions)
+                        {
+                            <MudListItem Value="@permission">
+                                @permission.Name
+                            </MudListItem>
+                        }
+                    </MudList>
+                }
+            </MudItem>
+        </MudGrid>
+    </MudCardContent>
+</MudCard>

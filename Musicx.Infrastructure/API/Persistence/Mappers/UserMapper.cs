@@ -49,8 +49,6 @@ public static class UserMapper
         Email = user.Email,
         EmailConfirmed = user.EmailConfirmed,
         Name = user.Name,
-        PasswordHash = user.PasswordHash,
-        PasswordSalt = user.PasswordSalt,
         GoogleId = user.GoogleId,
         LastFmUsername = user.LastFmUsername
     };
