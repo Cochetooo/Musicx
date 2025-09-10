@@ -14,9 +14,12 @@ public interface IUserContext
 }
 
 public sealed class UserContext(
+    ILoggerProvider loggerProvider,
     IHttpContextAccessor httpContextAccessor,
     IUserRepository userRepository) : IUserContext
 {
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserContext));
+    
     private OutUser? _cachedUser;
     private IReadOnlyCollection<OutRole>? _cachedRoles;
     private IReadOnlyCollection<OutPermission>? _cachedPermissions;
@@ -49,42 +52,63 @@ public sealed class UserContext(
     }
 
     public bool Can(string permission)
-        => Permissions.Any(p => p.Name.Equals(permission, StringComparison.OrdinalIgnoreCase));
+        => Permissions.Any(p => p.Name.Equals(permission, StringComparison.OrdinalIgnoreCase))
+        || Roles.Any(r => r.Name.Equals("Admin", StringComparison.OrdinalIgnoreCase));
 
     private void EnsureLoaded()
     {
+        _logger.LogDebug("🔄️ Loading User context Data...");
+        
         if (_cachedUser != null)
         {
             return;
         }
-        
-        var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrEmpty(userIdClaim))
+        try
         {
-            return;
+            var userIdClaim = httpContextAccessor
+                .HttpContext?
+                .User?
+                .FindFirst(ClaimTypes.NameIdentifier)?
+                .Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                return;
+            }
+
+            if (!long.TryParse(userIdClaim, out var userId))
+            {
+                return;
+            }
+
+            var user = userRepository.FindByIdAsync(userId, new UserQuerySpecification
+            {
+                IncludeRoles = true
+            }).Result;
+
+            if (user is null)
+            {
+                return;
+            }
+
+            _cachedUser = user;
+            _cachedRoles = user.Roles!.ToList();
+            _cachedPermissions = user.Roles!
+                .SelectMany(r =>
+                {
+                    if (r.Permissions != null) return r.Permissions;
+
+                    return [];
+                })
+                .DistinctBy(p => p.Id)
+                .ToList();
+            
+            _logger.LogDebug($"✅ Data Context loaded successfully ! Roles: {string.Join(", ", _cachedRoles.Select(r => r.Name))}" );
         }
-
-        if (!long.TryParse(userIdClaim, out var userId))
+        catch (Exception ex)
         {
-            return;
+            _logger.LogError($"❌ Error while loading user context: {ex.Message}");
         }
-
-        var user = userRepository.FindByIdAsync(userId, new UserQuerySpecification
-        {
-            IncludeRoles = true
-        }).Result;
-
-        if (user is null)
-        {
-            return;
-        }
-        
-        _cachedUser = user;
-        _cachedRoles = user.Roles!.ToList();
-        _cachedPermissions = user.Roles!
-            .SelectMany(r => r.Permissions!)
-            .DistinctBy(p => p.Id)
-            .ToList();
     }
 }

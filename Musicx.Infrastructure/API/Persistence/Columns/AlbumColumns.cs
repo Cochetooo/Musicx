@@ -21,5 +21,6 @@ public static class AlbumColumns
     public const string ReleaseType = "album_release_type";
     public const string SimplifiedGenreColor = "album_simplified_genre_color";
     public const string SimplifiedGenreName = "album_simplified_genre_name";
+    public const string TotalDuration = "album_total_duration";
     public const string TrackTotal = "album_track_total";
 }

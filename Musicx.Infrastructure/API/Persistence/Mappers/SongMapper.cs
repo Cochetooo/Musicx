@@ -58,7 +58,7 @@ public static class SongMapper
         Lyrics = song.SafeGet<string>(SongColumns.Lyrics),
         Title = song.SafeGet<string>(SongColumns.Title) ?? "",
         TrackNumber = song.SafeGet<int>(SongColumns.TrackNumber),
-        Type = song.SafeGet<SongType?>(SongColumns.Type)
+        Type = song.SafeGet<SongType>(SongColumns.Type)
     };
 
     public static InSong ToRaw(this OutSong song) => new()

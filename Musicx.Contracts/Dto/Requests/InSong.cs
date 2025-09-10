@@ -13,6 +13,7 @@ public sealed class InSong : BaseInputModel
 
     // Required Columns
     public string Title { get; set; } = string.Empty;
+    public SongType Type { get; set; }
 
     // Optional Relationships
     public long? AlbumId { get; set; }
@@ -23,5 +24,4 @@ public sealed class InSong : BaseInputModel
     public long? Duration { get; set; }
     public string? Lyrics { get; set; }
     public int? TrackNumber { get; set; }
-    public SongType? Type { get; set; }
 }

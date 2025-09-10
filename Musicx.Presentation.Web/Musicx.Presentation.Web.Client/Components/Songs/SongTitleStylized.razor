@@ -1,0 +1,43 @@
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Enums
+
+@if (Song.Type == SongType.Normal)
+{
+    <MudText Typo="Typo.inherit" Color="Color.Default">@Song.Title</MudText>
+} 
+else if (Song.Type == SongType.Bonus)
+{
+    <MudText Typo="Typo.inherit" Color="Color.Secondary">
+        @Song.Title
+    </MudText>
+    
+    <MudChip Class="ml-2" T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Secondary" Label="@true">
+        Bonus
+    </MudChip>
+}
+else if (Song.Type == SongType.Demo)
+{
+    <MudText Typo="Typo.inherit" Style="font-style: italic; color: var(--mud-palette-text-disabled);">
+        @Song.Title
+    </MudText>
+    
+    <MudChip Class="ml-2" T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Default" Label="@true">
+        Demo
+    </MudChip>
+}
+else if (Song.Type == SongType.Live)
+{
+    <MudText Typo="Typo.inherit" Color="Color.Tertiary">
+        @Song.Title
+    </MudText>
+    
+    <MudChip Class="ml-2" T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Tertiary" Label="@true">
+        Live
+    </MudChip>
+}
+
+@code {
+
+    [Parameter, EditorRequired] public OutSong Song { get; set; } = null!;
+
+}

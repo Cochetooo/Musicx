@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Http;
 using Microsoft.JSInterop;
 using Musicx.Infrastructure;
 using Musicx.Presentation.Web.Client;
+using Musicx.Presentation.Web.Client.Handlers;
 using Musicx.Presentation.Web.Client.Providers;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -14,10 +16,15 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 builder.Services
     .AddMusicxWeb();
 
-builder.Services.AddScoped(_ => new HttpClient
+builder.Services.AddTransient<BrowserCredentialsHandler>();
+
+builder.Services.AddHttpClient("Api", client =>
 {
-  BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
-});
+    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+})
+.AddHttpMessageHandler<BrowserCredentialsHandler>();
+
+builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Api"));
 
 var app = builder.Build();
 

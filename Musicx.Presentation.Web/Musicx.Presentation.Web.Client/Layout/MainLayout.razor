@@ -1,9 +1,13 @@
-﻿@using Musicx.Presentation.Web.Client.Components
+﻿@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Themes
+@using Musicx.Presentation.Web.Client.Modals.Users
 @inherits LayoutComponentBase
 
 @inject NavigationManager NavigationManager
+@inject IUserClientContext UserClientContext
 @inject ILoggerFactory LoggerFactory
+@inject HttpClient Http
 
 <MudThemeProvider @bind-IsDarkMode="_isDarkMode" @ref="_mudThemeProvider" Theme="Theme.MainTheme" />
 <MudPopoverProvider />
@@ -36,6 +40,13 @@
         
         <!-- Light/Dark Mode Switch -->
         <ThemeModeSwitch @bind-IsDarkMode="_isDarkMode" />
+        
+        @if (UserClientContext.CurrentUser is not null)
+        {
+            <MudText Typo="Typo.subtitle1" Color="Color.Inherit">
+                @UserClientContext.CurrentUser.Name
+            </MudText>
+        }
 
         <!-- Others Menu -->
         <MudMenu
@@ -45,28 +56,48 @@
             Icon="@Icons.Material.Filled.MoreVert">
             
             <!-- User > Signup -->
-            <MudMenuItem Href="/User/Signup"
-                         Icon="@Icons.Material.Filled.PersonAdd"
-                         IconColor="Color.Primary"
-                         Label="Signup"/>
-
-            <!-- Admin > Artist Dashboard -->
-            <MudMenuItem Href="/Admin/ArtistDashboard"
-                         Icon="@Icons.Material.Filled.Person"
-                         IconColor="Color.Primary"
-                         Label="Artist Dashboard"/>
-
-            <!-- Admin > Genre Dashboard -->
-            <MudMenuItem Href="/Admin/GenreDashboard"
-                         Icon="@Icons.Material.Filled.Piano"
-                         IconColor="Color.Primary"
-                         Label="Genre Dashboard"/>
+            @if (UserClientContext.CurrentUser is null)
+            {
+                <MudMenuItem Href="/User/Signup"
+                             Icon="@Icons.Material.Filled.PersonAdd"
+                             IconColor="Color.Primary"
+                             Label="Signup"/>
             
-            <!-- Admin > Role Dashboard -->
-            <MudMenuItem Href="/Admin/RoleDashboard"
-                         Icon="@Icons.Material.Filled.PersonPin"
-                         IconColor="Color.Primary"
-                         Label="Role Dashboard"/>
+                <MudMenuItem OnClick="@(async () => await _loginModal.Show())"
+                             Icon="@Icons.Material.Filled.Login"
+                             IconColor="Color.Primary"
+                             Label="Sign In"/>
+            }
+            else
+            {
+                <MudMenuItem OnClick="@SignOut"
+                             Icon="@Icons.Material.Filled.Logout"
+                             IconColor="Color.Primary"
+                             Label="Sign Out"/>
+                
+                @if (UserClientContext.Can("admin.dashboard.read"))
+                {
+                    <MudDivider />
+
+                    <!-- Admin > Artist Dashboard -->
+                    <MudMenuItem Href="/Admin/ArtistDashboard"
+                                 Icon="@Icons.Material.Filled.Person"
+                                 IconColor="Color.Primary"
+                                 Label="Artist Dashboard"/>
+
+                    <!-- Admin > Genre Dashboard -->
+                    <MudMenuItem Href="/Admin/GenreDashboard"
+                                 Icon="@Icons.Material.Filled.Piano"
+                                 IconColor="Color.Primary"
+                                 Label="Genre Dashboard"/>
+            
+                    <!-- Admin > Role Dashboard -->
+                    <MudMenuItem Href="/Admin/RoleDashboard"
+                                 Icon="@Icons.Material.Filled.PersonPin"
+                                 IconColor="Color.Primary"
+                                 Label="Role Dashboard"/>
+                }
+            }
         </MudMenu>
     </MudAppBar>
     
@@ -77,37 +108,4 @@
     </MudMainContent>
 </MudLayout>
 
-@code {
-
-    private ILogger _logger = null!;
-    
-    private bool _isDarkMode;
-    private MudThemeProvider _mudThemeProvider = null!;
-
-    private string _searchText = string.Empty;
-    
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _isDarkMode = await _mudThemeProvider.GetSystemDarkModeAsync();
-        }
-
-        _logger = LoggerFactory.CreateLogger(nameof(MainLayout));
-    }
-
-    private void SearchKeyDown(KeyboardEventArgs keyEvent)
-    {
-        if (!string.IsNullOrWhiteSpace(_searchText) && keyEvent.Key == "Enter")
-        {
-            Search();
-        }
-    }
-
-    private void Search()
-        => NavigationManager.NavigateTo($"/SearchResult/{_searchText}");
-
-    private void NavigateHome()
-        => NavigationManager.NavigateTo("/");
-
-}
+<LoginModal @ref="_loginModal" />

@@ -7,12 +7,24 @@ public sealed class AuthenticationMiddleware(
 {
     public async Task InvokeAsync(HttpContext context, ITokenValidator tokenValidator)
     {
+        string? token = null;
+        
         var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
 
         if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
         {
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-            
+            token = authHeader.Substring("Bearer ".Length).Trim();
+        }
+        else
+        {
+            if (context.Request.Cookies.TryGetValue("AuthToken", out var cookieToken))
+            {
+                token = cookieToken;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(token))
+        {
             var principal = tokenValidator.ValidateToken(token);
             if (principal != null)
             {

@@ -21,6 +21,7 @@ create table public.albums (
     album_release_type              integer,
     album_simplified_genre_color    text,
     album_simplified_genre_name     text,
+    album_total_duration            bigint,
     album_track_total               integer
 );
 

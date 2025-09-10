@@ -9,6 +9,7 @@ using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
+using Musicx.Application.Web.Interfaces.Models.Auth;
 using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
 using Musicx.Contracts.Dto.Requests;
@@ -137,6 +138,8 @@ public static class DependencyInjection
         services.AddScoped<IGetAlbumByArtistUseCase, UcGetAlbumByArtist>();
         services.AddScoped<IGetAlbumByGenreUseCase, UcGetAlbumByGenre>();
         services.AddScoped<IGetSongByAlbumUseCase, UcGetSongByAlbum>();
+
+        services.AddScoped<IAuthSignInUseCase, UcAuthSignIn>();
         
         return services;
     }

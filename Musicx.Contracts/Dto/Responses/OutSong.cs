@@ -14,5 +14,5 @@ public sealed class OutSong : BaseOutputModel
     public string? Lyrics { get; set; }
     public string Title { get; set; } = null!;
     public int? TrackNumber { get; set; }
-    public SongType? Type { get; set; }
+    public SongType Type { get; set; }
 }

@@ -140,7 +140,7 @@ internal sealed class UserSqlBuilder(
 
         if (userQuerySpecification.IncludeRoles)
         {
-            selects.Add("(SELECT json_agg(ur.*) FROM user_role ur " +
+            selects.Add("(SELECT json_agg(r.*) FROM user_role ur " +
                         $"JOIN roles r ON ur.{UserRoleColumns.RoleId} = r.{RoleColumns.Id} " +
                         $"WHERE ur.{UserRoleColumns.UserId} = u0.{UserColumns.Id}) AS roles");
         }

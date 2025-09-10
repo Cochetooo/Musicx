@@ -16,6 +16,15 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", b => b
+        .WithOrigins("https://localhost:7287")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials());
+});
+
 // Add application infrastructure
 builder.Services
     .AddMusicxInfrastructure(builder.Configuration)

@@ -1,0 +1,28 @@
+@using Musicx.Application.Web.Interfaces.Models.Auth
+
+@inject IUserClientContext UserClientContext
+
+@if (UserClientContext.Can(Permission))
+{
+    @ChildContent
+}
+else if (Fallback is not null)
+{
+    @Fallback
+}
+else
+{
+    <MudAlert Severity="Severity.Error" Elevation="2" Dense>
+        ⛔ You don't have the rights to access this page.
+    </MudAlert>
+}
+
+@code {
+
+    [Parameter] public string Permission { get; set; } = string.Empty;
+    
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter] public RenderFragment? Fallback { get; set; }
+
+}

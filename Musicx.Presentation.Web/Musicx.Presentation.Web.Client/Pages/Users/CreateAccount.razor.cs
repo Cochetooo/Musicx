@@ -41,6 +41,6 @@ public partial class CreateAccount
     private async Task Save()
     {
         await UcSave.ExecuteAsync(_user);
-        //Navigation.NavigateTo("/", forceLoad: true);
+        Navigation.NavigateTo("/", forceLoad: true);
     }
 }

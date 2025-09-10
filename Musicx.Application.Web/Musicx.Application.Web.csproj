@@ -10,8 +10,4 @@
       <ProjectReference Include="..\Musicx.Application.Shared\Musicx.Application.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Interfaces\" />
-    </ItemGroup>
-
 </Project>

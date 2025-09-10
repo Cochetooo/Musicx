@@ -1,7 +1,9 @@
+@using CsvHelper.TypeConversion
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.Fields
+@using Musicx.Presentation.Web.Client.Helpers
 @using SQLitePCL
 
 @inject ILoggerFactory LoggerProvider
@@ -22,7 +24,7 @@
                      EditMode="DataGridEditMode.Cell"
                      EditTrigger="DataGridEditTrigger.OnRowClick">
             <Columns>
-                <TemplateColumn>
+                <TemplateColumn CellStyle="width: 40px;">
                     <EditTemplate>
                         <MudIconButton 
                             Color="Color.Error"
@@ -34,28 +36,32 @@
                     </EditTemplate>
                 </TemplateColumn>
                 
-                <PropertyColumn Property="x => x.TrackNumber" CellStyle="max-width: 40px;" Title="#"/>
+                <PropertyColumn Property="x => x.DiscNumber" CellStyle="width: 60px;" Title="Disc #"/>
+                
+                <PropertyColumn Property="x => x.TrackNumber" CellStyle="width: 60px;" Title="Track #"/>
                 
                 <PropertyColumn Property="x => x.Title" Title="Name"/>
                 
-                <PropertyColumn Property="x => x.Type" CellStyle="max-width: 80px;">
+                <PropertyColumn Property="x => x.Type" CellStyle="width: 100px;">
                     <EditTemplate>
-                        <MudSelect T="SongType?" @bind-Value="context.Item.Type"
+                        <MudSelect T="SongType" @bind-Value="context.Item.Type"
                                    Placeholder="Select a type" 
                                    AdornmentIcon="@Icons.Material.Filled.Label">
                             @foreach (var type in Enum.GetValues<SongType>())
                             {
-                                <MudSelectItem T="SongType?" Value="@type">@type</MudSelectItem>
+                                <MudSelectItem T="SongType" Value="@type">@type</MudSelectItem>
                             }
                         </MudSelect>
                     </EditTemplate>
                 </PropertyColumn>
                 
                 <PropertyColumn Property="x => x.Duration" Title="Duration"
-                                CellStyle="max-width: 60px">
+                                CellStyle="width: 80px">
                     <EditTemplate>
                         <MudTextField @bind-Value="context.Item.Duration"
-                                      Placeholder="mm:ss" />
+                                      T="long?"
+                                      Placeholder="mm:ss"
+                                      Converter="@(new DurationConverter())" />
                     </EditTemplate>
                 </PropertyColumn>
             </Columns>

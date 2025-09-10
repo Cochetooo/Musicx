@@ -60,13 +60,14 @@ public static class AlbumMapper
         EndRecordDate = album.SafeGet<DateTime?>(AlbumColumns.EndRecordDate),
         IsFarRight = album.SafeGet<bool>(AlbumColumns.IsFarRight),
         IsNsfw = album.SafeGet<bool>(AlbumColumns.IsNsfw),
-        Language = album.SafeGet<string>(AlbumColumns.Language),
+        Language = album.SafeGet<string?>(AlbumColumns.Language),
         Name = album.SafeGet<string>(AlbumColumns.Name) ?? "",
         OriginalReleaseDate = album.SafeGet<DateTime?>(AlbumColumns.OriginalReleaseDate),
         ReleaseType = album.SafeGet<ReleaseType?>(AlbumColumns.ReleaseType),
         SimplifiedGenreColor = album.SafeGet<string>(AlbumColumns.SimplifiedGenreColor),
         SimplifiedGenreName = album.SafeGet<string>(AlbumColumns.SimplifiedGenreName),
-        TrackTotal = album.SafeGet<int>(AlbumColumns.TrackTotal),
+        TotalDuration = album.SafeGet<long?>(AlbumColumns.TotalDuration),
+        TrackTotal = album.SafeGet<int?>(AlbumColumns.TrackTotal),
     };
 
     public static InAlbum ToRaw(this OutAlbum album) => new()
