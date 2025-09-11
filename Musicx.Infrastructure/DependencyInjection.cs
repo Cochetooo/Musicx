@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Auth;
+using Musicx.Application.Api.Interfaces.Workers;
 using Musicx.Application.Api.Services.Auth;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
@@ -16,6 +17,7 @@ using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Auth;
 using Musicx.Infrastructure.API.Persistence;
 using Musicx.Infrastructure.API.Persistence.Builders;
+using Musicx.Infrastructure.API.Workers;
 using Musicx.Infrastructure.Desktop.Persistence;
 using Musicx.Infrastructure.Desktop.Persistence.Caches;
 using Musicx.Infrastructure.Desktop.Persistence.Repositories;
@@ -109,6 +111,9 @@ public static class DependencyInjection
         services.AddScoped<Application.Api.Interfaces.Persistence.IPermissionRepository, API.Persistence.Repositories.PermissionRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IRoleRepository, API.Persistence.Repositories.RoleRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IUserRepository, API.Persistence.Repositories.UserRepository>();
+        
+        // Audit
+        services.AddScoped<IAuditPublisher, RabbitMqAuditPublisher>();
         
         // Auth
         services.AddScoped<IPasswordHasher, PasswordHasher>();

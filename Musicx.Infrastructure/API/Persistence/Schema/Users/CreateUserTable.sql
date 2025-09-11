@@ -11,11 +11,15 @@ create table public.users (
     user_birth_date             timestamp without time zone,
     user_email                  varchar(320) not null unique,
     user_email_confirmed        boolean not null,
+    user_google_id              text,
+    user_lastfm_username        text,
     user_name                   varchar(50) not null unique CHECK (char_length(user_name) >= 3),
     user_password_hash          text,
     user_password_salt          text,
-    user_google_id              text,
-    user_lastfm_username        text
+    user_pref_dark_mode         bool not null default false,
+    user_pref_rating_mode       integer not null default 0,
+    user_pref_simple_genre      bool not null default false,
+    user_picture_url            text
 );
 
 alter table public.users owner to postgres;

@@ -1,4 +1,5 @@
 ﻿using System.Dynamic;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Musicx.Infrastructure.Shared.Exceptions;
@@ -107,6 +108,25 @@ public sealed class NpgsqlConnectionProvider(
             _logger.LogError("❌ Could not execute count command on table {table}", table);
             return -1;
         }
+    }
+
+    public async Task SetAppUserIdAsync(long userId)
+    {
+        await using var conn = CreateConnection();
+        await conn.OpenAsync();
+
+        var sql = $"SET LOCAL app.current_user_id = {userId}";
         
+        await using var command = new NpgsqlCommand(sql, conn);
+        _logger.LogDebug(SqlHelper.InterpolateQuery(sql, []));
+
+        try
+        {
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"❌ Could not set app user as var: {ex.Message}");
+        }
     }
 }

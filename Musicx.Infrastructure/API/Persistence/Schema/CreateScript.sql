@@ -22,6 +22,8 @@ create extension if not exists citext;
 \i 'Roles/CreateRoleTable.sql'
 \i 'Users/CreateUserTable.sql'
 
+\i 'Audit/CreateAuditLogTable.sql'
+
 /*
     Triggers 
  */
