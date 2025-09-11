@@ -22,10 +22,7 @@ public partial class AlbumView
     private bool _isArtworkRevealed;
     private bool _showDetailedView;
 
-    private readonly List<BreadcrumbItem>? _breadcrumb =
-    [
-        
-    ];
+    private readonly List<BreadcrumbItem>? _breadcrumb = [];
 
     protected override void OnInitialized()
     {

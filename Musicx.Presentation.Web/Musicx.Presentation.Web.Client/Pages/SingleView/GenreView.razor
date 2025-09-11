@@ -66,16 +66,18 @@ else
                                                     <AlbumListQuickInfo class="mx-3" Album="@album"/>
                                                 </MudStack>
 
-                                                @if (album.PrimaryGenres is not null)
-                                                {
-                                                    @foreach (var genre in album.PrimaryGenres)
+                                                <MudStack Justify="Justify.FlexEnd" Row>
+                                                    @if (album.PrimaryGenres is not null)
                                                     {
-                                                        if (genre.Name != _genre.Name)
+                                                        @foreach (var genre in album.PrimaryGenres)
                                                         {
-                                                            <GenreBadge Genre="@genre" Clickable />
+                                                            if (genre.Name != _genre.Name)
+                                                            {
+                                                                <GenreBadge Genre="@genre" Clickable />
+                                                            }
                                                         }
                                                     }
-                                                }
+                                                </MudStack>
                                             </MudStack>
                                         </MudLink>
                                     </MudListItem>

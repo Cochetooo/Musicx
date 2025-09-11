@@ -197,16 +197,18 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 
         if (albumQuerySpecification.IncludePrimaryGenres)
         {
-            selects.Add("(SELECT json_agg(pg.*) FROM album_genre apg " +
-                        $"JOIN genres pg ON apg.{AlbumGenreColumns.GenreId} = pg.{GenreColumns.Id} " +
-                        $"WHERE apg.{AlbumGenreColumns.AlbumId} = al0.{AlbumColumns.Id}) AS primary_genres");
+            selects.Add("(SELECT json_agg(pg.*) FROM album_genre apg1 " +
+                        $"INNER JOIN genres pg ON apg1.{AlbumGenreColumns.GenreId} = pg.{GenreColumns.Id} " +
+                        $"WHERE apg1.{AlbumGenreColumns.AlbumId} = al0.{AlbumColumns.Id}) AS primary_genres");
+            joins.Add($"LEFT JOIN album_genre apg ON apg.{AlbumGenreColumns.AlbumId} = al0.{AlbumColumns.Id}");
         }
 
         if (albumQuerySpecification.IncludeInfluenceGenres)
         {
-            selects.Add("(SELECT json_agg(ig.*) FROM album_influence aig " +
-                        $"JOIN genres ig ON aig.{AlbumInfluenceColumns.GenreId} = ig.{GenreColumns.Id} " +
-                        $"WHERE aig.{AlbumInfluenceColumns.AlbumId} = al0.{AlbumColumns.Id}) AS influence_genres");
+            selects.Add("(SELECT json_agg(ig.*) FROM album_influence aig1 " +
+                        $"INNER JOIN genres ig ON aig1.{AlbumInfluenceColumns.GenreId} = ig.{GenreColumns.Id} " +
+                        $"WHERE aig1.{AlbumInfluenceColumns.AlbumId} = al0.{AlbumColumns.Id}) AS influence_genres");
+            joins.Add($"LEFT JOIN album_influence aig ON aig.{AlbumInfluenceColumns.AlbumId} = al0.{AlbumColumns.Id}");
         }
 
         return distinct

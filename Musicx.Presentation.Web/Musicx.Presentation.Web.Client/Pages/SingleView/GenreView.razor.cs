@@ -15,29 +15,26 @@ public partial class GenreView
     private OutGenre? _genre;
     private List<OutAlbum> _genreAlbums = [];
 
-    private readonly List<BreadcrumbItem>? _breadcrumb =
-    [
-        new("Musicx", href: "/"),
-        new("Genres", href: "#")
-    ];
+    private readonly List<BreadcrumbItem>? _breadcrumb = [];
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnParametersSetAsync()
     {
-        if (!firstRender)
-        {
-            return;
-        }
-
-        _logger = LoggerProvider.CreateLogger(nameof(GenreView));
-
         await LoadGenre();
 
         if (_breadcrumb is not null && _genre is not null)
         {
+            _breadcrumb.Clear();
+            _breadcrumb.Add(new("Musicx", href: "/"));
+            _breadcrumb.Add(new("Genres", href: "#"));
             _breadcrumb.Add(new(_genre.Name, href: "#"));
         }
         
         await InvokeAsync(StateHasChanged);
+    }
+
+    protected override void OnInitialized()
+    {
+        _logger = LoggerProvider.CreateLogger(nameof(GenreView));
     }
 
     private async Task LoadGenre()
@@ -68,7 +65,7 @@ public partial class GenreView
         _genreAlbums = await UcAlbumByGenre.ExecuteAsync(
             genreId: _genre.Id,
             genreOptions: GenreOptions.PrimaryGenre,
-            take: 40,
+            take: 100,
             query: "artist_genre"
         );
         
