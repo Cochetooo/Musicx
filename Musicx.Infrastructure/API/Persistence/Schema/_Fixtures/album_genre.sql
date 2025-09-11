@@ -2536,3 +2536,11 @@ INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALU
 INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1704, 99);
 INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1705, 99);
 INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1706, 99);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1707, 34);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1708, 34);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1709, 71);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1710, 70);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1711, 124);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1712, 37);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1712, 124);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1713, 43);

@@ -2616,3 +2616,11 @@ INSERT INTO public.album_influence (album_influence_album_id, album_influence_ge
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1706, 48);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1706, 265);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1706, 26);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1707, 2);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1707, 307);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1710, 124);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1711, 37);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1712, 71);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1713, 37);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1713, 126);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (1713, 81);
