@@ -23,6 +23,8 @@ END $$;
 \i '_Fixtures/album_influence.sql'
 \i '_Fixtures/song_genre.sql'
 \i '_Fixtures/song_influence.sql'
+\i '_Fixtures/role_permission.sql'
+\i '_Fixtures/user_role.sql'
 
 -- Setup sequences
 DO $$
