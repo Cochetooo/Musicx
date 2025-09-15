@@ -9,6 +9,9 @@ public sealed class OutSong : BaseOutputModel
     public IReadOnlyList<OutGenre>? PrimaryGenres { get; set; } = new List<OutGenre>();
     public IReadOnlyList<OutGenre>? InfluenceGenres { get; set; } = new List<OutGenre>();
     
+    public long? AlbumId { get; set; }
+    public long? ArtistId { get; set; }
+    
     public int? DiscNumber { get; set; }
     public long? Duration { get; set; }
     public string? Lyrics { get; set; }

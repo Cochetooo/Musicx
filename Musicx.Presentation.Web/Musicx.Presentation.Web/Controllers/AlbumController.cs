@@ -3,6 +3,7 @@ using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Presentation.Web.Contexts;
 
 namespace Musicx.Presentation.Web.Controllers;
 
@@ -14,9 +15,15 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumController));
     
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] long id)
+    public async Task<IActionResult> Delete([FromRoute] long id, [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : DELETE albums ({id})");
+
+        if (false == userContext.Can("album.delete"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE albums ({id}) : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete albums.");
+        }
 
         try
         {
@@ -32,10 +39,16 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
 
     [HttpDelete("by-ids")]
-    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids)
+    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids, [FromServices] IUserContext userContext)
     {
         var stringIds = string.Join(",", ids);
         _logger.LogInformation($"🌍🏳️ API : DELETE ALL albums ({stringIds})");
+        
+        if (false == userContext.Can("album.delete_all"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE ALL albums ({stringIds}) : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete albums.");
+        }
 
         try
         {
@@ -246,9 +259,15 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
 
     [HttpPost]
-    public async Task<IActionResult> Save([FromBody] InAlbum albumDto)
+    public async Task<IActionResult> Save([FromBody] InAlbum albumDto, [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : SAVE albums");
+        
+        if (false == userContext.Can("album.save"))
+        {
+            _logger.LogInformation($"🌍⛔ API : SAVE albums : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to save albums.");
+        }
 
         try
         {
@@ -265,9 +284,16 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
     
     [HttpPost("save-all")]
-    public async Task<IActionResult> SaveAll([FromBody] IEnumerable<InAlbum> albumsDto)
+    public async Task<IActionResult> SaveAll([FromBody] IEnumerable<InAlbum> albumsDto,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : SAVE ALL albums");
+        
+        if (false == userContext.Can("album.save_all"))
+        {
+            _logger.LogInformation($"🌍⛔ API : SAVE ALL albums : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to save albums.");
+        }
 
         try
         {

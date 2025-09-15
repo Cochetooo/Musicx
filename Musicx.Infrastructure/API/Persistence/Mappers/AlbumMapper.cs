@@ -30,11 +30,9 @@ public static class AlbumMapper
 
         Artist = album.SafeGet<long?>(ArtistColumns.Id) != null
             ? album.FromDicoToArtist()
-            : new OutArtist
-            {
-                Id = album.SafeGet<long>(AlbumColumns.ArtistId),
-                Name = "",
-            },
+            : null,
+        
+        ArtistId = album.SafeGet<long?>(AlbumColumns.ArtistId),
 
         Releases = album.TryGetValue("releases", out var releaseValue)
                    && releaseValue is not null
@@ -74,7 +72,7 @@ public static class AlbumMapper
     {
         Id = album.Id,
         
-        ArtistId = album.Artist?.Id,
+        ArtistId = album.ArtistId,
         ReleaseIds = album.Releases?.Select(r => r.Id).ToList(),
         PrimaryGenreIds = album.PrimaryGenres?.Select(g => g.Id).ToList(),
         InfluenceGenreIds = album.InfluenceGenres?.Select(g => g.Id).ToList(),

@@ -5,13 +5,13 @@
     @switch (Album.ReleaseType)
     {
         case ReleaseType.Ep:
-            <MudText Class="quick-album-name" Style="font-style: italic;" Color="Color.Secondary">
+            <MudText Class="quick-album-name text-italic" Color="Color.Secondary">
                 @Album.Name 
                 <span class="release-type">[@Album.ReleaseType]</span>
             </MudText>
             break;
         case ReleaseType.Lp:
-            <MudText Class="quick-album-name" Style="font-weight: bold;" Color="Color.Primary">
+            <MudText Class="quick-album-name text-bold" Color="Color.Primary">
                 @Album.Name
             </MudText>
             break;

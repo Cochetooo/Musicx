@@ -21,12 +21,12 @@
 }
 else
 {
-    <MudCard Class="mt-4 glass-card animate-hover-up" Style="background-color: var(--mud-palette-background-gray);">
+    <MudCard Class="mt-4 glass-card animate-hover-up bg-gray">
         <MudCardHeader>
             <MudImage Src="@_artist.ArtworkUrl" Elevation="25" Style="width: 200px; border-radius: 10px"/>
 
             <MudStack Class="pl-8">
-                <MudText Typo="Typo.h1" Style="font-weight: 900; font-size: 5rem;" Class="montserrat mb-1">
+                <MudText Typo="Typo.h1" Style="font-size: 5rem;" Class="montserrat text-extra-bold mb-1">
                     @_artist.Name 
                 </MudText>
                 
@@ -39,17 +39,17 @@ else
                 
                 <MudDivider Class="mt-2"/>
             
-                <MudText Typo="Typo.body2" Style="font-weight: 700;" Color="Color.Secondary" Class="montserrat">
+                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="montserrat text-bold">
                     @_artist.CalculatedGenres
                 </MudText>
             
-                <MudText Typo="Typo.caption" Style="font-style: italic;" Color="Color.Tertiary" Class="montserrat">
+                <MudText Typo="Typo.caption" Color="Color.Tertiary" Class="montserrat text-italic">
                     @_artist.CalculatedInfluences
                 </MudText>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <MudTabs Elevation="2" Rounded ApplyEffectsToContainer PanelClass="pa-6" Style="background-color: var(--mud-palette-background);">
+            <MudTabs Elevation="2" Rounded ApplyEffectsToContainer PanelClass="pa-6 bg-default">
                 <MudTabPanel Text="Releases" Icon="@Icons.Material.Filled.LibraryMusic">
                     <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Row Class="mb-5">
                         <MudText Typo="Typo.caption">Type</MudText>

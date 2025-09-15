@@ -27,19 +27,14 @@ public static class SongMapper
 
         Album = song.SafeGet<long?>(AlbumColumns.Id) != null
             ? song.FromDicoToAlbum()
-            : new OutAlbum
-            {
-                Id = song.SafeGet<long>(AlbumColumns.Id),
-                Name = "",
-            },
+            : null,
         
         Artist = song.SafeGet<long?>(ArtistColumns.Id) != null
             ? song.FromDicoToArtist()
-            : new OutArtist
-            {
-                Id = song.SafeGet<long>(ArtistColumns.Id),
-                Name = "",
-            },
+            : null,
+        
+        AlbumId = song.SafeGet<long?>(SongColumns.AlbumId),
+        ArtistId = song.SafeGet<long?>(SongColumns.ArtistId),
         
         PrimaryGenres = song.TryGetValue("primary_genres", out var primaryGenreValue)
                         && primaryGenreValue is not null

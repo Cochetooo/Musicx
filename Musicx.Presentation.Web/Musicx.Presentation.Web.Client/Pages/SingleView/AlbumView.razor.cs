@@ -108,8 +108,16 @@ public partial class AlbumView
             _logger.LogError("❌ Cannot edit tracklist: album is null.");
             return;
         }
+
+        if (_albumSongs.Count > 0)
+        {
+            await _trackListEditModal.Show(_album, _albumSongs);
+        }
+        else
+        {
+            await _trackListEditModal.Show(_album);
+        }
         
-        await _trackListEditModal.Show(_album);
     }
 
     private async Task EditAlbumShowModal()

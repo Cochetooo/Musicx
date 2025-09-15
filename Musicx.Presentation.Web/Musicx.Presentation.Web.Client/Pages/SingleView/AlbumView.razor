@@ -26,9 +26,9 @@
 else
 {
     <MudCard Elevation="6" Class="animate-hover-up">
-        <MudCardHeader Class="pa-8" Style="background-color: var(--mud-palette-background-gray);">
+        <MudCardHeader Class="pa-8 bg-gray">
             <MudStack>
-                <MudText Typo="Typo.h2" Class="montserrat" Style="font-weight: 800">@_album.Name</MudText>
+                <MudText Typo="Typo.h2" Class="montserrat text-mega-bold">@_album.Name</MudText>
                 @if (_album.Artist is not null)
                 {
                     <MudLink Typo="Typo.h6" Class="ml-8" Href="@($"/Artist/{_album.Artist.Id}")">
@@ -68,7 +68,7 @@ else
                         }
                     </div>
                     
-                    <MudStack Row Class="my-4">
+                    <MudStack Row Class="my-4 pa-1 rounded bg-gray">
                         @if (_previousAlbum is not null)
                         {
                             <MudLink Href="@("/Album/" + _previousAlbum.Id)">
@@ -106,11 +106,13 @@ else
                         }
                     </MudStack>
                     
+                    <MudDivider Class="my-4" />
+                    
                     <MudTable Items="@_albumSongs" ReadOnly
                               Elevation="8"
-                              CustomHeader="@true"
-                              CustomFooter="@true"
-                              Style="width: 100%" Dense>
+                              CustomHeader="@true" CustomFooter="@true" 
+                              Class="animate-hover-up" Style="width: 100%" 
+                              Dense>
                         <HeaderContent>
                             <MudTHeadRow Class="header-centered">
                                 <MudTh colspan="3">Track List</MudTh>

@@ -9,6 +9,8 @@ public sealed class OutAlbum : BaseOutputModel
     public ICollection<OutGenre>? PrimaryGenres { get; set; }
     public ICollection<OutGenre>? InfluenceGenres { get; set; }
     
+    public long? ArtistId { get; set; }
+    
     public string? ArtworkUrl { get; set; }
     public DateTime? BeginRecordDate { get; set; }
     public int? DiscTotal { get; set; }

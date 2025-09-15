@@ -29,9 +29,9 @@
                                       Elevation="8"
                                       Class="rounded-lg"/>
                             <MudStack Class="ml-4 bg-search-artist rounded-lg py-1 px-5" Spacing="1">
-                                <MudLink Typo="Typo.h5" Class="montserrat mb-1" 
+                                <MudLink Typo="Typo.h5" Class="montserrat mb-1 text-bold" 
                                          Color="Color.Inherit"
-                                         Style="font-weight: bold;" Href="@($"/Artist/{artist.Id}")">
+                                         Href="@($"/Artist/{artist.Id}")">
                                     @artist.Name
                                 </MudLink>
                                 
@@ -79,7 +79,7 @@
             </MudList>
         }
 
-        <MudText Style="font-style: italic;">@_artistsResult.Count result(s) found.</MudText>
+        <MudText Class="text-italic">@_artistsResult.Count result(s) found.</MudText>
 
         <MudDivider Class="my-4" />
         
@@ -94,23 +94,30 @@
                     <MudListItem>
                         <MudStack Justify="Justify.FlexStart" Row>
                             <MudImage Src="@album.ArtworkUrl" 
-                                      Width="64" Height="64"
+                                      Width="72" Height="72"
                                       Elevation="8"
                                       Class="rounded-lg"/>
                             <MudStack Spacing="1" Class="ml-4">
-                                <MudLink Typo="Typo.h5" Class="montserrat" Style="font-weight: bold;" Href="@($"/Album/{album.Id}")">
+                                <MudLink Typo="Typo.h5" Class="montserrat" Style="font-weight: 600;" Color="Color.Inherit"
+                                         Href="@($"/Album/{album.Id}")">
                                     @album.Name
                                 </MudLink>
-                                <MudText Color="Color.Tertiary" Typo="Typo.caption">
-                                    @if (album.Artist is not null)
-                                    {
-                                        <span>By 
-                                            <MudLink Href="@($"/Artist/{album.Artist.Id}")">
-                                                @album.Artist.Name
-                                            </MudLink>
-                                        </span>
-                                    }
-                                </MudText>
+                                
+                                @if (album.SimplifiedGenreName is not null)
+                                {
+                                    <MudText Typo="Typo.body2" Class="text-italic" Color="Color.Secondary">
+                                        @album.SimplifiedGenreName
+                                    </MudText>
+                                }
+                                
+                                @if (album.Artist is not null)
+                                {
+                                    <MudText Color="Color.Tertiary" Typo="Typo.caption">By 
+                                        <MudLink Href="@($"/Artist/{album.Artist.Id}")" Typo="Typo.body2">
+                                            @album.Artist.Name
+                                        </MudLink>
+                                    </MudText>
+                                }
                             </MudStack>
                         </MudStack>
                     </MudListItem>
@@ -118,7 +125,7 @@
             </MudList>
         }
 
-        <MudText Style="font-style: italic;">@_albumsResult.Count result(s) found.</MudText>
+        <MudText Class="text-italic">@_albumsResult.Count result(s) found.</MudText>
     </MudCardContent>
 </MudCard>
 

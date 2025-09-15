@@ -87,11 +87,7 @@ public partial class AlbumTrackListEditModal
             if (_album is not null)
             {
                 song.AlbumId = _album.Id;
-
-                if (_album.Artist is not null)
-                {
-                    song.ArtistId = _album.Artist.Id;
-                }
+                song.ArtistId = _album.ArtistId;
             }
         }
     }

@@ -1,0 +1,127 @@
+﻿/*
+    Font Style
+ */
+
+.text-italic {
+    font-style: italic;
+}
+
+.text-underline {
+    text-decoration: underline;
+}
+
+.text-strikethrough {
+    text-decoration: line-through;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.text-mega-bold {
+    font-weight: 800;
+}
+
+.text-extra-bold {
+    font-weight: 900;
+}
+
+/*
+    Background Colors
+ */
+
+.bg-default {
+    background-color: var(--mud-palette-background);
+}
+
+.bg-gray {
+    background-color: var(--mud-palette-background-gray);
+}
+
+.bg-surface {
+    background-color: var(--mud-palette-surface);
+}
+
+/*
+    Background Darken / Lighten
+ */
+
+.bg-info-darken {
+    background-color: var(--mud-palette-info-darken);
+}
+
+.bg-success-darken {
+    background-color: var(--mud-palette-success-darken);
+}
+
+.bg-warning-darken {
+    background-color: var(--mud-palette-warning-darken);
+}
+
+.bg-error-darken {
+    background-color: var(--mud-palette-error-darken);
+}
+
+.bg-info-lighten {
+    background-color: var(--mud-palette-info-lighten);
+}
+
+.bg-success-lighten {
+    background-color: var(--mud-palette-success-lighten);
+}
+
+.bg-warning-lighten {
+    background-color: var(--mud-palette-warning-lighten);
+}
+
+.bg-error-lighten {
+    background-color: var(--mud-palette-error-lighten);
+}
+
+/*
+    Texts
+ */
+
+.text-color-secondary {
+    color: var(--mud-palette-text-secondary);
+}
+
+.text-color-muted {
+    color: var(--mud-palette-text-disabled);
+}
+
+/*
+    Text Darken / Lighten
+ */
+
+.text-color-info-darken {
+    color: var(--mud-palette-info-darken);
+}
+
+.text-color-success-darken {
+    color: var(--mud-palette-success-darken);
+}
+
+.text-color-warning-darken {
+    color: var(--mud-palette-warning-darken);
+}
+
+.text-color-error-darken {
+    color: var(--mud-palette-error-darken);
+}
+
+.text-color-info-lighten {
+    color: var(--mud-palette-info-lighten);
+}
+
+.text-color-success-lighten {
+    color: var(--mud-palette-success-lighten);
+}
+
+.text-color-warning-lighten {
+    color: var(--mud-palette-warning-lighten);
+}
+
+.text-color-error-lighten {
+    color: var(--mud-palette-error-lighten);
+}
