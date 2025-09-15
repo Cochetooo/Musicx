@@ -73,6 +73,32 @@ h1:focus {
     box-shadow: var(--mud-elevation-12);
 }
 
+.fade-item {
+    animation: fadeIn 350ms ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.step {
+    transition: opacity 250ms ease, transform 250ms ease;
+    position: relative;
+}
+
+.step-inactive {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.step-active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
 * {
     font-family: "Space Grotesk", "Helvetica Neue", sans-serif;
     font-optical-sizing: auto;

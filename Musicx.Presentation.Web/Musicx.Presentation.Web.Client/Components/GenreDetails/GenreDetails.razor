@@ -29,7 +29,7 @@ else
                     else if (DetailedView && Album.PrimaryGenres is not null && 0 < Album.PrimaryGenres.Count)
                     {
                         <Div class="d-flex flex-wrap gap-1 mt-1">
-                            @foreach (var genre in Album.PrimaryGenres.Where(g => g.Type == GenreType.Basic))
+                            @foreach (var genre in Album.PrimaryGenres.Where(g => g.Type == GenreType.Subgenre))
                             {
                                 <GenreBadge Genre="@genre" Size="@Size" Clickable/>
                             }

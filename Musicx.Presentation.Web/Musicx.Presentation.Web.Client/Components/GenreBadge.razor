@@ -78,7 +78,7 @@ else
         
         return Genre.Type switch
         {
-            GenreType.Basic => $"background:{gradient}; color:{textColor}; font-weight:600;",
+            GenreType.Subgenre => $"background:{gradient}; color:{textColor}; font-weight:600;",
             GenreType.Scene => $"border:1px solid {gradient}; color:{textColor}; background:{gradient}; font-weight: bold",
             GenreType.Movement => $"border:1px dashed {gradient}; color:{textColor}; background:{gradient}; font-weight: bold",
             GenreType.Descriptor => $"background:{gradient}; color:{textColor}; opacity:0.85; border-radius:16px;",
@@ -90,7 +90,7 @@ else
     {
         return Genre.Type switch
         {
-            GenreType.Basic => "chip-basic montserrat genre-badge animate-hover-up",
+            GenreType.Subgenre => "chip-basic montserrat genre-badge animate-hover-up",
             GenreType.Scene => "chip-scene montserrat genre-badge animate-hover-up",
             GenreType.Movement => "chip-movement montserrat genre-badge animate-hover-up",
             GenreType.Descriptor => "chip-descriptor montserrat genre-badge animate-hover-up",
@@ -101,7 +101,7 @@ else
     private string GetChipIcon()
     => Genre.Type switch
         {
-            GenreType.Basic => Icons.Material.Filled.Label,
+            GenreType.Subgenre => Icons.Material.Filled.Label,
             GenreType.Scene => Icons.Material.Filled.Language,
             GenreType.Movement => Icons.Material.Filled.Album,
             GenreType.Descriptor => Icons.Material.Filled.TheaterComedy,

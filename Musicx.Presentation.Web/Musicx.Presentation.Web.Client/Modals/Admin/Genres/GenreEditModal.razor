@@ -15,66 +15,174 @@
     </TitleContent>
     
     <DialogContent>
-        <MudGrid>
-            <MudItem xs="12" md="6">
-                <MudTextField 
-                    T="string"
-                    TextChanged="@NameTextChanged" 
-                    Disabled="@(_genre.Id != 0)"
-                    Immediate
-                    @ref="_nameTextEdit" Label="Enter a genre..." 
-                    HelperText="Name (*)" Variant="Variant.Text" />
-            </MudItem>
-            
-            <MudItem xs="12" md="3">
-                <MudSelect
-                    @bind-Value="_genre.Type" T="GenreType"
-                    Label="Type" Placeholder="Select a type"
-                    AdornmentIcon="@Icons.Material.Filled.Label">
-                    @foreach (var genreType in Enum.GetValues<GenreType>())
+        <div class="multi-step">
+            <!-- Step 1 : Type choice -->
+            <div class="@GetStepClass(1)">
+                <MudText Typo="Typo.h6" Color="Color.Info" Class="mb-4">
+                    What type of genre do you want to create?
+                </MudText>
+                    
+                <MudList Dense="false" T="RenderFragment">
+                    @foreach (var gtype in Enum.GetValues<GenreType>())
                     {
-                        <MudSelectItem T="GenreType" Value="@genreType">@genreType</MudSelectItem>
+                        var selected = _selectedType == gtype;
+                        <MudListItem Class="fade-item" OnClick="@(() => SelectType(gtype))">
+                            <MudGrid>
+                                <MudItem xs="10">
+                                    @gtype
+                                </MudItem>
+                                <MudItem xs="2">
+                                    <MudIcon Icon="@(selected ? Icons.Material.Filled.RadioButtonChecked 
+                                                       : Icons.Material.Filled.RadioButtonUnchecked)" />
+                                </MudItem>
+                            </MudGrid>
+                        </MudListItem>
                     }
-                </MudSelect>
-            </MudItem>
-            
-            <MudItem xs="12" md="3">
-                <MudColorPicker
-                    Label="Color"
-                    @bind-Text="_genre.Color"
-                    ImmediateText
-                    Style="@($"color: {_genre.Color}")"
-                    Elevation="4"
-                    ShowAlpha="false"
-                    Placeholder="Select a color"/>
-            </MudItem>
-            
-            <MudItem xs="12">
-                <MudTextField
-                    T="string?"
-                    Label="Description"
-                    Placeholder="Enter a description..."
-                    @bind-Text="_genre.Description"
-                    Lines="6"
-                />
-            </MudItem>
-            
-            <MudItem>
-                <MudText Typo="Typo.h6">Parent Genres</MudText>
+                </MudList>
+                    
+                <MudButton Class="mt-4" Disabled="@(_selectedType is null)"
+                           Color="Color.Primary" OnClick="@NextStep"
+                           Variant="Variant.Filled">Next</MudButton>
+            </div>
                 
-                <GenreTree
-                    RootGenres="@_genres"
-                    TypeFilter="@_genre.Type"
-                    Checkable
-                    SelectedGenresChanged="@SelectedGenresChanged"
-                    LoadChildrenAsync="@LoadChildrenAsync"
-                    />
-            </MudItem>
-        </MudGrid>
+            <!-- STEP 2: Formulaire spécifique selon le type -->
+            <div class="@GetStepClass(2)">
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6">Configure the new <b>@_selectedType</b></MudText>
+                    </MudItem>
+
+                    <!-- Nom (toujours présent sauf pour certains cas) -->
+                    <MudItem xs="12" md="8" Class="mb-2">
+                        <MudTextField T="string"
+                                      Label="Name"
+                                      Immediate
+                                      TextChanged="NameTextChanged"
+                                      Required="true"
+                                      For="@(()=> _genre.Name)" />
+                        @if (!_isNameAvailable && !string.IsNullOrWhiteSpace(_genre.Name))
+                        {
+                            <MudText Color="Color.Error" Typo="Typo.caption">A genre with that name already exists.</MudText>
+                        }
+                    </MudItem>
+
+                    <!-- ColorPicker only when Genre -->
+                    @if (_selectedType == GenreType.Genre)
+                    {
+                        <MudItem xs="12" md="4">
+                            <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.subtitle2">Parent Genres</MudText>
+                            <GenreTree RootGenres="@_genres"
+                                       AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
+                                       Checkable
+                                       SelectedGenresChanged="@SelectedGenresChanged"
+                                       LoadChildrenAsync="@LoadChildrenAsync" />
+                        </MudItem>
+                    }
+
+                    <!-- Subgenre: no color picker; color derived from parents -->
+                    @if (_selectedType == GenreType.Subgenre)
+                    {
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.subtitle2">Parent Genres (at least one)</MudText>
+                            <GenreTree RootGenres="@_genres"
+                                       AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
+                                       Checkable
+                                       SelectedGenresChanged="@SelectedGenresChanged"
+                                       LoadChildrenAsync="@LoadChildrenAsync" />
+                        </MudItem>
+                        
+                        <MudItem xs="12" md="4">
+                            <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false" />
+                        </MudItem>
+
+                        <!-- 
+                        <MudItem xs="12" class="mt-2">
+                            <MudTextField T="string" Label="Derived Color (gradient)"
+                                          Disabled="true"
+                                          Value="_derivedGradient"
+                                          Adornment="Adornment.End">
+                                <ChildContent>
+                                    <div style="height:36px; width:100%; border-radius:6px; background:@_derivedGradient"></div>
+                                </ChildContent>
+                            </MudTextField>
+                            <MudText Typo="Typo.caption">Subgenre color is automatically computed from selected parents.</MudText>
+                        </MudItem> -->
+                    }
+
+                    <!-- Scene & Movement: similar to Subgenre but different filter -->
+                    @if (_selectedType == GenreType.Scene || _selectedType == GenreType.Movement)
+                    {
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.subtitle2">Parent Genres</MudText>
+                            <GenreTree RootGenres="@_genres"
+                                       AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
+                                       Checkable
+                                       SelectedGenresChanged="@SelectedGenresChanged"
+                                       LoadChildrenAsync="@LoadChildrenAsync" />
+                        </MudItem>
+                        <MudItem xs="12" md="4">
+                            <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false" />
+                        </MudItem>
+                    }
+
+                    <!-- Descriptor: select list of descriptors without parent (you said you'll manage descriptors server-side; we show a select) -->
+                    @if (_selectedType == GenreType.Descriptor)
+                    {
+                        <MudItem xs="12" md="6">
+                            <MudSelect T="int?" @bind-Value="_selectedDescriptorId" Label="Select Descriptor (root only)">
+                                @foreach (var desc in _descriptors)
+                                {
+                                    <MudSelectItem T="long?" Value="@desc.Id">@desc.Name</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    }
+
+                    <!-- Fusion -->
+                    @if (_selectedType == GenreType.Fusion)
+                    {
+                        <MudItem xs="12" md="6">
+                            <MudSelect T="string?" Label="Fusion Prefix (optional)" @bind-Value="_fusionPrefix">
+                                <MudSelectItem T="string?" Value="@null">(none)</MudSelectItem>
+                                @foreach (var p in FusionPrefixes)
+                                {
+                                    <MudSelectItem T="string?" Value="@p">@p</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudCheckBox T="bool" @bind-Value="_fusionCustomizeName" Label="Customize Name" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <!-- Disabled text field builds the name unless customize enabled -->
+                            <MudTextField T="string" Label="Fusion Name" @bind-Text="_genre.Name" Disabled="!_fusionCustomizeName" />
+                            <MudText Typo="Typo.caption">If not customizing, name will be generated from prefix + selected genres.</MudText>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.subtitle2">Pick Genres to fuse</MudText>
+                            <GenreTree RootGenres="@_genres"
+                                       AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
+                                       Checkable
+                                       SelectedGenresChanged="@SelectedGenresChanged"
+                                       LoadChildrenAsync="@LoadChildrenAsync" />
+                        </MudItem>
+                    }
+
+                    <!-- Actions -->
+                    <MudItem xs="12" Class="mt-4">
+                        <MudButton Color="Color.Primary" OnClick="@Save" Disabled="@(!CanSave)">Save</MudButton>
+                        <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
+                        <MudButton Color="Color.Default" OnClick="@PreviousStep" Disabled="@(_currentStep == 1)">Back</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </div>
+        </div>
     </DialogContent>
-    
-    <DialogActions>
-        <MudButton Color="Color.Primary" OnClick="@Save">Save</MudButton>
-        <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
-    </DialogActions>
 </MudDialog>

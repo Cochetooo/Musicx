@@ -5,11 +5,7 @@
 <div class="genre-tree">
     @foreach (var genre in RootGenres)
     {
-        @if (TypeFilter is null || 
-             ((TypeFilter == GenreType.Movement || TypeFilter == GenreType.Scene)
-            && (genre.Type == GenreType.Basic || genre.Type == GenreType.Movement || genre.Type == GenreType.Scene))
-            || TypeFilter == genre.Type
-        )
+        @if (AllowedTypes is null || AllowedTypes.Contains(genre.Type))
         {
             <GenreTreeNode Genre="genre"
                            Checkable="@Checkable"
@@ -25,7 +21,7 @@
 
     [Parameter] public IReadOnlyList<OutGenre> RootGenres { get; set; } = [];
     [Parameter] public bool Checkable { get; set; }
-    [Parameter] public GenreType? TypeFilter { get; set; }
+    [Parameter] public IReadOnlyCollection<GenreType>? AllowedTypes { get; set; }
     [Parameter] public EventCallback<IReadOnlyList<OutGenre>> SelectedGenresChanged { get; set; }
 
     private HashSet<OutGenre> _selected = [];
