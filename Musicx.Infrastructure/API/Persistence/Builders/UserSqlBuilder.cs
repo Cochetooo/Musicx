@@ -96,7 +96,7 @@ internal sealed class UserSqlBuilder(
         await using (var cmd = new NpgsqlCommand(updateCommandSql.Query, connection, transaction))
         {
             cmd.Parameters.AddRange(updateCommandSql.Parameters.ToArray());
-            await cmd.ExecuteScalarAsync();
+            await cmd.ExecuteNonQueryAsync();
         }
         
         if (null != entity.RoleIds)

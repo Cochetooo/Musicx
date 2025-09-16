@@ -4,6 +4,7 @@ using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Presentation.Web.Contexts;
 
 namespace Musicx.Presentation.Web.Controllers;
 
@@ -16,9 +17,23 @@ public sealed class UserController(IUserRepository userRepository,
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserController));
     
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] long id)
+    public async Task<IActionResult> Delete([FromRoute] long id,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : DELETE users ({id})");
+        
+        if (false == userContext.Can("user.delete"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE users : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete users.");
+        }
+
+        if (false == userContext.Can("moderator.user.delete")
+                && id != userContext.CurrentUser?.Id)
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE users : NOT AUTHORIZED OTHER USER");
+            return Unauthorized("Not authorized to delete another user.");
+        }
 
         try
         {
@@ -34,10 +49,17 @@ public sealed class UserController(IUserRepository userRepository,
     }
     
     [HttpDelete("by-ids")]
-    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids)
+    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids,
+        [FromServices] IUserContext userContext)
     {
         var stringIds = string.Join(",", ids);
         _logger.LogInformation($"🌍🏳️ API : DELETE ALL users ({stringIds})");
+        
+        if (false == userContext.Can("user.delete_all"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE ALL users : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete all users.");
+        }
 
         try
         {
@@ -146,7 +168,7 @@ public sealed class UserController(IUserRepository userRepository,
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<int>> GetCount()
+    public async Task<ActionResult<long>> GetCount()
     {
         _logger.LogInformation($"🌍🏳️ API : COUNT users");
         

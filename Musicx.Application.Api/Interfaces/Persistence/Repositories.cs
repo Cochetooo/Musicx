@@ -34,3 +34,23 @@ public interface IUserRepository : IRepository<InUser, OutUser>
     Task<OutUser?> FindByEmailAsync(string email,
         IQuerySpecification<InUser>? userQuerySpecification = null);
 }
+
+public interface IUserAlbumAttrsRepository : IRepository<InUserAlbumAttribute, OutUserAlbumAttribute>
+{
+    Task<long> CountByAlbumIdAsync(long albumId);
+    Task<long> CountByUserIdAsync(long userId);
+    Task DeleteAsync(long userId, long albumId);
+    Task<IReadOnlyList<OutUserAlbumAttribute>> FindByAlbumIdAsync(long albumId,
+        int skip = 0,
+        int take = 100);
+    Task<IReadOnlyList<OutUserAlbumAttribute>> FindByUserIdAsync(long userId,
+        int skip = 0,
+        int take = 100,
+        string? filter = null);
+    Task<OutUserAlbumAttribute?> FindOneAlbumFromUserAsync(long userId, long albumId);
+}
+
+public interface IUserAlbumTagRepository : IRepository<InUserAlbumTag, OutUserAlbumTag>
+{
+    Task<IReadOnlyList<OutUserAlbumAttribute>> FindByAlbumIdAsync(long albumId, long? userId);
+}

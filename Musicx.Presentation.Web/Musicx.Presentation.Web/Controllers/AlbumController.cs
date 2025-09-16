@@ -241,7 +241,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<int>> GetCount()
+    public async Task<ActionResult<long>> GetCount()
     {
         _logger.LogInformation($"🌍🏳️ API : COUNT albums");
         

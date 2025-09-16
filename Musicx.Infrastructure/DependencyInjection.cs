@@ -102,6 +102,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(SqlBuilder<InPermission>), typeof(PermissionSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InRole>), typeof(RoleSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InUser>), typeof(UserSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InUserAlbumAttribute>), typeof(UserAlbumAttrSqlBuilder));
 
         // Repositories
         services.AddScoped<Application.Api.Interfaces.Persistence.ISongRepository, API.Persistence.Repositories.SongRepository>();
@@ -111,6 +112,7 @@ public static class DependencyInjection
         services.AddScoped<Application.Api.Interfaces.Persistence.IPermissionRepository, API.Persistence.Repositories.PermissionRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IRoleRepository, API.Persistence.Repositories.RoleRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IUserRepository, API.Persistence.Repositories.UserRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.IUserAlbumAttrsRepository, API.Persistence.Repositories.UserAlbumAttrRepository>();
         
         // Audit
         services.AddScoped<IAuditPublisher, RabbitMqAuditPublisher>();

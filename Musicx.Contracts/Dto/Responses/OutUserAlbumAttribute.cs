@@ -7,6 +7,9 @@ public sealed class OutUserAlbumAttribute : BaseOutputModel
     public OutUser User { get; set; } = null!;
     public OutAlbum Album { get; set; } = null!;
     
+    public long UserId { get; set; }
+    public long AlbumId { get; set; }
+    
     public CollectionType? CollectionType { get; set; }
     public short? Rating { get; set; }
     public string? Review { get; set; }

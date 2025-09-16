@@ -1,3 +1,5 @@
+using Musicx.Contracts.Enums;
+
 namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutUserAlbumTag : BaseOutputModel
@@ -5,4 +7,8 @@ public sealed class OutUserAlbumTag : BaseOutputModel
     public OutUser User { get; set; } = null!;
     public OutAlbum Album { get; set; } = null!;
     public OutTag Tag { get; set; } = null!;
+    
+    public long UserId { get; set; }
+    public long AlbumId { get; set; }
+    public long TagId { get; set; }
 }

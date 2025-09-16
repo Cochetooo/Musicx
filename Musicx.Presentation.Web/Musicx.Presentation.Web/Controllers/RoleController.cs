@@ -3,6 +3,7 @@ using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Presentation.Web.Contexts;
 
 namespace Musicx.Presentation.Web.Controllers;
 
@@ -14,9 +15,16 @@ public sealed class RoleController(IRoleRepository roleRepository,
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(RoleController));
     
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] long id)
+    public async Task<IActionResult> Delete([FromRoute] long id,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : DELETE roles ({id})");
+        
+        if (false == userContext.Can("role.delete"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE roles : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete roles.");
+        }
 
         try
         {
@@ -32,10 +40,17 @@ public sealed class RoleController(IRoleRepository roleRepository,
     }
     
     [HttpDelete("by-ids")]
-    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids)
+    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids,
+        [FromServices] IUserContext userContext)
     {
         var stringIds = string.Join(",", ids);
         _logger.LogInformation($"🌍🏳️ API : DELETE ALL roles ({stringIds})");
+        
+        if (false == userContext.Can("role.delete_all"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE roles : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete all roles.");
+        }
 
         try
         {
@@ -144,7 +159,7 @@ public sealed class RoleController(IRoleRepository roleRepository,
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<int>> GetCount()
+    public async Task<ActionResult<long>> GetCount()
     {
         _logger.LogInformation($"🌍🏳️ API : COUNT roles");
         
@@ -162,9 +177,16 @@ public sealed class RoleController(IRoleRepository roleRepository,
     }
 
     [HttpPost]
-    public async Task<IActionResult> Save([FromBody] InRole roleDto)
+    public async Task<IActionResult> Save([FromBody] InRole roleDto,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : SAVE roles");
+        
+        if (false == userContext.Can("role.save"))
+        {
+            _logger.LogInformation($"🌍⛔ API : SAVE roles : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to save roles.");
+        }
 
         try
         {
@@ -181,9 +203,16 @@ public sealed class RoleController(IRoleRepository roleRepository,
     }
     
     [HttpPost("save-all")]
-    public async Task<IActionResult> SaveAll([FromBody] IEnumerable<InRole> rolesDto)
+    public async Task<IActionResult> SaveAll([FromBody] IEnumerable<InRole> rolesDto,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : SAVE ALL roles");
+        
+        if (false == userContext.Can("role.save_all"))
+        {
+            _logger.LogInformation($"🌍⛔ API : SAVE ALL roles : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to save roles.");
+        }
 
         try
         {

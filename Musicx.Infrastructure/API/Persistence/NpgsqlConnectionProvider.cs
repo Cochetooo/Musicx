@@ -13,7 +13,7 @@ public interface IDbConnectionProvider
     NpgsqlConnection CreateConnection();
     Task ExecuteTransactionAsync(params (string sql, IReadOnlyList<NpgsqlParameter> parameters)[] commands);
     Task<List<ExpandoObject>> FetchListDynamicAsync(string sql, IReadOnlyList<NpgsqlParameter> parameters);
-    Task<int> Count(string table);
+    Task<long> Count(string table);
 }
 
 public sealed class NpgsqlConnectionProvider(
@@ -88,7 +88,7 @@ public sealed class NpgsqlConnectionProvider(
         return results;
     }
 
-    public async Task<int> Count(string table)
+    public async Task<long> Count(string table)
     {
         await using var conn = CreateConnection();
         await conn.OpenAsync();
@@ -101,7 +101,7 @@ public sealed class NpgsqlConnectionProvider(
         try
         {
             var result = await command.ExecuteScalarAsync();
-            return Convert.ToInt32(await command.ExecuteScalarAsync());
+            return Convert.ToInt64(result);
         }
         catch (Exception ex)
         {

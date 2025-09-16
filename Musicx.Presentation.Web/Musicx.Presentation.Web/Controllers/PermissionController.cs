@@ -2,6 +2,7 @@
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Presentation.Web.Contexts;
 
 namespace Musicx.Presentation.Web.Controllers;
 
@@ -13,9 +14,16 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(PermissionController));
     
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] long id)
+    public async Task<IActionResult> Delete([FromRoute] long id,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : DELETE permissions ({id})");
+        
+        if (false == userContext.Can("permission.delete"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE permissions : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete permissions.");
+        }
 
         try
         {
@@ -31,11 +39,18 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
     }
     
     [HttpDelete("by-ids")]
-    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids)
+    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids,
+        [FromServices] IUserContext userContext)
     {
         var stringIds = string.Join(",", ids);
         _logger.LogInformation($"🌍🏳️ API : DELETE ALL permissions ({stringIds})");
-
+        
+        if (false == userContext.Can("permission.delete_all"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE ALL permissions : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete all permissions.");
+        }
+        
         try
         {
             await permissionRepository.DeleteAllAsync(ids);
@@ -128,7 +143,7 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<int>> GetCount()
+    public async Task<ActionResult<long>> GetCount()
     {
         _logger.LogInformation($"🌍🏳️ API : COUNT permissions");
         
@@ -146,9 +161,16 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
     }
 
     [HttpPost]
-    public async Task<IActionResult> Save([FromBody] InPermission permissionDto)
+    public async Task<IActionResult> Save([FromBody] InPermission permissionDto,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : SAVE permissions");
+        
+        if (false == userContext.Can("permission.save"))
+        {
+            _logger.LogInformation($"🌍⛔ API : SAVE permissions : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to save permissions.");
+        }
 
         try
         {
@@ -165,9 +187,16 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
     }
     
     [HttpPost("save-all")]
-    public async Task<IActionResult> SaveAll([FromBody] IEnumerable<InPermission> permissionsDto)
+    public async Task<IActionResult> SaveAll([FromBody] IEnumerable<InPermission> permissionsDto,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : SAVE ALL permissions");
+        
+        if (false == userContext.Can("permission.save_all"))
+        {
+            _logger.LogInformation($"🌍⛔ API : SAVE ALL permissions : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to save permissions.");
+        }
 
         try
         {

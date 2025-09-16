@@ -111,10 +111,10 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// Creates an UPDATE statement for the specified table and entity.
     /// </summary>
     /// <param name="table">The table to update.</param>
-    /// <param name="whereColumn">The column to match the ID on.</param>
-    /// <param name="whereId">The value of the ID to match.</param>
+    /// <param name="whereColumns">The columns to match the ID on.</param>
+    /// <param name="whereIds">The value of the IDs to match.</param>
     /// <param name="properties">A dictionary of column names and values to update.</param>
-    internal SqlQuery BuildUpdate(string table, string whereColumn, long whereId, 
+    internal SqlQuery BuildUpdate(string table, string[] whereColumns, long[] whereIds,
         IDictionary<string, object?> properties)
     {
         var setters = new List<string>();
@@ -156,11 +156,35 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
             }
         }
 
-        var sql = $"UPDATE {table} SET {string.Join(", ", setters)} WHERE {whereColumn} = @Id";
-        parameters.Add(new NpgsqlParameter("@Id", whereId));
+        if (whereColumns.Length != whereIds.Length)
+        {
+            throw new ArgumentException("❌ whereColumns and whereIds must have the same number of elements.");
+        }
+
+        var whereClauses = new List<string>();
+
+        for (int i = 0; i < whereColumns.Length; i++)
+        {
+            var paramName = $"@Id{i}";
+            whereClauses.Add($"{whereColumns[i]} = {paramName}");
+            parameters.Add(new NpgsqlParameter(paramName, whereIds[i]));
+        }
+
+        var sql = $"UPDATE {table} SET {string.Join(", ", setters)} WHERE {string.Join(" AND ", whereClauses)}";
         
         return new SqlQuery(sql, parameters);
     }
+
+    /// <summary>
+    /// Creates an UPDATE statement for the specified table and entity.
+    /// </summary>
+    /// <param name="table">The table to update.</param>
+    /// <param name="whereColumn">The column to match the ID on.</param>
+    /// <param name="whereId">The value of the ID to match.</param>
+    /// <param name="properties">A dictionary of column names and values to update.</param>
+    internal SqlQuery BuildUpdate(string table, string whereColumn, long whereId, 
+        IDictionary<string, object?> properties)
+        => BuildUpdate(table, [whereColumn], [whereId], properties);
     
     /// <summary>
     /// Builds an ORDER BY clause with the given columns.

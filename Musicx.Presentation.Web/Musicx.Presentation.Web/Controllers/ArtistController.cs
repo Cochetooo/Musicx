@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Presentation.Web.Contexts;
 
 namespace Musicx.Presentation.Web.Controllers;
 
@@ -13,9 +14,16 @@ public sealed class ArtistController(IArtistRepository artistRepository,
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ArtistController));
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] long id)
+    public async Task<IActionResult> Delete([FromRoute] long id, 
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : DELETE artists ({id})");
+
+        if (false == userContext.Can("artist.delete"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE artists : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete artists.");
+        }
 
         try
         {
@@ -31,10 +39,17 @@ public sealed class ArtistController(IArtistRepository artistRepository,
     }
 
     [HttpDelete("by-ids")]
-    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids)
+    public async Task<IActionResult> DeleteAll([FromRoute] long[] ids,
+        [FromServices] IUserContext userContext)
     {
         var stringIds = string.Join(",", ids);
         _logger.LogInformation($"🌍🏳️ API : DELETE ALL artists ({stringIds})");
+        
+        if (false == userContext.Can("artist.delete_all"))
+        {
+            _logger.LogInformation($"🌍⛔ API : DELETE ALL artists : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to delete all artists.");
+        }
 
         try
         {
@@ -123,7 +138,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<int>> GetCount()
+    public async Task<ActionResult<long>> GetCount()
     {
         _logger.LogInformation($"🌍🏳️ API : COUNT artists");
         
@@ -141,9 +156,16 @@ public sealed class ArtistController(IArtistRepository artistRepository,
     }
 
     [HttpPost]
-    public async Task<IActionResult> Save([FromBody] InArtist artistDto)
+    public async Task<IActionResult> Save([FromBody] InArtist artistDto,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : SAVE artists");
+        
+        if (false == userContext.Can("artist.save"))
+        {
+            _logger.LogInformation($"🌍⛔ API : SAVE artists : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to save artists.");
+        }
 
         try
         {
@@ -160,9 +182,16 @@ public sealed class ArtistController(IArtistRepository artistRepository,
     }
     
     [HttpPost("save-all")]
-    public async Task<IActionResult> SaveAll([FromBody] IEnumerable<InArtist> artistsDto)
+    public async Task<IActionResult> SaveAll([FromBody] IEnumerable<InArtist> artistsDto,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : SAVE ALL artists");
+        
+        if (false == userContext.Can("artist.save_all"))
+        {
+            _logger.LogInformation($"🌍⛔ API : SAVE ALL artists : NOT AUTHORIZED");
+            return Unauthorized("Not authorized to save artists.");
+        }
 
         try
         {
