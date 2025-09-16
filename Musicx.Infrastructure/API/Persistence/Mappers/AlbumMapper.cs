@@ -51,6 +51,15 @@ public static class AlbumMapper
             ? JsonConvert.DeserializeObject<OutGenre[]>(influenceGenreValue as string ?? string.Empty,
                 GenreMapperJsonOptions)
             : null,
+        
+        Stats = album.SafeGet<long?>(AlbumRatingStatColumns.AlbumId) != null
+            ? new OutAlbumRatingStat
+            {
+                Average = album.SafeGet<decimal>(AlbumRatingStatColumns.Average),
+                Count = album.SafeGet<int>(AlbumRatingStatColumns.Count),
+                Sum = album.SafeGet<long>(AlbumRatingStatColumns.Sum),
+            }
+            : null,
 
         ArtworkUrl = album.SafeGet<string>(AlbumColumns.ArtworkUrl),
         BeginRecordDate = album.SafeGet<DateTime?>(AlbumColumns.BeginRecordDate),

@@ -24,9 +24,11 @@ if ($onlyFixture) {
 elseif ($noFixture) {
     Write-Host "⚡ Mode: NO FIXTURE"
     & $pgBin -U postgres -d MusicxDb -f ".\CreateScript.sql"
+    & $pgBin -U postgres -d MusicxDb -f ".\GenerateTriggers.sql"
 }
 else {
     Write-Host "⚡ Mode: CREATE + FIXTURE"
     & $pgBin -U postgres -d MusicxDb -f ".\CreateScript.sql"
     & $pgBin -U postgres -d MusicxDb -f ".\GenerateFixtureScript.sql"
+    & $pgBin -U postgres -d MusicxDb -f ".\GenerateTriggers.sql"
 }

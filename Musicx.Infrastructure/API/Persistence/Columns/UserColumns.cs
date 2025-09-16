@@ -15,4 +15,8 @@ public static class UserColumns
     public const string Name = "user_name";
     public const string PasswordHash = "user_password_hash";
     public const string PasswordSalt = "user_password_salt";
+    public const string PrefDarkMode = "user_pref_dark_mode";
+    public const string PrefRatingMode = "user_pref_rating_mode";
+    public const string PrefSimpleGenre = "user_pref_simple_genre";
+    public const string PictureUrl = "user_picture_url";
 }

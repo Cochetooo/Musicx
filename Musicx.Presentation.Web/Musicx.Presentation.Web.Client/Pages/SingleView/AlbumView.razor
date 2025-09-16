@@ -4,16 +4,19 @@
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Components.GenreDetails
 @using Musicx.Presentation.Web.Client.Components.Songs
+@using Musicx.Presentation.Web.Client.Components.Ratings
 
 @inject IGetUseCase<OutAlbum> UcGet
 @inject IGetAlbumByArtistUseCase UcGetArtistAlbums
 @inject IGetSongByAlbumUseCase UcGetSongs
+@inject ISaveUseCase<InUserAlbumAttribute> UcSaveUserAttrib
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
 
@@ -27,14 +30,31 @@ else
 {
     <MudCard Elevation="6" Class="animate-hover-up">
         <MudCardHeader Class="pa-8 bg-gray">
-            <MudStack>
-                <MudText Typo="Typo.h2" Class="montserrat text-mega-bold">@_album.Name</MudText>
-                @if (_album.Artist is not null)
-                {
-                    <MudLink Typo="Typo.h6" Class="ml-8" Href="@($"/Artist/{_album.Artist.Id}")">
-                        @_album.Artist.Name
-                    </MudLink>
-                }
+            <MudStack Row>
+                <MudStack>
+                    <MudText Typo="Typo.h2" Class="montserrat text-mega-bold"
+                             Style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3)">
+                        @_album.Name
+                    </MudText>
+                    @if (_album.Artist is not null)
+                    {
+                        <MudLink Typo="Typo.h5" Class="ml-8" Href="@($"/Artist/{_album.Artist.Id}")">
+                            @_album.Artist.Name
+                        </MudLink>
+                    }
+                </MudStack>
+                
+                <MudSpacer />
+                
+                <MudStack Style="white-space: nowrap; flex-shrink: 0;">
+                    @if (_album.Stats is not null)
+                    {
+                        <MudText Typo="Typo.h5" Class="montserrat text-bold">
+                            @RatingHelper.GetRatingFormatted(_album.Stats.Average,
+                                UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)
+                        </MudText>
+                    }
+                </MudStack>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -205,6 +225,17 @@ else
                                        ThumbIcon="@Icons.Material.Filled.ViewWeek"
                                        Class="my-2" />
                         </MudCardContent>
+                        
+                        @if (UserClientContext.CurrentUser is not null &&
+                                UserClientContext.Can("album.rate"))
+                        {
+                            <MudText Typo="Typo.body1" Color="Color.Primary">
+                                Your Rating
+                            </MudText>
+                            
+                            <DynamicRating RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
+                                           ValueChanged="@(v => Rate(v))"/>
+                        }
                         
                         @if (UserClientContext.Can("album.edit"))
                         {

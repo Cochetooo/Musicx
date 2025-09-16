@@ -1,4 +1,6 @@
-﻿namespace Musicx.Contracts.Dto.Requests;
+﻿using Musicx.Contracts.Enums;
+
+namespace Musicx.Contracts.Dto.Requests;
 
 public sealed class InUser : BaseInputModel
 {
@@ -17,4 +19,8 @@ public sealed class InUser : BaseInputModel
     public string? Password { get; set; }
     public string? PasswordHash { get; set; }
     public string? PasswordSalt { get; set; }
+    public bool? PrefDarkMode { get; set; }
+    public RatingMode? PrefRatingMode { get; set; }
+    public bool? PrefSimpleGenre { get; set; }
+    public string? PictureUrl { get; set; }
 }

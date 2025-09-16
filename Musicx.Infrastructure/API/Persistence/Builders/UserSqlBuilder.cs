@@ -31,7 +31,11 @@ internal sealed class UserSqlBuilder(
                 { UserColumns.PasswordHash, entity.PasswordHash },
                 { UserColumns.PasswordSalt, entity.PasswordSalt },
                 { UserColumns.GoogleId, entity.GoogleId },
-                { UserColumns.LastFmUsername, entity.LastFmUsername }
+                { UserColumns.LastFmUsername, entity.LastFmUsername },
+                { UserColumns.PrefDarkMode, entity.PrefDarkMode },
+                { UserColumns.PrefRatingMode, entity.PrefRatingMode },
+                { UserColumns.PrefSimpleGenre, entity.PrefSimpleGenre },
+                { UserColumns.PictureUrl, entity.PictureUrl }
             }, UserColumns.Id);
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
@@ -88,7 +92,11 @@ internal sealed class UserSqlBuilder(
                 { UserColumns.PasswordHash, entity.PasswordHash },
                 { UserColumns.PasswordSalt, entity.PasswordSalt },
                 { UserColumns.GoogleId, entity.GoogleId },
-                { UserColumns.LastFmUsername, entity.LastFmUsername }
+                { UserColumns.LastFmUsername, entity.LastFmUsername },
+                { UserColumns.PrefDarkMode, entity.PrefDarkMode },
+                { UserColumns.PrefRatingMode, entity.PrefRatingMode },
+                { UserColumns.PrefSimpleGenre, entity.PrefSimpleGenre },
+                { UserColumns.PictureUrl, entity.PictureUrl }
             });
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));

@@ -1,5 +1,6 @@
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Enums;
 using Musicx.Contracts.Helpers;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Newtonsoft.Json;
@@ -37,6 +38,10 @@ public static class UserMapper
         PasswordSalt = user.SafeGet<string>(UserColumns.PasswordSalt),
         GoogleId = user.SafeGet<string>(UserColumns.GoogleId),
         LastFmUsername = user.SafeGet<string>(UserColumns.LastFmUsername),
+        PrefDarkMode = user.SafeGet<bool>(UserColumns.PrefDarkMode),
+        PrefRatingMode = user.SafeGet<RatingMode>(UserColumns.PrefRatingMode),
+        PrefSimpleGenre = user.SafeGet<bool>(UserColumns.PrefSimpleGenre),
+        PictureUrl = user.SafeGet<string?>(UserColumns.PictureUrl),
     };
 
     public static InUser ToRaw(this OutUser user) => new()

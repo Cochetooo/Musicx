@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Musicx.Application.Shared.Utilities;
+using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 
@@ -59,7 +60,7 @@ public partial class AlbumView
             return;
         }
 
-        _album = await UcGet.ExecuteAsync(albumId, "artist_genre");
+        _album = await UcGet.ExecuteAsync(albumId, "artist_genre_stat");
         
         if (_album is null)
         {
@@ -136,15 +137,31 @@ public partial class AlbumView
         
         await _albumEditModal.Show(_album.Artist, _album);
     }
-    
-    private string GetSimplifiedGenreStyle(OutAlbum album)
-        =>
-            $"background: {album.SimplifiedGenreColor}; color: {(ColorHelper.IsColorLight(album.SimplifiedGenreColor!) 
-                ? ColorHelper.DarkColor 
-                : "white")}; font-weight: bold";
 
     private async Task OnQuitModal()
     {
         await LoadAlbum();
+    }
+
+    private async Task Rate(int? ratingValue)
+    {
+        if (_album is null
+            || UserClientContext.CurrentUser is null
+            || !UserClientContext.Can("album.rate"))
+        {
+            _logger.LogInformation($"❌ Could not rate album.");
+            return;
+        }
+
+        await UcSaveUserAttrib.ExecuteAsync(new InUserAlbumAttribute
+        {
+            UserId = UserClientContext.CurrentUser.Id,
+            AlbumId = _album.Id,
+            CollectionType = null,
+            Review = null,
+            Rating = (short?)ratingValue
+        });
+        
+        _logger.LogInformation($"✅ Successfully saved new rating.");
     }
 }

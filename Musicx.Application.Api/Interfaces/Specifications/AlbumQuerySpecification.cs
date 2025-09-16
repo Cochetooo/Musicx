@@ -33,4 +33,10 @@ public record AlbumQuerySpecification : IQuerySpecification<InAlbum>
     /// </summary>
     /// <since>0.6.1</since>
     public bool IncludeInfluenceGenres { get; set; }
+    
+    /// <summary>
+    /// Include stats of this album.
+    /// </summary>
+    /// <since>0.6.6</since>
+    public bool IncludeStats { get; set; }
 }

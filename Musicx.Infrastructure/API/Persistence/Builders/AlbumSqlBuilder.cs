@@ -192,7 +192,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         if (albumQuerySpecification.IncludeArtist)
         {
             selects.Add("ar0.*");
-            joins.Add($"INNER JOIN artists ar0 ON al0.{AlbumColumns.ArtistId} = ar0.{ArtistColumns.Id}");
+            joins.Add($"LEFT JOIN artists ar0 ON al0.{AlbumColumns.ArtistId} = ar0.{ArtistColumns.Id}");
         }
 
         if (albumQuerySpecification.IncludePrimaryGenres)
@@ -209,6 +209,12 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                         $"INNER JOIN genres ig ON aig1.{AlbumInfluenceColumns.GenreId} = ig.{GenreColumns.Id} " +
                         $"WHERE aig1.{AlbumInfluenceColumns.AlbumId} = al0.{AlbumColumns.Id}) AS influence_genres");
             joins.Add($"LEFT JOIN album_influence aig ON aig.{AlbumInfluenceColumns.AlbumId} = al0.{AlbumColumns.Id}");
+        }
+
+        if (albumQuerySpecification.IncludeStats)
+        {
+            selects.Add("alst0.*");
+            joins.Add($"LEFT JOIN album_rating_stats alst0 ON al0.{AlbumColumns.Id} = alst0.{AlbumRatingStatColumns.AlbumId}");
         }
 
         return distinct
@@ -231,6 +237,11 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         if (albumQuerySpecification.IncludeArtist)
         {
             groupings.Add($"ar0.{ArtistColumns.Id}");
+        }
+
+        if (albumQuerySpecification.IncludeStats)
+        {
+            groupings.Add($"alst0.{AlbumRatingStatColumns.AlbumId}");
         }
         
         return $" GROUP BY {string.Join(", ", groupings)}";

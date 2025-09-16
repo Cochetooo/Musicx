@@ -12,19 +12,37 @@ END $$;
 \i '_Fixtures/artists.sql'
 \i '_Fixtures/genres.sql'
 \i '_Fixtures/albums.sql'
+\i '_Fixtures/labels.sql'
+\i '_Fixtures/releases.sql'
 \i '_Fixtures/songs.sql'
+\i '_Fixtures/song_audio_data.sql'
+\i '_Fixtures/tags.sql'
 
 \i '_Fixtures/permissions.sql'
 \i '_Fixtures/roles.sql'
 \i '_Fixtures/users.sql'
 
 \i '_Fixtures/childrengenre_parentgenre.sql'
+\i '_Fixtures/bandartist_personartist.sql'
 \i '_Fixtures/album_genre.sql'
 \i '_Fixtures/album_influence.sql'
 \i '_Fixtures/song_genre.sql'
 \i '_Fixtures/song_influence.sql'
+
 \i '_Fixtures/role_permission.sql'
 \i '_Fixtures/user_role.sql'
+\i '_Fixtures/user_artist_ratings.sql'
+\i '_Fixtures/user_artist_tags.sql'
+\i '_Fixtures/user_album_attrs.sql'
+\i '_Fixtures/user_album_tags.sql'
+\i '_Fixtures/user_song_ratings.sql'
+\i '_Fixtures/user_song_tags.sql'
+
+\i '_Fixtures/album_rating_stats.sql'
+\i '_Fixtures/artist_rating_stats.sql'
+\i '_Fixtures/song_rating_stats.sql'
+
+\i '_Fixtures/audit_logs.sql'
 
 -- Setup sequences
 DO $$

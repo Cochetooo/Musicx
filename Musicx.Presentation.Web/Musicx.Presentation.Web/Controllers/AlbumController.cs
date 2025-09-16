@@ -75,7 +75,8 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 IncludeArtist = query.Contains("artist"),
                 IncludePrimaryGenres = query.Contains("genre"),
                 IncludeInfluenceGenres = query.Contains("genre"),
-                IncludeReleases = query.Contains("release")
+                IncludeReleases = query.Contains("release"),
+                IncludeStats = query.Contains("stat")
             };
             
             var album = await albumRepository.FindByIdAsync(id, querySpecification);
@@ -107,7 +108,8 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 IncludeArtist = query.Contains("artist"),
                 IncludePrimaryGenres = query.Contains("genre"),
                 IncludeInfluenceGenres = query.Contains("genre"),
-                IncludeReleases = query.Contains("release")
+                IncludeReleases = query.Contains("release"),
+                IncludeStats = query.Contains("stat")
             };
             
             var albums = await albumRepository.FindByArtistIdAsync(artistId, querySpecification);
@@ -144,7 +146,8 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 IncludeArtist = query.Contains("artist"),
                 IncludePrimaryGenres = query.Contains("genre"),
                 IncludeInfluenceGenres = query.Contains("genre"),
-                IncludeReleases = query.Contains("release")
+                IncludeReleases = query.Contains("release"),
+                IncludeStats = query.Contains("stat")
             };
             
             var albums = await albumRepository.FindByGenreIdAsync(
@@ -186,7 +189,8 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 IncludeArtist = query.Contains("artist"),
                 IncludePrimaryGenres = query.Contains("genre"),
                 IncludeInfluenceGenres = query.Contains("genre"),
-                IncludeReleases = query.Contains("release")
+                IncludeReleases = query.Contains("release"),
+                IncludeStats = query.Contains("stat")
             };
             
             var albums = await albumRepository.FindAsync(skip, take, querySpecification, filter);
@@ -226,7 +230,8 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 IncludeArtist = query.Contains("artist"),
                 IncludePrimaryGenres = query.Contains("genre"),
                 IncludeInfluenceGenres = query.Contains("genre"),
-                IncludeReleases = query.Contains("release")
+                IncludeReleases = query.Contains("release"),
+                IncludeStats = query.Contains("stat")
             };
             
             var albums = await albumRepository.FindIn(ids, querySpecification);
