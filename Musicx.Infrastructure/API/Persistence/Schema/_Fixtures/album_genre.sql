@@ -2757,3 +2757,8 @@ INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALU
 INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1868, 85);
 INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1868, 22);
 INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1869, 22);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1870, 93);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1870, 14);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1871, 93);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1871, 14);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (1871, 21);

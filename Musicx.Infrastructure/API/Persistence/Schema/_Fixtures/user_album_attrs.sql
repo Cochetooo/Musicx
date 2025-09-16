@@ -1,0 +1,1 @@
+INSERT INTO public.user_album_attrs (user_album_attrs_user_id, user_album_attrs_album_id, user_album_attrs_created_at, user_album_attrs_updated_at, user_album_attrs_rating, user_album_attrs_collection_type, user_album_attrs_review) VALUES (1, 1, '2025-09-16 13:58:30.903204', '2025-09-16 13:58:30.903209', 80, null, null);
