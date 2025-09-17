@@ -49,6 +49,10 @@ public static class RatingHelper
 
             return SplitCamelCase(textual.ToString());
         }
+        else if (ratingMode == RatingMode.Percentage)
+        {
+            return $"{r}%";
+        }
         else
         {
             decimal scaled;
@@ -81,11 +85,6 @@ public static class RatingHelper
                     denominator = 1000;
                     scaled = r * denominator / 100;
                     format = "0"; // pas de décimales
-                    break;
-                case RatingMode.Percentage:
-                    denominator = 100;
-                    scaled = r;
-                    format = "0.00";
                     break;
                 case RatingMode.RatingStars:
                     denominator = 5;

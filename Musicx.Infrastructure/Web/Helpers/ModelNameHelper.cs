@@ -15,7 +15,17 @@ public static class ModelNameHelper
             modelName += "s";
         }
         
-        return modelName.ToLower();
+        // Transformer PascalCase → snake_case
+        modelName = System.Text.RegularExpressions.Regex
+            .Replace(modelName, "([a-z0-9])([A-Z])", "$1-$2")
+            .ToLower();
+
+        // Remplacement spécifique
+        modelName = modelName
+            .ToLower()
+            .Replace("attributes", "attrs");
+        
+        return modelName;
     }
     
     public static string OutModelToEntity(this string name)

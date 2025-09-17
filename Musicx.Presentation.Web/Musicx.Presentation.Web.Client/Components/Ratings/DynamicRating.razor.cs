@@ -53,7 +53,7 @@ public partial class DynamicRating
         __builder.OpenComponent(0, typeof(MudNumericField<int?>));
         __builder.AddAttribute(1, "Min", 0);
         __builder.AddAttribute(2, "Max", max);
-        __builder.AddAttribute(3, "Immediate", true);
+        __builder.AddAttribute(3, "Immediate", false);
         __builder.AddAttribute(4, "Value", current);
         __builder.AddAttribute(5, "ValueChanged", EventCallback.Factory.Create<int?>(this, v =>
         {

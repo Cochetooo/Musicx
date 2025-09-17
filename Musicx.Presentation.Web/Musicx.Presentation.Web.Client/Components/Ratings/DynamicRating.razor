@@ -1,71 +1,72 @@
 @using Musicx.Contracts.Enums
-<MudButton Variant="Variant.Outlined" Color="Color.Primary"
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary"
+           Size="Size.Small"
+           Class="my-3"
            OnClick="@(() => _isOpen = !_isOpen)">
-    Rate
+    @(_isOpen ? "Close Rating" : "Rate")
 </MudButton>
 
-<MudPopover Open="@_isOpen" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
-    <MudPaper Class="pa-4">
-        @switch (RatingMode)
-        {
-            case RatingMode.TextualShort:
-                <MudStack Row Spacing="1">
-                    @foreach (var option in TextualShortOptions)
-                    {
-                        <MudChip Selected="@(Value == MapTextual(option))"
-                                 OnClick="@(() => SetTextual(option))"
-                                 Color="Color.Primary"
-                                 Variant="Variant.Outlined"
-                                 T="string">
-                            @SplitCamelCase(option.ToString())
-                        </MudChip>
-                    }
-                </MudStack>
-                break;
+<MudCollapse Expanded="@_isOpen">
+    @switch (RatingMode)
+    {
+        case RatingMode.TextualShort:
+            <MudStack Row Spacing="1">
+                @foreach (var option in TextualShortOptions)
+                {
+                    <MudChip Selected="@(Value == MapTextual(option))"
+                             OnClick="@(() => SetTextual(option))"
+                             Color="Color.Primary"
+                             Variant="Variant.Outlined"
+                             T="string">
+                        @SplitCamelCase(option.ToString())
+                    </MudChip>
+                }
+            </MudStack>
+            break;
                 
-            case RatingMode.TextualDetailed:
-                <MudStack Row Spacing="1" Wrap="Wrap.Wrap">
-                    @foreach (var option in Enum.GetValues<TextualRating>())
-                    {
-                        <MudChip Selected="@(Value == MapTextual(option))"
-                                 OnClick="@(() => SetTextual(option))"
-                                 Color="Color.Primary"
-                                 Variant="Variant.Outlined"
-                                 T="string">
-                            @SplitCamelCase(option.ToString())
-                        </MudChip>
-                    }
-                </MudStack>
-                break;
+        case RatingMode.TextualDetailed:
+            <MudStack Row Spacing="1" Wrap="Wrap.Wrap">
+                @foreach (var option in Enum.GetValues<TextualRating>())
+                {
+                    <MudChip Selected="@(Value == MapTextual(option))"
+                             OnClick="@(() => SetTextual(option))"
+                             Color="Color.Primary"
+                             Variant="Variant.Text"
+                             T="string">
+                        @SplitCamelCase(option.ToString())
+                    </MudChip>
+                }
+            </MudStack>
+            break;
                 
-            case RatingMode.OutOfFive:
-                @NumericField(5)
-                break;
+        case RatingMode.OutOfFive:
+            @NumericField(5)
+            break;
                 
-            case RatingMode.OutOfTen:
-                @NumericField(10)
-                break;
+        case RatingMode.OutOfTen:
+            @NumericField(10)
+            break;
                 
-            case RatingMode.OutOfTwenty:
-                @NumericField(20)
-                break;
+        case RatingMode.OutOfTwenty:
+            @NumericField(20)
+            break;
                 
-            case RatingMode.OutOfFifty:
-                @NumericField(50)
-                break;
+        case RatingMode.OutOfFifty:
+            @NumericField(50)
+            break;
                 
-            case RatingMode.OutOfThousand:
-                @NumericField(1000)
-                break;
+        case RatingMode.OutOfThousand:
+            @NumericField(1000)
+            break;
                 
-            case RatingMode.Percentage:
-                @NumericField(100)
-                break;
+        case RatingMode.Percentage:
+            @NumericField(100)
+            break;
                 
-            case RatingMode.RatingStars:
-                <MudRating @bind-SelectedValue="StarValue" MaxValue="5"
-                           Color="Color.Primary" />
-                break;
-        }
-    </MudPaper>
-</MudPopover>
+        case RatingMode.RatingStars:
+            <MudRating @bind-SelectedValue="StarValue" MaxValue="5"
+                       Color="Color.Primary" />
+            break;
+    }
+</MudCollapse>
