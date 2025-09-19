@@ -1,4 +1,5 @@
 @page "/Artist/{id}"
+@using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
 @using Musicx.Contracts.Dto.Enums
@@ -12,6 +13,7 @@
 @inject IGetUseCase<OutArtist> UcGet
 @inject IGetAlbumByArtistUseCase UcGetAlbums
 @inject ILoggerFactory LoggerProvider
+@inject IUserClientContext UserClientContext
 
 <MudBreadcrumbs Items="@_breadcrumb" />
 
@@ -68,13 +70,16 @@ else
 
                         <MudSpacer/>
 
-                        <MudButton OnClick="@AddAlbumShowModal"
-                                   Class="my-5"
-                                   Color="Color.Success"
-                                   Variant="Variant.Filled"
-                                   StartIcon="@Icons.Material.Filled.AddCircle">
-                            New Release
-                        </MudButton>
+                        @if (UserClientContext.Can("artist.album.add"))
+                        {
+                            <MudButton OnClick="@AddAlbumShowModal"
+                                       Class="my-5"
+                                       Color="Color.Success"
+                                       Variant="Variant.Filled"
+                                       StartIcon="@Icons.Material.Filled.AddCircle">
+                                New Release
+                            </MudButton>
+                        }
 
                         <MudIconButton
                             Icon="@Icons.Material.Filled.List"

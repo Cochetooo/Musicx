@@ -12,8 +12,6 @@ public sealed class OutUser : BaseOutputModel
     public string? GoogleId { get; set; }
     public string? LastFmUsername { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string? PasswordHash { get; set; }
-    public string? PasswordSalt { get; set; }
     public string? PictureUrl { get; set; }
     public bool PrefDarkMode { get; set; }
     public RatingMode PrefRatingMode { get; set; }

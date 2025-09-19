@@ -83,11 +83,11 @@
  */
 
 .text-color-secondary {
-    color: var(--mud-palette-text-secondary);
+    color: var(--mud-palette-text-secondary) !important;
 }
 
 .text-color-muted {
-    color: var(--mud-palette-text-disabled);
+    color: var(--mud-palette-text-disabled) !important;
 }
 
 /*

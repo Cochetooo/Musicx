@@ -28,6 +28,7 @@ public partial class AlbumView
     protected override void OnInitialized()
     {
         _logger = LoggerProvider.CreateLogger(nameof(AlbumView));
+        _showDetailedView = !UserClientContext.CurrentUser?.PrefSimpleGenre ?? false;
     }
     
     protected override async Task OnParametersSetAsync()

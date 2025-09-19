@@ -86,7 +86,7 @@ public partial class ArtistView
         _logger.LogInformation($"✅ Artist loaded: {_artist.Name} ({_artist.Id})");
         await InvokeAsync(StateHasChanged);
         
-        _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id);
+        _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id, "genre");
         _logger.LogInformation("🎵 Retrieved {Count} albums for artist {ArtistId}", _artistAlbums.Count, _artist.Id);
         
         _availableReleaseTypes = _artistAlbums

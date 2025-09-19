@@ -34,8 +34,6 @@ public static class UserMapper
         Email = user.SafeGet<string>(UserColumns.Email) ?? "",
         EmailConfirmed = user.SafeGet<bool>(UserColumns.EmailConfirmed),
         Name = user.SafeGet<string>(UserColumns.Name) ?? "",
-        PasswordHash = user.SafeGet<string>(UserColumns.PasswordHash),
-        PasswordSalt = user.SafeGet<string>(UserColumns.PasswordSalt),
         GoogleId = user.SafeGet<string>(UserColumns.GoogleId),
         LastFmUsername = user.SafeGet<string>(UserColumns.LastFmUsername),
         PrefDarkMode = user.SafeGet<bool>(UserColumns.PrefDarkMode),
