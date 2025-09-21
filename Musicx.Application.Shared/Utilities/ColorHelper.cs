@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Globalization;
 
 namespace Musicx.Application.Shared.Utilities;
@@ -77,5 +78,25 @@ public static class ColorHelper
         }
 
         return $"rgba(0,0,0,{alphaInvariant})";
+    }
+
+    public static string Interpolate(string color1, string color2, double factor)
+    {
+        int c1 = Convert.ToInt32(color1[1..], 16);
+        int c2 = Convert.ToInt32(color2[1..], 16);
+
+        int r1 = (c1 >> 16) & 0xFF;
+        int g1 = (c1 >> 8) & 0xFF;
+        int b1 = c1 & 0xFF;
+        
+        int r2 = (c2 >> 16) & 0xFF;
+        int g2 = (c2 >> 8) & 0xFF;
+        int b2 = c2 & 0xFF;
+
+        int r = (int)Math.Round(r1 + factor * (r2 - r1));
+        int g = (int)Math.Round(g1 + factor * (g2 - g1));
+        int b = (int)Math.Round(b1 + factor * (b2 - b1));
+
+        return $"rgb({r}, {g}, {b})";
     }
 }

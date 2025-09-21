@@ -126,16 +126,16 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 
         if (genreQuerySpecification.IncludeChildren)
         {
-            selects.Add($"json_agg(cg.*) FILTER (WHERE cg.{GenreColumns.Id} IS NOT NULL) AS children");
-            joins.Add($"LEFT JOIN childrengenre_parentgenre cgpg ON g0.{GenreColumns.Id} = cgpg.{ChildrenGenreParentGenreColumns.ParentId}");
-            joins.Add($"LEFT JOIN genres cg ON cgpg.{ChildrenGenreParentGenreColumns.ChildId} = cg.{GenreColumns.Id}");
+            selects.Add($"(SELECT json_agg(cg.*) FROM childrengenre_parentgenre cgpg " +
+                        $"INNER JOIN genres cg ON cgpg.{ChildrenGenreParentGenreColumns.ChildId} = cg.{GenreColumns.Id} " +
+                        $"WHERE g0.{GenreColumns.Id} = cgpg.{ChildrenGenreParentGenreColumns.ParentId}) AS children");
         }
         
         if (genreQuerySpecification.IncludeParents)
         {
-            selects.Add($"json_agg(pg.*) FILTER (WHERE pg.{GenreColumns.Id} IS NOT NULL) AS parents");
-            joins.Add($"LEFT JOIN childrengenre_parentgenre pgcg ON g0.{GenreColumns.Id} = pgcg.{ChildrenGenreParentGenreColumns.ChildId}");
-            joins.Add($"LEFT JOIN genres pg ON pgcg.{ChildrenGenreParentGenreColumns.ParentId} = pg.{GenreColumns.Id}");
+            selects.Add($"(SELECT json_agg(pg.*) FROM childrengenre_parentgenre pgcg " +
+                        $"INNER JOIN genres pg ON pgcg.{ChildrenGenreParentGenreColumns.ParentId} = pg.{GenreColumns.Id} " +
+                        $"WHERE g0.{GenreColumns.Id} = pgcg.{ChildrenGenreParentGenreColumns.ChildId}) AS parents");
         }
 
         return distinct

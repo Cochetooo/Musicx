@@ -51,7 +51,7 @@ public partial class GenreView
             return;
         }
 
-        _genre = await UcGet.ExecuteAsync(genreId, "children");
+        _genre = await UcGet.ExecuteAsync(genreId, "parents_children");
 
         if (_genre is null)
         {

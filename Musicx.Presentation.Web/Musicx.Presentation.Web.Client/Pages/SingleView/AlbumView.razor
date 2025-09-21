@@ -48,14 +48,14 @@ else
         <!-- Header Album -->
         <MudGrid Class="my-3">
             <MudItem xs="12" md="4">
-                <MudCard Class="bg-surface pa-2">
+                <MudCard Class="bg-surface animate-hover-up pa-2">
                     <MudCardHeader>
                         <div class="cursor-pointer pa-4" 
                              style="position: relative; width: 100%;"
                              @onclick="() => _isArtworkRevealed = !_isArtworkRevealed">
                             <MudImage Src="@_album.ArtworkUrl"
                                       Elevation="8"
-                                      Class="@($"rounded-lg animate-hover-up {(_album.IsNsfw && !_isArtworkRevealed ? "blurred" : "")}")"
+                                      Class="@($"rounded-lg {(_album.IsNsfw && !_isArtworkRevealed ? "blurred" : "")}")"
                                       Style="width: 100%; height: auto;" />
 
                             @if (_album.IsNsfw && !_isArtworkRevealed)
@@ -111,7 +111,7 @@ else
             </MudItem>
             
             <MudItem xs="12" md="8">
-                <MudPaper Class="pa-3 bg-surface">
+                <MudPaper Class="pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h3" Class="montserrat text-mega-bold text-color-primary"
                              Style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3)">
                         @_album.Name
@@ -119,7 +119,8 @@ else
                     
                     @if (_album.Artist is not null)
                     {
-                        <MudLink Typo="Typo.h6" Class="ml-8 montserrat text-italic" Href="@($"/Artist/{_album.Artist.Id}")">
+                        <MudLink Typo="Typo.h6" Class="ml-8 montserrat text-italic text-color-secondary" 
+                                 Href="@($"/Artist/{_album.Artist.Id}")">
                             @_album.Artist.Name
                         </MudLink>
                     }
@@ -182,12 +183,13 @@ else
         <MudGrid>
             <MudItem xs="12" md="5">
                 <!-- Track List -->
-                <MudPaper Class="mt-4 pa-3 bg-surface">
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">Track List</MudText>
+                    <MudDivider Class="my-3" />
                     <MudTable Items="@_albumSongs" ReadOnly
                               Elevation="8"
                               CustomHeader="@true" CustomFooter="@true"
-                              Class="animate-hover-up my-3" Style="width: 100%"
+                              Class="my-3" Style="width: 100%"
                               Dense>
                         <HeaderContent>
                             <MudTHeadRow>
@@ -236,7 +238,7 @@ else
             
             <MudItem xs="12" md="3">
                 <!-- Credit -->
-                <MudPaper Class="mt-4 pa-3 bg-surface">
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">Credits</MudText>
             
                 </MudPaper>
@@ -244,8 +246,9 @@ else
             
             <MudItem xs="12" md="4">
                 <!-- Genres -->
-                <MudPaper Class="mt-4 pa-3 bg-surface">
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">Genres</MudText>
+                    <MudDivider Class="my-3" />
                     <GenreDetails Album="@_album" @bind-DetailedView="@_showDetailedView" />
                     <MudSwitch @bind-Value="_showDetailedView"
                                Color="Color.Primary"
@@ -257,8 +260,10 @@ else
         </MudGrid>
         
         <!-- Reviews -->
-        <MudPaper Class="mt-4 pa-3 bg-surface">
+        <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
             <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">User Reviews</MudText>
+            <MudDivider Class="my-3" />
+            
             <MudList T="RenderFragment">
                 <MudListItem>
                     <MudText Class="text-bold">User123</MudText>
@@ -277,22 +282,17 @@ else
         </MudPaper>
         
         <!-- Suggestions -->
-        <MudPaper Class="mt-4 pa-3 bg-surface">
+        <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
             <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">
                 Similar Releases
             </MudText>
         </MudPaper>
         
-        <!-- Tileset Artist Disco -->
-        <MudExpansionPanels Class="mt-4">
-            <MudExpansionPanel Text="Other Releases">
-                
-            </MudExpansionPanel>
-        </MudExpansionPanels>
-        
         <!-- Ratings et collections -->
-        <MudPaper Class="mt-4 pa-3 bg-surface">
+        <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
             <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">User Ratings & Collections</MudText>
+            <MudDivider Class="my-3" />
+            
             <MudList T="string" Dense>
                 <MudListItem>User A – 4/5 – CD</MudListItem>
                 <MudListItem>User B – 5/5 – Vinyl</MudListItem>
@@ -300,8 +300,10 @@ else
         </MudPaper>
         
         <!-- Zone anecdotes -->
-        <MudPaper Class="mt-4 pa-3 bg-surface">
+        <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
             <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">Additional Info</MudText>
+            <MudDivider Class="my-3" />
+            
             <MudText Typo="Typo.body2" Class="text-italic">Some fun facts...</MudText>
         </MudPaper>
         
@@ -335,6 +337,13 @@ else
                 <MudButton Variant="Variant.Filled" Color="Color.Primary">+ Review</MudButton>
             </MudItem>
         </MudGrid>
+                
+        <!-- Tileset Artist Disco -->
+        <MudExpansionPanels Class="mt-4">
+            <MudExpansionPanel Text="Artist Discography">
+                
+            </MudExpansionPanel>
+        </MudExpansionPanels>
     </MudContainer>
 }
 
