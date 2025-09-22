@@ -36,6 +36,8 @@ public static class UserMapper
         Name = user.SafeGet<string>(UserColumns.Name) ?? "",
         GoogleId = user.SafeGet<string>(UserColumns.GoogleId),
         LastFmUsername = user.SafeGet<string>(UserColumns.LastFmUsername),
+        PasswordHash = user.SafeGet<string>(UserColumns.PasswordHash),
+        PasswordSalt = user.SafeGet<string>(UserColumns.PasswordSalt),
         PrefDarkMode = user.SafeGet<bool>(UserColumns.PrefDarkMode),
         PrefRatingMode = user.SafeGet<RatingMode>(UserColumns.PrefRatingMode),
         PrefSimpleGenre = user.SafeGet<bool>(UserColumns.PrefSimpleGenre),
