@@ -44,6 +44,40 @@ else
                             }
                         </MudCardContent>
                     </MudCard>
+                    
+                    <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                        <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">
+                            Hierarchy
+                        </MudText>
+                        
+                        <MudDivider Class="my-3" />
+                        
+                        @if (_genre.Parents?.Any() == true)
+                        {
+                            foreach (var genre in _genre.Parents)
+                            {
+                                <MudLink Href="@($"/Genre/{genre.Id}")" Color="Color.Tertiary"
+                                         Class="ml-2 d-block">
+                                    @genre.Name
+                                </MudLink>
+                            }
+                        }
+                        
+                        <MudLink Href="@($"/Genre/{_genre.Id}")" Color="Color.Primary" 
+                                 Class="ml-4 d-block text-bold">
+                            @_genre.Name
+                        </MudLink>
+                        
+                        @if (_genre.Children?.Any() == true)
+                        {
+                            foreach (var genre in _genre.Children)
+                            {
+                                <MudLink Href="@($"/Genre/{genre.Id}")" Color="Color.Secondary" Class="ml-6 d-block">
+                                    @genre.Name
+                                </MudLink>
+                            }
+                        }
+                    </MudPaper>
                 </MudItem>
                 <MudItem xs="12" md="9" Class="pa-3">
                     <MudCard>
@@ -64,6 +98,14 @@ else
                                                               Elevation="25"/>
 
                                                     <AlbumListQuickInfo class="mx-3" Album="@album"/>
+                                                    
+                                                    @if (album.Artist is not null)
+                                                    {
+                                                        <MudDivider Vertical />
+                                                        <MudText Class="text-color-secondary">
+                                                            @album.Artist.Name
+                                                        </MudText>
+                                                    }
                                                 </MudStack>
 
                                                 <MudStack Justify="Justify.FlexEnd" Row>

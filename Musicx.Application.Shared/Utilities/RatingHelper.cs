@@ -6,6 +6,17 @@ namespace Musicx.Application.Shared.Utilities;
 
 public static class RatingHelper
 {
+    public static readonly List<(decimal val, string color)> Stops = new()
+    {
+        (0.0m,   "#8B0000"), // bordeaux
+        (30.0m,  "#FF6347"), // salmon
+        (55.0m,  "#B0B027"), // greeny-yellow
+        (65.0m,  "#27C427"), // green
+        (72.0m,  "#2E8D69"), // seagreen
+        (80.0m,  "#008B8B"), // cyan
+        (100.0m, "#4B0082")  // indigo
+    };
+    
     public static string GetRatingFormatted(decimal? rating, RatingMode ratingMode)
     {
         if (!rating.HasValue)
@@ -99,6 +110,28 @@ public static class RatingHelper
 
             return $"{scaled.ToString(format)} / {denominator}";
         }
+    }
+
+    public static string GetColorForRating(decimal? rating)
+    {
+        if (rating is null)
+        {
+            return "gray";
+        }
+
+        for (int i = 0; i < Stops.Count - 1; i++)
+        {
+            var a = Stops[i];
+            var b = Stops[i + 1];
+
+            if (rating >= a.val && rating <= b.val)
+            {
+                var t = (rating.Value - a.val) / (b.val - a.val);
+                return ColorHelper.Interpolate(a.color, b.color, (double)t);
+            }
+        }
+
+        return Stops[^1].color;
     }
     
     private static string SplitCamelCase(string input)
