@@ -75,22 +75,22 @@ public static class RatingHelper
                 case RatingMode.OutOfFive:
                     denominator = 5;
                     scaled = r * denominator / 100;
-                    format = "0.00";
+                    format = "0.##";
                     break;
                 case RatingMode.OutOfTen:
                     denominator = 10;
                     scaled = r * denominator / 100;
-                    format = "0.00";
+                    format = "0.##";
                     break;
                 case RatingMode.OutOfTwenty:
                     denominator = 20;
                     scaled = r * denominator / 100;
-                    format = "0.00";
+                    format = "0.##";
                     break;
                 case RatingMode.OutOfFifty:
                     denominator = 50;
                     scaled = r * denominator / 100;
-                    format = "0.00";
+                    format = "0.##";
                     break;
                 case RatingMode.OutOfThousand:
                     denominator = 1000;
@@ -116,7 +116,7 @@ public static class RatingHelper
     {
         if (rating is null)
         {
-            return "gray";
+            return "#777777";
         }
 
         for (int i = 0; i < Stops.Count - 1; i++)

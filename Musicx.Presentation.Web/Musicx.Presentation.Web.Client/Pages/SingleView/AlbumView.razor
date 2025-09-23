@@ -129,9 +129,15 @@ else
                     
                     @if (_album.Stats is not null)
                     {
-                        <MudText Typo="Typo.subtitle1" Class="montserrat text-bold text-color-secondary">
-                            @RatingHelper.GetRatingFormatted(_album.Stats.Average,
-                                UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)
+                        <MudChip T="string"
+                                 Class="text-bold"
+                                 Style="@($"background-color: {RatingHelper.GetColorForRating(_album.Stats.Average)};" +
+                                        $"color: white")" >
+                            @RatingHelper.GetRatingFormatted(_album.Stats.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                        </MudChip>
+                        
+                        <MudText Typo="Typo.subtitle2" Class="text-color-secondary my-2">
+                            @_album.Stats.Count ratings
                         </MudText>
                     }
                     

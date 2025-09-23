@@ -163,6 +163,10 @@ public partial class AlbumView
             Rating = (short?)ratingValue
         });
         
+        // Refresh only album for new rating
+        _album = await UcGet.ExecuteAsync(_album.Id, "artist_genre_stat");
+        await InvokeAsync(StateHasChanged);
+        
         _logger.LogInformation($"✅ Successfully saved new rating.");
     }
 }

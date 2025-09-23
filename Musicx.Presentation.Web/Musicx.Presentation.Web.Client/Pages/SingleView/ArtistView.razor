@@ -1,10 +1,12 @@
 @page "/Artist/{id}"
+@using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
 @using Musicx.Contracts.Dto.Enums
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
+@using Musicx.Infrastructure.Shared.Models.ExternalMusicData
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
@@ -115,15 +117,32 @@ else
                                                         <AlbumListQuickInfo class="mx-3" Album="@album"/>
                                                     </MudStack>
 
-                                                    @if (album.SimplifiedGenreName is not null && album.SimplifiedGenreColor is not null)
-                                                    {
-                                                        <MudChip
-                                                            Class="montserrat py-1 px-3 ma-1 genre-badge"
-                                                            Style="@GetSimplifiedGenreStyle(album)"
-                                                            Label="@true">
-                                                            @album.SimplifiedGenreName
-                                                        </MudChip>
-                                                    }
+                                                    <MudStack Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Row>
+                                                        @if (album.SimplifiedGenreName is not null && album.SimplifiedGenreColor is not null)
+                                                        {
+                                                            <MudChip
+                                                                Class="montserrat py-1 px-3 ma-1 genre-badge"
+                                                                Style="@GetSimplifiedGenreStyle(album)"
+                                                                Label="@true">
+                                                                @album.SimplifiedGenreName
+                                                            </MudChip>
+                                                        }
+                                                        
+                                                        <MudDivider Vertical />
+                                                        
+                                                        <MudBadge Content="@(album.Stats?.Count ?? 0)"
+                                                                  Color="Color.Dark"
+                                                                  Overlap="true"
+                                                                  Bordered="true"
+                                                                  Origin="Origin.BottomRight">
+                                                            <MudChip T="string"
+                                                                     Class="text-bold"
+                                                                     Style="@($"background-color: {RatingHelper.GetColorForRating(album.Stats?.Average)};" +
+                                                                            $"color: white; width: 100px; max-width: 100px;")" >
+                                                                @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                                            </MudChip>
+                                                        </MudBadge>
+                                                    </MudStack>
                                                 </MudStack>
                                             </MudLink>
                                         </MudListItem>
@@ -147,10 +166,19 @@ else
                                                     Arrow>
                                             <ChildContent>
                                                 <MudLink Href="@($"/Album/{album.Id}")">
-                                                    <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
-                                                              Width="128" Height="128"
-                                                              Class="rounded-lg"
-                                                              Elevation="8"/>
+                                                    <MudBadge Content="@RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                                              Overlap="true"
+                                                              Color="Color.Dark"
+                                                              Bordered="true"
+                                                              Class="mb-1"
+                                                              BadgeClass="pa-2 text-bold montserrat"
+                                                              Origin="Origin.BottomCenter">
+                                                        <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
+                                                                  Width="128" Height="128"
+                                                                  Class="rounded-lg"
+                                                                  Elevation="8"/>
+                                                    </MudBadge>
+                                                    
                                                     <AlbumListQuickInfo Album="album"/>
                                                 </MudLink>
                                             </ChildContent>
