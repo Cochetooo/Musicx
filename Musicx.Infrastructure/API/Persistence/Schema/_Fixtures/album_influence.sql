@@ -3015,3 +3015,10 @@ INSERT INTO public.album_influence (album_influence_album_id, album_influence_ge
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2021, 55);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2021, 21);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2022, 104);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2029, 35);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2029, 394);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2030, 394);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2031, 394);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2031, 35);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2032, 35);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2034, 35);
