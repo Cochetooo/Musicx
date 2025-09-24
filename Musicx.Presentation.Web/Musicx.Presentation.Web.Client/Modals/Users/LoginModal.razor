@@ -11,38 +11,33 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudGrid Justify="Justify.Center">
-            <MudItem xs="12">
-                <MudTextField 
-                    T="string"
-                    @bind-Text="_email"
-                    Immediate
-                    Placeholder="Enter your email"
-                    Label="Email"
-                    Variant="Variant.Outlined"
-                />
-            </MudItem>
+        <MudStack Justify="Justify.Center">
+            <MudTextField 
+                T="string"
+                @bind-Text="_email"
+                Immediate
+                Placeholder="Enter your email"
+                Label="Email"
+                Variant="Variant.Outlined"
+            />
             
-            <MudItem xs="12">
-                <MudTextField 
-                    T="string"
-                    @bind-Text="_password"
-                    Immediate
-                    Placeholder="Enter your password"
-                    Label="Password"
-                    InputType="InputType.Password"
-                    Variant="Variant.Outlined"
-                />
-            </MudItem>
+            <MudTextField 
+                T="string"
+                @bind-Text="_password"
+                Immediate
+                Placeholder="Enter your password"
+                Label="Password"
+                InputType="InputType.Password"
+                Variant="Variant.Outlined"
+            />
             
-            <MudItem xs="12">
-                <MudButton 
-                    Variant="Variant.Filled"
-                    Disabled="@(string.IsNullOrWhiteSpace(_email) || string.IsNullOrWhiteSpace(_password))"
-                    OnClick="@Login">
-                    Login
-                </MudButton>
-            </MudItem>
-        </MudGrid>
+            <MudButton 
+                Variant="Variant.Outlined"
+                Color="Color.Primary"
+                Disabled="@(string.IsNullOrWhiteSpace(_email) || string.IsNullOrWhiteSpace(_password))"
+                OnClick="@Login">
+                Login
+            </MudButton>
+        </MudStack>
     </DialogContent>
 </MudDialog>

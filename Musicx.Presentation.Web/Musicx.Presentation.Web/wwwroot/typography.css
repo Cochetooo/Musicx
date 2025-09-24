@@ -82,6 +82,10 @@
     Texts
  */
 
+.text-color-primary {
+    color: var(--mud-palette-text-primary) !important;
+}
+
 .text-color-secondary {
     color: var(--mud-palette-text-secondary) !important;
 }

@@ -11,8 +11,8 @@ public static class UserAlbumAttrMapper
     public static OutUserAlbumAttribute FromDicoToUserAlbumAttr
         (this IDictionary<string, object?> userAlbumAttr) => new()
     {
-        UserId = userAlbumAttr.SafeGet<long>(UserAlbumAttrColumns.UserId),
-        AlbumId = userAlbumAttr.SafeGet<long>(UserAlbumAttrColumns.AlbumId),
+        User = userAlbumAttr.FromDicoToUser(),
+        Album = userAlbumAttr.FromDicoToAlbum(),
 
         CreatedAt = userAlbumAttr.SafeGet<DateTime>(UserAlbumAttrColumns.CreatedAt),
         UpdatedAt = userAlbumAttr.SafeGet<DateTime>(UserAlbumAttrColumns.UpdatedAt),
@@ -24,8 +24,8 @@ public static class UserAlbumAttrMapper
 
     public static InUserAlbumAttribute ToRaw(this OutUserAlbumAttribute userAlbumAttr) => new()
     {
-        UserId = userAlbumAttr.UserId,
-        AlbumId = userAlbumAttr.AlbumId,
+        UserId = userAlbumAttr.User.Id,
+        AlbumId = userAlbumAttr.Album.Id,
 
         CollectionType = userAlbumAttr.CollectionType,
         Rating = userAlbumAttr.Rating,

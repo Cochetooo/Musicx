@@ -19,7 +19,8 @@ public partial class AlbumView
     private OutAlbum? _album;
     private List<OutSong> _albumSongs = [];
     private OutAlbum? _previousAlbum, _nextAlbum;
-
+    private List<OutUserAlbumAttribute> _albumUserAttribs = [];
+ 
     private bool _isArtworkRevealed;
     private bool _showDetailedView;
 
@@ -101,6 +102,10 @@ public partial class AlbumView
             _logger.LogInformation($"✅ Previous and Next albums loaded.");
             await InvokeAsync(StateHasChanged);
         }
+
+        _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album.Id);
+        _logger.LogInformation($"✅ User attributes loaded.");
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task EditTrackListShowModal()

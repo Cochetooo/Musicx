@@ -104,6 +104,42 @@ public partial class ArtistView
         
         _logger.LogInformation($"✅ Chart created.");
     }
+
+    private void SortBy((string key, bool descending) sort)
+    {
+        if (sort.descending)
+        {
+            switch (sort.key)
+            {
+                case "Name":
+                    _artistAlbums = _artistAlbums.OrderByDescending(a => a.Name).ToList();
+                    break;
+                case "Rating":
+                    _artistAlbums = _artistAlbums.OrderByDescending(a => a.Stats?.Average).ToList();
+                    break;
+                case "ReleaseDate":
+                    _artistAlbums = _artistAlbums.OrderByDescending(a => a.OriginalReleaseDate).ToList();
+                    break;
+            }
+        }
+        else
+        {
+            switch (sort.key)
+            {
+                case "Name":
+                    _artistAlbums = _artistAlbums.OrderBy(a => a.Name).ToList();
+                    break;
+                case "Rating":
+                    _artistAlbums = _artistAlbums.OrderBy(a => a.Stats?.Average).ToList();
+                    break;
+                case "ReleaseDate":
+                    _artistAlbums = _artistAlbums.OrderBy(a => a.OriginalReleaseDate).ToList();
+                    break;
+            }
+        }
+
+        StateHasChanged();
+    }
     
     private void UpdateChart()
     {

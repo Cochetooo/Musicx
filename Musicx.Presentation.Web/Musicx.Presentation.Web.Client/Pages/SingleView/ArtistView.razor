@@ -94,6 +94,23 @@ else
                             Color="Color.Primary"
                             OnClick="@(() => ToggleListView(false))"
                             Variant="@GetListVariant(inverted: true)"/>
+                        
+                        <MudSelect 
+                                Variant="Variant.Outlined"
+                                AdornmentIcon="@Icons.Material.Filled.Sort"
+                                AdornmentColor="Color.Primary"
+                                Label="Sort By"
+                                Immediate
+                                FitContent
+                                T="@((string, bool))" 
+                                ValueChanged="@(v => SortBy(v))">
+                            <MudSelectItem Value="@(("ReleaseDate", false))">Release Date</MudSelectItem>
+                            <MudSelectItem Value="@(("ReleaseDate", true))">Release Date - desc</MudSelectItem>
+                            <MudSelectItem Value="@(("Name", false))">Name A->Z</MudSelectItem>
+                            <MudSelectItem Value="@(("Name", true))">Name Z->A</MudSelectItem>
+                            <MudSelectItem Value="@(("Rating", false))">Rating</MudSelectItem>
+                            <MudSelectItem Value="@(("Rating", true))">Rating - desc</MudSelectItem>
+                        </MudSelect>
                     </MudStack>
 
                     @if (_isReleasesListView)

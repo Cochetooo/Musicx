@@ -16,6 +16,7 @@
 @inject IGetUseCase<OutAlbum> UcGet
 @inject IGetAlbumByArtistUseCase UcGetArtistAlbums
 @inject IGetSongByAlbumUseCase UcGetSongs
+@inject IGetAlbumAttributesByAlbum UcGetAlbumAttrs
 @inject ISaveUseCase<InUserAlbumAttribute> UcSaveUserAttrib
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
@@ -127,45 +128,50 @@ else
                     
                     <MudDivider Class="my-3" />
                     
-                    @if (_album.Stats is not null)
-                    {
-                        <MudChip T="string"
-                                 Class="text-bold"
-                                 Style="@($"background-color: {RatingHelper.GetColorForRating(_album.Stats.Average)};" +
-                                        $"color: white")" >
-                            @RatingHelper.GetRatingFormatted(_album.Stats.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
-                        </MudChip>
+                    <MudStack Row Class="mb-2" AlignItems="AlignItems.Center">
+                        @if (_album.Stats is not null)
+                        {
+                            <MudChip T="string"
+                                     Class="text-bold"
+                                     Style="@($"background-color: {RatingHelper.GetColorForRating(_album.Stats.Average)};" +
+                                            $"color: white")" >
+                                @RatingHelper.GetRatingFormatted(_album.Stats.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                            </MudChip>
                         
-                        <MudText Typo="Typo.subtitle2" Class="text-color-secondary my-2">
-                            @_album.Stats.Count ratings
-                        </MudText>
-                    }
-                    
-                    @if (UserClientContext.CurrentUser is not null &&
-                         UserClientContext.Can("album.rate"))
-                    {
-                        <DynamicRating
-                            RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
-                            ValueChanged="@(v => Rate(v))"/>
-                    }
+                            <MudText Typo="Typo.caption" Class="text-color-secondary text-italic ml-3">
+                                @_album.Stats.Count ratings
+                            </MudText>
+                        }
+                    </MudStack>
                     
                     @if (null != _album.OriginalReleaseDate)
                     {
-                        <MudText Typo="Typo.subtitle2" Class="text-color-secondary mt-2">
-                            @_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")
+                        <MudText Class="text-color-secondary mt-2">
+                            Release Date:&nbsp;
+                            
+                            <MudText Inline Class="text-color-primary text-mega-bold montserrat">
+                                @_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")
+                            </MudText>
                         </MudText>
+                        
                     }
                     
-                    <MudText Typo="Typo.subtitle2" Class="text-color-secondary">
-                        @(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?")
-                        &nbsp;->&nbsp;
-                        @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                    <MudText Class="text-color-secondary mt-2">
+                        Recording Dates:&nbsp;
+                            
+                        <MudText Inline Class="text-color-primary text-mega-bold montserrat">
+                            @(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                            &nbsp;->&nbsp;
+                            @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                        </MudText>
                     </MudText>
                     
-                    <MudText Typo="Typo.body2" Class="text-color-secondary">
-                        @(_album.ReleaseType?.ToString() ?? "-")
-                        &nbsp;·&nbsp;
-                        - <!-- Label Todo -->
+                    <MudText Class="text-color-secondary mt-2">
+                        Release Type:&nbsp;
+                            
+                        <MudText Inline Class="text-color-primary text-mega-bold montserrat">
+                            @(_album.ReleaseType?.ToString() ?? "-")
+                        </MudText>
                     </MudText>
                     
                     <!-- Issues -->
@@ -182,6 +188,40 @@ else
                             </MudList>
                         </MudExpansionPanel>
                     </MudExpansionPanels>
+                    
+                    <MudDivider Class="my-2" />
+                    
+                    <MudStack Spacing="3" Class="my-2" Row>
+                        @if (UserClientContext.Can("album.edit"))
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Error"
+                                       Size="Size.Small"
+                                       Class="mr-2" OnClick="@EditAlbumShowModal">
+                                Edit Album Info
+                            </MudButton>
+                        }
+                        
+                        <MudMenu Label="Collection" Color="Color.Primary">
+                            @foreach (var collectionType in Enum.GetValues<CollectionType>())
+                            {
+                                <MudMenuItem>@collectionType.ToString()</MudMenuItem>
+                            }
+                        </MudMenu>
+
+                        <MudButton Variant="Variant.Filled"
+                                   Size="Size.Small"
+                                   Color="Color.Primary">
+                            Review
+                        </MudButton>
+
+                        @if (UserClientContext.CurrentUser is not null &&
+                             UserClientContext.Can("album.rate"))
+                        {
+                            <DynamicRating
+                                RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
+                                ValueChanged="@(v => Rate(v))"/>
+                        }
+                    </MudStack>
                 </MudPaper>
             </MudItem>
         </MudGrid>
@@ -233,7 +273,7 @@ else
                     
                     @if (UserClientContext.Can("album.edit"))
                     {
-                        <MudButton Variant="Variant.Outlined" Color="Color.Info"
+                        <MudButton Variant="Variant.Filled" Color="Color.Error"
                                    Size="Size.Small"
                                    OnClick="@EditTrackListShowModal" StartIcon="@Icons.Material.Filled.Edit">
                             Edit Tracklist
@@ -287,23 +327,60 @@ else
             </MudAlert>
         </MudPaper>
         
-        <!-- Suggestions -->
-        <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-            <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">
-                Similar Releases
-            </MudText>
-        </MudPaper>
-        
-        <!-- Ratings et collections -->
-        <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-            <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">User Ratings & Collections</MudText>
-            <MudDivider Class="my-3" />
+        <MudGrid>
+            <MudItem xs="12" md="4">
+                <!-- Suggestions -->
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">
+                        Similar Releases
+                    </MudText>
+                </MudPaper>
+            </MudItem>
             
-            <MudList T="string" Dense>
-                <MudListItem>User A – 4/5 – CD</MudListItem>
-                <MudListItem>User B – 5/5 – Vinyl</MudListItem>
-            </MudList>
-        </MudPaper>
+            <MudItem xs="12" md="8">
+                <!-- Ratings et collections -->
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">User Ratings & Collections</MudText>
+                    <MudDivider Class="my-3" />
+            
+                    <MudTable Striped Bordered="false"
+                              Items="@_albumUserAttribs"
+                              Dense
+                              Breakpoint="Breakpoint.Sm">
+                        <ColGroup>
+                            <col />
+                            <col style="width: 100px" />
+                            <col style="width: 100px" />
+                        </ColGroup>
+                        <HeaderContent>
+                            <MudTh>Name</MudTh>
+                            <MudTh>Date</MudTh>
+                            <MudTh>Rating</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Name">
+                                <MudText Typo="Typo.body1" Class="text-mega-bold montserrat" Color="Color.Primary">
+                                    @context.User.Name
+                                </MudText>
+                            </MudTd>
+                            <MudTd DataLabel="Date">
+                                <MudText Typo="Typo.caption" Class="text-color-secondary text-italic">
+                                    @context.UpdatedAt.ToString("dd/MM/yyyy")
+                                </MudText>
+                            </MudTd>
+                            <MudTd DataLabel="Rating">
+                                <MudChip T="string"
+                                         Class="text-bold"
+                                         Style="@($"background-color: {RatingHelper.GetColorForRating(context.Rating)};" +
+                                                $"color: white")">
+                                    @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                </MudChip>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
         
         <!-- Zone anecdotes -->
         <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
@@ -316,31 +393,12 @@ else
         <!-- Actions -->
         <MudGrid Class="mt-4">
             <MudItem xs="12" md="8">
-                @if (UserClientContext.Can("album.edit"))
-                {
-                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-                               Class="mr-2" OnClick="@EditAlbumShowModal">
-                        Edit Album Info
-                    </MudButton>
-                }
-
-                <MudMenu Label="Collection" Color="Color.Secondary">
-                    @foreach (var collectionType in Enum.GetValues<CollectionType>())
-                    {
-                        <MudMenuItem>@collectionType.ToString()</MudMenuItem>
-                    }
-                </MudMenu>
-
                 <MudExpansionPanels Dense="true" Class="d-inline-block ml-3">
                     <MudExpansionPanel Text="Tags">
                         <MudTextField T="string" Placeholder="Add a tag..."/>
                         <MudButton Color="Color.Primary" Variant="Variant.Outlined" Class="mt-2">Add</MudButton>
                     </MudExpansionPanel>
                 </MudExpansionPanels>
-            </MudItem>
-
-            <MudItem xs="12" md="4" Class="text-right">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary">+ Review</MudButton>
             </MudItem>
         </MudGrid>
                 
