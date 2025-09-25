@@ -32,19 +32,15 @@
                 Adornment="Adornment.End"
                 AdornmentIcon="@Icons.Material.Filled.Mail"
                 @bind-Text="_user.Email"/>
-
-            <MudTextField
-                T="string?"
-                Placeholder="Enter a password..."
-                Label="Password"
-                InputType="@_passwordInput"
+            
+            <MudPasswordField 
+                @bind-PasswordMode="_passwordMode"
                 Variant="Variant.Outlined"
                 Immediate
-                Adornment="Adornment.End"
-                AdornmentIcon="@_passwordInputIcon"
-                AdornmentAriaLabel="Show Password"
-                OnAdornmentClick="@TogglePasswordVisibility"
-                @bind-Text="@_user.Password"/>
+                @bind-Value="_user.Password"
+                Label="Password"
+                Placeholder="Enter a password..."
+            />
 
             <MudDatePicker Label="Birth Date" 
                            Variant="Variant.Outlined" 

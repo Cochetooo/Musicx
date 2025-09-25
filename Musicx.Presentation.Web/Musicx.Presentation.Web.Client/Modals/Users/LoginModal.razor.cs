@@ -11,6 +11,8 @@ public partial class LoginModal
 
     private MudDialog _modalRef = null!;
 
+    private bool _passwordMode = true;
+
     private async Task Login()
     {
         var token = await UcSignIn.ExecuteAsync(new SignInRequest(_email, _password));

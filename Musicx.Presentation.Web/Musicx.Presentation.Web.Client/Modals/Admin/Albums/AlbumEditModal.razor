@@ -60,10 +60,12 @@
             </MudItem>
 
             <MudItem xs="12" md="4">
-                <MudDatePicker 
+                <MudDateWheelPicker
                     Placeholder="Choose a date..." 
                     Label="Release Date" 
-                    @bind-Date="@_album.OriginalReleaseDate"/>
+                    Editable
+                    AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                    @bind-Value="@_album.OriginalReleaseDate"/>
             </MudItem>
 
             <MudItem xs="12" md="4">

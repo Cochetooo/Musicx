@@ -11,9 +11,7 @@ public partial class CreateAccount
         EmailConfirmed = false
     };
 
-    private bool _isPasswordVisible = false;
-    private InputType _passwordInput = InputType.Password;
-    private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+    private bool _passwordMode = true;
     
     private readonly List<BreadcrumbItem> _breadcrumb =
     [
@@ -21,22 +19,6 @@ public partial class CreateAccount
         new("Users", href: "#"),
         new("Create Account", href: "#")
     ];
-
-    private void TogglePasswordVisibility()
-    {
-        if (_isPasswordVisible)
-        {
-            _isPasswordVisible = false;
-            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
-            _passwordInput = InputType.Password;
-        }
-        else
-        {
-            _isPasswordVisible = true;
-            _passwordInputIcon = Icons.Material.Filled.Visibility;
-            _passwordInput = InputType.Text;
-        }
-    }
 
     private async Task Save()
     {
