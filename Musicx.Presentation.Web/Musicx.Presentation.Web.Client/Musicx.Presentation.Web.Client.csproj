@@ -15,7 +15,7 @@
         <PackageReference Include="ISO3166-updated" Version="1.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3"/>
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.6" />
-        <PackageReference Include="MudBlazor" Version="8.10.0" />
+        <PackageReference Include="MudBlazor" Version="8.12.0" />
         <PackageReference Include="MudBlazor.ThemeManager" Version="3.0.0" />
     </ItemGroup>
 

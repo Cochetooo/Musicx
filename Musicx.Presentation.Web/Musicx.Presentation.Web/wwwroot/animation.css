@@ -1,7 +1,44 @@
-﻿.animate-hover-up {
+﻿.animate-fade-in {
+    animation: fadeIn 350ms ease forwards;
+}
+
+.animate-hover-up {
     transition: transform 0.3s ease-in-out;
 }
 
 .animate-hover-up:hover {
     transform: translateY(-5px);
+}
+
+.animate-text {
+    background: linear-gradient(
+        90deg,
+        var(--mud-palette-text-primary) 0%,
+        var(--mud-palette-text-primary) 35%,
+        var(--mud-palette-text-secondary) 45%,
+        var(--mud-palette-text-secondary) 55%,
+        var(--mud-palette-text-primary) 65%,
+        var(--mud-palette-text-primary) 100%
+    );
+    
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    
+    animation: textGradientMove 6s linear infinite;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes textGradientMove {
+    from {
+        background-position: 0 center;
+    }
+    to {
+        background-position: -200% center;
+    }
 }

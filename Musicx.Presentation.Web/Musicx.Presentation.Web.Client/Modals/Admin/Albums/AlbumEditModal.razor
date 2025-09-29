@@ -60,12 +60,17 @@
             </MudItem>
 
             <MudItem xs="12" md="4">
-                <MudDateWheelPicker
-                    Placeholder="Choose a date..." 
-                    Label="Release Date" 
-                    Editable
+                <MudDatePicker
+                    @bind-Date="@_album.OriginalReleaseDate"
+                    Placeholder="Choose a date..."
+                    Label="Release Date"
                     AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
-                    @bind-Value="@_album.OriginalReleaseDate"/>
+                    Color="Color.Primary"
+                    AnchorOrigin="Origin.BottomCenter"
+                    TransformOrigin="Origin.TopCenter"
+                    Editable
+                    Clearable
+                />
             </MudItem>
 
             <MudItem xs="12" md="4">
@@ -97,7 +102,8 @@
 
                 @foreach (var genre in _primaryGenres)
                 {
-                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeletePrimaryGenre(genre))" Class="ma-1"/>
+                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeletePrimaryGenre(genre))" 
+                                Class="ma-1 animate-fade-in"/>
                 }
             </MudItem>
 
@@ -120,9 +126,12 @@
 
                 @foreach (var genre in _influenceGenres)
                 {
-                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))" Class="ma-1"/>
+                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))" 
+                                Class="ma-1 animate-fade-in"/>
                 }
             </MudItem>
+            
+            <MudDivider Class="my-5" />
 
             <MudItem xs="12">
                 <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Primary" />

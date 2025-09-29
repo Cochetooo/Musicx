@@ -4,7 +4,7 @@
 
 @if (Clickable)
 {
-    <MudLink Href="@($"/Genre/{Genre.Id}")">
+    <MudLink Href="@($"/Genre/{Genre.Id}")" @attributes="AdditionalAttributes">
         @if (Closable)
         {
             <MudChip T="string" Size="@Size" 
@@ -29,7 +29,8 @@ else
 {
     @if (Closable)
     {
-        <MudChip T="string" Size="@Size" 
+        <MudChip T="string" Size="@Size"
+                 @attributes="AdditionalAttributes"
                  Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
                  Class="@GetChipClass()" OnClose="@OnClose"
                  Label="@true">
@@ -39,6 +40,7 @@ else
     else
     {
         <MudChip T="string" Size="@Size" 
+                 @attributes="AdditionalAttributes"
                  Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
                  Class="@GetChipClass()"
                  Label="@true">
