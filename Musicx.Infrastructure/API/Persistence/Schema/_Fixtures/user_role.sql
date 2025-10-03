@@ -7,3 +7,13 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (6, 1
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (7, 1);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (8, 1);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (9, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (10, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (11, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (12, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (13, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (14, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (15, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (16, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (17, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (18, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (19, 1);

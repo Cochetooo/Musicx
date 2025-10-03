@@ -3064,3 +3064,7 @@ INSERT INTO public.album_influence (album_influence_album_id, album_influence_ge
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2059, 95);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2059, 21);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2060, 288);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2062, 34);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2063, 34);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2064, 34);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (2065, 34);
