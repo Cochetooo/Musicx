@@ -359,9 +359,11 @@ else
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel="Name">
-                                <MudText Typo="Typo.body1" Class="text-mega-bold montserrat" Color="Color.Primary">
-                                    @context.User.Name
-                                </MudText>
+                                <MudLink Href="@($"/User/{context.User.Id}")">
+                                    <MudText Typo="Typo.body1" Class="text-mega-bold montserrat" Color="Color.Primary">
+                                        @context.User.Name
+                                    </MudText>
+                                </MudLink>
                             </MudTd>
                             <MudTd DataLabel="Date">
                                 <MudText Typo="Typo.caption" Class="text-color-secondary text-italic">

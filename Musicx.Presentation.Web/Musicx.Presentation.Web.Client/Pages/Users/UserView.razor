@@ -1,0 +1,101 @@
+﻿@page "/User/{id}"
+
+@using Musicx.Application.Shared.Utilities
+@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Presentation.Web.Client.Components
+@using Musicx.Presentation.Web.Client.Models.Auth
+
+@inject ILoggerFactory LoggerFactory
+@inject IGetUseCase<OutUser> UcGet
+@inject IGetAlbumAttributesByUser UcGetAlbumAttrs
+@inject IUserClientContext UserClientContext
+
+@if (null == _user)
+{
+    <MudProgressCircular Indeterminate />
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="p-4 bg-default">
+        <!-- User Id -->
+        <MudText Typo="Typo.caption" Class="text-color-muted">@($"<User{_user.Id}>")</MudText>
+        
+        <!-- Bio -->
+        <MudCard Class="bg-surface animate-hover-up pa-2">
+            <MudCardHeader>
+                <MudStack Row Spacing="4">
+                    <MudImage Alt="Profile Picture" Width="128" Height="128"
+                              Class="rounded-lg" Src="@_user.PictureUrl" />
+                    
+                    <MudTextM3 Typo="TypoM3.Display" Size="Size.Large"
+                               Class="montserrat text-extra-bold">
+                        @_user.Name
+                    </MudTextM3>
+                </MudStack>
+            </MudCardHeader>
+            
+            <MudCardContent>
+                User content here.
+            </MudCardContent>
+        </MudCard>
+        
+        <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+            <MudTextM3 Typo="TypoM3.Title" Size="Size.Large"
+                       Class="montserrat text-extra-bold text-color-primary">
+                Ratings (@_albumAttrs.Count)
+            </MudTextM3>
+            
+            <MudDivider Class="my-3" />
+            
+            <MudTable Items="@_albumAttrs" ReadOnly
+                      Elevation="8" Striped
+                      Breakpoint="Breakpoint.Sm"
+                      Class="my-3" Dense>
+                <ColGroup>
+                    <col />
+                    <col style="width: 100px;" />
+                    <col style="width: 100px;" />
+                </ColGroup>
+                <HeaderContent>
+                    <MudTh>Album</MudTh>
+                    <MudTh>Collection</MudTh>
+                    <MudTh>Rating</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Releases">
+                        <MudLink Href="@($"/Album/{@context.Album.Id}")">
+                            <MudStack Justify="Justify.FlexStart" Row>
+                                <MudImage Src="@context.Album.ArtworkUrl" Alt="@context.Album.Name"
+                                          Width="48" Height="48"
+                                          Class="rounded-lg"
+                                          Elevation="25"/>
+
+                                <AlbumListQuickInfo class="mx-3" Album="@context.Album"/>
+                            </MudStack>
+                        </MudLink>
+                    </MudTd>
+
+                    <MudTd DataLabel="Collection">
+                        @(context.CollectionType?.ToString() ?? string.Empty)
+                    </MudTd>
+
+                    <MudTd DataLabel="Rating">
+                        <MudChip T="string"
+                                 Class="text-bold"
+                                 Style="@($"background-color: {RatingHelper.GetColorForRating(context.Rating)};" +
+                                        $"color: white")">
+                            @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                        </MudChip>
+                    </MudTd>
+                </RowTemplate>
+
+                <PagerContent>
+                    <MudTablePager/>
+                </PagerContent>
+            </MudTable>
+        </MudPaper>
+    </MudContainer>
+}

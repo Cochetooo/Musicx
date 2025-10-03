@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using Musicx.Contracts.Enums;
 
@@ -11,6 +12,7 @@ public partial class DynamicRating
     [Parameter] public int? Value { get; set; }
 
     private bool _isOpen;
+    private int? _editingValue;
 
     private IEnumerable<TextualRating> TextualShortOptions => new[]
     {
@@ -50,18 +52,40 @@ public partial class DynamicRating
     {
         int? current = Value * max / 100;
 
+        if (_editingValue == null)
+        {
+            _editingValue = current;
+        }
+
         __builder.OpenComponent(0, typeof(MudNumericField<int?>));
         __builder.AddAttribute(1, "Min", 0);
         __builder.AddAttribute(2, "Max", max);
-        __builder.AddAttribute(3, "Immediate", false);
-        __builder.AddAttribute(4, "Value", current);
+        __builder.AddAttribute(3, "Immediate", true);
+        __builder.AddAttribute(4, "Value", _editingValue);
         __builder.AddAttribute(5, "ValueChanged", EventCallback.Factory.Create<int?>(this, v =>
         {
-            Value = v * 100 / max;
-            ValueChanged.InvokeAsync(Value);
+            _editingValue = v;
+        }));
+        __builder.AddAttribute(6, "OnKeyDown", EventCallback.Factory.Create<KeyboardEventArgs>(this, e =>
+        {
+            if (e.Key == "Enter")
+            {
+                if (_editingValue.HasValue)
+                {
+                    Value = _editingValue.Value * 100 / max;
+                }
+                
+                ValueChanged.InvokeAsync(Value);
+                _isOpen = false;
+            } 
+            else if (e.Key == "Escape")
+            {
+                _editingValue = current;
+                _isOpen = false;
+            }
         }));
         __builder.CloseComponent();
-        __builder.AddContent(6, $" / {max}");
+        __builder.AddContent(7, $" / {max}");
     };
     
     private static int MapTextual(TextualRating r) => r switch

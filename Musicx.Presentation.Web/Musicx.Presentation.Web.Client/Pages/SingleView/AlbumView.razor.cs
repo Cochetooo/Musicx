@@ -172,6 +172,10 @@ public partial class AlbumView
         _album = await UcGet.ExecuteAsync(_album.Id, "artist_genre_stat");
         await InvokeAsync(StateHasChanged);
         
+        _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album!.Id);
+        _logger.LogInformation($"✅ User attributes loaded.");
+        await InvokeAsync(StateHasChanged);
+        
         _logger.LogInformation($"✅ Successfully saved new rating.");
     }
 }
