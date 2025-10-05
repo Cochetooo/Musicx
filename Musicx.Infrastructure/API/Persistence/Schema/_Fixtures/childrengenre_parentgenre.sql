@@ -537,3 +537,4 @@ INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id
 INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id, childrengenre_parentgenre_parent_id) VALUES (468, 84);
 INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id, childrengenre_parentgenre_parent_id) VALUES (469, 203);
 INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id, childrengenre_parentgenre_parent_id) VALUES (470, 469);
+INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id, childrengenre_parentgenre_parent_id) VALUES (471, 114);
