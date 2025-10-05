@@ -1,6 +1,73 @@
+@using Musicx.Application.Shared.Utilities
 @using Musicx.Contracts.Enums
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary"
+<MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+    @if (IsTextualMode)
+    {
+        <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;")"
+                 OnClick="@ToggleCollapse"
+                 Variant="Variant.Filled"
+                 T="string">
+            @RatingHelper.GetRatingFormatted(Value, RatingMode)
+        </MudChip>
+        <MudIconButton Icon="@(_isOpen ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                       Color="Color.Default"
+                       Size="Size.Small"
+                       OnClick="@ToggleCollapse" />
+    }
+    else if (IsNumericMode)
+    {
+        @if (!_isEditing)
+        {
+            <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;")"
+                     OnClick="@(() => _isEditing = true)"
+                     Variant="Variant.Filled"
+                     T="string">
+                @RatingHelper.GetRatingFormatted(Value, RatingMode)
+            </MudChip>
+        }
+        else
+        {
+            <MudNumericField
+                T="int?"
+                @bind-Value="_editingValue"
+                Min="0"
+                Max="@MaxValue"
+                Immediate
+                Class="w-20"
+                OnBlur="@CancelEdit"
+                OnKeyDown="@HandleNumericKey"/>
+        }
+    }
+    else if (RatingMode == RatingMode.RatingStars)
+    {
+        <MudRating @bind-SelectedValue="StarValue"
+                   MaxValue="5"
+                   Color="Color.Primary"
+                   Size="Size.Medium" />
+    }
+    
+    @if (IsTextualMode)
+    {
+        <MudCollapse Expanded="@_isOpen">
+            <MudStack Row Wrap="Wrap.Wrap" Spacing="1" Class="mt-2">
+                @foreach (var option in GetTextualOptions())
+                {
+                    var optionValue = MapTextual(option);
+                    <MudChip Style="@($"background-color:{RatingHelper.GetColorForRating(optionValue)};color:white;")"
+                             Selected="@(Value == optionValue)"
+                             OnClick="@(() => SetTextual(option))"
+                             Variant="Variant.Filled"
+                             T="string">
+                        @SplitCamelCase(option.ToString())
+                    </MudChip>
+                }
+            </MudStack>
+        </MudCollapse>
+    }
+</MudStack>
+
+<!-- <MudButton Variant="Variant.Filled" Color="Color.Primary"
            Size="Size.Small"
            Class="my-3"
            OnClick="@(() => _isOpen = !_isOpen)">
@@ -69,4 +136,4 @@
                        Color="Color.Primary" />
             break;
     }
-</MudCollapse>
+</MudCollapse> -->

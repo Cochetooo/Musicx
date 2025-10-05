@@ -12,29 +12,55 @@ public partial class DynamicRating
     [Parameter] public int? Value { get; set; }
 
     private bool _isOpen;
+    private bool _isEditing;
     private int? _editingValue;
 
-    private IEnumerable<TextualRating> TextualShortOptions => new[]
+    private bool IsTextualMode =>
+        RatingMode == RatingMode.TextualShort || RatingMode == RatingMode.TextualDetailed;
+    
+    private bool IsNumericMode =>
+        RatingMode == RatingMode.OutOfFive || RatingMode == RatingMode.OutOfTen
+            || RatingMode == RatingMode.OutOfFifty || RatingMode == RatingMode.Percentage
+            || RatingMode == RatingMode.OutOfThousand || RatingMode == RatingMode.OutOfTwenty;
+
+    private int MaxValue => RatingMode switch
     {
-        TextualRating.Meh,
-        TextualRating.Neutral,
-        TextualRating.Good,
-        TextualRating.Favourite
+        RatingMode.OutOfFive => 5,
+        RatingMode.OutOfTen => 10,
+        RatingMode.OutOfTwenty => 20,
+        RatingMode.OutOfFifty => 50,
+        RatingMode.Percentage => 100,
+        RatingMode.OutOfThousand => 1000,
+        _ => 100,
     };
+    
+    private void ToggleCollapse() => _isOpen = !_isOpen;
 
     private void SetTextual(TextualRating rating)
     {
         Value = MapTextual(rating);
         ValueChanged.InvokeAsync(Value);
+        _isOpen = false;
     }
 
-    private int? IntValue
+    private void CancelEdit(FocusEventArgs e)
     {
-        get => Value;
-        set
+        _isEditing = false;
+        _editingValue = null;
+    }
+
+    private void HandleNumericKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && _editingValue.HasValue)
         {
-            Value = value;
+            Value = _editingValue.Value * 100 / MaxValue;
+            _isEditing = false;
             ValueChanged.InvokeAsync(Value);
+        } 
+        else if (e.Key == "Escape")
+        {
+            _isEditing = false;
+            _editingValue = null;
         }
     }
     
@@ -43,50 +69,15 @@ public partial class DynamicRating
         get => Value / 20 ?? 0; // 0-5 stars mapped to 0-100
         set
         {
-            Value = (short?)value * 20;
+            Value = value * 20;
             ValueChanged.InvokeAsync(Value);
         }
     }
-
-    private RenderFragment NumericField(int max) => __builder =>
-    {
-        int? current = Value * max / 100;
-
-        if (_editingValue == null)
-        {
-            _editingValue = current;
-        }
-
-        __builder.OpenComponent(0, typeof(MudNumericField<int?>));
-        __builder.AddAttribute(1, "Min", 0);
-        __builder.AddAttribute(2, "Max", max);
-        __builder.AddAttribute(3, "Immediate", true);
-        __builder.AddAttribute(4, "Value", _editingValue);
-        __builder.AddAttribute(5, "ValueChanged", EventCallback.Factory.Create<int?>(this, v =>
-        {
-            _editingValue = v;
-        }));
-        __builder.AddAttribute(6, "OnKeyDown", EventCallback.Factory.Create<KeyboardEventArgs>(this, e =>
-        {
-            if (e.Key == "Enter")
-            {
-                if (_editingValue.HasValue)
-                {
-                    Value = _editingValue.Value * 100 / max;
-                }
-                
-                ValueChanged.InvokeAsync(Value);
-                _isOpen = false;
-            } 
-            else if (e.Key == "Escape")
-            {
-                _editingValue = current;
-                _isOpen = false;
-            }
-        }));
-        __builder.CloseComponent();
-        __builder.AddContent(7, $" / {max}");
-    };
+    
+    private IEnumerable<TextualRating> GetTextualOptions() =>
+        RatingMode == RatingMode.TextualShort
+            ? new[] { TextualRating.Meh, TextualRating.Neutral, TextualRating.Good, TextualRating.Favourite }
+            : Enum.GetValues<TextualRating>();
     
     private static int MapTextual(TextualRating r) => r switch
     {

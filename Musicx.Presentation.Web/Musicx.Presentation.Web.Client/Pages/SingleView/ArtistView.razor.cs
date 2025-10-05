@@ -114,6 +114,9 @@ public partial class ArtistView
                 case "Name":
                     _artistAlbums = _artistAlbums.OrderByDescending(a => a.Name).ToList();
                     break;
+                case "NbRating":
+                    _artistAlbums = _artistAlbums.OrderByDescending(a => a.Stats?.Count).ToList();
+                    break;
                 case "Rating":
                     _artistAlbums = _artistAlbums.OrderByDescending(a => a.Stats?.Average).ToList();
                     break;
@@ -128,6 +131,9 @@ public partial class ArtistView
             {
                 case "Name":
                     _artistAlbums = _artistAlbums.OrderBy(a => a.Name).ToList();
+                    break;
+                case "NbRating":
+                    _artistAlbums = _artistAlbums.OrderBy(a => a.Stats?.Count).ToList();
                     break;
                 case "Rating":
                     _artistAlbums = _artistAlbums.OrderBy(a => a.Stats?.Average).ToList();

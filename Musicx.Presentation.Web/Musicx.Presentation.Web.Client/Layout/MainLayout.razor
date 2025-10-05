@@ -44,9 +44,11 @@
         
         @if (UserClientContext.CurrentUser is not null)
         {
-            <MudText Typo="Typo.subtitle1" Color="Color.Inherit">
-                @UserClientContext.CurrentUser.Name
-            </MudText>
+            <MudLink Color="Color.Inherit" Href="@($"/User/{UserClientContext.CurrentUser.Id}")">
+                <MudText Typo="Typo.subtitle1" Color="Color.Inherit">
+                    @UserClientContext.CurrentUser.Name
+                </MudText>
+            </MudLink>
         }
 
         <!-- Others Menu -->

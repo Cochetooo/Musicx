@@ -45,12 +45,12 @@ else
         <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
             <MudTextM3 Typo="TypoM3.Title" Size="Size.Large"
                        Class="montserrat text-extra-bold text-color-primary">
-                Ratings (@_albumAttrs.Count)
+                Ratings (@_albumCount)
             </MudTextM3>
             
             <MudDivider Class="my-3" />
             
-            <MudTable Items="@_albumAttrs" ReadOnly
+            <MudTable ServerData="@LoadUserAttrData" ReadOnly
                       Elevation="8" Striped
                       Breakpoint="Breakpoint.Sm"
                       Class="my-3" Dense>
@@ -58,11 +58,25 @@ else
                     <col />
                     <col style="width: 100px;" />
                     <col style="width: 100px;" />
+                    <col style="width: 100px;" />
                 </ColGroup>
                 <HeaderContent>
                     <MudTh>Album</MudTh>
-                    <MudTh>Collection</MudTh>
-                    <MudTh>Rating</MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
+                            Date
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
+                            Collection
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
+                            Rating
+                        </MudTableSortLabel>
+                    </MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Releases">
@@ -76,6 +90,12 @@ else
                                 <AlbumListQuickInfo class="mx-3" Album="@context.Album"/>
                             </MudStack>
                         </MudLink>
+                    </MudTd>
+                    
+                    <MudTd DataLabel="Date">
+                        <MudText Typo="Typo.caption" Class="text-color-secondary text-italic">
+                            @context.UpdatedAt.ToString("dd/MM/yyyy")
+                        </MudText>
                     </MudTd>
 
                     <MudTd DataLabel="Collection">

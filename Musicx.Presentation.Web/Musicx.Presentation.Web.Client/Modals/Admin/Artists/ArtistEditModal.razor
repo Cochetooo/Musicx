@@ -8,6 +8,7 @@
 @using Musicx.Infrastructure.API.Persistence.Mappers
 @inject ILoggerFactory LoggerProvider
 @inject ISaveUseCase<InArtist> UcSave 
+@inject IListUseCase<OutArtist> UcListExistingArtists
 @inject HttpClient Http
 
 <MudDialog @ref="_modalRef" Class="pa-2">
@@ -102,6 +103,18 @@
                 
                 <MudItem xs="12" md="6">
                     <MudDatePicker Label="Death Date" @bind-Date="@_artist.DeathDate" />
+                </MudItem>
+            }
+            
+            @if (_existingArtists.Count > 0)
+            {
+                <MudItem xs="12">
+                    <MudAlert Severity="Severity.Info" Class="mb-3">
+                        This name already exists for @_existingArtists.Count artists.<br/>
+                        Please verify first that the artist you want to create does not already exist in our database<br/>
+                        before submitting your request.<br/>
+                        Not respecting this validation could cost you your privilege to create and edit artists.
+                    </MudAlert>
                 </MudItem>
             }
         </MudGrid>

@@ -15,6 +15,7 @@ public partial class ArtistEditModal
     private ILogger _logger = null!;
     
     private InArtist _artist = null!;
+    private List<OutArtist> _existingArtists = [];
 
     private bool _isLoading;
 
@@ -115,14 +116,17 @@ public partial class ArtistEditModal
             if (null == response)
             {
                 _logger.LogWarning($"⚠️ Artist not found: {_artist.Name}");
-                _isLoading = false;
-                return;
             }
-
-            _logger.LogInformation("ℹ️ Retrieved Artwork Url : " + response.ArtworkUrl);
-            _artist.ArtworkUrl = response.ArtworkUrl;
+            else
+            {
+                _logger.LogInformation("ℹ️ Retrieved Artwork Url : " + response.ArtworkUrl);
+                _artist.ArtworkUrl = response.ArtworkUrl;
+            }
+            
             _isLoading = false;
             await InvokeAsync(StateHasChanged);
+            
+            _existingArtists = await UcListExistingArtists.ExecuteAsync(filter: _artist.Name);
         }
         catch (TaskCanceledException)
         {

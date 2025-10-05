@@ -219,6 +219,9 @@ else
                         {
                             <DynamicRating
                                 RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
+                                Value="@(_albumUserAttribs
+                                            .Items
+                                           .FirstOrDefault(attr => attr.User.Id == UserClientContext.CurrentUser.Id)?.Rating)"
                                 ValueChanged="@(v => Rate(v))"/>
                         }
                     </MudStack>
@@ -232,7 +235,8 @@ else
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">Track List</MudText>
                     <MudDivider Class="my-3" />
-                    <MudTable Items="@_albumSongs" ReadOnly
+                    <MudTable ReadOnly
+                              Items="@_albumSongs"
                               Elevation="8"
                               CustomHeader="@true" CustomFooter="@true"
                               Class="my-3" Style="width: 100%"
@@ -344,18 +348,36 @@ else
                     <MudDivider Class="my-3" />
             
                     <MudTable Striped Bordered="false"
-                              Items="@_albumUserAttribs"
+                              ServerData="@LoadUserAttrData"
                               Dense
                               Breakpoint="Breakpoint.Sm">
                         <ColGroup>
                             <col />
+                            <col style="width: 100px;" />
                             <col style="width: 100px" />
                             <col style="width: 100px" />
                         </ColGroup>
                         <HeaderContent>
-                            <MudTh>Name</MudTh>
-                            <MudTh>Date</MudTh>
-                            <MudTh>Rating</MudTh>
+                            <MudTh>
+                                <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.User.Name))">
+                                    Name
+                                </MudTableSortLabel>
+                            </MudTh>
+                            <MudTh>
+                                <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
+                                    Date
+                                </MudTableSortLabel>
+                            </MudTh>
+                            <MudTh>
+                                <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
+                                    Collection
+                                </MudTableSortLabel>
+                            </MudTh>
+                            <MudTh>
+                                <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
+                                    Rating
+                                </MudTableSortLabel>
+                            </MudTh>
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel="Name">
@@ -369,6 +391,9 @@ else
                                 <MudText Typo="Typo.caption" Class="text-color-secondary text-italic">
                                     @context.UpdatedAt.ToString("dd/MM/yyyy")
                                 </MudText>
+                            </MudTd>
+                            <MudTd DataLabel="Collection">
+                                @(context.CollectionType.ToString() ?? string.Empty)
                             </MudTd>
                             <MudTd DataLabel="Rating">
                                 <MudChip T="string"

@@ -3,6 +3,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 
 namespace Musicx.Presentation.Web.Client.Pages.SingleView;
@@ -19,7 +20,12 @@ public partial class AlbumView
     private OutAlbum? _album;
     private List<OutSong> _albumSongs = [];
     private OutAlbum? _previousAlbum, _nextAlbum;
-    private List<OutUserAlbumAttribute> _albumUserAttribs = [];
+
+    private OutGenericList<OutUserAlbumAttribute> _albumUserAttribs = new OutGenericList<OutUserAlbumAttribute>
+    {
+        Items = [],
+        Total = 0
+    };
  
     private bool _isArtworkRevealed;
     private bool _showDetailedView;
@@ -106,6 +112,32 @@ public partial class AlbumView
         _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album.Id);
         _logger.LogInformation($"✅ User attributes loaded.");
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task<TableData<OutUserAlbumAttribute>> LoadUserAttrData(TableState state, CancellationToken token)
+    {
+        if (_album is null)
+        {
+            _logger.LogWarning("⚠️ Album ID is null, cannot load user attributes data.");
+            return new TableData<OutUserAlbumAttribute>
+            {
+                TotalItems = 0,
+                Items = []
+            };
+        }
+        
+        var response = await UcGetAlbumAttrs.ExecuteAsync(
+            _album.Id, 
+            skip: state.Page * state.PageSize,
+            take: state.PageSize,
+            token
+        );
+
+        return new TableData<OutUserAlbumAttribute>
+        {
+            TotalItems = (int)response.Total,
+            Items = response.Items
+        };
     }
 
     private async Task EditTrackListShowModal()

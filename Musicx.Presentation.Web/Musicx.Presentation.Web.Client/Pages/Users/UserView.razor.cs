@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Presentation.Web.Client.Pages.Users;
@@ -6,9 +7,10 @@ namespace Musicx.Presentation.Web.Client.Pages.Users;
 public partial class UserView
 {
     private ILogger _logger = null!;
-    
-    private OutUser? _user { get; set; }
-    private List<OutUserAlbumAttribute> _albumAttrs { get; set; } = [];
+
+    private OutUser? _user;
+
+    private long _albumCount;
     
     [Parameter] public string? Id { get; set; }
     
@@ -46,10 +48,34 @@ public partial class UserView
 
         _logger.LogInformation($"✅ User loaded: {_user.Name} ({_user.Id})");
         await InvokeAsync(StateHasChanged);
+    }
+    
+    private async Task<TableData<OutUserAlbumAttribute>> LoadUserAttrData(TableState state, CancellationToken token)
+    {
+        if (_user is null)
+        {
+            _logger.LogWarning("⚠️ User ID is null, cannot load user attributes data.");
+            return new TableData<OutUserAlbumAttribute>
+            {
+                TotalItems = 0,
+                Items = []
+            };
+        }
         
-        _albumAttrs = await UcGetAlbumAttrs.ExecuteAsync(userId);
-        
-        _logger.LogInformation($"✅ User album attributes loaded");
+        var response = await UcGetAlbumAttrs.ExecuteAsync(
+            _user.Id, 
+            skip: state.Page * state.PageSize,
+            take: state.PageSize,
+            token
+        );
+
+        _albumCount = response.Total;
         await InvokeAsync(StateHasChanged);
+
+        return new TableData<OutUserAlbumAttribute>
+        {
+            TotalItems = (int)response.Total,
+            Items = response.Items
+        };
     }
 }

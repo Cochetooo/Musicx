@@ -103,13 +103,16 @@ else
                                 Immediate
                                 FitContent
                                 T="@((string, bool))" 
+                                Value="@(("ReleaseDate", false))"
                                 ValueChanged="@(v => SortBy(v))">
-                            <MudSelectItem Value="@(("ReleaseDate", false))">Release Date</MudSelectItem>
-                            <MudSelectItem Value="@(("ReleaseDate", true))">Release Date - desc</MudSelectItem>
-                            <MudSelectItem Value="@(("Name", false))">Name A->Z</MudSelectItem>
-                            <MudSelectItem Value="@(("Name", true))">Name Z->A</MudSelectItem>
-                            <MudSelectItem Value="@(("Rating", false))">Rating</MudSelectItem>
-                            <MudSelectItem Value="@(("Rating", true))">Rating - desc</MudSelectItem>
+                            <MudSelectItem Value="@(("ReleaseDate", false))">Release Date ↓</MudSelectItem>
+                            <MudSelectItem Value="@(("ReleaseDate", true))">Release Date ↑</MudSelectItem>
+                            <MudSelectItem Value="@(("Name", false))">Name ↓</MudSelectItem>
+                            <MudSelectItem Value="@(("Name", true))">Name ↑</MudSelectItem>
+                            <MudSelectItem Value="@(("Rating", false))">Rating ↓</MudSelectItem>
+                            <MudSelectItem Value="@(("Rating", true))">Rating ↑</MudSelectItem>
+                            <MudSelectItem Value="@(("NbRating", false))">Number of Ratings ↓</MudSelectItem>
+                            <MudSelectItem Value="@(("NbRating", true))">Number of Ratings ↑</MudSelectItem>
                         </MudSelect>
                     </MudStack>
 

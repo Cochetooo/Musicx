@@ -2,6 +2,7 @@
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Presentation.Web.Contexts;
 
 namespace Musicx.Presentation.Web.Controllers;
@@ -83,7 +84,7 @@ public sealed class UserAlbumAttrController(
     }
     
     [HttpGet("by-album/{albumId}")]
-    public async Task<ActionResult<OutUserAlbumAttribute>> FindByAlbumId([FromRoute] long albumId,
+    public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> FindByAlbumId([FromRoute] long albumId,
         [FromQuery] int skip = 0, [FromQuery] int take = 100)
     {
         _logger.LogInformation($"🌍🏳️ API : FIND BY ALBUM user_album_attrs ({albumId})");
@@ -91,6 +92,7 @@ public sealed class UserAlbumAttrController(
         try
         {
             var userAlbumAttrs = await repository.FindByAlbumIdAsync(albumId, skip, take);
+            var totalCount = await repository.CountByAlbumIdAsync(albumId);
 
             if (0 == userAlbumAttrs.Count)
             {
@@ -99,7 +101,11 @@ public sealed class UserAlbumAttrController(
             }
             
             _logger.LogInformation($"🌍✅ API : FIND BY ALBUM user_album_attrs ({albumId}) - SUCCESS");
-            return Ok(userAlbumAttrs);
+            return Ok(new OutGenericList<OutUserAlbumAttribute>
+            {
+                Items = userAlbumAttrs,
+                Total = totalCount
+            });
         }
         catch (Exception ex)
         {
@@ -108,7 +114,7 @@ public sealed class UserAlbumAttrController(
     }
     
     [HttpGet("by-user/{userId}")]
-    public async Task<ActionResult<OutUserAlbumAttribute>> FindByUserId([FromRoute] long userId,
+    public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> FindByUserId([FromRoute] long userId,
         [FromQuery] int skip = 0, [FromQuery] int take = 100, [FromQuery] string? filter = null)
     {
         _logger.LogInformation($"🌍🏳️ API : FIND BY USER user_album_attrs ({userId})");
@@ -116,6 +122,7 @@ public sealed class UserAlbumAttrController(
         try
         {
             var userAlbumAttrs = await repository.FindByUserIdAsync(userId, skip, take, filter);
+            var totalCount = await repository.CountByUserIdAsync(userId);
 
             if (0 == userAlbumAttrs.Count)
             {
@@ -124,7 +131,11 @@ public sealed class UserAlbumAttrController(
             }
             
             _logger.LogInformation($"🌍✅ API : FIND BY USER user_album_attrs ({userId}) - SUCCESS");
-            return Ok(userAlbumAttrs);
+            return Ok(new OutGenericList<OutUserAlbumAttribute>
+            {
+                Items = userAlbumAttrs,
+                Total = totalCount
+            });
         }
         catch (Exception ex)
         {
