@@ -30,10 +30,9 @@ else
                     <MudImage Alt="Profile Picture" Width="128" Height="128"
                               Class="rounded-lg" Src="@_user.PictureUrl" />
                     
-                    <MudTextM3 Typo="TypoM3.Display" Size="Size.Large"
-                               Class="montserrat text-extra-bold">
+                    <MudText Typo="Typo.h2" Class="montserrat text-extra-bold animate-text">
                         @_user.Name
-                    </MudTextM3>
+                    </MudText>
                 </MudStack>
             </MudCardHeader>
             
@@ -43,10 +42,9 @@ else
         </MudCard>
         
         <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-            <MudTextM3 Typo="TypoM3.Title" Size="Size.Large"
-                       Class="montserrat text-extra-bold text-color-primary">
+            <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">
                 Ratings (@_albumCount)
-            </MudTextM3>
+            </MudText>
             
             <MudDivider Class="my-3" />
             
