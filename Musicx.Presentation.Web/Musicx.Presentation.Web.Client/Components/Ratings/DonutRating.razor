@@ -1,0 +1,63 @@
+﻿@using Musicx.Application.Shared.Utilities
+
+<MudChart ChartType="ChartType.Donut"
+          InputData="@_ratingData"
+          ChartOptions="@_ratingOptions"
+          Width="@_donutSize" Height="@_donutSize"
+          Class="mud-chart-no-legend">
+    <CustomGraphics>
+        @{
+            var ratingText = RatingHelper.GetRatingFormatted(
+                Rating,
+                RatingMode
+            );
+            
+            string? top = null;
+            string? bottom = null;
+
+            if (ratingText.Contains("/"))
+            {
+                var parts = ratingText.Split('/');
+                top = parts[0].Trim();
+                bottom = parts.Length > 1 ? parts[1].Trim() : null;
+            }
+        }
+        
+        @if (top is null)
+        {
+            <text>
+                <text class="donut-inner-text"
+                      x="50%" y="50%"
+                      fill="@_ratingColor"
+                      dominant-baseline="middle"
+                      text-anchor="middle"
+                      font-family="Montserrat"
+                      font-size="@(_textSize)"
+                      font-weight="bold">
+                    @ratingText
+                </text>
+            </text>
+        }
+        else
+        {
+            <text>
+                <text x="50%" y="50%"
+                      text-anchor="middle"
+                      font-family="Montserrat"
+                      fill="@_ratingColor">
+                    <!-- Partie haute -->
+                    <tspan x="50%" dy="-0.1em" font-size="@((int) (_textSize * 1.5))" font-weight="bold">@top</tspan>
+
+                    <!-- Partie basse -->
+                    <tspan x="50%" dy="1.7em" font-size="@(_textSize)" font-weight="400">/ @bottom</tspan>
+                </text>
+            </text>
+        }
+    </CustomGraphics>
+</MudChart>
+
+<style>
+    .mud-chart-no-legend .mud-chart-legend {
+        display: none;
+    }
+</style>

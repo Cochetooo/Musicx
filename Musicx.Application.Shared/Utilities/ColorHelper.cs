@@ -97,6 +97,6 @@ public static class ColorHelper
         int g = (int)Math.Round(g1 + factor * (g2 - g1));
         int b = (int)Math.Round(b1 + factor * (b2 - b1));
 
-        return $"rgb({r}, {g}, {b})";
+        return $"#{r:X2}{g:X2}{b:X2}";
     }
 }

@@ -11,6 +11,7 @@
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 @using Musicx.Presentation.Web.Client.Components.GenreDetails
+@using Musicx.Presentation.Web.Client.Components.Ratings
 
 @inject IGetUseCase<OutArtist> UcGet
 @inject IGetAlbumByArtistUseCase UcGetAlbums
@@ -103,7 +104,6 @@ else
                                 Immediate
                                 FitContent
                                 T="@((string, bool))" 
-                                Value="@(("ReleaseDate", false))"
                                 ValueChanged="@(v => SortBy(v))">
                             <MudSelectItem Value="@(("ReleaseDate", false))">Release Date ↓</MudSelectItem>
                             <MudSelectItem Value="@(("ReleaseDate", true))">Release Date ↑</MudSelectItem>
@@ -155,12 +155,16 @@ else
                                                                   Overlap="true"
                                                                   Bordered="true"
                                                                   Origin="Origin.BottomRight">
-                                                            <MudChip T="string"
+                                                            <DonutRating 
+                                                                Rating="@album.Stats?.Average"
+                                                                RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                                                Size="DonutRatingSize.ExtraSmall" />
+                                                            <!-- <MudChip T="string"
                                                                      Class="text-bold"
                                                                      Style="@($"background-color: {RatingHelper.GetColorForRating(album.Stats?.Average)};" +
-                                                                            $"color: white; width: 100px; max-width: 100px;")" >
+                                                                            $"color: white; width: 100px; max-width: 100px;")">
                                                                 @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
-                                                            </MudChip>
+                                                            </MudChip> -->
                                                         </MudBadge>
                                                     </MudStack>
                                                 </MudStack>

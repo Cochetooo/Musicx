@@ -6,7 +6,7 @@ namespace Musicx.Application.Shared.Utilities;
 
 public static class RatingHelper
 {
-    public static readonly List<(decimal val, string color)> Stops = new()
+    private static readonly List<(decimal val, string color)> Stops = new()
     {
         (0.0m,   "#8B0000"), // bordeaux
         (30.0m,  "#FF6347"), // salmon

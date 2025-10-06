@@ -110,6 +110,7 @@ public partial class AlbumView
         }
 
         _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album.Id);
+        
         _logger.LogInformation($"✅ User attributes loaded.");
         await InvokeAsync(StateHasChanged);
     }
