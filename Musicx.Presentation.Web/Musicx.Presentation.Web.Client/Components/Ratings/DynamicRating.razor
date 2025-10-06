@@ -7,6 +7,7 @@
         <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;")"
                  OnClick="@ToggleCollapse"
                  Variant="Variant.Filled"
+                 Class="glass-card"
                  T="string">
             @RatingHelper.GetRatingFormatted(Value, RatingMode)
         </MudChip>
@@ -22,6 +23,7 @@
             <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;")"
                      OnClick="@(() => _isEditing = true)"
                      Variant="Variant.Filled"
+                     Class="glass-card"
                      T="string">
                 @RatingHelper.GetRatingFormatted(Value, RatingMode)
             </MudChip>

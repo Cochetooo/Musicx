@@ -17,6 +17,7 @@
 @inject IGetAlbumByArtistUseCase UcGetArtistAlbums
 @inject IGetSongByAlbumUseCase UcGetSongs
 @inject IGetAlbumAttributesByAlbum UcGetAlbumAttrs
+@inject IDeleteUseCase<InUserAlbumAttribute> UcDeleteUserAttrib
 @inject ISaveUseCase<InUserAlbumAttribute> UcSaveUserAttrib
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
@@ -129,8 +130,8 @@ else
                     
                     <MudDivider Class="my-3" />
                     
-                    <MudGrid>
-                        <MudItem xs="12" lg="6">
+                    <MudGrid Justify="Justify.SpaceAround">
+                        <MudItem xs="12" lg="6" Style="justify-items: center;">
                             <DonutRating 
                                 Rating="@_album.Stats?.Average"
                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
@@ -151,7 +152,6 @@ else
                                         @_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")
                                     </MudText>
                                 </MudText>
-                        
                             }
                     
                             <MudText Class="text-color-secondary mt-2">
@@ -189,9 +189,9 @@ else
                         </MudExpansionPanel>
                     </MudExpansionPanels>
                     
-                    <MudDivider Class="my-2" />
+                    <MudDivider Class="mt-5" />
                     
-                    <MudStack Spacing="3" Class="my-2" Row>
+                    <MudStack Spacing="0" Class="mt-5" Justify="Justify.SpaceEvenly" Row>
                         @if (UserClientContext.Can("album.edit"))
                         {
                             <MudButton Variant="Variant.Filled" Color="Color.Error"
@@ -199,6 +199,27 @@ else
                                        Class="mr-2" OnClick="@EditAlbumShowModal">
                                 Edit Album Info
                             </MudButton>
+                        }
+                        
+                        @if (UserClientContext.CurrentUser is not null &&
+                             UserClientContext.Can("album.review"))
+                        {
+                            <MudButton Variant="Variant.Filled"
+                                       Size="Size.Small"
+                                       Color="Color.Primary">
+                                Review
+                            </MudButton>
+                        }
+                        
+                        @if (UserClientContext.CurrentUser is not null &&
+                             UserClientContext.Can("album.rate"))
+                        {
+                            <DynamicRating
+                                RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
+                                Value="@(_albumUserAttribs
+                                           .Items
+                                           .FirstOrDefault(attr => attr.User.Id == UserClientContext.CurrentUser.Id)?.Rating)"
+                                ValueChanged="@(v => Rate(v))"/>
                         }
                         
                         @if (UserClientContext.CurrentUser is not null &&
@@ -212,16 +233,6 @@ else
                             </MudMenu>
                         }
                         
-                        @if (UserClientContext.CurrentUser is not null &&
-                             UserClientContext.Can("album.review"))
-                        {
-                            <MudButton Variant="Variant.Filled"
-                                       Size="Size.Small"
-                                       Color="Color.Primary">
-                                Review
-                            </MudButton>
-                        }
-                        
                         <MudExpansionPanels Dense="true" Class="d-inline-block ml-3">
                             <MudExpansionPanel Text="Tags">
                                 <MudTextField T="string" Placeholder="Add a tag..."/>
@@ -229,19 +240,6 @@ else
                             </MudExpansionPanel>
                         </MudExpansionPanels>
                     </MudStack>
-                    
-                    @if (UserClientContext.CurrentUser is not null &&
-                         UserClientContext.Can("album.rate"))
-                    {
-                        <MudDivider Class="my-2" />
-                        
-                        <DynamicRating
-                            RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
-                            Value="@(_albumUserAttribs
-                                       .Items
-                                       .FirstOrDefault(attr => attr.User.Id == UserClientContext.CurrentUser.Id)?.Rating)"
-                            ValueChanged="@(v => Rate(v))"/>
-                    }
                 </MudPaper>
             </MudItem>
         </MudGrid>

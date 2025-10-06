@@ -24,17 +24,17 @@ public partial class DonutRating
 
     private double[] _ratingData = [];
     private string _ratingColor = string.Empty;
-    private readonly ChartOptions _ratingOptions = new ChartOptions();
+    private readonly ChartOptions _ratingOptions = new();
 
     protected override void OnParametersSet()
     {
         _donutSize = Size switch
         {
             DonutRatingSize.ExtraSmall => "48px",
-            DonutRatingSize.Small => "96px",
-            DonutRatingSize.Medium => "128px",
-            DonutRatingSize.Large => "196px",
-            _ => "128px"
+            DonutRatingSize.Small => "64px",
+            DonutRatingSize.Medium => "96px",
+            DonutRatingSize.Large => "128px",
+            _ => "96px"
         };
 
         _textSize = Size switch
