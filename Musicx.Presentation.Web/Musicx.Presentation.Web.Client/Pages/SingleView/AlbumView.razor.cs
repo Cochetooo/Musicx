@@ -21,6 +21,8 @@ public partial class AlbumView
     private List<OutSong> _albumSongs = [];
     private OutAlbum? _previousAlbum, _nextAlbum;
 
+    private MudTable<OutUserAlbumAttribute> _albumRatingsTable = null!;
+
     private OutGenericList<OutUserAlbumAttribute> _albumUserAttribs = new OutGenericList<OutUserAlbumAttribute>
     {
         Items = [],
@@ -110,6 +112,7 @@ public partial class AlbumView
         }
 
         _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album.Id);
+        await _albumRatingsTable.ReloadServerData();
         
         _logger.LogInformation($"✅ User attributes loaded.");
         await InvokeAsync(StateHasChanged);

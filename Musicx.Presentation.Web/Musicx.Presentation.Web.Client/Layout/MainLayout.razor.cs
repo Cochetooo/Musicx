@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using Musicx.Presentation.Web.Client.Modals.Users;
@@ -39,7 +40,7 @@ public partial class MainLayout
     }
 
     private void Search()
-        => NavigationManager.NavigateTo($"/SearchResult/{_searchText}");
+        => NavigationManager.NavigateTo($"/SearchResult/{WebUtility.UrlEncode(_searchText)}");
 
     private void NavigateHome()
         => NavigationManager.NavigateTo("/");

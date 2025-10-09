@@ -362,7 +362,8 @@ else
                     <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">User Ratings & Collections</MudText>
                     <MudDivider Class="my-3" />
             
-                    <MudTable Striped Bordered="false"
+                    <MudTable @ref="_albumRatingsTable"
+                              Striped Bordered="false"
                               ServerData="@LoadUserAttrData"
                               Dense
                               Breakpoint="Breakpoint.Sm">
