@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Globalization;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Persistence.Helpers;
@@ -192,4 +193,20 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// <param name="columns">The columns to sort by.</param>
     internal string BuildOrderBy(params string[] columns)
         => " ORDER BY " + string.Join(", ", columns);
+
+    internal void Filter(ref string sql, string column, string filter, List<NpgsqlParameter> parameters,
+        bool? filterExact = null, double? filterSimilitude = null)
+    {
+        if (filterExact is not null && filterExact.Value)
+        {
+            sql += $" WHERE {column} LIKE @filter";
+        }
+        else
+        {
+            var similitude = (filterSimilitude ?? 0.4).ToString(CultureInfo.InvariantCulture);
+            sql += $" WHERE similarity({column}, @filter) > {similitude}";
+        }
+        
+        parameters.Add(new NpgsqlParameter("@filter", filter));
+    }
 }

@@ -34,6 +34,7 @@
       <_ContentIncludedByDefault Remove="wwwroot\css\material.css.map" />
       <_ContentIncludedByDefault Remove="wwwroot\css\material.min.css" />
       <_ContentIncludedByDefault Remove="wwwroot\css\material.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\GenreList.css" />
     </ItemGroup>
 
 </Project>

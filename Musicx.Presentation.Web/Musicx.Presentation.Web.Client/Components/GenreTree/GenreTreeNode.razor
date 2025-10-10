@@ -24,6 +24,15 @@
             <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Remove" />
         }
         
+        @if (Addable)
+        {
+            <MudIconButton
+                Icon="@Icons.Material.Filled.Add"
+                Color="Color.Primary"
+                Disabled="@IsSelected"
+                OnClick="@(async () => await OnSelectionChange(true))"/>
+        }
+        
         @if (Checkable)
         {
             <MudCheckBox T="bool" Size="Size.Small"
@@ -43,6 +52,7 @@
                 {
                     <GenreTreeNode Genre="child"
                                    Checkable="Checkable"
+                                   Addable="Addable"
                                    LoadChildrenAsync="LoadChildrenAsync"
                                    OnSelectionChanged="OnSelectionChanged" />
                 }
@@ -55,6 +65,7 @@
 
     [Parameter] public OutGenre Genre { get; set; } = null!;
     [Parameter] public bool Checkable { get; set; }
+    [Parameter] public bool Addable { get; set; }
     [Parameter] public Func<OutGenre, Task<IReadOnlyList<OutGenre>>>? LoadChildrenAsync { get; set; }
     [Parameter] public EventCallback<(OutGenre, bool)> OnSelectionChanged { get; set; }
     

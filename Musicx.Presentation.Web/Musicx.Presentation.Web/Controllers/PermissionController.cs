@@ -90,8 +90,8 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OutPermission>>> Find(
-        [FromQuery] int skip = 0,
-        [FromQuery] int take = 100, 
+        [FromQuery] long skip = 0,
+        [FromQuery] long take = 100, 
         [FromQuery] string filter = "",
         [FromQuery] string query = "")
     {

@@ -63,8 +63,9 @@ internal sealed class ArtistRepository(
             .FromDicoToArtist();
     }
 
-    public async Task<List<OutArtist>> FindAsync(int skip = 0, int take = 100,
-        IQuerySpecification<InArtist>? artistQuerySpecification = null, string? filter = null)
+    public async Task<List<OutArtist>> FindAsync(long skip = 0, long take = 100,
+        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, 
+        string? order = null, IQuerySpecification<InArtist>? artistQuerySpecification = null)
     {
         var sql = builder.BuildSelect(artistQuerySpecification);
         
@@ -72,10 +73,16 @@ internal sealed class ArtistRepository(
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE similarity(ar0.{ArtistColumns.Name}, @filter) > 0.4";
-            sql += builder.BuildOrderBy($"similarity(ar0.{ArtistColumns.Name}, @filter) DESC");
+            builder.Filter(
+                sql: ref sql, 
+                column: $"ar0.{ArtistColumns.Name}", 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
             
-            parameters.Add(new NpgsqlParameter("@filter", filter));
+            sql += builder.BuildOrderBy($"similarity(ar0.{ArtistColumns.Name}, @filter) DESC");
         }
         else
         {

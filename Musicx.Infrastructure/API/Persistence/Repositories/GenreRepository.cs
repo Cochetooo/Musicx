@@ -67,16 +67,24 @@ internal sealed class GenreRepository(
             .FromDicoToGenre();
     }
 
-    public async Task<List<OutGenre>> FindAsync(int skip = 0, int take = 100,
-        IQuerySpecification<InGenre>? genreQuerySpecification = null, string? filter = null)
+    public async Task<List<OutGenre>> FindAsync(long skip = 0, long take = 100,
+        bool? filterExact = null, double? filterSimilitude = 0.4,
+        string? filter = null, string? order = null,
+        IQuerySpecification<InGenre>? genreQuerySpecification = null)
     {
         var sql = builder.BuildSelect(genreQuerySpecification);
         var parameters = new List<NpgsqlParameter>();
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE similarity(g0.{GenreColumns.Name}, @filter) > 0.4";
-            parameters.Add(new NpgsqlParameter("@filter", filter));
+            builder.Filter(
+                sql: ref sql, 
+                column: $"g0.{GenreColumns.Name}", 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
         }
         
         sql += builder.BuildGroupBy(genreQuerySpecification);

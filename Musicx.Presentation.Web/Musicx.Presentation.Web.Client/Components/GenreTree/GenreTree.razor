@@ -9,6 +9,7 @@
         {
             <GenreTreeNode Genre="genre"
                            Checkable="@Checkable"
+                           Addable="@Addable"
                            LoadChildrenAsync="@LoadChildrenAsync"
                            OnSelectionChanged="@(o => OnSelectionChanged(o.Item1, o.Item2))" />
         }
@@ -21,6 +22,7 @@
 
     [Parameter] public IReadOnlyList<OutGenre> RootGenres { get; set; } = [];
     [Parameter] public bool Checkable { get; set; }
+    [Parameter] public bool Addable { get; set; }
     [Parameter] public IReadOnlyCollection<GenreType>? AllowedTypes { get; set; }
     [Parameter] public EventCallback<IReadOnlyList<OutGenre>> SelectedGenresChanged { get; set; }
 

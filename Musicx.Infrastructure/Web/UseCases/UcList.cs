@@ -13,7 +13,9 @@ public sealed class UcList<T>(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcList<T>));
     
-    public async Task<List<T>> ExecuteAsync(int skip = 0, int take = 200, string? filter = null, string query = "")
+    public async Task<List<T>> ExecuteAsync(long skip = 0, long take = 200, 
+        bool? filterExact = null, double? filterSimilitude = null, 
+        string? filter = null, string? order = null, string query = "")
     {
         var modelName = typeof(T).Name.OutModelToEntity();
         var endpoint = $"/api/{modelName}?skip={skip}&take={take}&query={query}";
@@ -21,6 +23,21 @@ public sealed class UcList<T>(
         if (null != filter)
         {
             endpoint += $"&filter={filter}";
+        }
+
+        if (null != filterExact)
+        {
+            endpoint += $"&filterExact={filterExact}";
+        }
+
+        if (null != filterSimilitude)
+        {
+            endpoint += $"&filterSimilitude={filterSimilitude}";
+        }
+
+        if (null != order)
+        {
+            endpoint += $"&order={order}";
         }
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
@@ -48,7 +65,9 @@ public sealed class UcList<T>(
         }
     }
 
-    public List<T> Execute(int skip = 0, int take = 200, string? filter = null, string query = "")
+    public List<T> Execute(long skip = 0, long take = 200, 
+        bool? filterExact = null, double? filterSimilitude = null, 
+        string? filter = null, string? order = null, string query = "")
     {
         throw new NotImplementedException();
     }

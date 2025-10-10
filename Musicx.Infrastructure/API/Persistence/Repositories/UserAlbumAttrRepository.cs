@@ -52,7 +52,9 @@ internal sealed class UserAlbumAttrRepository(
     public Task<OutUserAlbumAttribute?> FindByIdAsync(long id, IQuerySpecification<InUserAlbumAttribute>? songQuerySpecification = null)
         => throw new NotImplementedException();
 
-    public Task<List<OutUserAlbumAttribute>> FindAsync(int skip = 0, int take = 100, IQuerySpecification<InUserAlbumAttribute>? songQuerySpecification = null, string? filter = null)
+    public Task<List<OutUserAlbumAttribute>> FindAsync(long skip = 0, long take = 100, 
+        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
+        string? order = null, IQuerySpecification<InUserAlbumAttribute>? songQuerySpecification = null)
         => throw new NotImplementedException();
 
     public Task<List<OutUserAlbumAttribute>> FindIn(IEnumerable<long> ids, IQuerySpecification<InUserAlbumAttribute>? songQuerySpecification = null)
@@ -153,7 +155,8 @@ internal sealed class UserAlbumAttrRepository(
         }
     }
 
-    public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindByAlbumIdAsync(long albumId, int skip = 0, int take = 100)
+    public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindByAlbumIdAsync(long albumId, 
+        long skip = 0, long take = 100, string? order = null)
     {
         var sql = builder.BuildSelect(null);
         var parameters = new List<NpgsqlParameter>();
@@ -174,7 +177,9 @@ internal sealed class UserAlbumAttrRepository(
             .ToList();
     }
 
-    public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindByUserIdAsync(long userId, int skip = 0, int take = 100, string? filter = null)
+    public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindByUserIdAsync(long userId, 
+        long skip = 0, long take = 100, bool? filterExact = null, double? filterSimilitude = 0.4,
+        string? filter = null, string? order = null)
     {
         var sql = builder.BuildSelect(null);
         var parameters = new List<NpgsqlParameter>();
@@ -184,8 +189,14 @@ internal sealed class UserAlbumAttrRepository(
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" AND similarity(al0.{AlbumColumns.Name}, @filter) > 0.4";
-            parameters.Add(new NpgsqlParameter("@filter", filter));
+            builder.Filter(
+                sql: ref sql, 
+                column: $"al0.{AlbumColumns.Name}", 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
         }
 
         sql += builder.BuildOrderBy($"uaa0.{UserAlbumAttrColumns.UpdatedAt} DESC", $"u0.{UserColumns.Name}");

@@ -102,8 +102,7 @@
 
                 @foreach (var genre in _primaryGenres)
                 {
-                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeletePrimaryGenre(genre))" 
-                                Class="ma-1 animate-fade-in"/>
+                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeletePrimaryGenre(genre))"/>
                 }
             </MudItem>
 
@@ -126,8 +125,7 @@
 
                 @foreach (var genre in _influenceGenres)
                 {
-                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))" 
-                                Class="ma-1 animate-fade-in"/>
+                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))"/>
                 }
             </MudItem>
             

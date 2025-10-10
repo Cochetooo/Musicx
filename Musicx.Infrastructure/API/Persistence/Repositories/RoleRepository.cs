@@ -62,9 +62,9 @@ internal sealed class RoleRepository(
             .FromDicoToRole();
     }
 
-    public async Task<List<OutRole>> FindAsync(int skip = 0, int take = 100,
-        IQuerySpecification<InRole>? roleQuerySpecification = null,
-        string? filter = null)
+    public async Task<List<OutRole>> FindAsync(long skip = 0, long take = 100,
+        bool? filterExact = false, double? filterSimilitude = 0.4, string? filter = null, string? order = null,
+        IQuerySpecification<InRole>? roleQuerySpecification = null)
     {
         var sql = builder.BuildSelect(roleQuerySpecification);
 
@@ -72,8 +72,14 @@ internal sealed class RoleRepository(
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE similarity(u0.{RoleColumns.Name}, @filter) > 0.4";
-            parameters.Add(new NpgsqlParameter("@filter", filter));
+            builder.Filter(
+                sql: ref sql, 
+                column: $"u0.{RoleColumns.Name}", 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
         }
         
         sql += builder.BuildGroupBy(roleQuerySpecification);

@@ -61,7 +61,6 @@ public partial class ArtistEditModal
         {
             _artist = artist.ToRaw();
             await _nameTextEdit.SetText(_artist.Name);
-            // _nameTextEdit.Revalidate();
             await InvokeAsync(StateHasChanged);
         }
         else
@@ -77,15 +76,6 @@ public partial class ArtistEditModal
     {
         await _modalRef.CloseAsync();
     }
-
-    /* private void ValidateNonEmptyField(ValidatorEventArgs e)
-    {
-        _isConfirmable = string.IsNullOrWhiteSpace(Convert.ToString(e.Value));
-        
-        e.Status = _isConfirmable
-            ? ValidationStatus.None
-            : ValidationStatus.Success;
-    } */
 
     private async Task UpdateArtwork()
     {
@@ -126,7 +116,8 @@ public partial class ArtistEditModal
             _isLoading = false;
             await InvokeAsync(StateHasChanged);
             
-            _existingArtists = await UcListExistingArtists.ExecuteAsync(filter: _artist.Name);
+            _existingArtists = await UcListExistingArtists.ExecuteAsync(filter: _artist.Name,
+                filterExact: true);
         }
         catch (TaskCanceledException)
         {

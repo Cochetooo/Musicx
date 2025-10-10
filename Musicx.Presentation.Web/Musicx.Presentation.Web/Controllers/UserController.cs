@@ -105,9 +105,12 @@ public sealed class UserController(IUserRepository userRepository,
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OutUser>>> Find(
-        [FromQuery] int skip = 0,
-        [FromQuery] int take = 100, 
+        [FromQuery] long skip = 0,
+        [FromQuery] long take = 100, 
+        [FromQuery] bool filterExact = false,
+        [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
+        [FromQuery] string order = "",
         [FromQuery] string query = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND users");
@@ -119,7 +122,8 @@ public sealed class UserController(IUserRepository userRepository,
                 IncludeRoles = query.Contains("role"),
             };
             
-            var albums = await userRepository.FindAsync(skip, take, querySpecification, filter);
+            var albums = await userRepository.FindAsync(skip, take, filterExact, filterSimilitude,
+                filter, order, querySpecification);
             
             if (0 == albums.Count)
             {

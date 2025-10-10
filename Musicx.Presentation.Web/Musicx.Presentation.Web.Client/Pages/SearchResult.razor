@@ -78,6 +78,24 @@
                 }
             </MudList>
         }
+        
+        <MudStack Row Spacing="2">
+            <MudButton Variant="Variant.Text" Color="Color.Secondary"
+                       StartIcon="@Icons.Material.Filled.ArrowLeft"
+                       IconColor="Color.Secondary"
+                       OnClick="@PreviousArtists"
+                       Disabled="@(_artistSkip < 10)">
+                Previous
+            </MudButton>
+        
+            <MudButton Variant="Variant.Text" Color="Color.Secondary"
+                       EndIcon="@Icons.Material.Filled.ArrowRight"
+                       IconColor="Color.Secondary"
+                       OnClick="@NextArtists"
+                       Disabled="@(_artistsResult.Count < 10)">
+                Next
+            </MudButton>
+        </MudStack>
 
         <MudText Class="text-italic">@_artistsResult.Count result(s) found.</MudText>
 
@@ -124,6 +142,24 @@
                 }
             </MudList>
         }
+        
+        <MudStack Row Spacing="2">
+            <MudButton Variant="Variant.Text" Color="Color.Secondary"
+                       StartIcon="@Icons.Material.Filled.ArrowLeft"
+                       IconColor="Color.Secondary"
+                       OnClick="@PreviousAlbums"
+                       Disabled="@(_albumSkip < 10)">
+                Previous
+            </MudButton>
+        
+            <MudButton Variant="Variant.Text" Color="Color.Secondary"
+                       EndIcon="@Icons.Material.Filled.ArrowRight"
+                       IconColor="Color.Secondary"
+                       OnClick="@NextAlbums"
+                       Disabled="@(_albumsResult.Count < 10)">
+                Next
+            </MudButton>
+        </MudStack>
 
         <MudText Class="text-italic">@_albumsResult.Count result(s) found.</MudText>
     </MudCardContent>

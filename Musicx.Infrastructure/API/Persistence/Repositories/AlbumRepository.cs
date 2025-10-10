@@ -68,7 +68,8 @@ internal sealed class AlbumRepository(
             .FromDicoToAlbum();
     }
     
-    public async Task<List<OutAlbum>> FindByArtistIdAsync(long artistId, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
+    public async Task<List<OutAlbum>> FindByArtistIdAsync(long artistId, 
+        IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
         var sql = builder.BuildSelect(albumQuerySpecification);
         sql += $" WHERE al0.{AlbumColumns.ArtistId} = @artistId" + 
@@ -88,8 +89,9 @@ internal sealed class AlbumRepository(
     
     public async Task<List<OutAlbum>> FindByGenreIdAsync(long genreId, 
         int genreOptions,
-        int skip = 0,
-        int take = 100,
+        long skip = 0,
+        long take = 100,
+        string? order = null,
         IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
         const int validMask = GenreOptions.PrimaryGenre | GenreOptions.InfluenceGenre;
@@ -151,9 +153,9 @@ internal sealed class AlbumRepository(
             .ToList();
     }
 
-    public async Task<List<OutAlbum>> FindAsync(int skip = 0, int take = 100,
-        IQuerySpecification<InAlbum>? albumQuerySpecification = null,
-        string? filter = null)
+    public async Task<List<OutAlbum>> FindAsync(long skip = 0, long take = 100,
+        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, string? order = null, 
+        IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
         var sql = builder.BuildSelect(albumQuerySpecification);
 
@@ -161,8 +163,14 @@ internal sealed class AlbumRepository(
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE similarity(al0.{AlbumColumns.Name}, @filter) > 0.4";
-            parameters.Add(new NpgsqlParameter("@filter", filter));
+            builder.Filter(
+                sql: ref sql, 
+                column: $"al0.{AlbumColumns.Name}", 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
         }
         
         sql += builder.BuildGroupBy(albumQuerySpecification);
@@ -188,7 +196,8 @@ internal sealed class AlbumRepository(
             .ToList();
     }
 
-    public async Task<List<OutAlbum>> FindIn(IEnumerable<long> ids, IQuerySpecification<InAlbum>? albumQuerySpecification = null)
+    public async Task<List<OutAlbum>> FindIn(IEnumerable<long> ids, 
+        IQuerySpecification<InAlbum>? albumQuerySpecification = null)
     {
         var idList = ids.ToArray();
         if (0 == idList.Length)

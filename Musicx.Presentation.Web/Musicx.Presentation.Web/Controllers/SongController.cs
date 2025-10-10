@@ -133,9 +133,12 @@ public sealed class SongController(ISongRepository songRepository,
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OutSong>>> Find(
-        [FromQuery] int skip = 0,
-        [FromQuery] int take = 100, 
+        [FromQuery] long skip = 0,
+        [FromQuery] long take = 100, 
+        [FromQuery] bool filterExact = false,
+        [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
+        [FromQuery] string order = "",
         [FromQuery] string query = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND songs");
@@ -151,7 +154,8 @@ public sealed class SongController(ISongRepository songRepository,
                 IncludeInfluenceGenres = query.Contains("genre"),
             };
             
-            var songs = await songRepository.FindAsync(skip, take, querySpecification, filter);
+            var songs = await songRepository.FindAsync(skip, take, filterExact, filterSimilitude,
+                filter, order, querySpecification);
             
             if (0 == songs.Count)
             {
