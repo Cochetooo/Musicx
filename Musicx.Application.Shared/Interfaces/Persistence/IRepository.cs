@@ -41,15 +41,22 @@ public interface IRepository<TIn, TOut>
     /// </summary>
     /// <param name="skip">Offset when retrieving all rows, useful for pagination.</param>
     /// <param name="take">Maximum number of rows taken, prevents response from being too large.</param>
+    /// <param name="filterExact">Use equality for the filter instead of a similarity algorithm</param>
+    /// <param name="filterSimilitude">The similarity rate for the algorithm to find similar results.</param>
     /// <param name="filter">An expression that entities must match to be in the result.</param>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
+    /// <param name="order">Sort the collection according to table columns</param>
     /// <returns>A collection of entities as <b>List</b>, empty if no entity has been found matching filter criteria.</returns>
     /// <since>0.6.0</since>
     Task<List<TOut>> FindAsync(
-        int skip = 0, 
-        int take = 100, 
-        IQuerySpecification<TIn>? songQuerySpecification = null,
-        string? filter = null);
+        long skip = 0, 
+        long take = 100, 
+        bool? filterExact = null,
+        double? filterSimilitude = 0.4,
+        string? filter = null,
+        string? order = null,
+        IQuerySpecification<TIn>? songQuerySpecification = null
+    );
 
     /// <summary>
     /// Retrieve entities corresponding to all identifiers prompted.

@@ -132,8 +132,9 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     [HttpGet("by-genre/{genreId}")]
     public async Task<ActionResult<OutAlbum>> FindByGenreId([FromRoute] long genreId, 
         [FromQuery] int genreOptions,
-        [FromQuery] int skip = 0,
-        [FromQuery] int take = 100,
+        [FromQuery] long skip = 0,
+        [FromQuery] long take = 100,
+        [FromQuery] string? order = null,
         [FromQuery] string query = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND BY GENRE albums ({genreId} " +
@@ -155,6 +156,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 genreOptions, 
                 skip, 
                 take, 
+                order,
                 querySpecification
             );
 
@@ -175,9 +177,12 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OutAlbum>>> Find(
-        [FromQuery] int skip = 0,
-        [FromQuery] int take = 100, 
+        [FromQuery] long skip = 0,
+        [FromQuery] long take = 100, 
+        [FromQuery] bool filterExact = false,
+        [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
+        [FromQuery] string order = "",
         [FromQuery] string query = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND albums");
@@ -193,7 +198,8 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 IncludeStats = query.Contains("stat")
             };
             
-            var albums = await albumRepository.FindAsync(skip, take, querySpecification, filter);
+            var albums = await albumRepository.FindAsync(skip, take, filterExact,
+                filterSimilitude, filter, order, querySpecification);
             
             if (0 == albums.Count)
             {

@@ -10,8 +10,9 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
         IQuerySpecification<InAlbum>? albumQuerySpecification = null);
     Task<List<OutAlbum>> FindByGenreIdAsync(long genreId, 
         int genreOptions,
-        int skip = 0, 
-        int take = 100,
+        long skip = 0, 
+        long take = 100,
+        string? order = null,
         IQuerySpecification<InAlbum>? albumQuerySpecification = null);
 }
 public interface IArtistRepository : IRepository<InArtist, OutArtist>;
@@ -41,12 +42,16 @@ public interface IUserAlbumAttrsRepository : IRepository<InUserAlbumAttribute, O
     Task<long> CountByUserIdAsync(long userId);
     Task DeleteAsync(long userId, long albumId);
     Task<IReadOnlyList<OutUserAlbumAttribute>> FindByAlbumIdAsync(long albumId,
-        int skip = 0,
-        int take = 100);
+        long skip = 0,
+        long take = 100,
+        string? order = null);
     Task<IReadOnlyList<OutUserAlbumAttribute>> FindByUserIdAsync(long userId,
-        int skip = 0,
-        int take = 100,
-        string? filter = null);
+        long skip = 0,
+        long take = 100,
+        bool? filterExact = null,
+        double? filterSimilitude = 0.4,
+        string? filter = null,
+        string? order = null);
     Task<OutUserAlbumAttribute?> FindOneAlbumFromUserAsync(long userId, long albumId);
 }
 

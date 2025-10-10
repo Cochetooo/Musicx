@@ -85,7 +85,7 @@ public sealed class UserAlbumAttrController(
     
     [HttpGet("by-album/{albumId}")]
     public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> FindByAlbumId([FromRoute] long albumId,
-        [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        [FromQuery] long skip = 0, [FromQuery] long take = 100)
     {
         _logger.LogInformation($"🌍🏳️ API : FIND BY ALBUM user_album_attrs ({albumId})");
 
@@ -114,14 +114,21 @@ public sealed class UserAlbumAttrController(
     }
     
     [HttpGet("by-user/{userId}")]
-    public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> FindByUserId([FromRoute] long userId,
-        [FromQuery] int skip = 0, [FromQuery] int take = 100, [FromQuery] string? filter = null)
+    public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> FindByUserId(
+        [FromRoute] long userId,
+        [FromQuery] long skip = 0, 
+        [FromQuery] long take = 100, 
+        [FromQuery] bool filterExact = false, 
+        [FromQuery] double filterSimilitude = 0.4,
+        [FromQuery] string filter = "", 
+        [FromQuery] string order = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND BY USER user_album_attrs ({userId})");
 
         try
         {
-            var userAlbumAttrs = await repository.FindByUserIdAsync(userId, skip, take, filter);
+            var userAlbumAttrs = await repository.FindByUserIdAsync(userId, skip, take,
+                filterExact, filterSimilitude, filter, order);
             var totalCount = await repository.CountByUserIdAsync(userId);
 
             if (0 == userAlbumAttrs.Count)

@@ -67,16 +67,23 @@ internal sealed class SongRepository(
             .FromDicoToSong();
     }
 
-    public async Task<List<OutSong>> FindAsync(int skip = 0, int take = 100,
-        IQuerySpecification<InSong>? songQuerySpecification = null, string? filter = null)
+    public async Task<List<OutSong>> FindAsync(long skip = 0, long take = 100,
+        bool? filterExact = false, double? filterSimilitude = 0.4, string? filter = null, string? order = null,
+        IQuerySpecification<InSong>? songQuerySpecification = null)
     {
         var sql = builder.BuildSelect(songQuerySpecification);
         var parameters = new List<NpgsqlParameter>();
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE similarity(s0.{SongColumns.Title}, @filter) > 0.4";
-            parameters.Add(new NpgsqlParameter("@filter", filter));
+            builder.Filter(
+                sql: ref sql, 
+                column: $"s0.{SongColumns.Title}", 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
         }
         
         sql += builder.BuildGroupBy(songQuerySpecification);

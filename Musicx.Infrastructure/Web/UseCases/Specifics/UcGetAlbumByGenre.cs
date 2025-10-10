@@ -14,8 +14,8 @@ public sealed class UcGetAlbumByGenre(
 
     public async Task<List<OutAlbum>> ExecuteAsync(long genreId, 
         int genreOptions,
-        int skip = 0,
-        int take = 100,
+        long skip = 0,
+        long take = 100,
         string query = "")
     {
         var endpoint = $"/api/albums/by-genre/{genreId}?" +
@@ -45,22 +45,22 @@ public sealed class UcGetAlbumByGenre(
     }
     
     public async Task<List<OutAlbum>> ExecuteAsync(OutGenre genre, int genreOptions,
-        int skip = 0,
-        int take = 100,
+        long skip = 0,
+        long take = 100,
         string query = "")
         => await ExecuteAsync(genre.Id, genreOptions, skip, take, query);
 
     public List<OutAlbum> Execute(long genreId, int genreOptions,
-        int skip = 0,
-        int take = 100,
+        long skip = 0,
+        long take = 100,
         string query = "")
     {
         throw new NotImplementedException();
     }
 
     public List<OutAlbum> Execute(OutGenre genre, int genreOptions,
-        int skip = 0,
-        int take = 100,
+        long skip = 0,
+        long take = 100,
         string query = "")
         => Execute(genre.Id, genreOptions, skip, take, query);
 }

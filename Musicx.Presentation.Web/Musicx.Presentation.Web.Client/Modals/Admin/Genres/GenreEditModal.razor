@@ -3,6 +3,7 @@
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.GenreTree
+@using Musicx.Presentation.Web.Client.Components
 
 @inject ILoggerFactory LoggerProvider
 @inject ISaveUseCase<InGenre> UcSave
@@ -73,26 +74,56 @@
                             <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false" />
                         </MudItem>
 
-                        <MudItem xs="12">
+                        <MudItem xs="12" md="8">
                             <MudText Typo="Typo.subtitle2">Parent Genres</MudText>
                             <GenreTree RootGenres="@_genres"
                                        AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
-                                       Checkable
+                                       Addable
                                        SelectedGenresChanged="@SelectedGenresChanged"
                                        LoadChildrenAsync="@LoadChildrenAsync" />
+                        </MudItem>
+                        
+                        <MudItem xs="12" md="4">
+                            <MudText Typo="Typo.h6">
+                                Selected Parents
+                            </MudText>
+                            
+                            <MudList T="RenderFragment" Class="mt-3" Dense>
+                                @foreach (var genre in _selectedParents)
+                                {
+                                    <MudListItem T="RenderFragment">
+                                        <GenreBadge Genre="@genre" Size="Size.Medium"/>
+                                    </MudListItem>
+                                }
+                            </MudList>
                         </MudItem>
                     }
 
                     <!-- Subgenre: no color picker; color derived from parents -->
                     @if (_selectedType == GenreType.Subgenre)
                     {
-                        <MudItem xs="12">
+                        <MudItem xs="12" md="8">
                             <MudText Typo="Typo.subtitle2">Parent Genres (at least one)</MudText>
                             <GenreTree RootGenres="@_genres"
                                        AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
-                                       Checkable
+                                       Addable
                                        SelectedGenresChanged="@SelectedGenresChanged"
                                        LoadChildrenAsync="@LoadChildrenAsync" />
+                        </MudItem>
+                        
+                        <MudItem xs="12" md="4">
+                            <MudText Typo="Typo.h6">
+                                Selected Parents
+                            </MudText>
+                            
+                            <MudList T="RenderFragment" Class="mt-3" Dense>
+                                @foreach (var genre in _selectedParents)
+                                {
+                                    <MudListItem T="RenderFragment">
+                                        <GenreBadge Genre="@genre" Size="Size.Medium"/>
+                                    </MudListItem>
+                                }
+                            </MudList>
                         </MudItem>
                         
                         <MudItem xs="12" md="4">
@@ -116,14 +147,30 @@
                     <!-- Scene & Movement: similar to Subgenre but different filter -->
                     @if (_selectedType == GenreType.Scene || _selectedType == GenreType.Movement)
                     {
-                        <MudItem xs="12">
+                        <MudItem xs="12" md="8">
                             <MudText Typo="Typo.subtitle2">Parent Genres</MudText>
                             <GenreTree RootGenres="@_genres"
                                        AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
-                                       Checkable
+                                       Addable
                                        SelectedGenresChanged="@SelectedGenresChanged"
                                        LoadChildrenAsync="@LoadChildrenAsync" />
                         </MudItem>
+                        
+                        <MudItem xs="12" md="4">
+                            <MudText Typo="Typo.h6">
+                                Selected Parents
+                            </MudText>
+                            
+                            <MudList T="RenderFragment" Class="mt-3" Dense>
+                                @foreach (var genre in _selectedParents)
+                                {
+                                    <MudListItem T="RenderFragment">
+                                        <GenreBadge Genre="@genre" Size="Size.Medium"/>
+                                    </MudListItem>
+                                }
+                            </MudList>
+                        </MudItem>
+                        
                         <MudItem xs="12" md="4">
                             <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false" />
                         </MudItem>

@@ -62,9 +62,9 @@ internal sealed class PermissionRepository(
             .FromDicoToPermission();
     }
 
-    public async Task<List<OutPermission>> FindAsync(int skip = 0, int take = 100,
-        IQuerySpecification<InPermission>? permissionQuerySpecification = null,
-        string? filter = null)
+    public async Task<List<OutPermission>> FindAsync(long skip = 0, long take = 100,
+        bool? filterExact = null, double? filterSimilitude = null, string? filter = null, string? order = null,
+        IQuerySpecification<InPermission>? permissionQuerySpecification = null)
     {
         var sql = builder.BuildSelect(permissionQuerySpecification);
 
@@ -72,8 +72,14 @@ internal sealed class PermissionRepository(
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE similarity(p0.{PermissionColumns.Name}, @filter) > 0.4";
-            parameters.Add(new NpgsqlParameter("@filter", filter));
+            builder.Filter(
+                sql: ref sql, 
+                column: $"p0.{PermissionColumns.Name}", 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
         }
         
         sql += builder.BuildGroupBy(permissionQuerySpecification);

@@ -1,3 +1,4 @@
+using Microsoft.JSInterop;
 using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Presentation.Web.Client.Pages;

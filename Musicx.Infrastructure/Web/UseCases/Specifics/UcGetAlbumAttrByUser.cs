@@ -14,7 +14,7 @@ public sealed class UcGetAlbumAttrByUser(
     private readonly ILogger _logger = loggerFactory.CreateLogger<UcGetAlbumAttrByAlbum>();
 
     public async Task<OutGenericList<OutUserAlbumAttribute>> ExecuteAsync(long userId, 
-        int skip = 0, int take = 100, CancellationToken token = default)
+        long skip = 0, long take = 100, CancellationToken token = default)
     {
         var endpoint = $"/api/user-album-attrs/by-user/{userId}?skip={skip}&take={take}";
         
@@ -49,7 +49,7 @@ public sealed class UcGetAlbumAttrByUser(
         return json;
     }
 
-    public OutGenericList<OutUserAlbumAttribute> Execute(long albumId, int skip = 0, int take = 100)
+    public OutGenericList<OutUserAlbumAttribute> Execute(long albumId, long skip = 0, long take = 100)
     {
         throw new NotImplementedException();
     }

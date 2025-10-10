@@ -62,7 +62,8 @@ internal sealed class UserRepository(
             .FromDicoToUser();
     }
     
-    public async Task<OutUser?> FindByEmailAsync(string email, IQuerySpecification<InUser>? userQuerySpecification = null)
+    public async Task<OutUser?> FindByEmailAsync(string email, 
+        IQuerySpecification<InUser>? userQuerySpecification = null)
     {
         var sql = new StringBuilder(builder.BuildSelect(userQuerySpecification));
         sql.Append($" WHERE u0.{UserColumns.Email} = @email")
@@ -80,9 +81,9 @@ internal sealed class UserRepository(
             .FromDicoToUser();
     }
 
-    public async Task<List<OutUser>> FindAsync(int skip = 0, int take = 100,
-        IQuerySpecification<InUser>? userQuerySpecification = null,
-        string? filter = null)
+    public async Task<List<OutUser>> FindAsync(long skip = 0, long take = 100,
+        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, string? order = null,
+        IQuerySpecification<InUser>? userQuerySpecification = null)
     {
         var sql = builder.BuildSelect(userQuerySpecification);
 
@@ -90,8 +91,14 @@ internal sealed class UserRepository(
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" WHERE similarity(u0.{UserColumns.Name}, @filter) > 0.4";
-            parameters.Add(new NpgsqlParameter("@filter", filter));
+            builder.Filter(
+                sql: ref sql, 
+                column: $"u0.{UserColumns.Name}", 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
         }
         
         sql += builder.BuildGroupBy(userQuerySpecification);

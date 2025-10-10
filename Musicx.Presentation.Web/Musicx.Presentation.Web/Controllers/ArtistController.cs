@@ -90,9 +90,12 @@ public sealed class ArtistController(IArtistRepository artistRepository,
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OutArtist>>> Find(
-        [FromQuery] int skip = 0,
-        [FromQuery] int take = 100, 
-        [FromQuery] string filter = "")
+        [FromQuery] long skip = 0,
+        [FromQuery] long take = 100, 
+        [FromQuery] bool filterExact = false,
+        [FromQuery] double filterSimilitude = 0.4,
+        [FromQuery] string filter = "",
+        [FromQuery] string order = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND artists");
 
@@ -101,7 +104,10 @@ public sealed class ArtistController(IArtistRepository artistRepository,
             var artists = await artistRepository.FindAsync(
                 skip: skip, 
                 take: take,
-                filter: filter
+                filterExact: filterExact,
+                filterSimilitude: filterSimilitude,
+                filter: filter,
+                order: order
             );
             
             _logger.LogInformation($"🌍✅ API : FIND artists - SUCCESS");
