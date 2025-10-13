@@ -21,24 +21,12 @@
                 <span class="release-type">[@Album.ReleaseType]</span>
             </MudText>
             break;
-        case ReleaseType.AdditionalRelease:
-        case ReleaseType.Bootleg:
-        case ReleaseType.Demo:
-        case ReleaseType.DjMix:
-        case ReleaseType.Live:
-        case ReleaseType.MixTape:
-        case ReleaseType.Soundtrack:
-        case ReleaseType.Unknown:
-        case ReleaseType.VideoClip:
-        case ReleaseType.Compilation:
-        case null:
+        default:
             <MudText Class="quick-album-name" Color="Color.Tertiary">
                 @Album.Name 
                 <span class="release-type">[@Album.ReleaseType]</span>
             </MudText>
             break;
-        default:
-            throw new ArgumentOutOfRangeException();
     }
 
     @if (null != Album.OriginalReleaseDate)
