@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 
 namespace Musicx.Presentation.Web.Client.Pages.Users;
 
@@ -11,6 +12,8 @@ public partial class UserView
     private OutUser? _user;
 
     private long _albumCount;
+
+    private OutUserRatingStats? _albumRatingDistrib;
     
     [Parameter] public string? Id { get; set; }
     
@@ -47,6 +50,10 @@ public partial class UserView
         }
 
         _logger.LogInformation($"✅ User loaded: {_user.Name} ({_user.Id})");
+        await InvokeAsync(StateHasChanged);
+
+        _albumRatingDistrib = await UcGetAlbumRatingDistrib.ExecuteAsync(_user.Id);
+        _logger.LogInformation($"✅ Album Ratings Distribution loaded ({_user.Id})");
         await InvokeAsync(StateHasChanged);
     }
     

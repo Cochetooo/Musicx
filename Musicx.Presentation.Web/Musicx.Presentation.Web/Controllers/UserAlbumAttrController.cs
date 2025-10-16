@@ -3,6 +3,7 @@ using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Presentation.Web.Contexts;
 
 namespace Musicx.Presentation.Web.Controllers;
@@ -204,6 +205,24 @@ public sealed class UserAlbumAttrController(
 
             _logger.LogInformation($"🌍✅ API : COUNT user_album_attrs BY user {userId} - SUCCESS");
             return Ok(count);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+
+    [HttpGet("ratings-distrib/{userId}")]
+    public async Task<ActionResult<OutUserRatingStats>> GetRatingsDistribByUserId([FromRoute] long userId)
+    {
+        _logger.LogInformation($"🌍🏳️ API : RATING DISTRIB user_album_attrs BY user {userId}");
+
+        try
+        {
+            var ratingDistrib = await repository.GetUserRatingStatsAsync(userId);
+            
+            _logger.LogInformation($"🌍✅ API : RATING DISTRIB user_album_attrs BY user {userId} - SUCCESS");
+            return Ok(ratingDistrib);
         }
         catch (Exception ex)
         {

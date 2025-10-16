@@ -1,6 +1,7 @@
 ﻿using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 
 namespace Musicx.Application.Api.Interfaces.Persistence;
 
@@ -53,6 +54,7 @@ public interface IUserAlbumAttrsRepository : IRepository<InUserAlbumAttribute, O
         string? filter = null,
         string? order = null);
     Task<OutUserAlbumAttribute?> FindOneAlbumFromUserAsync(long userId, long albumId);
+    Task<OutUserRatingStats> GetUserRatingStatsAsync(long userId);
 }
 
 public interface IUserAlbumTagRepository : IRepository<InUserAlbumTag, OutUserAlbumTag>

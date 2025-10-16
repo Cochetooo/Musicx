@@ -147,6 +147,7 @@ public static class DependencyInjection
         services.AddScoped<IGetAlbumByArtistUseCase, UcGetAlbumByArtist>();
         services.AddScoped<IGetAlbumByGenreUseCase, UcGetAlbumByGenre>();
         services.AddScoped<IGetSongByAlbumUseCase, UcGetSongByAlbum>();
+        services.AddScoped(typeof(IGetRatingDistribByUser<>), typeof(UcGetRatingDistribByUser<>));
 
         services.AddScoped<IAuthSignInUseCase, UcAuthSignIn>();
         

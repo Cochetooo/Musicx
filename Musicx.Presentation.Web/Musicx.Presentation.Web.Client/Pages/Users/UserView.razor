@@ -12,6 +12,7 @@
 @inject IGetUseCase<OutUser> UcGet
 @inject IGetAlbumAttributesByUser UcGetAlbumAttrs
 @inject IUserClientContext UserClientContext
+@inject IGetRatingDistribByUser<OutAlbum> UcGetAlbumRatingDistrib
 
 @if (null == _user)
 {
@@ -26,7 +27,7 @@ else
         <!-- Bio -->
         <MudCard Class="bg-surface animate-hover-up pa-2">
             <MudCardHeader>
-                <MudStack Row Spacing="4">
+                <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Spacing="4">
                     <MudImage Alt="Profile Picture" Width="128" Height="128"
                               Class="rounded-lg" Src="@_user.PictureUrl" />
                     
@@ -41,79 +42,125 @@ else
             </MudCardContent>
         </MudCard>
         
-        <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-            <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">
-                Ratings (@_albumCount)
-            </MudText>
-            
-            <MudDivider Class="my-3" />
-            
-            <MudTable ServerData="@LoadUserAttrData" ReadOnly
-                      Elevation="8" Striped
-                      Breakpoint="Breakpoint.Sm"
-                      Class="my-3" Dense>
-                <ColGroup>
-                    <col />
-                    <col style="width: 100px;" />
-                    <col style="width: 100px;" />
-                    <col style="width: 100px;" />
-                </ColGroup>
-                <HeaderContent>
-                    <MudTh>Album</MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
-                            Date
-                        </MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
-                            Collection
-                        </MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
-                            Rating
-                        </MudTableSortLabel>
-                    </MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Releases">
-                        <MudLink Href="@($"/Album/{@context.Album.Id}")">
-                            <MudStack Justify="Justify.FlexStart" Row>
-                                <MudImage Src="@context.Album.ArtworkUrl" Alt="@context.Album.Name"
-                                          Width="48" Height="48"
-                                          Class="rounded-lg"
-                                          Elevation="25"/>
-
-                                <AlbumListQuickInfo class="mx-3" Album="@context.Album"/>
-                            </MudStack>
-                        </MudLink>
-                    </MudTd>
+        <MudGrid>
+            <MudItem xs="12" md="8">
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">
+                        Ratings (@_albumCount)
+                    </MudText>
                     
-                    <MudTd DataLabel="Date">
-                        <MudText Typo="Typo.caption" Class="text-color-secondary text-italic">
-                            @context.UpdatedAt.ToString("dd/MM/yyyy")
-                        </MudText>
-                    </MudTd>
+                    <MudDivider Class="my-3" />
+                    
+                    <MudTable ServerData="@LoadUserAttrData" ReadOnly
+                              Elevation="8" Striped
+                              Breakpoint="Breakpoint.Sm"
+                              Class="my-3" Dense>
+                        <ColGroup>
+                            <col />
+                            <col style="width: 100px;" />
+                            <col style="width: 100px;" />
+                            <col style="width: 100px;" />
+                        </ColGroup>
+                        <HeaderContent>
+                            <MudTh>Album</MudTh>
+                            <MudTh>
+                                <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
+                                    Date
+                                </MudTableSortLabel>
+                            </MudTh>
+                            <MudTh>
+                                <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
+                                    Collection
+                                </MudTableSortLabel>
+                            </MudTh>
+                            <MudTh>
+                                <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
+                                    Rating
+                                </MudTableSortLabel>
+                            </MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Releases">
+                                <MudLink Href="@($"/Album/{@context.Album.Id}")">
+                                    <MudStack Justify="Justify.FlexStart" Row>
+                                        <MudImage Src="@context.Album.ArtworkUrl" Alt="@context.Album.Name"
+                                                  Width="48" Height="48"
+                                                  Class="rounded-lg"
+                                                  Elevation="25"/>
 
-                    <MudTd DataLabel="Collection">
-                        @(context.CollectionType?.ToString() ?? string.Empty)
-                    </MudTd>
+                                        <AlbumListQuickInfo class="mx-3" Album="@context.Album"/>
+                                    </MudStack>
+                                </MudLink>
+                            </MudTd>
+                            
+                            <MudTd DataLabel="Date">
+                                <MudText Typo="Typo.caption" Class="text-color-secondary text-italic">
+                                    @context.UpdatedAt.ToString("dd/MM/yyyy")
+                                </MudText>
+                            </MudTd>
 
-                    <MudTd DataLabel="Rating">
-                        <MudChip T="string"
-                                 Class="text-bold"
-                                 Style="@($"background-color: {RatingHelper.GetColorForRating(context.Rating)};" +
-                                        $"color: white")">
-                            @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
-                        </MudChip>
-                    </MudTd>
-                </RowTemplate>
+                            <MudTd DataLabel="Collection">
+                                @(context.CollectionType?.ToString() ?? string.Empty)
+                            </MudTd>
 
-                <PagerContent>
-                    <MudTablePager/>
-                </PagerContent>
-            </MudTable>
-        </MudPaper>
+                            <MudTd DataLabel="Rating">
+                                <MudChip T="string"
+                                         Class="text-bold"
+                                         Style="@($"background-color: {RatingHelper.GetColorForRating(context.Rating)};" +
+                                                $"color: white")">
+                                    @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                </MudChip>
+                            </MudTd>
+                        </RowTemplate>
+
+                        <PagerContent>
+                            <MudTablePager/>
+                        </PagerContent>
+                    </MudTable>
+                </MudPaper>
+            </MudItem>
+            
+            <MudItem xs="12" md="4">
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">
+                        Rating Distribution
+                    </MudText>
+                    
+                    <MudDivider Class="my-3" />
+                        
+                    @if (_albumRatingDistrib is not null && _albumCount > 0)
+                    {
+                        foreach (var ratingCount in _albumRatingDistrib.RatingCounts)
+                        {
+                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Spacing="4">
+                                <!-- Label à gauche -->
+                                <MudText Class="montserrat"
+                                         Typo="Typo.caption"
+                                         Style="min-width: 120px;">
+                                    <span style="font-weight: normal;" class="text-color-secondary">
+                                        @(ratingCount.Key - 9) - @ratingCount.Key
+                                    </span>
+                                    <span style="font-weight: 700; font-size: 0.9em; margin-left: 4px;">
+                                        (@ratingCount.Value)
+                                    </span>
+                                </MudText>
+
+                                <!-- Barre à droite, qui s’étend -->
+                                <MudProgressLinear Class="rating-bar flex-grow"
+                                                   Style="@($"--bar-color:{RatingHelper.GetColorForRating(ratingCount.Key - 5)}; width: 100%")"
+                                                   Value="@((ratingCount.Value / (double)_albumCount) * 100)"
+                                                   Size="Size.Large"/>
+                            </MudStack>
+                        }
+                    }
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
     </MudContainer>
 }
+
+<style>
+    .rating-bar .mud-progress-linear-bar {
+        background-color: var(--bar-color) !important;
+    }
+</style>

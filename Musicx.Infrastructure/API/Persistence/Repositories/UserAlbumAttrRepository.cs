@@ -4,6 +4,8 @@ using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
+using Musicx.Contracts.Helpers;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Mappers;
@@ -228,5 +230,41 @@ internal sealed class UserAlbumAttrRepository(
         return result
             .SingleOrDefault()?
             .FromDicoToUserAlbumAttr();
+    }
+
+    public async Task<OutUserRatingStats> GetUserRatingStatsAsync(long userId)
+    {
+        var sql = """
+                  SELECT 
+                      (user_album_attrs_rating / 10) * 10 AS range_floor,
+                      COUNT(*) AS count
+                  FROM user_album_attrs
+                  WHERE user_album_attrs_user_id = @userId
+                  GROUP BY (user_album_attrs_rating / 10) * 10
+                  ORDER BY range_floor;
+                  """;
+        
+        var parameters = new List<NpgsqlParameter>()
+        {
+            new("@userId", userId)
+        };
+
+        var result = await connection.FetchListDynamicAsync(sql, parameters);
+
+        var ratingCounts = result
+            .Select(x =>
+            {
+                var dict = (IDictionary<string, object>)x;
+                var key = Convert.ToInt32(dict["range_floor"]);
+                var value = Convert.ToInt32(dict["count"]);
+                return new KeyValuePair<int, int>(key, value);
+            })
+            .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+        return new OutUserRatingStats
+        {
+            UserId = userId,
+            RatingCounts = ratingCounts
+        };
     }
 }
