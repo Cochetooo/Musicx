@@ -225,7 +225,7 @@ else
                 </MudTabPanel>
                 
                 <MudTabPanel Text="Details" Icon="@Icons.Material.Filled.Info">
-                    <MudStack Spacing="5" Row>
+                    <MudStack Spacing="5" Class="mb-4" Row>
                         <MudButton
                             Variant="Variant.Filled"
                             Color="Color.Success"
@@ -243,13 +243,25 @@ else
                     </MudStack>
 
                     <MudList T="RenderFragment">
+                        @if (_artist.Alias is not null)
+                        {
+                            <Descriptor>
+                                <DescriptorLabel>
+                                    👀 Also Known As
+                                </DescriptorLabel>
+                                <DescriptorValue>
+                                    @_artist.Alias
+                                </DescriptorValue>
+                            </Descriptor>
+                        }
+                        
                         @if (_artist.Discriminator == ArtistDiscriminator.Band)
                         {
                             if (null != _artist.FormationDate)
                             {
                                 <Descriptor>
                                     <DescriptorLabel>
-                                        Formed
+                                        👥 Formed
                                     </DescriptorLabel>
                                     <DescriptorValue>
                                         @_artist.FormationDate.Value.ToString("dd / MM / yyyy")
@@ -261,7 +273,7 @@ else
                             {
                                 <Descriptor>
                                     <DescriptorLabel>
-                                        Split
+                                        🚫 Split
                                     </DescriptorLabel>
                                     <DescriptorValue>
                                         @_artist.SplitDate.Value.ToString("dd / MM / yyyy")
@@ -275,7 +287,7 @@ else
                             {
                                 <Descriptor>
                                     <DescriptorLabel>
-                                        Born
+                                        👶 Born
                                     </DescriptorLabel>
                                     <DescriptorValue>
                                         @_artist.BirthDate.Value.ToString("dd / MM / yyyy")
@@ -287,7 +299,7 @@ else
                             {
                                 <Descriptor>
                                     <DescriptorLabel>
-                                        Died
+                                        ☠️ Died
                                     </DescriptorLabel>
                                     <DescriptorValue>
                                         @_artist.DeathDate.Value.ToString("dd / MM / yyyy")
@@ -297,7 +309,7 @@ else
                         }
                         <Descriptor>
                             <DescriptorLabel>
-                                Country
+                                🏳️ Country
                             </DescriptorLabel>
                             <DescriptorValue>
                                 <Flag CountryName="@_artist.Country"/> @_artist.Country

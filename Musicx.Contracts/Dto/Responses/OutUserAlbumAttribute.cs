@@ -8,6 +8,7 @@ public sealed class OutUserAlbumAttribute : BaseOutputModel
     public OutAlbum Album { get; set; } = null!;
     
     public CollectionType? CollectionType { get; set; }
+    public DateTime? DiscoveryDate { get; set; }
     public short? Rating { get; set; }
     public string? Review { get; set; }
 }

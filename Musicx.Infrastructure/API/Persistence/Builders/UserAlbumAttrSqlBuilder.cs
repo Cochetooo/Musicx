@@ -22,6 +22,7 @@ internal sealed class UserAlbumAttrSqlBuilder(
                 { UserAlbumAttrColumns.CreatedAt, DateTime.Now },
                 { UserAlbumAttrColumns.UpdatedAt, DateTime.Now },
                 { UserAlbumAttrColumns.CollectionType, entity.CollectionType },
+                { UserAlbumAttrColumns.DiscoveryDate, entity.DiscoveryDate },
                 { UserAlbumAttrColumns.Rating, entity.Rating },
                 { UserAlbumAttrColumns.Review, entity.Review },
             });
@@ -46,6 +47,7 @@ internal sealed class UserAlbumAttrSqlBuilder(
             {
                 { UserAlbumAttrColumns.UpdatedAt, DateTime.Now },
                 { UserAlbumAttrColumns.CollectionType, entity.CollectionType },
+                { UserAlbumAttrColumns.DiscoveryDate, entity.DiscoveryDate },
                 { UserAlbumAttrColumns.Rating, entity.Rating },
                 { UserAlbumAttrColumns.Review, entity.Review },
             });

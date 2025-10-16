@@ -13,6 +13,7 @@ public sealed class InArtist : BaseInputModel
     public IReadOnlyList<long>? BandIds { get; set; } = [];
     
     // Optional Columns
+    public string? Alias { get; set; }
     public string? ArtworkUrl { get; set; }
     public string? Country { get; set; }
     public string? Description { get; set; }

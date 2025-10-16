@@ -19,6 +19,7 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
             {
                 { ArtistColumns.CreatedAt, DateTime.Now },
                 { ArtistColumns.UpdatedAt, DateTime.Now },
+                { ArtistColumns.Alias, entity.Alias },
                 { ArtistColumns.ArtworkUrl, entity.ArtworkUrl },
                 { ArtistColumns.Country, entity.Country },
                 { ArtistColumns.Description, entity.Description },
@@ -53,6 +54,7 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
             new Dictionary<string, object?>
             {
                 { ArtistColumns.UpdatedAt, DateTime.Now },
+                { ArtistColumns.Alias, entity.Alias },
                 { ArtistColumns.ArtworkUrl, entity.ArtworkUrl },
                 { ArtistColumns.Country, entity.Country },
                 { ArtistColumns.Description, entity.Description },

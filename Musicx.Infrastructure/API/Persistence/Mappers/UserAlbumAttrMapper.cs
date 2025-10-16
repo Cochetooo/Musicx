@@ -18,6 +18,7 @@ public static class UserAlbumAttrMapper
         UpdatedAt = userAlbumAttr.SafeGet<DateTime>(UserAlbumAttrColumns.UpdatedAt),
 
         CollectionType = userAlbumAttr.SafeGet<CollectionType?>(UserAlbumAttrColumns.CollectionType),
+        DiscoveryDate = userAlbumAttr.SafeGet<DateTime>(UserAlbumAttrColumns.DiscoveryDate),
         Rating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.Rating),
         Review = userAlbumAttr.SafeGet<string?>(UserAlbumAttrColumns.Review)
     };
@@ -28,6 +29,7 @@ public static class UserAlbumAttrMapper
         AlbumId = userAlbumAttr.Album.Id,
 
         CollectionType = userAlbumAttr.CollectionType,
+        DiscoveryDate = userAlbumAttr.DiscoveryDate,
         Rating = userAlbumAttr.Rating,
         Review = userAlbumAttr.Review
     };

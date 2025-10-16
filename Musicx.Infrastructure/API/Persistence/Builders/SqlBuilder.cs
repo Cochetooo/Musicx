@@ -194,19 +194,35 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     internal string BuildOrderBy(params string[] columns)
         => " ORDER BY " + string.Join(", ", columns);
 
-    internal void Filter(ref string sql, string column, string filter, List<NpgsqlParameter> parameters,
+    internal void Filter(ref string sql, IEnumerable<string> columns, 
+        string filter, List<NpgsqlParameter> parameters,
         bool? filterExact = null, double? filterSimilitude = null)
     {
+        if (string.IsNullOrWhiteSpace(filter) || !columns.Any())
+        {
+            return;
+        }
+
+        var paramName = "@filter";
+        parameters.Add(new NpgsqlParameter(paramName, filter));
+
+        string condition;
+        
         if (filterExact is not null && filterExact.Value)
         {
-            sql += $" WHERE {column} LIKE @filter";
+            condition = string.Join(" OR ", columns.Select(c => $"{c} ILIKE {paramName}"));
         }
         else
         {
+            // Approximate match via similarity()
             var similitude = (filterSimilitude ?? 0.4).ToString(CultureInfo.InvariantCulture);
-            sql += $" WHERE similarity({column}, @filter) > {similitude}";
+            condition = string.Join(" OR ", columns.Select(c => $"similarity({c}, {paramName}) > {similitude}"));
         }
         
-        parameters.Add(new NpgsqlParameter("@filter", filter));
+        sql += $" WHERE ({condition})";
     }
+    
+    internal void Filter(ref string sql, string column, string filter, List<NpgsqlParameter> parameters,
+        bool? filterExact = null, double? filterSimilitude = null)
+        => Filter(ref sql, [column], filter, parameters, filterExact, filterSimilitude);
 }

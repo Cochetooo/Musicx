@@ -4,6 +4,7 @@ namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutArtist : BaseOutputModel
 {
+    public string? Alias { get; set; }
     public string? ArtworkUrl { get; set; }
     public string? CalculatedGenres { get; set; }
     public string? CalculatedInfluences { get; set; }

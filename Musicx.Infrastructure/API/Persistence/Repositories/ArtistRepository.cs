@@ -75,7 +75,7 @@ internal sealed class ArtistRepository(
         {
             builder.Filter(
                 sql: ref sql, 
-                column: $"ar0.{ArtistColumns.Name}", 
+                columns: [$"ar0.{ArtistColumns.Name}", $"ar0.{ArtistColumns.Alias}"], 
                 filter: filter,
                 parameters: parameters, 
                 filterExact: filterExact, 

@@ -9,5 +9,6 @@ public sealed class InUserAlbumAttribute : BaseInputModel
     
     public short? Rating { get; set; }
     public CollectionType? CollectionType { get; set; }
+    public DateTime? DiscoveryDate { get; set; }
     public string? Review { get; set; }
 }

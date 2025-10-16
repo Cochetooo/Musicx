@@ -11,6 +11,7 @@ create table public.user_album_attrs (
     user_album_attrs_updated_at                  timestamp without time zone,
     user_album_attrs_rating                      smallint check (user_album_attrs_rating between 0 and 100),
     user_album_attrs_collection_type             integer,
+    user_album_attrs_discovery_date              timestamp without time zone,
     user_album_attrs_review                      text,
     primary key (user_album_attrs_user_id, user_album_attrs_album_id)
 );

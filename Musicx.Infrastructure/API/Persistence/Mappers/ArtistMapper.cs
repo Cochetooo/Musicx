@@ -16,6 +16,7 @@ public static class ArtistMapper
         CreatedAt = artist.SafeGet<DateTime>(ArtistColumns.CreatedAt),
         UpdatedAt = artist.SafeGet<DateTime>(ArtistColumns.UpdatedAt),
 
+        Alias = artist.SafeGet<string>(ArtistColumns.Alias),
         ArtworkUrl = artist.SafeGet<string>(ArtistColumns.ArtworkUrl),
         CalculatedGenres = artist.SafeGet<string>(ArtistColumns.CalculatedGenres),
         CalculatedInfluences = artist.SafeGet<string>(ArtistColumns.CalculatedInfluences),
@@ -40,6 +41,7 @@ public static class ArtistMapper
     {
         Id = artist.Id,
         
+        Alias = artist.Alias,
         ArtworkUrl = artist.ArtworkUrl,
         Country = artist.Country,
         Description = artist.Description,

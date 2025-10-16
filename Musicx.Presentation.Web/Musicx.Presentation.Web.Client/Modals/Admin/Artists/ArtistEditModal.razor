@@ -16,7 +16,7 @@
         Artist Editing
     </TitleContent>
     <DialogContent>
-        <MudGrid>
+        <MudGrid Justify="Justify.Center">
             <MudItem xs="12" md="6">
                 <MudTextField 
                     T="string"
@@ -28,11 +28,24 @@
                     Variant="Variant.Text" />
             </MudItem>
             
+            <MudFlexBreak />
+            
+            <MudItem xs="12" md="6">
+                <MudTextField 
+                    T="string"
+                    @bind-Text="_artist.Alias"
+                    HelperText="Alias"
+                    Label="Enter an alias for the artist..."
+                    Placeholder="AKA..."
+                    Variant="Variant.Text"/>
+            </MudItem>
+            
             <MudItem xs="12" md="6">
                 <MudAutocomplete
                     T="string"
                     Dense
                     Placeholder="Search country..."
+                    Label="Choose a country..."
                     HelperText="Country"
                     SearchFunc="@SearchCountry"
                     @bind-Value="_artist.Country"
