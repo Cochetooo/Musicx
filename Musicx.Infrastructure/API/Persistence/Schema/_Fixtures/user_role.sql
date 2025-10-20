@@ -20,3 +20,7 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (19, 
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (20, 1);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (21, 1);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (22, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (23, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (24, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (25, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (26, 1);
