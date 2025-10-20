@@ -65,7 +65,7 @@ else
     private string GetChipStyle(OutGenre genre)
     {
         var background = genre.Color ?? ColorHelper.DarkColor;
-        var transparentBackground = ColorHelper.ToRgba(background, 0.5);
+        var transparentBackground = ColorHelper.ToRgba(background, 0.3);
         
         var textColor = ColorHelper.IsColorLight(background)
             ? ColorHelper.DarkColor
@@ -75,12 +75,12 @@ else
 
         if (Influence)
         {
-            return $"background:{gradient}; opacity: 0.75; color:{textColor}; font-style: italic;";
+            return $"background:{gradient}; opacity: 0.6; color:{textColor}; font-style: italic;";
         }
         
         return Genre.Type switch
         {
-            GenreType.Subgenre => $"background:{gradient}; color:{textColor}; font-weight:600;",
+            GenreType.Subgenre => $"background:{gradient}; color:{textColor}; font-weight:700;",
             GenreType.Scene => $"border:1px solid {gradient}; color:{textColor}; background:{gradient}; font-weight: bold",
             GenreType.Movement => $"border:1px dashed {gradient}; color:{textColor}; background:{gradient}; font-weight: bold",
             GenreType.Descriptor => $"background:{gradient}; color:{textColor}; opacity:0.85; border-radius:16px;",

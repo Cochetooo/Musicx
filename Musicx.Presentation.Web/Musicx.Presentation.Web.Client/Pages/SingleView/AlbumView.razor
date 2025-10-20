@@ -36,7 +36,7 @@ else
         
         @if (_album.IsFarRight)
         {
-            <MudAlert Severity="Severity.Warning" Class="mb-3">
+            <MudAlert Severity="Severity.Warning" Class="mb-2">
                 This release is marked with the "national socialist" tag.<br/>
                 We do not endorse or support any of the associated ideologies.<br/>
                 Our role is solely to document and archive all forms of musical expression,
@@ -48,7 +48,7 @@ else
         <MudText Typo="Typo.caption" Class="text-color-muted">@($"<Album{_album.Id}>")</MudText>
         
         <!-- Header Album -->
-        <MudGrid Class="my-3">
+        <MudGrid Class="my-2">
             <MudItem xs="12" md="4">
                 <MudCard Class="bg-surface animate-hover-up pa-2">
                     <MudCardHeader>
@@ -58,7 +58,8 @@ else
                             <MudImage Src="@_album.ArtworkUrl"
                                       Elevation="8"
                                       Class="@($"rounded-lg {(_album.IsNsfw && !_isArtworkRevealed ? "blurred" : "")}")"
-                                      Style="width: 100%; height: auto;" />
+                                      ObjectFit="ObjectFit.Cover"
+                                      Style="width: 100%; aspect-ratio: 1 / 1;" />
 
                             @if (_album.IsNsfw && !_isArtworkRevealed)
                             {
@@ -127,11 +128,11 @@ else
                             @_album.Artist.Name
                         </MudLink>
                     }
-                    
+
                     <MudDivider Class="my-3" />
                     
                     <MudGrid Justify="Justify.SpaceAround">
-                        <MudItem xs="12" lg="6" Style="justify-items: center;">
+                        <MudItem xs="12" lg="3" Style="justify-items: center;">
                             <DonutRating 
                                 Rating="@_album.Stats?.Average"
                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
@@ -142,7 +143,7 @@ else
                             </MudText>
                         </MudItem>
                         
-                        <MudItem xs="12" lg="6">
+                        <MudItem xs="12" lg="4">
                             @if (null != _album.OriginalReleaseDate)
                             {
                                 <MudText Class="text-color-secondary mt-2">
@@ -172,31 +173,29 @@ else
                                 </MudText>
                             </MudText>
                         </MudItem>
+                        
+                        <MudItem xs="12" lg="5">
+                            <GenreDetails Album="@_album" @bind-DetailedView="@_showDetailedView"/>
+                            <MudSwitch @bind-Value="_showDetailedView"
+                                       Color="Color.Primary"
+                                       Label="Show more details"
+                                       ThumbIcon="@Icons.Material.Filled.ViewWeek"
+                                       Class="my-2"/>
+                        </MudItem>
                     </MudGrid>
-                    
-                    <!-- Issues -->
-                    <MudExpansionPanels Dense Class="mt-2">
-                        <MudExpansionPanel Text="Issues (Catalogs)">
-                            <MudList T="string">
-                                @if (_album.Releases is not null)
-                                {
-                                    foreach (var release in _album.Releases)
-                                    {
-                                        <MudListItem>@release.Label?.Name - @release.CatalogNumber</MudListItem>
-                                    }
-                                }
-                            </MudList>
-                        </MudExpansionPanel>
-                    </MudExpansionPanels>
                     
                     <MudDivider Class="mt-5" />
                     
-                    <MudStack Spacing="0" Class="mt-5" Justify="Justify.SpaceEvenly" Row>
+                    <MudStack Spacing="1" AlignItems="AlignItems.Center" 
+                              Class="mt-4" Wrap="Wrap.Wrap" 
+                              Justify="Justify.SpaceEvenly" Row>
                         @if (UserClientContext.Can("album.edit"))
                         {
-                            <MudButton Variant="Variant.Filled" Color="Color.Error"
+                            <MudButton Variant="Variant.Filled" 
+                                       Color="Color.Error"
                                        Size="Size.Small"
-                                       Class="mr-2" OnClick="@EditAlbumShowModal">
+                                       Class="mx-1" 
+                                       OnClick="@EditAlbumShowModal">
                                 Edit Album Info
                             </MudButton>
                         }
@@ -206,7 +205,8 @@ else
                         {
                             <MudButton Variant="Variant.Filled"
                                        Size="Size.Small"
-                                       Color="Color.Primary">
+                                       Color="Color.Primary"
+                                       Class="mx-1">
                                 Review
                             </MudButton>
                         }
@@ -216,29 +216,50 @@ else
                         {
                             <DynamicRating
                                 RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
-                                Value="@(_albumUserAttribs
-                                           .Items
-                                           .FirstOrDefault(attr => attr.User.Id == UserClientContext.CurrentUser.Id)?.Rating)"
+                                Value="@_userAttribute.Rating"
                                 ValueChanged="@(v => Rate(v))"/>
                         }
                         
                         @if (UserClientContext.CurrentUser is not null &&
-                             UserClientContext.Can("album.collection"))
+                             UserClientContext.Can("album.attr"))
                         {
-                            <MudMenu Label="Collection" Color="Color.Primary">
+                            <!-- <MudDatePicker 
+                                DateChanged="ChangeDateDiscovery"
+                                Label="Discovery Date"
+                                T="DateTime?"
+                                Class="mx-1"
+                                Style="width: 160px;"
+                                Variant="Variant.Outlined"/> -->
+                            
+                            <MudMenu Label="Collection" 
+                                     Variant="Variant.Filled"
+                                     Dense
+                                     Size="Size.Small"
+                                     Class="mx-1"
+                                     Color="Color.Primary">
                                 @foreach (var collectionType in Enum.GetValues<CollectionType>())
                                 {
                                     <MudMenuItem>@collectionType.ToString()</MudMenuItem>
                                 }
                             </MudMenu>
+                            
+                            <MudExpansionPanels Dense
+                                                Class="d-inline-block mx-1"
+                                                Elevation="0"
+                                                Square="true">
+                                <MudExpansionPanel Text="Tags" Gutters="false" Class="p-2">
+                                    <MudTextField T="string" 
+                                                  Placeholder="Add a tag..."
+                                                  Variant="Variant.Outlined"
+                                                  Class="flex-grow-1"/>
+                                    <MudButton Color="Color.Primary"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small">
+                                        Add
+                                    </MudButton>
+                                </MudExpansionPanel>
+                            </MudExpansionPanels>
                         }
-                        
-                        <MudExpansionPanels Dense="true" Class="d-inline-block ml-3">
-                            <MudExpansionPanel Text="Tags">
-                                <MudTextField T="string" Placeholder="Add a tag..."/>
-                                <MudButton Color="Color.Primary" Variant="Variant.Outlined" Class="mt-2">Add</MudButton>
-                            </MudExpansionPanel>
-                        </MudExpansionPanels>
                     </MudStack>
                 </MudPaper>
             </MudItem>
@@ -310,16 +331,20 @@ else
             </MudItem>
             
             <MudItem xs="12" md="4">
-                <!-- Genres -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">🎸 Genres</MudText>
-                    <MudDivider Class="my-3" />
-                    <GenreDetails Album="@_album" @bind-DetailedView="@_showDetailedView" />
-                    <MudSwitch @bind-Value="_showDetailedView"
-                               Color="Color.Primary"
-                               Label="Show more details"
-                               ThumbIcon="@Icons.Material.Filled.ViewWeek"
-                               Class="my-2"/>
+                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">💽 Releases</MudText>
+                    <MudDivider Class="my-3"/>
+                    
+                    <!-- Issues -->
+                        <MudList T="string">
+                            @if (_album.Releases is not null)
+                            {
+                                foreach (var release in _album.Releases)
+                                {
+                                    <MudListItem>@release.Label?.Name - @release.CatalogNumber</MudListItem>
+                                }
+                            }
+                        </MudList>
                 </MudPaper>
             </MudItem>
         </MudGrid>

@@ -63,6 +63,12 @@ public partial class DynamicRating
             _editingValue = null;
         }
     }
+
+    private void DeleteRating()
+    {
+        Value = null;
+        ValueChanged.InvokeAsync(Value);
+    }
     
     private int StarValue
     {

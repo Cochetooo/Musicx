@@ -4,6 +4,7 @@ using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 
 namespace Musicx.Presentation.Web.Client.Pages.SingleView;
@@ -23,11 +24,13 @@ public partial class AlbumView
 
     private MudTable<OutUserAlbumAttribute> _albumRatingsTable = null!;
 
-    private OutGenericList<OutUserAlbumAttribute> _albumUserAttribs = new OutGenericList<OutUserAlbumAttribute>
+    private OutGenericList<OutUserAlbumAttribute> _albumUserAttribs = new()
     {
         Items = [],
         Total = 0
     };
+    
+    private InUserAlbumAttribute _userAttribute = new();
  
     private bool _isArtworkRevealed;
     private bool _showDetailedView;
@@ -77,6 +80,8 @@ public partial class AlbumView
             _logger.LogWarning("❌ No album found for ID: {Id}", Id);
             return;
         }
+
+        _userAttribute = new();
         
         _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
         await InvokeAsync(StateHasChanged);
@@ -107,14 +112,35 @@ public partial class AlbumView
                 }
             }
             
-            _logger.LogInformation($"✅ Previous and Next albums loaded.");
+            _logger.LogInformation("✅ Previous and Next albums loaded.");
             await InvokeAsync(StateHasChanged);
         }
 
         _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album.Id);
         await _albumRatingsTable.ReloadServerData();
+
+        // If a user is connected, we need to give a user_attribute object to the view
+        if (UserClientContext.CurrentUser is not null)
+        {
+            // We try to find an existing attribute in the set of attributes
+            var existingAttr = _albumUserAttribs
+                .Items
+                .FirstOrDefault(attr => attr.User.Id == UserClientContext.CurrentUser.Id);
+
+            // If it exists, we give that to the view object.
+            if (existingAttr is not null)
+            {
+                _userAttribute = existingAttr.ToRaw();
+            }
+            // If not, we just update the album and user ID to the already initialized object.
+            else
+            {
+                _userAttribute.AlbumId = albumId;
+                _userAttribute.UserId = UserClientContext.CurrentUser.Id;
+            }
+        }
         
-        _logger.LogInformation($"✅ User attributes loaded.");
+        _logger.LogInformation("✅ User attributes loaded.");
         await InvokeAsync(StateHasChanged);
     }
 
@@ -184,34 +210,55 @@ public partial class AlbumView
     {
         await LoadAlbum();
     }
+    
+    /**
+     * Persistence
+     */
+    
+    private async Task ChangeDateDiscovery(DateTime? dateValue)
+    {
+        if (UserClientContext.CurrentUser is null
+            || !UserClientContext.Can("album.attr"))
+        {
+            _logger.LogInformation("❌ Could not change date of album.");
+            return;
+        }
+        
+        _userAttribute.DiscoveryDate = dateValue;
+        await SaveUserAttr();
+    }
 
     private async Task Rate(int? ratingValue)
     {
-        if (_album is null
-            || UserClientContext.CurrentUser is null
+        if (UserClientContext.CurrentUser is null
             || !UserClientContext.Can("album.rate"))
         {
-            _logger.LogInformation($"❌ Could not rate album.");
+            _logger.LogInformation("❌ Could not rate album.");
             return;
         }
+        
+        _userAttribute.Rating = (short?)ratingValue;
+        await SaveUserAttr();
+    }
 
-        await UcSaveUserAttrib.ExecuteAsync(new InUserAlbumAttribute
+    private async Task SaveUserAttr()
+    {
+        if (_album is null)
         {
-            UserId = UserClientContext.CurrentUser.Id,
-            AlbumId = _album.Id,
-            CollectionType = null,
-            Review = null,
-            Rating = (short?)ratingValue
-        });
+            _logger.LogInformation("❌ Could not save album.");
+            return;
+        }
+        
+        await UcSaveUserAttrib.ExecuteAsync(_userAttribute);
         
         // Refresh only album for new rating
         _album = await UcGet.ExecuteAsync(_album.Id, "artist_genre_stat");
         await InvokeAsync(StateHasChanged);
         
         _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album!.Id);
-        _logger.LogInformation($"✅ User attributes loaded.");
-        await InvokeAsync(StateHasChanged);
+        _logger.LogInformation("✅ User attributes loaded.");
+        await _albumRatingsTable.ReloadServerData();
         
-        _logger.LogInformation($"✅ Successfully saved new rating.");
+        _logger.LogInformation("✅ Successfully saved user attributes.");
     }
 }

@@ -9,7 +9,8 @@ public partial class GenreDetails
 {
     [Parameter, EditorRequired] public OutAlbum Album { get; set; } = null!;
     [Parameter] public Size Size { get; set; }
-
+    [Parameter] public bool Descriptor { get; set; } = true;
+    
     [Parameter] public bool DetailedView { get; set; }
     [Parameter] public EventCallback<bool> DetailedViewChanged { get; set; }
 

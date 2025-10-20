@@ -4,9 +4,11 @@
 <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
     @if (IsTextualMode)
     {
-        <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;")"
+        <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:120px;")"
                  OnClick="@ToggleCollapse"
+                 OnClose="@DeleteRating"
                  Variant="Variant.Filled"
+                 Size="Size.Large"
                  Class="glass-card"
                  T="string">
             @RatingHelper.GetRatingFormatted(Value, RatingMode)
@@ -20,10 +22,12 @@
     {
         @if (!_isEditing)
         {
-            <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;")"
+            <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:120px;")"
                      OnClick="@(() => _isEditing = true)"
+                     OnClose="@DeleteRating"
                      Variant="Variant.Filled"
                      Class="glass-card"
+                     Size="Size.Large"
                      T="string">
                 @RatingHelper.GetRatingFormatted(Value, RatingMode)
             </MudChip>
@@ -35,6 +39,7 @@
                 @bind-Value="_editingValue"
                 Min="0"
                 Max="@MaxValue"
+                Style="max-width: 120px;"
                 Immediate
                 Class="w-20"
                 OnBlur="@CancelEdit"
