@@ -5526,3 +5526,6 @@ INSERT INTO public.album_influence (album_influence_album_id, album_influence_ge
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3713, 15);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3715, 15);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3721, 15);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3722, 59);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3722, 229);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3722, 123);
