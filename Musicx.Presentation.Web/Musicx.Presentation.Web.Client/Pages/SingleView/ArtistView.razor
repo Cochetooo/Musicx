@@ -64,9 +64,19 @@ else
                     
                     <div class="mt-4">
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                            <MudButton Size="Size.Medium" Color="Color.Warning" Variant="Variant.Filled" Class="fav-star" Title="Add Favourite">
-                                <MudIcon Icon="@Icons.Material.Filled.Star" />
-                            </MudButton>
+                            <MudTooltip>
+                                <ChildContent>
+                                    <MudToggleIconButton
+                                        Size="Size.Medium"
+                                        Color="Color.Dark"
+                                        ToggledColor="Color.Warning"
+                                        Variant="Variant.Text"
+                                        Icon="@Icons.Material.Filled.Star"/>
+                                </ChildContent>
+                                <TooltipContent>
+                                    Add Favourite
+                                </TooltipContent>
+                            </MudTooltip>
 
                             @* small place for quick actions *@
                             <MudButton
