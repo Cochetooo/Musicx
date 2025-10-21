@@ -112,6 +112,38 @@ public static class RatingHelper
         }
     }
 
+    public static decimal CalculateArtistRating(IList<OutAlbum> albums)
+    {
+        decimal totalWeight = 0;
+        decimal weightedSum = 0;
+
+        foreach (var album in albums)
+        {
+            var coeff = album.ReleaseType switch
+            {
+                ReleaseType.Lp => 1.0m,
+                ReleaseType.Soundtrack => 0.8m,
+                ReleaseType.MixTape => 0.7m,
+                ReleaseType.Ep => 0.6m,
+                ReleaseType.DjMix => 0.5m,
+                ReleaseType.Covers => 0.4m,
+                ReleaseType.Single => 0.3m,
+                ReleaseType.Remix => 0.2m,
+                _ => 0.15m
+            };
+
+            if (album.Stats is null)
+            {
+                continue;
+            }
+            
+            weightedSum += album.Stats.Average * coeff;
+            totalWeight += coeff;
+        }
+        
+        return totalWeight > 0 ? weightedSum / totalWeight : 0;
+    }
+
     public static string GetColorForRating(decimal? rating)
     {
         if (rating is null)

@@ -1,0 +1,50 @@
+﻿@using Musicx.Presentation.Web.Client.Components.Ratings
+@using Musicx.Presentation.Web.Client.Components.GenreDetails
+
+@foreach (var group in GroupedAlbums)
+{
+    <MudPaper Class="pa-4 mb-6 glass-paper">
+        @if (IsGrouped)
+        {
+            <MudText Typo="Typo.h6" Class="montserrat text-bold mb-2">
+                🎶 @group.Key.ToString() (@group.Value.Count)
+            </MudText>
+            <MudDivider Class="mb-3" />
+        }
+
+        @foreach (var album in group.Value)
+        {
+            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="py-1">
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                    <MudImage Src="@album.ArtworkUrl" Width="@((int) (Zoom * 64))" Height="@((int) (Zoom * 64))"
+                              Class="rounded-lg" Elevation="8" />
+                    <MudStack>
+                        <MudLink Href="@($"/Album/{album.Id}")">
+                            <MudText Typo="Typo.body1" Class="montserrat text-bold">@album.Name</MudText>
+                        </MudLink>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                            @album.OriginalReleaseDate?.ToString("yyyy") · 
+                            <MudChip
+                                Size="Size.Small"
+                                T="string"
+                                Class="montserrat py-1 px-3 ma-1 genre-badge"
+                                Style="@GetSimplifiedGenreStyle(album)"
+                                Label="@true">
+                                @album.SimplifiedGenreName
+                            </MudChip>
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                    <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.ExtraSmall" />
+                    <MudText Typo="Typo.caption" Class="montserrat text-bold">
+                        @($"{album.Stats?.Count ?? 0} ratings")
+                    </MudText>
+                </MudStack>
+            </MudStack>
+            
+            <MudDivider Class="my-1" />
+        }
+    </MudPaper>
+}

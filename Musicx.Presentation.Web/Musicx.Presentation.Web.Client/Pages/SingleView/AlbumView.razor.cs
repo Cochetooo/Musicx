@@ -95,7 +95,8 @@ public partial class AlbumView
 
         if (_album.Artist is not null)
         {
-            var artistAlbums = await UcGetArtistAlbums.ExecuteAsync(_album.Artist.Id);
+            var response = await UcGetArtistAlbums.ExecuteAsync(_album.Artist.Id);
+            var artistAlbums = response.Items;
 
             var currentIndex = artistAlbums.FindIndex(a => a.Id == _album.Id);
 

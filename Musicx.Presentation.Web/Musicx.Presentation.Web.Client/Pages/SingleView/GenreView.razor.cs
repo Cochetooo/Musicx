@@ -3,6 +3,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Options;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 
 namespace Musicx.Presentation.Web.Client.Pages.SingleView;
 
@@ -13,7 +14,7 @@ public partial class GenreView
     private ILogger _logger = null!;
 
     private OutGenre? _genre;
-    private List<OutAlbum> _genreAlbums = [];
+    private OutAlbumList _genreAlbums = new();
 
     private readonly List<BreadcrumbItem>? _breadcrumb = [];
 
@@ -66,10 +67,10 @@ public partial class GenreView
             genreId: _genre.Id,
             genreOptions: GenreOptions.PrimaryGenre,
             take: 100,
-            query: "artist_genre"
+            query: "artist_genre_stats"
         );
         
-        _logger.LogInformation($"🏷️ Albums loaded : {_genreAlbums.Count}");
+        _logger.LogInformation($"🏷️ Albums loaded : {_genreAlbums.Total}");
         await InvokeAsync(StateHasChanged);
     }
 

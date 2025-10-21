@@ -2,11 +2,19 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Enums;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 using Musicx.Presentation.Web.Client.Modals.Admin.Artists;
 
 namespace Musicx.Presentation.Web.Client.Pages.SingleView;
+
+public enum ReleasesViewMode
+{
+    List,
+    Grid,
+    Timeline
+}
 
 public partial class ArtistView
 {
@@ -18,9 +26,15 @@ public partial class ArtistView
     private AlbumEditModal _albumEditModal = null!;
     
     private OutArtist? _artist;
-    private List<OutAlbum> _artistAlbums = [];
+    private OutAlbumList _artistAlbums = new();
+    private List<OutAlbum> _filteredAlbums = [];
     private Dictionary<ReleaseType, bool> _availableReleaseTypes = [];
     private Dictionary<int, int> _releaseCountPerYears = [];
+    
+    private ReleasesViewMode _viewMode = ReleasesViewMode.List;
+    private bool _groupByType = false;
+    private double _zoomLevel = 1.0;
+    private (string sortBy, bool asc) _selectedSort = ("ReleaseDate", false);
     
     private readonly List<ChartSeries> _historySeries = [];
     private readonly ChartOptions _historyChartOptions = new()
@@ -34,13 +48,6 @@ public partial class ArtistView
         MatchBoundsToSize = true,
     };
     private string[] _xAxisChartLabels = [];
-    
-    private bool _isReleasesListView;
-    
-    private readonly List<BreadcrumbItem>? _breadcrumb = 
-    [
-        new("Musicx", href: "/"),
-    ];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -52,13 +59,6 @@ public partial class ArtistView
         _logger = LoggerProvider.CreateLogger(nameof(ArtistView));
 
         await LoadArtist();
-
-        if (_breadcrumb is not null && _artist is not null)
-        {
-            _breadcrumb.Add(new(_artist.Name, href: "#"));
-        }
-
-        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadArtist()
@@ -87,9 +87,11 @@ public partial class ArtistView
         await InvokeAsync(StateHasChanged);
         
         _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id, "genre_stat");
-        _logger.LogInformation("🎵 Retrieved {Count} albums for artist {ArtistId}", _artistAlbums.Count, _artist.Id);
+        _filteredAlbums = new List<OutAlbum>(_artistAlbums.Items);
+        _logger.LogInformation("🎵 Retrieved {Count} albums for artist {ArtistId}", _artistAlbums.Total, _artist.Id);
         
         _availableReleaseTypes = _artistAlbums
+            .Items
             .Where(s => s.ReleaseType.HasValue)
             .Select(s => s.ReleaseType!.Value)
             .Distinct()
@@ -105,23 +107,30 @@ public partial class ArtistView
         _logger.LogInformation($"✅ Chart created.");
     }
 
-    private void SortBy((string key, bool descending) sort)
+    private void OnSearch(string text)
+    {
+        _filteredAlbums = _artistAlbums.Items
+            .Where(a => a.Name.ToLower().Contains(text.ToLower()))
+            .ToList();
+    }
+
+    private void OnSort((string key, bool descending) sort)
     {
         if (sort.descending)
         {
             switch (sort.key)
             {
                 case "Name":
-                    _artistAlbums = _artistAlbums.OrderByDescending(a => a.Name).ToList();
+                    _filteredAlbums = _filteredAlbums.OrderByDescending(a => a.Name).ToList();
                     break;
                 case "NbRating":
-                    _artistAlbums = _artistAlbums.OrderByDescending(a => a.Stats?.Count).ToList();
+                    _filteredAlbums = _filteredAlbums.OrderByDescending(a => a.Stats?.Count).ToList();
                     break;
                 case "Rating":
-                    _artistAlbums = _artistAlbums.OrderByDescending(a => a.Stats?.Average).ToList();
+                    _filteredAlbums = _filteredAlbums.OrderByDescending(a => a.Stats?.Average).ToList();
                     break;
                 case "ReleaseDate":
-                    _artistAlbums = _artistAlbums.OrderByDescending(a => a.OriginalReleaseDate).ToList();
+                    _filteredAlbums = _filteredAlbums.OrderByDescending(a => a.OriginalReleaseDate).ToList();
                     break;
             }
         }
@@ -130,21 +139,34 @@ public partial class ArtistView
             switch (sort.key)
             {
                 case "Name":
-                    _artistAlbums = _artistAlbums.OrderBy(a => a.Name).ToList();
+                    _filteredAlbums = _filteredAlbums.OrderBy(a => a.Name).ToList();
                     break;
                 case "NbRating":
-                    _artistAlbums = _artistAlbums.OrderBy(a => a.Stats?.Count).ToList();
+                    _filteredAlbums = _filteredAlbums.OrderBy(a => a.Stats?.Count).ToList();
                     break;
                 case "Rating":
-                    _artistAlbums = _artistAlbums.OrderBy(a => a.Stats?.Average).ToList();
+                    _filteredAlbums = _filteredAlbums.OrderBy(a => a.Stats?.Average).ToList();
                     break;
                 case "ReleaseDate":
-                    _artistAlbums = _artistAlbums.OrderBy(a => a.OriginalReleaseDate).ToList();
+                    _filteredAlbums = _filteredAlbums.OrderBy(a => a.OriginalReleaseDate).ToList();
                     break;
             }
         }
-
+        
         StateHasChanged();
+    }
+    
+    private void OnViewModeChanged(ReleasesViewMode vm) => _viewMode = vm;
+    private void OnZoomChanged(double zoom) => _zoomLevel = zoom;
+    private void OnToggleGroup(bool toggle) => _groupByType = toggle;
+
+    private void OnRatingModeChanged(RatingMode mode)
+    {
+        if (UserClientContext.CurrentUser is not null)
+        {
+            UserClientContext.CurrentUser.PrefRatingMode = mode;
+            // @TODO Persist change
+        }
     }
     
     private void UpdateChart()
@@ -171,6 +193,7 @@ public partial class ArtistView
         }
         
         var albumsWithDate = _artistAlbums
+            .Items
             .Where(a => a is
             {
                 OriginalReleaseDate: not null, 
@@ -196,32 +219,17 @@ public partial class ArtistView
             .Range(minYear, maxYear - minYear + 1)
             .ToDictionary(year => year, year => grouped.TryGetValue(year, out var value) ? value : 0);
     }
-
-    private void ToggleListView(bool newValue)
-    {
-        _isReleasesListView = newValue;
-    }
     
     private void ToggleReleaseType(KeyValuePair<ReleaseType, bool> releaseType)
     {
         _availableReleaseTypes[releaseType.Key] = !releaseType.Value;
     }
 
-    private Variant GetVariant(KeyValuePair<ReleaseType, bool> releaseType)
-        => _availableReleaseTypes[releaseType.Key]
-            ? Variant.Filled
-            : Variant.Text;
-    
-    private Variant GetListVariant(bool inverted = false)
-        => _isReleasesListView
-            ? inverted ? Variant.Text : Variant.Filled
-            : inverted ? Variant.Filled : Variant.Text;
-
     private async Task EditArtistShowModal()
     {
         if (null == _artist)
         {
-            _logger.LogError("❌ Cannot add artist: artist is null.");
+            _logger.LogError("❌ Cannot edit artist: artist is null.");
             return;
         }
 
@@ -243,10 +251,4 @@ public partial class ArtistView
     {
         await LoadArtist();
     }
-
-    private string GetSimplifiedGenreStyle(OutAlbum album)
-        =>
-            $"background: {album.SimplifiedGenreColor}; color: {(ColorHelper.IsColorLight(album.SimplifiedGenreColor!) 
-                ? ColorHelper.DarkColor 
-                : "white")};";
 }

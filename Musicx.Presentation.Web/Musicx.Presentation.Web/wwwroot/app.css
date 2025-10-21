@@ -64,6 +64,16 @@ h1:focus {
     box-shadow: 0 12px 36px rgba(0,0,0,0.35);
 }
 
+.glass-paper {
+    background: rgba(var(--mud-palette-surface), 0.06);
+    backdrop-filter: blur(8px) saturate(1.05);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(var(--mud-palette-surface), 0.08);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.45);
+}
+
 .genre-badge {
     box-shadow: var(--mud-elevation-6);
     transition: box-shadow 0.3s ease-in-out;

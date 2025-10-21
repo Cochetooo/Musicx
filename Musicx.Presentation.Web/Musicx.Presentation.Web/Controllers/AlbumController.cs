@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
+using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Presentation.Web.Contexts;
 
 namespace Musicx.Presentation.Web.Controllers;
@@ -97,7 +99,9 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
     
     [HttpGet("by-artist/{artistId}")]
-    public async Task<ActionResult<OutAlbum>> FindByArtistId([FromRoute] long artistId, [FromQuery] string query = "")
+    public async Task<ActionResult<OutAlbumList>> FindByArtistId(
+        [FromRoute] long artistId, 
+        [FromQuery] string query = "")
     {
         _logger.LogInformation($"🌍🏳️ API : FIND BY ARTIST albums ({artistId} & includes = {query})");
 
@@ -120,8 +124,15 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 return NoContent();
             }
             
+            var response = new OutAlbumList
+            {
+                AverageRating = RatingHelper.CalculateArtistRating(albums),
+                Items = albums,
+                Total = albums.Count
+            };
+            
             _logger.LogInformation($"🌍✅ API : FIND BY ARTIST albums ({artistId}) - SUCCESS");
-            return Ok(albums);
+            return Ok(response);
         }
         catch (Exception ex)
         {
@@ -130,7 +141,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
     
     [HttpGet("by-genre/{genreId}")]
-    public async Task<ActionResult<OutAlbum>> FindByGenreId([FromRoute] long genreId, 
+    public async Task<ActionResult<OutAlbumList>> FindByGenreId([FromRoute] long genreId, 
         [FromQuery] int genreOptions,
         [FromQuery] long skip = 0,
         [FromQuery] long take = 100,
@@ -165,9 +176,16 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 _logger.LogInformation($"🌍❔ API : FIND BY GENRE albums ({genreId}) - NOT FOUND");
                 return NoContent();
             }
+
+            var response = new OutAlbumList
+            {
+                AverageRating = RatingHelper.CalculateArtistRating(albums),
+                Items = albums,
+                Total = albums.Count
+            };
             
             _logger.LogInformation($"🌍✅ API : FIND BY GENRE albums ({genreId}) - SUCCESS");
-            return Ok(albums);
+            return Ok(response);
         }
         catch (Exception ex)
         {

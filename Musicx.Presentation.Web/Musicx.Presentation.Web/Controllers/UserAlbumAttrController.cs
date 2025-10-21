@@ -104,7 +104,7 @@ public sealed class UserAlbumAttrController(
             _logger.LogInformation($"🌍✅ API : FIND BY ALBUM user_album_attrs ({albumId}) - SUCCESS");
             return Ok(new OutGenericList<OutUserAlbumAttribute>
             {
-                Items = userAlbumAttrs,
+                Items = userAlbumAttrs.ToList(),
                 Total = totalCount
             });
         }
@@ -141,7 +141,7 @@ public sealed class UserAlbumAttrController(
             _logger.LogInformation($"🌍✅ API : FIND BY USER user_album_attrs ({userId}) - SUCCESS");
             return Ok(new OutGenericList<OutUserAlbumAttribute>
             {
-                Items = userAlbumAttrs,
+                Items = userAlbumAttrs.ToList(),
                 Total = totalCount
             });
         }

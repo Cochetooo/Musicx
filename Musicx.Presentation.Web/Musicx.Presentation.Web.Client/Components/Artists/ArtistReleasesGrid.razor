@@ -1,0 +1,50 @@
+﻿@using Musicx.Application.Shared.Utilities
+@using Musicx.Presentation.Web.Client.Components.Ratings
+
+@foreach (var group in GroupedAlbums)
+{
+    <MudPaper Class="pa-4 mb-6 glass-paper">
+        @if (IsGrouped)
+        {
+            <MudText Typo="Typo.h6" Class="montserrat text-bold mb-2">
+                🎧 @group.Key.ToString() (@group.Value.Count)
+            </MudText>
+            <MudDivider Class="mb-3" />
+        }
+
+        <div class="d-flex flex-wrap gap-3 justify-center">
+            @foreach (var album in group.Value)
+            {
+                <div class="album-tile pa-2" style="width:@($"{Zoom * 120}px");">
+                    <MudTooltip Duration="500" Placement="Placement.Top" Arrow>
+                        <ChildContent>
+                            <MudLink Href="@($"/Album/{album.Id}")">
+                                <MudBadge Content="@album.Stats?.Count"
+                                          Color="Color.Dark"
+                                          Overlap="true"
+                                          Origin="Origin.BottomCenter"
+                                          Class="mb-1">
+                                    <MudImage Src="@album.ArtworkUrl"
+                                              Alt="@album.Name"
+                                              Class="rounded-lg"
+                                              Elevation="8"
+                                              Width="@((int) (Zoom * 96))"
+                                              Height="@((int) (Zoom * 96))" />
+                                </MudBadge>
+                                
+                                <AlbumListQuickInfo Album="album"/>
+                            </MudLink>
+                        </ChildContent>
+                        <TooltipContent>
+                            <MudText Typo="Typo.body1">@album.Name</MudText>
+                            <MudText Typo="Typo.caption">@album.OriginalReleaseDate?.ToString("yyyy")</MudText>
+                            <DonutRating Rating="@album.Stats?.Average"
+                                         RatingMode="RatingMode"
+                                         Size="DonutRatingSize.ExtraSmall" />
+                        </TooltipContent>
+                    </MudTooltip>
+                </div>
+            }
+        </div>
+    </MudPaper>
+}

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 
 namespace Musicx.Infrastructure.Web.UseCases.Specifics;
 
@@ -12,14 +13,15 @@ public sealed class UcGetAlbumByGenre(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcGetAlbumByGenre));
 
-    public async Task<List<OutAlbum>> ExecuteAsync(long genreId, 
+    public async Task<OutAlbumList> ExecuteAsync(long genreId, 
         int genreOptions,
         long skip = 0,
         long take = 100,
+        string order = "",
         string query = "")
     {
         var endpoint = $"/api/albums/by-genre/{genreId}?" +
-                       $"genreOptions={genreOptions}&skip={skip}&take={take}&query={query}";
+                       $"genreOptions={genreOptions}&skip={skip}&take={take}&order={order}&query={query}";
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
@@ -28,15 +30,25 @@ public sealed class UcGetAlbumByGenre(
         if (string.IsNullOrWhiteSpace(response))
         {
             _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
-            return [];
+            return new OutAlbumList
+            {
+                Items = [],
+                Total = 0,
+                AverageRating = null,
+            };
         }
         
-        var json = JsonSerializer.Deserialize<List<OutAlbum>>(response, JsonHelper.OptionsDefault);
+        var json = JsonSerializer.Deserialize<OutAlbumList>(response, JsonHelper.OptionsDefault);
 
         if (null == json)
         {
             _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
-            return [];
+            return new OutAlbumList
+            {
+                Items = [],
+                Total = 0,
+                AverageRating = null,
+            };
         }
         
         _logger.LogInformation($"🌍✅ GET {endpoint} - SUCCESS");
@@ -44,23 +56,26 @@ public sealed class UcGetAlbumByGenre(
         return json;
     }
     
-    public async Task<List<OutAlbum>> ExecuteAsync(OutGenre genre, int genreOptions,
+    public async Task<OutAlbumList> ExecuteAsync(OutGenre genre, int genreOptions,
         long skip = 0,
         long take = 100,
+        string order = "",
         string query = "")
-        => await ExecuteAsync(genre.Id, genreOptions, skip, take, query);
+        => await ExecuteAsync(genre.Id, genreOptions, skip, take, order, query);
 
-    public List<OutAlbum> Execute(long genreId, int genreOptions,
+    public OutAlbumList Execute(long genreId, int genreOptions,
         long skip = 0,
         long take = 100,
+        string order = "",
         string query = "")
     {
         throw new NotImplementedException();
     }
 
-    public List<OutAlbum> Execute(OutGenre genre, int genreOptions,
+    public OutAlbumList Execute(OutGenre genre, int genreOptions,
         long skip = 0,
         long take = 100,
+        string order = "",
         string query = "")
-        => Execute(genre.Id, genreOptions, skip, take, query);
+        => Execute(genre.Id, genreOptions, skip, take, order, query);
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 
 namespace Musicx.Infrastructure.Web.UseCases.Specifics;
 
@@ -12,7 +13,7 @@ public sealed class UcGetAlbumByArtist(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcGetAlbumByArtist));
     
-    public async Task<List<OutAlbum>> ExecuteAsync(long artistId, string query = "")
+    public async Task<OutAlbumList> ExecuteAsync(long artistId, string query = "")
     {
         var endpoint = $"/api/albums/by-artist/{artistId}?query={query}";
         
@@ -23,15 +24,25 @@ public sealed class UcGetAlbumByArtist(
         if (string.IsNullOrWhiteSpace(response))
         {
             _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
-            return [];
+            return new OutAlbumList
+            {
+                Items = [],
+                Total = 0,
+                AverageRating = null,
+            };
         }
         
-        var json = JsonSerializer.Deserialize<List<OutAlbum>>(response, JsonHelper.OptionsDefault);
+        var json = JsonSerializer.Deserialize<OutAlbumList>(response, JsonHelper.OptionsDefault);
 
         if (null == json)
         {
             _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
-            return [];
+            return new OutAlbumList
+            {
+                Items = [],
+                Total = 0,
+                AverageRating = null,
+            };
         }
         
         _logger.LogInformation($"🌍✅ GET {endpoint} - SUCCESS");
@@ -39,7 +50,7 @@ public sealed class UcGetAlbumByArtist(
         return json;
     }
 
-    public List<OutAlbum> Execute(long artistId, string query = "")
+    public OutAlbumList Execute(long artistId, string query = "")
     {
         throw new NotImplementedException();
     }

@@ -1,25 +1,30 @@
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 
 namespace Musicx.Application.Web.Interfaces.UseCases.Specifics;
 
 public interface IGetAlbumByGenreUseCase
 {
-    Task<List<OutAlbum>> ExecuteAsync(long genreId, 
+    Task<OutAlbumList> ExecuteAsync(long genreId, 
         int genreOptions,
         long skip = 0,
         long take = 100,
+        string order = "",
         string query = "");
-    Task<List<OutAlbum>> ExecuteAsync(OutGenre genre, int genreOptions,
+    Task<OutAlbumList> ExecuteAsync(OutGenre genre, int genreOptions,
         long skip = 0,
         long take = 100,
+        string order = "",
         string query = "");
     
-    List<OutAlbum> Execute(long genreId, int genreOptions,
+    OutAlbumList Execute(long genreId, int genreOptions,
         long skip = 0,
         long take = 100,
+        string order = "",
         string query = "");
-    List<OutAlbum> Execute(OutGenre genre, int genreOptions,
+    OutAlbumList Execute(OutGenre genre, int genreOptions,
         long skip = 0,
         long take = 100,
+        string order = "",
         string query = "");
 }
