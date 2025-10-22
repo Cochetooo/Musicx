@@ -137,8 +137,8 @@ public static class RatingHelper
                 continue;
             }
             
-            weightedSum += album.Stats.Average * coeff;
-            totalWeight += coeff;
+            weightedSum += album.Stats.Average * coeff * album.Stats.Count;
+            totalWeight += coeff * album.Stats.Count;
         }
         
         return totalWeight > 0 ? weightedSum / totalWeight : 0;
