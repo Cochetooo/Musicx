@@ -7,7 +7,7 @@
         @if (IsGrouped)
         {
             <MudText Typo="Typo.h6" Class="montserrat text-bold mb-2">
-                🎧 @group.Key.ToString() (@group.Value.Count)
+                @group.Key.ToDescriptionString() (@group.Value.Count)
             </MudText>
             <MudDivider Class="mb-3" />
         }

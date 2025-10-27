@@ -60,7 +60,13 @@ public partial class AlbumEditModal
         _logger.LogDebug($"⛏️ AlbumEditModal : Persisting primary genres {string.Join(",", _album.PrimaryGenreIds)} " +
                                $"and influences {string.Join(",", _album.InfluenceGenreIds)}");
         
-        await UcSave.ExecuteAsync(_album);
+        var response = await UcSave.ExecuteAsync(_album);
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Could not save album: {response.ReasonPhrase}", Severity.Error);
+        }
+        
         await OnSave.InvokeAsync();
 
         Clean();

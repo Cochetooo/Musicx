@@ -48,7 +48,14 @@ public partial class ArtistEditModal
 
     private async Task Save()
     {
-        await UcSave.ExecuteAsync(_artist);
+        var response = await UcSave.ExecuteAsync(_artist);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var msg = await response.Content.ReadAsStringAsync();
+            Snackbar.Add($"Could not save artist: {msg}", Severity.Error);
+        }
+        
         await OnSave.InvokeAsync();
         await Hide();
     }

@@ -183,7 +183,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         catch (Exception ex)
         {
             _logger.LogError($"❌ API : SAVE artists - ERROR: {ex.Message}");
-            return BadRequest(ex);
+            return BadRequest($"{ex.Message}");
         }
     }
     

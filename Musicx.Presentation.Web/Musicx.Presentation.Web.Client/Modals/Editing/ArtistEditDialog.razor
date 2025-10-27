@@ -1,0 +1,12 @@
+﻿@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests
+@using Musicx.Presentation.Web.Client.Modals.Editing
+
+@inject ISaveUseCase<InArtist> UcSave
+
+<BaseEditDialog T="InArtist" 
+                Title="Artist Editing" 
+                Logic="_artistLogic"
+                OnSaveRequested="SaveArtistAsync">
+    
+</BaseEditDialog>

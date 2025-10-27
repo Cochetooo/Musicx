@@ -11,6 +11,7 @@
 @inject IListUseCase<OutGenre> UcListGenres
 @inject ISaveUseCase<InAlbum> UcSave
 @inject HttpClient Http
+@inject ISnackbar Snackbar
 
 <MudDialog @ref="_modalRef" Class="pa-2">
     <TitleContent>
@@ -25,12 +26,12 @@
                     Disabled="@(_album.Id != 0)"
                     Immediate
                     @ref="_nameTextEdit" Label="Enter an album..."
-                    HelperText="Name (*)" Variant="Variant.Outlined"/>
+                    HelperText="Name (*)" Variant="Variant.Text"/>
             </MudItem>
             
             <MudFlexBreak />
             
-            <MudItem xs="12" md="5">
+            <MudItem xs="12" md="4">
                 <MudTextField
                     T="string?"
                     Immediate
@@ -46,7 +47,7 @@
                     HelperText="English Name (in case album name is not using latin alphabet)" Variant="Variant.Text"/>
             </MudItem>
 
-            <MudItem xs="12" md="3">
+            <MudItem xs="12" md="2">
                 <MudField Label="Artwork" Variant="Variant.Text">
                     @if (_isLoading)
                     {
@@ -57,46 +58,49 @@
                         @if (_album is { ArtworkUrl: not null })
                         {
                             <MudImage Src="@_album.ArtworkUrl" Alt="@_album.Name" Class="rounded-lg" Elevation="25"
-                                      Style="width: 96px; aspect-ratio: 1 / 1;"/>
+                                      Style="width: 128px; aspect-ratio: 1 / 1;"/>
                         }
                     }
                 </MudField>
             </MudItem>
+            
+            <MudItem xs="12" md="3">
+                <MudStack Spacing="2">
+                    <MudSelect
+                        @bind-Value="_album.ReleaseType" T="ReleaseType?"
+                        Label="Release Type" Placeholder="Select a type"
+                        AdornmentIcon="@Icons.Material.Filled.Label">
+                        @foreach (var releaseType in Enum.GetValues<ReleaseType>().OrderBy(a => a.ToString()))
+                        {
+                            <MudSelectItem T="ReleaseType?" Value="@releaseType">@releaseType.ToDescriptionString()</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudDatePicker
+                        @bind-Date="@_album.OriginalReleaseDate"
+                        Placeholder="Choose a date..."
+                        Label="Release Date"
+                        AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                        Color="Color.Primary"
+                        AnchorOrigin="Origin.BottomCenter"
+                        TransformOrigin="Origin.TopCenter"
+                        Editable
+                        Clearable/>
+
+                    <MudDateRangePicker
+                        @bind-DateRange="_recordingDates"
+                        Placeholder="Choose dates..."
+                        Label="Recording Dates"
+                        PickerVariant="PickerVariant.Inline"/>
+                </MudStack>
+            </MudItem>
+            
+            <MudItem xs="12" md="3">
+                <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Primary"/>
+                <MudSwitch @bind-Value="_album.IsNsfw" Label="NSFW Content" Color="Color.Primary"/>
+            </MudItem>
 
             <MudFlexBreak/>
-
-            <MudItem xs="12" md="4">
-                <MudSelect
-                    @bind-Value="_album.ReleaseType" T="ReleaseType?"
-                    Label="Release Type" Placeholder="Select a type"
-                    AdornmentIcon="@Icons.Material.Filled.Label">
-                    @foreach (var releaseType in Enum.GetValues<ReleaseType>())
-                    {
-                        <MudSelectItem T="ReleaseType?" Value="@releaseType">@releaseType</MudSelectItem>
-                    }
-                </MudSelect>
-            </MudItem>
-
-            <MudItem xs="12" md="4">
-                <MudDatePicker
-                    @bind-Date="@_album.OriginalReleaseDate"
-                    Placeholder="Choose a date..."
-                    Label="Release Date"
-                    AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
-                    Color="Color.Primary"
-                    AnchorOrigin="Origin.BottomCenter"
-                    TransformOrigin="Origin.TopCenter"
-                    Editable
-                    Clearable/>
-            </MudItem>
-
-            <MudItem xs="12" md="4">
-                <MudDateRangePicker
-                    @bind-DateRange="_recordingDates"
-                    Placeholder="Choose dates..."
-                    Label="Recording Dates"
-                    PickerVariant="PickerVariant.Inline"/>
-            </MudItem>
 
             <MudDivider Class="my-5"/>
 
@@ -146,13 +150,6 @@
                 {
                     <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))"/>
                 }
-            </MudItem>
-
-            <MudDivider Class="my-5"/>
-
-            <MudItem xs="12">
-                <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Primary"/>
-                <MudSwitch @bind-Value="_album.IsNsfw" Label="NSFW Content" Color="Color.Primary"/>
             </MudItem>
         </MudGrid>
     </DialogContent>

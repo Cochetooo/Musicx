@@ -1,8 +1,10 @@
 ﻿using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Specifics;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
+using Musicx.Contracts.Enums;
 
 namespace Musicx.Application.Api.Interfaces.Persistence;
 
@@ -16,6 +18,8 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
         long take = 100,
         string? order = null,
         IQuerySpecification<InAlbum>? albumQuerySpecification = null);
+    Task<List<OutAlbum>> FindByChart(
+        AlbumChartQuery query);
 }
 public interface IArtistRepository : IRepository<InArtist, OutArtist>;
 public interface IGenreRepository : IRepository<InGenre, OutGenre>;

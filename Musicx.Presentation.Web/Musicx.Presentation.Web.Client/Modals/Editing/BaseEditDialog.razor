@@ -1,0 +1,50 @@
+﻿@typeparam T
+
+@inject ISnackbar Snackbar
+
+<MudDialog @ref="_dialogRef" Class="edit-dialog pa-4">
+    <TitleContent>
+        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudText Typo="Typo.h5" Class="montserrat text-bold">@Title</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Close" 
+                           OnClick="@HideAsync"
+                           Color="Color.Default" />
+        </MudStack>
+    </TitleContent>
+    
+    <DialogContent>
+        <MudPaper Class="dialog-body pa-4 rounded-xl" Elevation="2" Outlined>
+            @if (ChildContent is not null)
+            {
+                @ChildContent
+            }
+            else
+            {
+                <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
+                    No form content provided.
+                </MudText>
+            }
+        </MudPaper>
+    </DialogContent>
+    
+    <DialogActions>
+        <div class="dialog-actions mt-4">
+            <MudSpacer />
+            
+            <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="@HideAsync">
+                Cancel
+            </MudButton>
+            <!--<MudButton Color="Color.Primary" Disabled="@_isSaving" OnClick="@SaveClicked">
+                @if (_isSaving)
+                {
+                    <MudProgressCircular Indeterminate Size="Size.Medium" Class="mr-2" />
+                    <span>Saving...</span>
+                }
+                else
+                {
+                    <span>Save</span>
+                }
+            </MudButton> -->
+        </div>
+    </DialogActions>
+</MudDialog>

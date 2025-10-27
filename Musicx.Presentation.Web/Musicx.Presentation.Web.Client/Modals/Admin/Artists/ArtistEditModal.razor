@@ -1,15 +1,13 @@
-@using System.Text.Json
-@using ISO3166
-@using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Enums
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Infrastructure.API.Persistence.Mappers
+
 @inject ILoggerFactory LoggerProvider
 @inject ISaveUseCase<InArtist> UcSave 
 @inject IListUseCase<OutArtist> UcListExistingArtists
 @inject HttpClient Http
+@inject ISnackbar Snackbar
 
 <MudDialog @ref="_modalRef" Class="pa-2">
     <TitleContent>

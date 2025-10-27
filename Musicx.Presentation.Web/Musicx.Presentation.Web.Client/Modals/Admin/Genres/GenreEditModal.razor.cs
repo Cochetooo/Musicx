@@ -215,7 +215,13 @@ public partial class GenreEditModal
     private async Task Save()
     {
         _genre.ParentIds = _selectedParents.Select(g => g.Id).ToList();
-        await UcSave.ExecuteAsync(_genre);
+        var response = await UcSave.ExecuteAsync(_genre);
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Could not save artist: {response.ReasonPhrase}", Severity.Error);
+        }
+        
         await OnSave.InvokeAsync();
         await Hide();
         

@@ -155,7 +155,7 @@ internal sealed class ArtistRepository(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE Artist : Could not persist.", ex, _logger);
+            throw new RepositoryException($"❌ SAVE Artist : Could not persist: {ex.Message}", ex, _logger);
         }
 
         return entity.Id;

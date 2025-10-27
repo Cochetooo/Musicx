@@ -8,7 +8,9 @@ using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Shared.Options;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Specifics;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Mappers;
@@ -145,6 +147,34 @@ internal sealed class AlbumRepository(
                   {builder.BuildOrderBy($"al0.{AlbumColumns.OriginalReleaseDate}", $"al0.{AlbumColumns.Name}")}
                   OFFSET @skip LIMIT @take
                   """;
+        
+        var result = await connection.FetchListDynamicAsync(sql, parameters);
+        
+        return result
+            .Select(x => x.FromDicoToAlbum())
+            .ToList();
+    }
+
+    public async Task<List<OutAlbum>> FindByChart(AlbumChartQuery query)
+    {
+        var sql = builder.BuildSelect(new AlbumQuerySpecification
+        {
+            IncludeArtist = true,
+            IncludeStats = true,
+        });
+
+        var (whereClause, orderClause, parameters) = ((AlbumSqlBuilder)builder).BuildChartQuery(query);
+
+        sql += $"""
+                {whereClause}
+                {orderClause}
+                LIMIT @take OFFSET @skip;
+                """;
+        
+        parameters.Add(new NpgsqlParameter("@take", query.Take));
+        parameters.Add(new NpgsqlParameter("@skip", query.Skip));
+        
+        // @TODO count total
         
         var result = await connection.FetchListDynamicAsync(sql, parameters);
         

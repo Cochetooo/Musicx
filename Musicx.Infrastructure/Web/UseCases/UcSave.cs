@@ -14,7 +14,7 @@ public sealed class UcSave<T>(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcSave<T>));
     
-    public async Task ExecuteAsync(T entity)
+    public async Task<HttpResponseMessage> ExecuteAsync(T entity)
     {
         var modelName = typeof(T).Name.InModelToEntity();
         var endpoint = $"/api/{modelName}";
@@ -34,11 +34,13 @@ public sealed class UcSave<T>(
         }
         else
         {
-            _logger.LogInformation($"🌍❌ SAVE {endpoint} - ERROR : {response.StatusCode} | {response.ReasonPhrase}");
+            _logger.LogError($"🌍❌ SAVE {endpoint} - ERROR : {response.StatusCode} | {response.ReasonPhrase}");
         }
+        
+        return response;
     }
 
-    public void Execute(T entity)
+    public HttpResponseMessage Execute(T entity)
     {
         throw new NotImplementedException();
     }

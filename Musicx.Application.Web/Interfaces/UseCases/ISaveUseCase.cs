@@ -2,6 +2,6 @@
 
 public interface ISaveUseCase<in T> where T : class
 {
-    Task ExecuteAsync(T entity);
-    void Execute(T entity);
+    Task<HttpResponseMessage> ExecuteAsync(T entity);
+    HttpResponseMessage Execute(T entity);
 }

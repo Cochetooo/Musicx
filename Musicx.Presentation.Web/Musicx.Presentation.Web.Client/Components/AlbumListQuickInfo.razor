@@ -7,7 +7,7 @@
         case ReleaseType.Ep:
             <MudText Class="quick-album-name text-italic" Color="Color.Secondary">
                 @Album.Name 
-                <span class="release-type">[@Album.ReleaseType]</span>
+                <span class="release-type">[@Album.ReleaseType.ToDescriptionString()]</span>
             </MudText>
             break;
         case ReleaseType.Lp:
@@ -18,13 +18,13 @@
         case ReleaseType.Single:
             <MudText Class="quick-album-name" Color="Color.Secondary">
                 @Album.Name 
-                <span class="release-type">[@Album.ReleaseType]</span>
+                <span class="release-type">[@Album.ReleaseType.ToDescriptionString()]</span>
             </MudText>
             break;
         default:
             <MudText Class="quick-album-name" Color="Color.Tertiary">
                 @Album.Name 
-                <span class="release-type">[@Album.ReleaseType]</span>
+                <span class="release-type">[@Album.ReleaseType?.ToDescriptionString()]</span>
             </MudText>
             break;
     }

@@ -3,6 +3,7 @@ using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Specifics;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Presentation.Web.Contexts;
@@ -132,6 +133,37 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
             };
             
             _logger.LogInformation($"🌍✅ API : FIND BY ARTIST albums ({artistId}) - SUCCESS");
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+
+    [HttpGet("by-chart")]
+    public async Task<ActionResult<OutAlbumList>> FindByChart([FromQuery] AlbumChartQuery query)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND BY CHART albums");
+
+        try
+        {
+            var albums = await albumRepository.FindByChart(query);
+
+            if (0 == albums.Count)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND BY CHART albums - NOT FOUND");
+                return NoContent();
+            }
+            
+            var response = new OutAlbumList
+            {
+                AverageRating = RatingHelper.CalculateArtistRating(albums),
+                Items = albums,
+                Total = albums.Count
+            };
+            
+            _logger.LogInformation($"🌍✅ API : FIND BY CHART albums - SUCCESS");
             return Ok(response);
         }
         catch (Exception ex)
