@@ -61,10 +61,12 @@ public static class AlbumMapper
             }
             : null,
 
+        ArtistAlias = album.SafeGet<string>(AlbumColumns.ArtistAlias),
         ArtworkUrl = album.SafeGet<string>(AlbumColumns.ArtworkUrl),
         BeginRecordDate = album.SafeGet<DateTime?>(AlbumColumns.BeginRecordDate),
         DiscTotal = album.SafeGet<int>(AlbumColumns.DiscTotal),
         EndRecordDate = album.SafeGet<DateTime?>(AlbumColumns.EndRecordDate),
+        EnglishName = album.SafeGet<string>(AlbumColumns.EnglishName),
         IsFarRight = album.SafeGet<bool>(AlbumColumns.IsFarRight),
         IsNsfw = album.SafeGet<bool>(AlbumColumns.IsNsfw),
         Language = album.SafeGet<string?>(AlbumColumns.Language),
@@ -86,10 +88,12 @@ public static class AlbumMapper
         PrimaryGenreIds = album.PrimaryGenres?.Select(g => g.Id).ToList(),
         InfluenceGenreIds = album.InfluenceGenres?.Select(g => g.Id).ToList(),
         
+        ArtistAlias = album.ArtistAlias,
         ArtworkUrl = album.ArtworkUrl,
         BeginRecordDate = album.BeginRecordDate,
         DiscTotal = album.DiscTotal,
         EndRecordDate = album.EndRecordDate,
+        EnglishName = album.EnglishName,
         IsFarRight = album.IsFarRight,
         IsNsfw = album.IsNsfw,
         Language = album.Language,

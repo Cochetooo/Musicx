@@ -35,8 +35,6 @@ public partial class AlbumView
     private bool _isArtworkRevealed;
     private bool _showDetailedView;
 
-    private readonly List<BreadcrumbItem>? _breadcrumb = [];
-
     protected override void OnInitialized()
     {
         _logger = LoggerProvider.CreateLogger(nameof(AlbumView));
@@ -44,20 +42,7 @@ public partial class AlbumView
     }
     
     protected override async Task OnParametersSetAsync()
-    {
-        await LoadAlbum();
-
-        if (_breadcrumb is not null && _album is not null)
-        {
-            _breadcrumb.Clear();
-            _breadcrumb.Add(new("Musicx", href: "/"));
-            _breadcrumb.Add(new(_album.Artist?.Name ?? "?",
-                href: _album is { Artist: not null } ? "/Artist/" + _album.Artist.Id : "#"));
-            _breadcrumb.Add(new(_album.Name, href: "#"));
-        }
-        
-        await InvokeAsync(StateHasChanged);
-    }
+        => await LoadAlbum();
 
     private async Task LoadAlbum()
     {

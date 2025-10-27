@@ -32,7 +32,7 @@ public partial class ArtistView
     private Dictionary<int, int> _releaseCountPerYears = [];
     
     private ReleasesViewMode _viewMode = ReleasesViewMode.List;
-    private bool _groupByType = false;
+    private bool _groupByType = true;
     private double _zoomLevel = 1.0;
     private (string sortBy, bool asc) _selectedSort = ("ReleaseDate", false);
     

@@ -18,16 +18,34 @@
     </TitleContent>
     <DialogContent>
         <MudGrid Justify="Justify.Center">
-            <MudItem xs="12" md="6">
+            <MudItem xs="12" md="8">
                 <MudTextField
                     T="string"
                     TextChanged="@NameTextChanged"
                     Disabled="@(_album.Id != 0)"
                     Immediate
                     @ref="_nameTextEdit" Label="Enter an album..."
-                    HelperText="Name (*)" Variant="Variant.Text"/>
+                    HelperText="Name (*)" Variant="Variant.Outlined"/>
             </MudItem>
             
+            <MudFlexBreak />
+            
+            <MudItem xs="12" md="5">
+                <MudTextField
+                    T="string?"
+                    Immediate
+                    Label="Enter an alternative artist name..."
+                    @bind-Text="_album.ArtistAlias"
+                    HelperText="Artist Alias (in case artist used another name during that album)" Variant="Variant.Text"/>
+
+                <MudTextField
+                    T="string?"
+                    Immediate
+                    Label="Enter an alternative name..."
+                    @bind-Text="_album.EnglishName"
+                    HelperText="English Name (in case album name is not using latin alphabet)" Variant="Variant.Text"/>
+            </MudItem>
+
             <MudItem xs="12" md="3">
                 <MudField Label="Artwork" Variant="Variant.Text">
                     @if (_isLoading)
@@ -39,14 +57,14 @@
                         @if (_album is { ArtworkUrl: not null })
                         {
                             <MudImage Src="@_album.ArtworkUrl" Alt="@_album.Name" Class="rounded-lg" Elevation="25"
-                                      Width="96" Height="96"/>
+                                      Style="width: 96px; aspect-ratio: 1 / 1;"/>
                         }
                     }
                 </MudField>
             </MudItem>
-            
-            <MudFlexBreak />
-            
+
+            <MudFlexBreak/>
+
             <MudItem xs="12" md="4">
                 <MudSelect
                     @bind-Value="_album.ReleaseType" T="ReleaseType?"
@@ -69,8 +87,7 @@
                     AnchorOrigin="Origin.BottomCenter"
                     TransformOrigin="Origin.TopCenter"
                     Editable
-                    Clearable
-                />
+                    Clearable/>
             </MudItem>
 
             <MudItem xs="12" md="4">
@@ -80,9 +97,9 @@
                     Label="Recording Dates"
                     PickerVariant="PickerVariant.Inline"/>
             </MudItem>
-            
-            <MudDivider Class="my-5" />
-            
+
+            <MudDivider Class="my-5"/>
+
             <MudItem xs="12" md="6">
                 <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Row>
                     <MudAutocomplete
@@ -130,12 +147,12 @@
                     <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))"/>
                 }
             </MudItem>
-            
-            <MudDivider Class="my-5" />
+
+            <MudDivider Class="my-5"/>
 
             <MudItem xs="12">
-                <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Primary" />
-                <MudSwitch @bind-Value="_album.IsNsfw" Label="NSFW Content" Color="Color.Primary" />
+                <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Primary"/>
+                <MudSwitch @bind-Value="_album.IsNsfw" Label="NSFW Content" Color="Color.Primary"/>
             </MudItem>
         </MudGrid>
     </DialogContent>

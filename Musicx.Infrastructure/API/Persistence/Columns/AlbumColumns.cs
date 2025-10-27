@@ -9,10 +9,12 @@ public static class AlbumColumns
     
     public const string ArtistId = "album_artist_id";
     
+    public const string ArtistAlias = "album_artist_alias";
     public const string ArtworkUrl = "album_artwork_url";
     public const string BeginRecordDate = "album_begin_record_date";
     public const string DiscTotal = "album_disc_total";
     public const string EndRecordDate = "album_end_record_date";
+    public const string EnglishName = "album_english_name";
     public const string IsFarRight = "album_is_far_right";
     public const string IsNsfw = "album_is_nsfw";
     public const string Language = "album_language";

@@ -17,12 +17,9 @@
 @inject IGetAlbumByArtistUseCase UcGetArtistAlbums
 @inject IGetSongByAlbumUseCase UcGetSongs
 @inject IGetAlbumAttributesByAlbum UcGetAlbumAttrs
-@inject IDeleteUseCase<InUserAlbumAttribute> UcDeleteUserAttrib
 @inject ISaveUseCase<InUserAlbumAttribute> UcSaveUserAttrib
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
-
-<MudBreadcrumbs Items="@_breadcrumb" />
 
 @if (null == _album)
 {
@@ -30,7 +27,7 @@
 }
 else
 {
-    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="p-4 bg-default">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
         
         <!-- Alerts -->
         
@@ -43,9 +40,6 @@ else
                 regardless of their origin or context.
             </MudAlert>
         }
-        
-        <!-- Album Id -->
-        <MudText Typo="Typo.caption" Class="text-color-muted">@($"<Album{_album.Id}>")</MudText>
         
         <!-- Header Album -->
         <MudGrid Class="my-2">
@@ -71,46 +65,49 @@ else
                             }
                         </div>
                     </MudCardHeader>
-                    <MudCardActions Class="justify-between">
-                        <MudStack Class="ma-2 pa-1 rounded bg-gray d-flex flex-column flex-md-row" 
-                                  Style="width: 100%;">
-                            @if (_previousAlbum is not null)
-                            {
-                                <MudLink Href="@("/Album/" + _previousAlbum.Id)">
-                                    <MudStack AlignItems="AlignItems.Center" Spacing="1" Row>
-                                        <MudIcon Icon="@Icons.Material.Filled.ArrowLeft" />
-                                        <MudImage Src="@_previousAlbum.ArtworkUrl"
-                                                  Elevation="4"
-                                                  Class="rounded"
-                                                  Width="24"
-                                                  Height="24"/>
-                                        <MudText Typo="Typo.caption" Class="neighbor-album-text mr-1">
-                                            @_previousAlbum.Name
-                                        </MudText>
-                                    </MudStack>
-                                </MudLink>
-                            }
-                            
-                            <MudSpacer/>
-                            
-                            @if (_nextAlbum is not null)
-                            {
-                                <MudLink Href="@("/Album/" + _nextAlbum.Id)">
-                                    <MudStack AlignItems="AlignItems.Center" Spacing="1" Row>
-                                        <MudImage Src="@_nextAlbum.ArtworkUrl"
-                                                  Elevation="4"
-                                                  Class="rounded"
-                                                  Width="24"
-                                                  Height="24"/>
-                                        <MudText Typo="Typo.caption" Class="neighbor-album-text ml-1">
-                                            @_nextAlbum.Name
-                                        </MudText>
-                                        <MudIcon Icon="@Icons.Material.Filled.ArrowRight" />
-                                    </MudStack>
-                                </MudLink>
-                            }
-                        </MudStack>
-                    </MudCardActions>
+                    @if (_previousAlbum is not null || _nextAlbum is not null)
+                    {
+                        <MudCardActions Class="justify-between">
+                            <MudStack Class="ma-2 pa-1 rounded bg-gray d-flex flex-column flex-md-row" 
+                                      Style="width: 100%;">
+                                @if (_previousAlbum is not null)
+                                {
+                                    <MudLink Href="@("/Album/" + _previousAlbum.Id)">
+                                        <MudStack AlignItems="AlignItems.Center" Spacing="1" Row>
+                                            <MudIcon Icon="@Icons.Material.Filled.ArrowLeft" />
+                                            <MudImage Src="@_previousAlbum.ArtworkUrl"
+                                                      Elevation="4"
+                                                      Class="rounded"
+                                                      Width="24"
+                                                      Height="24"/>
+                                            <MudText Typo="Typo.caption" Class="neighbor-album-text mr-1">
+                                                @_previousAlbum.Name
+                                            </MudText>
+                                        </MudStack>
+                                    </MudLink>
+                                }
+                                
+                                <MudSpacer/>
+                                
+                                @if (_nextAlbum is not null)
+                                {
+                                    <MudLink Href="@("/Album/" + _nextAlbum.Id)">
+                                        <MudStack AlignItems="AlignItems.Center" Spacing="1" Row>
+                                            <MudImage Src="@_nextAlbum.ArtworkUrl"
+                                                      Elevation="4"
+                                                      Class="rounded"
+                                                      Width="24"
+                                                      Height="24"/>
+                                            <MudText Typo="Typo.caption" Class="neighbor-album-text ml-1">
+                                                @_nextAlbum.Name
+                                            </MudText>
+                                            <MudIcon Icon="@Icons.Material.Filled.ArrowRight" />
+                                        </MudStack>
+                                    </MudLink>
+                                }
+                            </MudStack>
+                        </MudCardActions>
+                    }
                 </MudCard>
             </MudItem>
             
@@ -121,11 +118,25 @@ else
                         @_album.Name
                     </MudText>
                     
+                    @if (_album.EnglishName is not null)
+                    {
+                        <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-muted">
+                            [@_album.EnglishName]
+                        </MudText>
+                    }
+                    
                     @if (_album.Artist is not null)
                     {
-                        <MudLink Typo="Typo.h6" Class="ml-8 montserrat text-italic text-color-secondary" 
+                        <MudLink Typo="Typo.h6" Class="ml-8 montserrat text-italic text-color-secondary"
                                  Href="@($"/Artist/{_album.Artist.Id}")">
-                            @_album.Artist.Name
+                            @if (_album.ArtistAlias is not null)
+                            {
+                                @_album.ArtistAlias
+                            }
+                            else
+                            {
+                                @_album.Artist.Name
+                            }
                         </MudLink>
                     }
 

@@ -48,7 +48,16 @@
 
         @if (AllowAdd)
         {
-            <MudButton Color="Color.Success" StartIcon="@Icons.Material.Filled.Add" OnClick="@(()=> OnNewRelease.InvokeAsync(null))">New Release</MudButton>
+            <MudTooltip>
+                <ChildContent>
+                    <MudIconButton Color="Color.Success" 
+                                   Icon="@Icons.Material.Filled.AddBox" 
+                                   OnClick="@(()=> OnNewRelease.InvokeAsync(null))" />
+                </ChildContent>
+                <TooltipContent>
+                    Add New Release
+                </TooltipContent>
+            </MudTooltip>
         }
     </div>
 </MudPaper>

@@ -11,11 +11,14 @@ public static class ArtistColumns
     public const string ArtworkUrl = "artist_artwork_url";
     public const string CalculatedGenres = "artist_calculated_genres";
     public const string CalculatedInfluences = "artist_calculated_influences";
-    public const string Country = "artist_country";
+    public const string CurrentCountry = "artist_current_country";
+    public const string CurrentRegion = "artist_current_region";
+    public const string CurrentTown = "artist_current_town";
     public const string Description = "artist_description";
     public const string Name = "artist_name";
-    public const string Region = "artist_region";
-    public const string Town = "artist_town";
+    public const string OriginCountry = "artist_origin_country";
+    public const string OriginRegion = "artist_origin_region";
+    public const string OriginTown = "artist_origin_town";
     
     public const string Discriminator = "artist_discriminator";
     

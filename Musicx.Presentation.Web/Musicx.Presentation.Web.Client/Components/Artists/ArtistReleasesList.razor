@@ -16,11 +16,19 @@
         {
             <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="py-1">
                 <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                    <MudImage Src="@album.ArtworkUrl" Width="@((int) (Zoom * 64))" Height="@((int) (Zoom * 64))"
-                              Class="rounded-lg mr-2" Elevation="8" />
+                    <MudImage Src="@album.ArtworkUrl" Width="@((int) (Zoom * 48))" Height="@((int) (Zoom * 48))"
+                              Class="rounded-lg mr-3" Elevation="8" />
                     <MudStack>
                         <MudLink Href="@($"/Album/{album.Id}")">
-                            <MudText Typo="Typo.body1" Class="montserrat text-bold">@album.Name</MudText>
+                            <MudText Typo="Typo.body1" Class="montserrat text-bold">
+                                @album.Name 
+                                @if (album.EnglishName is not null)
+                                {
+                                    <MudText Color="Color.Secondary">
+                                        [@album.EnglishName]
+                                    </MudText>
+                                }
+                            </MudText>
                         </MudLink>
                         <MudText Typo="Typo.caption" Color="Color.Secondary">
                             @album.ReleaseType.ToString() · 

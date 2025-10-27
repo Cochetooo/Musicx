@@ -12,10 +12,12 @@ public sealed class OutAlbum : BaseOutputModel
     
     public long? ArtistId { get; set; }
     
+    public string? ArtistAlias { get; set; }
     public string? ArtworkUrl { get; set; }
     public DateTime? BeginRecordDate { get; set; }
     public int? DiscTotal { get; set; }
     public DateTime? EndRecordDate { get; set; }
+    public string? EnglishName { get; set; }
     public bool IsFarRight { get; set; }
     public bool IsNsfw { get; set; }
     public string? Language { get; set; }

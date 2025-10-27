@@ -20,11 +20,14 @@ public static class ArtistMapper
         ArtworkUrl = artist.SafeGet<string>(ArtistColumns.ArtworkUrl),
         CalculatedGenres = artist.SafeGet<string>(ArtistColumns.CalculatedGenres),
         CalculatedInfluences = artist.SafeGet<string>(ArtistColumns.CalculatedInfluences),
-        Country = artist.SafeGet<string>(ArtistColumns.Country),
+        CurrentCountry = artist.SafeGet<string>(ArtistColumns.CurrentCountry),
+        CurrentRegion = artist.SafeGet<string>(ArtistColumns.CurrentRegion),
+        CurrentTown = artist.SafeGet<string>(ArtistColumns.CurrentTown),
         Description = artist.SafeGet<string>(ArtistColumns.Description),
         Name = artist.SafeGet<string>(ArtistColumns.Name) ?? "",
-        Region = artist.SafeGet<string>(ArtistColumns.Region),
-        Town = artist.SafeGet<string>(ArtistColumns.Town),
+        OriginCountry = artist.SafeGet<string>(ArtistColumns.OriginCountry),
+        OriginRegion = artist.SafeGet<string>(ArtistColumns.OriginRegion),
+        OriginTown = artist.SafeGet<string>(ArtistColumns.OriginTown),
 
         Discriminator = artist.SafeGet<ArtistDiscriminator>(ArtistColumns.Discriminator),
 
@@ -43,11 +46,14 @@ public static class ArtistMapper
         
         Alias = artist.Alias,
         ArtworkUrl = artist.ArtworkUrl,
-        Country = artist.Country,
+        CurrentCountry = artist.CurrentCountry,
+        CurrentRegion = artist.CurrentRegion,
+        CurrentTown = artist.CurrentTown,
         Description = artist.Description,
         Name = artist.Name,
-        Region = artist.Region,
-        Town = artist.Town,
+        OriginCountry = artist.OriginCountry,
+        OriginRegion = artist.OriginRegion,
+        OriginTown = artist.OriginTown,
 
         Discriminator = artist.Discriminator,
         

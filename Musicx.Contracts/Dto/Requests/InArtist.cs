@@ -15,10 +15,13 @@ public sealed class InArtist : BaseInputModel
     // Optional Columns
     public string? Alias { get; set; }
     public string? ArtworkUrl { get; set; }
-    public string? Country { get; set; }
+    public string? CurrentCountry { get; set; }
+    public string? CurrentRegion { get; set; }
+    public string? CurrentTown { get; set; }
     public string? Description { get; set; }
-    public string? Region { get; set; }
-    public string? Town { get; set; }
+    public string? OriginCountry { get; set; }
+    public string? OriginRegion { get; set; }
+    public string? OriginTown { get; set; }
     
     public DateTime? FormationDate { get; set; }
     public DateTime? SplitDate { get; set; }

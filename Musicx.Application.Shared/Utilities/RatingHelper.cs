@@ -112,7 +112,7 @@ public static class RatingHelper
         }
     }
 
-    public static decimal CalculateArtistRating(IList<OutAlbum> albums)
+    public static decimal? CalculateArtistRating(IList<OutAlbum> albums)
     {
         decimal totalWeight = 0;
         decimal weightedSum = 0;
@@ -141,7 +141,7 @@ public static class RatingHelper
             totalWeight += coeff * album.Stats.Count;
         }
         
-        return totalWeight > 0 ? weightedSum / totalWeight : 0;
+        return totalWeight > 0 ? weightedSum / totalWeight : null;
     }
 
     public static string GetColorForRating(decimal? rating)

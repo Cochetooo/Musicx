@@ -61,7 +61,7 @@ public class UcReadAudioFile(
             artist = new InArtist
             {
                 ArtworkUrl = track.AdditionalFields.GetValueOrDefault("ArtistArtworkUrl"),
-                Country = track.AdditionalFields.GetValueOrDefault("ArtistCountry"),
+                CurrentCountry = track.AdditionalFields.GetValueOrDefault("ArtistCountry"),
                 Name = track.Artist
             };
         }
