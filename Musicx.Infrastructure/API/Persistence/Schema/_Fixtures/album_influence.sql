@@ -5850,3 +5850,16 @@ INSERT INTO public.album_influence (album_influence_album_id, album_influence_ge
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3993, 70);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3993, 118);
 INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3994, 70);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3995, 37);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3995, 71);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3996, 71);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3997, 196);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3998, 37);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3999, 37);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (3999, 318);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (4000, 196);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (4000, 250);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (4000, 319);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (4001, 319);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (4001, 250);
+INSERT INTO public.album_influence (album_influence_album_id, album_influence_genre_id) VALUES (4001, 602);
