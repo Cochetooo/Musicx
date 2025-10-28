@@ -1,16 +1,17 @@
 ﻿@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Pages.SingleView
 <MudPaper Class="pa-2 mb-3 glass-paper">
-    <div class="releases-toolbar">
+    <MudStack Wrap="Wrap.Wrap" Style="width: 100%" AlignItems="AlignItems.Center"
+              Spacing="3" Row>
         <MudTextField Placeholder="Search releases..."
                       Immediate
                       T="string"
                       Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search"
                       Value="@_searchText"
-                      ValueChanged="@OnInput" />
-        
-        <MudSelect T="(string,bool)" Value="@SelectedSort" ValueChanged="@(v => RaiseSort(v))" Label="Sort By" Variant="Variant.Outlined">
+                      ValueChanged="@OnInput"/>
+
+        <MudSelect T="(string, bool)" Value="@SelectedSort" ValueChanged="@(v => RaiseSort(v))" Label="Sort By" Variant="Variant.Outlined">
             <MudSelectItem Value="@(("ReleaseDate", false))">Release Date ↓</MudSelectItem>
             <MudSelectItem Value="@(("ReleaseDate", true))">Release Date ↑</MudSelectItem>
             <MudSelectItem Value="@(("Name", false))">Name ↓</MudSelectItem>
@@ -20,29 +21,34 @@
             <MudSelectItem Value="@(("NbRating", false))">Number of Ratings ↓</MudSelectItem>
             <MudSelectItem Value="@(("NbRating", true))">Number of Ratings ↑</MudSelectItem>
         </MudSelect>
-        
-        <MudButtonGroup Size="Size.Medium">
-            <MudIconButton Icon="@(_viewMode == ReleasesViewMode.List ? 
-                                    Icons.Material.Filled.List : Icons.Material.Outlined.List)" 
-                           OnClick="@(()=>ChangeView(ReleasesViewMode.List))" />
-            <MudIconButton Icon="@(_viewMode == ReleasesViewMode.Grid ? 
-                                     Icons.Material.Filled.GridView : Icons.Material.Outlined.GridView)" 
-                           OnClick="@(()=>ChangeView(ReleasesViewMode.Grid))" />
-            <MudIconButton Icon="@(_viewMode == ReleasesViewMode.Timeline ? 
-                                     Icons.Material.Filled.Timeline : Icons.Material.Outlined.Timeline)" 
-                           OnClick="@(()=>ChangeView(ReleasesViewMode.Timeline))" />
-        </MudButtonGroup>
-        
-        <MudSlider T="double" Min="0.6" Max="1.6" Step="0.1" Value="@_zoom" ValueChanged="@(v => { _zoom = v; OnZoomChanged.InvokeAsync(v); })" Style="width:140px;" />
 
-        <MudSwitch T="bool" Value="@_groupBy" 
-                   ValueChanged="@(v => { _groupBy = v; OnGroupByChanged.InvokeAsync(v); })" 
-                   Color="Color.Primary" Label="Group by type" />
-        
+        <MudButtonGroup Size="Size.Medium">
+            <MudIconButton Icon="@(_viewMode == ReleasesViewMode.List ? Icons.Material.Filled.List : Icons.Material.Outlined.List)"
+                           OnClick="@(() => ChangeView(ReleasesViewMode.List))"/>
+            <MudIconButton Icon="@(_viewMode == ReleasesViewMode.Grid ? Icons.Material.Filled.GridView : Icons.Material.Outlined.GridView)"
+                           OnClick="@(() => ChangeView(ReleasesViewMode.Grid))"/>
+            <MudIconButton Icon="@(_viewMode == ReleasesViewMode.Timeline ? Icons.Material.Filled.Timeline : Icons.Material.Outlined.Timeline)"
+                           OnClick="@(() => ChangeView(ReleasesViewMode.Timeline))"/>
+        </MudButtonGroup>
+
+        <MudSlider T="double" Min="0.6" Max="1.6" Step="0.1" Value="@_zoom" ValueChanged="@(v =>
+                                                                                          {
+                                                                                              _zoom = v;
+                                                                                              OnZoomChanged.InvokeAsync(v);
+                                                                                          })" Style="width:140px;"/>
+
+        <MudSwitch T="bool" Value="@_groupBy"
+                   ValueChanged="@(v =>
+                                 {
+                                     _groupBy = v;
+                                     OnGroupByChanged.InvokeAsync(v);
+                                 })"
+                   Color="Color.Primary" Label="Group by type"/>
+
         <MudSelect T="RatingMode" Value="@_selectedRatingMode" ValueChanged="@ChangeRatingMode">
-            @foreach(var rm in Enum.GetValues<RatingMode>())
+            @foreach (var rm in Enum.GetValues<RatingMode>())
             {
-                <MudSelectItem Value="rm">@rm.ToString()</MudSelectItem>
+                <MudSelectItem Value="rm">@rm.ToDescriptionString()</MudSelectItem>
             }
         </MudSelect>
 
@@ -50,14 +56,14 @@
         {
             <MudTooltip>
                 <ChildContent>
-                    <MudIconButton Color="Color.Success" 
-                                   Icon="@Icons.Material.Filled.AddBox" 
-                                   OnClick="@(()=> OnNewRelease.InvokeAsync(null))" />
+                    <MudIconButton Color="Color.Success"
+                                   Icon="@Icons.Material.Filled.AddBox"
+                                   OnClick="@(() => OnNewRelease.InvokeAsync(null))"/>
                 </ChildContent>
                 <TooltipContent>
                     Add New Release
                 </TooltipContent>
             </MudTooltip>
         }
-    </div>
+    </MudStack>
 </MudPaper>

@@ -41,30 +41,34 @@ else
             </MudAlert>
         }
         
-        <!-- Header Album -->
-        <MudGrid Class="my-2">
-            <MudItem xs="12" md="4">
-                <MudCard Class="bg-surface animate-hover-up pa-2">
-                    <MudCardHeader>
-                        <div class="cursor-pointer pa-4" 
-                             style="position: relative; width: 100%;"
-                             @onclick="() => _isArtworkRevealed = !_isArtworkRevealed">
-                            <MudImage Src="@_album.ArtworkUrl"
-                                      Elevation="8"
-                                      Class="@($"rounded-lg {(_album.IsNsfw && !_isArtworkRevealed ? "blurred" : "")}")"
-                                      ObjectFit="ObjectFit.Cover"
-                                      Style="width: 100%; aspect-ratio: 1 / 1;" />
+        <div class="album-hero" style="--album-url: url('@_album.ArtworkUrl');">
+            <style>
+                .album-hero::before {
+                    background-image: url('@_album.ArtworkUrl');
+                }
+            </style>
+            
+            <div class="album-hero-content">
+                <div class="album-hero-image glass-paper">
+                    <div class="cursor-pointer pa-3" 
+                         style="position: relative; width: 100%;"
+                         @onclick="() => _isArtworkRevealed = !_isArtworkRevealed">
+                        <MudImage Src="@_album.ArtworkUrl"
+                                  Elevation="8"
+                                  Class="@($"rounded-lg {(_album.IsNsfw && !_isArtworkRevealed ? "blurred" : "")}")"
+                                  ObjectFit="ObjectFit.Cover"
+                                  Style="width: 100%; aspect-ratio: 1 / 1;" />
 
-                            @if (_album.IsNsfw && !_isArtworkRevealed)
-                            {
-                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                        @if (_album.IsNsfw && !_isArtworkRevealed)
+                        {
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
                                         background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px;">
-                                    <MudIcon Icon="@Icons.Material.Filled.VisibilityOff" Size="Size.Large" />
-                                    <span class="mt-2 text-sm font-semibold">Sensitive content</span>
-                                </div>
-                            }
-                        </div>
-                    </MudCardHeader>
+                                <MudIcon Icon="@Icons.Material.Filled.VisibilityOff" Size="Size.Large" />
+                                <span class="mt-2 text-sm font-semibold">Sensitive content</span>
+                            </div>
+                        }
+                    </div>
+                    
                     @if (_previousAlbum is not null || _nextAlbum is not null)
                     {
                         <MudCardActions Class="justify-between">
@@ -108,15 +112,10 @@ else
                             </MudStack>
                         </MudCardActions>
                     }
-                </MudCard>
-            </MudItem>
-            
-            <MudItem xs="12" md="8">
-                <MudPaper Class="pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h3" Class="montserrat text-mega-bold animate-text"
-                             Style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3)">
-                        @_album.Name
-                    </MudText>
+                </div>
+                
+                <div class="glass-paper">
+                    <h1 class="album-title animate-text">@_album.Name</h1>
                     
                     @if (_album.EnglishName is not null)
                     {
@@ -139,63 +138,17 @@ else
                             }
                         </MudLink>
                     }
-
-                    <MudDivider Class="my-3" />
                     
-                    <MudGrid Justify="Justify.SpaceAround">
-                        <MudItem xs="12" lg="3" Style="justify-items: center;">
-                            <DonutRating 
-                                Rating="@_album.Stats?.Average"
-                                RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                                Size="DonutRatingSize.Medium" />
-                
-                            <MudText Typo="Typo.body2" Class="montserrat text-color-primary text-bold mt-2">
-                                @(_album.Stats?.Count ?? 0) ratings
-                            </MudText>
-                        </MudItem>
-                        
-                        <MudItem xs="12" lg="4">
-                            @if (null != _album.OriginalReleaseDate)
-                            {
-                                <MudText Class="text-color-secondary mt-2">
-                                    📅 Release Date:&nbsp;
-                            
-                                    <MudText Inline Class="text-color-primary text-mega-bold montserrat">
-                                        @_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")
-                                    </MudText>
-                                </MudText>
-                            }
+                    <MudDivider Class="my-2" />
                     
-                            <MudText Class="text-color-secondary mt-2">
-                                🎛️ Recording Dates:&nbsp;
-                            
-                                <MudText Inline Class="text-color-primary text-mega-bold montserrat">
-                                    @(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?")
-                                    &nbsp;->&nbsp;
-                                    @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
-                                </MudText>
-                            </MudText>
+                    <GenreDetails Album="@_album" @bind-DetailedView="@_showDetailedView"/>
+                    <MudSwitch @bind-Value="_showDetailedView"
+                               Color="Color.Primary"
+                               Label="Show more details"
+                               ThumbIcon="@Icons.Material.Filled.ViewWeek"
+                               Class="my-2"/>
                     
-                            <MudText Class="text-color-secondary mt-2">
-                                💿 Release Type:&nbsp;
-                            
-                                <MudText Inline Class="text-color-primary text-mega-bold montserrat">
-                                    @(_album.ReleaseType?.ToString() ?? "-")
-                                </MudText>
-                            </MudText>
-                        </MudItem>
-                        
-                        <MudItem xs="12" lg="5">
-                            <GenreDetails Album="@_album" @bind-DetailedView="@_showDetailedView"/>
-                            <MudSwitch @bind-Value="_showDetailedView"
-                                       Color="Color.Primary"
-                                       Label="Show more details"
-                                       ThumbIcon="@Icons.Material.Filled.ViewWeek"
-                                       Class="my-2"/>
-                        </MudItem>
-                    </MudGrid>
-                    
-                    <MudDivider Class="mt-5" />
+                    <MudDivider Class="my-2" />
                     
                     <MudStack Spacing="1" AlignItems="AlignItems.Center" 
                               Class="mt-4" Wrap="Wrap.Wrap" 
@@ -272,9 +225,53 @@ else
                             </MudExpansionPanels>
                         }
                     </MudStack>
-                </MudPaper>
-            </MudItem>
-        </MudGrid>
+                </div>
+                
+                <div style="width: 100%" class="pa-2">
+                    <div style="justify-items: center">
+                        <DonutRating
+                            Rating="@_album.Stats?.Average"
+                            RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                            Size="DonutRatingSize.Medium"/>
+
+                        <MudText Typo="Typo.body2" Class="montserrat text-color-primary text-bold mt-2">
+                            @(_album.Stats?.Count ?? 0) ratings
+                        </MudText>
+                    </div>
+                    
+                    <MudDivider Class="my-2" />
+
+                    @if (null != _album.OriginalReleaseDate)
+                    {
+                        <MudText Class="text-color-secondary mt-2">
+                            📅 Release Date:&nbsp;
+
+                            <MudText Inline Class="text-color-primary text-mega-bold montserrat">
+                                @_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")
+                            </MudText>
+                        </MudText>
+                    }
+
+                    <MudText Class="text-color-secondary mt-2">
+                        🎛️ Recording Dates:&nbsp;
+
+                        <MudText Inline Class="text-color-primary text-mega-bold montserrat">
+                            @(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                            &nbsp;->&nbsp;
+                            @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                        </MudText>
+                    </MudText>
+
+                    <MudText Class="text-color-secondary mt-2">
+                        💿 Release Type:&nbsp;
+
+                        <MudText Inline Class="text-color-primary text-mega-bold montserrat">
+                            @(_album.ReleaseType?.ToDescriptionString() ?? "-")
+                        </MudText>
+                    </MudText>
+                </div>
+            </div>
+        </div>
         
         <MudGrid>
             <MudItem xs="12" md="5">

@@ -9,7 +9,7 @@
 @inject ILoggerFactory LoggerFactory
 @inject HttpClient Http
 
-<MudThemeProvider @bind-IsDarkMode="_isDarkMode" @ref="_mudThemeProvider" Theme="Theme.MainTheme" />
+<MudThemeProvider @bind-IsDarkMode="_isDarkMode" @ref="_mudThemeProvider" Theme="Theme.DeepTheme" />
 <MudPopoverProvider />
 <MudDialogProvider
     CloseButton="true"
@@ -28,6 +28,7 @@
         </MudButton>
         
         <!-- Pages -->
+        <MudLink Href="/Charts" Underline="Underline.None" Typo="Typo.subtitle1" Color="Color.Inherit" Class="mr-4">Charts</MudLink>
         <MudLink Href="/Genres" Underline="Underline.None" Typo="Typo.subtitle1" Color="Color.Inherit">Genres</MudLink>
         
         <MudSpacer />

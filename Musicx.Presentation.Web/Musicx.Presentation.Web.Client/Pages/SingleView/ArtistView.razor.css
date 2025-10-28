@@ -8,6 +8,7 @@
     padding: 2rem;
     box-sizing: border-box;
     overflow: hidden;
+    border-radius: 10px;
 }
 
 .artist-hero::before {
@@ -52,7 +53,7 @@
     line-height: 1;
     font-size: clamp(2rem, 6vw, 4.5rem);
     margin: 0;
-    color: var(--mud-palette-text-primary);
+    color: #ffffff;
 }
 
 .artist-genres {
@@ -84,45 +85,5 @@
         flex-direction: row;
         justify-content: center;
         gap: 1rem;
-    }
-}
-
-@keyframes pop-bounce {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-
-    60% {
-        transform: scale(1.1);
-        opacity: 1;
-    }
-
-    80% {
-        transform: scale(0.95);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes swipe-right {
-    0% {
-        transform: translateX(-100%);
-        opacity: 0;
-    }
-    
-    60% {
-        transform: translateX(20px);
-        opacity: 1;
-    }
-    
-    80% {
-        transform: translateX(-5px);
-    }
-    
-    100% {
-        transform: translateX(0);
     }
 }

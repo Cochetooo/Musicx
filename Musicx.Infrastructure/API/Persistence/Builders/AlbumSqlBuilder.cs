@@ -263,28 +263,32 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         
         if (query.IncludedCountries?.Length > 0)
         {
-            whereConditions.Add($"alar0.{ArtistColumns.CurrentCountry} = ANY(@includedCountries)");
-            parameters.Add(new NpgsqlParameter("@includedCountries", query.IncludedCountries));
+            whereConditions.Add($"ar0.{ArtistColumns.CurrentCountry} = ANY(ARRAY[@includedCountries])");
+            parameters.Add(new NpgsqlParameter("@includedCountries", 
+                string.Join(",", query.IncludedCountries)));
         }
         
         if (query.ExcludedCountries?.Length > 0)
         {
-            whereConditions.Add($"alar0.{ArtistColumns.CurrentCountry} <> ALL(@excludedCountries)");
-            parameters.Add(new NpgsqlParameter("@excludedCountries", query.ExcludedCountries));
+            whereConditions.Add($"ar0.{ArtistColumns.CurrentCountry} <> ALL(ARRAY[@excludedCountries])");
+            parameters.Add(new NpgsqlParameter("@excludedCountries", 
+                string.Join(",", query.ExcludedCountries)));
         }
         
         // 🔹 Genres inclus/exclus
         
         if (query.IncludedGenres?.Length > 0)
         {
-            whereConditions.Add($"al0.{AlbumColumns.Id} IN (SELECT {AlbumGenreColumns.AlbumId} FROM album_genre WHERE {AlbumGenreColumns.GenreId} = ANY(@includedGenres))");
-            parameters.Add(new NpgsqlParameter("@includedGenres", query.IncludedGenres));
+            whereConditions.Add($"al0.{AlbumColumns.Id} IN (SELECT {AlbumGenreColumns.AlbumId} FROM album_genre WHERE {AlbumGenreColumns.GenreId} = ANY(ARRAY[@includedGenres]))");
+            parameters.Add(new NpgsqlParameter("@includedGenres", 
+                string.Join(",", query.IncludedGenres)));
         }
 
         if (query.ExcludedGenres?.Length > 0)
         {
-            whereConditions.Add($"al0.{AlbumColumns.Id} NOT IN (SELECT {AlbumGenreColumns.AlbumId} FROM album_genre WHERE {AlbumGenreColumns.GenreId} = ANY(@excludedGenres))");
-            parameters.Add(new NpgsqlParameter("@excludedGenres", query.ExcludedGenres));
+            whereConditions.Add($"al0.{AlbumColumns.Id} NOT IN (SELECT {AlbumGenreColumns.AlbumId} FROM album_genre WHERE {AlbumGenreColumns.GenreId} = ANY(ARRAY[@excludedGenres]))");
+            parameters.Add(new NpgsqlParameter("@excludedGenres", 
+                string.Join(",", query.ExcludedGenres)));
         }
         
         // 🔹 Date de sortie
@@ -337,7 +341,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             EXISTS (
                 SELECT 1 
                 FROM user_album_attrs uaa2
-                JOIN users u2 ON u.{UserColumns.Id} = uaa2.{UserAlbumAttrColumns.UserId}
+                JOIN users u2 ON u2.{UserColumns.Id} = uaa2.{UserAlbumAttrColumns.UserId}
                 WHERE uaa2.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id}
                 AND DATE_PART('year', AGE(u2.{UserColumns.BirthDate})) >= @minAge
             )");
@@ -350,7 +354,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             EXISTS (
                 SELECT 1 
                 FROM user_album_attrs uaa
-                JOIN users u2 ON u.{UserColumns.Id} = uaa2.{UserAlbumAttrColumns.UserId}
+                JOIN users u2 ON u2.{UserColumns.Id} = uaa2.{UserAlbumAttrColumns.UserId}
                 WHERE uaa2.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id}
                 AND DATE_PART('year', AGE(u2.{UserColumns.BirthDate})) <= @maxAge
             )");
@@ -382,15 +386,15 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         // 🔹 Construction du ORDER BY selon ChartType
         string orderClause = query.ChartType switch
         {
-            ChartType.Top => $"ORDER BY alst0.{AlbumRatingStatColumns.Average} DESC",
-            ChartType.Bottom => $"ORDER BY alst0.{AlbumRatingStatColumns.Average} ASC",
-            ChartType.Esoteric => $"ORDER BY (alst0.{AlbumRatingStatColumns.Average} * POWER(1.0 / (album_rating_stat.count + 1), 0.5)) DESC",
-            ChartType.Popular => $@"
+            ChartType.Popular => $"ORDER BY alst0.{AlbumRatingStatColumns.Count} DESC NULLS LAST",
+            ChartType.Bottom => $"ORDER BY alst0.{AlbumRatingStatColumns.Average} ASC NULLS LAST",
+            ChartType.Esoteric => $"ORDER BY (alst0.{AlbumRatingStatColumns.Average} * POWER(1.0 / (alst0.{AlbumRatingStatColumns.Count} + 1), 0.5)) DESC NULLS LAST",
+            ChartType.Top => $@"
             ORDER BY (
-                (alst0.{AlbumRatingStatColumns.Average} * (10 - {query.PopularityWeight})) + 
-                (LOG(alst0.{AlbumRatingStatColumns.Count} + 1) * {query.PopularityWeight})
-            ) DESC",
-            _ => $"ORDER BY alst0.{AlbumRatingStatColumns.Average} DESC"
+            (alst0.{AlbumRatingStatColumns.Average} * POWER(10 - {query.PopularityWeight}, 1.2)) +
+            (LOG(alst0.{AlbumRatingStatColumns.Count} + 1) * POWER({query.PopularityWeight}, 1.5))
+            ) DESC NULLS LAST",
+            _ => $"ORDER BY alst0.{AlbumRatingStatColumns.Average} DESC NULLS LAST"
         };
         
         var whereClause = whereConditions.Count > 0

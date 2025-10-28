@@ -14,7 +14,7 @@
 
         @foreach (var album in group.Value)
         {
-            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="py-1">
+            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="py-1 animate-swipe-right">
                 <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                     <MudImage Src="@album.ArtworkUrl" Width="@((int) (Zoom * 48))" Height="@((int) (Zoom * 48))"
                               Class="rounded-lg mr-3" Elevation="8" />
@@ -46,7 +46,7 @@
                 </MudStack>
 
                 <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                    <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.ExtraSmall" />
+                    <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.Small" />
                     <MudText Typo="Typo.caption" Class="montserrat text-bold">
                         @($"{album.Stats?.Count ?? 0} ratings")
                     </MudText>

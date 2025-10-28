@@ -30,11 +30,11 @@ public partial class DonutRating
     {
         _donutSize = Size switch
         {
-            DonutRatingSize.ExtraSmall => "48px",
-            DonutRatingSize.Small => "64px",
+            DonutRatingSize.ExtraSmall => "36px",
+            DonutRatingSize.Small => "56px",
             DonutRatingSize.Medium => "96px",
             DonutRatingSize.Large => "128px",
-            _ => "96px"
+            _ => "84px"
         };
 
         _textSize = Size switch
@@ -44,7 +44,7 @@ public partial class DonutRating
 
         _ratingColor = ColorHelper.LightenColor(
             RatingHelper.GetColorForRating(Rating),
-            0.18
+            0.22
         );
         
         _ratingData = [(double)(Rating ?? 0), 100 - (double)(Rating ?? 0)];

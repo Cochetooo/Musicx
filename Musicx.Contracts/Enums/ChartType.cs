@@ -2,8 +2,8 @@
 
 public enum ChartType
 {
-    Bottom,
-    Esoteric,
-    Popular,
-    Top,
+    Bottom = 1,
+    Esoteric = 2,
+    Popular = 3,
+    Top = 0,
 }

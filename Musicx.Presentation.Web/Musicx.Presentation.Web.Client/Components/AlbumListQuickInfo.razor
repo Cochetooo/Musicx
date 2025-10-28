@@ -28,6 +28,13 @@
             </MudText>
             break;
     }
+    
+    @if (ShowArtist && Album.Artist is not null)
+    {
+        <MudText Class="montserrat quick-album-name" Color="Color.Default">
+            @Album.Artist.Name
+        </MudText>
+    }
 
     @if (null != Album.OriginalReleaseDate)
     {
@@ -41,6 +48,7 @@
     public Dictionary<string, object> AdditionalAttributes { get; set; } = null!;
     
     [Parameter, EditorRequired] public OutAlbum Album { get; set; } = null!;
+    [Parameter] public bool ShowArtist { get; set; }
 
 }
 

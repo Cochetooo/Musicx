@@ -39,7 +39,7 @@ else
                 </div>
                 
                 <div class="glass-paper">
-                    <h1 class="artist-title">@_artist.Name</h1>
+                    <h1 class="artist-title animate-text">@_artist.Name</h1>
                     
                     <MudDivider Class="my-2" />
                     
@@ -141,6 +141,8 @@ else
                     {
                         <ArtistReleasesGrid Albums="@_filteredAlbums" Zoom="@_zoomLevel" 
                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
+                                            ShowRating
+                                            ShowRatingCount
                                             IsGrouped="@_groupByType" />
                     }
                     else if (_viewMode == ReleasesViewMode.Timeline)

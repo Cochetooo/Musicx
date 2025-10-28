@@ -1,0 +1,111 @@
+﻿@page "/Charts"
+
+@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Presentation.Web.Client.Components.Artists
+
+@inject IGetAlbumByChartUseCase UcAlbumChart
+@inject IUserClientContext UserClientContext
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="pa-0">
+    <MudPaper Class="glass-paper pa-4 justify-center">
+        <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">🏆 Chart</MudText>
+        <MudDivider Class="my-3" />
+        
+        <MudPaper Class="pa-2 mb-3 glass-paper">
+            <MudStack Spacing="2" AlignItems="AlignItems.Center"
+                      Justify="Justify.Center" Style="width: 100%" Row>
+                <MudSelect T="Contracts.Enums.ChartType" 
+                           Label="Chart Type"
+                           @bind-Value="_query.ChartType">
+                    @foreach (var chartType in Enum.GetValues<Contracts.Enums.ChartType>())
+                    {
+                        <MudSelectItem Value="chartType">@chartType.ToString()</MudSelectItem>
+                    }
+                </MudSelect>
+                
+                <MudTextField Placeholder="Filter by name..."
+                              Label="Name"
+                              T="string?"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              @bind-Value="_query.Name"/>
+            </MudStack>
+            
+            <MudStack Spacing="2" AlignItems="AlignItems.Center"
+                      Justify="Justify.Center" Wrap="Wrap.Wrap" Style="width: 100%" Row>
+                <MudNumericField
+                    @bind-Value="_query.MinAge" MaxLength="3"
+                    Label="Minimum User Age" />
+                
+                <MudNumericField
+                    @bind-Value="_query.MaxAge" MaxLength="3"
+                    Label="Maximum User Age" />
+                
+                <MudDivider Vertical />
+                
+                <MudDatePicker
+                    T="DateTime?"
+                    @bind-Date="_query.MinDate"
+                    Label="Minimum Release Date" />
+                
+                <MudDatePicker
+                    T="DateTime?"
+                    @bind-Date="_query.MaxDate"
+                    Label="Maximum Release Date" />
+            </MudStack>
+            
+            <MudStack Spacing="2" AlignItems="AlignItems.Center"
+                      Justify="Justify.Center" Wrap="Wrap.Wrap" Style="width: 100%" Row>
+                <MudNumericField
+                    @bind-Value="_query.MinRating" MaxLength="3"
+                    Label="Minimum Rating" />
+                
+                <MudNumericField
+                    @bind-Value="_query.MaxRating" MaxLength="3"
+                    Label="Maximum Rating" />
+                
+                <MudDivider Vertical />
+                
+                <MudNumericField
+                    @bind-Value="_query.MinNbRatings" MaxLength="3"
+                    Label="Minimum Nb. Ratings" />
+                
+                <MudNumericField
+                    @bind-Value="_query.MaxNbRatings" MaxLength="3"
+                    Label="Maximum Nb. Ratings" />
+            </MudStack>
+            
+            <MudText Typo="Typo.body2">
+                Popularity Weighting
+            </MudText>
+            
+            <MudStack Spacing="2" AlignItems="AlignItems.Center"
+                      Row Justify="Justify.SpaceAround">
+                <MudRadioGroup T="short" @bind-Value="_query.PopularityWeight">
+                    @for (short s = 1; s <= 10; s++)
+                    {
+                        var localS = s;
+                        <MudRadio Value="@localS">@localS</MudRadio>
+                    }
+                </MudRadioGroup>
+            </MudStack>
+            
+            <MudButton Variant="Variant.Filled" Disabled="@_isLoading" Color="Color.Success" OnClick="@LoadChart">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Indeterminate />
+                }
+                else
+                {
+                    <span>Create Chart</span>
+                }
+            </MudButton>
+        </MudPaper>
+        
+        <ArtistReleasesGrid Albums="@_outAlbumList.Items" IsGrouped="false" 
+                            RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
+                            ShowRank ShowRating ShowRatingCount
+                            Zoom="2"/>
+    </MudPaper>
+</MudContainer>

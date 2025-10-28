@@ -13,26 +13,47 @@
         }
 
         <div class="d-flex flex-wrap gap-3 justify-center">
-            @foreach (var album in group.Value)
+            @for (int rank = 0; rank < group.Value.Count; rank++)
             {
+                var currentRank = rank+1;
+                var album = group.Value[rank];
                 <div class="album-tile pa-2" style="width:@($"{Zoom * 120}px");">
                     <MudTooltip Duration="500" Placement="Placement.Top" Arrow>
                         <ChildContent>
                             <MudLink Href="@($"/Album/{album.Id}")">
-                                <MudBadge Content="@album.Stats?.Count"
-                                          Color="Color.Dark"
-                                          Overlap="true"
-                                          Origin="Origin.BottomCenter"
-                                          Class="mb-1">
-                                    <MudImage Src="@album.ArtworkUrl"
-                                              Alt="@album.Name"
-                                              Class="rounded-lg"
-                                              Elevation="8"
-                                              Width="@((int) (Zoom * 96))"
-                                              Height="@((int) (Zoom * 96))" />
-                                </MudBadge>
-                                
-                                <AlbumListQuickInfo Album="album"/>
+                                <div class="album-card">
+                                    <div class="album-image-container">
+                                        <MudImage Src="@album.ArtworkUrl"
+                                                  Alt="@album.Name"
+                                                  Class="rounded-lg"
+                                                  Elevation="8"
+                                                  Width="@((int)(Zoom * 96))"
+                                                  Height="@((int)(Zoom * 96))"/>
+
+                                        @if (ShowRank)
+                                        {
+                                            <div class="album-rank">#@currentRank</div>
+                                        }
+                                        
+                                        @if (ShowRating)
+                                        {
+                                            <div class="album-donut">
+                                                <DonutRating Rating="@album.Stats?.Average"
+                                                             RatingMode="RatingMode"
+                                                             Size="DonutRatingSize.ExtraSmall" />
+                                            </div>
+                                        }
+                                        
+                                        @if (ShowRatingCount)
+                                        {
+                                            <div class="album-count">
+                                                ⭐ @album.Stats?.Count
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <AlbumListQuickInfo Album="album" ShowArtist />
                             </MudLink>
                         </ChildContent>
                         <TooltipContent>
@@ -40,7 +61,7 @@
                             <MudText Typo="Typo.caption">@album.OriginalReleaseDate?.ToString("yyyy")</MudText>
                             <DonutRating Rating="@album.Stats?.Average"
                                          RatingMode="RatingMode"
-                                         Size="DonutRatingSize.ExtraSmall" />
+                                         Size="DonutRatingSize.ExtraSmall"/>
                         </TooltipContent>
                     </MudTooltip>
                 </div>

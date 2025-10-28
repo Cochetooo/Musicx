@@ -65,10 +65,10 @@ h1:focus {
 }
 
 .glass-paper {
-    background: rgba(var(--mud-palette-surface), 0.06);
+    background: rgba(var(--mud-palette-surface), 0.09);
     backdrop-filter: blur(8px) saturate(1.05);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(var(--mud-palette-surface), 0.08);
+    border: 1px solid rgba(var(--mud-palette-surface), 0.1);
     border-radius: 12px;
     padding: 1rem;
     box-shadow: 0 8px 30px rgba(2,6,23,0.45);
@@ -110,11 +110,83 @@ h1:focus {
 }
 
 * {
-    font-family: "Space Grotesk", "Helvetica Neue", sans-serif;
+    font-family: "ClashGrotesk-Medium", "Helvetica Neue", sans-serif;
     font-optical-sizing: auto;
     scrollbar-color: #767a7d transparent;
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: "Montserrat", "Helvetica Neue", sans-serif;
+}
+
+@font-face {
+    font-family: 'ClashGrotesk-Extralight';
+    src: url('Fonts/ClashGrotesk-Extralight.woff2') format('woff2'),
+    url('Fonts/ClashGrotesk-Extralight.woff') format('woff'),
+    url('Fonts/ClashGrotesk-Extralight.ttf') format('truetype');
+    font-weight: 200;
+    font-display: swap;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ClashGrotesk-Light';
+    src: url('Fonts/ClashGrotesk-Light.woff2') format('woff2'),
+    url('Fonts/ClashGrotesk-Light.woff') format('woff'),
+    url('Fonts/ClashGrotesk-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-display: swap;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ClashGrotesk-Regular';
+    src: url('Fonts/ClashGrotesk-Regular.woff2') format('woff2'),
+    url('Fonts/ClashGrotesk-Regular.woff') format('woff'),
+    url('Fonts/ClashGrotesk-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ClashGrotesk-Medium';
+    src: url('Fonts/ClashGrotesk-Medium.woff2') format('woff2'),
+    url('Fonts/ClashGrotesk-Medium.woff') format('woff'),
+    url('Fonts/ClashGrotesk-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ClashGrotesk-Semibold';
+    src: url('Fonts/ClashGrotesk-Semibold.woff2') format('woff2'),
+    url('Fonts/ClashGrotesk-Semibold.woff') format('woff'),
+    url('Fonts/ClashGrotesk-Semibold.ttf') format('truetype');
+    font-weight: 600;
+    font-display: swap;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ClashGrotesk-Bold';
+    src: url('Fonts/ClashGrotesk-Bold.woff2') format('woff2'),
+    url('Fonts/ClashGrotesk-Bold.woff') format('woff'),
+    url('Fonts/ClashGrotesk-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-display: swap;
+    font-style: normal;
+}
+/**
+* This is a variable font
+* You can control variable axes as shown below:
+* font-variation-settings: wght 700.0;
+*
+* available axes:
+'wght' (range from 200.0 to 700.0
+*/
+@font-face {
+    font-family: 'ClashGrotesk-Variable';
+    src: url('Fonts/ClashGrotesk-Variable.woff2') format('woff2'),
+    url('Fonts/ClashGrotesk-Variable.woff') format('woff'),
+    url('Fonts/ClashGrotesk-Variable.ttf') format('truetype');
+    font-weight: 200 700;
+    font-display: swap;
+    font-style: normal;
 }
