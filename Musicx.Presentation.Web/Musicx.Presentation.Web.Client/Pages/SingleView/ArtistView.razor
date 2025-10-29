@@ -39,29 +39,35 @@ else
                 </div>
                 
                 <div class="glass-paper">
-                    <h1 class="artist-title animate-text">@_artist.Name</h1>
-                    
-                    <MudDivider Class="my-2" />
-                    
+                    <MudTooltip Inline="false" Text="@_artist.Name" Delay="500">
+                        <ChildContent>
+                            <h1 class="artist-title animate-text clamped-text-2">
+                                @_artist.Name
+                            </h1>
+                        </ChildContent>
+                    </MudTooltip>
+
+                    <MudDivider Class="my-2"/>
+
                     @if (!string.IsNullOrWhiteSpace(_artist.CalculatedGenres))
                     {
-                        <MudText Typo="Typo.body2" Color="Color.Secondary" 
+                        <MudText Typo="Typo.body2" Color="Color.Secondary"
                                  Class="montserrat artist-genres text-bold">
                             @_artist.CalculatedGenres
                         </MudText>
-            
-                        <MudText Typo="Typo.caption" Color="Color.Tertiary" 
+
+                        <MudText Typo="Typo.caption" Color="Color.Tertiary"
                                  Class="montserrat artist-genres text-italic">
                             @_artist.CalculatedInfluences
                         </MudText>
                     }
-                    
+
                     <MudStack Row Class="mt-3" AlignItems="AlignItems.Center" Spacing="4">
                         <MudText Typo="Typo.subtitle2" Color="Color.Tertiary">👥 Followers: 0</MudText>
                         <MudText Typo="Typo.subtitle2" Color="Color.Tertiary">💿 Releases: @_artistAlbums.Total</MudText>
-                        <MudText Typo="Typo.subtitle2" Color="Color.Tertiary">🌍 Country: <Flag CountryName="@_artist.CurrentCountry" /></MudText>
+                        <MudText Typo="Typo.subtitle2" Color="Color.Tertiary">🌍 Country: <Flag CountryName="@_artist.CurrentCountry"/></MudText>
                     </MudStack>
-                    
+
                     <div class="mt-4">
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                             <MudTooltip>

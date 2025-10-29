@@ -115,15 +115,21 @@ else
                 </div>
                 
                 <div class="glass-paper">
-                    <h1 class="album-title animate-text">@_album.Name</h1>
-                    
+                    <MudTooltip Inline="false" Text="@_album.Name" Delay="500">
+                        <ChildContent>
+                            <h1 class="album-title animate-text clamped-text-2">
+                                @_album.Name
+                            </h1>
+                        </ChildContent>
+                    </MudTooltip>
+
                     @if (_album.EnglishName is not null)
                     {
                         <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-muted">
                             [@_album.EnglishName]
                         </MudText>
                     }
-                    
+
                     @if (_album.Artist is not null)
                     {
                         <MudLink Typo="Typo.h6" Class="ml-8 montserrat text-italic text-color-secondary"
@@ -138,32 +144,32 @@ else
                             }
                         </MudLink>
                     }
-                    
-                    <MudDivider Class="my-2" />
-                    
+
+                    <MudDivider Class="my-2"/>
+
                     <GenreDetails Album="@_album" @bind-DetailedView="@_showDetailedView"/>
                     <MudSwitch @bind-Value="_showDetailedView"
                                Color="Color.Primary"
                                Label="Show more details"
                                ThumbIcon="@Icons.Material.Filled.ViewWeek"
                                Class="my-2"/>
-                    
-                    <MudDivider Class="my-2" />
-                    
-                    <MudStack Spacing="1" AlignItems="AlignItems.Center" 
-                              Class="mt-4" Wrap="Wrap.Wrap" 
+
+                    <MudDivider Class="my-2"/>
+
+                    <MudStack Spacing="1" AlignItems="AlignItems.Center"
+                              Class="mt-4" Wrap="Wrap.Wrap"
                               Justify="Justify.SpaceEvenly" Row>
                         @if (UserClientContext.Can("album.edit"))
                         {
-                            <MudButton Variant="Variant.Filled" 
+                            <MudButton Variant="Variant.Filled"
                                        Color="Color.Error"
                                        Size="Size.Small"
-                                       Class="mx-1" 
+                                       Class="mx-1"
                                        OnClick="@EditAlbumShowModal">
                                 Edit Album Info
                             </MudButton>
                         }
-                        
+
                         @if (UserClientContext.CurrentUser is not null &&
                              UserClientContext.Can("album.review"))
                         {
@@ -174,7 +180,7 @@ else
                                 Review
                             </MudButton>
                         }
-                        
+
                         @if (UserClientContext.CurrentUser is not null &&
                              UserClientContext.Can("album.rate"))
                         {
@@ -183,7 +189,7 @@ else
                                 Value="@_userAttribute.Rating"
                                 ValueChanged="@(v => Rate(v))"/>
                         }
-                        
+
                         @if (UserClientContext.CurrentUser is not null &&
                              UserClientContext.Can("album.attr"))
                         {
@@ -194,8 +200,8 @@ else
                                 Class="mx-1"
                                 Style="width: 160px;"
                                 Variant="Variant.Outlined"/> -->
-                            
-                            <MudMenu Label="Collection" 
+
+                            <MudMenu Label="Collection"
                                      Variant="Variant.Filled"
                                      Dense
                                      Size="Size.Small"
@@ -206,13 +212,13 @@ else
                                     <MudMenuItem>@collectionType.ToString()</MudMenuItem>
                                 }
                             </MudMenu>
-                            
+
                             <MudExpansionPanels Dense
                                                 Class="d-inline-block mx-1"
                                                 Elevation="0"
                                                 Square="true">
                                 <MudExpansionPanel Text="Tags" Gutters="false" Class="p-2">
-                                    <MudTextField T="string" 
+                                    <MudTextField T="string"
                                                   Placeholder="Add a tag..."
                                                   Variant="Variant.Outlined"
                                                   Class="flex-grow-1"/>
