@@ -29,3 +29,4 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (28, 
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (29, 1);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (30, 1);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (31, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (32, 1);
