@@ -51,21 +51,21 @@ else
 
                     @if (!string.IsNullOrWhiteSpace(_artist.CalculatedGenres))
                     {
-                        <MudText Typo="Typo.body2" Color="Color.Secondary"
-                                 Class="montserrat artist-genres text-bold">
+                        <MudText Typo="Typo.body2" Color="Color.Primary"
+                                 Class="montserrat highlight-text text-bold">
                             @_artist.CalculatedGenres
                         </MudText>
 
-                        <MudText Typo="Typo.caption" Color="Color.Tertiary"
-                                 Class="montserrat artist-genres text-italic">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary"
+                                 Class="highlight-text">
                             @_artist.CalculatedInfluences
                         </MudText>
                     }
 
                     <MudStack Row Class="mt-3" AlignItems="AlignItems.Center" Spacing="4">
-                        <MudText Typo="Typo.subtitle2" Color="Color.Tertiary">👥 Followers: 0</MudText>
-                        <MudText Typo="Typo.subtitle2" Color="Color.Tertiary">💿 Releases: @_artistAlbums.Total</MudText>
-                        <MudText Typo="Typo.subtitle2" Color="Color.Tertiary">🌍 Country: <Flag CountryName="@_artist.CurrentCountry"/></MudText>
+                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="highlight-text">👥 Followers: 0</MudText>
+                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="highlight-text">💿 Releases: @_artistAlbums.Total</MudText>
+                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="highlight-text">🌍 Country: <Flag CountryName="@_artist.CurrentCountry"/></MudText>
                     </MudStack>
 
                     <div class="mt-4">
@@ -73,7 +73,7 @@ else
                             <MudTooltip>
                                 <ChildContent>
                                     <MudToggleIconButton
-                                        Size="Size.Medium"
+                                        Size="Size.Large"
                                         Color="Color.Dark"
                                         ToggledColor="Color.Warning"
                                         Variant="Variant.Text"

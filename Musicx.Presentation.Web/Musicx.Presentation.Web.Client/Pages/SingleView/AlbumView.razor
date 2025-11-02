@@ -209,14 +209,13 @@ else
                                      Color="Color.Primary">
                                 @foreach (var collectionType in Enum.GetValues<CollectionType>())
                                 {
-                                    <MudMenuItem>@collectionType.ToString()</MudMenuItem>
+                                    <MudMenuItem>@collectionType.ToDescriptionString()</MudMenuItem>
                                 }
                             </MudMenu>
 
                             <MudExpansionPanels Dense
-                                                Class="d-inline-block mx-1"
-                                                Elevation="0"
-                                                Square="true">
+                                                Class="d-inline-block mx-1 rounded-lg"
+                                                Elevation="2">
                                 <MudExpansionPanel Text="Tags" Gutters="false" Class="p-2">
                                     <MudTextField T="string"
                                                   Placeholder="Add a tag..."
