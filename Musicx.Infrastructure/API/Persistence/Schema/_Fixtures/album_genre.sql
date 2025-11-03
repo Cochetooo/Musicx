@@ -6264,3 +6264,14 @@ INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALU
 INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4237, 44);
 INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4238, 252);
 INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4238, 44);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4239, 22);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4239, 107);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4240, 107);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4240, 22);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4241, 22);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4241, 107);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4242, 22);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4242, 107);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4243, 22);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4244, 22);
+INSERT INTO public.album_genre (album_genre_album_id, album_genre_genre_id) VALUES (4244, 107);
