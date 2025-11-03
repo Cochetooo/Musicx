@@ -1,5 +1,4 @@
 ﻿@using Musicx.Presentation.Web.Client.Components.Ratings
-@using Musicx.Presentation.Web.Client.Components.GenreDetails
 
 @foreach (var group in GroupedAlbums)
 {
@@ -46,7 +45,22 @@
                 </MudStack>
 
                 <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                    <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.Small" />
+                    @{
+                        var rating = UserRatings?.Items
+                            .FirstOrDefault(ur => ur.Album.Id == album.Id)
+                            ?.Rating;
+                        
+                        if (rating is not null)
+                        {
+                            <EditableRatingBadge
+                                Editable="@false"
+                                Size="Size.Small"
+                                RatingMode="RatingMode"
+                                Value="@rating"/>
+                        }
+                    }
+
+                    <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.Small"/>
                     <MudText Typo="Typo.caption" Class="montserrat text-bold">
                         @($"{album.Stats?.Count ?? 0} ratings")
                     </MudText>

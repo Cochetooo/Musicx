@@ -13,10 +13,16 @@ public sealed class UcGetAlbumAttrByUser(
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger<UcGetAlbumAttrByAlbum>();
 
-    public async Task<OutGenericList<OutUserAlbumAttribute>> ExecuteAsync(long userId, 
-        long skip = 0, long take = 100, CancellationToken token = default)
+    public async Task<OutGenericList<OutUserAlbumAttribute>> ExecuteAsync(long userId,
+        long skip = 0, long take = 100, CancellationToken token = default,
+        long? artistId = null)
     {
         var endpoint = $"/api/user-album-attrs/by-user/{userId}?skip={skip}&take={take}";
+
+        if (artistId is not null)
+        {
+            endpoint += $"&artistId={artistId}";
+        }
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
@@ -49,7 +55,8 @@ public sealed class UcGetAlbumAttrByUser(
         return json;
     }
 
-    public OutGenericList<OutUserAlbumAttribute> Execute(long albumId, long skip = 0, long take = 100)
+    public OutGenericList<OutUserAlbumAttribute> Execute(long albumId, long skip = 0, long take = 100,
+        long? artistId = null)
     {
         throw new NotImplementedException();
     }

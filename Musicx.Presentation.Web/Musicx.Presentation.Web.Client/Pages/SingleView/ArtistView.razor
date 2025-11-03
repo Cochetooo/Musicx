@@ -1,21 +1,18 @@
 @page "/Artist/{id}"
-@using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
 @using Musicx.Contracts.Dto.Enums
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Contracts.Enums
-@using Musicx.Infrastructure.Shared.Models.ExternalMusicData
 @using Musicx.Presentation.Web.Client.Components
+@using Musicx.Presentation.Web.Client.Components.AlbumView
+@using Musicx.Presentation.Web.Client.Components.Ratings
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
-@using Musicx.Presentation.Web.Client.Components.GenreDetails
-@using Musicx.Presentation.Web.Client.Components.Ratings
-@using Musicx.Presentation.Web.Client.Components.Artists
 
 @inject IGetUseCase<OutArtist> UcGet
 @inject IGetAlbumByArtistUseCase UcGetAlbums
+@inject IGetAlbumAttributesByUser UcGetUserRatings
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
 
@@ -130,7 +127,7 @@ else
                     <MudDivider Class="my-3" />
 
                     @* TOOLBAR COMPONENT *@
-                    <ArtistReleasesToolbar OnSearch="OnSearch" OnSort="OnSort" OnViewModeChanged="OnViewModeChanged"
+                    <AlbumViewToolbar OnSearch="OnSearch" OnSort="OnSort" OnViewModeChanged="OnViewModeChanged"
                                    OnZoomChanged="OnZoomChanged" OnGroupByChanged="OnToggleGroup"
                                    OnRatingModeChanged="OnRatingModeChanged" AllowAdd="@UserClientContext.Can("artist.album.add")"
                                    OnNewRelease="AddAlbumShowModal"
@@ -139,13 +136,14 @@ else
                     @* Main view switcher: List / Grid / Timeline *@
                     @if (_viewMode == ReleasesViewMode.List)
                     {
-                        <ArtistReleasesList Albums="@_filteredAlbums" Zoom="@_zoomLevel" 
+                        <AlbumListView Albums="@_filteredAlbums" Zoom="@_zoomLevel" 
+                                            UserRatings="@_userAttrs"
                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
                                             IsGrouped="@_groupByType" />
                     }
                     else if (_viewMode == ReleasesViewMode.Grid)
                     {
-                        <ArtistReleasesGrid Albums="@_filteredAlbums" Zoom="@_zoomLevel" 
+                        <AlbumGridView Albums="@_filteredAlbums" Zoom="@_zoomLevel" 
                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
                                             ShowRating
                                             ShowRatingCount
@@ -153,7 +151,7 @@ else
                     }
                     else if (_viewMode == ReleasesViewMode.Timeline)
                     {
-                        <ArtistReleasesTimeline />
+                        <AlbumTimelineView />
                     }
                 </MudPaper>
             </MudItem>

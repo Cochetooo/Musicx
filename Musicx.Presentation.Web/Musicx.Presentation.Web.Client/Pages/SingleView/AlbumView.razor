@@ -1,5 +1,4 @@
 @page "/Album/{id}"
-
 @using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
@@ -7,11 +6,10 @@
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
-@using Musicx.Presentation.Web.Client.Components
-@using Musicx.Presentation.Web.Client.Modals.Admin.Albums
-@using Musicx.Presentation.Web.Client.Components.GenreDetails
-@using Musicx.Presentation.Web.Client.Components.Songs
 @using Musicx.Presentation.Web.Client.Components.Ratings
+@using Musicx.Presentation.Web.Client.Components.Songs
+@using Musicx.Presentation.Web.Client.Modals.Admin.Albums
+@using Musicx.Presentation.Web.Client.Components.Genres
 
 @inject IGetUseCase<OutAlbum> UcGet
 @inject IGetAlbumByArtistUseCase UcGetArtistAlbums
@@ -184,7 +182,9 @@ else
                         @if (UserClientContext.CurrentUser is not null &&
                              UserClientContext.Can("album.rate"))
                         {
-                            <DynamicRating
+                            <EditableRatingBadge
+                                Editable
+                                Size="Size.Large"
                                 RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
                                 Value="@_userAttribute.Rating"
                                 ValueChanged="@(v => Rate(v))"/>

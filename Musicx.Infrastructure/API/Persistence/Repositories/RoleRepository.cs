@@ -47,7 +47,7 @@ internal sealed class RoleRepository(
     public async Task<OutRole?> FindByIdAsync(long id, IQuerySpecification<InRole>? roleQuerySpecification = null)
     {
         var sql = new StringBuilder(builder.BuildSelect(roleQuerySpecification));
-        sql.Append($" WHERE u0.{RoleColumns.Id} = @id")
+        sql.Append($" WHERE r0.{RoleColumns.Id} = @id")
             .Append(builder.BuildGroupBy(roleQuerySpecification));
 
         var parameters = new List<NpgsqlParameter>
@@ -74,7 +74,7 @@ internal sealed class RoleRepository(
         {
             builder.Filter(
                 sql: ref sql, 
-                column: $"u0.{RoleColumns.Name}", 
+                column: $"r0.{RoleColumns.Name}", 
                 filter: filter,
                 parameters: parameters, 
                 filterExact: filterExact, 
@@ -86,11 +86,11 @@ internal sealed class RoleRepository(
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += $" ORDER BY similarity(u0.{RoleColumns.Name}, @filter) DESC";
+            sql += $" ORDER BY similarity(r0.{RoleColumns.Name}, @filter) DESC";
         }
         else
         {
-            sql += $" ORDER BY u0.{RoleColumns.Name}";
+            sql += $" ORDER BY r0.{RoleColumns.Name}";
         }
 
         sql += " OFFSET @skip LIMIT @take";
@@ -116,10 +116,10 @@ internal sealed class RoleRepository(
 
         var stringIds = string.Join(",", idList);
         var sql = builder.BuildSelect(roleQuerySpecification);
-        sql += $" WHERE u0.{RoleColumns.Id} IN ({stringIds})" +
+        sql += $" WHERE r0.{RoleColumns.Id} IN ({stringIds})" +
                builder.BuildGroupBy(roleQuerySpecification) +
                builder.BuildOrderBy(
-                   $"u0.{RoleColumns.Name}");
+                   $"r0.{RoleColumns.Name}");
 
         var result = await connection.FetchListDynamicAsync(sql, []);
 

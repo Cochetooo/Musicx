@@ -16,7 +16,8 @@ public interface IUserContext
 public sealed class UserContext(
     ILoggerProvider loggerProvider,
     IHttpContextAccessor httpContextAccessor,
-    IUserRepository userRepository) : IUserContext
+    IUserRepository userRepository,
+    IRoleRepository roleRepository) : IUserContext
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserContext));
     
@@ -94,15 +95,25 @@ public sealed class UserContext(
 
             _cachedUser = user;
             _cachedRoles = user.Roles!.ToList();
-            _cachedPermissions = user.Roles!
-                .SelectMany(r =>
-                {
-                    if (r.Permissions != null) return r.Permissions;
+            _cachedPermissions = [];
+            
+            List<OutPermission> foundPermissions = [];
+            
+            foreach (var role in _cachedRoles)
+            {
+                var permissions = roleRepository.FindByIdAsync(role.Id,
+                    new RoleQuerySpecification
+                    {
+                        IncludePermissions = true
+                    }).Result?.Permissions;
 
-                    return [];
-                })
-                .DistinctBy(p => p.Id)
-                .ToList();
+                if (permissions is not null)
+                {
+                    foundPermissions.AddRange(permissions);
+                }
+            }
+
+            _cachedPermissions = foundPermissions;
             
             _logger.LogDebug($"✅ Data Context loaded successfully ! Roles: {string.Join(", ", _cachedRoles.Select(r => r.Name))}" );
         }

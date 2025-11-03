@@ -2,9 +2,9 @@
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
 
-namespace Musicx.Presentation.Web.Client.Components.Artists;
+namespace Musicx.Presentation.Web.Client.Components.AlbumView;
 
-public partial class ArtistReleasesGrid
+public partial class AlbumGridView
 {
     [Parameter] public IEnumerable<OutAlbum> Albums { get; set; } = [];
     [Parameter] public double Zoom { get; set; } = 1.0;

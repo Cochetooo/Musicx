@@ -28,6 +28,7 @@ public partial class ArtistView
     private OutArtist? _artist;
     private OutAlbumList _artistAlbums = new();
     private List<OutAlbum> _filteredAlbums = [];
+    private OutGenericList<OutUserAlbumAttribute>? _userAttrs;
     private Dictionary<ReleaseType, bool> _availableReleaseTypes = [];
     private Dictionary<int, int> _releaseCountPerYears = [];
     
@@ -98,6 +99,14 @@ public partial class ArtistView
             .ToDictionary(r => r, r => r is ReleaseType.Lp or ReleaseType.MixTape or ReleaseType.Soundtrack);
         
         await InvokeAsync(StateHasChanged);
+
+        if (UserClientContext.CurrentUser is not null)
+        {
+            _userAttrs = await UcGetUserRatings.ExecuteAsync(
+                userId: UserClientContext.CurrentUser.Id,
+                artistId: _artist.Id
+            );
+        }
      
         CalculateReleasesPerYear();
         UpdateChart();

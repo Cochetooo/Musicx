@@ -119,6 +119,7 @@ public sealed class UserAlbumAttrController(
         [FromRoute] long userId,
         [FromQuery] long skip = 0, 
         [FromQuery] long take = 100, 
+        [FromQuery] long? artistId = null,
         [FromQuery] bool filterExact = false, 
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "", 
@@ -129,7 +130,7 @@ public sealed class UserAlbumAttrController(
         try
         {
             var userAlbumAttrs = await repository.FindByUserIdAsync(userId, skip, take,
-                filterExact, filterSimilitude, filter, order);
+                artistId, filterExact, filterSimilitude, filter, order);
             var totalCount = await repository.CountByUserIdAsync(userId);
 
             if (0 == userAlbumAttrs.Count)

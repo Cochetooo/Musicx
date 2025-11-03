@@ -2,9 +2,9 @@
 using Musicx.Contracts.Enums;
 using Musicx.Presentation.Web.Client.Pages.SingleView;
 
-namespace Musicx.Presentation.Web.Client.Components.Artists;
+namespace Musicx.Presentation.Web.Client.Components.AlbumView;
 
-public partial class ArtistReleasesToolbar
+public partial class AlbumViewToolbar
 {
     [Parameter] public EventCallback<string> OnSearch { get; set; }
     [Parameter] public EventCallback<(string,bool)> OnSort { get; set; }

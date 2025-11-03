@@ -3,7 +3,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Responses;
 
-namespace Musicx.Presentation.Web.Client.Components.GenreDetails;
+namespace Musicx.Presentation.Web.Client.Components.Genres;
 
 public partial class GenreDetails
 {

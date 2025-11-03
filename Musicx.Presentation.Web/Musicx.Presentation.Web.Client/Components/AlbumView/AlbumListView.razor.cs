@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Enums;
 
-namespace Musicx.Presentation.Web.Client.Components.Artists;
+namespace Musicx.Presentation.Web.Client.Components.AlbumView;
 
-public partial class ArtistReleasesList
+public partial class AlbumListView
 {
     [Parameter] public IEnumerable<OutAlbum> Albums { get; set; } = [];
     [Parameter] public double Zoom { get; set; } = 1.0;
     [Parameter] public bool IsGrouped { get; set; } = true;
     [Parameter] public RatingMode RatingMode { get; set; }
+    [Parameter] public OutGenericList<OutUserAlbumAttribute>? UserRatings { get; set; }
     
     private Dictionary<ReleaseType, List<OutAlbum>> GroupedAlbums => 
         IsGrouped

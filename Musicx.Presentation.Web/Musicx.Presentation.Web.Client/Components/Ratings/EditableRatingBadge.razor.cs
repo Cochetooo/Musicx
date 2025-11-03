@@ -5,11 +5,13 @@ using Musicx.Contracts.Enums;
 
 namespace Musicx.Presentation.Web.Client.Components.Ratings;
 
-public partial class DynamicRating
+public partial class EditableRatingBadge
 {
     [Parameter] public RatingMode RatingMode { get; set; }
     [Parameter] public EventCallback<int?> ValueChanged { get; set; }
     [Parameter] public int? Value { get; set; }
+    [Parameter] public bool Editable { get; set; }
+    [Parameter] public Size Size { get; set; } = Size.Medium;
 
     private bool _isOpen;
     private bool _isEditing;
@@ -33,8 +35,22 @@ public partial class DynamicRating
         RatingMode.OutOfThousand => 1000,
         _ => 100,
     };
-    
-    private void ToggleCollapse() => _isOpen = !_isOpen;
+
+    private void ToggleCollapse()
+    {
+        if (Editable)
+        {
+            _isOpen = !_isOpen;
+        }
+    }
+
+    private void ToggleEdit()
+    {
+        if (Editable)
+        {
+            _isEditing = true;
+        }
+    }
 
     private void SetTextual(TextualRating rating)
     {

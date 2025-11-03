@@ -2,7 +2,7 @@
 
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
-@using Musicx.Presentation.Web.Client.Components.Artists
+@using Musicx.Presentation.Web.Client.Components.AlbumView
 
 @inject IGetAlbumByChartUseCase UcAlbumChart
 @inject IUserClientContext UserClientContext
@@ -103,7 +103,7 @@
             </MudButton>
         </MudPaper>
         
-        <ArtistReleasesGrid Albums="@_outAlbumList.Items" IsGrouped="false" 
+        <AlbumGridView Albums="@_outAlbumList.Items" IsGrouped="false" 
                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
                             ShowRank ShowRating ShowRatingCount
                             Zoom="2"/>

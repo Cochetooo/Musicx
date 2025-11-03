@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Responses;
 
-namespace Musicx.Presentation.Web.Client.Components;
+namespace Musicx.Presentation.Web.Client.Components.Genres;
 
 public partial class GenreCard : ComponentBase
 {

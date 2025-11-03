@@ -33,4 +33,13 @@
       <Folder Include="Modals\Admin\Songs\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Auth\AuthorizeView.razor" />
+      <_ContentIncludedByDefault Remove="Components\Fields\CstDurationField.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Layout\Auth\AuthorizeView.razor" />
+    </ItemGroup>
+
 </Project>

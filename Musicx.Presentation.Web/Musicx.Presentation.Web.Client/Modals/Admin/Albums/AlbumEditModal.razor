@@ -1,12 +1,8 @@
-@using System.Text.Json
-@using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
-@using Musicx.Infrastructure.API.Persistence.Mappers
-@using Musicx.Presentation.Web.Client.Components
-
+@using Musicx.Presentation.Web.Client.Components.Genres
 @inject ILoggerFactory LoggerFactory
 @inject IListUseCase<OutGenre> UcListGenres
 @inject ISaveUseCase<InAlbum> UcSave

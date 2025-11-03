@@ -54,6 +54,7 @@ public interface IUserAlbumAttrsRepository : IRepository<InUserAlbumAttribute, O
     Task<IReadOnlyList<OutUserAlbumAttribute>> FindByUserIdAsync(long userId,
         long skip = 0,
         long take = 100,
+        long? artistId = null,
         bool? filterExact = null,
         double? filterSimilitude = 0.4,
         string? filter = null,

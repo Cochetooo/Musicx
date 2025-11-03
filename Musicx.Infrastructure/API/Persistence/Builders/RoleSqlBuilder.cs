@@ -112,14 +112,14 @@ internal sealed class RoleSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
 
         if (roleQuerySpecification.IncludePermissions)
         {
-            selects.Add("(SELECT json_agg(pg.*) FROM role_permission rp " +
+            selects.Add("(SELECT json_agg(p.*) FROM role_permission rp " +
                         $"JOIN permissions p ON rp.{RolePermissionColumns.PermissionId} = p.{PermissionColumns.Id} " +
                         $"WHERE rp.{RolePermissionColumns.RoleId} = r0.{RoleColumns.Id}) AS permissions");
         }
 
         return distinct
-            ? $"SELECT DISTINCT {string.Join(", ", selects)} FROM roles u0 {string.Join(" ", joins)}"
-            : $"SELECT {string.Join(", ", selects)} FROM roles u0 {string.Join(" ", joins)}";
+            ? $"SELECT DISTINCT {string.Join(", ", selects)} FROM roles r0 {string.Join(" ", joins)}"
+            : $"SELECT {string.Join(", ", selects)} FROM roles r0 {string.Join(" ", joins)}";
     }
 
     internal override string BuildGroupBy(IQuerySpecification<InRole>? querySpecification = null)
