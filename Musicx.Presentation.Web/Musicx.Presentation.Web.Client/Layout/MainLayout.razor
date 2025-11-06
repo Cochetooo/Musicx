@@ -2,12 +2,14 @@
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Themes
 @using Musicx.Presentation.Web.Client.Modals.Users
+@using Musicx.Presentation.Web.Client.Modals.Searches
 @inherits LayoutComponentBase
 
 @inject NavigationManager NavigationManager
 @inject IUserClientContext UserClientContext
 @inject ILoggerFactory LoggerFactory
 @inject HttpClient Http
+@inject IJSRuntime JS
 
 <MudThemeProvider @bind-IsDarkMode="_isDarkMode" @ref="_mudThemeProvider" Theme="Theme.DeepTheme" />
 <MudPopoverProvider />
@@ -37,7 +39,7 @@
         <!-- Search Box -->
         <MudTextField Immediate @bind-Value="_searchText" Label="Search" 
                       OnKeyDown="@SearchKeyDown" Variant="Variant.Filled"
-                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" />
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"/>
 
         <MudSpacer/>
         
@@ -111,6 +113,8 @@
             @Body
         </MudContainer>
     </MudMainContent>
+    
+    <SearchOverlay />
 </MudLayout>
 
 <LoginModal @ref="_loginModal" />

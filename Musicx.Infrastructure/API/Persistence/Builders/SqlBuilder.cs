@@ -77,14 +77,9 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
 
                 if (actualType.IsEnum)
                 {
-                    if (property.Key.Contains("Discriminator", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        parameters.Add(new NpgsqlParameter(securizedValue, property.Value.ToString()));
-                    }
-                    else
-                    {
-                        parameters.Add(new NpgsqlParameter(securizedValue, (int)property.Value));
-                    }
+                    parameters.Add(property.Key.Contains("Discriminator", StringComparison.InvariantCultureIgnoreCase)
+                        ? new NpgsqlParameter(securizedValue, property.Value.ToString())
+                        : new NpgsqlParameter(securizedValue, (int)property.Value));
                 }
                 else
                 {
@@ -193,6 +188,46 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// <param name="columns">The columns to sort by.</param>
     internal string BuildOrderBy(params string[] columns)
         => " ORDER BY " + string.Join(", ", columns);
+    
+    /// <summary>
+    /// For a list of many-to-many values, delete those who are not existing anymore.
+    /// </summary>
+    /// <param name="table"></param>
+    /// <param name="keyColumn"></param>
+    /// <param name="targetColumn"></param>
+    /// <param name="keyValue"></param>
+    /// <param name="newValues"></param>
+    /// <param name="connection"></param>
+    /// <param name="transaction"></param>
+    internal async Task DeleteMissingManyAsync(string table,
+        string keyColumn, string targetColumn, long keyValue,
+        IReadOnlyList<long> newValues,
+        NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        var existingValues = new List<long>();
+        var selectSql = $"SELECT {targetColumn} FROM {table} WHERE {keyColumn} = @key";
+        await using (var cmd = new NpgsqlCommand(selectSql, connection, transaction))
+        {
+            cmd.Parameters.AddWithValue("@key", keyValue);
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                existingValues.Add((long)reader.GetValue(0));
+            }
+        }
+        
+        var toAdd = newValues.Except(existingValues).ToList();
+        var toRemove = existingValues.Except(newValues).ToList();
+
+        foreach (var val in toRemove)
+        {
+            var deleteSql = $"DELETE FROM {table} WHERE {keyColumn} = @key AND {targetColumn} = @val";
+            await using var deleteCmd = new NpgsqlCommand(deleteSql, connection, transaction);
+            deleteCmd.Parameters.AddWithValue("@key", keyValue);
+            deleteCmd.Parameters.AddWithValue("@val", val);
+            await deleteCmd.ExecuteNonQueryAsync();
+        }
+    }
 
     internal void Filter(ref string sql, IEnumerable<string> columns, 
         string filter, List<NpgsqlParameter> parameters,

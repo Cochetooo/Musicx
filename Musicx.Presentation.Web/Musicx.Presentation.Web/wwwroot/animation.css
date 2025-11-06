@@ -59,7 +59,7 @@
     -webkit-background-clip: text;
     color: transparent;
     
-    animation: textGradientMove 6s linear infinite;
+    animation: text-gradient-move 6s linear infinite;
 }
 
 @keyframes dust-in {
@@ -146,7 +146,7 @@
     }
 }
 
-@keyframes textGradientMove {
+@keyframes text-gradient-move {
     from {
         background-position: 0 center;
     }

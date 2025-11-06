@@ -1,6 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using Musicx.Presentation.Web.Client.Modals.Searches;
 using Musicx.Presentation.Web.Client.Modals.Users;
 
 namespace Musicx.Presentation.Web.Client.Layout;
@@ -14,7 +15,9 @@ public partial class MainLayout
 
     private string _searchText = string.Empty;
 
+    private MudTextField<string> _navSearchRef;
     private LoginModal _loginModal = null!;
+    private SearchOverlay _searchOverlay = null!;
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -31,12 +34,25 @@ public partial class MainLayout
         await InvokeAsync(StateHasChanged);
     }
 
+    private async Task OpenSearch(FocusEventArgs e)
+    {
+        var domId = await JS.InvokeAsync<string>("searchOverlay.getElementId");
+        await _searchOverlay
+    }
+
     private void SearchKeyDown(KeyboardEventArgs keyEvent)
     {
         if (!string.IsNullOrWhiteSpace(_searchText) && keyEvent.Key == "Enter")
         {
             Search();
         }
+    }
+
+    private Task OnOverlayClose(string finalValue)
+    {
+        _searchText = finalValue;
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 
     private void Search()

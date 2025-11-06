@@ -142,6 +142,15 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 
         if (null != entity.PrimaryGenreIds)
         {
+            await DeleteMissingManyAsync(
+                table: "album_genre",
+                keyColumn: AlbumGenreColumns.AlbumId,
+                targetColumn: AlbumGenreColumns.GenreId,
+                keyValue: entity.Id,
+                newValues: entity.PrimaryGenreIds,
+                connection: connection,
+                transaction: transaction);
+            
             foreach (var primaryGenre in entity.PrimaryGenreIds)
             {
                 var primaryGenreSql = BuildInsert("album_genre",
@@ -163,6 +172,15 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 
         if (null != entity.InfluenceGenreIds)
         {
+            await DeleteMissingManyAsync(
+                table: "album_influence",
+                keyColumn: AlbumInfluenceColumns.AlbumId,
+                targetColumn: AlbumInfluenceColumns.GenreId,
+                keyValue: entity.Id,
+                newValues: entity.InfluenceGenreIds,
+                connection: connection,
+                transaction: transaction);
+            
             foreach (var influenceGenre in entity.InfluenceGenreIds)
             {
                 var influenceGenreSql = BuildInsert("album_influence",
