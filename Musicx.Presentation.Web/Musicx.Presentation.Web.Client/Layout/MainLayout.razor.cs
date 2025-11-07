@@ -36,15 +36,14 @@ public partial class MainLayout
 
     private async Task OpenSearch(FocusEventArgs e)
     {
-        var domId = await JS.InvokeAsync<string>("searchOverlay.getElementId");
-        await _searchOverlay
+        await _searchOverlay.OpenFromNavAsync(".nav-search-field input");
     }
 
     private void SearchKeyDown(KeyboardEventArgs keyEvent)
     {
-        if (!string.IsNullOrWhiteSpace(_searchText) && keyEvent.Key == "Enter")
+        if (keyEvent.Key == "Enter")
         {
-            Search();
+            _ = _searchOverlay.OpenFromNavAsync(".nav-search-field input");
         }
     }
 

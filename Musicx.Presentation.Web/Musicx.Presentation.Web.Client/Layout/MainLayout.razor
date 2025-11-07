@@ -39,6 +39,7 @@
         <!-- Search Box -->
         <MudTextField Immediate @bind-Value="_searchText" Label="Search" 
                       OnKeyDown="@SearchKeyDown" Variant="Variant.Filled"
+                      Class="nav-search-field" @onfocus="OpenSearch"
                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"/>
 
         <MudSpacer/>
@@ -114,7 +115,8 @@
         </MudContainer>
     </MudMainContent>
     
-    <SearchOverlay />
+    <SearchOverlay @ref="_searchOverlay"
+                   InitialValue="@_searchText"/>
 </MudLayout>
 
 <LoginModal @ref="_loginModal" />

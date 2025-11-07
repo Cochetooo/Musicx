@@ -121,7 +121,7 @@ public partial class AlbumEditModal
 
         try
         {
-            await Task.Delay(2000, _artworkCts.Token);
+            await Task.Delay(1_000, _artworkCts.Token);
 
             var content = await Http.GetStringAsync(
                 $"api/external/album?name={Uri.EscapeDataString(_album.Name)}&artist={Uri.EscapeDataString(_artist!.Name)}",

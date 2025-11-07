@@ -74,10 +74,10 @@ h1:focus {
 }
 
 .glass-paper {
-    background: rgba(var(--mud-palette-surface), 0.09);
+    background: rgba(0, 0, 0, 0.12);
     backdrop-filter: blur(8px) saturate(1.05);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(var(--mud-palette-surface), 0.1);
+    border: 1px solid rgba(var(--mud-palette-surface), 0.18);
     border-radius: 12px;
     padding: 1rem;
     box-shadow: 0 8px 30px rgba(2,6,23,0.45);

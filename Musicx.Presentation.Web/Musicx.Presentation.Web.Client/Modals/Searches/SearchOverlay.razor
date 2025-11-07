@@ -1,5 +1,115 @@
-﻿@inject IJSRuntime JS
+﻿@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Responses
+@inject IJSRuntime JS
+@inject IListUseCase<OutArtist> UcListArtists
+@inject IListUseCase<OutAlbum> UcListAlbums
+@inject IListUseCase<OutGenre> UcListGenres
+@inject IListUseCase<OutUser> UcListUsers
+@inject IListUseCase<OutSong> UcListSongs
+@inject NavigationManager Navigation
 
 <div class="search-overlay" @onclick="OnBackdropClick" style="display:@(IsOpen ? "block" : "none")">
+    <div class="overlay-backdrop" @onclick="OnBackdropClick"></div>
     
+    <div class="overlay-wrapper" @ref="_wrapperRef" role="dialog" aria-modal="true">
+        <MudPaper Class="search-modal glass-paper" Elevation="8" @onclick:stopPropagation>
+            <div class="search-input-row">
+                <MudTextField @ref="_mudInput"
+                              @bind-Value="_value"
+                              Immediate
+                              Placeholder="Search anything..."
+                              OnKeyDown="@OnKeyDownHandler"
+                              Variant="Variant.Filled"
+                              Class="search-input-mud"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Search"/>
+                
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Default"
+                               OnClick="@Close" Class="close-btn"/>
+            </div>
+            
+            <div class="search-body">
+                <div class="results-column">
+                    @if (_isLoading)
+                    {
+                        <div class="search-loading">
+                            <span class="loader"></span> 
+                            <span class="loading-text">Loading...</span>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(_value))
+                    {
+                        <div class="results-groups">
+                            @foreach (var group in _searchResults)
+                            {
+                                <div class="result-group">
+                                    <div class="group-header">
+                                        <MudText Typo="Typo.subtitle2" Class="group-title">
+                                            @group.Key (@group.Value.Count)
+                                        </MudText>
+                                    </div>
+                                    <MudList T="RenderFragment" Dense>
+                                        @foreach (var item in group.Value)
+                                        {
+                                            <MudListItem Class="result-item" OnClick="@(() => OnResultClick(item))">
+                                                <MudStack Row Spacing="2">
+                                                    @if (item.Image is not null)
+                                                    {
+                                                        <MudImage Src="@item.Image"
+                                                                  Width="48"
+                                                                  Height="48"
+                                                                  Class="rounded-lg"
+                                                                  Elevation="2"/>
+                                                    }
+
+                                                    <div>
+                                                        <span class="icon">@item.Icon</span>
+                                                        <span class="meta text-bold">@item.Title</span>
+                                                        <div class="sub text-color-secondary">@item.Subtitle</div>
+                                                    </div>
+                                                </MudStack>
+                                                
+                                            </MudListItem>
+                                        }
+                                    </MudList>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="search-hint">Type something to display results...</div>
+                    }
+                </div>
+                
+                <div class="filters-column">
+                    <MudPaper Elevation="0" Class="filters-panel glass-paper">
+                        <MudText Typo="Typo.h6">Filters</MudText>
+                        
+                        <div class="filter-row">
+                            <MudSelect T="string" @bind-Value="_sortBy" Dense>
+                                <MudSelectItem Value="@("relevance")">Relevance</MudSelectItem>
+                                <MudSelectItem Value="@("popularity")">Popularity</MudSelectItem>
+                                <MudSelectItem Value="@("recent")">Most Recent</MudSelectItem>
+                            </MudSelect>
+                        </div>
+                        <div class="filter-row">
+                            <MudCheckBox T="bool" @bind-Value="_groupResults" Label="Group by category" />
+                        </div>
+                        <div class="filter-row">
+                            <MudCheckBox T="bool" @bind-Value="_exactSearch" Label="Exact search" />
+                        </div>
+                        <div class="filter-row">
+                            <MudSlider Min="1" Max="50" @bind-Value="_maxResults" Step="1" />
+                            <div>@_maxResults</div>
+                        </div>
+                        <div class="actions">
+                            <MudIconButton Icon="@Icons.Material.Filled.Search" OnClick="@ApplyFilters" />
+                        </div>
+                    </MudPaper>
+                </div>
+            </div>
+        </MudPaper>
+    </div>
 </div>

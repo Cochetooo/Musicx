@@ -1,0 +1,65 @@
+﻿/* Overlay & backdrop */
+.search-overlay { position: fixed; inset: 0; z-index: 1400; pointer-events: none; }
+.overlay-backdrop {
+    position: fixed; inset: 0; background: rgba(10,10,12,0.6); opacity: 0; transition: opacity 220ms ease;
+    backdrop-filter: blur(3px);
+}
+.search-overlay[style*="display:block"] .overlay-backdrop { opacity: 1; pointer-events: auto; }
+/* wrapper centers the modal */
+.overlay-wrapper { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+
+/* the modal card */
+.search-modal {
+    width: min(1100px, 92%);
+    max-height: 82vh;
+    border-radius: 12px;
+    padding: 18px;
+    opacity: 0;
+    transform: translateY(8px) scale(0.995);
+    transition: opacity 200ms ease, transform 220ms cubic-bezier(.25,.1,.25,1);
+    overflow: hidden;
+}
+
+/* when overlay open (class toggled on documentElement by JS) */
+.search-overlay-open .overlay-backdrop { opacity: 1; pointer-events: auto; }
+.search-overlay-open .search-modal { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+/* input row */
+.search-input-row { position: relative; display:flex; align-items:center; gap:12px; }
+.search-input { width: 100%; }
+
+/* result layout */
+.search-body { display:flex; gap:16px; margin-top:16px; }
+.results-column { flex: 1 1 60%; overflow:auto; max-height:58vh; padding-right:8px; }
+.filters-column { width: 260px; flex: 0 0 260px; }
+
+/* group header */
+.result-group { margin-bottom: 12px; }
+.group-header { font-weight:700; margin-bottom:6px; }
+.result-item { display:flex; gap:8px; align-items:center; padding:8px; border-radius:6px; transition: background 120ms ease; }
+.result-item:hover { background: rgba(255,255,255,0.02); }
+
+/* loader */
+.search-loading { display:flex; gap:8px; align-items:center; padding:8px; color:#ddd; }
+.loader {
+    width:16px; height:16px; border-radius:50%;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-top-color: rgba(255,255,255,0.9);
+    animation: spin 900ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Close button */
+.close-btn { margin-left: 8px; }
+
+/* subtle transitions on height changes */
+.results-column, .filters-column { transition: all 180ms ease; }
+
+/* nav input (in AppBar) to identify source */
+.nav-search-field input { cursor: text; }
+
+/* optional: small responsive tweaks */
+@media (max-width: 900px) {
+    .search-modal { width: 96%; padding: 12px; }
+    .filters-column { display:none; }
+}

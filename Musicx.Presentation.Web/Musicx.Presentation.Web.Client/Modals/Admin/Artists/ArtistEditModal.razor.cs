@@ -101,7 +101,7 @@ public partial class ArtistEditModal
 
         try
         {
-            await Task.Delay(2000, _artworkCts.Token);
+            await Task.Delay(1_000, _artworkCts.Token);
 
             var content = await Http.GetStringAsync(
                 $"api/external/artist?name={Uri.EscapeDataString(_artist.Name)}",
