@@ -50,17 +50,11 @@ public partial class ArtistView
     };
     private string[] _xAxisChartLabels = [];
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-        {
-            return;
-        }
+    protected override async Task OnParametersSetAsync()
+        => await LoadArtist();
 
-        _logger = LoggerProvider.CreateLogger(nameof(ArtistView));
-
-        await LoadArtist();
-    }
+    protected override void OnInitialized()
+    => _logger = LoggerProvider.CreateLogger(nameof(ArtistView));
 
     private async Task LoadArtist()
     {

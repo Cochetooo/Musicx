@@ -26,7 +26,10 @@
 
 /* input row */
 .search-input-row { position: relative; display:flex; align-items:center; gap:12px; }
-.search-input { width: 100%; }
+.search-input-row input { 
+    font-size: 1.5rem !important;
+    text-align: center;
+}
 
 /* result layout */
 .search-body { display:flex; gap:16px; margin-top:16px; }

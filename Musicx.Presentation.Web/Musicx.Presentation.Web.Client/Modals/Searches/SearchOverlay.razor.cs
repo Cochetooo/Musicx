@@ -14,8 +14,7 @@ public partial class SearchOverlay
     private string _inputId = $"search-input-{Guid.NewGuid().ToString("N").Substring(0, 6)}";
     private bool IsOpen { get; set; }
     private string _value = "";
-
-    [Parameter] public string InitialValue { get; set; } = "";
+    
     [Parameter] public EventCallback<string> OnClose { get; set; }
     [Parameter] public EventCallback<string> OnQuery { get; set; }
 
@@ -28,16 +27,11 @@ public partial class SearchOverlay
     private Dictionary<string, List<SearchItem>> _searchResults = [];
     
     private CancellationTokenSource? _cts;
-    private bool _isLoading = false;
+    private bool _isLoading;
     private int _maxResults = 10;
     private string _sortBy = "relevance";
     private bool _groupResults = true;
-    private bool _exactSearch = false;
-
-    protected override void OnInitialized()
-    {
-        _value = InitialValue;
-    }
+    private bool _exactSearch;
 
     public async Task OpenFromNavAsync(string sourceSelector)
     {
@@ -107,7 +101,7 @@ public partial class SearchOverlay
         var token = _cts.Token;
         try
         {
-            await Task.Delay(1_000, _cts.Token);
+            await Task.Delay(300, token);
             
             _isLoading = true;
             ClearResults();
@@ -206,6 +200,7 @@ public partial class SearchOverlay
     private async Task OnResultClick(SearchItem item)
     {
         await Close();
+        _value = "";
         Navigation.NavigateTo($"/{item.Category}/{item.Id}");
     }
 

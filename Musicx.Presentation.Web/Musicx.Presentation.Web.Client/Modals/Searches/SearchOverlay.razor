@@ -1,4 +1,5 @@
-﻿@using Musicx.Application.Web.Interfaces.UseCases
+﻿@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Responses
 @inject IJSRuntime JS
 @inject IListUseCase<OutArtist> UcListArtists
@@ -7,6 +8,7 @@
 @inject IListUseCase<OutUser> UcListUsers
 @inject IListUseCase<OutSong> UcListSongs
 @inject NavigationManager Navigation
+@inject IUserClientContext UserClientContext
 
 <div class="search-overlay" @onclick="OnBackdropClick" style="display:@(IsOpen ? "block" : "none")">
     <div class="overlay-backdrop" @onclick="OnBackdropClick"></div>
@@ -64,9 +66,12 @@
                                                     }
 
                                                     <div>
-                                                        <span class="icon">@item.Icon</span>
-                                                        <span class="meta text-bold">@item.Title</span>
-                                                        <div class="sub text-color-secondary">@item.Subtitle</div>
+                                                        <MudText Typo="Typo.body1">
+                                                            @item.Icon @item.Title
+                                                        </MudText>
+                                                        <MudText Typo="Typo.body2" Class="text-color-secondary">
+                                                            @item.Subtitle
+                                                        </MudText>
                                                     </div>
                                                 </MudStack>
                                                 
