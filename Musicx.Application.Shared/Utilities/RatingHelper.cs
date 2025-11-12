@@ -58,7 +58,7 @@ public static class RatingHelper
                 }
             }
 
-            return SplitCamelCase(textual.ToString());
+            return textual.ToString().SplitCamelCase();
         }
         else if (ratingMode == RatingMode.Percentage)
         {
@@ -166,6 +166,29 @@ public static class RatingHelper
         return Stops[^1].color;
     }
     
-    private static string SplitCamelCase(string input)
-        => Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
+    public static int ToInt(this TextualRating r) => r switch
+    {
+        TextualRating.Hate => 15,
+        TextualRating.Meh => 35,
+        TextualRating.Neutral => 50,
+        TextualRating.Ok => 60,
+        TextualRating.Good => 70,
+        TextualRating.VeryGood => 80,
+        TextualRating.Excellent => 90,
+        TextualRating.Favourite => 100,
+        _ => 0
+    };
+
+    public static decimal GetDecimalStep(this RatingMode r) => r switch
+    {
+        RatingMode.OutOfFive => .5m,
+        RatingMode.OutOfTen => .5m,
+        RatingMode.OutOfTwenty => .5m,
+        RatingMode.OutOfFifty => 1,
+        RatingMode.OutOfThousand => 1,
+        RatingMode.Percentage => 1,
+        RatingMode.RatingStars => .5m,
+        _ => 1
+    };
+
 }

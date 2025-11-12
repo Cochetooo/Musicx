@@ -11,7 +11,8 @@
                       Value="@_searchText"
                       ValueChanged="@OnInput"/>
 
-        <MudSelect T="(string, bool)" Value="@SelectedSort" ValueChanged="@(v => RaiseSort(v))" Label="Sort By" Variant="Variant.Outlined">
+        <MudSelect T="(string, bool)" Value="@SelectedSort" ValueChanged="@(v => { SelectedSort = v; RaiseSort(v); })" 
+                   Label="Sort By" Variant="Variant.Outlined">
             <MudSelectItem Value="@(("ReleaseDate", false))">Release Date ↓</MudSelectItem>
             <MudSelectItem Value="@(("ReleaseDate", true))">Release Date ↑</MudSelectItem>
             <MudSelectItem Value="@(("Name", false))">Name ↓</MudSelectItem>
@@ -24,10 +25,13 @@
 
         <MudButtonGroup Size="Size.Medium">
             <MudIconButton Icon="@(_viewMode == ReleasesViewMode.List ? Icons.Material.Filled.List : Icons.Material.Outlined.List)"
+                           Variant="Variant.Filled"
                            OnClick="@(() => ChangeView(ReleasesViewMode.List))"/>
             <MudIconButton Icon="@(_viewMode == ReleasesViewMode.Grid ? Icons.Material.Filled.GridView : Icons.Material.Outlined.GridView)"
+                           Variant="Variant.Filled"
                            OnClick="@(() => ChangeView(ReleasesViewMode.Grid))"/>
             <MudIconButton Icon="@(_viewMode == ReleasesViewMode.Timeline ? Icons.Material.Filled.Timeline : Icons.Material.Outlined.Timeline)"
+                           Variant="Variant.Filled"
                            OnClick="@(() => ChangeView(ReleasesViewMode.Timeline))"/>
         </MudButtonGroup>
 

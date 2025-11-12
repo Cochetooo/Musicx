@@ -21,12 +21,21 @@ public partial class AlbumViewToolbar
         
     ];
     [Parameter] public (string, bool) SelectedSort { get; set; }
+    [Parameter] public RatingMode? InitialRatingMode { get; set; }
 
     private string _searchText = string.Empty;
     private double _zoom = 1.0;
     private bool _groupBy;
     private ReleasesViewMode _viewMode = ReleasesViewMode.Grid;
     private RatingMode _selectedRatingMode = RatingMode.OutOfTen;
+
+    protected override void OnInitialized()
+    {
+        if (InitialRatingMode is not null)
+        {
+            _selectedRatingMode = InitialRatingMode.Value;
+        }
+    }
 
     void OnInput(string v) { _searchText = v; OnSearch.InvokeAsync(v); }
 

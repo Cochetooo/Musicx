@@ -91,13 +91,13 @@
             <MudStack Row Wrap="Wrap.Wrap" Spacing="1" Class="mt-2">
                 @foreach (var option in GetTextualOptions())
                 {
-                    var optionValue = MapTextual(option);
+                    var optionValue = option.ToInt();
                     <MudChip Style="@($"background-color:{RatingHelper.GetColorForRating(optionValue)};color:white;")"
                              Selected="@(Value == optionValue)"
                              OnClick="@(() => SetTextual(option))"
                              Variant="Variant.Filled"
                              T="string">
-                        @SplitCamelCase(option.ToString())
+                        @option.ToString().SplitCamelCase()
                     </MudChip>
                 }
             </MudStack>

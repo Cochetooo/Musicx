@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Presentation.Web.Client.Components.Ratings;
@@ -54,7 +55,7 @@ public partial class EditableRatingBadge
 
     private void SetTextual(TextualRating rating)
     {
-        Value = MapTextual(rating);
+        Value = rating.ToInt();
         ValueChanged.InvokeAsync(Value);
         _isOpen = false;
     }
@@ -69,7 +70,7 @@ public partial class EditableRatingBadge
     {
         if (e.Key == "Enter" && _editingValue.HasValue)
         {
-            Value = _editingValue.Value * 100 / MaxValue;
+            Value = (int)(_editingValue.Value * 100 / MaxValue);
             _isEditing = false;
             ValueChanged.InvokeAsync(Value);
         } 
@@ -98,22 +99,6 @@ public partial class EditableRatingBadge
     
     private IEnumerable<TextualRating> GetTextualOptions() =>
         RatingMode == RatingMode.TextualShort
-            ? new[] { TextualRating.Meh, TextualRating.Neutral, TextualRating.Good, TextualRating.Favourite }
+            ? [TextualRating.Meh, TextualRating.Neutral, TextualRating.Good, TextualRating.Favourite]
             : Enum.GetValues<TextualRating>();
-    
-    private static int MapTextual(TextualRating r) => r switch
-    {
-        TextualRating.Hate => 15,
-        TextualRating.Meh => 35,
-        TextualRating.Neutral => 50,
-        TextualRating.Ok => 60,
-        TextualRating.Good => 70,
-        TextualRating.VeryGood => 80,
-        TextualRating.Excellent => 90,
-        TextualRating.Favourite => 100,
-        _ => 0
-    };
-    
-    private static string SplitCamelCase(string input) =>
-        System.Text.RegularExpressions.Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
 }

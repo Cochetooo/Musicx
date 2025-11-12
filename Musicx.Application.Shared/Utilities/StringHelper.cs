@@ -1,4 +1,6 @@
-﻿namespace Musicx.Application.Shared.Utilities;
+﻿using System.Text.RegularExpressions;
+
+namespace Musicx.Application.Shared.Utilities;
 
 public static class StringHelper
 {
@@ -27,4 +29,7 @@ public static class StringHelper
         
         return d[n, m];
     }
+    
+    public static string SplitCamelCase(this string input) =>
+        Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
 }

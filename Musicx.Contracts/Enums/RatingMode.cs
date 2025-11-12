@@ -29,5 +29,11 @@ public enum RatingMode
     TextualShort = 7,
     
     [Description("🏷️ Tags Detailed")]
-    TextualDetailed = 8
+    TextualDetailed = 8,
+    
+    [Description("🅰️ Tier List")]
+    TierList = 9,
+    
+    [Description("🅱️ Detailed Tier List")]
+    TierListDetailed = 10,
 }
