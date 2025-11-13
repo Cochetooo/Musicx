@@ -41,6 +41,7 @@ public static class GenreMapper
         
         Color = genre.SafeGet<string>(GenreColumns.Color),
         Description = genre.SafeGet<string>(GenreColumns.Description),
+        IsVisible = genre.SafeGet<bool>(GenreColumns.IsVisible),
         Name = genre.SafeGet<string>(GenreColumns.Name) ?? "",
         Type = genre.SafeGet<GenreType>(GenreColumns.Type),
     };
@@ -51,7 +52,8 @@ public static class GenreMapper
 
         ParentIds = genre.Parents?.Select(g => g.Id).ToList(),
         ChildIds = genre.Children?.Select(g => g.Id).ToList(),
-
+        
+        IsVisible = genre.IsVisible,
         Name = genre.Name,
         Type = genre.Type,
         

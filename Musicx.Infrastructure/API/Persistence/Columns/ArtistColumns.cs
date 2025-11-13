@@ -15,6 +15,7 @@ public static class ArtistColumns
     public const string CurrentRegion = "artist_current_region";
     public const string CurrentTown = "artist_current_town";
     public const string Description = "artist_description";
+    public const string IsVisible = "artist_is_visible";
     public const string Name = "artist_name";
     public const string OriginCountry = "artist_origin_country";
     public const string OriginRegion = "artist_origin_region";

@@ -6,6 +6,7 @@ public sealed class InLabel : BaseInputModel
     public IReadOnlyList<long> ReleaseIds { get; set; } = [];
     
     // Required Columns
+    public bool IsVisible { get; set; }
     public string Name { get; set; } = null!;
     
     // Optional Columns

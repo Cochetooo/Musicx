@@ -6,6 +6,7 @@ public sealed class InArtist : BaseInputModel
 {
     // Required Columns
     public ArtistDiscriminator Discriminator { get; set; }
+    public bool IsVisible { get; set; }
     public string Name { get; set; } = string.Empty;
     
     // Optional Relationships

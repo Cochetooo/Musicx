@@ -10,6 +10,7 @@ public sealed class InAlbum : BaseInputModel
     public IReadOnlyList<long>? InfluenceGenreIds { get; set; }
     
     // Required Columns
+    public bool IsVisible { get; set; }
     public string Name { get; set; } = string.Empty;
 
     // Optional Relationships
@@ -22,8 +23,9 @@ public sealed class InAlbum : BaseInputModel
     public int? DiscTotal { get; set; }
     public DateTime? EndRecordDate { get; set; }
     public string? EnglishName { get; set; }
+    public bool IsExplicitContent { get; set; }
     public bool IsFarRight { get; set; }
-    public bool IsNsfw { get; set; }
+    public bool IsGraphicContent { get; set; }
     public string? Language { get; set; }
     public DateTime? OriginalReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }

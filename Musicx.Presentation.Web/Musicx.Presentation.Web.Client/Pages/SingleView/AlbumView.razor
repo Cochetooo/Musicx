@@ -53,11 +53,11 @@ else
                          @onclick="() => _isArtworkRevealed = !_isArtworkRevealed">
                         <MudImage Src="@_album.ArtworkUrl"
                                   Elevation="8"
-                                  Class="@($"rounded-lg {(_album.IsNsfw && !_isArtworkRevealed ? "blurred" : "")}")"
+                                  Class="@($"rounded-lg {(_album.IsExplicitContent && !_isArtworkRevealed ? "blurred" : "")}")"
                                   ObjectFit="ObjectFit.Cover"
                                   Style="width: 100%; aspect-ratio: 1 / 1;" />
 
-                        @if (_album.IsNsfw && !_isArtworkRevealed)
+                        @if (_album.IsExplicitContent && !_isArtworkRevealed)
                         {
                             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
                                         background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px;">

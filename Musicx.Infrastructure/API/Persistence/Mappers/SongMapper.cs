@@ -50,6 +50,7 @@ public static class SongMapper
 
         DiscNumber = song.SafeGet<int>(SongColumns.DiscNumber),
         Duration = song.SafeGet<long>(SongColumns.Duration),
+        IsVisible = song.SafeGet<bool>(SongColumns.IsVisible),
         Lyrics = song.SafeGet<string>(SongColumns.Lyrics),
         Title = song.SafeGet<string>(SongColumns.Title) ?? "",
         TrackNumber = song.SafeGet<int>(SongColumns.TrackNumber),
@@ -67,6 +68,7 @@ public static class SongMapper
 
         DiscNumber = song.DiscNumber,
         Duration = song.Duration,
+        IsVisible = song.IsVisible,
         Lyrics = song.Lyrics,
         Title = song.Title,
         TrackNumber = song.TrackNumber,

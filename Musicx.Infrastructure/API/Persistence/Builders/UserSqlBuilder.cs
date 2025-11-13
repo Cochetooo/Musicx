@@ -24,6 +24,7 @@ internal sealed class UserSqlBuilder(
             {
                 { UserColumns.CreatedAt, DateTime.Now },
                 { UserColumns.UpdatedAt, DateTime.Now },
+                { UserColumns.Biography, entity.Biography },
                 { UserColumns.BirthDate, entity.BirthDate },
                 { UserColumns.Email, entity.Email },
                 { UserColumns.EmailConfirmed, entity.EmailConfirmed },
@@ -34,6 +35,7 @@ internal sealed class UserSqlBuilder(
                 { UserColumns.LastFmUsername, entity.LastFmUsername },
                 { UserColumns.PrefDarkMode, entity.PrefDarkMode },
                 { UserColumns.PrefRatingMode, entity.PrefRatingMode },
+                { UserColumns.PrefShowRatings, entity.PrefShowRatings },
                 { UserColumns.PrefSimpleGenre, entity.PrefSimpleGenre },
                 { UserColumns.PictureUrl, entity.PictureUrl }
             }, UserColumns.Id);
@@ -85,6 +87,7 @@ internal sealed class UserSqlBuilder(
             new Dictionary<string, object?>
             {
                 { UserColumns.UpdatedAt, DateTime.Now },
+                { UserColumns.Biography, entity.Biography },
                 { UserColumns.BirthDate, entity.BirthDate },
                 { UserColumns.Email, entity.Email },
                 { UserColumns.EmailConfirmed, entity.EmailConfirmed },
@@ -95,6 +98,7 @@ internal sealed class UserSqlBuilder(
                 { UserColumns.LastFmUsername, entity.LastFmUsername },
                 { UserColumns.PrefDarkMode, entity.PrefDarkMode },
                 { UserColumns.PrefRatingMode, entity.PrefRatingMode },
+                { UserColumns.PrefShowRatings, entity.PrefShowRatings },
                 { UserColumns.PrefSimpleGenre, entity.PrefSimpleGenre },
                 { UserColumns.PictureUrl, entity.PictureUrl }
             });

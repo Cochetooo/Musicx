@@ -21,7 +21,7 @@ internal record SqlQuery (
 internal abstract class SqlBuilder<T> where T : BaseInputModel
 {
     /// <summary>
-    /// Executes an INSERT operatin for the given entity.
+    /// Executes an INSERT operation for the given entity.
     /// </summary>
     internal abstract Task<object?> ExecuteInsert(T entity, 
         NpgsqlConnection connection, NpgsqlTransaction? transaction = null);

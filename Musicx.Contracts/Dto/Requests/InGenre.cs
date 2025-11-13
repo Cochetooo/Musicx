@@ -9,6 +9,7 @@ public sealed class InGenre : BaseInputModel
     public IReadOnlyList<long>? ParentIds { get; set; } = [];
     
     // Required Columns
+    public bool IsVisible { get; set; }
     public string Name { get; set; } = null!;
     public GenreType Type { get; set; }
     

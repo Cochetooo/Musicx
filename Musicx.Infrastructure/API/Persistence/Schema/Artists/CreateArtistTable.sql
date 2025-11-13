@@ -16,6 +16,7 @@ create table public.artists (
     artist_current_region           text,
     artist_current_town             text,
     artist_description              text,
+    artist_is_visible               bool not null default false,
     artist_name                     text not null,
     artist_origin_country           text,
     artist_origin_region            text,

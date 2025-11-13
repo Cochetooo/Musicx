@@ -6,6 +6,7 @@ public sealed class OutUser : BaseOutputModel
 {
     public ICollection<OutRole>? Roles { get; set; }
     
+    public string? Biography { get; set; }
     public DateTime? BirthDate { get; set; }
     public string Email { get; set; } = string.Empty;
     public bool EmailConfirmed { get; set; }
@@ -17,5 +18,6 @@ public sealed class OutUser : BaseOutputModel
     public string? PictureUrl { get; set; }
     public bool PrefDarkMode { get; set; }
     public RatingMode PrefRatingMode { get; set; }
+    public bool PrefShowRatings { get; set; }
     public bool PrefSimpleGenre { get; set; }
 }

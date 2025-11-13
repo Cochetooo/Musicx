@@ -8,6 +8,7 @@ public sealed class OutGenre : BaseOutputModel
     public IReadOnlyList<OutGenre>? Children { get; set; }
     public IReadOnlyList<OutGenre>? Parents { get; set; }
     
+    public bool IsVisible { get; set; }
     public string Name { get; set; } = null!;
     public GenreType Type { get; set; }
     

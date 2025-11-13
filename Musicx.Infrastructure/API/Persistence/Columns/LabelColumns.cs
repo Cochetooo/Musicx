@@ -8,5 +8,6 @@ public static class LabelColumns
     public const string UpdatedAt = "label_updated_at";
     
     public const string Description = "label_description";
+    public const string IsVisible = "label_is_visible";
     public const string Name = "label_name";
 }

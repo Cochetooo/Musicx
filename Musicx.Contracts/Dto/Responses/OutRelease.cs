@@ -6,5 +6,6 @@ public sealed class OutRelease : BaseOutputModel
     public OutLabel? Label { get; set; }
 
     public string CatalogNumber { get; set; } = null!;
+    public bool IsVisible { get; set; }
     public DateTime? ReleaseDate { get; set; }
 }

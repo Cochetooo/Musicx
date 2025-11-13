@@ -12,6 +12,7 @@ public static class SongColumns
     
     public const string DiscNumber = "song_disc_number";
     public const string Duration = "song_duration";
+    public const string IsVisible = "song_is_visible";
     public const string Lyrics = "song_lyrics";
     public const string Title = "song_title";
     public const string TrackNumber = "song_track_number";

@@ -7,6 +7,7 @@ public static class UserColumns
     public const string CreatedAt = "user_created_at";
     public const string UpdatedAt = "user_updated_at";
 
+    public const string Biography = "user_biography";
     public const string BirthDate = "user_birth_date";
     public const string Email = "user_email";
     public const string EmailConfirmed = "user_email_confirmed";
@@ -17,6 +18,7 @@ public static class UserColumns
     public const string PasswordSalt = "user_password_salt";
     public const string PrefDarkMode = "user_pref_dark_mode";
     public const string PrefRatingMode = "user_pref_rating_mode";
+    public const string PrefShowRatings = "user_pref_show_ratings";
     public const string PrefSimpleGenre = "user_pref_simple_genre";
     public const string PictureUrl = "user_picture_url";
 }

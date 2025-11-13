@@ -12,6 +12,7 @@ create table public.songs (
     song_artist_id              bigint references public.artists,
     song_disc_number            integer,
     song_duration               bigint,
+    song_is_visible             bool not null default false,
     song_lyrics                 text,
     song_title                  text not null,
     song_track_number           integer,

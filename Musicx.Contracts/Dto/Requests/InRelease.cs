@@ -7,6 +7,7 @@ public sealed class InRelease : BaseInputModel
     
     // Required Columns
     public string CatalogNumber { get; set; } = null!;
+    public bool IsVisible { get; set; }
 
     // Optional Relationships
     public long? LabelId { get; set; }

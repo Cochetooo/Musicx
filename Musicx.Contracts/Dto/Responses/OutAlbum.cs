@@ -18,8 +18,10 @@ public sealed class OutAlbum : BaseOutputModel
     public int? DiscTotal { get; set; }
     public DateTime? EndRecordDate { get; set; }
     public string? EnglishName { get; set; }
+    public bool IsExplicitContent { get; set; }
     public bool IsFarRight { get; set; }
-    public bool IsNsfw { get; set; }
+    public bool IsGraphicContent { get; set; }
+    public bool IsVisible { get; set; }
     public string? Language { get; set; }
     public string Name { get; set; } = null!;
     public DateTime? OriginalReleaseDate { get; set; }

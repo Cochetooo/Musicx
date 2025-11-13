@@ -14,6 +14,7 @@ public sealed class OutSong : BaseOutputModel
     
     public int? DiscNumber { get; set; }
     public long? Duration { get; set; }
+    public bool IsVisible { get; set; }
     public string? Lyrics { get; set; }
     public string Title { get; set; } = null!;
     public int? TrackNumber { get; set; }

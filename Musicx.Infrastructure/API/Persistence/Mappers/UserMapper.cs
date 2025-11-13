@@ -30,6 +30,7 @@ public static class UserMapper
                 RoleMapperJsonOptions)
             : null,
 
+        Biography = user.SafeGet<string>(UserColumns.Biography),
         BirthDate = user.SafeGet<DateTime>(UserColumns.BirthDate),
         Email = user.SafeGet<string>(UserColumns.Email) ?? "",
         EmailConfirmed = user.SafeGet<bool>(UserColumns.EmailConfirmed),
@@ -40,6 +41,7 @@ public static class UserMapper
         PasswordSalt = user.SafeGet<string>(UserColumns.PasswordSalt),
         PrefDarkMode = user.SafeGet<bool>(UserColumns.PrefDarkMode),
         PrefRatingMode = user.SafeGet<RatingMode>(UserColumns.PrefRatingMode),
+        PrefShowRatings = user.SafeGet<bool>(UserColumns.PrefShowRatings),
         PrefSimpleGenre = user.SafeGet<bool>(UserColumns.PrefSimpleGenre),
         PictureUrl = user.SafeGet<string?>(UserColumns.PictureUrl),
     };
@@ -50,11 +52,17 @@ public static class UserMapper
 
         RoleIds = user.Roles?.Select(r => r.Id).ToList(),
 
+        Biography = user.Biography,
         BirthDate = user.BirthDate,
         Email = user.Email,
         EmailConfirmed = user.EmailConfirmed,
         Name = user.Name,
         GoogleId = user.GoogleId,
-        LastFmUsername = user.LastFmUsername
+        LastFmUsername = user.LastFmUsername,
+        PrefDarkMode = user.PrefDarkMode,
+        PrefRatingMode = user.PrefRatingMode,
+        PrefShowRatings = user.PrefShowRatings,
+        PrefSimpleGenre = user.PrefSimpleGenre,
+        PictureUrl = user.PictureUrl,
     };
 }

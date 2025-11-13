@@ -9,6 +9,7 @@ public static class GenreColumns
     
     public const string Color = "genre_color";
     public const string Description = "genre_description";
+    public const string IsVisible = "genre_is_visible";
     public const string Name = "genre_name";
     public const string Type = "genre_type";
 }

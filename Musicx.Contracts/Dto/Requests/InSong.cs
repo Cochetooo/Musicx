@@ -12,6 +12,7 @@ public sealed class InSong : BaseInputModel
     public IReadOnlyList<long>? InfluenceGenreIds { get; set; } = [];
 
     // Required Columns
+    public bool IsVisible { get; set; }
     public string Title { get; set; } = string.Empty;
     public SongType Type { get; set; }
 

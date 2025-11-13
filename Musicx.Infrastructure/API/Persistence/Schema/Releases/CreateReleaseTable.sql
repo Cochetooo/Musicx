@@ -11,6 +11,7 @@ create table public.releases (
     release_album_id            bigint references public.albums,
     release_label_id            bigint references public.labels,
     release_catalog_number      text not null,
+    release_is_visible          bool not null default false,
     release_release_date        timestamp without time zone
 );
 

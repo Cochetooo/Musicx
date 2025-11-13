@@ -13,6 +13,7 @@ public sealed class OutArtist : BaseOutputModel
     public string? CurrentTown { get; set; }
     public string? Description { get; set; }
     public ArtistDiscriminator Discriminator { get; set; }
+    public bool IsVisible { get; set; }
     public string Name { get; set; } = null!;
     public string? OriginCountry { get; set; }
     public string? OriginRegion { get; set; }

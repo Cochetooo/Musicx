@@ -22,6 +22,9 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
         AlbumChartQuery query);
 }
 public interface IArtistRepository : IRepository<InArtist, OutArtist>;
+public interface IEventRepository : IRepository<InEvent, OutEvent>;
+public interface IEventArtistRepository : IRepository<InEventArtist, OutEventArtist>;
+public interface IEventUserRepository : IRepository<InEventUser, OutEventUser>;
 public interface IGenreRepository : IRepository<InGenre, OutGenre>;
 public interface ILabelRepository : IRepository<InLabel, OutLabel>;
 public interface IReleaseRepository : IRepository<InRelease, OutRelease>;
@@ -35,6 +38,8 @@ public interface ISongRepository : IRepository<InSong, OutSong>
 public interface IPermissionRepository : IRepository<InPermission, OutPermission>;
 
 public interface IRoleRepository : IRepository<InRole, OutRole>;
+
+public interface ITagRepository : IRepository<InTag, OutTag>;
 
 public interface IUserRepository : IRepository<InUser, OutUser>
 {

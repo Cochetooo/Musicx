@@ -11,5 +11,6 @@ public static class ReleaseColumns
     public const string LabelId = "release_label_id";
     
     public const string CatalogNumber = "release_catalog_number";
+    public const string IsVisible = "release_is_visible";
     public const string ReleaseDate = "release_release_date";
 }

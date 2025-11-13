@@ -24,6 +24,7 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { GenreColumns.UpdatedAt, DateTime.Now },
                 { GenreColumns.Color, entity.Color },
                 { GenreColumns.Description, entity.Description },
+                { GenreColumns.IsVisible, entity.IsVisible },
                 { GenreColumns.Name, entity.Name },
                 { GenreColumns.Type, entity.Type }
             },
@@ -78,6 +79,7 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { GenreColumns.UpdatedAt, DateTime.Now },
                 { GenreColumns.Color, entity.Color },
                 { GenreColumns.Description, entity.Description },
+                { GenreColumns.IsVisible, entity.IsVisible },
                 { GenreColumns.Name, entity.Name },
                 { GenreColumns.Type, entity.Type }
             });
