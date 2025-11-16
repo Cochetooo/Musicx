@@ -160,7 +160,7 @@ internal sealed class UserAlbumAttrRepository(
     public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindByAlbumIdAsync(long albumId, 
         long skip = 0, long take = 100, string? order = null)
     {
-        var sql = builder.BuildSelect(null);
+        var sql = builder.BuildSelect();
         var parameters = new List<NpgsqlParameter>();
 
         sql += $" WHERE {UserAlbumAttrColumns.AlbumId} = @albumId";
@@ -184,7 +184,7 @@ internal sealed class UserAlbumAttrRepository(
         bool? filterExact = null, double? filterSimilitude = 0.4,
         string? filter = null, string? order = null)
     {
-        var sql = builder.BuildSelect(null);
+        var sql = builder.BuildSelect();
         var parameters = new List<NpgsqlParameter>();
 
         sql += $" WHERE {UserAlbumAttrColumns.UserId} = @userId";

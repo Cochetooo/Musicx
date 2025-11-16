@@ -793,3 +793,5 @@ INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id
 INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id, childrengenre_parentgenre_parent_id) VALUES (686, 110);
 INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id, childrengenre_parentgenre_parent_id) VALUES (686, 51);
 INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id, childrengenre_parentgenre_parent_id) VALUES (687, 686);
+INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id, childrengenre_parentgenre_parent_id) VALUES (688, 332);
+INSERT INTO public.childrengenre_parentgenre (childrengenre_parentgenre_child_id, childrengenre_parentgenre_parent_id) VALUES (689, 3);

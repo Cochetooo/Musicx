@@ -8,13 +8,12 @@
 @inject IListUseCase<OutUser> UcListUsers
 @inject IListUseCase<OutSong> UcListSongs
 @inject NavigationManager Navigation
-@inject IUserClientContext UserClientContext
 
 <div class="search-overlay" @onclick="OnBackdropClick" style="display:@(IsOpen ? "block" : "none")">
     <div class="overlay-backdrop" @onclick="OnBackdropClick"></div>
     
     <div class="overlay-wrapper" @ref="_wrapperRef" role="dialog" aria-modal="true">
-        <MudPaper Class="search-modal glass-paper" Elevation="8" @onclick:stopPropagation>
+        <MudPaper Class="search-modal glass-paper animate-fade-in" Elevation="8" @onclick:stopPropagation>
             <div class="search-input-row">
                 <MudTextField @ref="_mudInput"
                               @bind-Value="_value"
@@ -54,7 +53,7 @@
                                     <MudList T="RenderFragment" Dense>
                                         @foreach (var item in group.Value)
                                         {
-                                            <MudListItem Class="result-item" OnClick="@(() => OnResultClick(item))">
+                                            <MudListItem Class="result-item animate-fade-in" OnClick="@(() => OnResultClick(item))">
                                                 <MudStack Row Spacing="2">
                                                     @if (item.Image is not null)
                                                     {

@@ -196,7 +196,6 @@ public partial class SearchOverlay
         }
     }
 
-
     private async Task OnResultClick(SearchItem item)
     {
         await Close();
