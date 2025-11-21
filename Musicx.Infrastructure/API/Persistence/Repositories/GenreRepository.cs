@@ -79,7 +79,7 @@ internal sealed class GenreRepository(
         {
             builder.Filter(
                 sql: ref sql, 
-                column: $"g0.{GenreColumns.Name}", 
+                column: $"g0.{GenreColumns.CanonicalName}", 
                 filter: filter,
                 parameters: parameters, 
                 filterExact: filterExact, 
@@ -91,11 +91,11 @@ internal sealed class GenreRepository(
         
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            sql += builder.BuildOrderBy($"similarity(g0.{GenreColumns.Name}, @filter) DESC");
+            sql += builder.BuildOrderBy($"similarity(g0.{GenreColumns.CanonicalName}, @filter) DESC");
         }
         else
         {
-            sql += builder.BuildOrderBy($"g0.{GenreColumns.Name}");
+            sql += builder.BuildOrderBy($"g0.{GenreColumns.CanonicalName}");
         }
         
         sql += " OFFSET @skip LIMIT @take";
@@ -122,7 +122,7 @@ internal sealed class GenreRepository(
         var sql = builder.BuildSelect(genreQuerySpecification);
         sql += $" WHERE g0.{GenreColumns.Id} IN ({stringIds})" +
                builder.BuildGroupBy(genreQuerySpecification) +
-               $" ORDER BY g0.{GenreColumns.Name}";
+               $" ORDER BY g0.{GenreColumns.CanonicalName}";
         
         var result = await connection.FetchListDynamicAsync(sql, []);
         

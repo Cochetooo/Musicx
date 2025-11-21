@@ -25,7 +25,7 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { GenreColumns.Color, entity.Color },
                 { GenreColumns.Description, entity.Description },
                 { GenreColumns.IsVisible, entity.IsVisible },
-                { GenreColumns.Name, entity.Name },
+                { GenreColumns.CanonicalName, entity.Name },
                 { GenreColumns.Type, entity.Type }
             },
             returningColumn: GenreColumns.Id);
@@ -80,7 +80,7 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { GenreColumns.Color, entity.Color },
                 { GenreColumns.Description, entity.Description },
                 { GenreColumns.IsVisible, entity.IsVisible },
-                { GenreColumns.Name, entity.Name },
+                { GenreColumns.CanonicalName, entity.Name },
                 { GenreColumns.Type, entity.Type }
             });
         

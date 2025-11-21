@@ -12,9 +12,11 @@ create extension if not exists citext;
 \i 'Artists/CreateArtistTable.sql'
 \i 'Labels/CreateLabelTable.sql'
 \i 'Genres/CreateGenreTable.sql'
+\i 'Facets/CreateFacetTable.sql'
 \i 'Albums/CreateAlbumTable.sql'
 \i 'Releases/CreateReleaseTable.sql'
 \i 'Songs/CreateSongTable.sql'
+\i 'Events/CreateEventTable.sql'
 
 \i 'Tags/CreateTagTable.sql'
 

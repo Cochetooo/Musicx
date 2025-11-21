@@ -42,7 +42,7 @@ public static class GenreMapper
         Color = genre.SafeGet<string>(GenreColumns.Color),
         Description = genre.SafeGet<string>(GenreColumns.Description),
         IsVisible = genre.SafeGet<bool>(GenreColumns.IsVisible),
-        Name = genre.SafeGet<string>(GenreColumns.Name) ?? "",
+        Name = genre.SafeGet<string>(GenreColumns.CanonicalName) ?? "",
         Type = genre.SafeGet<GenreType>(GenreColumns.Type),
     };
 
