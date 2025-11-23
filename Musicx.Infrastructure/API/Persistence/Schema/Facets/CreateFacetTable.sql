@@ -9,7 +9,7 @@ create table public.facets (
     facet_created_at                    timestamp without time zone,
     facet_updated_at                    timestamp without time zone,
     facet_name                          text not null unique,
-    facet_type                          text not null,
+    facet_type                          integer not null default 0,
     facet_description                   text
 );
 

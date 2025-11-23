@@ -29,6 +29,5 @@ create index ix_genres_trgm on public.genres using GIN (genre_canonical_name gin
 \i 'Genres/CreateGenreAliasTable.sql'
 \i 'Genres/CreateGenreRelationTable.sql'
 \i 'Genres/CreateGenreClosureTable.sql'
-\i 'Genres/CreateSceneTable.sql'
 
 \i 'Genres/CreateChildrenParentGenreTable.sql'

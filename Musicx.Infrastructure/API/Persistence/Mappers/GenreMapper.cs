@@ -54,7 +54,7 @@ public static class GenreMapper
         ChildIds = genre.Children?.Select(g => g.Id).ToList(),
         
         IsVisible = genre.IsVisible,
-        Name = genre.Name,
+        CanonicalName = genre.Name,
         Type = genre.Type,
         
         Description = genre.Description,

@@ -111,7 +111,7 @@ public partial class GenreEditModal
 
     private async void NameTextChanged(string newValue)
     {
-        _genre.Name = newValue;
+        _genre.CanonicalName = newValue;
         await ValidateNameExists(newValue);
     }
 
@@ -190,11 +190,11 @@ public partial class GenreEditModal
         var joined = string.Join(" ", genreNames);
         if (!string.IsNullOrWhiteSpace(_fusionPrefix))
         {
-            _genre.Name = $"{_fusionPrefix} {joined}".Trim();
+            _genre.CanonicalName = $"{_fusionPrefix} {joined}".Trim();
         }
         else
         {
-            _genre.Name = joined;
+            _genre.CanonicalName = joined;
         }
     }
     
@@ -203,7 +203,7 @@ public partial class GenreEditModal
         get
         {
             if (_selectedType is null) return false;
-            if (string.IsNullOrWhiteSpace(_genre.Name)) return false;
+            if (string.IsNullOrWhiteSpace(_genre.CanonicalName)) return false;
             if (!_isNameAvailable) return false;
             // pour Subgenre, require at least one parent
             if (_selectedType == GenreType.Subgenre && !_selectedParents.Any()) return false;

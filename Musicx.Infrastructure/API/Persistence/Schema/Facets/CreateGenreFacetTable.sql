@@ -10,7 +10,7 @@ create table public.genre_facet (
     genre_facet_created_at          timestamp without time zone,
     genre_facet_updated_at          timestamp without time zone,
     genre_facet_value               text not null,
-    genre_facet_confidence          numeric(5,4) default 0.8 check (genre_facet_confidence >= 0 and genre_facet_confidence <= 1),
+    genre_facet_confidence          numeric(5,4) not null default 0.8 check (genre_facet_confidence >= 0 and genre_facet_confidence <= 1),
     genre_facet_metadata            jsonb default '{}'::jsonb,
     unique (genre_facet_genre_id, genre_facet_facet_id, genre_facet_value)
 );

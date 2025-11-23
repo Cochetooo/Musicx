@@ -60,8 +60,8 @@
                                       Immediate
                                       TextChanged="NameTextChanged"
                                       Required="true"
-                                      For="@(()=> _genre.Name)" />
-                        @if (!_isNameAvailable && !string.IsNullOrWhiteSpace(_genre.Name))
+                                      For="@(()=> _genre.CanonicalName)" />
+                        @if (!_isNameAvailable && !string.IsNullOrWhiteSpace(_genre.CanonicalName))
                         {
                             <MudText Color="Color.Error" Typo="Typo.caption">A genre with that name already exists.</MudText>
                         }
@@ -208,7 +208,7 @@
 
                         <MudItem xs="12">
                             <!-- Disabled text field builds the name unless customize enabled -->
-                            <MudTextField T="string" Label="Fusion Name" @bind-Text="_genre.Name" Disabled="!_fusionCustomizeName" />
+                            <MudTextField T="string" Label="Fusion Name" @bind-Text="_genre.CanonicalName" Disabled="!_fusionCustomizeName" />
                             <MudText Typo="Typo.caption">If not customizing, name will be generated from prefix + selected genres.</MudText>
                         </MudItem>
 

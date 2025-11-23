@@ -8,6 +8,10 @@ public sealed class InUser : BaseInputModel
     public string Email { get; set; } = string.Empty;
     public bool EmailConfirmed { get; set; }
     public string Name { get; set; } = string.Empty;
+    public bool PrefDarkMode { get; set; }
+    public RatingMode PrefRatingMode { get; set; }
+    public bool PrefShowRatings { get; set; } = true;
+    public bool PrefSimpleGenre { get; set; }
     
     // Optional Relationships
     public IReadOnlyList<long>? RoleIds { get; set; }
@@ -20,9 +24,5 @@ public sealed class InUser : BaseInputModel
     public string? Password { get; set; }
     public string? PasswordHash { get; set; }
     public string? PasswordSalt { get; set; }
-    public bool? PrefDarkMode { get; set; }
-    public RatingMode? PrefRatingMode { get; set; }
-    public bool? PrefShowRatings { get; set; }
-    public bool? PrefSimpleGenre { get; set; }
     public string? PictureUrl { get; set; }
 }
