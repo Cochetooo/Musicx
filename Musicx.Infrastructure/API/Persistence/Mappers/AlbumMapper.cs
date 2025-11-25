@@ -20,6 +20,14 @@ public static class AlbumMapper
             new JsonToOutModelConverter<OutGenre>("genre")
         }
     };
+    
+    private static readonly JsonSerializerSettings ReleaseMapperJsonOptions = new()
+    {
+        Converters =
+        {
+            new JsonToOutModelConverter<OutRelease>("release")
+        }
+    };
 
     public static OutAlbum FromDicoToAlbum(this IDictionary<string, object?> album) => new()
     {
@@ -37,18 +45,18 @@ public static class AlbumMapper
         Releases = album.TryGetValue("releases", out var releaseValue)
                    && releaseValue is not null
             ? JsonConvert.DeserializeObject<OutRelease[]>(releaseValue as string ?? string.Empty,
-                GenreMapperJsonOptions)
+                ReleaseMapperJsonOptions)
             : null,
 
         PrimaryGenres = album.TryGetValue("primary_genres", out var primaryGenreValue)
                         && primaryGenreValue is not null
-            ? JsonConvert.DeserializeObject<OutGenre[]>(primaryGenreValue as string ?? string.Empty,
+            ? JsonConvert.DeserializeObject<OutAlbumGenre[]>(primaryGenreValue as string ?? string.Empty,
                 GenreMapperJsonOptions)
             : null,
 
         InfluenceGenres = album.TryGetValue("influence_genres", out var influenceGenreValue)
                           && influenceGenreValue is not null
-            ? JsonConvert.DeserializeObject<OutGenre[]>(influenceGenreValue as string ?? string.Empty,
+            ? JsonConvert.DeserializeObject<OutAlbumInfluence[]>(influenceGenreValue as string ?? string.Empty,
                 GenreMapperJsonOptions)
             : null,
         
@@ -87,8 +95,6 @@ public static class AlbumMapper
         
         ArtistId = album.ArtistId,
         ReleaseIds = album.Releases?.Select(r => r.Id).ToList(),
-        PrimaryGenreIds = album.PrimaryGenres?.Select(g => g.Id).ToList(),
-        InfluenceGenreIds = album.InfluenceGenres?.Select(g => g.Id).ToList(),
         
         ArtistAlias = album.ArtistAlias,
         ArtworkUrl = album.ArtworkUrl,

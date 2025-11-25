@@ -5,8 +5,10 @@ namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutGenre : BaseOutputModel
 {
-    public IReadOnlyList<OutGenre>? Children { get; set; }
-    public IReadOnlyList<OutGenre>? Parents { get; set; }
+    public IReadOnlyList<OutGenreClosure> Closures { get; set; } = [];
+    
+    public IReadOnlyList<OutGenreAlias>? Aliases { get; set; }
+    public IReadOnlyList<OutGenreRelation>? Relations { get; set; }
     
     public bool IsVisible { get; set; }
     public string Name { get; set; } = null!;

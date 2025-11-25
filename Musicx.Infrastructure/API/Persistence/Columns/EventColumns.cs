@@ -17,6 +17,7 @@ public static class EventColumns
     public const string Name = "event_name";
     public const string PosterUrl = "event_poster_url";
     public const string Prices = "event_prices";
+    public const string TicketLinks = "event_ticket_links";
     public const string Town = "event_town";
     public const string Venue = "event_venue";
     public const string ZipCode = "event_zip_code";

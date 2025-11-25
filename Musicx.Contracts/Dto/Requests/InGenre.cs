@@ -18,6 +18,6 @@ public sealed class InGenre : BaseInputModel
     public string? Description { get; set; }
     public DateTime? EraStart { get; set; }
     public DateTime? EraEnd { get; set; }
-    public JsonObject? Metadata { get; set; }
+    public string? Metadata { get; set; }
     public string? ShortName { get; set; }
 }

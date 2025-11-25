@@ -40,30 +40,6 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         }
         
         _logger.LogDebug("ℹ️ Id for new entity is : " + genreId);
-        
-        /*
-         * NOTE : It is technically impossible to generate Children when a new genre is created,
-         * Thus why we don't handle ChildIds here.
-         */
-
-        if (null != entity.ParentIds)
-        {
-            foreach (var parent in entity.ParentIds)
-            {
-                var parentSql = BuildInsert("childrengenre_parentgenre",
-                    new Dictionary<string, object?>
-                    {
-                        { ChildrenGenreParentGenreColumns.ChildId, genreId },
-                        { ChildrenGenreParentGenreColumns.ParentId, parent }
-                    });
-                
-                _logger.LogDebug(SqlHelper.InterpolateQuery(parentSql.Query, parentSql.Parameters));
-                
-                await using var cmd = new NpgsqlCommand(parentSql.Query, connection, transaction);
-                cmd.Parameters.AddRange(parentSql.Parameters.ToArray());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
 
         return genreId;
     }
@@ -91,27 +67,6 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             cmd.Parameters.AddRange(updateCommandSql.Parameters.ToArray());
             await cmd.ExecuteScalarAsync();
         }
-
-        if (null != entity.ParentIds)
-        {
-            foreach (var parent in entity.ParentIds)
-            {
-                var parentSql = BuildInsert("childrengenre_parentgenre",
-                    new Dictionary<string, object?>
-                    {
-                        { ChildrenGenreParentGenreColumns.ChildId, entity.Id },
-                        { ChildrenGenreParentGenreColumns.ParentId, parent }
-                    },
-                    conflictAction: SqlConflictAction.Nothing
-                );
-                
-                _logger.LogDebug(SqlHelper.InterpolateQuery(parentSql.Query, parentSql.Parameters));
-                
-                await using var cmd = new NpgsqlCommand(parentSql.Query, connection, transaction);
-                cmd.Parameters.AddRange(parentSql.Parameters.ToArray());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        } 
     }
 
     internal override string BuildSelect(IQuerySpecification<InGenre>? querySpecification = null, bool distinct = false)

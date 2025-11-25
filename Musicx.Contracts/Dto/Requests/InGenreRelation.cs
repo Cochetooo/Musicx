@@ -14,5 +14,5 @@ public sealed class InGenreRelation : BaseInputModel
     public float Weight { get; set; } = 1.0f;
     
     // Optional Columns
-    public JsonObject? Metadata { get; set; }
+    public string? Metadata { get; set; }
 }

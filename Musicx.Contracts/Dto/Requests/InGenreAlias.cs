@@ -12,5 +12,5 @@ public sealed class InGenreAlias : BaseInputModel
     
     // Optional Columns
     public string? Lang { get; set; }
-    public JsonObject? Metadata { get; set; }
+    public string? Metadata { get; set; }
 }

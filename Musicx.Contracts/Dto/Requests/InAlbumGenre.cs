@@ -15,5 +15,5 @@ public sealed class InAlbumGenre : BaseInputModel
     public GenreVoteSource Source { get; set; }
     
     // Optional Columns
-    public JsonObject? Metadata { get; set; }
+    public string? Metadata { get; set; }
 }

@@ -1,16 +1,18 @@
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
+using Musicx.Contracts.Enums;
 
 namespace Musicx.Contracts.Dto.Requests;
 
-public sealed class InGenreFacet : BaseInputModel
+public sealed class InAlbumInfluence : BaseInputModel
 {
     // Required Relationships
-    public long FacetId { get; set; }
+    public long AlbumId { get; set; }
     public long GenreId { get; set; }
+    public long TaggerId { get; set; }
     
     // Required Columns
     public float Confidence { get; set; } = 0.8f;
-    public string Value { get; set; } = null!;
+    public GenreVoteSource Source { get; set; }
     
     // Optional Columns
     public string? Metadata { get; set; }

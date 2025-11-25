@@ -6,8 +6,8 @@ public sealed class OutAlbum : BaseOutputModel
 {
     public OutArtist? Artist { get; set; }
     public ICollection<OutRelease>? Releases { get; set; }
-    public ICollection<OutGenre>? PrimaryGenres { get; set; }
-    public ICollection<OutGenre>? InfluenceGenres { get; set; }
+    public ICollection<OutAlbumGenre>? PrimaryGenres { get; set; }
+    public ICollection<OutAlbumInfluence>? InfluenceGenres { get; set; }
     public OutAlbumRatingStat? Stats { get; set; }
     
     public long? ArtistId { get; set; }

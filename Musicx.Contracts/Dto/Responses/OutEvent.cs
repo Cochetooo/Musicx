@@ -7,8 +7,8 @@ public sealed class OutEvent : BaseOutputModel
     public ICollection<OutEventArtist>? EventArtists { get; set; }
     public ICollection<OutEventUser>? EventUsers { get; set; }
 
-    public ICollection<EventPrice> EventPrices { get; set; } = [];
-    public ICollection<EventTicketLink> EventTicketLinks { get; set; } = [];
+    public ICollection<EventPrice>? EventPrices { get; set; } = [];
+    public ICollection<EventTicketLink>? EventTicketLinks { get; set; } = [];
     
     public string? Address { get; set; }
     public DateTime? BeginDate { get; set; }

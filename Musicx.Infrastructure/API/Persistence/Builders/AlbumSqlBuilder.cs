@@ -57,45 +57,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         {
             foreach (var release in entity.ReleaseIds)
             {
-
-            }
-        }
-
-        if (null != entity.PrimaryGenreIds)
-        {
-            foreach (var primaryGenre in entity.PrimaryGenreIds)
-            {
-                var primaryGenreSql = BuildInsert("album_genre",
-                    new Dictionary<string, object?>
-                    {
-                        { AlbumGenreColumns.AlbumId, albumId },
-                        { AlbumGenreColumns.GenreId, primaryGenre }
-                    });
                 
-                _logger.LogDebug(SqlHelper.InterpolateQuery(primaryGenreSql.Query, primaryGenreSql.Parameters));
-
-                await using var cmd = new NpgsqlCommand(primaryGenreSql.Query, connection, transaction);
-                cmd.Parameters.AddRange(primaryGenreSql.Parameters.ToArray());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        if (null != entity.InfluenceGenreIds)
-        {
-            foreach (var influenceGenre in entity.InfluenceGenreIds)
-            {
-                var influenceGenreSql = BuildInsert("album_influence",
-                    new Dictionary<string, object?>
-                    {
-                        { AlbumInfluenceColumns.AlbumId, albumId },
-                        { AlbumInfluenceColumns.GenreId, influenceGenre }
-                    });
-                
-                _logger.LogDebug(SqlHelper.InterpolateQuery(influenceGenreSql.Query, influenceGenreSql.Parameters));
-
-                await using var cmd = new NpgsqlCommand(influenceGenreSql.Query, connection, transaction);
-                cmd.Parameters.AddRange(influenceGenreSql.Parameters.ToArray());
-                await cmd.ExecuteNonQueryAsync();
             }
         }
         
@@ -141,66 +103,6 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             foreach (var release in entity.ReleaseIds)
             {
 
-            }
-        }
-
-        if (null != entity.PrimaryGenreIds)
-        {
-            await DeleteMissingManyAsync(
-                table: "album_genre",
-                keyColumn: AlbumGenreColumns.AlbumId,
-                targetColumn: AlbumGenreColumns.GenreId,
-                keyValue: entity.Id,
-                newValues: entity.PrimaryGenreIds,
-                connection: connection,
-                transaction: transaction);
-            
-            foreach (var primaryGenre in entity.PrimaryGenreIds)
-            {
-                var primaryGenreSql = BuildInsert("album_genre",
-                    new Dictionary<string, object?>
-                    {
-                        { AlbumGenreColumns.AlbumId, entity.Id },
-                        { AlbumGenreColumns.GenreId, primaryGenre }
-                    },
-                    conflictAction: SqlConflictAction.Nothing
-                );
-                
-                _logger.LogDebug(SqlHelper.InterpolateQuery(primaryGenreSql.Query, primaryGenreSql.Parameters));
-
-                await using var cmd = new NpgsqlCommand(primaryGenreSql.Query, connection, transaction);
-                cmd.Parameters.AddRange(primaryGenreSql.Parameters.ToArray());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        if (null != entity.InfluenceGenreIds)
-        {
-            await DeleteMissingManyAsync(
-                table: "album_influence",
-                keyColumn: AlbumInfluenceColumns.AlbumId,
-                targetColumn: AlbumInfluenceColumns.GenreId,
-                keyValue: entity.Id,
-                newValues: entity.InfluenceGenreIds,
-                connection: connection,
-                transaction: transaction);
-            
-            foreach (var influenceGenre in entity.InfluenceGenreIds)
-            {
-                var influenceGenreSql = BuildInsert("album_influence",
-                    new Dictionary<string, object?>
-                    {
-                        { AlbumInfluenceColumns.AlbumId, entity.Id },
-                        { AlbumInfluenceColumns.GenreId, influenceGenre }
-                    },
-                    conflictAction: SqlConflictAction.Nothing
-                );
-                
-                _logger.LogDebug(SqlHelper.InterpolateQuery(influenceGenreSql.Query, influenceGenreSql.Parameters));
-
-                await using var cmd = new NpgsqlCommand(influenceGenreSql.Query, connection, transaction);
-                cmd.Parameters.AddRange(influenceGenreSql.Parameters.ToArray());
-                await cmd.ExecuteNonQueryAsync();
             }
         }
     }

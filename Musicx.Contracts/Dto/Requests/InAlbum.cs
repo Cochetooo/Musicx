@@ -6,8 +6,6 @@ public sealed class InAlbum : BaseInputModel
 {
     // Required Relationships
     public IReadOnlyList<long>? ReleaseIds { get; set; }
-    public IReadOnlyList<long>? PrimaryGenreIds { get; set; }
-    public IReadOnlyList<long>? InfluenceGenreIds { get; set; }
     
     // Required Columns
     public bool IsVisible { get; set; }

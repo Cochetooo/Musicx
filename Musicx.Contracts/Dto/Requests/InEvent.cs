@@ -1,13 +1,14 @@
-﻿using Musicx.Contracts.Dto.Jsons.Events;
+﻿using System.Text.Json.Nodes;
+using Musicx.Contracts.Dto.Jsons.Events;
 
 namespace Musicx.Contracts.Dto.Requests;
 
 public sealed class InEvent : BaseInputModel
 {
-    // Required Relationships
-    public ICollection<EventPrice> EventPrices { get; set; } = [];
-    public ICollection<EventTicketLink> EventTicketLinks { get; set; } = [];
-    
+    // Optional Relationships
+    public string? EventPrices { get; set; }
+    public string? EventTicketLinks { get; set; }
+
     // Required Columns
     public bool IsFestival { get; set; }
     public bool IsVisible { get; set; }
