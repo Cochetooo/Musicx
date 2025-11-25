@@ -14,7 +14,7 @@ public static class GenreFacetMapper
         Genre = genreFacet.FromDicoToGenre(),
         
         Confidence = genreFacet.SafeGet<float>(GenreFacetColumns.Confidence),
-        Metadata = genreFacet.SafeGet<JsonObject?>(GenreFacetColumns.Metadata),
+        Metadata = genreFacet.SafeGet<string?>(GenreFacetColumns.Metadata),
         Value = genreFacet.SafeGet<string>(GenreFacetColumns.Value) ?? string.Empty,
     };
 
@@ -24,7 +24,7 @@ public static class GenreFacetMapper
         GenreId = genreFacet.Genre.Id,
         
         Confidence = genreFacet.Confidence,
-        Metadata = genreFacet.Metadata?.ToJsonString(),
+        Metadata = genreFacet.Metadata,
         Value = genreFacet.Value,
     };
 }

@@ -118,7 +118,7 @@
                         HelperText="Primary Genres"
                         @bind-Text="_selectedPrimaryText"
                         @bind-Value="_selectedPrimaryGenre"
-                        ToStringFunc="@(e => e?.Name ?? "")"
+                        ToStringFunc="@(e => e?.CanonicalName ?? "")"
                         SearchFunc="SearchGenre"/>
 
                     <MudIconButton Icon="@Icons.Material.Filled.Add"
@@ -142,7 +142,7 @@
                         HelperText="Influence Genres"
                         @bind-Text="_selectedInfluenceText"
                         @bind-Value="_selectedInfluenceGenre"
-                        ToStringFunc="@(e => e?.Name ?? "")"
+                        ToStringFunc="@(e => e?.CanonicalName ?? "")"
                         SearchFunc="SearchGenre"/>
 
                     <MudIconButton Icon="@Icons.Material.Filled.Add"

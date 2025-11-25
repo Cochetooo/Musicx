@@ -74,7 +74,7 @@ public partial class GenreEditModal
         if (null != genre)
         {
             _genre = genre.ToRaw();
-            await _nameTextEdit.SetText(genre.Name);
+            await _nameTextEdit.SetText(genre.CanonicalName);
             await InvokeAsync(StateHasChanged);
         }
     }
@@ -186,7 +186,7 @@ public partial class GenreEditModal
 
     private void BuildFusionName()
     {
-        var genreNames = _selectedParents.Select(g => g.Name).ToList();
+        var genreNames = _selectedParents.Select(g => g.CanonicalName).ToList();
         var joined = string.Join(" ", genreNames);
         if (!string.IsNullOrWhiteSpace(_fusionPrefix))
         {
@@ -230,7 +230,7 @@ public partial class GenreEditModal
     
     private async Task<IReadOnlyList<OutGenre>> LoadChildrenAsync(OutGenre genre)
     {
-        _logger.LogInformation($"🔄️ Loading Server Data for : {genre.Name} | Array count: {genre.Children?.Count}");
+        _logger.LogInformation($"🔄️ Loading Server Data for : {genre.CanonicalName} | Array count: {genre.Children?.Count}");
         
         if (genre.Children is null)
         {

@@ -183,7 +183,7 @@
                             <MudSelect T="int?" @bind-Value="_selectedDescriptorId" Label="Select Descriptor (root only)">
                                 @foreach (var desc in _descriptors)
                                 {
-                                    <MudSelectItem T="long?" Value="@desc.Id">@desc.Name</MudSelectItem>
+                                    <MudSelectItem T="long?" Value="@desc.Id">@desc.CanonicalName</MudSelectItem>
                                 }
                             </MudSelect>
                         </MudItem>

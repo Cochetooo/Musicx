@@ -22,10 +22,17 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             {
                 { GenreColumns.CreatedAt, DateTime.Now },
                 { GenreColumns.UpdatedAt, DateTime.Now },
-                { GenreColumns.Color, entity.Color },
-                { GenreColumns.Description, entity.Description },
-                { GenreColumns.IsVisible, entity.IsVisible },
                 { GenreColumns.CanonicalName, entity.CanonicalName },
+                { GenreColumns.Color, entity.Color },
+                { GenreColumns.Confidence, entity.Confidence },
+                { GenreColumns.CountryOrigin, entity.CountryOrigin },
+                { GenreColumns.Description, entity.Description },
+                { GenreColumns.EraStart, entity.EraStart },
+                { GenreColumns.EraEnd, entity.EraEnd },
+                { GenreColumns.IsVisible, entity.IsVisible },
+                { GenreColumns.Metadata, entity.Metadata },
+                { GenreColumns.ShortName, entity.ShortName },
+                { GenreColumns.Taggable, entity.IsTaggable },
                 { GenreColumns.Type, entity.Type }
             },
             returningColumn: GenreColumns.Id);
@@ -53,10 +60,17 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             new Dictionary<string, object?>
             {
                 { GenreColumns.UpdatedAt, DateTime.Now },
-                { GenreColumns.Color, entity.Color },
-                { GenreColumns.Description, entity.Description },
-                { GenreColumns.IsVisible, entity.IsVisible },
                 { GenreColumns.CanonicalName, entity.CanonicalName },
+                { GenreColumns.Color, entity.Color },
+                { GenreColumns.Confidence, entity.Confidence },
+                { GenreColumns.CountryOrigin, entity.CountryOrigin },
+                { GenreColumns.Description, entity.Description },
+                { GenreColumns.EraStart, entity.EraStart },
+                { GenreColumns.EraEnd, entity.EraEnd },
+                { GenreColumns.IsVisible, entity.IsVisible },
+                { GenreColumns.Metadata, entity.Metadata },
+                { GenreColumns.ShortName, entity.ShortName },
+                { GenreColumns.Taggable, entity.IsTaggable },
                 { GenreColumns.Type, entity.Type }
             });
         
@@ -81,18 +95,31 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         var selects = new List<string> { "g0.*" };
         var joins = new List<string>();
 
+        if (genreQuerySpecification.IncludeAliases)
+        {
+            selects.Add($"(SELECT json_agg(gal.*) FROM genre_alias gal " +
+                        $"WHERE g0.{GenreColumns.Id} = gal.{GenreAliasColumns.GenreId}) AS children");
+        }
+
         if (genreQuerySpecification.IncludeChildren)
         {
-            selects.Add($"(SELECT json_agg(cg.*) FROM childrengenre_parentgenre cgpg " +
-                        $"INNER JOIN genres cg ON cgpg.{ChildrenGenreParentGenreColumns.ChildId} = cg.{GenreColumns.Id} " +
-                        $"WHERE g0.{GenreColumns.Id} = cgpg.{ChildrenGenreParentGenreColumns.ParentId}) AS children");
+            selects.Add($"(SELECT json_agg(jsonb_build_object('relation', cg.*, 'depth', chgc.{GenreClosureColumns.Depth})) FROM genre_closure chgc " +
+                        $"INNER JOIN genres cg ON chgc.{GenreClosureColumns.DescendantId} = cg.{GenreColumns.Id} " +
+                        $"WHERE g0.{GenreColumns.Id} = chgc.{GenreClosureColumns.AncestorId}) AS children");
         }
         
         if (genreQuerySpecification.IncludeParents)
         {
-            selects.Add($"(SELECT json_agg(pg.*) FROM childrengenre_parentgenre pgcg " +
-                        $"INNER JOIN genres pg ON pgcg.{ChildrenGenreParentGenreColumns.ParentId} = pg.{GenreColumns.Id} " +
-                        $"WHERE g0.{GenreColumns.Id} = pgcg.{ChildrenGenreParentGenreColumns.ChildId}) AS parents");
+            selects.Add($"(SELECT json_agg(jsonb_build_object('relation', pg.*, 'depth', pagc.{GenreClosureColumns.Depth})) FROM genre_closure pagc " +
+                        $"INNER JOIN genres pg ON pagc.{GenreClosureColumns.AncestorId} = pg.{GenreColumns.Id} " +
+                        $"WHERE g0.{GenreColumns.Id} = pagc.{GenreClosureColumns.DescendantId}) AS parents");
+        }
+
+        if (genreQuerySpecification.IncludeRelations)
+        {
+            selects.Add($"(SELECT json_agg(jsonb_build_object('relation', gr.*, 'related_genre', rg.*)) FROM genre_relation gr " +
+                        $"INNER JOIN rg ON gr.{GenreRelationColumns.ToGenreId} = rg.{GenreColumns.Id} " +
+                        $"WHERE gr.{GenreRelationColumns.FromGenreId} = g0.{GenreColumns.Id}) AS relations");
         }
 
         return distinct

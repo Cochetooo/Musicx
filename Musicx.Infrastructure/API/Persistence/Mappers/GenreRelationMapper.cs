@@ -14,7 +14,7 @@ public static class GenreRelationMapper
         FromGenre = genreRelation.FromDicoToGenre("fg."),
         ToGenre = genreRelation.FromDicoToGenre("tg."),
 
-        Metadata = genreRelation.SafeGet<JsonObject?>(GenreRelationColumns.Metadata),
+        Metadata = genreRelation.SafeGet<string?>(GenreRelationColumns.Metadata),
         Type = genreRelation.SafeGet<GenreRelationType>(GenreRelationColumns.Type),
         Weight = genreRelation.SafeGet<float>(GenreRelationColumns.Weight),
     };
@@ -24,7 +24,7 @@ public static class GenreRelationMapper
         FromGenreId = genreRelation.FromGenre.Id,
         ToGenreId = genreRelation.ToGenre.Id,
 
-        Metadata = genreRelation.Metadata?.ToJsonString(),
+        Metadata = genreRelation.Metadata,
         Type = genreRelation.Type,
         Weight = genreRelation.Weight,
     };

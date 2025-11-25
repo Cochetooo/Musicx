@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
@@ -61,10 +62,17 @@ public static class GenreMapper
                 GenreRelationMapperJsonOptions)
             : null,
         
-        Color = genre.SafeGet<string>(prefix + GenreColumns.Color),
-        Description = genre.SafeGet<string>(prefix + GenreColumns.Description),
+        CanonicalName = genre.SafeGet<string>(prefix + GenreColumns.CanonicalName) ?? "",
+        Color = genre.SafeGet<string?>(prefix + GenreColumns.Color),
+        Confidence = genre.SafeGet<float?>(prefix + GenreColumns.Confidence),
+        CountryOrigin = genre.SafeGet<string?>(prefix + GenreColumns.CountryOrigin),
+        Description = genre.SafeGet<string?>(prefix + GenreColumns.Description),
+        EraStart = genre.SafeGet<DateTime?>(prefix + GenreColumns.EraStart),
+        EraEnd = genre.SafeGet<DateTime?>(prefix + GenreColumns.EraEnd),
         IsVisible = genre.SafeGet<bool>(prefix + GenreColumns.IsVisible),
-        Name = genre.SafeGet<string>(prefix + GenreColumns.CanonicalName) ?? "",
+        Metadata = genre.SafeGet<string?>(prefix + GenreColumns.Metadata),
+        ShortName = genre.SafeGet<string?>(prefix + GenreColumns.ShortName),
+        IsTaggable = genre.SafeGet<bool>(prefix + GenreColumns.Taggable),
         Type = genre.SafeGet<GenreType>(prefix + GenreColumns.Type),
     };
 
@@ -73,7 +81,7 @@ public static class GenreMapper
         Id = genre.Id,
         
         IsVisible = genre.IsVisible,
-        CanonicalName = genre.Name,
+        CanonicalName = genre.CanonicalName,
         Type = genre.Type,
         
         Description = genre.Description,

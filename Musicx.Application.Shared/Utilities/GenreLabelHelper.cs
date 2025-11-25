@@ -67,5 +67,5 @@ public static class GenreLabelHelper
     /// Entry point for genre objects
     /// </summary>
     public static string MergeGenresFromList(List<OutGenre> genres)
-        => MergeGenres(genres.Select(g => g.Name).ToList());
+        => MergeGenres(genres.Select(g => g.CanonicalName).ToList());
 }

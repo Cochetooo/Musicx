@@ -22,7 +22,7 @@ else
     <MudCard Class="mt-4">
         <MudCardHeader Style="@GetHeaderStyle()">
             <MudText Typo="Typo.h1" Class="pl-5 text-italic text-mega-bold" Style="font-size: 5rem;">
-                @_genre.Name
+                @_genre.CanonicalName
             </MudText>
         </MudCardHeader>
         <MudCardContent>
@@ -74,7 +74,7 @@ else
                         
                         <MudLink Href="@($"/Genre/{_genre.Id}")" Color="Color.Primary" 
                                  Class="ml-4 d-block text-bold">
-                            @_genre.Name
+                            @_genre.CanonicalName
                         </MudLink>
                         
                         @if (_genre.Children?.Any() == true)
@@ -122,7 +122,7 @@ else
                                                     {
                                                         @foreach (var genre in album.PrimaryGenres)
                                                         {
-                                                            if (genre.Name != _genre.Name)
+                                                            if (genre.Name != _genre.CanonicalName)
                                                             {
                                                                 <GenreBadge Genre="@genre" Clickable />
                                                             }

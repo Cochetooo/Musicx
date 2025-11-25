@@ -160,7 +160,7 @@ public partial class SearchOverlay
                         Category = "Genre",
                         Icon = GetIconForCategory("Genre"),
                         Subtitle = a.Type.ToString(),
-                        Title = a.Name
+                        Title = a.CanonicalName
                     }).ToList());
                 
                 _searchResults.Add("User", _userResults

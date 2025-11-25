@@ -15,7 +15,7 @@ public static class GenreAliasMapper
         Genre = genreAlias.FromDicoToGenre(),
 
         Lang = genreAlias.SafeGet<string?>(GenreAliasColumns.Lang),
-        Metadata = genreAlias.SafeGet<JsonObject?>(GenreAliasColumns.Metadata),
+        Metadata = genreAlias.SafeGet<string?>(GenreAliasColumns.Metadata),
         Name = genreAlias.SafeGet<string>(GenreAliasColumns.Name) ?? string.Empty,
     };
 
@@ -25,7 +25,7 @@ public static class GenreAliasMapper
         GenreId = genreAlias.Genre.Id,
         
         Lang = genreAlias.Lang,
-        Metadata = genreAlias.Metadata?.ToJsonString(),
+        Metadata = genreAlias.Metadata,
         Name = genreAlias.Name,
     };
 }

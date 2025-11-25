@@ -204,7 +204,7 @@ public partial class AlbumEditModal
         }
 
         return _availableGenres.Where(x =>
-            x.Name
+            x.CanonicalName
                 .ToLower()
                 .Contains(value, StringComparison.InvariantCultureIgnoreCase)
             && !_primaryGenres.Contains(x)

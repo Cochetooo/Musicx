@@ -58,7 +58,7 @@
                     </ToolBarContent>
                     
                     <Columns>
-                        <PropertyColumn Property="x => x.Name"/>
+                        <PropertyColumn Property="x => x.CanonicalName"/>
 
                         <PropertyColumn Property="x => x.Description"/>
 
@@ -95,7 +95,7 @@
                 <ul>
                     @foreach (var genre in _selectedGenres)
                     {
-                        <li>@genre.Name</li>
+                        <li>@genre.CanonicalName</li>
                     }
                 </ul>
             </DialogContent>

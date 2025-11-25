@@ -115,7 +115,7 @@ public partial class GenreDashboard
             .Where(a =>
                 keywords.Length == 0
                 || keywords.All(keyword =>
-                    a.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase)))
+                    a.CanonicalName.Contains(keyword, StringComparison.OrdinalIgnoreCase)))
             .ToList();
     }
 

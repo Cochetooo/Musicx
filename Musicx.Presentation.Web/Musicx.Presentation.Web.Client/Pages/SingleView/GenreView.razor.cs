@@ -27,7 +27,7 @@ public partial class GenreView
             _breadcrumb.Clear();
             _breadcrumb.Add(new("Musicx", href: "/"));
             _breadcrumb.Add(new("Genres", href: "#"));
-            _breadcrumb.Add(new(_genre.Name, href: "#"));
+            _breadcrumb.Add(new(_genre.CanonicalName, href: "#"));
         }
         
         await InvokeAsync(StateHasChanged);
@@ -60,7 +60,7 @@ public partial class GenreView
             return;
         }
         
-        _logger.LogInformation($"✅ Genre loaded: {_genre.Name} ({_genre.Id})");
+        _logger.LogInformation($"✅ Genre loaded: {_genre.CanonicalName} ({_genre.Id})");
         await InvokeAsync(StateHasChanged);
 
         _genreAlbums = await UcAlbumByGenre.ExecuteAsync(

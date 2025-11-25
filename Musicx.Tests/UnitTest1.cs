@@ -38,7 +38,7 @@ public class Tests
             var result = JsonConvert.DeserializeObject<OutGenre[]>(jsonString, GenreMapperJsonOptions);
             foreach (var genre in result)
             {
-                Console.WriteLine("result: " + genre.Name + " | " + genre.CreatedAt);
+                Console.WriteLine("result: " + genre.CanonicalName + " | " + genre.CreatedAt);
             }
         }
         catch (Exception ex)

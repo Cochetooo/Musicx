@@ -19,7 +19,7 @@ public static class AlbumGenreMapper
         UpdatedAt = albumGenre.SafeGet<DateTime>(AlbumGenreColumns.UpdatedAt),
         
         Confidence = albumGenre.SafeGet<float>(AlbumGenreColumns.Confidence),
-        Metadata = albumGenre.SafeGet<JsonObject?>(AlbumGenreColumns.Metadata),
+        Metadata = albumGenre.SafeGet<string?>(AlbumGenreColumns.Metadata),
         Source = albumGenre.SafeGet<GenreVoteSource>(AlbumGenreColumns.Source),
     };
 
@@ -30,7 +30,7 @@ public static class AlbumGenreMapper
         TaggerId = albumGenre.Tagger.Id,
 
         Confidence = albumGenre.Confidence,
-        Metadata = albumGenre.Metadata?.ToJsonString(),
+        Metadata = albumGenre.Metadata,
         Source = albumGenre.Source,
     };
 }

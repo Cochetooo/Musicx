@@ -11,7 +11,7 @@
                      Icon="@GetChipIcon()" Style="@GetChipStyle(Genre)" 
                      Class="@GetChipClass()" OnClose="@OnClose"
                      Label="@true">
-                @Genre.Name
+                @Genre.CanonicalName
             </MudChip>
         }
         else
@@ -20,7 +20,7 @@
                      Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
                      Class="@GetChipClass()"
                      Label="@true">
-                @Genre.Name
+                @Genre.CanonicalName
             </MudChip>
         }
     </MudLink>
@@ -34,7 +34,7 @@ else
                  Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
                  Class="@GetChipClass()" OnClose="@OnClose"
                  Label="@true">
-            @Genre.Name
+            @Genre.CanonicalName
         </MudChip>
     }
     else
@@ -44,7 +44,7 @@ else
                  Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
                  Class="@GetChipClass()"
                  Label="@true">
-            @Genre.Name
+            @Genre.CanonicalName
         </MudChip>
     }
 }

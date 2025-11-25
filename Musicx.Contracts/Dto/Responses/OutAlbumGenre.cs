@@ -10,6 +10,6 @@ public sealed class OutAlbumGenre : BaseOutputModel
     public OutUser Tagger { get; set; } = null!;
 
     public float Confidence { get; set; } = 0.8f;
-    public JsonObject? Metadata { get; set; }
+    public String? Metadata { get; set; }
     public GenreVoteSource Source { get; set; }
 }

@@ -19,7 +19,7 @@ public static class AlbumInfluenceMapper
         UpdatedAt = albumInfluence.SafeGet<DateTime>(AlbumInfluenceColumns.UpdatedAt),
         
         Confidence = albumInfluence.SafeGet<float>(AlbumInfluenceColumns.Confidence),
-        Metadata = albumInfluence.SafeGet<JsonObject?>(AlbumInfluenceColumns.Metadata),
+        Metadata = albumInfluence.SafeGet<string?>(AlbumInfluenceColumns.Metadata),
         Source = albumInfluence.SafeGet<GenreVoteSource>(AlbumInfluenceColumns.Source),
     };
 
@@ -30,7 +30,7 @@ public static class AlbumInfluenceMapper
         TaggerId = albumInfluence.Tagger.Id,
 
         Confidence = albumInfluence.Confidence,
-        Metadata = albumInfluence.Metadata?.ToJsonString(),
+        Metadata = albumInfluence.Metadata,
         Source = albumInfluence.Source,
     };
 }

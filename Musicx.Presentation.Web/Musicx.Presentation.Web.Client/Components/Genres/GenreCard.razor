@@ -1,7 +1,7 @@
 <Div Class="@GetClasses()"
      Style="@GetStyle()"
      @onclick="ToggleExpand">
-    <MudText Align="Align.Center" Typo="Typo.h6">@Genre.Name</MudText>
+    <MudText Align="Align.Center" Typo="Typo.h6">@Genre.CanonicalName</MudText>
     
     @if (IsExpanded && Genre.Children?.Any() == true)
     {
