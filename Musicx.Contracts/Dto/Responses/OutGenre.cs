@@ -1,13 +1,15 @@
+using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutGenre : BaseOutputModel
 {
-    public IReadOnlyList<OutGenreClosure> Closures { get; set; } = [];
+    public IReadOnlyList<GenreClosureNode> Parents { get; set; } = [];
+    public IReadOnlyList<GenreClosureNode> Children { get; set; } = [];
     
     public IReadOnlyList<OutGenreAlias>? Aliases { get; set; }
-    public IReadOnlyList<OutGenreRelation>? Relations { get; set; }
+    public IReadOnlyList<GenreRelationNode>? Relations { get; set; }
     
     public bool IsVisible { get; set; }
     public string CanonicalName { get; set; } = null!;

@@ -98,7 +98,7 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         if (genreQuerySpecification.IncludeAliases)
         {
             selects.Add($"(SELECT json_agg(gal.*) FROM genre_alias gal " +
-                        $"WHERE g0.{GenreColumns.Id} = gal.{GenreAliasColumns.GenreId}) AS children");
+                        $"WHERE g0.{GenreColumns.Id} = gal.{GenreAliasColumns.GenreId}) AS aliases");
         }
 
         if (genreQuerySpecification.IncludeChildren)

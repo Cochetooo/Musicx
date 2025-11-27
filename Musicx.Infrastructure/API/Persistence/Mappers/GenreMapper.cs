@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
 using Musicx.Contracts.Helpers;
 using Musicx.Infrastructure.API.Persistence.Columns;
@@ -44,21 +45,27 @@ public static class GenreMapper
         CreatedAt = genre.SafeGet<DateTime>(prefix + GenreColumns.CreatedAt),
         UpdatedAt = genre.SafeGet<DateTime>(prefix + GenreColumns.UpdatedAt),
         
-        Aliases = genre.TryGetValue("genre_alias", out var genreAliasValue)
+        Aliases = genre.TryGetValue("aliases", out var genreAliasValue)
                         && genreAliasValue is not null
             ? JsonConvert.DeserializeObject<OutGenreAlias[]>(genreAliasValue as string ?? string.Empty,
                 GenreAliasMapperJsonOptions)
             : null,
         
-        Closures = genre.TryGetValue("genre_closure", out var genreClosureValue)
-                   && genreClosureValue is not null
-            ? JsonConvert.DeserializeObject<OutGenreClosure[]>(genreClosureValue as string ?? string.Empty,
-                GenreRelationMapperJsonOptions) ?? []
+        Parents = genre.TryGetValue("parents", out var parentsValue)
+                   && parentsValue is not null
+            ? JsonConvert.DeserializeObject<GenreClosureNode[]>(parentsValue as string ?? string.Empty,
+                GenreClosureMapperJsonOptions) ?? []
+            : [],
+        
+        Children = genre.TryGetValue("children", out var childrenValue)
+                  && childrenValue is not null
+            ? JsonConvert.DeserializeObject<GenreClosureNode[]>(childrenValue as string ?? string.Empty,
+                GenreClosureMapperJsonOptions) ?? []
             : [],
 
-        Relations = genre.TryGetValue("genre_relation", out var genreRelationValue)
+        Relations = genre.TryGetValue("relations", out var genreRelationValue)
                           && genreRelationValue is not null
-            ? JsonConvert.DeserializeObject<OutGenreRelation[]>(genreRelationValue as string ?? string.Empty,
+            ? JsonConvert.DeserializeObject<GenreRelationNode[]>(genreRelationValue as string ?? string.Empty,
                 GenreRelationMapperJsonOptions)
             : null,
         
