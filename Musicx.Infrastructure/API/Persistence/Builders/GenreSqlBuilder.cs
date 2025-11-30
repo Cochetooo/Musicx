@@ -13,7 +13,8 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(GenreSqlBuilder));
     
-    internal override async Task<object?> ExecuteInsert(InGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override async Task<object?> ExecuteInsert(InGenre entity, NpgsqlConnection connection, 
+        NpgsqlTransaction? transaction = null)
     {
         long genreId;
 
@@ -104,21 +105,21 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         if (genreQuerySpecification.IncludeChildren)
         {
             selects.Add($"(SELECT json_agg(jsonb_build_object('relation', cg.*, 'depth', chgc.{GenreClosureColumns.Depth})) FROM genre_closure chgc " +
-                        $"INNER JOIN genres cg ON chgc.{GenreClosureColumns.DescendantId} = cg.{GenreColumns.Id} " +
+                        $"JOIN genres cg ON chgc.{GenreClosureColumns.DescendantId} = cg.{GenreColumns.Id} " +
                         $"WHERE g0.{GenreColumns.Id} = chgc.{GenreClosureColumns.AncestorId}) AS children");
         }
         
         if (genreQuerySpecification.IncludeParents)
         {
             selects.Add($"(SELECT json_agg(jsonb_build_object('relation', pg.*, 'depth', pagc.{GenreClosureColumns.Depth})) FROM genre_closure pagc " +
-                        $"INNER JOIN genres pg ON pagc.{GenreClosureColumns.AncestorId} = pg.{GenreColumns.Id} " +
+                        $"JOIN genres pg ON pagc.{GenreClosureColumns.AncestorId} = pg.{GenreColumns.Id} " +
                         $"WHERE g0.{GenreColumns.Id} = pagc.{GenreClosureColumns.DescendantId}) AS parents");
         }
 
         if (genreQuerySpecification.IncludeRelations)
         {
             selects.Add($"(SELECT json_agg(jsonb_build_object('relation', gr.*, 'related_genre', rg.*)) FROM genre_relation gr " +
-                        $"INNER JOIN rg ON gr.{GenreRelationColumns.ToGenreId} = rg.{GenreColumns.Id} " +
+                        $"JOIN rg ON gr.{GenreRelationColumns.ToGenreId} = rg.{GenreColumns.Id} " +
                         $"WHERE gr.{GenreRelationColumns.FromGenreId} = g0.{GenreColumns.Id}) AS relations");
         }
 
