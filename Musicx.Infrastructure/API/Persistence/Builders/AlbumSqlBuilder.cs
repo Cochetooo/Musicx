@@ -95,7 +95,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         await using (var cmd = new NpgsqlCommand(updateCommandSql.Query, connection, transaction))
         {
             cmd.Parameters.AddRange(updateCommandSql.Parameters.ToArray());
-            await cmd.ExecuteScalarAsync();
+            await cmd.ExecuteNonQueryAsync();
         }
         
         if (null != entity.ReleaseIds)

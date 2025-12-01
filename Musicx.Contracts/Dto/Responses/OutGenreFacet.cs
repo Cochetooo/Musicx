@@ -4,8 +4,8 @@ namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutGenreFacet : BaseOutputModel
 {
-    public OutFacet Facet { get; set; }
-    public OutGenre Genre { get; set; }
+    public OutFacet Facet { get; set; } = null!;
+    public OutGenre Genre { get; set; } = null!;
 
     public float Confidence { get; set; } = 0.8f;
     public String? Metadata { get; set; }
