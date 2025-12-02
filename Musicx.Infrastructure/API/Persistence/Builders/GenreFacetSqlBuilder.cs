@@ -67,5 +67,5 @@ internal sealed class GenreFacetSqlBuilder(ILoggerProvider loggerProvider) : Sql
               $"JOIN facets f0 on gf0.{GenreFacetColumns.FacetId} = f0.{FacetColumns.Id} ";
 
     internal override string BuildGroupBy(IQuerySpecification<InGenreFacet>? spec = null)
-        => $" GROUP BY gf0.{GenreFacetColumns.GenreId}";
+        => string.Empty;
 }

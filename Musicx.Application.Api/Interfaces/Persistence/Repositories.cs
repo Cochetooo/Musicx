@@ -21,6 +21,11 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
     Task<List<OutAlbum>> FindByChart(
         AlbumChartQuery query);
 }
+
+public interface IAlbumGenreRepository : IRepository<InAlbumGenre, OutAlbumGenre>
+{
+    Task<List<OutAlbumGenre>> 
+}
 public interface IArtistRepository : IRepository<InArtist, OutArtist>;
 public interface IEventRepository : IRepository<InEvent, OutEvent>;
 public interface IEventArtistRepository : IRepository<InEventArtist, OutEventArtist>;
