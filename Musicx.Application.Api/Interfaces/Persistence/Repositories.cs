@@ -22,10 +22,9 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
         AlbumChartQuery query);
 }
 
-public interface IAlbumGenreRepository : IRepository<InAlbumGenre, OutAlbumGenre>
-{
-    Task<List<OutAlbumGenre>> 
-}
+public interface IAlbumGenreRepository : IRepository<InAlbumGenre, OutAlbumGenre>;
+public interface IAlbumInfluenceRepository : IRepository<InAlbumInfluence, OutAlbumInfluence>;
+
 public interface IArtistRepository : IRepository<InArtist, OutArtist>;
 public interface IEventRepository : IRepository<InEvent, OutEvent>;
 public interface IEventArtistRepository : IRepository<InEventArtist, OutEventArtist>;

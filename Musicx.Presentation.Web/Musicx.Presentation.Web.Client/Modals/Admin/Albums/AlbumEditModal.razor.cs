@@ -52,26 +52,27 @@ public partial class AlbumEditModal
 
     private async Task Save()
     {
-        _album.PrimaryGenreIds = _primaryGenres.Select(g => g.Id).ToList();
+        throw new NotImplementedException("Primary & secondary genres changes.");
+        /* _album.PrimaryGenreIds = _primaryGenres.Select(g => g.Id).ToList();
         _album.InfluenceGenreIds = _influenceGenres.Select(g => g.Id).ToList();
         _album.BeginRecordDate = _recordingDates?.Start;
         _album.EndRecordDate = _recordingDates?.End;
-        
+
         _logger.LogDebug($"⛏️ AlbumEditModal : Persisting primary genres {string.Join(",", _album.PrimaryGenreIds)} " +
                                $"and influences {string.Join(",", _album.InfluenceGenreIds)}");
-        
+
         var response = await UcSave.ExecuteAsync(_album);
-        
+
         if (!response.IsSuccessStatusCode)
         {
             Snackbar.Add($"Could not save album: {response.ReasonPhrase}", Severity.Error);
         }
-        
+
         await OnSave.InvokeAsync();
 
         Clean();
-        
-        await Hide();
+
+        await Hide(); */
     }
 
     public async Task Show(OutArtist artist, OutAlbum? album = null)
@@ -85,8 +86,8 @@ public partial class AlbumEditModal
         {
             _album = album.ToRaw();
             
-            _primaryGenres = album.PrimaryGenres?.ToList() ?? [];
-            _influenceGenres = album.InfluenceGenres?.ToList() ?? [];
+            _primaryGenres = album.PrimaryGenres?.Select(pgr => pgr.Genre).ToList() ?? [];
+            _influenceGenres = album.InfluenceGenres?.Select(igr => igr.Genre).ToList() ?? [];
             
             _recordingDates = new DateRange(
                 _album.BeginRecordDate,
@@ -213,7 +214,8 @@ public partial class AlbumEditModal
 
     private void Clean()
     {
-        _album = new InAlbum
+        throw new NotImplementedException("Primary genre ids & influences changes");
+        /* _album = new InAlbum
         {
             PrimaryGenreIds = [],
             InfluenceGenreIds = []
@@ -228,6 +230,6 @@ public partial class AlbumEditModal
         _selectedInfluenceGenre = null;
         _selectedInfluenceText = "";
 
-        _recordingDates = null;
+        _recordingDates = null; */
     }
 }

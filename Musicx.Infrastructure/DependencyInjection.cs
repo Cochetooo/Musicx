@@ -97,7 +97,17 @@ public static class DependencyInjection
         // SQL Builder
         services.AddScoped(typeof(SqlBuilder<InArtist>), typeof(ArtistSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InAlbum>), typeof(AlbumSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InAlbumGenre>), typeof(AlbumGenreSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InAlbumInfluence>), typeof(AlbumInfluenceSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InEvent>), typeof(EventSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InEventArtist>), typeof(EventArtistSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InEventUser>), typeof(EventUserSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InFacet>), typeof(FacetSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InGenre>), typeof(GenreSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InGenreAlias>), typeof(GenreAliasSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InGenreFacet>), typeof(GenreFacetSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InGenreRelation>), typeof(GenreRelationSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InLabel>), typeof(LabelSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InSong>), typeof(SongSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InPermission>), typeof(PermissionSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InRole>), typeof(RoleSqlBuilder));
@@ -108,6 +118,8 @@ public static class DependencyInjection
         // Repositories
         services.AddScoped<Application.Api.Interfaces.Persistence.ISongRepository, API.Persistence.Repositories.SongRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumRepository, API.Persistence.Repositories.AlbumRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumGenreRepository, API.Persistence.Repositories.AlbumGenreRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumInfluenceRepository, API.Persistence.Repositories.AlbumInfluenceRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IArtistRepository, API.Persistence.Repositories.ArtistRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IGenreRepository, API.Persistence.Repositories.GenreRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.IPermissionRepository, API.Persistence.Repositories.PermissionRepository>();

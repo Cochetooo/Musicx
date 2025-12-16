@@ -1,4 +1,5 @@
-﻿using Musicx.Contracts.Dto.Responses;
+﻿using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Helpers;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Newtonsoft.Json;
@@ -28,5 +29,16 @@ public static class LabelMapper
         Description = label.SafeGet<string?>(LabelColumns.Description),
         IsVisible = label.SafeGet<bool>(LabelColumns.IsVisible),
         Name = label.SafeGet<string>(LabelColumns.Name) ?? string.Empty,
+    };
+
+    public static InLabel ToRaw(this OutLabel label) => new()
+    {
+        Id = label.Id,
+
+        ReleaseIds = label.Releases.Select(r => r.Id).ToArray(),
+
+        Description = label.Description,
+        IsVisible = label.IsVisible,
+        Name = label.Name,
     };
 }

@@ -65,9 +65,9 @@ else
                         {
                             foreach (var genre in _genre.Parents)
                             {
-                                <MudLink Href="@($"/Genre/{genre.Id}")" Color="Color.Tertiary"
+                                <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Tertiary"
                                          Class="ml-2 d-block">
-                                    @genre.Name
+                                    @genre.Relation.CanonicalName
                                 </MudLink>
                             }
                         }
@@ -81,8 +81,8 @@ else
                         {
                             foreach (var genre in _genre.Children)
                             {
-                                <MudLink Href="@($"/Genre/{genre.Id}")" Color="Color.Secondary" Class="ml-6 d-block">
-                                    @genre.Name
+                                <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Secondary" Class="ml-6 d-block">
+                                    @genre.Relation.CanonicalName
                                 </MudLink>
                             }
                         }
@@ -122,7 +122,7 @@ else
                                                     {
                                                         @foreach (var genre in album.PrimaryGenres)
                                                         {
-                                                            if (genre.Name != _genre.CanonicalName)
+                                                            if (genre.Genre.CanonicalName != _genre.CanonicalName)
                                                             {
                                                                 <GenreBadge Genre="@genre" Clickable />
                                                             }

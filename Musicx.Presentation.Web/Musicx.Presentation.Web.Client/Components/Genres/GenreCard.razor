@@ -8,7 +8,7 @@
         <Div Class="children-container">
             @foreach (var child in Genre.Children)
             {
-                <GenreCard Genre="child" Depth="Depth + 1" />
+                <GenreCard Genre="child.Relation" Depth="Depth + 1" />
             }
         </Div>
     }

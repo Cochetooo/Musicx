@@ -214,6 +214,8 @@ public partial class GenreEditModal
     
     private async Task Save()
     {
+        throw new NotImplementedException("Parent Ids changes");
+        /*
         _genre.ParentIds = _selectedParents.Select(g => g.Id).ToList();
         var response = await UcSave.ExecuteAsync(_genre);
         
@@ -225,7 +227,7 @@ public partial class GenreEditModal
         await OnSave.InvokeAsync();
         await Hide();
         
-        await Load();
+        await Load(); */
     }
     
     private async Task<IReadOnlyList<OutGenre>> LoadChildrenAsync(OutGenre genre)
@@ -237,7 +239,7 @@ public partial class GenreEditModal
             return [];
         }
         
-        return await UcFindIn.ExecuteAsync(genre.Children.Select(g => g.Id), "children");
+        return await UcFindIn.ExecuteAsync(genre.Children.Select(g => g.Relation.Id), "children");
     }
 
     private IReadOnlyCollection<GenreType> AllowedFilterFor(GenreType type)

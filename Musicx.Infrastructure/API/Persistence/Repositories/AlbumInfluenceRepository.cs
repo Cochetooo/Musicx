@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -8,12 +8,12 @@ using Musicx.Infrastructure.Shared.Exceptions;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
-internal sealed class AlbumGenreRepository(
+internal sealed class AlbumInfluenceRepository(
     IDbConnectionProvider connection,
-    SqlBuilder<InAlbumGenre> builder,
-    ILoggerProvider loggerProvider) : IAlbumGenreRepository
+    SqlBuilder<InAlbumInfluence> builder,
+    ILoggerProvider loggerProvider) : IAlbumInfluenceRepository
 {
-    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumGenreRepository));
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumInfluenceRepository));
     
     public Task DeleteAsync(long id)
         => throw new NotImplementedException("DeleteAsync is disabled on this repository.");
@@ -21,22 +21,22 @@ internal sealed class AlbumGenreRepository(
     public Task DeleteAllAsync(IEnumerable<long> ids)
         => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
 
-    public Task<OutAlbumGenre?> FindByIdAsync(long id, IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
+    public Task<OutAlbumInfluence?> FindByIdAsync(long id, IQuerySpecification<InAlbumInfluence>? albumInfluenceQuerySpecification = null)
         => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
 
-    public async Task<List<OutAlbumGenre>> FindAsync(long skip = 0, long take = 100,
+    public async Task<List<OutAlbumInfluence>> FindAsync(long skip = 0, long take = 100,
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, string? order = null, 
-        IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
+        IQuerySpecification<InAlbumInfluence>? albumInfluenceQuerySpecification = null)
         => throw new NotImplementedException("FindAsync is disabled on this repository.");
 
-    public async Task<List<OutAlbumGenre>> FindIn(IEnumerable<long> ids, 
-        IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
+    public async Task<List<OutAlbumInfluence>> FindIn(IEnumerable<long> ids, 
+        IQuerySpecification<InAlbumInfluence>? albumInfluenceQuerySpecification = null)
         => throw new NotImplementedException("FindIn is disabled on this repository.");
 
     public async Task<long> GetCountAsync()
         => await connection.Count("album_genre");
 
-    public async Task<long> SaveAsync(InAlbumGenre entity)
+    public async Task<long> SaveAsync(InAlbumInfluence entity)
     {
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
@@ -65,7 +65,7 @@ internal sealed class AlbumGenreRepository(
         return entity.Id;
     }
 
-    public async Task<List<long>> SaveAllAsync(IEnumerable<InAlbumGenre> entities)
+    public async Task<List<long>> SaveAllAsync(IEnumerable<InAlbumInfluence> entities)
     {
         var idList = new List<long>();
         
