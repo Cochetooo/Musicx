@@ -43,4 +43,6 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (42, 
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (43, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (44, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (45, 2);
-INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (46, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (46, 2);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (48, 2);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (47, 2);
