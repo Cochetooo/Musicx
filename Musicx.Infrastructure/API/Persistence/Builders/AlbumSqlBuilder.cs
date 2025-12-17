@@ -127,7 +127,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 
         if (albumQuerySpecification.IncludePrimaryGenres)
         {
-            selects.Add("(SELECT json_agg(pg.*) FROM album_genre apg1 " +
+            selects.Add("(SELECT json_agg(jsonb_build_object('relation', apg1.*, 'genre', pg.*)) FROM album_genre apg1 " +
                         $"INNER JOIN genres pg ON apg1.{AlbumGenreColumns.GenreId} = pg.{GenreColumns.Id} " +
                         $"WHERE apg1.{AlbumGenreColumns.AlbumId} = al0.{AlbumColumns.Id}) AS primary_genres");
             joins.Add($"LEFT JOIN album_genre apg ON apg.{AlbumGenreColumns.AlbumId} = al0.{AlbumColumns.Id}");
@@ -135,7 +135,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 
         if (albumQuerySpecification.IncludeInfluenceGenres)
         {
-            selects.Add("(SELECT json_agg(ig.*) FROM album_influence aig1 " +
+            selects.Add("(SELECT json_agg(jsonb_build_object('relation', aig1.*, 'genre', ig.*)) FROM album_influence aig1 " +
                         $"INNER JOIN genres ig ON aig1.{AlbumInfluenceColumns.GenreId} = ig.{GenreColumns.Id} " +
                         $"WHERE aig1.{AlbumInfluenceColumns.AlbumId} = al0.{AlbumColumns.Id}) AS influence_genres");
             joins.Add($"LEFT JOIN album_influence aig ON aig.{AlbumInfluenceColumns.AlbumId} = al0.{AlbumColumns.Id}");

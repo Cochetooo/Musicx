@@ -24,6 +24,11 @@ public sealed class JsonToOutModelConverter<T>(
 
         foreach (var jProp in jsonObject.Properties())
         {
+            if (jProp.Value.Type == JTokenType.Null)
+            {
+                continue;
+            }
+            
             var name = jProp.Name;
 
             // 1. Supprimer le préfixe
@@ -40,8 +45,15 @@ public sealed class JsonToOutModelConverter<T>(
             var prop = props.FirstOrDefault(p => p.Name == pascalCaseName);
             if (prop != null && prop.CanWrite)
             {
-                var value = jProp.Value.ToObject(prop.PropertyType, serializer);
-                prop.SetValue(target, value);
+                if (prop.PropertyType == typeof(string) && jProp.Value.Type == JTokenType.Object)
+                {
+                    prop.SetValue(target, jProp.Value.ToString(Formatting.None));
+                }
+                else
+                {
+                    var value = jProp.Value.ToObject(prop.PropertyType, serializer);
+                    prop.SetValue(target, value);
+                }
             }
         }
 

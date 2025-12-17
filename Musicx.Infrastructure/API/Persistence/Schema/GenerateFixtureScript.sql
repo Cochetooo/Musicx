@@ -10,6 +10,7 @@ END $$;
 
 -- Insert fixtures
 \i '_Fixtures/artists.sql'
+\i '_Fixtures/facets.sql'
 \i '_Fixtures/genres.sql'
 \i '_Fixtures/albums.sql'
 \i '_Fixtures/labels.sql'
@@ -18,11 +19,18 @@ END $$;
 \i '_Fixtures/song_audio_data.sql'
 \i '_Fixtures/tags.sql'
 
+\i '_Fixtures/events.sql'
+\i '_Fixtures/event_artist.sql'
+\i '_Fixtures/event_user.sql'
+
 \i '_Fixtures/permissions.sql'
 \i '_Fixtures/roles.sql'
 \i '_Fixtures/users.sql'
 
-\i '_Fixtures/childrengenre_parentgenre.sql'
+\i '_Fixtures/genre_alias.sql'
+\i '_Fixtures/genre_relation.sql'
+\i '_Fixtures/genre_closure.sql'
+\i '_Fixtures/genre_facet.sql'
 \i '_Fixtures/bandartist_personartist.sql'
 \i '_Fixtures/album_genre.sql'
 \i '_Fixtures/album_influence.sql'
@@ -31,11 +39,11 @@ END $$;
 
 \i '_Fixtures/role_permission.sql'
 \i '_Fixtures/user_role.sql'
-\i '_Fixtures/user_artist_ratings.sql'
+\i '_Fixtures/user_artist_attrs.sql'
 \i '_Fixtures/user_artist_tags.sql'
 \i '_Fixtures/user_album_attrs.sql'
 \i '_Fixtures/user_album_tags.sql'
-\i '_Fixtures/user_song_ratings.sql'
+\i '_Fixtures/user_song_attrs.sql'
 \i '_Fixtures/user_song_tags.sql'
 
 \i '_Fixtures/album_rating_stats.sql'

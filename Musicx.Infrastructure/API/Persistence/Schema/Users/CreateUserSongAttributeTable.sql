@@ -15,5 +15,5 @@ create table public.user_song_attrs (
 
 alter table public.user_song_attrs owner to postgres;
 
-create index ix_usr_song on public.user_song_attrs (user_song_attrs_song_id, user_song_attrs_attr);
-create index ix_usr_user on public.user_song_attrs (user_song_attrs_user_id);
+create index ix_usrat_song on public.user_song_attrs (user_song_attrs_song_id, user_song_attrs_attr);
+create index ix_usrat_user on public.user_song_attrs (user_song_attrs_user_id);

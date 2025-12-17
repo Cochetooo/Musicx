@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION update_album_simplified_genre(albumId INT)
     RETURNS void AS
 $$
 WITH raw_genres AS (
-    SELECT g.genre_name, g.genre_color
+    SELECT g.genre_canonical_name, g.genre_color
     FROM album_genre ag
     JOIN genres g ON g.genre_id = ag.album_genre_genre_id
     WHERE ag.album_genre_album_id = albumId
@@ -10,7 +10,7 @@ WITH raw_genres AS (
 
 -- Normalisation du nom (tirets -> espaces, qu'on réutilise partout)
 normed AS (
- SELECT regexp_replace(genre_name, '-', ' ', 'g') AS norm_name, genre_color
+ SELECT regexp_replace(genre_canonical_name, '-', ' ', 'g') AS norm_name, genre_color
  FROM raw_genres
 ),
 

@@ -31,11 +31,11 @@ create index ix_users_trgm on public.users using GIN (user_name gin_trgm_ops);
 
 \i 'Users/CreateUserRoleTable.sql'
 
-\i 'Users/CreateUserArtistRatingTable.sql'
+\i 'Users/CreateUserArtistAttributeTable.sql'
 \i 'Users/CreateUserArtistTagTable.sql'
 
 \i 'Users/CreateUserAlbumAttributeTable.sql'
 \i 'Users/CreateUserAlbumTagTable.sql'
 
-\i 'Users/CreateUserSongRatingTable.sql'
+\i 'Users/CreateUserSongAttributeTable.sql'
 \i 'Users/CreateUserSongTagTable.sql'

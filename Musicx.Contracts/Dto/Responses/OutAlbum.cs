@@ -1,3 +1,4 @@
+using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Contracts.Dto.Responses;
@@ -6,8 +7,8 @@ public sealed class OutAlbum : BaseOutputModel
 {
     public OutArtist? Artist { get; set; }
     public ICollection<OutRelease>? Releases { get; set; }
-    public ICollection<OutAlbumGenre>? PrimaryGenres { get; set; }
-    public ICollection<OutAlbumInfluence>? InfluenceGenres { get; set; }
+    public ICollection<AlbumGenreNode>? PrimaryGenres { get; set; }
+    public ICollection<AlbumInfluenceNode>? InfluenceGenres { get; set; }
     public OutAlbumRatingStat? Stats { get; set; }
     
     public long? ArtistId { get; set; }

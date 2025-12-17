@@ -3,9 +3,11 @@ using System.Dynamic;
 using System.Text.Json;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
 using Musicx.Contracts.Helpers;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Converters;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -13,19 +15,31 @@ namespace Musicx.Infrastructure.API.Persistence.Mappers;
 
 public static class AlbumMapper
 {
-    private static readonly JsonSerializerSettings GenreMapperJsonOptions = new()
-    {
-        Converters =
-        {
-            new JsonToOutModelConverter<OutGenre>("genre")
-        }
-    };
-    
     private static readonly JsonSerializerSettings ReleaseMapperJsonOptions = new()
     {
         Converters =
         {
             new JsonToOutModelConverter<OutRelease>("release")
+        }
+    };
+    
+    private static readonly JsonSerializerSettings AlbumGenreJsonOptions = new()
+    {
+        Converters =
+        {
+            new AlbumGenreNodeConverter(),
+            new JsonToOutModelConverter<OutGenre>("genre"),
+            new JsonToOutModelConverter<OutAlbumGenre>("album_genre")
+        }
+    };
+    
+    private static readonly JsonSerializerSettings AlbumInfluenceJsonOptions = new()
+    {
+        Converters =
+        {
+            new AlbumInfluenceNodeConverter(),
+            new JsonToOutModelConverter<OutGenre>("genre"),
+            new JsonToOutModelConverter<OutAlbumInfluence>("album_influence")
         }
     };
 
@@ -50,14 +64,14 @@ public static class AlbumMapper
 
         PrimaryGenres = album.TryGetValue("primary_genres", out var primaryGenreValue)
                         && primaryGenreValue is not null
-            ? JsonConvert.DeserializeObject<OutAlbumGenre[]>(primaryGenreValue as string ?? string.Empty,
-                GenreMapperJsonOptions)
+            ? JsonConvert.DeserializeObject<AlbumGenreNode[]>(primaryGenreValue as string ?? string.Empty,
+                AlbumGenreJsonOptions)
             : null,
 
         InfluenceGenres = album.TryGetValue("influence_genres", out var influenceGenreValue)
                           && influenceGenreValue is not null
-            ? JsonConvert.DeserializeObject<OutAlbumInfluence[]>(influenceGenreValue as string ?? string.Empty,
-                GenreMapperJsonOptions)
+            ? JsonConvert.DeserializeObject<AlbumInfluenceNode[]>(influenceGenreValue as string ?? string.Empty,
+                AlbumInfluenceJsonOptions)
             : null,
         
         Stats = album.SafeGet<long?>(AlbumRatingStatColumns.AlbumId) != null

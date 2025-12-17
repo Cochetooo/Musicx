@@ -65,9 +65,18 @@ internal sealed class AlbumRepository(
 
         var result = await connection.FetchListDynamicAsync(sql.ToString(), parameters);
 
-        return result
-            .SingleOrDefault()?
-            .FromDicoToAlbum();
+        try
+        {
+            return result
+                .SingleOrDefault()?
+                .FromDicoToAlbum();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            _logger.LogCritical(e.StackTrace);
+            throw new ApplicationException();
+        }
     }
     
     public async Task<List<OutAlbum>> FindByArtistIdAsync(long artistId, 
