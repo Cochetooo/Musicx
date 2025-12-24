@@ -22,8 +22,15 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
         AlbumChartQuery query);
 }
 
-public interface IAlbumGenreRepository : IRepository<InAlbumGenre, OutAlbumGenre>;
-public interface IAlbumInfluenceRepository : IRepository<InAlbumInfluence, OutAlbumInfluence>;
+public interface IAlbumGenreRepository : IRepository<InAlbumGenre, OutAlbumGenre>
+{
+    Task<OutAlbumGenre?> FindOneAsync(long albumId, long genreId, long taggerId);
+}
+
+public interface IAlbumInfluenceRepository : IRepository<InAlbumInfluence, OutAlbumInfluence>
+{
+    Task<OutAlbumInfluence?> FindOneAsync(long albumId, long genreId, long taggerId);
+}
 
 public interface IArtistRepository : IRepository<InArtist, OutArtist>;
 public interface IEventRepository : IRepository<InEvent, OutEvent>;

@@ -32,6 +32,11 @@ internal sealed class AlbumInfluenceRepository(
     public async Task<List<OutAlbumInfluence>> FindIn(IEnumerable<long> ids, 
         IQuerySpecification<InAlbumInfluence>? albumInfluenceQuerySpecification = null)
         => throw new NotImplementedException("FindIn is disabled on this repository.");
+    
+    public Task<OutAlbumInfluence?> FindOneAsync(long albumId, long genreId, long taggerId)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<long> GetCountAsync()
         => await connection.Count("album_genre");

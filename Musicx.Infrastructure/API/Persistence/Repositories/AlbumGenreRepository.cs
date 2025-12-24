@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Text;
+using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Builders;
+using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
+using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
@@ -33,11 +37,32 @@ internal sealed class AlbumGenreRepository(
         IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
         => throw new NotImplementedException("FindIn is disabled on this repository.");
 
+    public async Task<OutAlbumGenre?> FindOneAsync(long albumId, long genreId, long taggerId)
+    {
+        var sql = new StringBuilder(builder.BuildSelect());
+        sql.Append($" WHERE {AlbumGenreColumns.AlbumId} = @albumId AND {AlbumGenreColumns.GenreId} = @genreId AND {AlbumGenreColumns.TaggerId} = @taggerId");
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@albumId", albumId),
+            new("@genreId", genreId),
+            new("@taggerId", taggerId),
+        };
+        
+        var result = await connection.FetchListDynamicAsync(sql.ToString(), parameters);
+
+        return result
+            .SingleOrDefault()?
+            .FromDicoToAlbumGenre();
+    }
+
     public async Task<long> GetCountAsync()
         => await connection.Count("album_genre");
 
     public async Task<long> SaveAsync(InAlbumGenre entity)
     {
+        _logger.LogWarning("⚠️ SaveAsync : SQL not optimized, might highly affect performance.");
+        
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
         
@@ -45,7 +70,9 @@ internal sealed class AlbumGenreRepository(
         
         try
         {
-            if (0 == entity.Id)
+            var exist = await FindOneAsync(entity.AlbumId, entity.GenreId, entity.TaggerId);
+            
+            if (exist is null)
             {
                 await builder.ExecuteInsert(entity, conn, transaction);
             }
@@ -69,6 +96,8 @@ internal sealed class AlbumGenreRepository(
     {
         var idList = new List<long>();
         
+        _logger.LogWarning("⚠️ SaveAllAsync : SQL not optimized, might highly affect performance.");
+        
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
         
@@ -78,7 +107,9 @@ internal sealed class AlbumGenreRepository(
         {
             foreach (var entity in entities)
             {
-                if (0 == entity.Id)
+                var exist = await FindOneAsync(entity.AlbumId, entity.GenreId, entity.TaggerId);
+                
+                if (exist is null)
                 {
                     var result = await builder.ExecuteInsert(entity, conn, transaction);
                     if (result is long l)

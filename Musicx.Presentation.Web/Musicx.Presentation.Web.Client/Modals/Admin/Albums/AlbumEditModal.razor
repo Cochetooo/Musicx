@@ -1,3 +1,4 @@
+@using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Responses
@@ -6,6 +7,9 @@
 @inject ILoggerFactory LoggerFactory
 @inject IListUseCase<OutGenre> UcListGenres
 @inject ISaveUseCase<InAlbum> UcSave
+@inject ISaveAllUseCase<InAlbumGenre> UcSavePrimaryGenre
+@inject ISaveAllUseCase<InAlbumInfluence> UcSaveInfluenceGenre
+@inject IUserClientContext UserClientContext
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 
@@ -104,7 +108,7 @@
                 </MudField>
             </MudItem>
 
-            <MudFlexBreak/>
+            <!-- <MudFlexBreak/>
 
             <MudDivider Class="my-5"/>
 
@@ -154,7 +158,7 @@
                 {
                     <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))"/>
                 }
-            </MudItem>
+            </MudItem> -->
         </MudGrid>
     </DialogContent>
     <DialogActions>

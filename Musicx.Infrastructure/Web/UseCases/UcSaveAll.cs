@@ -14,7 +14,7 @@ public sealed class UcSaveAll<T>(
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger(nameof(UcSaveAll<T>));
     
-    public async Task ExecuteAsync(IEnumerable<T> entities)
+    public async Task<HttpResponseMessage> ExecuteAsync(IEnumerable<T> entities)
     {
         var modelName = typeof(T).Name.InModelToEntity();
         var endpoint = $"/api/{modelName}/save-all";
@@ -36,9 +36,11 @@ public sealed class UcSaveAll<T>(
         {
             _logger.LogInformation($"🌍❌ SAVE ALL {endpoint} - ERROR : {response.StatusCode} | {response.ReasonPhrase}");
         }
+
+        return response;
     }
 
-    public void Execute(IEnumerable<T> entities)
+    public HttpResponseMessage Execute(IEnumerable<T> entities)
     {
         throw new NotImplementedException();
     }

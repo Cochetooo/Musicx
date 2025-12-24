@@ -4,7 +4,9 @@ using MudBlazor;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Mappers;
+using Musicx.Presentation.Web.Client.Models.Auth;
 
 namespace Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 
@@ -18,14 +20,14 @@ public partial class AlbumEditModal
     private OutArtist? _artist;
     private InAlbum _album = null!;
     
-    private IList<OutGenre> _availableGenres = [];
+    /* private IList<OutGenre> _availableGenres = [];
     private IList<OutGenre> _primaryGenres = [];
     private IList<OutGenre> _influenceGenres = [];
 
     private string _selectedPrimaryText = string.Empty;
     private string _selectedInfluenceText = string.Empty;
     private OutGenre? _selectedPrimaryGenre;
-    private OutGenre? _selectedInfluenceGenre;
+    private OutGenre? _selectedInfluenceGenre; */
 
     private DateRange? _recordingDates;
 
@@ -47,32 +49,61 @@ public partial class AlbumEditModal
         _logger = LoggerFactory.CreateLogger(nameof(AlbumEditModal));
 
         _album = new InAlbum();
-        _availableGenres = await UcListGenres.ExecuteAsync(take: 10_000);
+        /* _availableGenres = await UcListGenres.ExecuteAsync(take: 10_000); */
     }
 
     private async Task Save()
     {
-        throw new NotImplementedException("Primary & secondary genres changes.");
-        /* _album.PrimaryGenreIds = _primaryGenres.Select(g => g.Id).ToList();
-        _album.InfluenceGenreIds = _influenceGenres.Select(g => g.Id).ToList();
         _album.BeginRecordDate = _recordingDates?.Start;
         _album.EndRecordDate = _recordingDates?.End;
-
-        _logger.LogDebug($"⛏️ AlbumEditModal : Persisting primary genres {string.Join(",", _album.PrimaryGenreIds)} " +
-                               $"and influences {string.Join(",", _album.InfluenceGenreIds)}");
+        
+        _logger.LogInformation($"💾 Saving album {_album.Name}...");
 
         var response = await UcSave.ExecuteAsync(_album);
-
+        
         if (!response.IsSuccessStatusCode)
         {
             Snackbar.Add($"Could not save album: {response.ReasonPhrase}", Severity.Error);
+            return;
         }
+        
+        /* _logger.LogInformation($"💾 Saving album genres & influences...");
 
-        await OnSave.InvokeAsync();
-
+        response = await UcSavePrimaryGenre.ExecuteAsync(_primaryGenres.Select(g => new InAlbumGenre
+        {
+            AlbumId = _album.Id,
+            GenreId = g.Id,
+            TaggerId = UserClientContext.CurrentUser?.Id ?? 0,
+            Source = GenreVoteSource.User
+        }));
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Album saved but could not persist album primary genres: {response.ReasonPhrase}", Severity.Warning);
+            return;
+        }
+        
+        response = await UcSaveInfluenceGenre.ExecuteAsync(_influenceGenres.Select(g => new InAlbumInfluence
+        {
+            AlbumId = _album.Id,
+            GenreId = g.Id,
+            TaggerId = UserClientContext.CurrentUser?.Id ?? 0,
+            Source = GenreVoteSource.User
+        }));
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Album saved but could not persist album influence genres: {response.ReasonPhrase}", Severity.Warning);
+            return;
+        } */
+        
+        _logger.LogInformation("✅ Album saved successfully!");
+        Snackbar.Add("Album saved successfully!", Severity.Success);
+        
         Clean();
-
-        await Hide(); */
+        
+        await OnSave.InvokeAsync();
+        await Hide();
     }
 
     public async Task Show(OutArtist artist, OutAlbum? album = null)
@@ -86,8 +117,8 @@ public partial class AlbumEditModal
         {
             _album = album.ToRaw();
             
-            _primaryGenres = album.PrimaryGenres?.Select(pgr => pgr.Genre).ToList() ?? [];
-            _influenceGenres = album.InfluenceGenres?.Select(igr => igr.Genre).ToList() ?? [];
+            /* _primaryGenres = album.PrimaryGenres?.Select(pgr => pgr.Genre).ToList() ?? [];
+            _influenceGenres = album.InfluenceGenres?.Select(igr => igr.Genre).ToList() ?? []; */
             
             _recordingDates = new DateRange(
                 _album.BeginRecordDate,
@@ -161,7 +192,7 @@ public partial class AlbumEditModal
         await UpdateArtwork();
     }
 
-    private void OnDeletePrimaryGenre(OutGenre genre)
+    /* private void OnDeletePrimaryGenre(OutGenre genre)
     {
         _primaryGenres.Remove(genre);
     }
@@ -210,26 +241,21 @@ public partial class AlbumEditModal
                 .Contains(value, StringComparison.InvariantCultureIgnoreCase)
             && !_primaryGenres.Contains(x)
             && !_influenceGenres.Contains(x));
-    }
+    } */
 
     private void Clean()
     {
-        throw new NotImplementedException("Primary genre ids & influences changes");
-        /* _album = new InAlbum
-        {
-            PrimaryGenreIds = [],
-            InfluenceGenreIds = []
-        };
+        _album = new InAlbum();
 
-        _primaryGenres.Clear();
+        /* _primaryGenres.Clear();
         _influenceGenres.Clear();
 
         _selectedPrimaryGenre = null;
         _selectedPrimaryText = "";
         
         _selectedInfluenceGenre = null;
-        _selectedInfluenceText = "";
+        _selectedInfluenceText = ""; */
 
-        _recordingDates = null; */
+        _recordingDates = null;
     }
 }

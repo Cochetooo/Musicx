@@ -49,21 +49,21 @@ internal sealed class UserAlbumAttrRepository(
     }
 
     public Task DeleteAllAsync(IEnumerable<long> ids)
-        => throw new NotImplementedException();
+        => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
 
     public Task<OutUserAlbumAttribute?> FindByIdAsync(long id, IQuerySpecification<InUserAlbumAttribute>? songQuerySpecification = null)
-        => throw new NotImplementedException();
+        => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
 
     public Task<List<OutUserAlbumAttribute>> FindAsync(long skip = 0, long take = 100, 
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
         string? order = null, IQuerySpecification<InUserAlbumAttribute>? songQuerySpecification = null)
-        => throw new NotImplementedException();
+        => throw new NotImplementedException("FindAsync is disabled on this repository.");
 
     public Task<List<OutUserAlbumAttribute>> FindIn(IEnumerable<long> ids, IQuerySpecification<InUserAlbumAttribute>? songQuerySpecification = null)
-        => throw new NotImplementedException();
+        => throw new NotImplementedException("FindIn is disabled on this repository.");
 
     public Task<long> GetCountAsync()
-        => throw new NotImplementedException();
+        => throw new NotImplementedException("GetCountAsync is disabled on this repository.");
 
     public async Task<long> SaveAsync(InUserAlbumAttribute entity)
     {
@@ -223,7 +223,7 @@ internal sealed class UserAlbumAttrRepository(
 
     public async Task<OutUserAlbumAttribute?> FindOneAlbumFromUserAsync(long userId, long albumId)
     {
-        var sql = new StringBuilder(builder.BuildSelect(null));
+        var sql = new StringBuilder(builder.BuildSelect());
         sql.Append($" WHERE {UserAlbumAttrColumns.UserId} = @userId AND {UserAlbumAttrColumns.AlbumId} = @albumId");
 
         var parameters = new List<NpgsqlParameter>

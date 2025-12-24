@@ -47,9 +47,6 @@ internal sealed class AlbumGenreSqlBuilder(ILoggerProvider loggerProvider) : Sql
             [entity.AlbumId, entity.GenreId, entity.TaggerId],
             new Dictionary<string, object?>
             {
-                { AlbumGenreColumns.AlbumId, entity.AlbumId },
-                { AlbumGenreColumns.GenreId, entity.GenreId },
-                { AlbumGenreColumns.TaggerId, entity.TaggerId },
                 { AlbumGenreColumns.UpdatedAt, DateTime.Now },
                 { AlbumGenreColumns.Confidence, entity.Confidence },
                 { AlbumGenreColumns.Metadata, entity.Metadata },
