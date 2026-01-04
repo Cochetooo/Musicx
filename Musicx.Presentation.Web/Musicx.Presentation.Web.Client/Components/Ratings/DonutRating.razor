@@ -23,17 +23,24 @@
             }
         }
         
+        <defs>
+            <filter id="shadow">
+                <feDropShadow dx="0.2" dy="0.8" stdDeviation="1" flood-opacity="0.8" />
+            </filter>
+        </defs>
+        
         @if (top is null)
         {
             <text>
                 <text class="donut-inner-text"
                       x="50%" y="50%"
                       fill="@_ratingColor"
+                      filter="url(#shadow)"
                       dominant-baseline="middle"
                       text-anchor="middle"
-                      font-family="Montserrat"
+                      style="font-family: Montserrat, serif;"
                       font-size="@(_textSize)"
-                      font-weight="bold">
+                      font-weight="400">
                     @ratingText
                 </text>
             </text>
@@ -43,20 +50,21 @@
             <text>
                 <text x="50%" y="50%"
                       text-anchor="middle"
-                      font-family="Montserrat"
+                      style="font-family: Montserrat, serif;"
+                      filter="url(#shadow)"
                       fill="@_ratingColor">
                     @if (Size != DonutRatingSize.ExtraSmall)
                     {
                         <!-- Partie haute -->
-                        <tspan x="50%" dy="-0.1em" font-size="@((int) (_textSize * 1.5))" font-weight="bold">@top</tspan>
-                        
+                        <tspan x="50%" dy="-0.1em" font-size="@((int)(_textSize * 1.5))" font-weight="400">@top</tspan>
+
                         <!-- Partie basse -->
-                        <tspan x="50%" dy="1.7em" font-size="@(_textSize)" font-weight="400">/ @bottom</tspan>
+                        <tspan x="50%" dy="1.7em" font-size="@(_textSize)" font-weight="200">/ @bottom</tspan>
                     }
                     else
                     {
                         <!-- Partie haute -->
-                        <tspan x="50%" dy="0.4em" font-size="@((int) (_textSize * 1.8))" font-weight="bold">@top</tspan>
+                        <tspan x="50%" dy="0.4em" font-size="@((int)(_textSize * 1.8))" font-weight="400">@top</tspan>
                     }
                 </text>
             </text>

@@ -61,6 +61,11 @@ internal sealed class FacetSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         await cmd.ExecuteScalarAsync();
     }
 
+    internal override Task ExecuteUpsert(InFacet entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InFacet>? querySpecification = null, bool distinct = false)
         => distinct
             ? "SELECT DISTINCT fa0.* FROM facets fa0 "

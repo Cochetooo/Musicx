@@ -65,40 +65,41 @@ else
     private string GetChipStyle(OutGenre genre)
     {
         var background = genre.Color ?? ColorHelper.DarkColor;
-        var transparentBackground = ColorHelper.ToRgba(background, 0.3);
+        var transparentBackground = ColorHelper.ToRgba(background, 0.45);
         
         var textColor = ColorHelper.IsColorLight(background)
             ? ColorHelper.DarkColor
             : "#ffffff";
+        
+        var fontSize = Size switch
+        {
+            Size.Small => "14px",
+            Size.Medium => "16px",
+            Size.Large => "18px",
+            _ => "16px"
+        } ;
 
-        var gradient = $"linear-gradient(to right, {transparentBackground}, {background} 5%, {background} 95%, {transparentBackground})";
+        var gradient = $"linear-gradient(135deg, {background}, {transparentBackground})";
 
         if (Influence)
         {
-            return $"background:{gradient}; opacity: 0.6; color:{textColor}; font-style: italic;";
+            return $"background:{gradient}; opacity: 0.75; color:{textColor}; font-weight: 200; font-size: {fontSize};";
         }
         
         return Genre.Type switch
         {
-            GenreType.Subgenre => $"background:{gradient}; color:{textColor}; font-weight:700;",
-            GenreType.Scene => $"border:1px solid {gradient}; color:{textColor}; background:{gradient}; font-weight: bold",
-            GenreType.Movement => $"border:1px dashed {gradient}; color:{textColor}; background:{gradient}; font-weight: bold",
-            GenreType.Descriptor => $"background:{gradient}; color:{textColor}; opacity:0.85; border-radius:16px;",
-            _ => $"background:{gradient}; color:{textColor};"
+            GenreType.Subgenre => $"background:{gradient}; color:{textColor}; font-weight:500; font-size: {fontSize};",
+            GenreType.Scene => $"border:1px solid {gradient}; color:{textColor}; background:{gradient}; font-weight: 400; font-size: {fontSize};",
+            GenreType.Movement => $"border:1px dashed {gradient}; color:{textColor}; background:{gradient}; font-weight: 400; font-size: {fontSize};",
+            GenreType.Descriptor => $"background:{gradient}; color:{textColor}; opacity:0.85; border-radius:16px; font-size: 400; font-size: {fontSize};",
+            _ => $"background:{gradient}; color:{textColor}; font-size: {fontSize};"
         };
     }
-    
+
     private string GetChipClass()
-    {
-        return Genre.Type switch
-        {
-            GenreType.Subgenre => "chip-basic montserrat genre-badge animate-hover-up animate__animated animate__bounceIn",
-            GenreType.Scene => "chip-scene montserrat genre-badge animate-hover-up animate__animated animate__bounceIn",
-            GenreType.Movement => "chip-movement montserrat genre-badge animate-hover-up animate__animated animate__bounceIn",
-            GenreType.Descriptor => "chip-descriptor montserrat genre-badge animate-hover-up animate__animated animate__bounceIn",
-            _ => "chip-default montserrat animate-hover-up animate__animated animate__bounceIn"
-        };
-    }
+        => Influence
+            ? "genre-badge animate-hover-up"
+            : "genre-badge animate-hover-up animate__animated animate__bounceIn";
     
     private string GetChipIcon()
     => Genre.Type switch

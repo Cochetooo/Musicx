@@ -25,6 +25,11 @@ public sealed class StyledJsConsoleLogger(string categoryName, IJSRuntime jsRunt
         Exception? exception,
         Func<TState, Exception?, string> formatter)
     {
+        if (categoryName.StartsWith("System.Net"))
+        {
+            return;
+        }
+        
         string message = formatter(state, exception);
         string level = logLevel.ToString().ToUpper();
         string date = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss");

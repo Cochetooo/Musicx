@@ -17,7 +17,7 @@
                 <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                     <MudImage Src="@album.ArtworkUrl" Width="@((int) (Zoom * 48))" Height="@((int) (Zoom * 48))"
                               Class="rounded-lg mr-3" Elevation="8" />
-                    <MudStack>
+                    <MudStack Spacing="1">
                         <MudLink Href="@($"/Album/{album.Id}")">
                             <MudText Typo="Typo.body1" Class="montserrat text-bold">
                                 @album.Name 
@@ -32,14 +32,17 @@
                         <MudText Typo="Typo.caption" Color="Color.Secondary">
                             @album.ReleaseType?.ToDescriptionString() · 
                             @album.OriginalReleaseDate?.ToString("yyyy") ·
-                            <MudChip
-                                Size="Size.Small"
-                                T="string"
-                                Class="montserrat py-1 px-3 ma-1 genre-badge"
-                                Style="@GetSimplifiedGenreStyle(album)"
-                                Label="@true">
-                                @album.SimplifiedGenreName
-                            </MudChip>
+                            @if (album.SimplifiedGenreName is not null)
+                            {
+                                <MudChip
+                                    Size="Size.Small"
+                                    T="string"
+                                    Class="montserrat py-1 px-3 ma-1 genre-badge"
+                                    Style="@GetSimplifiedGenreStyle(album)"
+                                    Label="@true">
+                                    @album.SimplifiedGenreName
+                                </MudChip>
+                            }
                         </MudText>
                     </MudStack>
                 </MudStack>
@@ -61,8 +64,11 @@
                     }
 
                     <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.Small"/>
-                    <MudText Typo="Typo.caption" Class="montserrat text-bold">
-                        @($"{album.Stats?.Count ?? 0} ratings")
+                    <MudText Typo="Typo.body2" Class="montserrat text-bold" Style="width: 50px; text-align: end;">
+                        @(album.Stats?.Count ?? 0)
+                        <MudText Typo="Typo.caption" Class="text-color-secondary">
+                            &nbsp;ratings
+                        </MudText>
                     </MudText>
                 </MudStack>
             </MudStack>

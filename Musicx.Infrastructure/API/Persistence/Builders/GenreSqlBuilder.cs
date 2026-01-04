@@ -84,6 +84,11 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         }
     }
 
+    internal override Task ExecuteUpsert(InGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InGenre>? querySpecification = null, bool distinct = false)
     {
         if (querySpecification is not GenreQuerySpecification genreQuerySpecification)

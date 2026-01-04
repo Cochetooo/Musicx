@@ -11,10 +11,14 @@ internal sealed class AlbumInfluenceSqlBuilder(ILoggerProvider loggerProvider) :
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumInfluenceSqlBuilder));
     
-    internal override async Task<object?> ExecuteInsert(InAlbumInfluence entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override async Task<object?> ExecuteUpsert(InAlbumInfluence entity, NpgsqlConnection connection,
+        NpgsqlTransaction? transaction = null)
     {
-        var createCommandSql = BuildInsert("album_influence",
-            new Dictionary<string, object?>
+        var now = DateTime.Now;
+
+        var query = BuildUpsert(
+            table: "album_influence",
+            insertProperties: new Dictionary<string, object?>
             {
                 { AlbumInfluenceColumns.AlbumId, entity.AlbumId },
                 { AlbumInfluenceColumns.GenreId, entity.GenreId },
@@ -24,41 +28,36 @@ internal sealed class AlbumInfluenceSqlBuilder(ILoggerProvider loggerProvider) :
                 { AlbumInfluenceColumns.Confidence, entity.Confidence },
                 { AlbumInfluenceColumns.Metadata, entity.Metadata },
                 { AlbumInfluenceColumns.Source, entity.Source },
-            });
-        
-        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
-
-        await using (var cmd = new NpgsqlCommand(createCommandSql.Query, connection, transaction))
-        {
-            cmd.Parameters.AddRange(createCommandSql.Parameters.ToArray());
-            await cmd.ExecuteNonQueryAsync();
-        }
-        
-        return null;
-    }
-
-    internal override async Task ExecuteUpdate(InAlbumInfluence entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
-    {
-        var updateCommandSql = BuildUpdate("album_influence",
-            [AlbumInfluenceColumns.AlbumId, AlbumInfluenceColumns.GenreId, AlbumInfluenceColumns.TaggerId],
-            [entity.AlbumId, entity.GenreId, entity.TaggerId],
-            new Dictionary<string, object?>
+            },
+            conflictColumns:
+            [
+                AlbumInfluenceColumns.AlbumId,
+                AlbumInfluenceColumns.GenreId,
+                AlbumInfluenceColumns.TaggerId
+            ],
+            updateProperties: new Dictionary<string, object?>
             {
-                { AlbumInfluenceColumns.AlbumId, entity.AlbumId },
-                { AlbumInfluenceColumns.GenreId, entity.GenreId },
-                { AlbumInfluenceColumns.TaggerId, entity.TaggerId },
-                { AlbumInfluenceColumns.UpdatedAt, DateTime.Now },
+                { AlbumInfluenceColumns.UpdatedAt, now },
                 { AlbumInfluenceColumns.Confidence, entity.Confidence },
                 { AlbumInfluenceColumns.Metadata, entity.Metadata },
                 { AlbumInfluenceColumns.Source, entity.Source },
-        });
+            }
+        );
         
-        _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
+        _logger.LogDebug(SqlHelper.InterpolateQuery(query.Query, query.Parameters));
+        
+        await using var cmd = new NpgsqlCommand(query.Query, connection, transaction);
+        cmd.Parameters.AddRange(query.Parameters.ToArray());
+        await cmd.ExecuteNonQueryAsync();
 
-        await using var cmd = new NpgsqlCommand(updateCommandSql.Query, connection, transaction);
-        cmd.Parameters.AddRange(updateCommandSql.Parameters.ToArray());
-        await cmd.ExecuteScalarAsync();
+        return null;
     }
+    
+    internal override async Task<object?> ExecuteInsert(InAlbumInfluence entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+        => throw new NotImplementedException();
+
+    internal override async Task ExecuteUpdate(InAlbumInfluence entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+        => throw new NotImplementedException();
 
     internal override string BuildSelect(IQuerySpecification<InAlbumInfluence>? querySpecification = null, bool distinct = false)
         => distinct

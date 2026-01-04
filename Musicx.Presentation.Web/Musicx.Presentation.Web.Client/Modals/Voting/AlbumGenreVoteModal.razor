@@ -1,0 +1,84 @@
+@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Presentation.Web.Client.Components.Genres
+
+@inject ILoggerFactory LoggerFactory
+@inject IUserClientContext UserClientContext
+@inject ISnackbar Snackbar
+@inject IListUseCase<OutGenre> UcListGenres
+@inject ISaveAllUseCase<InAlbumGenre> UcVoteAlbumGenre
+@inject ISaveAllUseCase<InAlbumInfluence> UcVoteAlbumInfluence
+
+<MudDialog @ref="_modalRef" Class="pa-2">
+    <TitleContent>
+        Album Genre Votes
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Justify="Justify.Center">
+            <!-- Primary Genres -->
+            
+            <MudItem xs="12">
+                <MudText Typo="Typo.h3" Class="text-mega-bold">
+                    Primary Genres
+                </MudText>
+            
+                <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Row>
+                    <MudAutocomplete
+                        T="OutGenre?"
+                        Dense
+                        MaxItems="25"
+                        Placeholder="Search a genre..."
+                        @bind-Text="_selectedPrimaryText"
+                        @bind-Value="_selectedPrimaryGenre"
+                        ToStringFunc="@(e => e?.CanonicalName ?? "")"
+                        SearchFunc="SearchGenre"/>
+                
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" 
+                                   Disabled="@(_selectedPrimaryGenre is null)"
+                                   OnClick="@AddPrimaryGenre"/>
+                </MudStack>
+            
+                @foreach (var genre in _primaryGenres)
+                {
+                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeletePrimaryGenre(genre))" />
+                }
+            </MudItem>
+            
+            
+            <!-- Influence Genres -->
+            
+            <MudItem xs="12">
+                <MudText Typo="Typo.h3" Class="text-mega-bold">
+                    Influence Genres
+                </MudText>
+            
+                <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Row>
+                    <MudAutocomplete
+                        T="OutGenre?"
+                        Dense
+                        MaxItems="25"
+                        Placeholder="Search a genre..."
+                        @bind-Text="_selectedInfluenceText"
+                        @bind-Value="_selectedInfluenceGenre"
+                        ToStringFunc="@(e => e?.CanonicalName ?? "")"
+                        SearchFunc="SearchGenre"/>
+                
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" 
+                                   Disabled="@(_selectedInfluenceGenre is null)"
+                                   OnClick="@AddInfluenceGenre"/>
+                </MudStack>
+            
+                @foreach (var genre in _influenceGenres)
+                {
+                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))" />
+                }
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="@Save">Save</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
+    </DialogActions>
+</MudDialog>

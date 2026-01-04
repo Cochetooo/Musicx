@@ -84,6 +84,11 @@ internal sealed class EventSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         await cmd.ExecuteScalarAsync();
     }
 
+    internal override Task ExecuteUpsert(InEvent entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InEvent>? querySpecification = null, bool distinct = false)
     {
         if (querySpecification is not EventQuerySpecification eventQuerySpecification)

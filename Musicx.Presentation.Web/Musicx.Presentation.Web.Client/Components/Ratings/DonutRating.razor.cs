@@ -53,5 +53,6 @@ public partial class DonutRating
             _ratingColor,
             Colors.Gray.Darken3
         ];
+        _ratingOptions.ShowToolTips = false;
     }
 }

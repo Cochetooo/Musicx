@@ -33,6 +33,12 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
         NpgsqlConnection connection, NpgsqlTransaction? transaction = null);
     
     /// <summary>
+    /// Executes and UPSERT operation for the given entity.
+    /// </summary>
+    internal abstract Task ExecuteUpsert(T entity,
+        NpgsqlConnection connection, NpgsqlTransaction? transaction = null);
+    
+    /// <summary>
     /// Builds a SELECT query with a given specification for joins.
     /// </summary>
     internal abstract string BuildSelect(IQuerySpecification<T>? spec = null, bool distinct = false);
@@ -181,6 +187,72 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     internal SqlQuery BuildUpdate(string table, string whereColumn, long whereId, 
         IDictionary<string, object?> properties)
         => BuildUpdate(table, [whereColumn], [whereId], properties);
+
+    /// <summary>
+    /// Creates an INSERT statement if the entity does not exist, else UPDATE it.
+    /// </summary>
+    /// <param name="table">The table to update.</param>
+    /// <param name="insertProperties">A dictionary of column names and values to insert.</param>
+    /// <param name="conflictColumns">The list of column that serves as identifier to check if the row already exists</param>
+    /// <param name="updateProperties">A dictionary of the columns to update.</param>
+    /// <param name="returningColumn">Optional column to return</param>
+    /// <exception cref="ArgumentException">If conflict columns is an empty array.</exception>
+    internal SqlQuery BuildUpsert(string table, IDictionary<string, object?> insertProperties,
+        string[] conflictColumns, IDictionary<string, object?> updateProperties,
+        string returningColumn = "")
+    {
+        var insert = BuildInsert(
+            table, 
+            insertProperties, 
+            returningColumn
+        );
+
+        if (conflictColumns.Length == 0)
+        {
+            throw new ArgumentException("❌ ConflictColumns cannot be empty for an UPSERT.");
+        }
+
+        var setters = new List<string>();
+        var updateParameters = new List<NpgsqlParameter>();
+
+        foreach (var property in updateProperties)
+        {
+            var paramName = "@upd_" + property.Key;
+            setters.Add($"{property.Key} = {paramName}");
+
+            if (property.Value is null)
+            {
+                updateParameters.Add(new NpgsqlParameter(paramName, DBNull.Value));
+            }
+            else
+            {
+                var actualType = Nullable.GetUnderlyingType(property.Value.GetType()) ?? property.Value.GetType();
+
+                if (actualType.IsEnum)
+                {
+                    updateParameters.Add(
+                        property.Key.Contains("Discriminator", StringComparison.InvariantCultureIgnoreCase)
+                            ? new NpgsqlParameter(paramName, property.Value.ToString())
+                            : new NpgsqlParameter(paramName, (int) property.Value)
+                    );
+                }
+                else
+                {
+                    updateParameters.Add(new NpgsqlParameter(paramName, property.Value));
+                }
+            }
+        }
+
+        var sql = insert.Query
+                  + $" ON CONFLICT ({string.Join(", ", conflictColumns)})"
+                  + $" DO UPDATE SET {string.Join(", ", setters)}";
+
+        var parameters = insert.Parameters
+            .Concat(updateParameters)
+            .ToList();
+
+        return new SqlQuery(sql, parameters);
+    }
     
     /// <summary>
     /// Builds an ORDER BY clause with the given columns.

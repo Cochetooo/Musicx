@@ -65,6 +65,11 @@ internal sealed class GenreAliasSqlBuilder(ILoggerProvider loggerProvider) : Sql
         }
     }
 
+    internal override Task ExecuteUpsert(InGenreAlias entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InGenreAlias>? querySpecification = null,
         bool distinct = false)
         => distinct

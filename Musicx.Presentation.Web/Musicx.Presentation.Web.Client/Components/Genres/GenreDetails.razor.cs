@@ -42,5 +42,5 @@ public partial class GenreDetails
         =>
             $"background: {album.SimplifiedGenreColor}; color: {(ColorHelper.IsColorLight(album.SimplifiedGenreColor!) 
                 ? ColorHelper.DarkColor 
-                : "white")}; font-weight: bold";
+                : "white")}; letter-spacing: 0.5px;";
 }

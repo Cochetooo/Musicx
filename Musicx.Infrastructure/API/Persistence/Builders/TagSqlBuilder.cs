@@ -63,6 +63,11 @@ internal sealed class TagSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilder
         }
     }
 
+    internal override Task ExecuteUpsert(InTag entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InTag>? querySpecification = null, bool distinct = false)
         => distinct
             ? "SELECT DISTINCT t0.* FROM tags t0"

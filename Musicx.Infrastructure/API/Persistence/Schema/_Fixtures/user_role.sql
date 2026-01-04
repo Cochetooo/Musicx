@@ -16,7 +16,6 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (4, 2
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (33, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (6, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (9, 2);
-INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (3, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (11, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (8, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (31, 2);
@@ -31,7 +30,6 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (30, 
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (24, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (21, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (26, 2);
-INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (5, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (15, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (36, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (37, 2);
@@ -47,3 +45,7 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (46, 
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (48, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (47, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (49, 2);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (50, 2);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (51, 2);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (3, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (5, 2);

@@ -6,10 +6,11 @@
     {
         if (Editable && Value is not null)
         {
-            <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;")"
+            <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;font-weight:600;")"
                      OnClick="@ToggleCollapse"
                      OnClose="@DeleteRating"
                      Variant="Variant.Filled"
+                     Label="true"
                      Size="@Size"
                      Class="glass-card"
                      T="string">
@@ -18,10 +19,11 @@
         }
         else
         {
-            <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;")"
+            <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;font-weight:600;")"
                      OnClick="@ToggleCollapse"
                      Variant="@(Editable ? Variant.Filled : Variant.Outlined)"
                      Size="@Size"
+                     Label="true"
                      Class="glass-card"
                      T="string">
                 @RatingHelper.GetRatingFormatted(Value, RatingMode)
@@ -39,10 +41,11 @@
         {
             if (Editable && Value is not null)
             {
-                <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;")"
+                <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;font-weight:600;")"
                          OnClick="@ToggleEdit"
                          OnClose="@DeleteRating"
                          Variant="Variant.Filled"
+                         Label="true"
                          Class="glass-card"
                          Size="@Size"
                          T="string">
@@ -51,10 +54,11 @@
             }
             else
             {
-                <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;")"
+                <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;font-weight:600;")"
                          OnClick="@ToggleEdit"
                          Variant="@(Editable ? Variant.Filled : Variant.Outlined)"
                          Class="glass-card"
+                         Label="true"
                          Size="@Size"
                          T="string">
                     @RatingHelper.GetRatingFormatted(Value, RatingMode)
@@ -92,9 +96,10 @@
                 @foreach (var option in GetTextualOptions())
                 {
                     var optionValue = option.ToInt();
-                    <MudChip Style="@($"background-color:{RatingHelper.GetColorForRating(optionValue)};color:white;")"
+                    <MudChip Style="@($"background-color:{RatingHelper.GetColorForRating(optionValue)};color:white;font-weight:600;")"
                              Selected="@(Value == optionValue)"
                              OnClick="@(() => SetTextual(option))"
+                             Label="true"
                              Variant="Variant.Filled"
                              T="string">
                         @option.ToString().SplitCamelCase()

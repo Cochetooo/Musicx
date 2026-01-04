@@ -6,6 +6,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
+using Musicx.Presentation.Web.Client.Modals.Voting;
 
 namespace Musicx.Presentation.Web.Client.Pages.SingleView;
 
@@ -17,6 +18,7 @@ public partial class AlbumView
 
     private AlbumEditModal _albumEditModal = null!;
     private AlbumTrackListEditModal _trackListEditModal = null!;
+    private AlbumGenreVoteModal _genreVoteModal = null!;
 
     private OutAlbum? _album;
     private List<OutSong> _albumSongs = [];
@@ -46,6 +48,8 @@ public partial class AlbumView
 
     private async Task LoadAlbum()
     {
+        _logger.LogInformation("🔄️ Loading Album Data...");
+        
         if (string.IsNullOrWhiteSpace(Id))
         {
             _logger.LogError("❌ Album ID is null or empty.");
@@ -212,6 +216,17 @@ public partial class AlbumView
         
         _userAttribute.DiscoveryDate = dateValue;
         await SaveUserAttr();
+    }
+
+    private async Task OpenVoteGenreModal()
+    {
+        if (_album is null)
+        {
+            _logger.LogError("❌ Cannot open vote genre modal: album is null.");
+            return;
+        }
+        
+        await _genreVoteModal.Show(_album);
     }
 
     private async Task Rate(int? ratingValue)

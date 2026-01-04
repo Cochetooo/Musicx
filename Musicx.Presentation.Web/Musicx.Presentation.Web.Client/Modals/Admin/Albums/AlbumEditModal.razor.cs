@@ -4,9 +4,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Utilities;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
-using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Mappers;
-using Musicx.Presentation.Web.Client.Models.Auth;
 
 namespace Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 
@@ -19,15 +17,6 @@ public partial class AlbumEditModal
 
     private OutArtist? _artist;
     private InAlbum _album = null!;
-    
-    /* private IList<OutGenre> _availableGenres = [];
-    private IList<OutGenre> _primaryGenres = [];
-    private IList<OutGenre> _influenceGenres = [];
-
-    private string _selectedPrimaryText = string.Empty;
-    private string _selectedInfluenceText = string.Empty;
-    private OutGenre? _selectedPrimaryGenre;
-    private OutGenre? _selectedInfluenceGenre; */
 
     private DateRange? _recordingDates;
 
@@ -39,17 +28,10 @@ public partial class AlbumEditModal
 
     private MudDialog _modalRef = null!;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnInitialized()
     {
-        if (!firstRender)
-        {
-            return;
-        }
-        
         _logger = LoggerFactory.CreateLogger(nameof(AlbumEditModal));
-
         _album = new InAlbum();
-        /* _availableGenres = await UcListGenres.ExecuteAsync(take: 10_000); */
     }
 
     private async Task Save()
@@ -66,37 +48,7 @@ public partial class AlbumEditModal
             Snackbar.Add($"Could not save album: {response.ReasonPhrase}", Severity.Error);
             return;
         }
-        
-        /* _logger.LogInformation($"💾 Saving album genres & influences...");
 
-        response = await UcSavePrimaryGenre.ExecuteAsync(_primaryGenres.Select(g => new InAlbumGenre
-        {
-            AlbumId = _album.Id,
-            GenreId = g.Id,
-            TaggerId = UserClientContext.CurrentUser?.Id ?? 0,
-            Source = GenreVoteSource.User
-        }));
-        
-        if (!response.IsSuccessStatusCode)
-        {
-            Snackbar.Add($"Album saved but could not persist album primary genres: {response.ReasonPhrase}", Severity.Warning);
-            return;
-        }
-        
-        response = await UcSaveInfluenceGenre.ExecuteAsync(_influenceGenres.Select(g => new InAlbumInfluence
-        {
-            AlbumId = _album.Id,
-            GenreId = g.Id,
-            TaggerId = UserClientContext.CurrentUser?.Id ?? 0,
-            Source = GenreVoteSource.User
-        }));
-        
-        if (!response.IsSuccessStatusCode)
-        {
-            Snackbar.Add($"Album saved but could not persist album influence genres: {response.ReasonPhrase}", Severity.Warning);
-            return;
-        } */
-        
         _logger.LogInformation("✅ Album saved successfully!");
         Snackbar.Add("Album saved successfully!", Severity.Success);
         
@@ -116,10 +68,7 @@ public partial class AlbumEditModal
         if (null != album)
         {
             _album = album.ToRaw();
-            
-            /* _primaryGenres = album.PrimaryGenres?.Select(pgr => pgr.Genre).ToList() ?? [];
-            _influenceGenres = album.InfluenceGenres?.Select(igr => igr.Genre).ToList() ?? []; */
-            
+
             _recordingDates = new DateRange(
                 _album.BeginRecordDate,
                 _album.EndRecordDate
@@ -192,69 +141,9 @@ public partial class AlbumEditModal
         await UpdateArtwork();
     }
 
-    /* private void OnDeletePrimaryGenre(OutGenre genre)
-    {
-        _primaryGenres.Remove(genre);
-    }
-
-    private void AddPrimaryGenre()
-    {
-        if (_selectedPrimaryGenre is null)
-        {
-            return;
-        }
-        
-        _primaryGenres.Add(_selectedPrimaryGenre);
-        _selectedPrimaryGenre = null;
-        _selectedPrimaryText = "";
-    }
-    
-    private void OnDeleteInfluenceGenre(OutGenre genre)
-    {
-        _influenceGenres.Remove(genre);
-    }
-
-    private void AddInfluenceGenre()
-    {
-        if (_selectedInfluenceGenre is null)
-        {
-            return;
-        }
-        
-        _influenceGenres.Add(_selectedInfluenceGenre);
-        _selectedInfluenceGenre = null;
-        _selectedInfluenceText = "";
-    }
-
-    private async Task<IEnumerable<OutGenre>> SearchGenre(string? value, CancellationToken token)
-    {
-        await Task.Delay(5, token);
-
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return _availableGenres;
-        }
-
-        return _availableGenres.Where(x =>
-            x.CanonicalName
-                .ToLower()
-                .Contains(value, StringComparison.InvariantCultureIgnoreCase)
-            && !_primaryGenres.Contains(x)
-            && !_influenceGenres.Contains(x));
-    } */
-
     private void Clean()
     {
         _album = new InAlbum();
-
-        /* _primaryGenres.Clear();
-        _influenceGenres.Clear();
-
-        _selectedPrimaryGenre = null;
-        _selectedPrimaryText = "";
-        
-        _selectedInfluenceGenre = null;
-        _selectedInfluenceText = ""; */
 
         _recordingDates = null;
     }

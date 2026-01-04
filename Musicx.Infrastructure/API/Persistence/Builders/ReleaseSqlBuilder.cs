@@ -65,6 +65,11 @@ internal sealed class ReleaseSqlBuilder(ILoggerProvider loggerProvider) : SqlBui
         await cmd.ExecuteNonQueryAsync();
     }
 
+    internal override Task ExecuteUpsert(InRelease entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InRelease>? querySpecification = null,
         bool distinct = false)
     {

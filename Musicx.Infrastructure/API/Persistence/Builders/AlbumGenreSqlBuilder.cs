@@ -13,52 +13,54 @@ namespace Musicx.Infrastructure.API.Persistence.Builders;
 internal sealed class AlbumGenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilder<InAlbumGenre>
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumGenreSqlBuilder));
-    
-    internal override async Task<object?> ExecuteInsert(InAlbumGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+
+    internal override async Task<object?> ExecuteUpsert(InAlbumGenre entity, NpgsqlConnection connection,
+        NpgsqlTransaction? transaction = null)
     {
-        var createCommandSql = BuildInsert("album_genre",
-            new Dictionary<string, object?>
+        var now = DateTime.Now;
+
+        var query = BuildUpsert(
+            table: "album_genre",
+            insertProperties: new Dictionary<string, object?>
             {
                 { AlbumGenreColumns.AlbumId, entity.AlbumId },
                 { AlbumGenreColumns.GenreId, entity.GenreId },
                 { AlbumGenreColumns.TaggerId, entity.TaggerId },
-                { AlbumGenreColumns.CreatedAt, DateTime.Now },
-                { AlbumGenreColumns.UpdatedAt, DateTime.Now },
+                { AlbumGenreColumns.CreatedAt, now },
+                { AlbumGenreColumns.UpdatedAt, now },
                 { AlbumGenreColumns.Confidence, entity.Confidence },
                 { AlbumGenreColumns.Metadata, entity.Metadata },
                 { AlbumGenreColumns.Source, entity.Source },
-            });
+            },
+            conflictColumns:
+            [
+                AlbumGenreColumns.AlbumId,
+                AlbumGenreColumns.GenreId,
+                AlbumGenreColumns.TaggerId
+            ],
+            updateProperties: new Dictionary<string, object?>
+            {
+                { AlbumGenreColumns.UpdatedAt, now },
+                { AlbumGenreColumns.Confidence, entity.Confidence },
+                { AlbumGenreColumns.Metadata, entity.Metadata },
+                { AlbumGenreColumns.Source, entity.Source },
+            }
+        );
         
-        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
+        _logger.LogDebug(SqlHelper.InterpolateQuery(query.Query, query.Parameters));
+        
+        await using var cmd = new NpgsqlCommand(query.Query, connection, transaction);
+        cmd.Parameters.AddRange(query.Parameters.ToArray());
+        await cmd.ExecuteNonQueryAsync();
 
-        await using (var cmd = new NpgsqlCommand(createCommandSql.Query, connection, transaction))
-        {
-            cmd.Parameters.AddRange(createCommandSql.Parameters.ToArray());
-            await cmd.ExecuteNonQueryAsync();
-        }
-        
         return null;
     }
+    
+    internal override async Task<object?> ExecuteInsert(InAlbumGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+        => throw new NotImplementedException();
 
     internal override async Task ExecuteUpdate(InAlbumGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
-    {
-        var updateCommandSql = BuildUpdate("album_genre",
-            [AlbumGenreColumns.AlbumId, AlbumGenreColumns.GenreId, AlbumGenreColumns.TaggerId],
-            [entity.AlbumId, entity.GenreId, entity.TaggerId],
-            new Dictionary<string, object?>
-            {
-                { AlbumGenreColumns.UpdatedAt, DateTime.Now },
-                { AlbumGenreColumns.Confidence, entity.Confidence },
-                { AlbumGenreColumns.Metadata, entity.Metadata },
-                { AlbumGenreColumns.Source, entity.Source },
-        });
-        
-        _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
-
-        await using var cmd = new NpgsqlCommand(updateCommandSql.Query, connection, transaction);
-        cmd.Parameters.AddRange(updateCommandSql.Parameters.ToArray());
-        await cmd.ExecuteScalarAsync();
-    }
+        => throw new NotImplementedException();
 
     internal override string BuildSelect(IQuerySpecification<InAlbumGenre>? querySpecification = null, bool distinct = false)
         => distinct

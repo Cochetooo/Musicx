@@ -107,6 +107,11 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         }
     }
 
+    internal override Task ExecuteUpsert(InAlbum entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InAlbum>? querySpecification = null, bool distinct = false)
     {
         if (querySpecification is not AlbumQuerySpecification albumQuerySpecification)

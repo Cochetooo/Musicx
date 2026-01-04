@@ -138,6 +138,11 @@ internal sealed class UserSqlBuilder(
          */
     }
 
+    internal override Task ExecuteUpsert(InUser entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InUser>? querySpecification = null, bool distinct = false)
     {
         if (querySpecification is not UserQuerySpecification userQuerySpecification)

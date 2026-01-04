@@ -56,6 +56,11 @@ internal sealed class GenreRelationSqlBuilder(ILoggerProvider loggerProvider) : 
         await cmd.ExecuteNonQueryAsync();
     }
 
+    internal override Task ExecuteUpsert(InGenreRelation entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InGenreRelation>? querySpecification = null,
         bool distinct = false)
         => distinct

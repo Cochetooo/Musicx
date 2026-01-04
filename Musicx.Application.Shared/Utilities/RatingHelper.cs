@@ -148,7 +148,7 @@ public static class RatingHelper
     {
         if (rating is null)
         {
-            return "#777777";
+            return "#77777777";
         }
 
         for (int i = 0; i < Stops.Count - 1; i++)

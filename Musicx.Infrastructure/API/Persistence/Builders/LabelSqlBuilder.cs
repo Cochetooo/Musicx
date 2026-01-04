@@ -71,6 +71,11 @@ internal sealed class LabelSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         await cmd.ExecuteNonQueryAsync();
     }
 
+    internal override Task ExecuteUpsert(InLabel entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InLabel>? querySpecification = null,
         bool distinct = false)
     {

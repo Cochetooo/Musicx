@@ -59,6 +59,11 @@ internal sealed class PermissionSqlBuilder(ILoggerProvider loggerProvider) : Sql
         }
     }
 
+    internal override Task ExecuteUpsert(InPermission entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InPermission>? querySpecification = null, bool distinct = false)
     {
         return distinct

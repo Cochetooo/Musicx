@@ -13,7 +13,7 @@ create table public.album_influence (
     album_influence_confidence      numeric(5,4) default 0.8 check (album_influence_confidence >= 0 and album_influence_confidence <= 1),
     album_influence_metadata        jsonb default '{}'::jsonb,
     album_influence_source          integer not null default 0,
-    primary key (album_influence_album_id, album_influence_genre_id)
+    primary key (album_influence_album_id, album_influence_genre_id, album_influence_tagger_id)
 );
 
 alter table public.album_influence owner to postgres;

@@ -28,12 +28,12 @@ internal sealed class AlbumGenreRepository(
     public Task<OutAlbumGenre?> FindByIdAsync(long id, IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
         => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
 
-    public async Task<List<OutAlbumGenre>> FindAsync(long skip = 0, long take = 100,
+    public Task<List<OutAlbumGenre>> FindAsync(long skip = 0, long take = 100,
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, string? order = null, 
         IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
         => throw new NotImplementedException("FindAsync is disabled on this repository.");
 
-    public async Task<List<OutAlbumGenre>> FindIn(IEnumerable<long> ids, 
+    public Task<List<OutAlbumGenre>> FindIn(IEnumerable<long> ids, 
         IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
         => throw new NotImplementedException("FindIn is disabled on this repository.");
 
@@ -61,8 +61,6 @@ internal sealed class AlbumGenreRepository(
 
     public async Task<long> SaveAsync(InAlbumGenre entity)
     {
-        _logger.LogWarning("⚠️ SaveAsync : SQL not optimized, might highly affect performance.");
-        
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
         
@@ -70,17 +68,7 @@ internal sealed class AlbumGenreRepository(
         
         try
         {
-            var exist = await FindOneAsync(entity.AlbumId, entity.GenreId, entity.TaggerId);
-            
-            if (exist is null)
-            {
-                await builder.ExecuteInsert(entity, conn, transaction);
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-            
+            await builder.ExecuteUpsert(entity, conn, transaction);
             await transaction.CommitAsync();
         } 
         catch (Exception ex)
@@ -89,15 +77,11 @@ internal sealed class AlbumGenreRepository(
             throw new RepositoryException("❌ SAVE Album Genre : Could not persist.", ex, _logger);
         }
         
-        return entity.Id;
+        return -1;
     }
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<InAlbumGenre> entities)
     {
-        var idList = new List<long>();
-        
-        _logger.LogWarning("⚠️ SaveAllAsync : SQL not optimized, might highly affect performance.");
-        
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
         
@@ -107,26 +91,7 @@ internal sealed class AlbumGenreRepository(
         {
             foreach (var entity in entities)
             {
-                var exist = await FindOneAsync(entity.AlbumId, entity.GenreId, entity.TaggerId);
-                
-                if (exist is null)
-                {
-                    var result = await builder.ExecuteInsert(entity, conn, transaction);
-                    if (result is long l)
-                    {
-                        entity.Id = l;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                    }
-                }
-                else
-                {
-                    await builder.ExecuteUpdate(entity, conn, transaction);
-                }
-                
-                idList.Add(entity.Id);
+                await builder.ExecuteUpsert(entity, conn, transaction);
             }
             
             await transaction.CommitAsync();
@@ -137,6 +102,6 @@ internal sealed class AlbumGenreRepository(
             throw new RepositoryException("❌ SAVE ALL Album : Could not persist.", ex, _logger);
         }
         
-        return idList;
+        return [];
     }
 }

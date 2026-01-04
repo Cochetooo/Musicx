@@ -61,6 +61,11 @@ internal sealed class UserAlbumAttrSqlBuilder(
         }
     }
 
+    internal override Task ExecuteUpsert(InUserAlbumAttribute entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InUserAlbumAttribute>? spec = null, bool distinct = false)
     {
         return distinct

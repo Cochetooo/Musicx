@@ -155,6 +155,11 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
         }
     }
 
+    internal override Task ExecuteUpsert(InSong entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InSong>? querySpecification = null, bool distinct = false)
     {
         if (querySpecification is not SongQuerySpecification songQuerySpecification)

@@ -92,6 +92,10 @@ h1:focus {
     box-shadow: var(--mud-elevation-12);
 }
 
+.genre-badge .mud-chip-content {
+    font-family: "Montserrat", "Helvetica Neue", sans-serif !important;
+}
+
 .clamped-text-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;

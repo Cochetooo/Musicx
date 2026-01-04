@@ -14,6 +14,10 @@
     text-decoration: line-through;
 }
 
+.text-light {
+    font-weight: 300;
+}
+
 .text-bold {
     font-weight: bold;
 }
@@ -128,4 +132,12 @@
 
 .text-color-error-lighten {
     color: var(--mud-palette-error-lighten);
+}
+
+/*
+    Text Shadow
+ */
+
+.text-shadow {
+    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
 }

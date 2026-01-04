@@ -52,6 +52,11 @@ internal sealed class EventArtistSqlBuilder(ILoggerProvider loggerProvider) : Sq
         await cmd.ExecuteScalarAsync();
     }
 
+    internal override Task ExecuteUpsert(InEventArtist entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InEventArtist>? querySpecification = null, bool distinct = false)
         => distinct
             ? "SELECT DISTINCT evar0.*, ev0.*, ar0.* FROM event_artist evar0 " + 

@@ -85,6 +85,11 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
         await cmd.ExecuteScalarAsync();
     }
 
+    internal override Task ExecuteUpsert(InArtist entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    {
+        throw new NotImplementedException();
+    }
+
     internal override string BuildSelect(IQuerySpecification<InArtist>? spec = null, bool distinct = false)
     {
         return distinct 
