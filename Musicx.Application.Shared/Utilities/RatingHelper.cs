@@ -62,7 +62,7 @@ public static class RatingHelper
         }
         else if (ratingMode == RatingMode.Percentage)
         {
-            return $"{r}%";
+            return $"{r:0.##}%";
         }
         else
         {

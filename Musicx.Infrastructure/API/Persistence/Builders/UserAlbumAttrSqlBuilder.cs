@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Persistence.Columns;
@@ -68,13 +69,33 @@ internal sealed class UserAlbumAttrSqlBuilder(
 
     internal override string BuildSelect(IQuerySpecification<InUserAlbumAttribute>? spec = null, bool distinct = false)
     {
+        if (spec is not UserAlbumAttrSpecification specUserAlbumAttr)
+        {
+            return distinct
+                ? "SELECT DISTINCT uaa0.*, u0.*, al0.* FROM user_album_attrs uaa0 " +
+                  $"JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id} " +
+                  $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} "
+                : "SELECT uaa0.*, u0.*, al0.* FROM user_album_attrs uaa0 " +
+                  $"JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id} " +
+                  $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} ";
+        }
+
+        var selects = new List<string> { "uaa0.*", "u0.*", "al0.*" };
+        var joins = new List<string>
+        {
+            $"JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id}",
+            $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id}"
+        };
+
+        if (specUserAlbumAttr.IncludeAlbumArtists)
+        {
+            selects.Add("ar0.*");
+            joins.Add($"LEFT JOIN artists ar0 ON al0.{AlbumColumns.ArtistId} = ar0.{ArtistColumns.Id}");
+        }
+        
         return distinct
-            ? "SELECT DISTINCT uaa0.*, u0.*, al0.* FROM user_album_attrs uaa0 " +
-              $"INNER JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id} " +
-              $"INNER JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} "
-            : "SELECT uaa0.*, u0.*, al0.* FROM user_album_attrs uaa0 " +
-              $"INNER JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id} " +
-              $"INNER JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} ";
+            ? $"SELECT DISTINCT {string.Join(", ", selects)} FROM user_album_attrs uaa0 {string.Join(" ", joins)}"
+            : $"SELECT {string.Join(", ", selects)} FROM user_album_attrs uaa0 {string.Join(" ", joins)}";
     }
 
     internal override string BuildGroupBy(IQuerySpecification<InUserAlbumAttribute>? spec = null)

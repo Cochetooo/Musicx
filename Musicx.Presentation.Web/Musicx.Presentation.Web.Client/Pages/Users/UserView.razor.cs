@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 
 namespace Musicx.Presentation.Web.Client.Pages.Users;
@@ -9,9 +10,12 @@ public partial class UserView
 {
     private ILogger _logger = null!;
 
+    private MudTable<OutUserAlbumAttribute> _albumRatingsTable = null!;
+    
     private OutUser? _user;
 
     private long _albumCount;
+    private string _searchString = string.Empty;
 
     private OutUserRatingStats? _albumRatingDistrib;
     
@@ -71,9 +75,11 @@ public partial class UserView
         
         var response = await UcGetAlbumAttrs.ExecuteAsync(
             _user.Id, 
+            query: "artist",
             skip: state.Page * state.PageSize,
             take: state.PageSize,
-            token
+            filter: string.IsNullOrWhiteSpace(_searchString) ? null : _searchString,
+            token: token
         );
 
         _albumCount = response.Total;
@@ -84,5 +90,11 @@ public partial class UserView
             TotalItems = (int)response.Total,
             Items = response.Items
         };
+    }
+
+    private void OnSearch(string text)
+    {
+        _searchString = text;
+        _albumRatingsTable.ReloadServerData();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence;
+using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
@@ -117,6 +118,7 @@ public sealed class UserAlbumAttrController(
     [HttpGet("by-user/{userId}")]
     public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> FindByUserId(
         [FromRoute] long userId,
+        [FromQuery] string query = "",
         [FromQuery] long skip = 0, 
         [FromQuery] long take = 100, 
         [FromQuery] long? artistId = null,
@@ -129,9 +131,16 @@ public sealed class UserAlbumAttrController(
 
         try
         {
-            var userAlbumAttrs = await repository.FindByUserIdAsync(userId, skip, take,
+            var querySpecification = new UserAlbumAttrSpecification
+            {
+                IncludeAlbumArtists = query.Contains("artist")
+            };
+            
+            var userAlbumAttrs = await repository.FindByUserIdAsync(userId, querySpecification, skip, take,
                 artistId, filterExact, filterSimilitude, filter, order);
-            var totalCount = await repository.CountByUserIdAsync(userId);
+            var totalCount = await repository.CountByUserIdAsync(userId,
+                querySpecification, artistId,
+                filterExact, filterSimilitude, filter);
 
             if (0 == userAlbumAttrs.Count)
             {

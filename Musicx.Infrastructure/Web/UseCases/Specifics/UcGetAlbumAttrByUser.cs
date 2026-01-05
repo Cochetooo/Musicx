@@ -14,14 +14,20 @@ public sealed class UcGetAlbumAttrByUser(
     private readonly ILogger _logger = loggerFactory.CreateLogger<UcGetAlbumAttrByAlbum>();
 
     public async Task<OutGenericList<OutUserAlbumAttribute>> ExecuteAsync(long userId,
+        string query = "",
         long skip = 0, long take = 100, CancellationToken token = default,
-        long? artistId = null)
+        long? artistId = null, string? filter = null)
     {
-        var endpoint = $"/api/user-album-attrs/by-user/{userId}?skip={skip}&take={take}";
+        var endpoint = $"/api/user-album-attrs/by-user/{userId}?skip={skip}&take={take}&query={query}";
 
         if (artistId is not null)
         {
             endpoint += $"&artistId={artistId}";
+        }
+
+        if (filter is not null)
+        {
+            endpoint += $"&filter={filter}";
         }
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);

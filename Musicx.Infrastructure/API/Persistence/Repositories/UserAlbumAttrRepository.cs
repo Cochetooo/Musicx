@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
+using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
@@ -128,18 +129,47 @@ internal sealed class UserAlbumAttrRepository(
         }
     }
 
-    public async Task<long> CountByUserIdAsync(long userId)
+    public async Task<long> CountByUserIdAsync(long userId, 
+        IQuerySpecification<InUserAlbumAttribute>? spec, long? artistId = null,
+        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null)
     {
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
         
-        var sql = $"SELECT COUNT(*) FROM user_album_attrs WHERE {UserAlbumAttrColumns.UserId} = @userId";
-        
-        await using var command = new NpgsqlCommand(sql, conn);
         var parameters = new List<NpgsqlParameter>()
         {
             new("@userId", userId)
         };
+        
+        var sql = $"SELECT COUNT(*) FROM user_album_attrs uaa0 "
+               + $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} ";
+
+        if (spec is UserAlbumAttrSpecification uaaSpec)
+        {
+            if (uaaSpec.IncludeAlbumArtists)
+            {
+                sql += $"JOIN artists ar0 ON al0.{AlbumColumns.ArtistId} = ar0.{ArtistColumns.Id} ";
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            builder.Filter(
+                sql: ref sql, 
+                columns: [$"al0.{AlbumColumns.Name}", $"ar0.{ArtistColumns.Name}"], 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
+            sql += $" AND {UserAlbumAttrColumns.UserId} = @userId";
+        }
+        else
+        {
+            sql += $" WHERE {UserAlbumAttrColumns.UserId} = @userId";
+        }
+        
+        await using var command = new NpgsqlCommand(sql, conn);
         
         command.Parameters.AddRange(parameters.ToArray());
         
@@ -180,32 +210,37 @@ internal sealed class UserAlbumAttrRepository(
     }
 
     public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindByUserIdAsync(long userId, 
+        IQuerySpecification<InUserAlbumAttribute>? spec = null,
         long skip = 0, long take = 100, long? artistId = null, 
         bool? filterExact = null, double? filterSimilitude = 0.4,
         string? filter = null, string? order = null)
     {
-        var sql = builder.BuildSelect();
+        var sql = builder.BuildSelect(spec);
         var parameters = new List<NpgsqlParameter>();
 
-        sql += $" WHERE {UserAlbumAttrColumns.UserId} = @userId";
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            builder.Filter(
+                sql: ref sql, 
+                columns: [$"al0.{AlbumColumns.Name}", $"ar0.{ArtistColumns.Name}"], 
+                filter: filter,
+                parameters: parameters, 
+                filterExact: filterExact, 
+                filterSimilitude: filterSimilitude
+            );
+            sql += $" AND {UserAlbumAttrColumns.UserId} = @userId";
+        }
+        else
+        {
+            sql += $" WHERE {UserAlbumAttrColumns.UserId} = @userId";
+        }
+        
         parameters.Add(new NpgsqlParameter("@userId", userId));
 
         if (artistId is not null)
         {
             sql += $" AND al0.{AlbumColumns.ArtistId} = @artistId";
             parameters.Add(new NpgsqlParameter("@artistId", artistId));
-        }
-
-        if (!string.IsNullOrWhiteSpace(filter))
-        {
-            builder.Filter(
-                sql: ref sql, 
-                column: $"al0.{AlbumColumns.Name}", 
-                filter: filter,
-                parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
-            );
         }
 
         sql += builder.BuildOrderBy($"uaa0.{UserAlbumAttrColumns.UpdatedAt} DESC", $"u0.{UserColumns.Name}");
