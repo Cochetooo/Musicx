@@ -1,5 +1,6 @@
 ﻿@page "/User/{id}"
 
+@using System.Globalization
 @using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
@@ -138,14 +139,17 @@ else
             </MudItem>
             <MudItem xs="12" md="7">
                 <MudTable ServerData="@LoadUserAttrData" ReadOnly
-                          Elevation="8" Striped
+                          Elevation="8"
                           Breakpoint="Breakpoint.Sm"
+                          RowClass="rating-row"
+                          RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Rating)}")"
                           @ref="_albumRatingsTable"
-                          Class="mt-4 pa-3 bg-surface animate-hover-up" Dense>
+                          Class="mt-4 pa-2 bg-surface animate-hover-up" Dense>
                     <ColGroup>
+                        <col style="width:3px;" />
                         <col/>
                         <col style="width: 100px;"/>
-                        <col style="width: 100px;"/>
+                        <col style="width: 120px;"/>
                         <col style="width: 100px;"/>
                     </ColGroup>
                     <ToolBarContent>
@@ -156,17 +160,18 @@ else
                                       IconSize="Size.Medium" Class="mt-0" />
                     </ToolBarContent>
                     <HeaderContent>
+                        <MudTh Style="padding: 0;"></MudTh>
                         <MudTh>
                             Album
                         </MudTh>
                         <MudTh>
-                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
-                                Date
+                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
+                                Collection
                             </MudTableSortLabel>
                         </MudTh>
                         <MudTh>
-                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
-                                Collection
+                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
+                                Date
                             </MudTableSortLabel>
                         </MudTh>
                         <MudTh>
@@ -180,24 +185,24 @@ else
                             <MudLink Href="@($"/Album/{@context.Album.Id}")">
                                 <MudStack Justify="Justify.FlexStart" Row>
                                     <MudImage Src="@context.Album.ArtworkUrl" Alt="@context.Album.Name"
-                                              Width="64" Height="64"
+                                              Width="48" Height="48"
                                               Class="rounded-lg"
                                               Elevation="25"/>
 
-                                    <AlbumListQuickInfo class="mx-3" ShowArtist="true" 
+                                    <AlbumListQuickInfo class="mx-3" ShowArtist="true"
                                                         Album="@context.Album"/>
                                 </MudStack>
                             </MudLink>
                         </MudTd>
 
-                        <MudTd DataLabel="Date">
-                            <MudText Typo="Typo.caption" Class="text-color-primary text-light">
-                                @context.UpdatedAt.ToString("dd/MM/yyyy")
-                            </MudText>
-                        </MudTd>
-
                         <MudTd DataLabel="Collection">
                             @(context.CollectionType?.ToString() ?? string.Empty)
+                        </MudTd>
+
+                        <MudTd DataLabel="Date">
+                            <MudText Typo="Typo.caption" Class="text-color-primary text-light">
+                                @context.UpdatedAt.ToString("dd MMM yy", CultureInfo.CurrentCulture)
+                            </MudText>
                         </MudTd>
 
                         <MudTd DataLabel="Rating">
@@ -287,5 +292,21 @@ else
 <style>
     .rating-bar .mud-progress-linear-bar {
         background-color: var(--bar-color) !important;
+    }
+
+    .rating-row {
+        position: relative;
+    }
+
+    .rating-row:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background-color: var(--rating-color);
+        opacity: 0.75;
+        border-radius: 2px;
     }
 </style>

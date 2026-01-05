@@ -29,17 +29,27 @@
             break;
     }
     
-    @if (ShowArtist && Album.Artist is not null)
-    {
-        <MudText Class="montserrat clamped-text-4 text-light text-color-secondary" Typo="Typo.body1" Color="Color.Inherit">
-            @Album.Artist.Name
-        </MudText>
-    }
+    <MudText Class="montserrat clamped-text-4 text-light text-color-secondary" Typo="Typo.body2" Color="Color.Inherit">
+        @{
+            var hasDate = Album.OriginalReleaseDate is not null;
+            var hasArtist = ShowArtist && Album.Artist is not null;
+        }
+        
+        @if (hasDate)
+        {
+            @Album.OriginalReleaseDate!.Value.Year
+        }
 
-    @if (null != Album.OriginalReleaseDate)
-    {
-        <MudText Color="Color.Primary" Typo="Typo.body2">@Album.OriginalReleaseDate.Value.Year</MudText>
-    }
+        @if (hasDate && hasArtist)
+        {
+            @(" · ")
+        }
+
+        @if (hasArtist)
+        {
+            @Album.Artist!.Name
+        }
+    </MudText>
 </div>
 
 @code {
