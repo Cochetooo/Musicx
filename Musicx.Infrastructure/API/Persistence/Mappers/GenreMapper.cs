@@ -6,6 +6,7 @@ using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
 using Musicx.Contracts.Helpers;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Converters;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -26,6 +27,8 @@ public static class GenreMapper
     {
         Converters =
         {
+            new GenreClosureNodeConverter(),
+            new JsonToOutModelConverter<OutGenre>("genre"),
             new JsonToOutModelConverter<OutGenreClosure>("genre_closure")
         }
     };
@@ -55,13 +58,13 @@ public static class GenreMapper
                    && parentsValue is not null
             ? JsonConvert.DeserializeObject<GenreClosureNode[]>(parentsValue as string ?? string.Empty,
                 GenreClosureMapperJsonOptions) ?? []
-            : [],
+            : null,
         
         Children = genre.TryGetValue("children", out var childrenValue)
                   && childrenValue is not null
             ? JsonConvert.DeserializeObject<GenreClosureNode[]>(childrenValue as string ?? string.Empty,
                 GenreClosureMapperJsonOptions) ?? []
-            : [],
+            : null,
 
         Relations = genre.TryGetValue("relations", out var genreRelationValue)
                           && genreRelationValue is not null

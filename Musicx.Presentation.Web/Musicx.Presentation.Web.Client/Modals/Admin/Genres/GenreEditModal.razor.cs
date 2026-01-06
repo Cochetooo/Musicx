@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 
@@ -18,6 +19,8 @@ public partial class GenreEditModal
 
     private MudDialog _modalRef = null!;
     private MudTextField<string> _nameTextEdit = null!;
+
+    private GenreRelationType _genreType = GenreRelationType.IsA;
 
     private int _currentStep = 1;
     private GenreType? _selectedType = null;
@@ -53,14 +56,14 @@ public partial class GenreEditModal
 
     private async Task Load()
     {
-        var result = await UcList.ExecuteAsync(take: 10_000, query: "parents_children");
+        var result = await UcList.ExecuteAsync(take: 100_000, query: "parents");
         
         _genres = result
-            .Where(g => g.Parents is null)
+            .Where(g => g.Parents.Count > 0)
             .ToList();
 
         _descriptors = result
-            .Where(d => d.Type == GenreType.Descriptor && d.Parents is null)
+            .Where(d => d is { Type: GenreType.Descriptor, Parents.Count: > 0 })
             .ToList();
         
         _logger.LogInformation("✅ Genre list loaded successfully !");
@@ -214,32 +217,55 @@ public partial class GenreEditModal
     
     private async Task Save()
     {
-        throw new NotImplementedException("Parent Ids changes");
-        /*
-        _genre.ParentIds = _selectedParents.Select(g => g.Id).ToList();
         var response = await UcSave.ExecuteAsync(_genre);
         
         if (!response.IsSuccessStatusCode)
         {
-            Snackbar.Add($"Could not save artist: {response.ReasonPhrase}", Severity.Error);
+            Snackbar.Add($"Could not save genre: {response.ReasonPhrase}", Severity.Error);
+            await Hide();
+            return;
         }
+
+        response = await UcSaveRelations.ExecuteAsync(_selectedParents.Select(pg => new InGenreRelation
+        {
+            FromGenreId = pg.Id,
+            ToGenreId = _genre.Id,
+            Type = _genreType,
+            Weight = 0.8f
+        }));
+        
+        Snackbar.Add("Genre saved successfully !", Severity.Success);
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Could not save genre relations: {response.ReasonPhrase}", Severity.Error);
+            await Hide();
+            return;
+        }
+
+        Snackbar.Add("Genre relations saved successfully !", Severity.Success);
         
         await OnSave.InvokeAsync();
         await Hide();
         
-        await Load(); */
+        await Load();
     }
     
-    private async Task<IReadOnlyList<OutGenre>> LoadChildrenAsync(OutGenre genre)
+    private async Task<IReadOnlyList<GenreClosureNode>> LoadChildrenAsync(OutGenre genre)
     {
         _logger.LogInformation($"🔄️ Loading Server Data for : {genre.CanonicalName} | Array count: {genre.Children?.Count}");
-        
+
         if (genre.Children is null)
         {
-            return [];
+            genre = await UcGet.ExecuteAsync(genre.Id, "children") ?? genre;
+
+            if (genre.Children is null)
+            {
+                return [];
+            }
         }
-        
-        return await UcFindIn.ExecuteAsync(genre.Children.Select(g => g.Relation.Id), "children");
+
+        return genre.Children;
     }
 
     private IReadOnlyCollection<GenreType> AllowedFilterFor(GenreType type)

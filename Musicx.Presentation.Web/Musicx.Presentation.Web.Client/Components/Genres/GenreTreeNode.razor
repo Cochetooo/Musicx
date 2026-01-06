@@ -67,7 +67,7 @@
     [Parameter] public OutGenre Genre { get; set; } = null!;
     [Parameter] public bool Checkable { get; set; }
     [Parameter] public bool Addable { get; set; }
-    [Parameter] public Func<OutGenre, Task<IReadOnlyList<OutGenre>>>? LoadChildrenAsync { get; set; }
+    [Parameter] public Func<OutGenre, Task<IReadOnlyList<GenreClosureNode>>>? LoadChildrenAsync { get; set; }
     [Parameter] public EventCallback<(OutGenre, bool)> OnSelectionChanged { get; set; }
     
     private bool Expanded { get; set; }
@@ -92,8 +92,7 @@
 
             if (LoadChildrenAsync != null)
             {
-                throw new NotImplementedException("Load Children Async Genre Closure Node");
-                //Children = await LoadChildrenAsync(Genre);
+                Children = await LoadChildrenAsync(Genre);
             }
             else
             {

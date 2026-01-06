@@ -209,11 +209,13 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 return NoContent();
             }
 
+            var albumCount = await albumRepository.GetCountByGenreIdAsync(genreId);
+
             var response = new OutAlbumList
             {
                 AverageRating = RatingHelper.CalculateArtistRating(albums),
                 Items = albums,
-                Total = albums.Count
+                Total = albumCount
             };
             
             _logger.LogInformation($"🌍✅ API : FIND BY GENRE albums ({genreId}) - SUCCESS");

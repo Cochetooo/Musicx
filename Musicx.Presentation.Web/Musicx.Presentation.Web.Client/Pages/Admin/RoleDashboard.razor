@@ -6,43 +6,96 @@
 
 @inject ILoggerFactory LoggerFactory
 @inject IListUseCase<OutRole> UcList
+@inject IListUseCase<OutPermission> UcListPermissions
 @inject ISaveUseCase<InRole> UcSave
 @inject IDeleteUseCase<InRole> UcDelete
+@inject ISnackbar Snackbar
 
 <AuthorizeView Permission="admin.role.read">
     <ChildContent>
         <MudBreadcrumbs Items="@_breadcrumb" />
 
-        <MudCard Class="py-4">
+        <MudCard Class="py-2">
             <MudCardHeader>
                 <MudText Typo="Typo.h4">Role Management</MudText>
             </MudCardHeader>
     
             <MudCardContent>
                 <MudGrid>
-                    <MudItem xs="12" md="6" Class="pa-3">
+                    <MudItem xs="12" md="3" Class="pa-3">
                         <MudList T="OutRole?" @bind-SelectedValue="_selectedRole">
                             @foreach (var role in _roles)
                             {
                                 <MudListItem Value="@role">
-                                    @role.Name
+                                    <MudText Typo="Typo.body1" Style="justify-items: center;" 
+                                             Class="montserrat text-bold text-color-primary">
+                                        @role.Name.ToUpper()
+                                    </MudText>
                                 </MudListItem>
                             }
                         </MudList>
                     </MudItem>
             
                     <MudItem xs="12" md="6" Class="pa-3">
-                        @if (_selectedRole is not null && _selectedRole.Permissions is not null)
+                        @if (_selectedRole is not null)
                         {
-                            <MudList T="OutPermission?">
-                                @foreach (var permission in _selectedRole.Permissions)
+                            <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                                Permissions
+                            </MudText>
+                            @if (_selectedRole.Permissions is not null)
+                            {
+                                <MudList T="OutPermission?" Class="animate-swipe-right">
+                                    @foreach (var permission in _selectedRole.Permissions)
+                                    {
+                                        <MudListItem Value="@permission">
+                                            <MudStack AlignItems="AlignItems.Center" Spacing="3" Row>
+                                                <MudIconButton Icon="@Icons.Material.Filled.Close" 
+                                                               OnClick="@(() => RemovePermission(permission))"
+                                                               Size="Size.Small"
+                                                               Color="Color.Error"/>
+                                                <MudText Typo="Typo.body2" Class="text-light montserrat text-color-secondary">
+                                                    @permission.Name
+                                                </MudText>
+                                            </MudStack>
+                                        </MudListItem>
+                                    }
+                                </MudList>
+                            }
+                            <MudStack Row>
+                                <MudIconButton Size="Size.Large" Color="Color.Primary" 
+                                               Icon="@(_addMode ? Icons.Material.Filled.Minimize : Icons.Material.Filled.Add)"
+                                               OnClick="@(() => _addMode = !_addMode)"/>
+                                
+                                <MudIconButton Size="Size.Large" Color="Color.Success"
+                                               OnClick="@Save"
+                                               Disabled="@(!_isModified)" Icon="@Icons.Material.Filled.Save"/>
+                            </MudStack>
+                        }
+                    </MudItem>
+                    
+                    <MudItem xs="12" md="3" Class="pa-3">
+                        @if (_selectedRole is not null && _addMode)
+                        {
+                            <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                                Available Permissions
+                            </MudText>
+                            <MudList T="OutPermission?" Class="animate-pop-bounce">
+                                @foreach (var permission in _permissions.Where(
+                                              p => !_selectedRole.Permissions?.Select(sp => sp.Id)
+                                                  .Contains(p.Id) ?? true))
                                 {
-                                    <MudListItem Value="@permission">
-                                        @permission.Name
+                                    <MudListItem Value="@permission" OnClick="@(() => AddPermission(permission))">
+                                        <MudStack AlignItems="AlignItems.Center" Spacing="3" Row>
+                                            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                                           Size="Size.Small" Color="Color.Error"/>
+                                            <MudText Typo="Typo.body2" Class="text-light montserrat text-color-secondary">
+                                                @permission.Name
+                                            </MudText>
+                                        </MudStack>
                                     </MudListItem>
                                 }
                             </MudList>
-                        }
+                        }                   
                     </MudItem>
                 </MudGrid>
             </MudCardContent>

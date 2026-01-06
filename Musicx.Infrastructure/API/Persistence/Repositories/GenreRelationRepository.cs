@@ -12,12 +12,12 @@ using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;
 
-internal sealed class AlbumGenreRepository(
+internal sealed class GenreRelationRepository(
     IDbConnectionProvider connection,
-    SqlBuilder<InAlbumGenre> builder,
-    ILoggerProvider loggerProvider) : IAlbumGenreRepository
+    SqlBuilder<InGenreRelation> builder,
+    ILoggerProvider loggerProvider) : IGenreRelationRepository
 {
-    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumGenreRepository));
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(GenreRelationRepository));
     
     public Task DeleteAsync(long id)
         => throw new NotImplementedException("DeleteAsync is disabled on this repository.");
@@ -25,41 +25,22 @@ internal sealed class AlbumGenreRepository(
     public Task DeleteAllAsync(IEnumerable<long> ids)
         => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
 
-    public Task<OutAlbumGenre?> FindByIdAsync(long id, IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
+    public Task<OutGenreRelation?> FindByIdAsync(long id, IQuerySpecification<InGenreRelation>? GenreRelationQuerySpecification = null)
         => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
 
-    public Task<List<OutAlbumGenre>> FindAsync(long skip = 0, long take = 100,
+    public Task<List<OutGenreRelation>> FindAsync(long skip = 0, long take = 100,
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, string? order = null, 
-        IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
+        IQuerySpecification<InGenreRelation>? GenreRelationQuerySpecification = null)
         => throw new NotImplementedException("FindAsync is disabled on this repository.");
 
-    public Task<List<OutAlbumGenre>> FindIn(IEnumerable<long> ids, 
-        IQuerySpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
+    public Task<List<OutGenreRelation>> FindIn(IEnumerable<long> ids, 
+        IQuerySpecification<InGenreRelation>? GenreRelationQuerySpecification = null)
         => throw new NotImplementedException("FindIn is disabled on this repository.");
 
-    public async Task<OutAlbumGenre?> FindOneAsync(long albumId, long genreId, long taggerId)
-    {
-        var sql = new StringBuilder(builder.BuildSelect());
-        sql.Append($" WHERE {AlbumGenreColumns.AlbumId} = @albumId AND {AlbumGenreColumns.GenreId} = @genreId AND {AlbumGenreColumns.TaggerId} = @taggerId");
-
-        var parameters = new List<NpgsqlParameter>
-        {
-            new("@albumId", albumId),
-            new("@genreId", genreId),
-            new("@taggerId", taggerId),
-        };
-        
-        var result = await connection.FetchListDynamicAsync(sql.ToString(), parameters);
-
-        return result
-            .SingleOrDefault()?
-            .FromDicoToAlbumGenre();
-    }
-
     public async Task<long> GetCountAsync()
-        => await connection.Count("album_genre");
+        => await connection.Count("genre_relation");
 
-    public async Task<long> SaveAsync(InAlbumGenre entity)
+    public async Task<long> SaveAsync(InGenreRelation entity)
     {
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
@@ -74,13 +55,13 @@ internal sealed class AlbumGenreRepository(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE Album Genre : Could not persist.", ex, _logger);
+            throw new RepositoryException("❌ SAVE Genre Relation : Could not persist.", ex, _logger);
         }
         
         return -1;
     }
 
-    public async Task<List<long>> SaveAllAsync(IEnumerable<InAlbumGenre> entities)
+    public async Task<List<long>> SaveAllAsync(IEnumerable<InGenreRelation> entities)
     {
         await using var conn = connection.CreateConnection();
         await conn.OpenAsync();
@@ -99,7 +80,7 @@ internal sealed class AlbumGenreRepository(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE ALL Album Genre : Could not persist.", ex, _logger);
+            throw new RepositoryException("❌ SAVE ALL Genre Relation : Could not persist.", ex, _logger);
         }
         
         return [];

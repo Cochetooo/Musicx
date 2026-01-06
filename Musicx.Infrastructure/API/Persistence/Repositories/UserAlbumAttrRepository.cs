@@ -182,7 +182,7 @@ internal sealed class UserAlbumAttrRepository(
         }
         catch (Exception ex)
         {
-            _logger.LogError("❌ Could not execute cound by user command for table user_album_attrs.");
+            _logger.LogError("❌ Could not execute count by user command for table user_album_attrs.");
             return -1;
         }
     }

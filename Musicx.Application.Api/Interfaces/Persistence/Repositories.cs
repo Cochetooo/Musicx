@@ -10,6 +10,7 @@ namespace Musicx.Application.Api.Interfaces.Persistence;
 
 public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
 {
+    Task<long> GetCountByGenreIdAsync(long genreId);
     Task<List<OutAlbum>> FindByArtistIdAsync(long artistId, 
         IQuerySpecification<InAlbum>? albumQuerySpecification = null);
     Task<List<OutAlbum>> FindByGenreIdAsync(long genreId, 
@@ -37,6 +38,7 @@ public interface IEventRepository : IRepository<InEvent, OutEvent>;
 public interface IEventArtistRepository : IRepository<InEventArtist, OutEventArtist>;
 public interface IEventUserRepository : IRepository<InEventUser, OutEventUser>;
 public interface IGenreRepository : IRepository<InGenre, OutGenre>;
+public interface IGenreRelationRepository : IRepository<InGenreRelation, OutGenreRelation>;
 public interface ILabelRepository : IRepository<InLabel, OutLabel>;
 public interface IReleaseRepository : IRepository<InRelease, OutRelease>;
 

@@ -14,9 +14,12 @@ public partial class GenreView
     private ILogger _logger = null!;
 
     private OutGenre? _genre;
-    private OutAlbumList _genreAlbums = new();
 
     private readonly List<BreadcrumbItem>? _breadcrumb = [];
+    private long _albumCount;
+    private decimal? _albumsAvgRating = null;
+    
+    private MudTable<OutAlbum> _albumTable = null!;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -63,15 +66,39 @@ public partial class GenreView
         _logger.LogInformation($"✅ Genre loaded: {_genre.CanonicalName} ({_genre.Id})");
         await InvokeAsync(StateHasChanged);
 
-        _genreAlbums = await UcAlbumByGenre.ExecuteAsync(
+        await _albumTable.ReloadServerData();
+        await InvokeAsync(StateHasChanged);
+    }
+    
+    private async Task<TableData<OutAlbum>> LoadAlbumsData(TableState state, CancellationToken token)
+    {
+        if (_genre is null)
+        {
+            _logger.LogError("❌ No genre found for ID: {Id}", Id);
+            return new TableData<OutAlbum>
+            {
+                TotalItems = 0,
+                Items = []
+            };;
+        }
+        
+        var response = await UcAlbumByGenre.ExecuteAsync(
             genreId: _genre.Id,
             genreOptions: GenreOptions.PrimaryGenre,
-            take: 100,
+            skip: state.Page * state.PageSize,
+            take: state.PageSize,
             query: "artist_genre_stats"
         );
-        
-        _logger.LogInformation($"🏷️ Albums loaded : {_genreAlbums.Total}");
+
+        _albumCount = response.Total;
+        _albumsAvgRating = response.AverageRating;
         await InvokeAsync(StateHasChanged);
+
+        return new TableData<OutAlbum>
+        {
+            TotalItems = (int)response.Total,
+            Items = response.Items
+        };
     }
 
     private string GetHeaderStyle()

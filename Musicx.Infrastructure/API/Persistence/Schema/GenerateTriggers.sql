@@ -1,6 +1,8 @@
 /*
     Triggers 
  */
+ 
+\i 'Genres/TriggerInsertGenreClosure.sql'
 
 \i 'Songs/TriggerCalculateRatingSong.sql'
 

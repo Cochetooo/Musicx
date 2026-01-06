@@ -1,4 +1,5 @@
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Dto.Responses.Specifics.Genres
 @using Musicx.Contracts.Enums
 @inject ILoggerFactory LoggerFactory
 
@@ -47,6 +48,6 @@
         await SelectedGenresChanged.InvokeAsync(_selected.ToList());
     }
     
-    [Parameter] public Func<OutGenre, Task<IReadOnlyList<OutGenre>>>? LoadChildrenAsync { get; set; }
+    [Parameter] public Func<OutGenre, Task<IReadOnlyList<GenreClosureNode>>>? LoadChildrenAsync { get; set; }
 
 }

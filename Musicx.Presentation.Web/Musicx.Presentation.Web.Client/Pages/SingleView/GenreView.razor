@@ -1,4 +1,6 @@
 @page "/Genre/{id}"
+@using System.Globalization
+@using Musicx.Application.Shared.Utilities
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
@@ -30,11 +32,13 @@ else
                 <MudItem xs="12" md="3" Class="pa-3">
                     <MudCard>
                         <MudCardHeader>
-                            <MudText Typo="Typo.h4">Description</MudText>
+                            <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                                Description
+                            </MudText>
                         </MudCardHeader>
                         <MudCardContent>
                             <DonutRating
-                                Rating="@_genreAlbums.AverageRating"
+                                Rating="@_albumsAvgRating"
                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
                                 Size="DonutRatingSize.Small"
                             />
@@ -55,7 +59,7 @@ else
                     </MudCard>
                     
                     <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                        <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">
+                        <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
                             Hierarchy
                         </MudText>
                         
@@ -65,10 +69,13 @@ else
                         {
                             foreach (var genre in _genre.Parents)
                             {
-                                <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Tertiary"
-                                         Class="ml-2 d-block">
-                                    @genre.Relation.CanonicalName
-                                </MudLink>
+                                if (genre.Relation.Id != _genre.Id)
+                                {
+                                    <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Tertiary"
+                                             Class="ml-2 d-block">
+                                        @genre.Relation.CanonicalName
+                                    </MudLink>
+                                }
                             }
                         }
                         
@@ -81,9 +88,13 @@ else
                         {
                             foreach (var genre in _genre.Children)
                             {
-                                <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Secondary" Class="ml-6 d-block">
-                                    @genre.Relation.CanonicalName
-                                </MudLink>
+                                if (genre.Relation.Id != _genre.Id)
+                                {
+                                    <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Secondary"
+                                             Class="ml-6 d-block">
+                                        @genre.Relation.CanonicalName
+                                    </MudLink>
+                                }
                             }
                         }
                     </MudPaper>
@@ -91,49 +102,85 @@ else
                 <MudItem xs="12" md="9" Class="pa-3">
                     <MudCard>
                         <MudCardHeader>
-                            <MudText Typo="Typo.h4">Releases</MudText>
+                            <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                                Releases (@_albumCount)
+                            </MudText>
                         </MudCardHeader>
                         <MudCardContent>
-                            <MudList T="RenderFragment" Dense>
-                                @foreach (var album in _genreAlbums.Items)
-                                {
-                                    <MudListItem>
-                                        <MudLink Href="@($"/Album/{album.Id}")">
-                                            <MudStack AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Row>
-                                                <MudStack Justify="Justify.FlexStart" Row>
-                                                    <MudImage Src="@album.ArtworkUrl" Alt="@album.Name"
-                                                              Width="48" Height="48"
-                                                              Style="border-radius: 5px"
-                                                              Elevation="25"/>
+                            <MudTable ServerData="@LoadAlbumsData" ReadOnly
+                                      Elevation="8"
+                                      Breakpoint="Breakpoint.Sm"
+                                      RowClass="album-row"
+                                      RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Stats?.Average)}")"
+                                      Class="mt-4 pa-2 bg-surface animate-hover-up" Dense>
+                                <ColGroup>
+                                    <col style="width:3px;" />
+                                    <col/>
+                                    <col style="width: 100px;"/>
+                                    <col style="width: 120px;"/>
+                                    <col style="width: 100px;"/>
+                                </ColGroup>
+                                <HeaderContent>
+                                    <MudTh Style="padding: 0;"></MudTh>
+                                    <MudTh>
+                                        Album
+                                    </MudTh>
+                                    <MudTh>
+                                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
+                                            Other Primary Genres
+                                        </MudTableSortLabel>
+                                    </MudTh>
+                                    <MudTh>
+                                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
+                                            Date
+                                        </MudTableSortLabel>
+                                    </MudTh>
+                                    <MudTh>
+                                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
+                                            Rating
+                                        </MudTableSortLabel>
+                                    </MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="Releases">
+                                        <MudLink Href="@($"/Album/{@context.Id}")">
+                                            <MudStack Justify="Justify.FlexStart" Row>
+                                                <MudImage Src="@context.ArtworkUrl" Alt="@context.Name"
+                                                          Width="48" Height="48"
+                                                          Class="rounded-lg"
+                                                          Elevation="25"/>
 
-                                                    <AlbumListQuickInfo class="mx-3" Album="@album"/>
-                                                    
-                                                    @if (album.Artist is not null)
-                                                    {
-                                                        <MudDivider Vertical />
-                                                        <MudText Class="text-color-secondary">
-                                                            @album.Artist.Name
-                                                        </MudText>
-                                                    }
-                                                </MudStack>
-
-                                                <MudStack Justify="Justify.FlexEnd" Row>
-                                                    @if (album.PrimaryGenres is not null)
-                                                    {
-                                                        @foreach (var genre in album.PrimaryGenres)
-                                                        {
-                                                            if (genre.Genre.CanonicalName != _genre.CanonicalName)
-                                                            {
-                                                                <GenreBadge Genre="@genre" Clickable />
-                                                            }
-                                                        }
-                                                    }
-                                                </MudStack>
+                                                <AlbumListQuickInfo class="mx-3" ShowArtist="true"
+                                                                    Album="@context"/>
                                             </MudStack>
                                         </MudLink>
-                                    </MudListItem>
-                                }
-                            </MudList>
+                                    </MudTd>
+
+                                    <MudTd DataLabel="Other Primary Genres">
+                                        
+                                    </MudTd>
+
+                                    <MudTd DataLabel="Date">
+                                        <MudText Typo="Typo.caption" Class="text-color-primary text-light">
+                                            @context.OriginalReleaseDate?.ToString("dd MMM yy", CultureInfo.CurrentCulture)
+                                        </MudText>
+                                    </MudTd>
+
+                                    <MudTd DataLabel="Rating">
+                                        <MudChip T="string"
+                                                 Class="text-bold"
+                                                 Label="true"
+                                                 Style="@($"background-color: {RatingHelper.GetColorForRating(context.Stats?.Average)};" +
+                                                        $"color: white")">
+                                            @RatingHelper.GetRatingFormatted(context.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                        </MudChip>
+                                    </MudTd>
+                                </RowTemplate>
+
+                                <PagerContent>
+                                    <MudTablePager/>
+                                </PagerContent>
+                            </MudTable>
                         </MudCardContent>
                     </MudCard>
                 </MudItem>
@@ -141,3 +188,21 @@ else
         </MudCardContent>
     </MudCard>
 }
+
+<style>
+    .album-row {
+        position: relative;
+    }
+
+    .album-row:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background-color: var(--rating-color);
+        opacity: 0.75;
+        border-radius: 2px;
+    }
+</style>

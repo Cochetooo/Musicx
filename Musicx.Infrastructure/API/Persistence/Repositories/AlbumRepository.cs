@@ -262,6 +262,38 @@ internal sealed class AlbumRepository(
     public async Task<long> GetCountAsync()
         => await connection.Count("albums");
 
+    public async Task<long> GetCountByGenreIdAsync(long genreId)
+    {
+        await using var conn = connection.CreateConnection();
+        await conn.OpenAsync();
+
+        var parameters = new List<NpgsqlParameter>()
+        {
+            new("@genreId", genreId),
+        };
+
+        var sql = $"SELECT COUNT(*) FROM albums al0 "
+                  + $"JOIN album_genre ag0 ON al0.{AlbumColumns.Id} = ag0.{AlbumGenreColumns.AlbumId} "
+                  + $" WHERE ag0.{AlbumGenreColumns.GenreId} = @genreId";
+
+        await using var command = new NpgsqlCommand(sql, conn);
+        
+        command.Parameters.AddRange(parameters.ToArray());
+        
+        _logger.LogDebug(SqlHelper.InterpolateQuery(sql, parameters));
+
+        try
+        {
+            var result = await command.ExecuteScalarAsync();
+            return Convert.ToInt32(await command.ExecuteScalarAsync());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("❌ Could not execute count by genre command for table album.");
+            return -1;
+        }
+    }
+
     public async Task<long> SaveAsync(InAlbum entity)
     {
         await using var conn = connection.CreateConnection();

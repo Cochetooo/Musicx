@@ -6,8 +6,10 @@
 
 @inject ILoggerFactory LoggerProvider
 @inject ISaveUseCase<InGenre> UcSave
+@inject ISaveAllUseCase<InGenreRelation> UcSaveRelations
 @inject IListUseCase<OutGenre> UcList
 @inject IFindInUseCase<OutGenre> UcFindIn
+@inject IGetUseCase<OutGenre> UcGet
 @inject ISnackbar Snackbar
 
 <MudDialog @ref="_modalRef">

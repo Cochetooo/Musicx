@@ -117,7 +117,7 @@ internal sealed class RoleSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
 
         if (roleQuerySpecification.IncludePermissions)
         {
-            selects.Add("(SELECT json_agg(p.*) FROM role_permission rp " +
+            selects.Add($"(SELECT json_agg(p.* ORDER BY p.{PermissionColumns.Name}) FROM role_permission rp " +
                         $"JOIN permissions p ON rp.{RolePermissionColumns.PermissionId} = p.{PermissionColumns.Id} " +
                         $"WHERE rp.{RolePermissionColumns.RoleId} = r0.{RoleColumns.Id}) AS permissions");
         }

@@ -5,8 +5,8 @@ namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutGenre : BaseOutputModel
 {
-    public IReadOnlyList<GenreClosureNode> Parents { get; set; } = [];
-    public IReadOnlyList<GenreClosureNode> Children { get; set; } = [];
+    public IReadOnlyList<GenreClosureNode>? Parents { get; set; }
+    public IReadOnlyList<GenreClosureNode>? Children { get; set; }
     
     public IReadOnlyList<OutGenreAlias>? Aliases { get; set; }
     public IReadOnlyList<GenreRelationNode>? Relations { get; set; }
