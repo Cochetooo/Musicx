@@ -53,18 +53,13 @@ else
                                        Variant="Variant.Filled">
                                 Edit Profile
                             </MudButton>
-                                                    
-                            <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.People"
-                                       Variant="Variant.Filled">
-                                Friends
-                            </MudButton>
                         
                             <MudButton Color="Color.Dark" StartIcon="@Icons.Material.Filled.Settings"
                                        Variant="Variant.Filled">
                                 Settings
                             </MudButton>
                         
-                            <MudButton Color="Color.Dark" StartIcon="@Icons.Material.Filled.DeleteForever"
+                            <MudButton Color="Color.Error" Size="Size.Small" StartIcon="@Icons.Material.Filled.DeleteForever"
                                        Variant="Variant.Filled">
                                 Clear Ratings
                             </MudButton>
@@ -92,15 +87,7 @@ else
         </div>
         
         <MudGrid Spacing="2">
-            <MudItem xs="12" md="3">
-                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
-                        Favorites
-                    </MudText>
-                    
-                    <MudDivider Class="my-3"/>
-                </MudPaper>
-                
+            <MudItem xs="12" md="2">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
                         Rating Distribution
@@ -116,8 +103,8 @@ else
                                 <!-- Label à gauche -->
                                 <MudText Class="montserrat"
                                          Typo="Typo.caption"
-                                         Style="min-width: 140px;">
-                                    <span style="font-weight: 200;" class="text-color-secondary montserrat">
+                                         Style="min-width: 100px;">
+                                    <span style="font-weight: 300;" class="text-color-secondary montserrat">
                                         <!-- @RatingHelper.GetRatingFormatted(ratingCount.Key - 9, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) - @RatingHelper.GetRatingFormatted(ratingCount.Key, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) -->
                                         @(ratingCount.Key - 9) - @ratingCount.Key
                                     </span>
@@ -136,93 +123,7 @@ else
                         }
                     }
                 </MudPaper>
-            </MudItem>
-            <MudItem xs="12" md="7">
-                <MudTable ServerData="@LoadUserAttrData" ReadOnly
-                          Elevation="8"
-                          Breakpoint="Breakpoint.Sm"
-                          RowClass="rating-row"
-                          RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Rating)}")"
-                          @ref="_albumRatingsTable"
-                          Class="mt-4 pa-2 bg-surface animate-hover-up" Dense>
-                    <ColGroup>
-                        <col style="width:3px;" />
-                        <col/>
-                        <col style="width: 100px;"/>
-                        <col style="width: 120px;"/>
-                        <col style="width: 100px;"/>
-                    </ColGroup>
-                    <ToolBarContent>
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">Ratings (@_albumCount)</MudText>
-                        <MudSpacer />
-                        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search"
-                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
-                                      IconSize="Size.Medium" Class="mt-0" />
-                    </ToolBarContent>
-                    <HeaderContent>
-                        <MudTh Style="padding: 0;"></MudTh>
-                        <MudTh>
-                            Album
-                        </MudTh>
-                        <MudTh>
-                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
-                                Collection
-                            </MudTableSortLabel>
-                        </MudTh>
-                        <MudTh>
-                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
-                                Date
-                            </MudTableSortLabel>
-                        </MudTh>
-                        <MudTh>
-                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
-                                Rating
-                            </MudTableSortLabel>
-                        </MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Releases">
-                            <MudLink Href="@($"/Album/{@context.Album.Id}")">
-                                <MudStack Justify="Justify.FlexStart" Row>
-                                    <MudImage Src="@context.Album.ArtworkUrl" Alt="@context.Album.Name"
-                                              Width="48" Height="48"
-                                              Class="rounded-lg"
-                                              Elevation="25"/>
-
-                                    <AlbumListQuickInfo class="mx-3" ShowArtist="true"
-                                                        Album="@context.Album"/>
-                                </MudStack>
-                            </MudLink>
-                        </MudTd>
-
-                        <MudTd DataLabel="Collection">
-                            @(context.CollectionType?.ToString() ?? string.Empty)
-                        </MudTd>
-
-                        <MudTd DataLabel="Date">
-                            <MudText Typo="Typo.caption" Class="text-color-primary text-light">
-                                @context.UpdatedAt.ToString("dd MMM yy", CultureInfo.CurrentCulture)
-                            </MudText>
-                        </MudTd>
-
-                        <MudTd DataLabel="Rating">
-                            <MudChip T="string"
-                                     Class="text-bold"
-                                     Label="true"
-                                     Style="@($"background-color: {RatingHelper.GetColorForRating(context.Rating)};" +
-                                            $"color: white")">
-                                @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
-                            </MudChip>
-                        </MudTd>
-                    </RowTemplate>
-
-                    <PagerContent>
-                        <MudTablePager/>
-                    </PagerContent>
-                </MudTable>
-            </MudItem>
-
-            <MudItem xs="12" md="2">
+                
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
                         Statistics
@@ -276,6 +177,97 @@ else
                         </MudListItem>
                     </MudList>
                 </MudPaper>
+            </MudItem>
+            <MudItem xs="12" md="7">
+                <MudTable ServerData="@LoadUserAttrData" ReadOnly
+                          Elevation="8"
+                          Breakpoint="Breakpoint.Sm"
+                          RowClass="rating-row"
+                          RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Rating)}")"
+                          @ref="_albumRatingsTable"
+                          Class="mt-4 pa-2 bg-surface animate-hover-up" Dense>
+                    <ColGroup>
+                        <col />
+                        <col style="width: 100%;"/>
+                        <col style="width: 120px;"/>
+                        <col style="width: 100px;"/>
+                    </ColGroup>
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">Ratings (@_albumCount)</MudText>
+                        <MudSpacer />
+                        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search"
+                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium" Class="mt-0" />
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>
+                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
+                                Rating
+                            </MudTableSortLabel>
+                        </MudTh>
+                        <MudTh>
+                            Album
+                        </MudTh>
+                        <MudTh>
+                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
+                                Collection
+                            </MudTableSortLabel>
+                        </MudTh>
+                        <MudTh>
+                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
+                                Date
+                            </MudTableSortLabel>
+                        </MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Rating" Class="rating-col">
+                            <MudText Typo="Typo.body1" Class="montserrat text-color-primary rating-text">
+                                @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                            </MudText>
+                        </MudTd>
+                        
+                        <MudTd DataLabel="Releases">
+                            <MudLink Href="@($"/Album/{@context.Album.Id}")">
+                                <MudStack Justify="Justify.FlexStart" Row>
+                                    <MudImage Src="@context.Album.ArtworkUrl" Alt="@context.Album.Name"
+                                              Width="48" Height="48"
+                                              Class="rounded-lg"
+                                              Elevation="25"/>
+
+                                    <AlbumListQuickInfo class="mx-3" ShowArtist="true"
+                                                        Album="@context.Album"/>
+                                </MudStack>
+                            </MudLink>
+                        </MudTd>
+
+                        <MudTd DataLabel="Collection">
+                            @(context.CollectionType?.ToString() ?? string.Empty)
+                        </MudTd>
+
+                        <MudTd DataLabel="Date" Style="justify-items: center;">
+                            <MudText Typo="Typo.body2" Class="text-color-primary text-light">
+                                @context.UpdatedAt.ToString("dd MMM", CultureInfo.CurrentCulture)
+                            </MudText>
+                            <MudText Typo="Typo.body1" Class="text-color-primary text-bold">
+                                @context.UpdatedAt.ToString("yyyy", CultureInfo.CurrentCulture)
+                            </MudText>
+                        </MudTd>
+                    </RowTemplate>
+
+                    <PagerContent>
+                        <MudTablePager/>
+                    </PagerContent>
+                </MudTable>
+            </MudItem>
+
+            <MudItem xs="12" md="3">
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                        Favorites
+                    </MudText>
+                    
+                    <MudDivider Class="my-3"/>
+                </MudPaper>
                 
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
@@ -294,19 +286,38 @@ else
         background-color: var(--bar-color) !important;
     }
 
-    .rating-row {
+    .rating-col {
         position: relative;
+        overflow: hidden;
+        transition: width 0.25s ease-in;
+        width: auto;
     }
 
-    .rating-row:before {
+    .rating-col:hover {
+        width: 150px;
+    }
+
+    .rating-col::before {
         content: '';
         position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background-color: var(--rating-color);
-        opacity: 0.75;
-        border-radius: 2px;
+        inset: 0;
+        z-index: 0;
+        background: linear-gradient(
+            90deg,
+            var(--rating-color) 0%,
+            color-mix(in srgb, var(--rating-color) 60%, transparent) 45%,
+            color-mix(in srgb, var(--rating-color) 30%, transparent) 65%,
+            transparent 100%
+        );
+        opacity: 0.36;
+    }
+
+    .rating-text {
+        position: relative;
+        z-index: 1;
+        font-weight: 600;
+        text-shadow:
+            0 1px 2px rgba(0,0,0,0.45),
+            0 0 4px rgba(0,0,0,0.25);
     }
 </style>
