@@ -58,22 +58,18 @@ else
                                        Variant="Variant.Filled">
                                 Settings
                             </MudButton>
-                        
-                            <MudButton Color="Color.Error" Size="Size.Small" StartIcon="@Icons.Material.Filled.DeleteForever"
-                                       Variant="Variant.Filled">
-                                Clear Ratings
-                            </MudButton>
                         </MudStack>
                     }
                 </div>
                 
                 <div>
                     <MudStack Justify="Justify.FlexEnd" Row Spacing="3">
-                        @if (_user.Id != UserClientContext.CurrentUser?.Id)
+                        @if (_user.Id == UserClientContext.CurrentUser?.Id)
                         {
-                            <MudButton Color="Color.Secondary" StartIcon="@Icons.Material.Filled.PersonAdd"
+                                                    
+                            <MudButton Color="Color.Error" Size="Size.Small" StartIcon="@Icons.Material.Filled.DeleteForever"
                                        Variant="Variant.Filled">
-                                Follow
+                                Clear Ratings
                             </MudButton>
                         }
                         
@@ -81,6 +77,14 @@ else
                                    Variant="Variant.Filled">
                             Export Ratings
                         </MudButton>
+                        
+                        @if (_user.Id != UserClientContext.CurrentUser?.Id)
+                        {
+                            <MudButton Color="Color.Secondary" StartIcon="@Icons.Material.Filled.PersonAdd"
+                                       Variant="Variant.Filled">
+                                Follow
+                            </MudButton>
+                        }
                     </MudStack>
                 </div>
             </div>
