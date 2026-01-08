@@ -154,7 +154,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (538, 1, 85, 85.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (448, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (52, 4, 260, 65.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1297, 1, 30, 30.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (510, 2, 120, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (105, 1, 55, 55.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (106, 1, 60, 60.00);
@@ -314,7 +313,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1199, 6, 475, 79.17);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (66, 7, 480, 68.57);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (64, 6, 390, 65.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1351, 5, 175, 35.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (183, 13, 1065, 81.92);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (187, 11, 695, 63.18);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (189, 11, 655, 59.55);
@@ -392,7 +390,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (721, 6, 455, 75.83);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1748, 4, 250, 62.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (682, 5, 360, 72.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (569, 7, 510, 72.86);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (683, 4, 270, 67.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (684, 3, 210, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1235, 4, 295, 73.75);
@@ -406,6 +403,7 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2153, 8, 545, 68.13);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2132, 4, 190, 47.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1659, 3, 220, 73.33);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (569, 8, 570, 71.25);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (924, 7, 470, 67.14);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (961, 7, 480, 68.57);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1429, 5, 300, 60.00);
@@ -642,7 +640,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1542, 6, 390, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1543, 6, 340, 56.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1546, 6, 320, 53.33);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1894, 9, 600, 66.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2083, 4, 280, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2606, 5, 210, 42.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1341, 3, 170, 56.67);
@@ -913,7 +910,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2619, 6, 420, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1583, 8, 610, 76.25);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1586, 2, 130, 65.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1774, 4, 220, 55.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (398, 8, 500, 62.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3502, 10, 660, 66.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3503, 11, 750, 68.18);
@@ -1151,7 +1147,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (390, 7, 490, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (208, 9, 690, 76.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1589, 5, 150, 30.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (726, 3, 250, 83.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (727, 3, 230, 76.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2053, 5, 370, 74.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2054, 4, 280, 70.00);
@@ -1244,11 +1239,9 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1230, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3251, 4, 180, 45.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3617, 4, 220, 55.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (423, 3, 240, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (964, 4, 255, 63.75);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (918, 6, 370, 61.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (360, 9, 610, 67.78);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1781, 4, 230, 57.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3007, 14, 1055, 75.36);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2733, 3, 180, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3030, 8, 520, 65.00);
@@ -1286,8 +1279,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (712, 5, 330, 66.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3587, 4, 250, 62.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3589, 8, 590, 73.75);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1786, 4, 275, 68.75);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1785, 5, 375, 75.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1987, 7, 370, 52.86);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (395, 5, 340, 68.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (396, 6, 430, 71.67);
@@ -1358,6 +1349,8 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1144, 4, 320, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (810, 4, 280, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1768, 3, 150, 50.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1781, 5, 310, 62.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1785, 6, 395, 65.83);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2357, 1, 50, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3632, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1603, 4, 260, 65.00);
@@ -1418,7 +1411,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2713, 8, 570, 71.25);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1079, 9, 710, 78.89);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3601, 11, 710, 64.55);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1784, 6, 460, 76.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3569, 9, 540, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2993, 3, 190, 63.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3642, 1, 40, 40.00);
@@ -1445,7 +1437,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2747, 4, 190, 47.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (847, 5, 355, 71.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (848, 4, 250, 62.50);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (851, 6, 365, 60.83);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2363, 3, 170, 56.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2364, 3, 210, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3633, 3, 220, 73.33);
@@ -1494,6 +1485,7 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3263, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (910, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (322, 2, 110, 55.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (851, 7, 425, 60.71);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1755, 2, 130, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3339, 5, 330, 66.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3348, 3, 250, 83.33);
@@ -2067,7 +2059,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1819, 4, 240, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3763, 3, 180, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3764, 3, 190, 63.33);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3783, 4, 230, 57.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3810, 3, 150, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3789, 7, 460, 65.71);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3812, 2, 100, 50.00);
@@ -2169,11 +2160,11 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3692, 5, 365, 73.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1970, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3725, 3, 220, 73.33);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3782, 5, 340, 68.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3784, 3, 160, 53.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2973, 7, 510, 72.86);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3963, 2, 130, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (809, 3, 240, 80.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3783, 5, 310, 62.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3316, 10, 760, 76.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3331, 7, 470, 67.14);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3329, 3, 190, 63.33);
@@ -2197,7 +2188,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3849, 4, 220, 55.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3850, 2, 130, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3949, 2, 140, 70.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3903, 4, 310, 77.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3844, 4, 240, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3861, 3, 190, 63.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3868, 4, 290, 72.50);
@@ -2285,7 +2275,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3731, 12, 970, 80.83);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3848, 6, 370, 61.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3360, 6, 410, 68.33);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (722, 3, 190, 63.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (723, 3, 225, 75.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (725, 3, 200, 66.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (738, 1, 60, 60.00);
@@ -2310,6 +2299,7 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2612, 9, 580, 64.44);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1305, 12, 905, 75.42);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3871, 4, 270, 67.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3903, 5, 375, 75.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3611, 7, 515, 73.57);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (201, 13, 1020, 78.46);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1696, 8, 640, 80.00);
@@ -2453,7 +2443,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1254, 5, 320, 64.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1352, 9, 640, 71.11);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2720, 10, 675, 67.50);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1608, 12, 850, 70.83);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1082, 18, 1335, 74.17);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (354, 11, 740, 67.27);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4000, 5, 280, 56.00);
@@ -2705,7 +2694,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1612, 7, 470, 67.14);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1613, 8, 550, 68.75);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (849, 12, 870, 72.50);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1342, 16, 1030, 64.38);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (199, 19, 1530, 80.53);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1021, 11, 730, 66.36);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (444, 22, 1915, 87.05);
@@ -2718,9 +2706,7 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4182, 5, 270, 54.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4017, 5, 260, 52.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4225, 2, 100, 50.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4239, 3, 180, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4237, 3, 190, 63.33);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4240, 3, 200, 66.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3574, 7, 510, 72.86);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4256, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1865, 2, 120, 60.00);
@@ -2813,7 +2799,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2427, 12, 905, 75.42);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4042, 2, 140, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3167, 18, 1240, 68.89);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4249, 3, 180, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (333, 9, 685, 76.11);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2718, 11, 690, 62.73);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2959, 20, 1540, 77.00);
@@ -2854,6 +2839,8 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4257, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4259, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4262, 1, 40, 40.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4240, 4, 275, 68.75);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4249, 4, 240, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4263, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4264, 1, 40, 40.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4265, 1, 20, 20.00);
@@ -2970,7 +2957,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4375, 2, 150, 75.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4376, 2, 170, 85.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4377, 2, 120, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4420, 2, 90, 45.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3875, 4, 180, 45.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4153, 4, 260, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4164, 2, 120, 60.00);
@@ -2978,7 +2964,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4448, 3, 200, 66.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (363, 12, 900, 75.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1427, 8, 550, 68.75);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4424, 2, 150, 75.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (193, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (192, 1, 90, 90.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3090, 4, 180, 45.00);
@@ -2990,6 +2975,7 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4106, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4117, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4027, 1, 30, 30.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4420, 3, 180, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (647, 5, 230, 46.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1717, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (98, 1, 60, 60.00);
@@ -3008,7 +2994,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3169, 18, 1270, 70.56);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1718, 13, 905, 69.62);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1486, 4, 230, 57.50);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4423, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3580, 7, 520, 74.29);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (673, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (122, 13, 880, 67.69);
@@ -3070,7 +3055,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4098, 2, 90, 45.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4197, 5, 340, 68.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4199, 3, 220, 73.33);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4203, 3, 200, 66.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4248, 3, 200, 66.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4363, 4, 250, 62.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4456, 3, 200, 66.67);
@@ -3089,7 +3073,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4472, 7, 480, 68.57);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4301, 3, 210, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4193, 4, 230, 57.50);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4195, 5, 350, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4127, 3, 190, 63.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4130, 2, 120, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4131, 4, 250, 62.50);
@@ -3126,6 +3109,8 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2748, 3, 180, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2750, 3, 210, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2751, 4, 245, 61.25);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4195, 6, 405, 67.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4203, 4, 275, 68.75);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2911, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2912, 3, 210, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2915, 2, 130, 65.00);
@@ -3153,7 +3138,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4522, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4523, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1330, 7, 390, 55.71);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (852, 4, 250, 62.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4531, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2199, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2212, 1, 80, 80.00);
@@ -3174,7 +3158,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4525, 2, 150, 75.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3708, 5, 330, 66.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1046, 6, 420, 70.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4296, 5, 340, 68.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1052, 5, 320, 64.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (128, 21, 1560, 74.29);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (486, 22, 1685, 76.59);
@@ -3262,6 +3245,7 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1692, 4, 250, 62.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1469, 3, 230, 76.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1667, 5, 340, 68.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4296, 6, 370, 61.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1675, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1472, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (300, 4, 305, 76.25);
@@ -3270,7 +3254,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1688, 1, 80, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4619, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4479, 2, 140, 70.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4629, 1, 40, 40.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (589, 8, 580, 72.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (385, 8, 320, 40.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (858, 5, 355, 71.00);
@@ -3326,7 +3309,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (355, 15, 1135, 75.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1303, 9, 570, 63.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1081, 22, 1650, 75.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4638, 4, 280, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4567, 2, 130, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4238, 3, 200, 66.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2898, 18, 1475, 81.94);
@@ -3384,7 +3366,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2123, 12, 840, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2125, 6, 340, 56.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2781, 4, 270, 67.50);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1343, 11, 700, 63.64);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2723, 13, 950, 73.08);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (308, 2, 135, 67.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (318, 5, 330, 66.00);
@@ -3398,6 +3379,8 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2302, 7, 460, 65.71);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2144, 6, 430, 71.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1363, 1, 80, 80.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4629, 2, 120, 60.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4638, 5, 330, 66.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (75, 5, 220, 44.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (351, 16, 1155, 72.19);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (945, 6, 410, 68.33);
@@ -3483,7 +3466,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3019, 10, 610, 61.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3079, 13, 1025, 78.85);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3364, 14, 1000, 71.43);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4315, 5, 290, 58.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4470, 6, 420, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4471, 8, 600, 75.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4473, 4, 250, 62.50);
@@ -3502,7 +3484,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4505, 4, 300, 75.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4506, 3, 190, 63.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3838, 1, 80, 80.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4538, 2, 120, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1389, 3, 150, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4708, 2, 120, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (770, 1, 70, 70.00);
@@ -3530,10 +3511,11 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2896, 10, 700, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2983, 1, 50, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2995, 5, 350, 70.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4735, 2, 110, 55.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4749, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3048, 12, 920, 76.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1706, 6, 420, 70.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4538, 3, 170, 56.67);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4735, 3, 165, 55.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1468, 8, 555, 69.38);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3083, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3085, 1, 50, 50.00);
@@ -3600,7 +3582,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4085, 3, 170, 56.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4323, 1, 30, 30.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4190, 1, 50, 50.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4310, 3, 190, 63.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4293, 2, 110, 55.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4288, 1, 40, 40.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4701, 5, 410, 82.00);
@@ -3630,7 +3611,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4361, 1, 50, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4399, 1, 50, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4435, 3, 190, 63.33);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4418, 2, 130, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4426, 1, 50, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4427, 1, 50, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4428, 1, 60, 60.00);
@@ -3667,14 +3647,13 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4649, 2, 120, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4678, 3, 180, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4677, 1, 60, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4679, 2, 100, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4676, 1, 60, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4686, 2, 110, 55.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4310, 4, 260, 65.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4686, 3, 175, 58.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4700, 3, 210, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4745, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4785, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4787, 1, 60, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4241, 2, 100, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4091, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (2284, 17, 1425, 83.82);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4145, 3, 230, 76.67);
@@ -3691,28 +3670,13 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4150, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4183, 4, 210, 52.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4224, 2, 120, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4311, 3, 210, 70.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4312, 3, 200, 66.67);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4313, 3, 220, 73.33);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4314, 3, 230, 76.67);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4316, 2, 100, 50.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4317, 3, 200, 66.67);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4318, 3, 200, 66.67);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4319, 1, 60, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4320, 1, 60, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4321, 1, 40, 40.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4322, 1, 50, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4329, 1, 50, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4365, 3, 160, 53.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4371, 1, 20, 20.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4372, 1, 20, 20.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4405, 2, 120, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4415, 1, 10, 10.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4416, 1, 20, 20.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4417, 2, 110, 55.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4419, 1, 60, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4421, 1, 70, 70.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4422, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4436, 3, 180, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4583, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4586, 1, 60, 60.00);
@@ -3782,7 +3746,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4549, 1, 10, 10.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4552, 1, 30, 30.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4553, 1, 30, 30.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4581, 1, 70, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4602, 1, 40, 40.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4603, 1, 40, 40.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4648, 1, 70, 70.00);
@@ -3795,7 +3758,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4719, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4729, 2, 120, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4731, 2, 110, 55.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4733, 2, 100, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4734, 2, 120, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4746, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4770, 1, 40, 40.00);
@@ -3806,6 +3768,22 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4789, 2, 130, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4790, 3, 150, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4791, 3, 190, 63.33);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4421, 2, 160, 80.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4419, 2, 120, 60.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4415, 2, 60, 30.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4321, 2, 120, 60.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4319, 2, 150, 75.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4320, 2, 100, 50.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4318, 4, 300, 75.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4317, 4, 290, 72.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4316, 3, 160, 53.33);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4314, 4, 330, 82.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4313, 4, 320, 80.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4312, 4, 280, 70.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4311, 4, 290, 72.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4241, 3, 180, 60.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4733, 3, 140, 46.67);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4581, 2, 135, 67.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4793, 2, 110, 55.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4806, 3, 220, 73.33);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4807, 3, 210, 70.00);
@@ -3857,7 +3835,6 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3805, 16, 1010, 63.13);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4049, 4, 280, 70.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4173, 1, 60, 60.00);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4355, 9, 690, 76.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4380, 1, 50, 50.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4381, 1, 60, 60.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4384, 1, 60, 60.00);
@@ -3876,10 +3853,36 @@ INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4673, 1, 65, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4674, 2, 160, 80.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4675, 3, 215, 71.67);
-INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3781, 3, 200, 66.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3785, 3, 170, 56.67);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1387, 2, 135, 67.50);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4511, 3, 195, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4886, 1, 65, 65.00);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (915, 17, 1385, 81.47);
 INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (919, 13, 1095, 84.23);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3781, 4, 290, 72.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (3782, 6, 430, 71.67);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1342, 17, 1090, 64.12);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1343, 12, 770, 64.17);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1351, 6, 195, 32.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (726, 4, 330, 82.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (722, 4, 210, 52.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1786, 5, 325, 65.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1894, 10, 680, 68.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1784, 7, 500, 71.43);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1774, 5, 290, 58.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4424, 3, 200, 66.67);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4423, 2, 130, 65.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4422, 2, 150, 75.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4418, 3, 230, 76.67);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4417, 3, 190, 63.33);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4315, 6, 370, 61.67);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (423, 4, 320, 80.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4899, 1, 65, 65.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (852, 5, 310, 62.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4239, 4, 255, 63.75);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1608, 13, 900, 69.23);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1916, 1, 65, 65.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (1297, 2, 75, 37.50);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4679, 3, 165, 55.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4630, 1, 65, 65.00);
+INSERT INTO public.album_rating_stats (album_rating_stats_album_id, album_rating_stats_count, album_rating_stats_sum, album_rating_stats_avg) VALUES (4355, 10, 745, 74.50);
