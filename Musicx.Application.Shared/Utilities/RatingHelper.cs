@@ -144,7 +144,7 @@ public static class RatingHelper
                 throw new ArgumentOutOfRangeException(nameof(ratingMode), ratingMode, null);
         }
 
-        return $"{scaled.ToString(format)} / {denominator}";
+        return $"{scaled.ToString(format)}";
     }
 
     public static decimal? CalculateArtistRating(IList<OutAlbum> albums)
@@ -200,6 +200,23 @@ public static class RatingHelper
 
         return Stops[^1].color;
     }
+
+    public static bool IsNumeric(this RatingMode ratingMode)
+        => ratingMode == RatingMode.OutOfFive || ratingMode == RatingMode.OutOfTen 
+            || ratingMode == RatingMode.OutOfTwenty || ratingMode == RatingMode.OutOfFifty
+            || ratingMode == RatingMode.OutOfThousand;
+
+    public static int? GetDenominator(this RatingMode ratingMode)
+        => ratingMode switch
+        {
+            RatingMode.OutOfFive => 5,
+            RatingMode.OutOfTen => 10,
+            RatingMode.OutOfTwenty => 20,
+            RatingMode.OutOfFifty => 50,
+            RatingMode.OutOfThousand => 1000,
+            RatingMode.Percentage => 100,
+            _ => null
+        };
     
     public static int ToInt(this TextualRating r) => r switch
     {

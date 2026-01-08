@@ -225,7 +225,7 @@ else
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Rating" Class="rating-col">
-                            <MudText Typo="Typo.body1" Class="montserrat text-color-primary rating-text">
+                            <MudText Typo="Typo.h5" Class="montserrat text-color-primary rating-text">
                                 @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
                             </MudText>
                         </MudTd>
@@ -234,11 +234,12 @@ else
                             <MudLink Href="@($"/Album/{@context.Album.Id}")">
                                 <MudStack Justify="Justify.FlexStart" Row>
                                     <MudImage Src="@context.Album.ArtworkUrl" Alt="@context.Album.Name"
-                                              Width="48" Height="48"
+                                              Width="64" Height="64"
                                               Class="rounded-lg"
                                               Elevation="25"/>
 
                                     <AlbumListQuickInfo class="mx-3" ShowArtist="true"
+                                                        ShowGenres="true"
                                                         Album="@context.Album"/>
                                 </MudStack>
                             </MudLink>

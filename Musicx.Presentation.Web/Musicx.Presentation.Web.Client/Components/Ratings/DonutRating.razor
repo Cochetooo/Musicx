@@ -15,6 +15,11 @@
             string? top = null;
             string? bottom = null;
 
+            if (RatingMode.IsNumeric())
+            {
+                ratingText += " / " + RatingMode.GetDenominator();
+            }
+
             if (ratingText.Contains("/"))
             {
                 var parts = ratingText.Split('/');
