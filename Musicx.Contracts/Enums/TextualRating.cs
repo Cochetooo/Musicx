@@ -2,12 +2,17 @@ namespace Musicx.Contracts.Enums;
 
 public enum TextualRating
 {
-    Hate,
-    Meh,
-    Neutral,
-    Ok,
+    Unlistenable,
+    Terrible,
+    Poor,
+    Mediocre,
+    Average,
+    Decent,
     Good,
     VeryGood,
+    Great,
     Excellent,
-    Favourite
+    Outstanding,
+    Exceptional,
+    Masterpiece
 }

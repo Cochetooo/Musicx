@@ -28,88 +28,123 @@ public static class RatingHelper
         
         if (ratingMode == RatingMode.TextualShort || ratingMode == RatingMode.TextualDetailed)
         {
-
             TextualRating textual;
-            if (r < 25) textual = TextualRating.Hate;
-            else if (r < 45) textual = TextualRating.Meh;
-            else if (r < 55) textual = TextualRating.Neutral;
-            else if (r < 65) textual = TextualRating.Ok;
-            else if (r < 75) textual = TextualRating.Good;
-            else if (r < 85) textual = TextualRating.VeryGood;
-            else if (r < 95) textual = TextualRating.Excellent;
-            else textual = TextualRating.Favourite;
+            if (r <= 15) textual = TextualRating.Unlistenable;
+            else if (r <= 25) textual = TextualRating.Terrible;
+            else if (r <= 35) textual = TextualRating.Poor;
+            else if (r <= 45) textual = TextualRating.Mediocre;
+            else if (r <= 52) textual = TextualRating.Average;
+            else if (r <= 60) textual = TextualRating.Decent;
+            else if (r <= 65) textual = TextualRating.Good;
+            else if (r <= 70) textual = TextualRating.VeryGood;
+            else if (r <= 75) textual = TextualRating.Great;
+            else if (r <= 80) textual = TextualRating.Excellent;
+            else if (r <= 90) textual = TextualRating.Outstanding;
+            else textual = TextualRating.Masterpiece;
 
             if (ratingMode == RatingMode.TextualShort)
             {
                 switch (textual)
                 {
-                    case TextualRating.Hate:
-                    case TextualRating.Meh:
-                        return "Meh";
-                    case TextualRating.Neutral:
-                        return "Neutral";
-                    case TextualRating.Ok:
+                    case TextualRating.Unlistenable:
+                    case TextualRating.Terrible:
+                    case TextualRating.Poor:
+                        return "Poor";
+                    case TextualRating.Mediocre:
+                    case TextualRating.Average:
+                    case TextualRating.Decent:
+                        return "Average";
                     case TextualRating.Good:
                     case TextualRating.VeryGood:
-                    case TextualRating.Excellent:
                         return "Good";
-                    case TextualRating.Favourite:
-                        return "Favourite";
+                    case TextualRating.Great:
+                    case TextualRating.Excellent:
+                    case TextualRating.Outstanding:
+                        return "Excellent";
+                    case TextualRating.Masterpiece:
+                        return "Masterpiece";
                 }
             }
 
             return textual.ToString().SplitCamelCase();
         }
-        else if (ratingMode == RatingMode.Percentage)
+        
+        if (ratingMode == RatingMode.TierList || ratingMode == RatingMode.TierListDetailed)
+        {
+            var tier = string.Empty;
+            if (r <= 20) tier = "D-";
+            else if (r <= 30) tier = "D";
+            else if (r <= 35) tier = "D+";
+            else if (r <= 40) tier = "C-";
+            else if (r <= 50) tier = "C";
+            else if (r <= 55) tier = "C+";
+            else if (r <= 60) tier = "B-";
+            else if (r <= 65) tier = "B";
+            else if (r <= 70) tier = "B+";
+            else if (r <= 75) tier = "A-";
+            else if (r <= 80) tier = "A";
+            else if (r <= 85) tier = "A+";
+            else if (r <= 90) tier = "S-";
+            else if (r <= 95) tier = "S";
+            else if (r < 100) tier = "S+";
+            else if (r == 100) tier = "S++";
+
+            if (ratingMode == RatingMode.TierList)
+            {
+                return tier[0].ToString();
+            }
+
+            return tier;
+        }
+        
+        if (ratingMode == RatingMode.Percentage)
         {
             return $"{r:0.##}%";
         }
-        else
-        {
-            decimal scaled;
-            string format;
-            int denominator;
-            
-            switch (ratingMode)
-            {
-                case RatingMode.OutOfFive:
-                    denominator = 5;
-                    scaled = r * denominator / 100;
-                    format = "0.##";
-                    break;
-                case RatingMode.OutOfTen:
-                    denominator = 10;
-                    scaled = r * denominator / 100;
-                    format = "0.##";
-                    break;
-                case RatingMode.OutOfTwenty:
-                    denominator = 20;
-                    scaled = r * denominator / 100;
-                    format = "0.##";
-                    break;
-                case RatingMode.OutOfFifty:
-                    denominator = 50;
-                    scaled = r * denominator / 100;
-                    format = "0.##";
-                    break;
-                case RatingMode.OutOfThousand:
-                    denominator = 1000;
-                    scaled = r * denominator / 100;
-                    format = "0"; // pas de décimales
-                    break;
-                case RatingMode.RatingStars:
-                    denominator = 5;
-                    scaled = r * denominator / 100;
-                    // arrondi au 0.5 le plus proche
-                    scaled = Math.Round(scaled * 2, MidpointRounding.AwayFromZero) / 2;
-                    format = scaled % 1 == 0 ? "0" : "0.0";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(ratingMode), ratingMode, null);
-            }
 
-            return $"{scaled.ToString(format)} / {denominator}";
+        decimal scaled;
+        string format;
+        int denominator;
+        
+        switch (ratingMode)
+        {
+            case RatingMode.OutOfFive:
+                denominator = 5;
+                scaled = r * denominator / 100;
+                format = "0.##";
+                break;
+            case RatingMode.OutOfTen:
+                denominator = 10;
+                scaled = r * denominator / 100;
+                format = "0.##";
+                break;
+            case RatingMode.OutOfTwenty:
+                denominator = 20;
+                scaled = r * denominator / 100;
+                format = "0.##";
+                break;
+            case RatingMode.OutOfFifty:
+                denominator = 50;
+                scaled = r * denominator / 100;
+                format = "0.##";
+                break;
+            case RatingMode.OutOfThousand:
+                denominator = 1000;
+                scaled = r * denominator / 100;
+                format = "0"; // pas de décimales
+                break;
+            case RatingMode.RatingStars:
+                denominator = 5;
+                scaled = r * denominator / 100;
+                // arrondi au 0.5 le plus proche
+                scaled = Math.Round(scaled * 2, MidpointRounding.AwayFromZero) / 2;
+                format = scaled % 1 == 0 ? "0" : "0.0";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(ratingMode), ratingMode, null);
         }
+
+        return $"{scaled.ToString(format)} / {denominator}";
     }
 
     public static decimal? CalculateArtistRating(IList<OutAlbum> albums)
@@ -168,14 +203,18 @@ public static class RatingHelper
     
     public static int ToInt(this TextualRating r) => r switch
     {
-        TextualRating.Hate => 15,
-        TextualRating.Meh => 35,
-        TextualRating.Neutral => 50,
-        TextualRating.Ok => 60,
-        TextualRating.Good => 70,
-        TextualRating.VeryGood => 80,
-        TextualRating.Excellent => 90,
-        TextualRating.Favourite => 100,
+        TextualRating.Unlistenable => 5,
+        TextualRating.Terrible => 15,
+        TextualRating.Poor => 30,
+        TextualRating.Mediocre => 40,
+        TextualRating.Average => 50,
+        TextualRating.Decent => 60,
+        TextualRating.Good => 65,
+        TextualRating.VeryGood => 70,
+        TextualRating.Great => 75,
+        TextualRating.Excellent => 80,
+        TextualRating.Outstanding => 90,
+        TextualRating.Masterpiece => 100,
         _ => 0
     };
 

@@ -29,11 +29,14 @@
                 @RatingHelper.GetRatingFormatted(Value, RatingMode)
             </MudChip>
         }
-        
-        <MudIconButton Icon="@(_isOpen ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
-                       Color="Color.Default"
-                       Size="Size.Small"
-                       OnClick="@ToggleCollapse" />
+
+        if (Editable)
+        {
+            <MudIconButton Icon="@(_isOpen ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                           Color="Color.Default"
+                           Size="Size.Small"
+                           OnClick="@ToggleCollapse" />
+        }
     }
     else if (IsNumericMode)
     {
@@ -89,7 +92,7 @@
                    Size="@Size" />
     }
     
-    @if (IsTextualMode)
+    @if (IsTextualMode && Editable)
     {
         <MudCollapse Expanded="@_isOpen">
             <MudStack Row Wrap="Wrap.Wrap" Spacing="1" Class="mt-2">

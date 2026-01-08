@@ -33,6 +33,9 @@ public partial class UserView
 
     private async Task Load()
     {
+        _albumCount = 0;
+        _searchString = string.Empty;
+        
         if (string.IsNullOrWhiteSpace(Id))
         {
             _logger.LogError("❌ Album ID is null or empty.");
@@ -58,6 +61,8 @@ public partial class UserView
 
         _albumRatingDistrib = await UcGetAlbumRatingDistrib.ExecuteAsync(_user.Id);
         _logger.LogInformation($"✅ Album Ratings Distribution loaded ({_user.Id})");
+        
+        await _albumRatingsTable.ReloadServerData();
         await InvokeAsync(StateHasChanged);
     }
     

@@ -50,9 +50,9 @@ public static class Theme
             Tertiary = "#387a73",
             TertiaryDarken = "256861",
             
-            Surface = "#3d3d3d",
-            Background = "#282828",
-            BackgroundGray = "#1f1f1f",
+            Surface = "#262626",
+            Background = "#1b1b1b",
+            BackgroundGray = "#141414",
 
             TextPrimary = "#fcfcfc",
             

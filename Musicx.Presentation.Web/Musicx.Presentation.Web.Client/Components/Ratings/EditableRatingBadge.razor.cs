@@ -99,6 +99,7 @@ public partial class EditableRatingBadge
     
     private IEnumerable<TextualRating> GetTextualOptions() =>
         RatingMode == RatingMode.TextualShort
-            ? [TextualRating.Meh, TextualRating.Neutral, TextualRating.Good, TextualRating.Favourite]
+            ? [TextualRating.Poor, TextualRating.Average, TextualRating.Good, 
+                TextualRating.Excellent, TextualRating.Masterpiece]
             : Enum.GetValues<TextualRating>();
 }
