@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
-using Musicx.Application.Shared.Utilities;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.Shared.Models.ExternalMusicData;
 

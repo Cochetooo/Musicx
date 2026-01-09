@@ -30,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Components\Artists\" />
       <Folder Include="Modals\Admin\Songs\" />
     </ItemGroup>
 

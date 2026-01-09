@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Genre;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;

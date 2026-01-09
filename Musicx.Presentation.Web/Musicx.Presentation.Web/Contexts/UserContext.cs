@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
-using Musicx.Application.Api.Interfaces.Persistence;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Security;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Responses;
 

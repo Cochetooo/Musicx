@@ -4,7 +4,7 @@ using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
-using Musicx.Contracts.Helpers;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Converters;
 using Newtonsoft.Json;

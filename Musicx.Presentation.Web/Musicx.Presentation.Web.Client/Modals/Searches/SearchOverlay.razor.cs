@@ -59,6 +59,8 @@ public partial class SearchOverlay
         await OnClose.InvokeAsync(_value);
         
         ClearResults();
+
+        _value = "";
         
         _isLoading = false;
         StateHasChanged();

@@ -10,6 +10,7 @@
       <Folder Include="Api\Persistence\Repositories\" />
       <Folder Include="API\Persistence\Schema\Forums\" />
       <Folder Include="API\Persistence\Schema\_Fixtures\" />
+      <Folder Include="API\Persistence\Sql\" />
       <Folder Include="Desktop\" />
     </ItemGroup>
 

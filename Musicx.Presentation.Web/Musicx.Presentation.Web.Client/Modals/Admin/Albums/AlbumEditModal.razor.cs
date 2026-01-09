@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Musicx.Application.Shared.Utilities;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Mappers;

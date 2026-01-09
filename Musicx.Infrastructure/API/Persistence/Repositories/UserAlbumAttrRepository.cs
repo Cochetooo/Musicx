@@ -1,14 +1,14 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Logging;
-using Musicx.Application.Api.Interfaces.Persistence;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
-using Musicx.Contracts.Helpers;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
 using Musicx.Infrastructure.Shared.Helpers;

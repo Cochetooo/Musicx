@@ -1,5 +1,5 @@
-﻿using Musicx.Contracts.Dto.Enums;
-using Musicx.Contracts.Dto.Requests;
+﻿using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Enums;
 
 namespace Musicx.Presentation.Web.Client.Modals.Editing;
 

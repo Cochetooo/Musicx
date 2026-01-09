@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using Musicx.Application.Shared.Utilities;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 
 namespace Musicx.Presentation.Web.Client.Components.Genres;

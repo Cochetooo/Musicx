@@ -1,9 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Builders;
+using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.Shared.Exceptions;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;

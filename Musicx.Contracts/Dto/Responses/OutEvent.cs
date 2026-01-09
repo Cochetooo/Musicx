@@ -1,4 +1,4 @@
-﻿using Musicx.Contracts.Dto.Jsons.Events;
+﻿using Musicx.Contracts.Dto.ValueObjects.Events;
 
 namespace Musicx.Contracts.Dto.Responses;
 

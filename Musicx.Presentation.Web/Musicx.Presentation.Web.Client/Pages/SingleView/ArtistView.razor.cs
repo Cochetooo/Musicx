@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Musicx.Application.Shared.Utilities;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Enums;

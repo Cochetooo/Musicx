@@ -1,0 +1,91 @@
+@using Musicx.Application.Shared.Helpers
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Enums
+
+<div @attributes="AdditionalAttributes">
+    @switch (Album.ReleaseType)
+    {
+        case ReleaseType.Ep:
+            <MudText Class="clamped-text-4" Color="Color.Primary">
+                @Album.Name 
+                <span class="release-type">[@Album.ReleaseType.ToDescriptionString()]</span>
+            </MudText>
+            break;
+        case ReleaseType.Lp:
+            <MudText Class="clamped-text-4 text-color-primary">
+                @Album.Name
+            </MudText>
+            break;
+        case ReleaseType.Single:
+            <MudText Class="clamped-text-4 text-light" Color="Color.Primary">
+                @Album.Name 
+                <span class="release-type">[@Album.ReleaseType.ToDescriptionString()]</span>
+            </MudText>
+            break;
+        default:
+            <MudText Class="clamped-text-4 text-light" Color="Color.Secondary">
+                @Album.Name 
+                <span class="release-type">[@Album.ReleaseType?.ToDescriptionString()]</span>
+            </MudText>
+            break;
+    }
+    
+    <MudText Class="montserrat clamped-text-4 text-light text-color-secondary" Typo="Typo.body2" Color="Color.Inherit">
+        @{
+            var hasDate = Album.OriginalReleaseDate is not null;
+            var hasArtist = ShowArtist && Album.Artist is not null;
+        }
+        
+        @if (hasDate)
+        {
+            @Album.OriginalReleaseDate!.Value.Year
+        }
+
+        @if (hasDate && hasArtist)
+        {
+            @(" · ")
+        }
+
+        @if (hasArtist)
+        {
+            @Album.Artist!.Name
+        }
+    </MudText>
+    
+    @if (ShowGenres)
+    {
+        if (Album.SimplifiedGenreName is not null)
+        {
+            <MudChip
+                Size="Size.Small"
+                T="string"
+                Label="true"
+                Class="montserrat py-1 px-3 ma-0 genre-badge"
+                Style="@GetSimplifiedGenreStyle(Album)">
+                @Album.SimplifiedGenreName
+            </MudChip>
+        }
+    }
+</div>
+
+@code {
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = null!;
+    
+    [Parameter, EditorRequired] public OutAlbum Album { get; set; } = null!;
+    [Parameter] public bool ShowArtist { get; set; }
+    [Parameter] public bool ShowGenres { get; set; }
+
+    private string GetSimplifiedGenreStyle(OutAlbum album)
+        => $"background: {album.SimplifiedGenreColor}; color: {(ColorHelper.IsColorLight(album.SimplifiedGenreColor!) ? ColorHelper.DarkColor : "white")}";
+}
+
+<style>
+    .release-type {
+        color: var(--mud-palette-text-disabled); 
+        font-style: normal;
+        font-size: 0.8rem;
+        vertical-align: center;
+    }
+</style>

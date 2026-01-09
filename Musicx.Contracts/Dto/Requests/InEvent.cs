@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Nodes;
-using Musicx.Contracts.Dto.Jsons.Events;
 
 namespace Musicx.Contracts.Dto.Requests;
 

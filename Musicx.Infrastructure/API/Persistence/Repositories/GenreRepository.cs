@@ -1,18 +1,14 @@
-using System.Linq.Expressions;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Musicx.Application.Api.Interfaces.Persistence;
-using Musicx.Application.Api.Interfaces.Specifications;
-using Musicx.Application.Shared.Interfaces.Common;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Genre;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
-using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories;

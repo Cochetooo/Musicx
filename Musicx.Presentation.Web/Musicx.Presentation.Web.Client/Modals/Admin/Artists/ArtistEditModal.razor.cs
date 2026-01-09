@@ -2,10 +2,10 @@ using System.Text.Json;
 using ISO3166;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Musicx.Application.Shared.Utilities;
-using Musicx.Contracts.Dto.Enums;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 
 namespace Musicx.Presentation.Web.Client.Modals.Admin.Artists;

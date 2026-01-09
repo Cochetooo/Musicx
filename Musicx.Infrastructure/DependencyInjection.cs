@@ -4,19 +4,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Application.Api.Interfaces.Workers;
-using Musicx.Application.Api.Services.Auth;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
-using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
-using Musicx.Application.Web.Interfaces.Models.Auth;
 using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Auth;
 using Musicx.Infrastructure.API.Persistence;
 using Musicx.Infrastructure.API.Persistence.Builders;
+using Musicx.Infrastructure.API.Persistence.Connection;
+using Musicx.Infrastructure.API.Persistence.Repositories;
 using Musicx.Infrastructure.API.Workers;
 using Musicx.Infrastructure.Desktop.Persistence;
 using Musicx.Infrastructure.Desktop.Persistence.Caches;
@@ -116,17 +115,17 @@ public static class DependencyInjection
         services.AddScoped(typeof(SqlBuilder<InUserAlbumAttribute>), typeof(UserAlbumAttrSqlBuilder));
 
         // Repositories
-        services.AddScoped<Application.Api.Interfaces.Persistence.ISongRepository, API.Persistence.Repositories.SongRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumRepository, API.Persistence.Repositories.AlbumRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumGenreRepository, API.Persistence.Repositories.AlbumGenreRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IAlbumInfluenceRepository, API.Persistence.Repositories.AlbumInfluenceRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IArtistRepository, API.Persistence.Repositories.ArtistRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IGenreRepository, API.Persistence.Repositories.GenreRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IPermissionRepository, API.Persistence.Repositories.PermissionRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IRoleRepository, API.Persistence.Repositories.RoleRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.ITagRepository, API.Persistence.Repositories.TagRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IUserRepository, API.Persistence.Repositories.UserRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.IUserAlbumAttrsRepository, API.Persistence.Repositories.UserAlbumAttrRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Song.ISongRepository, SongRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Album.IAlbumRepository, AlbumRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Album.IAlbumGenreRepository, AlbumGenreRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Album.IAlbumInfluenceRepository, AlbumInfluenceRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Artist.IArtistRepository, ArtistRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Genre.IGenreRepository, GenreRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Security.IPermissionRepository, PermissionRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Security.IRoleRepository, RoleRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Tag.ITagRepository, TagRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserRepository, UserRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserAlbumAttrsRepository, UserAlbumAttrRepository>();
         
         // Audit
         services.AddScoped<IAuditPublisher, RabbitMqAuditPublisher>();
