@@ -399,16 +399,23 @@ else
             
                     <MudTable @ref="_albumRatingsTable"
                               Striped Bordered="false"
+                              Elevation="8"
                               ServerData="@LoadUserAttrData"
+                              RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Rating)}")"
                               Dense
                               Breakpoint="Breakpoint.Sm">
                         <ColGroup>
                             <col />
-                            <col style="width: 100px;" />
+                            <col style="width: 100%" />
                             <col style="width: 100px" />
                             <col style="width: 100px" />
                         </ColGroup>
                         <HeaderContent>
+                            <MudTh>
+                                <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
+                                    Rating
+                                </MudTableSortLabel>
+                            </MudTh>
                             <MudTh>
                                 <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.User.Name))">
                                     Name
@@ -416,7 +423,7 @@ else
                             </MudTh>
                             <MudTh>
                                 <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
-                                    Date
+                                    Rating Date
                                 </MudTableSortLabel>
                             </MudTh>
                             <MudTh>
@@ -424,13 +431,13 @@ else
                                     Collection
                                 </MudTableSortLabel>
                             </MudTh>
-                            <MudTh>
-                                <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
-                                    Rating
-                                </MudTableSortLabel>
-                            </MudTh>
                         </HeaderContent>
                         <RowTemplate>
+                            <MudTd DataLabel="Rating" Class="rating-col">
+                                <MudText Typo="Typo.h5" Class="text-color-primary text-bold rating-text">
+                                    @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                </MudText>
+                            </MudTd>
                             <MudTd DataLabel="Name">
                                 <MudLink Href="@($"/User/{context.User.Id}")">
                                     <MudText Typo="Typo.body1" Class="text-bold text-color-primary">
@@ -445,14 +452,6 @@ else
                             </MudTd>
                             <MudTd DataLabel="Collection">
                                 @(context.CollectionType.ToString() ?? string.Empty)
-                            </MudTd>
-                            <MudTd DataLabel="Rating">
-                                <MudChip T="string"
-                                         Class="text-bold"
-                                         Style="@($"background-color: {RatingHelper.GetColorForRating(context.Rating)};" +
-                                                $"color: white")">
-                                    @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
-                                </MudChip>
                             </MudTd>
                         </RowTemplate>
                         <FooterContent>

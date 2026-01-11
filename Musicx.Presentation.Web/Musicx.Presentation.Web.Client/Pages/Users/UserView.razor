@@ -188,7 +188,6 @@ else
                 <MudTable ServerData="@LoadUserAttrData" ReadOnly
                           Elevation="8"
                           Breakpoint="Breakpoint.Sm"
-                          RowClass="rating-row"
                           RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Rating)}")"
                           @ref="_albumRatingsTable"
                           Class="mt-4 pa-2 bg-surface animate-hover-up" Dense>
@@ -229,7 +228,7 @@ else
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Rating" Class="rating-col">
-                            <MudText Typo="Typo.h5" Class="montserrat text-color-primary rating-text">
+                            <MudText Typo="Typo.h5" Class="text-color-primary text-bold rating-text">
                                 @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
                             </MudText>
                         </MudTd>
@@ -293,40 +292,5 @@ else
 <style>
     .rating-bar .mud-progress-linear-bar {
         background-color: var(--bar-color) !important;
-    }
-
-    .rating-col {
-        position: relative;
-        overflow: hidden;
-        transition: width 0.25s ease-in;
-        width: auto;
-    }
-
-    .rating-col:hover {
-        width: 150px;
-    }
-
-    .rating-col::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        background: linear-gradient(
-            90deg,
-            var(--rating-color) 0%,
-            color-mix(in srgb, var(--rating-color) 60%, transparent) 45%,
-            color-mix(in srgb, var(--rating-color) 30%, transparent) 65%,
-            transparent 100%
-        );
-        opacity: 0.36;
-    }
-
-    .rating-text {
-        position: relative;
-        z-index: 1;
-        font-weight: 600;
-        text-shadow:
-            0 1px 2px rgba(0,0,0,0.45),
-            0 0 4px rgba(0,0,0,0.25);
     }
 </style>
