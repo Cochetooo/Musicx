@@ -1,5 +1,7 @@
-﻿using Musicx.Application.Shared.Interfaces.Persistence;
+﻿using Musicx.Application.Shared.Enums;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Requests.Specifics;
 using Musicx.Contracts.Dto.Responses;
 
@@ -42,7 +44,8 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
     /// </returns>
     /// <since>0.6.3</since>
     Task<List<OutAlbum>> FindByArtistIdAsync(long artistId, 
-        IQuerySpecification<InAlbum>? albumQuerySpecification = null);
+        IJoinSpecification<InAlbum>? joinSpec = null,
+        OrderSpecification<InAlbum>? orderSpecification = null);
     
     /// <summary>
     /// Retrieves albums associated with the specified genre.
@@ -72,10 +75,9 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
     /// <since>0.6.5</since>
     Task<List<OutAlbum>> FindByGenreIdAsync(long genreId, 
         int genreOptions,
-        long skip = 0, 
-        long take = 100,
-        string? order = null,
-        IQuerySpecification<InAlbum>? albumQuerySpecification = null);
+        IJoinSpecification<InAlbum>? joinSpec = null,
+        OrderSpecification<InAlbum>? orderSpec = null,
+        PagingOptions? pagingOptions = null);
     
     /// <summary>
     /// Retrieves albums based on chart-specific criteria.

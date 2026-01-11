@@ -2,6 +2,7 @@
 using MudBlazor;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 
 namespace Musicx.Presentation.Web.Client.Components.Genres;
 
@@ -25,7 +26,11 @@ public partial class GenreDetails
 
         if (Album.PrimaryGenres is null)
         {
-            var result = await UcGetAlbum.ExecuteAsync(Album.Id, "genre");
+            var result = await UcGetAlbum.ExecuteAsync(Album.Id, new AlbumJoinSpecification
+            {
+                IncludePrimaryGenres = true,
+                IncludeInfluenceGenres = true
+            });
 
             if (result is not null)
             {

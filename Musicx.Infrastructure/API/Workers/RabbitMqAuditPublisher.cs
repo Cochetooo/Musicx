@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Musicx.Application.Api.Interfaces.Workers;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Security;
 using RabbitMQ.Client;
 
 namespace Musicx.Infrastructure.API.Workers;

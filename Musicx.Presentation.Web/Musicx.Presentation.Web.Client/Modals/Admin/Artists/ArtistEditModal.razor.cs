@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Mappers;

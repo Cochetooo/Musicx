@@ -1,7 +1,8 @@
 ﻿@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests.Album
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
-@inject IGetUseCase<OutAlbum> UcGetAlbum
+@inject IGetUseCase<InAlbum, OutAlbum> UcGetAlbum
 
 @if (_isLoading)
 {

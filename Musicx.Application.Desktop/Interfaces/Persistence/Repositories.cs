@@ -1,5 +1,10 @@
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Album;
+using Musicx.Contracts.Dto.Requests.Artist;
+using Musicx.Contracts.Dto.Requests.Genre;
+using Musicx.Contracts.Dto.Requests.Label;
+using Musicx.Contracts.Dto.Requests.Song;
 using Musicx.Contracts.Dto.Responses;
 
 

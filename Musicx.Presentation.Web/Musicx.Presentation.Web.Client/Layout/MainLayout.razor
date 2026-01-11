@@ -9,7 +9,7 @@
 @inject IUserClientContext UserClientContext
 @inject ILoggerFactory LoggerFactory
 @inject HttpClient Http
-@inject IJSRuntime JS
+@inject ISnackbar Snackbar
 
 <MudThemeProvider @bind-IsDarkMode="_isDarkMode" @ref="_mudThemeProvider" Theme="Theme.DeepTheme" />
 <MudPopoverProvider />
@@ -37,7 +37,8 @@
         <MudSpacer />
         
         <!-- Search Box -->
-        <MudTextField Immediate @bind-Value="_searchText" Label="Search" 
+        <MudTextField Immediate Label="Search"
+                      T="string"
                       OnKeyDown="@SearchKeyDown" Variant="Variant.Filled"
                       Class="nav-search-field" @onfocus="OpenSearch"
                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"/>
@@ -71,7 +72,7 @@
                              IconColor="Color.Primary"
                              Label="Signup"/>
             
-                <MudMenuItem OnClick="@(async () => await _loginModal.Show())"
+                <MudMenuItem OnClick="@OpenLogin"
                              Icon="@Icons.Material.Filled.Login"
                              IconColor="Color.Primary"
                              Label="Sign In"/>
@@ -118,4 +119,4 @@
     <SearchOverlay @ref="_searchOverlay"/>
 </MudLayout>
 
-<LoginModal @ref="_loginModal" />
+<LoginModal @ref="_loginModal" OnLogin="@HandleLogin" />

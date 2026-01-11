@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Musicx.Application.Shared.Options;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Infrastructure.API.Persistence.Specifications.Album;
+using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 
 namespace Musicx.Presentation.Web.Client.Pages.SingleView;
 
@@ -17,9 +19,9 @@ public partial class GenreView
 
     private readonly List<BreadcrumbItem>? _breadcrumb = [];
     private long _albumCount;
-    private decimal? _albumsAvgRating = null;
+    private decimal? _albumsAvgRating;
     
-    private MudTable<OutAlbum> _albumTable = null!;
+    private MudTable<OutAlbum>? _albumTable;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -55,7 +57,11 @@ public partial class GenreView
             return;
         }
 
-        _genre = await UcGet.ExecuteAsync(genreId, "parents_children");
+        _genre = await UcGet.ExecuteAsync(genreId, joins: new GenreJoinSpecification
+        {
+            IncludeParents = true,
+            IncludeChildren = true
+        });
 
         if (_genre is null)
         {
@@ -64,9 +70,12 @@ public partial class GenreView
         }
         
         _logger.LogInformation($"✅ Genre loaded: {_genre.CanonicalName} ({_genre.Id})");
-        await InvokeAsync(StateHasChanged);
 
-        await _albumTable.ReloadServerData();
+        if (_albumTable is not null)
+        {
+            await _albumTable.ReloadServerData();
+        }
+        
         await InvokeAsync(StateHasChanged);
     }
     
@@ -85,9 +94,14 @@ public partial class GenreView
         var response = await UcAlbumByGenre.ExecuteAsync(
             genreId: _genre.Id,
             genreOptions: GenreOptions.PrimaryGenre,
-            skip: state.Page * state.PageSize,
-            take: state.PageSize,
-            query: "artist_genre_stats"
+            pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),
+            joins: new AlbumJoinSpecification
+            {
+                IncludeArtist = true,
+                IncludePrimaryGenres = true,
+                IncludeInfluenceGenres = true,
+                IncludeStats = true
+            }
         );
 
         _albumCount = response.Total;

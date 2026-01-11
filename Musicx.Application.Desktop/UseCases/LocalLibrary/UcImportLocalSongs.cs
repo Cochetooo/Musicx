@@ -3,6 +3,9 @@ using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Album;
+using Musicx.Contracts.Dto.Requests.Artist;
+using Musicx.Contracts.Dto.Requests.Song;
 
 
 namespace Musicx.Application.Desktop.UseCases.LocalLibrary;

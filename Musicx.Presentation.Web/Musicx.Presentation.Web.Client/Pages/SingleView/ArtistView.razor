@@ -2,6 +2,7 @@
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Contracts.Dto.Requests.Artist
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
@@ -10,7 +11,7 @@
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 
-@inject IGetUseCase<OutArtist> UcGet
+@inject IGetUseCase<InArtist, OutArtist> UcGet
 @inject IGetAlbumByArtistUseCase UcGetAlbums
 @inject IGetAlbumAttributesByUser UcGetUserRatings
 @inject ILoggerFactory LoggerProvider
@@ -49,20 +50,26 @@ else
                     @if (!string.IsNullOrWhiteSpace(_artist.CalculatedGenres))
                     {
                         <MudText Typo="Typo.body2" Color="Color.Primary"
-                                 Class="montserrat highlight-text text-bold">
+                                 Class="highlight-text text-bold">
                             @_artist.CalculatedGenres
                         </MudText>
 
                         <MudText Typo="Typo.caption" Color="Color.Secondary"
-                                 Class="highlight-text">
+                                 Class="highlight-text description">
                             @_artist.CalculatedInfluences
                         </MudText>
                     }
 
                     <MudStack Row Class="mt-3" AlignItems="AlignItems.Center" Spacing="4">
-                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="highlight-text">👥 Followers: 0</MudText>
-                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="highlight-text">💿 Releases: @_artistAlbums.Total</MudText>
-                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="highlight-text">🌍 Country: <Flag CountryName="@_artist.CurrentCountry"/></MudText>
+                        <MudText Typo="Typo.subtitle2" Class="highlight-text text-color-secondary">
+                            👥 Followers: 0
+                        </MudText>
+                        <MudText Typo="Typo.subtitle2" Class="highlight-text text-color-secondary">
+                            💿 Releases: @_artistAlbums.Total
+                        </MudText>
+                        <MudText Typo="Typo.subtitle2" Class="highlight-text text-color-secondary">
+                            🌍 Country: <Flag CountryName="@_artist.CurrentCountry"/>
+                        </MudText>
                     </MudStack>
 
                     <div class="mt-4">

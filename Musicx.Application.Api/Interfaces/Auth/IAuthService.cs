@@ -1,4 +1,5 @@
 ﻿using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.User;
 
 namespace Musicx.Application.Api.Interfaces.Auth;
 

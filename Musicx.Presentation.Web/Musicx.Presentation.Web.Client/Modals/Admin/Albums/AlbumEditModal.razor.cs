@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 

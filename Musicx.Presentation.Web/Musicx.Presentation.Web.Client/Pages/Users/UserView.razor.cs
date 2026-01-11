@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Resources;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
+using Musicx.Infrastructure.API.Persistence.Specifications.User;
 
 namespace Musicx.Presentation.Web.Client.Pages.Users;
 
@@ -48,7 +51,10 @@ public partial class UserView
             return;
         }
 
-        _user = await UcGet.ExecuteAsync(userId, "role");
+        _user = await UcGet.ExecuteAsync(userId, new UserJoinSpecification
+        {
+            IncludeRoles = true
+        });
 
         if (_user == null)
         {
@@ -77,14 +83,27 @@ public partial class UserView
                 Items = []
             };
         }
+
+        short sortDir = state.SortDirection == SortDirection.Ascending ? (short) 1 : (short) -1;
+        var sortLabel = state.SortLabel;
         
         var response = await UcGetAlbumAttrs.ExecuteAsync(
             _user.Id, 
-            query: "artist",
-            skip: state.Page * state.PageSize,
-            take: state.PageSize,
+            pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),
+            joins: new UserAlbumAttrJoinSpecification
+            {
+                IncludeAlbumArtists = true
+            },
+            order: new UserAlbumAttrOrderSpecification
+            {
+                AlbumOriginalReleaseDate = (sortLabel == "Album") ? (short) (sortDir * 2) : null,
+                ArtistName = (sortLabel == "Album") ? sortDir : null,
+                CollectionType = (sortLabel == "Collection") ? sortDir : null,
+                Rating = (sortLabel == "Rating") ? sortDir : null,
+                CreatedAt = (sortLabel == "Date") ? sortDir : null,
+            },
             filter: string.IsNullOrWhiteSpace(_searchString) ? null : _searchString,
-            token: token
+            cancellationToken: token
         );
 
         _albumCount = response.Total;

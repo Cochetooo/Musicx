@@ -1,7 +1,8 @@
 ﻿using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
-using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.User;
+using Musicx.Infrastructure.API.Persistence.Specifications.User;
 
 namespace Musicx.Infrastructure.API.Auth;
 
@@ -26,7 +27,7 @@ public sealed class AuthService(
 
     public async Task<string> SignInAsync(string email, string password)
     {
-        var user = await userRepository.FindByEmailAsync(email, new UserQuerySpecification
+        var user = await userRepository.FindByEmailAsync(email, new UserJoinSpecification
         {
             IncludeRoles = true
         });

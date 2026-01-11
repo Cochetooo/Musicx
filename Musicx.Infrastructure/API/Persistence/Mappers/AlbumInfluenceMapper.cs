@@ -3,7 +3,9 @@ using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Columns.Album;
 
 namespace Musicx.Infrastructure.API.Persistence.Mappers;
 

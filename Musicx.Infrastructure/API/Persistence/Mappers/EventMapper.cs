@@ -2,7 +2,9 @@
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.ValueObjects.Events;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Contracts.Dto.Requests.Event;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Columns.Event;
 using Newtonsoft.Json;
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 using JsonSerializer = System.Text.Json.JsonSerializer;

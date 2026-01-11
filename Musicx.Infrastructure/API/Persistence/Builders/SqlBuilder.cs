@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -41,12 +42,12 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// <summary>
     /// Builds a SELECT query with a given specification for joins.
     /// </summary>
-    internal abstract string BuildSelect(IQuerySpecification<T>? spec = null, bool distinct = false);
+    internal abstract string BuildSelect(IJoinSpecification<T>? spec = null, bool distinct = false);
     
     /// <summary>
     /// Builds a GROUP BY clause with a given specification for joins.
     /// </summary>
-    internal abstract string BuildGroupBy(IQuerySpecification<T>? spec = null);
+    internal abstract string BuildGroupBy(IJoinSpecification<T>? spec = null);
 
     /// <summary>
     /// Create a INSERT INTO command with a set of values.
@@ -253,13 +254,24 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
 
         return new SqlQuery(sql, parameters);
     }
-    
+
     /// <summary>
     /// Builds an ORDER BY clause with the given columns.
     /// </summary>
     /// <param name="columns">The columns to sort by.</param>
-    internal string BuildOrderBy(params string[] columns)
-        => " ORDER BY " + string.Join(", ", columns);
+    internal string BuildOrderBy(OrderSpecification<T> orderSpec)
+    {
+        orderSpec.Validate();
+
+        var clauses = orderSpec.ToClauses();
+
+        if (!clauses.Any())
+        {
+            return string.Empty;
+        }
+
+        return $" ORDER BY {string.Join(", ", orderSpec.ToClauses().Select(c => c.Field + " " + c.Direction))}";
+    }
     
     /// <summary>
     /// For a list of many-to-many values, delete those who are not existing anymore.

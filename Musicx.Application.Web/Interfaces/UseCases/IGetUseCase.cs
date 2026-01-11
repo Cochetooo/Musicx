@@ -1,7 +1,13 @@
+using Musicx.Application.Shared.Interfaces.Persistence;
+using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
+
 namespace Musicx.Application.Web.Interfaces.UseCases;
 
-public interface IGetUseCase<T> where T : class
+public interface IGetUseCase<TIn, TOut> 
+    where TIn : BaseInputModel
+    where TOut : BaseOutputModel
 {
-    Task<T?> ExecuteAsync(long id, string query = "");
-    T? Execute(long id, string query = "");
+    Task<TOut?> ExecuteAsync(long id, IJoinSpecification<TIn>? joins = null);
+    TOut? Execute(long id, IJoinSpecification<TIn>? joins = null);
 }

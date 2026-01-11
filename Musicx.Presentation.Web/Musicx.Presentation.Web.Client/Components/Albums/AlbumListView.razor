@@ -19,17 +19,17 @@
                               Class="rounded-lg mr-3" Elevation="8" />
                     <MudStack Spacing="1">
                         <MudLink Href="@($"/Album/{album.Id}")">
-                            <MudText Typo="Typo.body1" Class="montserrat text-bold">
+                            <MudText Typo="Typo.body1" Class="text-color-primary">
                                 @album.Name 
                                 @if (album.EnglishName is not null)
                                 {
-                                    <MudText Color="Color.Secondary">
+                                    <MudText Class="text-color-secondary">
                                         [@album.EnglishName]
                                     </MudText>
                                 }
                             </MudText>
                         </MudLink>
-                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                        <MudText Typo="Typo.caption" Class="text-color-secondary">
                             @album.ReleaseType?.ToDescriptionString() · 
                             @album.OriginalReleaseDate?.ToString("yyyy") ·
                             @if (album.SimplifiedGenreName is not null)
@@ -37,7 +37,7 @@
                                 <MudChip
                                     Size="Size.Small"
                                     T="string"
-                                    Class="montserrat py-1 px-3 ma-1 genre-badge"
+                                    Class="py-1 px-3 ma-1 genre-badge"
                                     Style="@GetSimplifiedGenreStyle(album)"
                                     Label="@true">
                                     @album.SimplifiedGenreName

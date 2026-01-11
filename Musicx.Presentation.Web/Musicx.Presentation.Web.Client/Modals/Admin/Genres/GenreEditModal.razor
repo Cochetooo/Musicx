@@ -1,5 +1,6 @@
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
+@using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.Genres
@@ -7,9 +8,9 @@
 @inject ILoggerFactory LoggerProvider
 @inject ISaveUseCase<InGenre> UcSave
 @inject ISaveAllUseCase<InGenreRelation> UcSaveRelations
-@inject IListUseCase<OutGenre> UcList
-@inject IFindInUseCase<OutGenre> UcFindIn
-@inject IGetUseCase<OutGenre> UcGet
+@inject IListUseCase<InGenre, OutGenre> UcList
+@inject IFindInUseCase<InGenre, OutGenre> UcFindIn
+@inject IGetUseCase<InGenre, OutGenre> UcGet
 @inject ISnackbar Snackbar
 
 <MudDialog @ref="_modalRef">

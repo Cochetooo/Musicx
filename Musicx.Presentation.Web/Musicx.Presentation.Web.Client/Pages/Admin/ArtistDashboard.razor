@@ -1,6 +1,7 @@
 @page "/Admin/ArtistDashboard"
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
+@using Musicx.Contracts.Dto.Requests.Artist
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Models
@@ -8,7 +9,7 @@
 @using Musicx.Presentation.Web.Client.Layout.Auth
 
 @inject ILoggerFactory LoggerProvider
-@inject IListUseCase<OutArtist> UcList
+@inject IListUseCase<InArtist, OutArtist> UcList
 @inject IDeleteUseCase<InArtist> UcDelete
 
 <AuthorizeView Permission="admin.artist.read">

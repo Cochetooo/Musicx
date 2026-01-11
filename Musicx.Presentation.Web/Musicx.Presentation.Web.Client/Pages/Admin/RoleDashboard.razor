@@ -1,12 +1,13 @@
 ﻿@page "/Admin/RoleDashboard"
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
+@using Musicx.Contracts.Dto.Requests.Security
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Layout.Auth
 
 @inject ILoggerFactory LoggerFactory
-@inject IListUseCase<OutRole> UcList
-@inject IListUseCase<OutPermission> UcListPermissions
+@inject IListUseCase<InRole, OutRole> UcList
+@inject IListUseCase<InPermission, OutPermission> UcListPermissions
 @inject ISaveUseCase<InRole> UcSave
 @inject IDeleteUseCase<InRole> UcDelete
 @inject ISnackbar Snackbar

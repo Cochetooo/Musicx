@@ -2,7 +2,9 @@
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Contracts.Dto.Requests.Security;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Columns.Security;
 
 namespace Musicx.Infrastructure.API.Persistence.Mappers;
 

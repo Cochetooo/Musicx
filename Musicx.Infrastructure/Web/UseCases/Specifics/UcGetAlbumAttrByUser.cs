@@ -1,9 +1,13 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Infrastructure.Web.Helpers;
 
 namespace Musicx.Infrastructure.Web.UseCases.Specifics;
 
@@ -13,12 +17,18 @@ public sealed class UcGetAlbumAttrByUser(
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger<UcGetAlbumAttrByAlbum>();
 
-    public async Task<OutGenericList<OutUserAlbumAttribute>> ExecuteAsync(long userId,
-        string query = "",
-        long skip = 0, long take = 100, CancellationToken token = default,
-        long? artistId = null, string? filter = null)
+    public async Task<OutGenericList<OutUserAlbumAttribute>> ExecuteAsync(long userId, 
+        long? artistId = null,
+        bool? filterExact = null,
+        double? filterSimilitude = 0.4,
+        string? filter = null,
+        IJoinSpecification<InUserAlbumAttribute>? joins = null,
+        OrderSpecification<InUserAlbumAttribute>? order = null,
+        PagingOptions? pagingOptions = null,
+        CancellationToken cancellationToken = default)
     {
-        var endpoint = $"/api/user-album-attrs/by-user/{userId}?skip={skip}&take={take}&query={query}";
+        var endpoint = $"/api/user-album-attrs/by-user/{userId}?";
+        endpoint += QueryStringHelper.SetUseCaseParameters(joins, order, pagingOptions);
 
         if (artistId is not null)
         {
@@ -32,7 +42,7 @@ public sealed class UcGetAlbumAttrByUser(
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
-        var response = await httpClient.GetStringAsync(endpoint, token);
+        var response = await httpClient.GetStringAsync(endpoint, cancellationToken);
 
         if (string.IsNullOrWhiteSpace(response))
         {
@@ -61,8 +71,16 @@ public sealed class UcGetAlbumAttrByUser(
         return json;
     }
 
-    public OutGenericList<OutUserAlbumAttribute> Execute(long albumId, long skip = 0, long take = 100,
-        long? artistId = null)
+    public OutGenericList<OutUserAlbumAttribute> Execute(
+        long userId, 
+        long? artistId = null,
+        bool? filterExact = null,
+        double? filterSimilitude = 0.4,
+        string? filter = null,
+        IJoinSpecification<InUserAlbumAttribute>? joins = null,
+        OrderSpecification<InUserAlbumAttribute>? order = null,
+        PagingOptions? pagingOptions = null,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

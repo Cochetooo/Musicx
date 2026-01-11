@@ -4,13 +4,14 @@
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Albums
 @using Musicx.Presentation.Web.Client.Components.Ratings
 
 @inject ILoggerFactory LoggerProvider
-@inject IGetUseCase<OutGenre> UcGet
+@inject IGetUseCase<InGenre, OutGenre> UcGet
 @inject IGetAlbumByGenreUseCase UcAlbumByGenre
 @inject IUserClientContext UserClientContext
 
@@ -24,7 +25,7 @@ else
 {
     <MudCard Class="mt-4">
         <MudCardHeader Style="@GetHeaderStyle()">
-            <MudText Typo="Typo.h1" Class="pl-5 text-italic text-mega-bold" Style="font-size: 5rem;">
+            <MudText Typo="Typo.h1" Class="pl-5 montserrat text-mega-bold" Style="font-size: 5rem; text-shadow: 1px 1px 5px #77777733">
                 @_genre.CanonicalName
             </MudText>
         </MudCardHeader>
@@ -46,7 +47,7 @@ else
                             
                             @if (_genre.Description is not null)
                             {
-                                <MudText Typo="Typo.body2">
+                                <MudText Typo="Typo.body2" Class="description">
                                     @_genre.Description
                                 </MudText>
                             }
@@ -81,7 +82,7 @@ else
                         }
                         
                         <MudLink Href="@($"/Genre/{_genre.Id}")" Color="Color.Primary" 
-                                 Class="ml-4 d-block text-bold">
+                                 Class="ml-6 d-block text-bold">
                             @_genre.CanonicalName
                         </MudLink>
                         
@@ -92,7 +93,7 @@ else
                                 if (genre.Relation.Id != _genre.Id)
                                 {
                                     <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Secondary"
-                                             Class="ml-6 d-block">
+                                             Class="ml-10 d-block">
                                         @genre.Relation.CanonicalName
                                     </MudLink>
                                 }
@@ -109,6 +110,7 @@ else
                         </MudCardHeader>
                         <MudCardContent>
                             <MudTable ServerData="@LoadAlbumsData" ReadOnly
+                                      @ref="_albumTable"
                                       Elevation="8"
                                       Breakpoint="Breakpoint.Sm"
                                       RowClass="album-row"

@@ -1,13 +1,15 @@
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
+@using Musicx.Contracts.Dto.Requests.Album
+@using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Components.Genres
 
 @inject ILoggerFactory LoggerFactory
 @inject IUserClientContext UserClientContext
 @inject ISnackbar Snackbar
-@inject IListUseCase<OutGenre> UcListGenres
+@inject IListUseCase<InGenre, OutGenre> UcListGenres
 @inject ISaveAllUseCase<InAlbumGenre> UcVoteAlbumGenre
 @inject ISaveAllUseCase<InAlbumInfluence> UcVoteAlbumInfluence
 

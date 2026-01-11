@@ -1,7 +1,9 @@
 ﻿using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Contracts.Dto.Requests.Security;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Columns.Security;
 using Newtonsoft.Json;
 
 namespace Musicx.Infrastructure.API.Persistence.Mappers;

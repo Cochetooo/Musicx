@@ -11,11 +11,36 @@ using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Album;
+using Musicx.Contracts.Dto.Requests.Artist;
+using Musicx.Contracts.Dto.Requests.Event;
+using Musicx.Contracts.Dto.Requests.Genre;
+using Musicx.Contracts.Dto.Requests.Label;
+using Musicx.Contracts.Dto.Requests.Security;
+using Musicx.Contracts.Dto.Requests.Song;
+using Musicx.Contracts.Dto.Requests.Tag;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Infrastructure.API.Auth;
 using Musicx.Infrastructure.API.Persistence;
 using Musicx.Infrastructure.API.Persistence.Builders;
+using Musicx.Infrastructure.API.Persistence.Builders.Album;
+using Musicx.Infrastructure.API.Persistence.Builders.Artist;
+using Musicx.Infrastructure.API.Persistence.Builders.Event;
+using Musicx.Infrastructure.API.Persistence.Builders.Genre;
+using Musicx.Infrastructure.API.Persistence.Builders.Label;
+using Musicx.Infrastructure.API.Persistence.Builders.Security;
+using Musicx.Infrastructure.API.Persistence.Builders.Song;
+using Musicx.Infrastructure.API.Persistence.Builders.Tag;
+using Musicx.Infrastructure.API.Persistence.Builders.User;
 using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.API.Persistence.Repositories;
+using Musicx.Infrastructure.API.Persistence.Repositories.Album;
+using Musicx.Infrastructure.API.Persistence.Repositories.Artist;
+using Musicx.Infrastructure.API.Persistence.Repositories.Genre;
+using Musicx.Infrastructure.API.Persistence.Repositories.Security;
+using Musicx.Infrastructure.API.Persistence.Repositories.Song;
+using Musicx.Infrastructure.API.Persistence.Repositories.Tag;
+using Musicx.Infrastructure.API.Persistence.Repositories.User;
 using Musicx.Infrastructure.API.Workers;
 using Musicx.Infrastructure.Desktop.Persistence;
 using Musicx.Infrastructure.Desktop.Persistence.Caches;
@@ -147,12 +172,12 @@ public static class DependencyInjection
     /// </summary>
     public static IServiceCollection AddMusicxWeb(this IServiceCollection services)
     {
-        services.AddScoped(typeof(IGetUseCase<>), typeof(UcGet<>));
+        services.AddScoped(typeof(IGetUseCase<,>), typeof(UcGet<,>));
         services.AddScoped(typeof(ISaveUseCase<>), typeof(UcSave<>));
         services.AddScoped(typeof(ISaveAllUseCase<>), typeof(UcSaveAll<>));
         services.AddScoped(typeof(IDeleteUseCase<>), typeof(UcDelete<>));
-        services.AddScoped(typeof(IListUseCase<>), typeof(UcList<>));
-        services.AddScoped(typeof(IFindInUseCase<>), typeof(UcFindIn<>));
+        services.AddScoped(typeof(IListUseCase<,>), typeof(UcList<,>));
+        services.AddScoped(typeof(IFindInUseCase<,>), typeof(UcFindIn<,>));
         services.AddScoped(typeof(ICountUseCase<>), typeof(UcCount<>));
         
         services.AddScoped<IGetAlbumAttributesByAlbum, UcGetAlbumAttrByAlbum>();

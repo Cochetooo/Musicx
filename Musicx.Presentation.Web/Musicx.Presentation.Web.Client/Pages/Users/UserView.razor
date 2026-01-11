@@ -5,13 +5,14 @@
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Albums
 @using Musicx.Presentation.Web.Client.Models.Auth
 
 @inject ILoggerFactory LoggerFactory
-@inject IGetUseCase<OutUser> UcGet
+@inject IGetUseCase<InUser, OutUser> UcGet
 @inject IGetAlbumAttributesByUser UcGetAlbumAttrs
 @inject IUserClientContext UserClientContext
 @inject IGetRatingDistribByUser<OutAlbum> UcGetAlbumRatingDistrib
@@ -206,20 +207,22 @@ else
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh>
-                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
+                            <MudTableSortLabel SortLabel="Rating" SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
                                 Rating
                             </MudTableSortLabel>
                         </MudTh>
                         <MudTh>
-                            Album
+                            <MudTableSortLabel SortLabel="Album" SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Album.Artist?.Name ?? string.Empty))">
+                                Album
+                            </MudTableSortLabel>
                         </MudTh>
                         <MudTh>
-                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
+                            <MudTableSortLabel SortLabel="Collection" SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
                                 Collection
                             </MudTableSortLabel>
                         </MudTh>
                         <MudTh>
-                            <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
+                            <MudTableSortLabel SortLabel="Date" SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
                                 Date
                             </MudTableSortLabel>
                         </MudTh>

@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Mappers;
+using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 
 namespace Musicx.Presentation.Web.Client.Modals.Admin.Genres;
 
@@ -23,7 +26,7 @@ public partial class GenreEditModal
     private GenreRelationType _genreType = GenreRelationType.IsA;
 
     private int _currentStep = 1;
-    private GenreType? _selectedType = null;
+    private GenreType? _selectedType;
 
     private bool _isNameAvailable = true;
     private string _derivedGradient = "transparent";
@@ -56,10 +59,15 @@ public partial class GenreEditModal
 
     private async Task Load()
     {
-        var result = await UcList.ExecuteAsync(take: 100_000, query: "parents");
+        var result = await UcList.ExecuteAsync(
+            joins: new GenreJoinSpecification
+            {
+                IncludeParents = true
+            },
+            pagingOptions: new PagingOptions(100_000, 0));
         
         _genres = result
-            .Where(g => g.Parents.Count > 0)
+            .Where(g => g.Parents?.Count > 0)
             .ToList();
 
         _descriptors = result
@@ -257,7 +265,10 @@ public partial class GenreEditModal
 
         if (genre.Children is null)
         {
-            genre = await UcGet.ExecuteAsync(genre.Id, "children") ?? genre;
+            genre = await UcGet.ExecuteAsync(genre.Id, new GenreJoinSpecification
+            {
+                IncludeChildren = true
+            }) ?? genre;
 
             if (genre.Children is null)
             {

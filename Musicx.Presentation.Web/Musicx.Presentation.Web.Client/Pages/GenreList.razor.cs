@@ -1,5 +1,7 @@
 using Microsoft.JSInterop;
+using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 
 namespace Musicx.Presentation.Web.Client.Pages;
 
@@ -23,7 +25,13 @@ public partial class GenreList
 
     private async Task Load()
     {
-        _genres = await UcList.ExecuteAsync(take: 10_000, query: "parents_children");
+        _genres = await UcList.ExecuteAsync(
+            pagingOptions: new PagingOptions(Take: 100_000, Skip: 0),
+            joins: new GenreJoinSpecification
+            {
+                IncludeChildren = true,
+                IncludeParents = true
+            });
         
         _logger.LogInformation("✅ Genres retrieved successfully!");
         await InvokeAsync(StateHasChanged);

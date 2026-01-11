@@ -1,7 +1,9 @@
 ﻿using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Infrastructure.API.Persistence.Columns;
+using Musicx.Infrastructure.API.Persistence.Columns.User;
 
 namespace Musicx.Infrastructure.API.Persistence.Mappers;
 

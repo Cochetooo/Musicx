@@ -1,9 +1,13 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
+using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Infrastructure.Web.Helpers;
 
 namespace Musicx.Infrastructure.Web.UseCases.Specifics;
 
@@ -13,15 +17,15 @@ public sealed class UcGetAlbumByGenre(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcGetAlbumByGenre));
 
-    public async Task<OutAlbumList> ExecuteAsync(long genreId, 
+    public async Task<OutAlbumList> ExecuteAsync(
+        long genreId, 
         int genreOptions,
-        long skip = 0,
-        long take = 100,
-        string order = "",
-        string query = "")
+        IJoinSpecification<InAlbum>? joins = null,
+        OrderSpecification<InAlbum>? order = null,
+        PagingOptions? pagingOptions = null)
     {
-        var endpoint = $"/api/albums/by-genre/{genreId}?" +
-                       $"genreOptions={genreOptions}&skip={skip}&take={take}&order={order}&query={query}";
+        var endpoint = $"/api/albums/by-genre/{genreId}?genreOptions={genreOptions}&";
+        endpoint += QueryStringHelper.SetUseCaseParameters(joins, order, pagingOptions);
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
@@ -55,27 +59,14 @@ public sealed class UcGetAlbumByGenre(
 
         return json;
     }
-    
-    public async Task<OutAlbumList> ExecuteAsync(OutGenre genre, int genreOptions,
-        long skip = 0,
-        long take = 100,
-        string order = "",
-        string query = "")
-        => await ExecuteAsync(genre.Id, genreOptions, skip, take, order, query);
 
-    public OutAlbumList Execute(long genreId, int genreOptions,
-        long skip = 0,
-        long take = 100,
-        string order = "",
-        string query = "")
+    public OutAlbumList Execute(
+        long genreId, 
+        int genreOptions,
+        IJoinSpecification<InAlbum>? joins = null,
+        OrderSpecification<InAlbum>? order = null,
+        PagingOptions? pagingOptions = null)
     {
         throw new NotImplementedException();
     }
-
-    public OutAlbumList Execute(OutGenre genre, int genreOptions,
-        long skip = 0,
-        long take = 100,
-        string order = "",
-        string query = "")
-        => Execute(genre.Id, genreOptions, skip, take, order, query);
 }

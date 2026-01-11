@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Presentation.Web.Client.Modals.Admin.Artists;
 using Musicx.Presentation.Web.Client.Models;
@@ -44,7 +45,7 @@ public partial class ArtistDashboard
     {
         _logger.LogInformation("🔄️ ArtistDashboard : UPDATE Data");
 
-        _artists = await UcList.ExecuteAsync(take: 1000);
+        _artists = await UcList.ExecuteAsync(pagingOptions: new PagingOptions(Take: 1_000, Skip: 0));
         _filteredArtists = new List<OutArtist>(_artists);
         
         await InvokeAsync(StateHasChanged);

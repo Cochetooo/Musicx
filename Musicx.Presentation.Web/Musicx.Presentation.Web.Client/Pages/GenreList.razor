@@ -1,7 +1,8 @@
 @page "/Genres"
 @using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Components
 
-@inject IListUseCase<OutGenre> UcList
+@inject IListUseCase<InGenre, OutGenre> UcList
 @inject ILoggerFactory LoggerProvider

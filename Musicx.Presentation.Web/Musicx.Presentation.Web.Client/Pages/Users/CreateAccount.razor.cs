@@ -1,5 +1,6 @@
 ﻿using MudBlazor;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Infrastructure.Web.UseCases;
 
 namespace Musicx.Presentation.Web.Client.Pages.Users;

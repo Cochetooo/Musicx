@@ -1,11 +1,16 @@
 ﻿@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests.Album
+@using Musicx.Contracts.Dto.Requests.Artist
+@using Musicx.Contracts.Dto.Requests.Genre
+@using Musicx.Contracts.Dto.Requests.Song
+@using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
 @inject IJSRuntime JS
-@inject IListUseCase<OutArtist> UcListArtists
-@inject IListUseCase<OutAlbum> UcListAlbums
-@inject IListUseCase<OutGenre> UcListGenres
-@inject IListUseCase<OutUser> UcListUsers
-@inject IListUseCase<OutSong> UcListSongs
+@inject IListUseCase<InArtist, OutArtist> UcListArtists
+@inject IListUseCase<InAlbum, OutAlbum> UcListAlbums
+@inject IListUseCase<InGenre, OutGenre> UcListGenres
+@inject IListUseCase<InUser, OutUser> UcListUsers
+@inject IListUseCase<InSong, OutSong> UcListSongs
 @inject NavigationManager Navigation
 
 <div class="search-overlay" @onclick="OnBackdropClick" style="display:@(IsOpen ? "block" : "none")">

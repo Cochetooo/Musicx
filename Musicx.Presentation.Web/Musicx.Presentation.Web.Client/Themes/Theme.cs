@@ -70,23 +70,27 @@ public static class Theme
             
             InfoDarken = "#21498a",
             Info = "#4077d1",
-            InfoLighten = "#92b2e5"
+            InfoLighten = "#92b2e5",
+            
+            TableLines = "#44444444",
+            TableStriped = "#44444455",
+            TableHover = "#55555577"
         },
         
         Typography = new()
         {
             Default = new DefaultTypography
             {
-                FontFamily = ["ClashGrotesk-Medium", "Segoe UI", "sans-serif"]
+                FontFamily = ["Exo 2", "Helvetica Neue", "sans-serif"]
             },
             Body1 = new Body1Typography
             {
-                FontFamily = ["ClashGrotesk-Medium", "Segoe UI", "sans-serif"]
+                FontFamily = ["Exo 2", "Helvetica Neue", "sans-serif"]
             },
             Body2 = new Body2Typography
             {
-                FontFamily = ["ClashGrotesk-Medium", "Segoe UI", "sans-serif"]
-            }
+                FontFamily = ["Exo 2", "Helvetica Neue", "sans-serif"]
+            },
         }
     };
     

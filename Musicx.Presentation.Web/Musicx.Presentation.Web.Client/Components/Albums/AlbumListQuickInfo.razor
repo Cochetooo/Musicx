@@ -30,7 +30,7 @@
             break;
     }
     
-    <MudText Class="montserrat clamped-text-4 text-light text-color-secondary" Typo="Typo.body2" Color="Color.Inherit">
+    <MudText Class="clamped-text-4 text-light text-color-secondary" Typo="Typo.body2" Color="Color.Inherit">
         @{
             var hasDate = Album.OriginalReleaseDate is not null;
             var hasArtist = ShowArtist && Album.Artist is not null;
@@ -60,7 +60,7 @@
                 Size="Size.Small"
                 T="string"
                 Label="true"
-                Class="montserrat py-1 px-3 ma-0 genre-badge"
+                Class="py-1 px-3 ma-0 genre-badge"
                 Style="@GetSimplifiedGenreStyle(Album)">
                 @Album.SimplifiedGenreName
             </MudChip>

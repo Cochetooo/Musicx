@@ -4,6 +4,7 @@ using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Enums;
+using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 using Musicx.Presentation.Web.Client.Modals.Admin.Artists;
 
@@ -81,7 +82,12 @@ public partial class ArtistView
         _logger.LogInformation($"✅ Artist loaded: {_artist.Name} ({_artist.Id})");
         await InvokeAsync(StateHasChanged);
         
-        _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id, "genre_stat");
+        _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id, new AlbumJoinSpecification
+        {
+            IncludePrimaryGenres = true,
+            IncludeInfluenceGenres = true,
+            IncludeStats = true
+        });
         _filteredAlbums = new List<OutAlbum>(_artistAlbums.Items);
         _logger.LogInformation("🎵 Retrieved {Count} albums for artist {ArtistId}", _artistAlbums.Total, _artist.Id);
         

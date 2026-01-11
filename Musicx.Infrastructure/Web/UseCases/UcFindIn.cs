@@ -1,22 +1,31 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Web.Interfaces.UseCases;
+using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.Web.Helpers;
 
 namespace Musicx.Infrastructure.Web.UseCases;
 
-public sealed class UcFindIn<T>(
+public sealed class UcFindIn<TIn, TOut>(
     HttpClient httpClient,
     ILoggerFactory loggerProvider
-    ) : IFindInUseCase<T> where T : class
+    ) : IFindInUseCase<TIn, TOut> 
+    where TIn : BaseInputModel
+    where TOut : BaseOutputModel
 {
-    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcFindIn<T>));
+    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcFindIn<TIn, TOut>));
     
-    public async Task<List<T>> ExecuteAsync(IEnumerable<long> ids, string query = "")
+    public async Task<List<TOut>> ExecuteAsync(
+        IEnumerable<long> ids, 
+        IJoinSpecification<TIn>? joins = null, 
+        OrderSpecification<TIn>? order = null)
     {
-        var modelName = typeof(T).Name.OutModelToEntity();
-        var endpoint = $"/api/{modelName}/by-ids?query={query}&ids={string.Join("&ids=", ids)}";
+        var modelName = typeof(TOut).Name.OutModelToEntity();
+        var endpoint = $"/api/{modelName}/by-ids?ids={string.Join("&ids=", ids)}&";
+        endpoint += QueryStringHelper.SetUseCaseParameters(joins, order);
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
 
@@ -24,7 +33,7 @@ public sealed class UcFindIn<T>(
         {
             var response = await httpClient.GetStringAsync(endpoint);
 
-            var json = JsonSerializer.Deserialize<List<T>>(response, JsonHelper.OptionsDefault);
+            var json = JsonSerializer.Deserialize<List<TOut>>(response, JsonHelper.OptionsDefault);
             
             if (null == json)
             {
@@ -43,7 +52,10 @@ public sealed class UcFindIn<T>(
         }
     }
 
-    public List<T> Execute(IEnumerable<long> ids, string query = "")
+    public List<TOut> Execute(
+        IEnumerable<long> ids, 
+        IJoinSpecification<TIn>? joins = null, 
+        OrderSpecification<TIn>? order = null)
     {
         throw new NotImplementedException();
     }

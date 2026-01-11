@@ -13,19 +13,16 @@ public partial class MainLayout
     private bool _isDarkMode;
     private MudThemeProvider _mudThemeProvider = null!;
 
-    private string _searchText = string.Empty;
-
-    private MudTextField<string> _navSearchRef;
     private LoginModal _loginModal = null!;
     private SearchOverlay _searchOverlay = null!;
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
         {
             return;
         }
-
+        
         _isDarkMode = await _mudThemeProvider.GetSystemDarkModeAsync();
         _logger = LoggerFactory.CreateLogger(nameof(MainLayout));
 
@@ -47,18 +44,29 @@ public partial class MainLayout
         }
     }
 
-    private Task OnOverlayClose(string finalValue)
-    {
-        _searchText = finalValue;
-        StateHasChanged();
-        return Task.CompletedTask;
-    }
-
-    private void Search()
-        => NavigationManager.NavigateTo($"/SearchResult/{WebUtility.UrlEncode(_searchText)}");
-
     private void NavigateHome()
         => NavigationManager.NavigateTo("/");
+
+    private async Task OpenLogin()
+    {
+        await _loginModal.Show();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task HandleLogin(string response)
+    {
+        if (response.Contains("Invalid credentials"))
+        {
+            Snackbar.Add(response, Severity.Error);
+        }
+        else
+        {
+            Snackbar.Add("You are now connected!", Severity.Success);
+        }
+
+        await UserClientContext.RefreshAsync();
+        await InvokeAsync(StateHasChanged);
+    }
 
     private async Task SignOut()
     {

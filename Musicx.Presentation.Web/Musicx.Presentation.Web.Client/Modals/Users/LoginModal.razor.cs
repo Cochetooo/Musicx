@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Musicx.Contracts.Dto.Requests.Specifics;
 
@@ -5,6 +6,8 @@ namespace Musicx.Presentation.Web.Client.Modals.Users;
 
 public partial class LoginModal
 {
+    [Parameter] public EventCallback<string> OnLogin { get; set; }
+    
     private string 
         _email = string.Empty, 
         _password = string.Empty;
@@ -15,13 +18,10 @@ public partial class LoginModal
 
     private async Task Login()
     {
-        var token = await UcSignIn.ExecuteAsync(new SignInRequest(_email, _password));
+        var response = await UcSignIn.ExecuteAsync(new SignInRequest(_email, _password));
         
+        await OnLogin.InvokeAsync(response);
         await Hide();
-
-        await UserClientContext.RefreshAsync();
-
-        await InvokeAsync(StateHasChanged);
     }
 
     public async Task Show()

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Presentation.Web.Client.Modals.Admin.Genres;
 using Musicx.Presentation.Web.Client.Models;
@@ -44,7 +45,7 @@ public partial class GenreDashboard
     {
         _logger.LogInformation("🔄️ GenreDashboard : UPDATE Data");
 
-        _genres = await UcList.ExecuteAsync(take: 10_000);
+        _genres = await UcList.ExecuteAsync(pagingOptions: new PagingOptions(Take: 100_000, Skip: 0));
         _filteredGenres = new List<OutGenre>(_genres);
         
         await InvokeAsync(StateHasChanged);

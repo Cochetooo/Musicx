@@ -1,9 +1,13 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Infrastructure.Web.Helpers;
 
 namespace Musicx.Infrastructure.Web.UseCases.Specifics;
 
@@ -13,14 +17,18 @@ public sealed class UcGetAlbumAttrByAlbum(
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger<UcGetAlbumAttrByAlbum>();
 
-    public async Task<OutGenericList<OutUserAlbumAttribute>> ExecuteAsync(long albumId, 
-        long skip = 0, long take = 100, CancellationToken token = default)
+    public async Task<OutGenericList<OutUserAlbumAttribute>> ExecuteAsync(
+        long albumId, 
+        OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
+        PagingOptions? pagingOptions = null, 
+        CancellationToken cancellationToken = default)
     {
-        var endpoint = $"/api/user-album-attrs/by-album/{albumId}?skip={skip}&take={take}";
+        var endpoint = $"/api/user-album-attrs/by-album/{albumId}?";
+        endpoint += QueryStringHelper.SetUseCaseParameters(null, orderSpec, pagingOptions);
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
-        var response = await httpClient.GetStringAsync(endpoint, token);
+        var response = await httpClient.GetStringAsync(endpoint, cancellationToken);
 
         if (string.IsNullOrWhiteSpace(response))
         {
@@ -49,7 +57,11 @@ public sealed class UcGetAlbumAttrByAlbum(
         return json;
     }
 
-    public OutGenericList<OutUserAlbumAttribute> Execute(long albumId, long skip = 0, long take = 100)
+    public OutGenericList<OutUserAlbumAttribute> Execute(
+        long albumId, 
+        OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
+        PagingOptions? pagingOptions = null, 
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

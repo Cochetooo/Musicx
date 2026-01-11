@@ -24,21 +24,19 @@ public sealed class UcAuthSignIn(
         _logger.LogInformation("ℹ️ Content sent:\n" + content);
         
         var response = await httpClient.PostAsync(endpoint, content);
+        var token = await response.Content.ReadAsStringAsync();
 
         if (response.IsSuccessStatusCode)
         {
             _logger.LogInformation($"🌍✅ AUTH SIGNIN {endpoint} - SUCCESS");
-            
-            var token = await response.Content.ReadAsStringAsync();
-            
             _logger.LogInformation($"🔑 Token: {token}");
-
-            return token;
+        }
+        else
+        {
+            _logger.LogInformation($"🌍❌ AUTH SIGNIN {endpoint} - ERROR : {response.StatusCode} | {token}");
         }
 
-        _logger.LogInformation($"🌍❌ AUTH SIGNIN {endpoint} - ERROR : {response.StatusCode} | {response.ReasonPhrase}");
-
-        return null;
+        return token;
     }
 
     public string? Execute(SignInRequest request) 

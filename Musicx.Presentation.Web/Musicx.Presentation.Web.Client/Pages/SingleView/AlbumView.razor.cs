@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Musicx.Application.Shared.Helpers;
-using Musicx.Contracts.Dto.Requests;
+using Musicx.Application.Shared.Enums;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Mappers;
+using Musicx.Infrastructure.API.Persistence.Specifications.Album;
+using Musicx.Infrastructure.API.Persistence.Specifications.Song;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 using Musicx.Presentation.Web.Client.Modals.Voting;
 
@@ -62,7 +64,13 @@ public partial class AlbumView
             return;
         }
 
-        _album = await UcGet.ExecuteAsync(albumId, "artist_genre_stat");
+        _album = await UcGet.ExecuteAsync(albumId, joins: new AlbumJoinSpecification
+        {
+            IncludeArtist = true,
+            IncludePrimaryGenres = true,
+            IncludeInfluenceGenres = true,
+            IncludeStats = true
+        });
         
         if (_album is null)
         {
@@ -75,7 +83,11 @@ public partial class AlbumView
         _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
         await InvokeAsync(StateHasChanged);
 
-        _albumSongs = await UcGetSongs.ExecuteAsync(_album.Id);
+        _albumSongs = await UcGetSongs.ExecuteAsync(_album.Id, order: new SongOrderSpecification
+        {
+            TrackNumber = 1,
+            Title = 2
+        });
         _logger.LogInformation($"✅ Album Songs loaded: {_albumSongs.Count}");
         await InvokeAsync(StateHasChanged);
 
@@ -148,9 +160,8 @@ public partial class AlbumView
         
         var response = await UcGetAlbumAttrs.ExecuteAsync(
             _album.Id, 
-            skip: state.Page * state.PageSize,
-            take: state.PageSize,
-            token
+            pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),
+            cancellationToken: token
         );
 
         return new TableData<OutUserAlbumAttribute>
@@ -253,7 +264,13 @@ public partial class AlbumView
         await UcSaveUserAttrib.ExecuteAsync(_userAttribute);
         
         // Refresh only album for new rating
-        _album = await UcGet.ExecuteAsync(_album.Id, "artist_genre_stat");
+        _album = await UcGet.ExecuteAsync(_album.Id, joins: new AlbumJoinSpecification
+        {
+            IncludeArtist = true,
+            IncludePrimaryGenres = true,
+            IncludeInfluenceGenres = true,
+            IncludeStats = true
+        });
         await InvokeAsync(StateHasChanged);
         
         _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album!.Id);

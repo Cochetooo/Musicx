@@ -1,9 +1,12 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Web.Interfaces.UseCases.Specifics;
+using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Infrastructure.Web.Helpers;
 
 namespace Musicx.Infrastructure.Web.UseCases.Specifics;
 
@@ -13,9 +16,13 @@ public sealed class UcGetAlbumByArtist(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcGetAlbumByArtist));
     
-    public async Task<OutAlbumList> ExecuteAsync(long artistId, string query = "")
+    public async Task<OutAlbumList> ExecuteAsync(
+        long artistId, 
+        IJoinSpecification<InAlbum>? joinSpec = null,
+        OrderSpecification<InAlbum>? orderSpec = null)
     {
-        var endpoint = $"/api/albums/by-artist/{artistId}?query={query}";
+        var endpoint = $"/api/albums/by-artist/{artistId}?";
+        endpoint += QueryStringHelper.SetUseCaseParameters(joinSpec, orderSpec);
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);
         
@@ -50,7 +57,10 @@ public sealed class UcGetAlbumByArtist(
         return json;
     }
 
-    public OutAlbumList Execute(long artistId, string query = "")
+    public OutAlbumList Execute(
+        long artistId, 
+        IJoinSpecification<InAlbum>? joinSpec = null,
+        OrderSpecification<InAlbum>? orderSpecification = null)
     {
         throw new NotImplementedException();
     }

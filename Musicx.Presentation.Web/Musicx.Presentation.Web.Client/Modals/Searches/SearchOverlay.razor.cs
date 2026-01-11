@@ -4,6 +4,8 @@ using System.Timers;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using MudBlazor;
+using Musicx.Application.Desktop.Specifications;
+using Musicx.Application.Shared.Enums;
 
 namespace Musicx.Presentation.Web.Client.Modals.Searches;
 
@@ -108,28 +110,41 @@ public partial class SearchOverlay
             _isLoading = true;
             ClearResults();
             await InvokeAsync(StateHasChanged);
+
+            var pagingOptions = new PagingOptions(_maxResults, 0);
             
             _artistResults = await UcListArtists.ExecuteAsync(
-                take: _maxResults,
-                filter: _value);
+                pagingOptions: pagingOptions,
+                filter: _value
+            );
 
             _albumResults = await UcListAlbums.ExecuteAsync(
-                take: _maxResults,
+                pagingOptions: pagingOptions,
                 filter: _value,
-                query: "artist");
+                joins: new AlbumJoinSpecification
+                {
+                    IncludeArtist = true
+                }
+            );
 
             _genreResults = await UcListGenres.ExecuteAsync(
-                take: _maxResults,
-                filter: _value);
+                pagingOptions: pagingOptions,
+                filter: _value
+            );
 
             _songResults = await UcListSongs.ExecuteAsync(
-                take: _maxResults,
+                pagingOptions: pagingOptions,
                 filter: _value,
-                query: "album");
+                joins: new SongJoinSpecification
+                {
+                    IncludeAlbum = true
+                }
+            );
 
             _userResults = await UcListUsers.ExecuteAsync(
-                take: _maxResults,
-                filter: _value);
+                pagingOptions: pagingOptions,
+                filter: _value
+            );
 
             if (_groupResults)
             {

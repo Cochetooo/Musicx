@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 
@@ -34,7 +35,10 @@ public interface IRepository<TIn, TOut>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
     /// <returns>An entity if the identifier has been found in the database, else <b>null</b></returns>
     /// <since>0.6.0</since>
-    Task<TOut?> FindByIdAsync(long id, IQuerySpecification<TIn>? songQuerySpecification = null);
+    Task<TOut?> FindByIdAsync(
+        long id, 
+        IJoinSpecification<TIn>? joinSpecification = null
+    );
     
     /// <summary>
     /// Retrieve all entities that matches filter criteria, or all entities if no filter is specified.
@@ -45,17 +49,15 @@ public interface IRepository<TIn, TOut>
     /// <param name="filterSimilitude">The similarity rate for the algorithm to find similar results.</param>
     /// <param name="filter">An expression that entities must match to be in the result.</param>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
-    /// <param name="order">Sort the collection according to table columns</param>
     /// <returns>A collection of entities as <b>List</b>, empty if no entity has been found matching filter criteria.</returns>
     /// <since>0.6.0</since>
     Task<List<TOut>> FindAsync(
-        long skip = 0, 
-        long take = 100, 
         bool? filterExact = null,
         double? filterSimilitude = 0.4,
         string? filter = null,
-        string? order = null,
-        IQuerySpecification<TIn>? songQuerySpecification = null
+        IJoinSpecification<TIn>? joinSpec = null,
+        OrderSpecification<TIn>? orderSpec = null,
+        PagingOptions? pagingOptions = null
     );
 
     /// <summary>
@@ -65,7 +67,11 @@ public interface IRepository<TIn, TOut>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
     /// <returns>A collection of entities as <b>List</b>, empty if no entity matches the IDs.</returns>
     /// <since>0.6.0</since>
-    Task<List<TOut>> FindIn(IEnumerable<long> ids, IQuerySpecification<TIn>? songQuerySpecification = null);
+    Task<List<TOut>> FindIn(
+        IEnumerable<long> ids, 
+        IJoinSpecification<TIn>? joinSpec = null,
+        OrderSpecification<TIn>? orderSpec = null
+    );
     
     /// <summary>
     /// Get the number of entities in this table.

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
 
@@ -28,7 +30,7 @@ public partial class AlbumGenreVoteModal
     protected override async Task OnInitializedAsync()
     {
         _logger = LoggerFactory.CreateLogger(nameof(AlbumGenreVoteModal));
-        _availableGenres = await UcListGenres.ExecuteAsync(take: 100_000);
+        _availableGenres = await UcListGenres.ExecuteAsync(pagingOptions: new PagingOptions(100_000, 0));
     }
 
     public async Task Show(OutAlbum album)

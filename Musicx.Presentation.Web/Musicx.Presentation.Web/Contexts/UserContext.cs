@@ -1,8 +1,9 @@
 ﻿using System.Security.Claims;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Security;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
-using Musicx.Application.Api.Interfaces.Specifications;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Specifications.Security;
+using Musicx.Infrastructure.API.Persistence.Specifications.User;
 
 namespace Musicx.Presentation.Web.Contexts;
 
@@ -84,7 +85,7 @@ public sealed class UserContext(
                 return;
             }
 
-            var user = userRepository.FindByIdAsync(userId, new UserQuerySpecification
+            var user = userRepository.FindByIdAsync(userId, new UserJoinSpecification
             {
                 IncludeRoles = true
             }).Result;
@@ -103,7 +104,7 @@ public sealed class UserContext(
             foreach (var role in _cachedRoles)
             {
                 var permissions = roleRepository.FindByIdAsync(role.Id,
-                    new RoleQuerySpecification
+                    new RoleJoinSpecification
                     {
                         IncludePermissions = true
                     }).Result?.Permissions;

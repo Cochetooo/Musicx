@@ -35,7 +35,7 @@
     position: relative;
     z-index: 2;
     display: grid;
-    grid-template-columns: 256px 1fr 320px;
+    grid-template-columns: 256px 1fr 360px;
     gap: 1.25rem;
     align-items: start;
 }

@@ -1,5 +1,6 @@
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Requests.User;
 
 namespace Musicx.Infrastructure.API.Persistence.FindQueries;
 

@@ -1,11 +1,29 @@
-﻿namespace Musicx.Application.Web.Interfaces.UseCases;
+﻿using Musicx.Application.Shared.Enums;
+using Musicx.Application.Shared.Interfaces.Persistence;
+using Musicx.Contracts.Dto.Requests;
+using Musicx.Contracts.Dto.Responses;
 
-public interface IListUseCase<T> where T : class
+namespace Musicx.Application.Web.Interfaces.UseCases;
+
+public interface IListUseCase<TIn, TOut> 
+    where TIn : BaseInputModel
+    where TOut : BaseOutputModel
 {
-    Task<List<T>> ExecuteAsync(long skip = 0, long take = 200, 
-        bool? filterExact = null, double? filterSimilitude = null, 
-        string? filter = null, string? order = null, string query = "");
-    List<T> Execute(long skip = 0, long take = 200, 
-        bool? filterExact = null, double? filterSimilitude = null, 
-        string? filter = null, string? order = null, string query = "");
+    Task<List<TOut>> ExecuteAsync(
+        bool? filterExact = null, 
+        double? filterSimilitude = null, 
+        string? filter = null, 
+        IJoinSpecification<TIn>? joins = null,
+        OrderSpecification<TIn>? order = null,
+        PagingOptions? pagingOptions = null
+    );
+    
+    List<TOut> Execute(
+        bool? filterExact = null, 
+        double? filterSimilitude = null, 
+        string? filter = null, 
+        IJoinSpecification<TIn>? joins = null,
+        OrderSpecification<TIn>? order = null,
+        PagingOptions? pagingOptions = null
+    );
 }
