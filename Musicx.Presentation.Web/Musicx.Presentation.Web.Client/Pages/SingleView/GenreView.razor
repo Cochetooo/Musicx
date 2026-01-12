@@ -31,7 +31,7 @@ else
         </MudCardHeader>
         <MudCardContent>
             <MudGrid Class="ma-3">
-                <MudItem xs="12" md="3" Class="pa-3">
+                <MudItem xs="12" md="4" Class="pa-2">
                     <MudCard>
                         <MudCardHeader>
                             <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
@@ -47,13 +47,13 @@ else
                             
                             @if (_genre.Description is not null)
                             {
-                                <MudText Typo="Typo.body2" Class="description">
+                                <MudText Typo="Typo.body2" Class="description mt-2">
                                     @_genre.Description
                                 </MudText>
                             }
                             else
                             {
-                                <MudText Typo="Typo.body2" Class="text-italic">
+                                <MudText Typo="Typo.body2" Class="description text-italic mt-2">
                                     There is no description yet.
                                 </MudText>
                             }
@@ -101,7 +101,7 @@ else
                         }
                     </MudPaper>
                 </MudItem>
-                <MudItem xs="12" md="9" Class="pa-3">
+                <MudItem xs="12" md="8" Class="pa-2">
                     <MudCard>
                         <MudCardHeader>
                             <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
@@ -82,11 +83,15 @@ public partial class ArtistView
         _logger.LogInformation($"✅ Artist loaded: {_artist.Name} ({_artist.Id})");
         await InvokeAsync(StateHasChanged);
         
-        _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id, new AlbumJoinSpecification
+        _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id, joins: new AlbumJoinSpecification
         {
             IncludePrimaryGenres = true,
             IncludeInfluenceGenres = true,
             IncludeStats = true
+        }, order: new AlbumOrderSpecification
+        {
+            OriginalReleaseDate = 1,
+            Name = 2
         });
         _filteredAlbums = new List<OutAlbum>(_artistAlbums.Items);
         _logger.LogInformation("🎵 Retrieved {Count} albums for artist {ArtistId}", _artistAlbums.Total, _artist.Id);
@@ -104,7 +109,8 @@ public partial class ArtistView
         {
             _userAttrs = await UcGetUserRatings.ExecuteAsync(
                 userId: UserClientContext.CurrentUser.Id,
-                artistId: _artist.Id
+                artistId: _artist.Id,
+                pagingOptions: new PagingOptions(Take: 100_000, Skip: 0)
             );
         }
      
@@ -135,8 +141,14 @@ public partial class ArtistView
                 case "NbRating":
                     _filteredAlbums = _filteredAlbums.OrderByDescending(a => a.Stats?.Count).ToList();
                     break;
-                case "Rating":
+                case "GlobalRating":
                     _filteredAlbums = _filteredAlbums.OrderByDescending(a => a.Stats?.Average).ToList();
+                    break;
+                case "MyRating":
+                    _filteredAlbums = _filteredAlbums.OrderByDescending(a => _userAttrs?
+                        .Items
+                        .FirstOrDefault(i => i.Album.Id == a.Id)
+                        ?.Rating).ToList();
                     break;
                 case "ReleaseDate":
                     _filteredAlbums = _filteredAlbums.OrderByDescending(a => a.OriginalReleaseDate).ToList();
@@ -153,15 +165,22 @@ public partial class ArtistView
                 case "NbRating":
                     _filteredAlbums = _filteredAlbums.OrderBy(a => a.Stats?.Count).ToList();
                     break;
-                case "Rating":
+                case "GlobalRating":
                     _filteredAlbums = _filteredAlbums.OrderBy(a => a.Stats?.Average).ToList();
+                    break;
+                case "MyRating":
+                    _filteredAlbums = _filteredAlbums.OrderBy(a => _userAttrs?
+                        .Items
+                        .FirstOrDefault(i => i.Album.Id == a.Id)
+                        ?.Rating).ToList();
                     break;
                 case "ReleaseDate":
                     _filteredAlbums = _filteredAlbums.OrderBy(a => a.OriginalReleaseDate).ToList();
                     break;
             }
         }
-        
+
+        _selectedSort = sort;
         StateHasChanged();
     }
     

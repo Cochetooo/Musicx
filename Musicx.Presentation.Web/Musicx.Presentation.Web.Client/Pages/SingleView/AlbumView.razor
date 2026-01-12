@@ -17,6 +17,7 @@
 @inject IGetAlbumByArtistUseCase UcGetArtistAlbums
 @inject IGetSongByAlbumUseCase UcGetSongs
 @inject IGetAlbumAttributesByAlbum UcGetAlbumAttrs
+@inject IGetAlbumAttributeByAlbumUser UcGetUserAlbumAttr
 @inject ISaveUseCase<InUserAlbumAttribute> UcSaveUserAttrib
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
@@ -434,7 +435,8 @@ else
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel="Rating" Class="rating-col">
-                                <MudText Typo="Typo.h5" Class="text-color-primary text-bold rating-text">
+                                <MudText Typo="Typo.h5" Class="text-color-primary text-bold rating-text"
+                                         Style="width: fit-content;">
                                     @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
                                 </MudText>
                             </MudTd>

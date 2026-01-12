@@ -324,7 +324,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             ChartType.Top => $@"
             ORDER BY (
             (alst0.{AlbumRatingStatColumns.Average} * POWER(10 - {query.PopularityWeight}, 1.2)) +
-            (LOG(alst0.{AlbumRatingStatColumns.Count} + 1) * POWER({query.PopularityWeight}, 1.5))
+            (LOG(alst0.{AlbumRatingStatColumns.Count} + 1) * POWER({query.PopularityWeight}, 2.2))
             ) DESC NULLS LAST",
             _ => $"ORDER BY alst0.{AlbumRatingStatColumns.Average} DESC NULLS LAST"
         };

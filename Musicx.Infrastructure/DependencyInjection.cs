@@ -182,6 +182,7 @@ public static class DependencyInjection
         
         services.AddScoped<IGetAlbumAttributesByAlbum, UcGetAlbumAttrByAlbum>();
         services.AddScoped<IGetAlbumAttributesByUser, UcGetAlbumAttrByUser>();
+        services.AddScoped<IGetAlbumAttributeByAlbumUser, UcGetAlbumAttrByAlbumUser>();
         services.AddScoped<IGetAlbumByArtistUseCase, UcGetAlbumByArtist>();
         services.AddScoped<IGetAlbumByChartUseCase, UcGetAlbumByChart>();
         services.AddScoped<IGetAlbumByGenreUseCase, UcGetAlbumByGenre>();

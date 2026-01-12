@@ -96,7 +96,11 @@ public partial class AlbumView
 
         if (_album.Artist is not null)
         {
-            var response = await UcGetArtistAlbums.ExecuteAsync(_album.Artist.Id);
+            var response = await UcGetArtistAlbums.ExecuteAsync(_album.Artist.Id, order: new AlbumOrderSpecification
+            {
+                OriginalReleaseDate = 1,
+                Name = 2
+            });
             var artistAlbums = response.Items;
 
             var currentIndex = artistAlbums.FindIndex(a => a.Id == _album.Id);
@@ -118,31 +122,28 @@ public partial class AlbumView
             await InvokeAsync(StateHasChanged);
         }
 
-        _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album.Id);
-        await _albumRatingsTable.ReloadServerData();
-
         // If a user is connected, we need to give a user_attribute object to the view
         if (UserClientContext.CurrentUser is not null)
         {
-            // We try to find an existing attribute in the set of attributes
-            var existingAttr = _albumUserAttribs
-                .Items
-                .FirstOrDefault(attr => attr.User.Id == UserClientContext.CurrentUser.Id);
+            var existingAttr = await UcGetUserAlbumAttr.ExecuteAsync(
+                UserClientContext.CurrentUser.Id,
+                _album.Id);
 
             // If it exists, we give that to the view object.
             if (existingAttr is not null)
             {
                 _userAttribute = existingAttr.ToRaw();
+                _logger.LogInformation("ℹ️ User rating found.");
             }
             // If not, we just update the album and user ID to the already initialized object.
             else
             {
                 _userAttribute.AlbumId = albumId;
                 _userAttribute.UserId = UserClientContext.CurrentUser.Id;
+                _logger.LogInformation("ℹ️ No user rating.");
             }
         }
         
-        _logger.LogInformation("✅ User attributes loaded.");
         await InvokeAsync(StateHasChanged);
     }
 

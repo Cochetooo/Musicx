@@ -9,13 +9,13 @@ public interface IGetAlbumByArtistUseCase
 {
     Task<OutAlbumList> ExecuteAsync(
         long artistId, 
-        IJoinSpecification<InAlbum>? joinSpec = null,
-        OrderSpecification<InAlbum>? orderSpecification = null
+        IJoinSpecification<InAlbum>? joins = null,
+        OrderSpecification<InAlbum>? order = null
     );
     
     OutAlbumList Execute(
         long artistId, 
-        IJoinSpecification<InAlbum>? joinSpec = null,
-        OrderSpecification<InAlbum>? orderSpecification = null
+        IJoinSpecification<InAlbum>? joins = null,
+        OrderSpecification<InAlbum>? order = null
     );
 }

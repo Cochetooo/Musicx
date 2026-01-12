@@ -173,7 +173,7 @@ public sealed class UserAlbumAttrController(
     }
     
     [HttpGet("by-user/{userId}/{albumId}")]
-    public async Task<ActionResult<OutUserAlbumAttribute>> FindOneAlbumFromUser([FromRoute] long userId,
+    public async Task<ActionResult<OutUserAlbumAttribute?>> FindOneAlbumFromUser([FromRoute] long userId,
         [FromRoute] long albumId)
     {
         _logger.LogInformation($"🌍🏳️ API : FIND ALBUM FROM USER user_album_attrs ({userId},{albumId})");

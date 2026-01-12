@@ -8,13 +8,13 @@ public static class RatingHelper
 {
     private static readonly List<(decimal val, string color)> Stops = new()
     {
-        (0.0m,   "#8B0000"), // bordeaux
+        (0.0m,   "#CD0000"), // bordeaux
         (30.0m,  "#FF6347"), // salmon
-        (55.0m,  "#B0B027"), // greeny-yellow
-        (65.0m,  "#27C427"), // green
-        (72.0m,  "#2E8D69"), // seagreen
-        (80.0m,  "#008B8B"), // cyan
-        (100.0m, "#4B0082")  // indigo
+        (55.0m,  "#CDCD27"), // greeny-yellow
+        (65.0m,  "#27CD27"), // green
+        (72.0m,  "#2EAD69"), // seagreen
+        (80.0m,  "#00ADAD"), // cyan
+        (100.0m, "#9500FF")  // indigo
     };
     
     public static string GetRatingFormatted(decimal? rating, RatingMode ratingMode)
