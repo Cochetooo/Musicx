@@ -15,6 +15,7 @@ public sealed record UserAlbumAttrOrderSpecification : OrderSpecification<InUser
     public short? CollectionType { get; init; }
     public short? DiscoveryDate { get; init; }
     public short? Rating { get; init; }
+    public short? UserName { get; init; }
     
     public override void Validate()
     {
@@ -35,6 +36,7 @@ public sealed record UserAlbumAttrOrderSpecification : OrderSpecification<InUser
             nameof(CollectionType) => new($"uaa0.{UserAlbumAttrColumns.CollectionType}", dir),
             nameof(DiscoveryDate) => new($"uaa0.{UserAlbumAttrColumns.DiscoveryDate}", dir),
             nameof(Rating) => new($"uaa0.{UserAlbumAttrColumns.Rating}", dir),
+            nameof(UserName) => new($"u0.{UserColumns.Name}", dir),
             _ => throw new ArgumentOutOfRangeException(nameof(propName), propName, null)
         };
     }

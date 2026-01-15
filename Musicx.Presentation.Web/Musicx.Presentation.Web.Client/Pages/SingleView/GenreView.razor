@@ -121,6 +121,7 @@ else
                                     <col/>
                                     <col style="width: 100px;"/>
                                     <col style="width: 120px;"/>
+                                    <col style="width: 75px;" />
                                     <col style="width: 100px;"/>
                                 </ColGroup>
                                 <HeaderContent>
@@ -129,17 +130,22 @@ else
                                         Album
                                     </MudTh>
                                     <MudTh>
-                                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
+                                        <MudTableSortLabel SortBy="@(new Func<OutAlbum, object>(x => x.SimplifiedGenreName ?? string.Empty))">
                                             Other Primary Genres
                                         </MudTableSortLabel>
                                     </MudTh>
                                     <MudTh>
-                                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
+                                        <MudTableSortLabel SortBy="@(new Func<OutAlbum, object>(x => x.OriginalReleaseDate ?? DateTime.MaxValue))">
                                             Date
                                         </MudTableSortLabel>
                                     </MudTh>
                                     <MudTh>
-                                        <MudTableSortLabel SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
+                                        <MudTableSortLabel SortBy="@(new Func<OutAlbum, object>(x => x.Stats?.Count ?? 0))">
+                                            #
+                                        </MudTableSortLabel>
+                                    </MudTh>
+                                    <MudTh>
+                                        <MudTableSortLabel SortBy="@(new Func<OutAlbum, object>(x => x.Stats?.Average ?? 0))">
                                             Rating
                                         </MudTableSortLabel>
                                     </MudTh>
@@ -167,6 +173,21 @@ else
                                         <MudText Typo="Typo.caption" Class="text-color-primary text-light">
                                             @context.OriginalReleaseDate?.ToString("dd MMM yy", CultureInfo.CurrentCulture)
                                         </MudText>
+                                    </MudTd>
+                                    
+                                    <MudTd DataLabel="#">
+                                        @if (context.Stats is not null)
+                                        {
+                                            <MudText Typo="Typo.body2" Class="text-color-primary">
+                                                @context.Stats.Count
+                                            </MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudText Typo="Typo.body2" Class="text-color-secondary">
+                                                -
+                                            </MudText>
+                                        }
                                     </MudTd>
 
                                     <MudTd DataLabel="Rating">

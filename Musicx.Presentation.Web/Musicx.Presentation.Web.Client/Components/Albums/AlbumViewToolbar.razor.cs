@@ -14,17 +14,11 @@ public partial class AlbumViewToolbar
     [Parameter] public EventCallback<RatingMode> OnRatingModeChanged { get; set; }
     [Parameter] public EventCallback OnNewRelease { get; set; }
     [Parameter] public bool AllowAdd { get; set; }
-    [Parameter] public IEnumerable<(string key, string display)> AvailableSorts { get; set; } = 
-    [
-        ("ReleaseDate","Release Date ↓"),
-        ("ReleaseDate","Release Date ↑"),
-        
-    ];
     [Parameter] public (string, bool) SelectedSort { get; set; }
     [Parameter] public RatingMode? InitialRatingMode { get; set; }
 
     private string _searchText = string.Empty;
-    private double _zoom = 1.0;
+    private double _zoom = 1.2;
     private bool _groupBy;
     private ReleasesViewMode _viewMode = ReleasesViewMode.Grid;
     private RatingMode _selectedRatingMode = RatingMode.OutOfTen;

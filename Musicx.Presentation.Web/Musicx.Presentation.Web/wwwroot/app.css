@@ -135,11 +135,6 @@ h1:focus {
 .rating-col {
     position: relative;
     overflow: hidden;
-    transition: width 0.25s ease-in;
-}
-
-.rating-col:hover {
-    width: 150px;
 }
 
 .rating-col::before {

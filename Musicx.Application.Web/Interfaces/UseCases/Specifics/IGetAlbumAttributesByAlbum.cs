@@ -10,14 +10,14 @@ public interface IGetAlbumAttributesByAlbum
 {
     Task<OutGenericList<OutUserAlbumAttribute>> ExecuteAsync(
         long albumId, 
-        OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
+        OrderSpecification<InUserAlbumAttribute>? order = null,
         PagingOptions? pagingOptions = null, 
         CancellationToken cancellationToken = default
     );
     
     OutGenericList<OutUserAlbumAttribute> Execute(
         long albumId, 
-        OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
+        OrderSpecification<InUserAlbumAttribute>? order = null,
         PagingOptions? pagingOptions = null, 
         CancellationToken cancellationToken = default
     );

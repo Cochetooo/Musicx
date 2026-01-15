@@ -95,6 +95,11 @@ public partial class GenreView
             genreId: _genre.Id,
             genreOptions: GenreOptions.PrimaryGenre,
             pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),
+            order: new AlbumOrderSpecification
+            {
+                OriginalReleaseDate = 1,
+                Name = 2,
+            },
             joins: new AlbumJoinSpecification
             {
                 IncludeArtist = true,

@@ -7,6 +7,7 @@ using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Infrastructure.API.Persistence.Specifications.Song;
+using Musicx.Infrastructure.API.Persistence.Specifications.User;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 using Musicx.Presentation.Web.Client.Modals.Voting;
 
@@ -161,6 +162,12 @@ public partial class AlbumView
         
         var response = await UcGetAlbumAttrs.ExecuteAsync(
             _album.Id, 
+            order: new UserAlbumAttrOrderSpecification
+            {
+                CreatedAt = -1,
+                UserName = 2,
+                Rating = 3
+            },
             pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),
             cancellationToken: token
         );

@@ -14,8 +14,6 @@
 
 .album-image-container {
     position: relative;
-    width: 192px;
-    height: 192px;
     overflow: visible; /* pour que le donut puisse déborder */
 }
 
@@ -47,7 +45,6 @@
     top: -8px; /* chevauche vers le bas */
     right: -8px;
     background: rgba(0,0,0,0.85);
-    padding: 6px;
     border-radius: 50%;
     box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }

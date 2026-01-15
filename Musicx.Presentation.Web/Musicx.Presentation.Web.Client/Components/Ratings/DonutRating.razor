@@ -1,10 +1,10 @@
 ﻿@using Musicx.Application.Shared.Helpers
 
 <MudChart ChartType="ChartType.Donut"
-          InputData="@_ratingData"
-          ChartOptions="@_ratingOptions"
-          Width="@_donutSize" Height="@_donutSize"
-          Class="mud-chart-no-legend">
+      InputData="@_ratingData"
+      ChartOptions="@_ratingOptions"
+      Width="@_donutSize" Height="@_donutSize"
+      Class="mud-chart-no-legend">
     <CustomGraphics>
         @{
             var ratingText = RatingHelper.GetRatingFormatted(

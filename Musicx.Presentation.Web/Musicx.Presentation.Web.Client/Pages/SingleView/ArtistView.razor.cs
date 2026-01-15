@@ -36,7 +36,7 @@ public partial class ArtistView
     
     private ReleasesViewMode _viewMode = ReleasesViewMode.List;
     private bool _groupByType = true;
-    private double _zoomLevel = 1.0;
+    private double _zoomLevel = 1.2;
     private (string sortBy, bool asc) _selectedSort = ("ReleaseDate", false);
     
     private readonly List<ChartSeries> _historySeries = [];

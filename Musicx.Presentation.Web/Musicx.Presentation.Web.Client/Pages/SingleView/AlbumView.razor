@@ -400,10 +400,10 @@ else
             
                     <MudTable @ref="_albumRatingsTable"
                               Striped Bordered="false"
+                              Dense
                               Elevation="8"
                               ServerData="@LoadUserAttrData"
                               RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Rating)}")"
-                              Dense
                               Breakpoint="Breakpoint.Sm">
                         <ColGroup>
                             <col />
@@ -456,9 +456,9 @@ else
                                 @(context.CollectionType.ToString() ?? string.Empty)
                             </MudTd>
                         </RowTemplate>
-                        <FooterContent>
+                        <PagerContent>
                             <MudTablePager />
-                        </FooterContent>
+                        </PagerContent>
                     </MudTable>
                 </MudPaper>
             </MudItem>

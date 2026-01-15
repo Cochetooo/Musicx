@@ -37,7 +37,7 @@
                            OnClick="@(() => ChangeView(ReleasesViewMode.Timeline))"/>
         </MudButtonGroup>
 
-        <MudSlider T="double" Min="0.6" Max="1.6" Step="0.1" Value="@_zoom" ValueChanged="@(v =>
+        <MudSlider T="double" Min="1.2" Max="2.4" Step="0.1" Value="@_zoom" ValueChanged="@(v =>
                                                                                           {
                                                                                               _zoom = v;
                                                                                               OnZoomChanged.InvokeAsync(v);
