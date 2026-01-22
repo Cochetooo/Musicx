@@ -6,6 +6,7 @@ using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Application.Api.Interfaces.Workers;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Application.Web.Interfaces.UseCases;

@@ -1,20 +1,14 @@
-﻿using System.Dynamic;
+﻿using System.Data.Common;
+using System.Dynamic;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Infrastructure.Shared.Exceptions;
 using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Connection;
-
-public interface IDbConnectionProvider
-{
-    NpgsqlConnection CreateConnection();
-    Task ExecuteTransactionAsync(params (string sql, IReadOnlyList<NpgsqlParameter> parameters)[] commands);
-    Task<List<ExpandoObject>> FetchListDynamicAsync(string sql, IReadOnlyList<NpgsqlParameter> parameters);
-    Task<long> Count(string table);
-}
 
 public sealed class NpgsqlConnectionProvider(
     IConfiguration configuration,
@@ -24,12 +18,12 @@ public sealed class NpgsqlConnectionProvider(
     private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection")
         ?? throw new NullReferenceException("Musicx database connection string not found");
     
-    public NpgsqlConnection CreateConnection()
-        => new(_connectionString);
+    public DbConnection CreateConnection()
+        => new NpgsqlConnection(_connectionString);
 
-    public async Task ExecuteTransactionAsync(params (string sql, IReadOnlyList<NpgsqlParameter> parameters)[] commands)
+    public async Task ExecuteTransactionAsync(params (string sql, IReadOnlyList<DbParameter> parameters)[] commands)
     {
-        await using var conn = CreateConnection();
+        await using var conn = (NpgsqlConnection)CreateConnection();
         await conn.OpenAsync();
         await using var transaction = await conn.BeginTransactionAsync();
 
@@ -52,14 +46,14 @@ public sealed class NpgsqlConnectionProvider(
         }
     }
 
-    public async Task<List<ExpandoObject>> FetchListDynamicAsync(string sql, IReadOnlyList<NpgsqlParameter> parameters)
+    public async Task<List<ExpandoObject>> FetchListDynamicAsync(string sql, IReadOnlyList<DbParameter> parameters)
     {
         _logger.LogDebug(SqlHelper.InterpolateQuery(sql, parameters));
         var results = new List<ExpandoObject>();
 
         try
         {
-            await using var conn = CreateConnection();
+            await using var conn = (NpgsqlConnection)CreateConnection();
             await conn.OpenAsync();
 
             await using var command = new NpgsqlCommand(sql, conn);
@@ -90,7 +84,7 @@ public sealed class NpgsqlConnectionProvider(
 
     public async Task<long> Count(string table)
     {
-        await using var conn = CreateConnection();
+        await using var conn = (NpgsqlConnection)CreateConnection();
         await conn.OpenAsync();
         
         var sql = $"SELECT COUNT(*) FROM {table}";
@@ -112,7 +106,7 @@ public sealed class NpgsqlConnectionProvider(
 
     public async Task SetAppUserIdAsync(long userId)
     {
-        await using var conn = CreateConnection();
+        await using var conn = (NpgsqlConnection)CreateConnection();
         await conn.OpenAsync();
 
         var sql = $"SET LOCAL app.current_user_id = {userId}";

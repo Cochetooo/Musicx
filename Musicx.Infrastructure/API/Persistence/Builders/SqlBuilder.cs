@@ -11,9 +11,10 @@ namespace Musicx.Infrastructure.API.Persistence.Builders;
 /// <summary>
 /// Represents an SQL query and its associated parameters.
 /// </summary>
-internal record SqlQuery (
+internal record SqlStatement (
     string Query,
-    List<NpgsqlParameter> Parameters);
+    List<NpgsqlParameter> Parameters
+);
 
 /// <summary>
 /// Abstract builder class to generate SQL statements for a given input model.
@@ -57,7 +58,7 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// <param name="returningColumn">Optional column to return</param>
     /// <param name="conflictAction">Allows to do a UPDATE or NOTHING action if the entry already exists (ON CONFLICT query)</param>
     /// <returns></returns>
-    internal SqlQuery BuildInsert(string table,
+    internal SqlStatement BuildInsert(string table,
         IDictionary<string, object?> properties,
         string returningColumn = "",
         SqlConflictAction conflictAction = SqlConflictAction.Throw)
@@ -107,7 +108,7 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
             _ => ""
         };
         
-        return new SqlQuery(sql, parameters);
+        return new SqlStatement(sql, parameters);
     }
 
     /// <summary>
@@ -117,7 +118,7 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// <param name="whereColumns">The columns to match the ID on.</param>
     /// <param name="whereIds">The value of the IDs to match.</param>
     /// <param name="properties">A dictionary of column names and values to update.</param>
-    internal SqlQuery BuildUpdate(string table, string[] whereColumns, long[] whereIds,
+    internal SqlStatement BuildUpdate(string table, string[] whereColumns, long[] whereIds,
         IDictionary<string, object?> properties)
     {
         var setters = new List<string>();
@@ -175,7 +176,7 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
 
         var sql = $"UPDATE {table} SET {string.Join(", ", setters)} WHERE {string.Join(" AND ", whereClauses)}";
         
-        return new SqlQuery(sql, parameters);
+        return new SqlStatement(sql, parameters);
     }
 
     /// <summary>
@@ -185,7 +186,7 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// <param name="whereColumn">The column to match the ID on.</param>
     /// <param name="whereId">The value of the ID to match.</param>
     /// <param name="properties">A dictionary of column names and values to update.</param>
-    internal SqlQuery BuildUpdate(string table, string whereColumn, long whereId, 
+    internal SqlStatement BuildUpdate(string table, string whereColumn, long whereId, 
         IDictionary<string, object?> properties)
         => BuildUpdate(table, [whereColumn], [whereId], properties);
 
@@ -198,7 +199,7 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// <param name="updateProperties">A dictionary of the columns to update.</param>
     /// <param name="returningColumn">Optional column to return</param>
     /// <exception cref="ArgumentException">If conflict columns is an empty array.</exception>
-    internal SqlQuery BuildUpsert(string table, IDictionary<string, object?> insertProperties,
+    internal SqlStatement BuildUpsert(string table, IDictionary<string, object?> insertProperties,
         string[] conflictColumns, IDictionary<string, object?> updateProperties,
         string returningColumn = "")
     {
@@ -252,7 +253,7 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
             .Concat(updateParameters)
             .ToList();
 
-        return new SqlQuery(sql, parameters);
+        return new SqlStatement(sql, parameters);
     }
 
     /// <summary>

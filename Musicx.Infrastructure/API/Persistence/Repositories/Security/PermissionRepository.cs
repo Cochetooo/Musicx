@@ -149,7 +149,7 @@ internal sealed class PermissionRepository(
     
     public async Task<long> SaveAsync(InPermission entity)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();
@@ -188,7 +188,7 @@ internal sealed class PermissionRepository(
     {
         var idList = new List<long>();
         
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();

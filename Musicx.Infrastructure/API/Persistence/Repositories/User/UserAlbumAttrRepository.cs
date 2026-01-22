@@ -76,7 +76,7 @@ internal sealed class UserAlbumAttrRepository(
 
     public async Task<long> SaveAsync(InUserAlbumAttribute entity)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();
@@ -110,7 +110,7 @@ internal sealed class UserAlbumAttrRepository(
 
     public async Task<long> CountByAlbumIdAsync(long albumId)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         var sql = $"SELECT COUNT(*) FROM user_album_attrs WHERE {UserAlbumAttrColumns.AlbumId} = @albumId";
@@ -141,7 +141,7 @@ internal sealed class UserAlbumAttrRepository(
         IJoinSpecification<InUserAlbumAttribute>? spec, long? artistId = null,
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         var parameters = new List<NpgsqlParameter>()

@@ -67,7 +67,7 @@ internal sealed class AlbumGenreRepository(
 
     public async Task<long> SaveAsync(InAlbumGenre entity)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();
@@ -88,7 +88,7 @@ internal sealed class AlbumGenreRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<InAlbumGenre> entities)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();

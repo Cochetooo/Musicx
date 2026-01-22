@@ -8,6 +8,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.Shared.Exceptions;
+using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories.Album;
 
@@ -47,7 +48,7 @@ internal sealed class AlbumInfluenceRepository(
 
     public async Task<long> SaveAsync(InAlbumInfluence entity)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();
@@ -68,7 +69,7 @@ internal sealed class AlbumInfluenceRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<InAlbumInfluence> entities)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();

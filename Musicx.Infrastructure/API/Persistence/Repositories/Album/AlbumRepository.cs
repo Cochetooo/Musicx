@@ -289,7 +289,7 @@ internal sealed class AlbumRepository(
 
     public async Task<long> GetCountByGenreIdAsync(long genreId)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
 
         var parameters = new List<NpgsqlParameter>()
@@ -321,7 +321,7 @@ internal sealed class AlbumRepository(
 
     public async Task<long> SaveAsync(InAlbum entity)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();
@@ -360,7 +360,7 @@ internal sealed class AlbumRepository(
     {
         var idList = new List<long>();
         
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();

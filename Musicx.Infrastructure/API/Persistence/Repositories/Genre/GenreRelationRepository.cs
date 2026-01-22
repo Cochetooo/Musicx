@@ -8,6 +8,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.Shared.Exceptions;
+using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories.Genre;
 
@@ -44,7 +45,7 @@ internal sealed class GenreRelationRepository(
 
     public async Task<long> SaveAsync(InGenreRelation entity)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();
@@ -65,7 +66,7 @@ internal sealed class GenreRelationRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<InGenreRelation> entities)
     {
-        await using var conn = connection.CreateConnection();
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
         await using var transaction = await conn.BeginTransactionAsync();

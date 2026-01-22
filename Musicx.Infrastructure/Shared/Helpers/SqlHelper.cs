@@ -1,10 +1,11 @@
-﻿using Npgsql;
+﻿using System.Data.Common;
+using Npgsql;
 
 namespace Musicx.Infrastructure.Shared.Helpers;
 
 public static class SqlHelper
 {
-    public static string InterpolateQuery(string rawSql, IEnumerable<NpgsqlParameter> parameters)
+    public static string InterpolateQuery(string rawSql, IEnumerable<DbParameter> parameters)
     {
         var interpolated = rawSql;
 
