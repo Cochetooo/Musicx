@@ -177,10 +177,10 @@ public sealed class TagController(ITagRepository tagRepository,
 
         try
         {
-            await tagRepository.SaveAsync(tagDto);
+            var result = await tagRepository.SaveAsync(tagDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE tags - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

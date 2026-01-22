@@ -28,10 +28,10 @@ public sealed class GenreRelationController(
 
         try
         {
-            await repository.SaveAsync(genreRelationDto);
+            var result = await repository.SaveAsync(genreRelationDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE genre_relation - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

@@ -1,0 +1,18 @@
+.type-card {
+    padding: 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.03);
+    transition: all .25s ease;
+}
+
+.type-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.2);
+    border-bottom: 2px solid var(--mud-palette-primary);
+}
+
+.type-card.selected {
+    background: rgba(var(--mud-palette-primary-rgb),0.15);
+    border-left: 4px solid var(--mud-palette-primary);
+}

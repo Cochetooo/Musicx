@@ -188,10 +188,10 @@ public sealed class RoleController(IRoleRepository roleRepository,
 
         try
         {
-            await roleRepository.SaveAsync(roleDto);
+            var result = await roleRepository.SaveAsync(roleDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE roles - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

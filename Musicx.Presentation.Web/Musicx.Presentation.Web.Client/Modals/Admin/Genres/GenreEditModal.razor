@@ -1,4 +1,6 @@
 @using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests.Genre
+@* @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
@@ -11,6 +13,12 @@
 @inject IListUseCase<InGenre, OutGenre> UcList
 @inject IFindInUseCase<InGenre, OutGenre> UcFindIn
 @inject IGetUseCase<InGenre, OutGenre> UcGet
+@inject ISnackbar Snackbar *@
+
+@inject ISaveUseCase<InGenre> UcSaveGenre
+@inject ISaveAllUseCase<InGenreRelation> UcSaveRelations
+@inject ISaveAllUseCase<InGenreFacet> UcSaveFacets
+@inject ISaveAllUseCase<InGenreAlias> UcSaveAliases
 @inject ISnackbar Snackbar
 
 <MudDialog @ref="_modalRef">
@@ -19,13 +27,43 @@
     </TitleContent>
     
     <DialogContent>
-        <div class="multi-step">
+        <div class="wizard-container step-@_state.Step">
+            <div class="wizard-step">
+                <GenreTypeSelector Node="@_state.Node" NodeChanged="@NextStep" />
+            </div>
+                
+            <div class="wizard-step">
+                <GenreNodeEditor Node="@_state.Node" @ref="_nodeEditor" />
+            </div>
+                
+            <div class="wizard-step">
+                <GenreRelationsEditor />
+            </div>
+        </div>
+    </DialogContent>
+    
+    <DialogActions>
+        @if (_state.Step < 4)
+        {
+            <MudButton Color="Color.Default" OnClick="@NextStep">Next</MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" OnClick="@SaveAsync">Save</MudButton>
+        }
+        
+        <MudButton Color="Color.Secondary" OnClick="@HideAsync">Close</MudButton>
+        <MudButton Color="Color.Default" OnClick="@PreviousStep" Disabled="@(_state.Step <= 1)">Back</MudButton>
+    </DialogActions>
+</MudDialog>
+        
+    @* <div class="multi-step">
             <!-- Step 1 : Type choice -->
             <div class="@GetStepClass(1)">
                 <MudText Typo="Typo.h6" Color="Color.Info" Class="mb-4">
                     What type of genre do you want to create?
                 </MudText>
-                    
+
                 <MudList Dense="false" T="RenderFragment">
                     @foreach (var gtype in Enum.GetValues<GenreType>())
                     {
@@ -36,19 +74,20 @@
                                     @gtype
                                 </MudItem>
                                 <MudItem xs="2">
-                                    <MudIcon Icon="@(selected ? Icons.Material.Filled.RadioButtonChecked 
-                                                       : Icons.Material.Filled.RadioButtonUnchecked)" />
+                                    <MudIcon Icon="@(selected
+                                                       ? Icons.Material.Filled.RadioButtonChecked
+                                                       : Icons.Material.Filled.RadioButtonUnchecked)"/>
                                 </MudItem>
                             </MudGrid>
                         </MudListItem>
                     }
                 </MudList>
-                    
+
                 <MudButton Class="mt-4" Disabled="@(_selectedType is null)"
                            Color="Color.Primary" OnClick="@NextStep"
                            Variant="Variant.Filled">Next</MudButton>
             </div>
-                
+
             <!-- STEP 2: Formulaire spécifique selon le type -->
             <div class="@GetStepClass(2)">
                 <MudGrid>
@@ -63,7 +102,7 @@
                                       Immediate
                                       TextChanged="NameTextChanged"
                                       Required="true"
-                                      For="@(()=> _genre.CanonicalName)" />
+                                      For="@(() => _genre.CanonicalName)"/>
                         @if (!_isNameAvailable && !string.IsNullOrWhiteSpace(_genre.CanonicalName))
                         {
                             <MudText Color="Color.Error" Typo="Typo.caption">A genre with that name already exists.</MudText>
@@ -74,7 +113,7 @@
                     @if (_selectedType == GenreType.Genre)
                     {
                         <MudItem xs="12" md="4">
-                            <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false" />
+                            <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false"/>
                         </MudItem>
 
                         <MudItem xs="12" md="8">
@@ -83,14 +122,14 @@
                                        AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
                                        Addable
                                        SelectedGenresChanged="@SelectedGenresChanged"
-                                       LoadChildrenAsync="@LoadChildrenAsync" />
+                                       LoadChildrenAsync="@LoadChildrenAsync"/>
                         </MudItem>
-                        
+
                         <MudItem xs="12" md="4">
                             <MudText Typo="Typo.h6">
                                 Selected Parents
                             </MudText>
-                            
+
                             <MudList T="RenderFragment" Class="mt-3" Dense>
                                 @foreach (var genre in _selectedParents)
                                 {
@@ -111,14 +150,14 @@
                                        AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
                                        Addable
                                        SelectedGenresChanged="@SelectedGenresChanged"
-                                       LoadChildrenAsync="@LoadChildrenAsync" />
+                                       LoadChildrenAsync="@LoadChildrenAsync"/>
                         </MudItem>
-                        
+
                         <MudItem xs="12" md="4">
                             <MudText Typo="Typo.h6">
                                 Selected Parents
                             </MudText>
-                            
+
                             <MudList T="RenderFragment" Class="mt-3" Dense>
                                 @foreach (var genre in _selectedParents)
                                 {
@@ -128,9 +167,9 @@
                                 }
                             </MudList>
                         </MudItem>
-                        
+
                         <MudItem xs="12" md="4">
-                            <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false" />
+                            <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false"/>
                         </MudItem>
 
                         <!-- 
@@ -156,14 +195,14 @@
                                        AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
                                        Addable
                                        SelectedGenresChanged="@SelectedGenresChanged"
-                                       LoadChildrenAsync="@LoadChildrenAsync" />
+                                       LoadChildrenAsync="@LoadChildrenAsync"/>
                         </MudItem>
-                        
+
                         <MudItem xs="12" md="4">
                             <MudText Typo="Typo.h6">
                                 Selected Parents
                             </MudText>
-                            
+
                             <MudList T="RenderFragment" Class="mt-3" Dense>
                                 @foreach (var genre in _selectedParents)
                                 {
@@ -173,9 +212,9 @@
                                 }
                             </MudList>
                         </MudItem>
-                        
+
                         <MudItem xs="12" md="4">
-                            <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false" />
+                            <MudColorPicker Label="Color" @bind-Text="_genre.Color" ShowAlpha="false"/>
                         </MudItem>
                     }
 
@@ -206,12 +245,12 @@
                         </MudItem>
 
                         <MudItem xs="12" md="6">
-                            <MudCheckBox T="bool" @bind-Value="_fusionCustomizeName" Label="Customize Name" />
+                            <MudCheckBox T="bool" @bind-Value="_fusionCustomizeName" Label="Customize Name"/>
                         </MudItem>
 
                         <MudItem xs="12">
                             <!-- Disabled text field builds the name unless customize enabled -->
-                            <MudTextField T="string" Label="Fusion Name" @bind-Text="_genre.CanonicalName" Disabled="!_fusionCustomizeName" />
+                            <MudTextField T="string" Label="Fusion Name" @bind-Text="_genre.CanonicalName" Disabled="!_fusionCustomizeName"/>
                             <MudText Typo="Typo.caption">If not customizing, name will be generated from prefix + selected genres.</MudText>
                         </MudItem>
 
@@ -221,7 +260,7 @@
                                        AllowedTypes="@AllowedFilterFor(_selectedType.Value)"
                                        Checkable
                                        SelectedGenresChanged="@SelectedGenresChanged"
-                                       LoadChildrenAsync="@LoadChildrenAsync" />
+                                       LoadChildrenAsync="@LoadChildrenAsync"/>
                         </MudItem>
                     }
 
@@ -233,6 +272,4 @@
                     </MudItem>
                 </MudGrid>
             </div>
-        </div>
-    </DialogContent>
-</MudDialog>
+        </div> *@

@@ -183,10 +183,10 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
 
         try
         {
-            await permissionRepository.SaveAsync(permissionDto);
+            var result = await permissionRepository.SaveAsync(permissionDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE permissions - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

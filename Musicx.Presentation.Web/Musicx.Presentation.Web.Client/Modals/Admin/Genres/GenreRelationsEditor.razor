@@ -1,0 +1,30 @@
+@using Musicx.Presentation.Web.Client.Components.Genres
+
+@*
+<MudTabs>
+    <MudTabPanel Text="Hierarchy (IsA)">
+        <GenreTree RelationType="IsA" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="Influences">
+        <GenreTree RelationType="InfluencedBy" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="Fusion">
+        <GenreTree RelationType="FusionOf" />
+        <MudSlider @bind-Value="_fusionWeight" Min="0" Max="1" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="Scenes">
+        <GenreTree RelationType="AssociatedWith" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="Aliases">
+        <MudTextField @bind-Value="_newAlias" />
+        <MudButton OnClick="AddAlias" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="Facets">
+        <FacetEditor />
+    </MudTabPanel>
+</MudTabs> *@

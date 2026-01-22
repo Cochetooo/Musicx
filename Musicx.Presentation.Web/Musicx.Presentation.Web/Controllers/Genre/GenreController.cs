@@ -188,10 +188,10 @@ public sealed class GenreController(IGenreRepository genreRepository,
 
         try
         {
-            await genreRepository.SaveAsync(genreDto);
+            var result = await genreRepository.SaveAsync(genreDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE genres - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

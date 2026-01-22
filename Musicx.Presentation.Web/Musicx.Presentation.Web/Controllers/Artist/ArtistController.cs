@@ -187,10 +187,10 @@ public sealed class ArtistController(IArtistRepository artistRepository,
 
         try
         {
-            await artistRepository.SaveAsync(artistDto);
+            var result = await artistRepository.SaveAsync(artistDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE artists - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

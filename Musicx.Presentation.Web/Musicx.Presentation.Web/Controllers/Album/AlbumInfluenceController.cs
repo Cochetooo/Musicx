@@ -35,10 +35,10 @@ public sealed class AlbumInfluenceController(
 
         try
         {
-            await repository.SaveAsync(albumInfluenceDto);
+            var result = await repository.SaveAsync(albumInfluenceDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE album_influence - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

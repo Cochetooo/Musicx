@@ -215,10 +215,10 @@ public sealed class SongController(ISongRepository songRepository,
 
         try
         {
-            await songRepository.SaveAsync(songDto);
+            var result = await songRepository.SaveAsync(songDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE songs - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

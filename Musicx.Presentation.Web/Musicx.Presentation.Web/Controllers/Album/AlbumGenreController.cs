@@ -35,10 +35,10 @@ public sealed class AlbumGenreController(
 
         try
         {
-            await repository.SaveAsync(albumGenreDto);
+            var result = await repository.SaveAsync(albumGenreDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE album_genre - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

@@ -307,10 +307,10 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
 
         try
         {
-            await albumRepository.SaveAsync(albumDto);
+            var result = await albumRepository.SaveAsync(albumDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE albums - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

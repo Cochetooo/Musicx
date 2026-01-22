@@ -275,7 +275,7 @@ public sealed class UserAlbumAttrController(
             await repository.SaveAsync(userAlbumAttrDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE user_album_attrs - SUCCESS");
-            return Ok();
+            return Ok(0L);
         }
         catch (Exception ex)
         {

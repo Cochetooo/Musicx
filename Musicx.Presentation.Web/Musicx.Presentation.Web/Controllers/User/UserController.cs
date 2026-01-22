@@ -194,10 +194,10 @@ public sealed class UserController(IUserRepository userRepository,
             authService.CreatePasswordHash(ref userDto);
             
             // Persist
-            await userRepository.SaveAsync(userDto);
+            var result = await userRepository.SaveAsync(userDto);
 
             _logger.LogInformation($"🌍✅ API : SAVE users - SUCCESS");
-            return Ok();
+            return Ok(result);
         }
         catch (Exception ex)
         {

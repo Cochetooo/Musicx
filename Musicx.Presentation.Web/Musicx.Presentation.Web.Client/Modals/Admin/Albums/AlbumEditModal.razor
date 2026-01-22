@@ -61,6 +61,8 @@
                     <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Primary"/>
 
                     <MudSwitch @bind-Value="_album.IsExplicitContent" Label="NSFW Content" Color="Color.Primary"/>
+                    
+                    <MudSwitch @bind-Value="_album.IsGraphicContent" Label="Graphic/Gore Content" Color="Color.Primary"/>
                 </MudStack>
             </MudItem>
             
@@ -81,6 +83,7 @@
                         @bind-DateRange="_recordingDates"
                         Placeholder="Choose dates..."
                         Label="Recording Dates"
+                        MaxDate="@_album.OriginalReleaseDate"
                         PickerVariant="PickerVariant.Inline"/>
                 </MudStack>
             </MudItem>

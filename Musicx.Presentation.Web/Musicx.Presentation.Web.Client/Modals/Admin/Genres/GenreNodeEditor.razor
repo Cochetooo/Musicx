@@ -1,0 +1,54 @@
+@inject ILoggerFactory LoggerFactory
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="8">
+        <MudTextField Label="Name"
+                      Immediate
+                      TextChanged="NameTextChanged"
+                      @ref="_nameTextEdit"
+                      @bind-Value="Node.CanonicalName" />
+        
+        @if (!_isNameAvailable && !string.IsNullOrWhiteSpace(Node.CanonicalName))
+        {
+            <MudText Color="Color.Error" Typo="Typo.caption">A genre with that name already exists.</MudText>
+        }
+    </MudItem>
+
+    <MudItem xs="4">
+        <MudColorPicker @bind-Text="Node.Color" ShowAlpha="false" />
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField T="float?"
+                         Label="Confidence"
+                         Min="0"
+                         Max="1"
+                         Step="0.05f"
+                         @bind-Value="Node.Confidence" />
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudTextField Label="Country of origin"
+                      @bind-Value="Node.CountryOrigin" />
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudTextField Lines="4"
+                      Label="Description"
+                      @bind-Value="Node.Description" />
+    </MudItem>
+
+    <MudItem xs="4">
+        <MudDatePicker Label="Era start"
+                       @bind-Date="Node.EraStart" />
+    </MudItem>
+
+    <MudItem xs="4">
+        <MudDatePicker Label="Era end"
+                       @bind-Date="Node.EraEnd" />
+    </MudItem>
+
+    <MudItem xs="4">
+        <MudSwitch T="bool" Label="Taggable" @bind-Checked="Node.IsTaggable" />
+    </MudItem>
+</MudGrid>

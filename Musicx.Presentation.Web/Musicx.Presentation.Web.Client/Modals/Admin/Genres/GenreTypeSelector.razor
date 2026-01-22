@@ -1,0 +1,11 @@
+@using Musicx.Contracts.Enums
+<div class="type-grid">
+    @foreach (var type in Enum.GetValues<GenreType>())
+    {
+        <div class="type-card @(Node.Type == type ? "selected" : "")"
+             @onclick="() => Select(type)">
+            <div class="type-title">@type</div>
+            <div class="type-desc">@type.ToDescriptionString()</div>
+        </div>
+    }
+</div>

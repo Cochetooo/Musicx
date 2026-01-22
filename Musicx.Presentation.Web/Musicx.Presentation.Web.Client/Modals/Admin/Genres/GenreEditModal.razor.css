@@ -1,0 +1,16 @@
+.wizard-container {
+    display: flex;
+    width: 400%;
+    transition: transform 600ms cubic-bezier(.25, .8, .25, 1);
+}
+
+.step-1 { transform: translateX(0%); }
+.step-2 { transform: translateX(-25%); }
+.step-3 { transform: translateX(-50%); }
+.step-3 { transform: translateX(-75%); }
+
+.wizard-step {
+    width: 25%;
+    padding: 32px;
+    transition: opacity 300ms ease;
+}

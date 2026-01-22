@@ -67,14 +67,20 @@ else
                         
                         <MudDivider Class="my-3" />
                         
+                        @{
+                            var maxDepth = 0;
+                        }
+                        
                         @if (_genre.Parents?.Any() == true)
                         {
+                            maxDepth = _genre.Parents.Select(p => p.Depth).Max();
+                            
                             foreach (var genre in _genre.Parents)
                             {
                                 if (genre.Relation.Id != _genre.Id)
                                 {
                                     <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Tertiary"
-                                             Class="ml-2 d-block">
+                                             Class="@($"ml-{(maxDepth - genre.Depth)*4} d-block")">
                                         @genre.Relation.CanonicalName
                                     </MudLink>
                                 }
@@ -82,7 +88,7 @@ else
                         }
                         
                         <MudLink Href="@($"/Genre/{_genre.Id}")" Color="Color.Primary" 
-                                 Class="ml-6 d-block text-bold">
+                                 Class="@($"ml-{maxDepth * 4} d-block text-bold")">
                             @_genre.CanonicalName
                         </MudLink>
                         
@@ -90,10 +96,10 @@ else
                         {
                             foreach (var genre in _genre.Children)
                             {
-                                if (genre.Relation.Id != _genre.Id)
+                                if (genre.Relation.Id != _genre.Id && genre.Depth == 1)
                                 {
                                     <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Secondary"
-                                             Class="ml-10 d-block">
+                                             Class="@($"ml-{(maxDepth + 1) * 4} d-block")">
                                         @genre.Relation.CanonicalName
                                     </MudLink>
                                 }
