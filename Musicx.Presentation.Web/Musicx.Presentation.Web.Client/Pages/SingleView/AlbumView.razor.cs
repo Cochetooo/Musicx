@@ -126,7 +126,7 @@ public partial class AlbumView
         // If a user is connected, we need to give a user_attribute object to the view
         if (UserClientContext.CurrentUser is not null)
         {
-            var existingAttr = await UcGetUserAlbumAttr.ExecuteAsync(
+            var existingAttr = await UcGetUserServiceAlbumAttr.ExecuteAsync(
                 UserClientContext.CurrentUser.Id,
                 _album.Id);
 

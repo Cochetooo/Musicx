@@ -5,8 +5,8 @@
 @using Musicx.Contracts.Enums
 
 @inject ILoggerFactory LoggerProvider
-@inject ISaveUseCase<InArtist> UcSave 
-@inject IListUseCase<InArtist, OutArtist> UcListExistingArtists
+@inject ISaveService<InArtist> UcSave 
+@inject IFindAllService<InArtist, OutArtist> UcListExistingArtists
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 

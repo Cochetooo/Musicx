@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Tag;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Tag;
 using Musicx.Infrastructure.API.Persistence.Connection;
@@ -47,7 +48,7 @@ internal sealed class TagRepository(
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
-    public async Task<OutTag?> FindByIdAsync(long id, IJoinSpecification<InTag>? songQuerySpecification = null)
+    public async Task<OutTag?> FindOneByIdAsync(long id, IJoinSpecification<InTag>? songQuerySpecification = null)
     {
         var sql = new StringBuilder(builder.BuildSelect());
         sql.Append($" WHERE t0.{TagColumns.Id} = @id")
@@ -65,7 +66,7 @@ internal sealed class TagRepository(
             .FromDicoToTag();
     }
 
-    public async Task<List<OutTag>> FindAsync(
+    public async Task<List<OutTag>> FindAllAsync(
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, 
         IJoinSpecification<InTag>? joinSpec = null,
         OrderSpecification<InTag>? orderSpec = null,
@@ -117,7 +118,7 @@ internal sealed class TagRepository(
             .ToList();
     }
 
-    public async Task<List<OutTag>> FindIn(IEnumerable<long> ids, 
+    public async Task<List<OutTag>> FindInAsync(IEnumerable<long> ids,
         IJoinSpecification<InTag>? joinSpec = null,
         OrderSpecification<InTag>? orderSpec = null)
     {

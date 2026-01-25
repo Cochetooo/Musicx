@@ -74,7 +74,7 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
 
         try
         {
-            var permission = await permissionRepository.FindByIdAsync(id);
+            var permission = await permissionRepository.FindOneByIdAsync(id);
 
             if (null == permission)
             {
@@ -103,7 +103,7 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
 
         try
         {
-            var albums = await permissionRepository.FindAsync(
+            var albums = await permissionRepository.FindAllAsync(
                 filterExact,
                 filterSimilitude,
                 filter,
@@ -140,7 +140,7 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
 
         try
         {
-            var albums = await permissionRepository.FindIn(ids, orderSpec: order);
+            var albums = await permissionRepository.FindInAsync(ids, orderSpec: order);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID permissions ({stringIds}) - SUCCESS");
             return Ok(albums);

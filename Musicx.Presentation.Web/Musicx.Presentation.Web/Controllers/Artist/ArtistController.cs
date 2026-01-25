@@ -74,7 +74,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
 
         try
         {
-            var artist = await artistRepository.FindByIdAsync(id);
+            var artist = await artistRepository.FindOneByIdAsync(id);
 
             if (null == artist)
             {
@@ -104,7 +104,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
 
         try
         {
-            var artists = await artistRepository.FindAsync(
+            var artists = await artistRepository.FindAllAsync(
                 filterExact,
                 filterSimilitude,
                 filter,
@@ -144,7 +144,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
 
         try
         {
-            var artists = await artistRepository.FindIn(ids, joins, order);
+            var artists = await artistRepository.FindInAsync(ids, joins, order);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID artists ({stringIds}) - SUCCESS");
             return Ok(artists);

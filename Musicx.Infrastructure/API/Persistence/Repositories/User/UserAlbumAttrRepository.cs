@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
@@ -56,19 +57,19 @@ internal sealed class UserAlbumAttrRepository(
     public Task DeleteAllAsync(IEnumerable<long> ids)
         => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
 
-    public Task<OutUserAlbumAttribute?> FindByIdAsync(long id, IJoinSpecification<InUserAlbumAttribute>? songQuerySpecification = null)
+    public Task<OutUserAlbumAttribute?> FindOneByIdAsync(long id, IJoinSpecification<InUserAlbumAttribute>? songQuerySpecification = null)
         => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
 
-    public Task<List<OutUserAlbumAttribute>> FindAsync(
+    public Task<List<OutUserAlbumAttribute>> FindAllAsync(
             bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
             IJoinSpecification<InUserAlbumAttribute>? joinSpec = null,
             OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
             PagingOptions? pagingOptions = null)
         => throw new NotImplementedException("FindAsync is disabled on this repository.");
 
-    public Task<List<OutUserAlbumAttribute>> FindIn(IEnumerable<long> ids, 
-            IJoinSpecification<InUserAlbumAttribute>? joinSpec = null,
-            OrderSpecification<InUserAlbumAttribute>? orderSpec = null)
+    public Task<List<OutUserAlbumAttribute>> FindInAsync(IEnumerable<long> ids,
+        IJoinSpecification<InUserAlbumAttribute>? joinSpec = null,
+        OrderSpecification<InUserAlbumAttribute>? orderSpec = null)
         => throw new NotImplementedException("FindIn is disabled on this repository.");
 
     public Task<long> GetCountAsync()

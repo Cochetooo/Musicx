@@ -13,12 +13,12 @@
 @using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Modals.Voting
 
-@inject IGetUseCase<InAlbum, OutAlbum> UcGet
-@inject IGetAlbumByArtistUseCase UcGetArtistAlbums
-@inject IGetSongByAlbumUseCase UcGetSongs
-@inject IGetAlbumAttributesByAlbum UcGetAlbumAttrs
-@inject IGetAlbumAttributeByAlbumUser UcGetUserAlbumAttr
-@inject ISaveUseCase<InUserAlbumAttribute> UcSaveUserAttrib
+@inject IFindOneByIdService<InAlbum, OutAlbum> UcGet
+@inject IGetAlbumByArtistService UcGetArtistAlbums
+@inject IGetSongByAlbumService UcGetSongs
+@inject IGetAlbumAttributesByAlbumService UcGetAlbumAttrs
+@inject IGetAlbumAttributeByAlbumUserService UcGetUserServiceAlbumAttr
+@inject ISaveService<InUserAlbumAttribute> UcSaveUserAttrib
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
 

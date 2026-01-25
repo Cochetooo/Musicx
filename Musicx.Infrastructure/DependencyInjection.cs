@@ -78,8 +78,8 @@ public static class DependencyInjection
         services.AddScoped<ExternalMusicDataService>();
 
         // Use cases
-        services.AddScoped<IFetchArtistInfoUseCase, UcFetchArtistInfo>();
-        services.AddScoped<IFetchAlbumInfoUseCase, UcFetchAlbumInfo>();
+        services.AddScoped<IFetchArtistInfoClientService, UcFetchArtistInfo>();
+        services.AddScoped<IFetchAlbumInfoClientService, UcFetchAlbumInfo>();
         
         return services;
     }
@@ -105,7 +105,7 @@ public static class DependencyInjection
         services.AddScoped<IBatchImportRepository, BatchImportRepository>();
         
         // Use cases
-        services.AddScoped<IReadAudioFileUseCase, UcReadAudioFile>();
+        services.AddScoped<IReadAudioFileClientService, UcReadAudioFile>();
         
         return services;
     }
@@ -173,24 +173,24 @@ public static class DependencyInjection
     /// </summary>
     public static IServiceCollection AddMusicxWeb(this IServiceCollection services)
     {
-        services.AddScoped(typeof(IGetUseCase<,>), typeof(UcGet<,>));
-        services.AddScoped(typeof(ISaveUseCase<>), typeof(UcSave<>));
-        services.AddScoped(typeof(ISaveAllUseCase<>), typeof(UcSaveAll<>));
-        services.AddScoped(typeof(IDeleteUseCase<>), typeof(UcDelete<>));
-        services.AddScoped(typeof(IListUseCase<,>), typeof(UcList<,>));
-        services.AddScoped(typeof(IFindInUseCase<,>), typeof(UcFindIn<,>));
-        services.AddScoped(typeof(ICountUseCase<>), typeof(UcCount<>));
+        services.AddScoped(typeof(IFindOneByIdService<,>), typeof(FindOneByIdService<,>));
+        services.AddScoped(typeof(ISaveService<>), typeof(SaveService<>));
+        services.AddScoped(typeof(ISaveAllService<>), typeof(SaveAllService<>));
+        services.AddScoped(typeof(IDeleteService<>), typeof(DeleteService<>));
+        services.AddScoped(typeof(IFindAllService<,>), typeof(FindAllService<,>));
+        services.AddScoped(typeof(IFindInService<,>), typeof(FindInService<,>));
+        services.AddScoped(typeof(ICountService<>), typeof(CountService<>));
         
-        services.AddScoped<IGetAlbumAttributesByAlbum, UcGetAlbumAttrByAlbum>();
-        services.AddScoped<IGetAlbumAttributesByUser, UcGetAlbumAttrByUser>();
-        services.AddScoped<IGetAlbumAttributeByAlbumUser, UcGetAlbumAttrByAlbumUser>();
-        services.AddScoped<IGetAlbumByArtistUseCase, UcGetAlbumByArtist>();
-        services.AddScoped<IGetAlbumByChartUseCase, UcGetAlbumByChart>();
-        services.AddScoped<IGetAlbumByGenreUseCase, UcGetAlbumByGenre>();
-        services.AddScoped<IGetSongByAlbumUseCase, UcGetSongByAlbum>();
-        services.AddScoped(typeof(IGetRatingDistribByUser<>), typeof(UcGetRatingDistribByUser<>));
+        services.AddScoped<IGetAlbumAttributesByAlbumService, GetAlbumAttrByAlbumService>();
+        services.AddScoped<IGetAlbumAttributesByUserService, GetAlbumAttrByUserService>();
+        services.AddScoped<IGetAlbumAttributeByAlbumUserService, GetAlbumAttrByAlbumUserService>();
+        services.AddScoped<IGetAlbumByArtistService, GetAlbumByArtistService>();
+        services.AddScoped<IGetAlbumByChartService, GetAlbumByChartService>();
+        services.AddScoped<IGetAlbumByGenreService, GetAlbumByGenreService>();
+        services.AddScoped<IGetSongByAlbumService, GetSongByAlbumService>();
+        services.AddScoped(typeof(IGetRatingDistribByUserService<>), typeof(GetRatingDistribByUserService<>));
 
-        services.AddScoped<IAuthSignInUseCase, UcAuthSignIn>();
+        services.AddScoped<IAuthSignInService, AuthSignInService>();
         
         return services;
     }

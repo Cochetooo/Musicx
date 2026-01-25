@@ -7,6 +7,7 @@ using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Requests.Specifics;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Builders.Album;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
@@ -51,7 +52,7 @@ internal sealed class AlbumRepository(
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
-    public async Task<OutAlbum?> FindByIdAsync(
+    public async Task<OutAlbum?> FindOneByIdAsync(
         long id, 
         IJoinSpecification<InAlbum>? joinSpec = null)
     {
@@ -205,8 +206,8 @@ internal sealed class AlbumRepository(
             .ToList();
     }
 
-    public async Task<List<OutAlbum>> FindAsync(
-        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, 
+    public async Task<List<OutAlbum>> FindAllAsync(bool? filterExact = null, double? filterSimilitude = 0.4D,
+        string? filter = null,
         IJoinSpecification<InAlbum>? joinSpec = null,
         OrderSpecification<InAlbum>? orderSpec = null,
         PagingOptions? pagingOptions = null)
@@ -257,7 +258,7 @@ internal sealed class AlbumRepository(
             .ToList();
     }
 
-    public async Task<List<OutAlbum>> FindIn(IEnumerable<long> ids, 
+    public async Task<List<OutAlbum>> FindInAsync(IEnumerable<long> ids,
         IJoinSpecification<InAlbum>? joinSpec = null,
         OrderSpecification<InAlbum>? orderSpec = null)
     {

@@ -12,8 +12,8 @@ public static class DependencyInjection
     public static IServiceCollection AddMusicxDesktopApp(this IServiceCollection services)
     {
         // Non external framework dependant use cases
-        services.AddScoped<IImportLocalSongsUseCase, UcImportLocalSongs>();
-        services.AddScoped<IPersistLocalSongsUseCase, UcPersistLocalSongs>();
+        services.AddScoped<IImportLocalSongsClientService, UcImportLocalSongs>();
+        services.AddScoped<IPersistLocalSongsClientService, UcPersistLocalSongs>();
         
         return services;
     }

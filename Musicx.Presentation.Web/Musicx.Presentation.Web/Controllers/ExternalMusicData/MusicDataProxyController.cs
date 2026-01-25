@@ -8,8 +8,8 @@ namespace Musicx.Presentation.Web.Controllers.ExternalMusicData;
 [Route("api/external")]
 public sealed class MusicDataProxyController(
     ILoggerProvider loggerProvider,
-    IFetchArtistInfoUseCase ucFetchArtistInfo,
-    IFetchAlbumInfoUseCase ucFetchAlbumInfo) : ControllerBase
+    IFetchArtistInfoClientService ucFetchArtistInfo,
+    IFetchAlbumInfoClientService ucFetchAlbumInfo) : ControllerBase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(MusicDataProxyController));
     

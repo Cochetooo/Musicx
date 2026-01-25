@@ -13,7 +13,7 @@ using Musicx.Contracts.Enums;
 namespace Musicx.Infrastructure.Desktop.Services.LocalLibrary;
 
 public class UcReadAudioFile(
-    ILoggerProvider loggerProvider) : IReadAudioFileUseCase
+    ILoggerProvider loggerProvider) : IReadAudioFileClientService
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcReadAudioFile));
     

@@ -11,8 +11,8 @@
 @using Musicx.Presentation.Web.Client.Components.Ratings
 
 @inject ILoggerFactory LoggerProvider
-@inject IGetUseCase<InGenre, OutGenre> UcGet
-@inject IGetAlbumByGenreUseCase UcAlbumByGenre
+@inject IFindOneByIdService<InGenre, OutGenre> UcGet
+@inject IGetAlbumByGenreService UcAlbumByGenre
 @inject IUserClientContext UserClientContext
 
 <MudBreadcrumbs Items="@_breadcrumb" />

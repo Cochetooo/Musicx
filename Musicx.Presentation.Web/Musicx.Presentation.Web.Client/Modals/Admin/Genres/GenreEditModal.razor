@@ -15,10 +15,10 @@
 @inject IGetUseCase<InGenre, OutGenre> UcGet
 @inject ISnackbar Snackbar *@
 
-@inject ISaveUseCase<InGenre> UcSaveGenre
-@inject ISaveAllUseCase<InGenreRelation> UcSaveRelations
-@inject ISaveAllUseCase<InGenreFacet> UcSaveFacets
-@inject ISaveAllUseCase<InGenreAlias> UcSaveAliases
+@inject ISaveService<InGenre> UcSaveGenre
+@inject ISaveAllService<InGenreRelation> UcSaveRelations
+@inject ISaveAllService<InGenreFacet> UcSaveFacets
+@inject ISaveAllService<InGenreAlias> UcSaveAliases
 @inject ISnackbar Snackbar
 
 <MudDialog @ref="_modalRef">

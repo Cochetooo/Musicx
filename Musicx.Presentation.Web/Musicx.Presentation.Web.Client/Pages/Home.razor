@@ -2,10 +2,10 @@
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Responses
 
-@inject ICountUseCase<OutArtist> UcCountArtists
-@inject ICountUseCase<OutAlbum> UcCountAlbums
-@inject ICountUseCase<OutSong> UcCountSongs
-@inject ICountUseCase<OutGenre> UcCountGenres
+@inject ICountService<OutArtist> UcCountArtists
+@inject ICountService<OutAlbum> UcCountAlbums
+@inject ICountService<OutSong> UcCountSongs
+@inject ICountService<OutGenre> UcCountGenres
 
 <MudGrid Class="home-container">
     <MudItem xs="12" Class="flex-center">

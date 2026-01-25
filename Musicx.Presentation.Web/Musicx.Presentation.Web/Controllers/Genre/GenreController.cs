@@ -75,7 +75,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
 
         try
         {
-            var genre = await genreRepository.FindByIdAsync(id, joins);
+            var genre = await genreRepository.FindOneByIdAsync(id, joins);
 
             if (null == genre)
             {
@@ -105,7 +105,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
         
         try
         {
-            var genres = await genreRepository.FindAsync(
+            var genres = await genreRepository.FindAllAsync(
                 filterExact, 
                 filterSimilitude, 
                 filter,
@@ -145,7 +145,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
 
         try
         {
-            var genres = await genreRepository.FindIn(ids, joins, order);
+            var genres = await genreRepository.FindInAsync(ids, joins, order);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID genres ({stringIds}) - SUCCESS");
             return Ok(genres);

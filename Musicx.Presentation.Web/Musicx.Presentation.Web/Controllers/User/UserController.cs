@@ -84,7 +84,7 @@ public sealed class UserController(IUserRepository userRepository,
 
         try
         {
-            var user = await userRepository.FindByIdAsync(id, joins);
+            var user = await userRepository.FindOneByIdAsync(id, joins);
 
             if (null == user)
             {
@@ -114,7 +114,7 @@ public sealed class UserController(IUserRepository userRepository,
 
         try
         {
-            var albums = await userRepository.FindAsync(
+            var albums = await userRepository.FindAllAsync(
                 filterExact, 
                 filterSimilitude,
                 filter, 
@@ -154,7 +154,7 @@ public sealed class UserController(IUserRepository userRepository,
 
         try
         {
-            var albums = await userRepository.FindIn(ids, joins, order);
+            var albums = await userRepository.FindInAsync(ids, joins, order);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID users ({stringIds}) - SUCCESS");
             return Ok(albums);

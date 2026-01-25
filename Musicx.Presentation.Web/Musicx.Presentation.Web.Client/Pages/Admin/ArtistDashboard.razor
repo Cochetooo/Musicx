@@ -9,8 +9,8 @@
 @using Musicx.Presentation.Web.Client.Layout.Auth
 
 @inject ILoggerFactory LoggerProvider
-@inject IListUseCase<InArtist, OutArtist> UcList
-@inject IDeleteUseCase<InArtist> UcDelete
+@inject IFindAllService<InArtist, OutArtist> UcList
+@inject IDeleteService<InArtist> UcDelete
 
 <AuthorizeView Permission="admin.artist.read">
     <ChildContent>

@@ -9,9 +9,9 @@
 @inject ILoggerFactory LoggerFactory
 @inject IUserClientContext UserClientContext
 @inject ISnackbar Snackbar
-@inject IListUseCase<InGenre, OutGenre> UcListGenres
-@inject ISaveAllUseCase<InAlbumGenre> UcVoteAlbumGenre
-@inject ISaveAllUseCase<InAlbumInfluence> UcVoteAlbumInfluence
+@inject IFindAllService<InGenre, OutGenre> UcListGenres
+@inject ISaveAllService<InAlbumGenre> UcVoteAlbumGenre
+@inject ISaveAllService<InAlbumInfluence> UcVoteAlbumInfluence
 
 <MudDialog @ref="_modalRef" Class="pa-2">
     <TitleContent>

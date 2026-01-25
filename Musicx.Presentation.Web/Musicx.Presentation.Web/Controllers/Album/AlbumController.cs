@@ -75,7 +75,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
 
         try
         {
-            var album = await albumRepository.FindByIdAsync(id, joins);
+            var album = await albumRepository.FindOneByIdAsync(id, joins);
 
             if (null == album)
             {
@@ -206,7 +206,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OutAlbum>>> Find(
+    public async Task<ActionResult<OutAlbumList>> Find(
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
@@ -225,7 +225,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
 
         try
         {
-            var albums = await albumRepository.FindAsync(
+            var albums = await albumRepository.FindAllAsync(
                 filterExact,
                 filterSimilitude, 
                 filter,
@@ -265,7 +265,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
 
         try
         {
-            var albums = await albumRepository.FindIn(ids, joins, order);
+            var albums = await albumRepository.FindInAsync(ids, joins, order);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID albums ({stringIds}) - SUCCESS");
             return Ok(albums);

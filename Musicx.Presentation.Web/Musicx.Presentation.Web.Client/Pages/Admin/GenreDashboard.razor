@@ -8,8 +8,8 @@
 @using Musicx.Presentation.Web.Client.Layout.Auth
 
 @inject ILoggerFactory LoggerProvider
-@inject IListUseCase<InGenre, OutGenre> UcList
-@inject IDeleteUseCase<InGenre> UcDelete
+@inject IFindAllService<InGenre, OutGenre> UcList
+@inject IDeleteService<InGenre> UcDelete
 
 <AuthorizeView Permission="admin.genre.read">
     <ChildContent>
@@ -21,7 +21,8 @@
             </MudCardHeader>
             
             <MudCardContent>
-                <MudDataGrid T="OutGenre" Items="@_filteredGenres"
+                <MudDataGrid T="OutGenre"
+                             Items="@_filteredGenres"
                              RowsPerPage="20" Dense ColumnResizeMode="ResizeMode.Column"
                              MultiSelection bind-SelectedItems="@_selectedGenres">
                     <ToolBarContent>

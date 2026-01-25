@@ -76,7 +76,7 @@ public sealed class SongController(ISongRepository songRepository,
 
         try
         {
-            var album = await songRepository.FindByIdAsync(id, joins);
+            var album = await songRepository.FindOneByIdAsync(id, joins);
 
             if (null == album)
             {
@@ -132,7 +132,7 @@ public sealed class SongController(ISongRepository songRepository,
 
         try
         {
-            var songs = await songRepository.FindAsync(
+            var songs = await songRepository.FindAllAsync(
                 filterExact, 
                 filterSimilitude,
                 filter, 
@@ -172,7 +172,7 @@ public sealed class SongController(ISongRepository songRepository,
 
         try
         {
-            var songs = await songRepository.FindIn(ids, joins, order);
+            var songs = await songRepository.FindInAsync(ids, joins, order);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID songs ({stringIds}) - SUCCESS");
             return Ok(songs);

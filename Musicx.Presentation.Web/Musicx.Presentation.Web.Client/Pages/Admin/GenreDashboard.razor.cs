@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 using Musicx.Presentation.Web.Client.Modals.Admin.Genres;
 using Musicx.Presentation.Web.Client.Models;
+using GenreJoinSpecification = Musicx.Application.Desktop.Specifications.GenreJoinSpecification;
 
 namespace Musicx.Presentation.Web.Client.Pages.Admin;
 
@@ -28,15 +30,18 @@ public partial class GenreDashboard
         new("Admin", href: "#"),
         new("Genre Management", href: "#")
     ];
-    
+
+    protected override void OnInitialized()
+    {
+        _logger = LoggerProvider.CreateLogger(nameof(ArtistDashboard));
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
         {
             return;
         }
-        
-        _logger = LoggerProvider.CreateLogger(nameof(ArtistDashboard));
         
         await LoadData();
     }
@@ -102,6 +107,30 @@ public partial class GenreDashboard
     {
         EnableNormalMode();
         await LoadData();
+    }
+
+    private async Task<GridData<OutGenre>> LoadGenresData(GridState<OutGenre> state)
+    {
+        var response = await UcList.ExecuteAsync(
+            filterExact: true,
+            filter: _searchDataGrid,
+            pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),
+            order: new GenreOrderSpecification
+            {
+                CanonicalName = 1,
+                ShortName = 2
+            },
+            joins: new GenreJoinSpecification
+            {
+                IncludeParents = true
+            }
+        );
+
+        return new GridData<OutGenre>
+        {
+            TotalItems = response.Count,
+            Items = response
+        };
     }
 
     private void ApplySearchFilters()

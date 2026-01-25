@@ -85,7 +85,7 @@ public sealed class UserContext(
                 return;
             }
 
-            var user = userRepository.FindByIdAsync(userId, new UserJoinSpecification
+            var user = userRepository.FindOneByIdAsync(userId, new UserJoinSpecification
             {
                 IncludeRoles = true
             }).Result;
@@ -103,7 +103,7 @@ public sealed class UserContext(
             
             foreach (var role in _cachedRoles)
             {
-                var permissions = roleRepository.FindByIdAsync(role.Id,
+                var permissions = roleRepository.FindOneByIdAsync(role.Id,
                     new RoleJoinSpecification
                     {
                         IncludePermissions = true

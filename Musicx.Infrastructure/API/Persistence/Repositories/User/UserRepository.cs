@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.User;
 using Musicx.Infrastructure.API.Persistence.Connection;
@@ -47,7 +48,7 @@ internal sealed class UserRepository(
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
-    public async Task<OutUser?> FindByIdAsync(long id, IJoinSpecification<InUser>? userQuerySpecification = null)
+    public async Task<OutUser?> FindOneByIdAsync(long id, IJoinSpecification<InUser>? userQuerySpecification = null)
     {
         var sql = new StringBuilder(builder.BuildSelect(userQuerySpecification));
         sql.Append($" WHERE u0.{UserColumns.Id} = @id")
@@ -84,7 +85,7 @@ internal sealed class UserRepository(
             .FromDicoToUser();
     }
 
-    public async Task<List<OutUser>> FindAsync(
+    public async Task<List<OutUser>> FindAllAsync(
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
         IJoinSpecification<InUser>? joinSpec = null,
         OrderSpecification<InUser>? orderSpec = null,
@@ -136,7 +137,7 @@ internal sealed class UserRepository(
             .ToList();
     }
 
-    public async Task<List<OutUser>> FindIn(IEnumerable<long> ids,
+    public async Task<List<OutUser>> FindInAsync(IEnumerable<long> ids,
         IJoinSpecification<InUser>? joinSpec = null,
         OrderSpecification<InUser>? orderSpec = null)
     {

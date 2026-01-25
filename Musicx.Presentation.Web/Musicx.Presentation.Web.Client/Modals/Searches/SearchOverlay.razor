@@ -6,11 +6,11 @@
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
 @inject IJSRuntime JS
-@inject IListUseCase<InArtist, OutArtist> UcListArtists
-@inject IListUseCase<InAlbum, OutAlbum> UcListAlbums
-@inject IListUseCase<InGenre, OutGenre> UcListGenres
-@inject IListUseCase<InUser, OutUser> UcListUsers
-@inject IListUseCase<InSong, OutSong> UcListSongs
+@inject IFindAllService<InArtist, OutArtist> UcListArtists
+@inject IFindAllService<InAlbum, OutAlbum> UcListAlbums
+@inject IFindAllService<InGenre, OutGenre> UcListGenres
+@inject IFindAllService<InUser, OutUser> UcListUsers
+@inject IFindAllService<InSong, OutSong> UcListSongs
 @inject NavigationManager Navigation
 
 <div class="search-overlay" @onclick="OnBackdropClick" style="display:@(IsOpen ? "block" : "none")">

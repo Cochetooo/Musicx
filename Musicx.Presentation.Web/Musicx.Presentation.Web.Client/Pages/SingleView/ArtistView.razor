@@ -11,9 +11,9 @@
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 
-@inject IGetUseCase<InArtist, OutArtist> UcGet
-@inject IGetAlbumByArtistUseCase UcGetAlbums
-@inject IGetAlbumAttributesByUser UcGetUserRatings
+@inject IFindOneByIdService<InArtist, OutArtist> UcGet
+@inject IGetAlbumByArtistService UcGetAlbums
+@inject IGetAlbumAttributesByUserService UcGetUserServiceRatings
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
 

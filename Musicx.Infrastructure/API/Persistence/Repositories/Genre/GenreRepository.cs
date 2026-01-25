@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Genre;
 using Musicx.Infrastructure.API.Persistence.Connection;
@@ -47,7 +48,7 @@ internal sealed class GenreRepository(
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
-    public async Task<OutGenre?> FindByIdAsync(long id, IJoinSpecification<InGenre>? genreQuerySpecification = null)
+    public async Task<OutGenre?> FindOneByIdAsync(long id, IJoinSpecification<InGenre>? genreQuerySpecification = null)
     {
         var sql = new StringBuilder(builder.BuildSelect(genreQuerySpecification));
         sql.Append($" WHERE g0.{GenreColumns.Id} = @id")
@@ -65,7 +66,7 @@ internal sealed class GenreRepository(
             .FromDicoToGenre();
     }
 
-    public async Task<List<OutGenre>> FindAsync(
+    public async Task<List<OutGenre>> FindAllAsync(
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
         IJoinSpecification<InGenre>? joinSpec = null,
         OrderSpecification<InGenre>? orderSpec = null,
@@ -116,7 +117,7 @@ internal sealed class GenreRepository(
             .ToList();
     }
 
-    public async Task<List<OutGenre>> FindIn(IEnumerable<long> ids, 
+    public async Task<List<OutGenre>> FindInAsync(IEnumerable<long> ids,
         IJoinSpecification<InGenre>? joinSpec = null,
         OrderSpecification<InGenre>? orderSpec = null)
     {

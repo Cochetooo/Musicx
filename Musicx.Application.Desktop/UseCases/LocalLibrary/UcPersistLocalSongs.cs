@@ -7,7 +7,7 @@ namespace Musicx.Application.Desktop.UseCases.LocalLibrary;
 
 public class UcPersistLocalSongs(
     ILoggerProvider loggerProvider,
-    IBatchImportRepository batchImportRepository) : IPersistLocalSongsUseCase
+    IBatchImportRepository batchImportRepository) : IPersistLocalSongsClientService
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcPersistLocalSongs));
     

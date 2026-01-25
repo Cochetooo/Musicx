@@ -3,7 +3,7 @@
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Requests.User
 
-@inject ISaveUseCase<InUser> UcSave
+@inject ISaveService<InUser> UcSave
 @inject NavigationManager Navigation
 
 <MudBreadcrumbs Items="@_breadcrumb" />

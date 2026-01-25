@@ -2,7 +2,7 @@
 @using Musicx.Contracts.Dto.Requests.Album
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
-@inject IGetUseCase<InAlbum, OutAlbum> UcGetAlbum
+@inject IFindOneByIdService<InAlbum, OutAlbum> UcGetAlbum
 
 @if (_isLoading)
 {

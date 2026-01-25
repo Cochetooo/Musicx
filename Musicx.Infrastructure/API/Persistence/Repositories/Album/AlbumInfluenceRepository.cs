@@ -5,6 +5,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.Shared.Exceptions;
@@ -25,19 +26,19 @@ internal sealed class AlbumInfluenceRepository(
     public Task DeleteAllAsync(IEnumerable<long> ids)
         => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
 
-    public Task<OutAlbumInfluence?> FindByIdAsync(long id, IJoinSpecification<InAlbumInfluence>? albumInfluenceQuerySpecification = null)
+    public Task<OutAlbumInfluence?> FindOneByIdAsync(long id, IJoinSpecification<InAlbumInfluence>? albumInfluenceQuerySpecification = null)
         => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
 
-    public Task<List<OutAlbumInfluence>> FindAsync(
-            bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
-            IJoinSpecification<InAlbumInfluence>? joinSpec = null,
-            OrderSpecification<InAlbumInfluence>? orderSpec = null,
-            PagingOptions? pagingOptions = null)
+    public Task<List<OutAlbumInfluence>> FindAllAsync(bool? filterExact = null, double? filterSimilitude = 0.4D,
+        string? filter = null,
+        IJoinSpecification<InAlbumInfluence>? joinSpec = null,
+        OrderSpecification<InAlbumInfluence>? orderSpec = null,
+        PagingOptions? pagingOptions = null)
         => throw new NotImplementedException("FindAsync is disabled on this repository.");
 
-    public Task<List<OutAlbumInfluence>> FindIn(IEnumerable<long> ids, 
-            IJoinSpecification<InAlbumInfluence>? joinSpec = null,
-            OrderSpecification<InAlbumInfluence>? orderSpec = null)
+    public Task<List<OutAlbumInfluence>> FindInAsync(IEnumerable<long> ids,
+        IJoinSpecification<InAlbumInfluence>? joinSpec = null,
+        OrderSpecification<InAlbumInfluence>? orderSpec = null)
         => throw new NotImplementedException("FindIn is disabled on this repository.");
     
     public Task<OutAlbumInfluence?> FindOneAsync(long albumId, long genreId, long taggerId)

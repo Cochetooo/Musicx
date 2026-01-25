@@ -15,10 +15,10 @@ namespace Musicx.Application.Desktop.UseCases.LocalLibrary;
 /// </summary>
 /// <since>0.3.0</since>
 public sealed class UcImportLocalSongs(
-    IReadAudioFileUseCase readAudioFile,
-    IPersistLocalSongsUseCase persistLocalSongs,
+    IReadAudioFileClientService readAudioFile,
+    IPersistLocalSongsClientService persistLocalSongs,
     ILoggerProvider loggerProvider
-    ) : IImportLocalSongsUseCase
+    ) : IImportLocalSongsClientService
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UcImportLocalSongs));
     

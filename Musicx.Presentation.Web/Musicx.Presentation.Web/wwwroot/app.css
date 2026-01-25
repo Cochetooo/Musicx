@@ -24,6 +24,23 @@ h1:focus {
     content: "An error has occurred."
 }
 
+.mud-dialog {
+    background: transparent;
+    backdrop-filter: blur(10px) brightness(80%);
+}
+
+.mud-dialog-title {
+    background-color: rgba(30, 30, 30, .2);
+}
+
+.mud-dialog-content {
+    background-color: rgba(30, 30, 30, .1);
+}
+
+.mud-dialog-actions {
+    background-color: rgba(30, 30, 30, .3);
+}
+
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
@@ -47,15 +64,6 @@ h1:focus {
 
 .table thead th {
     font-weight: bold;
-}
-
-.blurry-bg-dialog {
-    backdrop-filter: blur(20px) brightness(80%);
-    -webkit-backdrop-filter: blur(20px) brightness(80%);
-}
-
-.blurry-bg-dialog > .mud-dialog {
-    background-color: rgba(50,50,50,.3);
 }
 
 .montserrat {

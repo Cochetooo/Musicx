@@ -6,10 +6,10 @@
 @using Musicx.Presentation.Web.Client.Layout.Auth
 
 @inject ILoggerFactory LoggerFactory
-@inject IListUseCase<InRole, OutRole> UcList
-@inject IListUseCase<InPermission, OutPermission> UcListPermissions
-@inject ISaveUseCase<InRole> UcSave
-@inject IDeleteUseCase<InRole> UcDelete
+@inject IFindAllService<InRole, OutRole> UcList
+@inject IFindAllService<InPermission, OutPermission> UcListPermissions
+@inject ISaveService<InRole> UcSave
+@inject IDeleteService<InRole> UcDelete
 @inject ISnackbar Snackbar
 
 <AuthorizeView Permission="admin.role.read">

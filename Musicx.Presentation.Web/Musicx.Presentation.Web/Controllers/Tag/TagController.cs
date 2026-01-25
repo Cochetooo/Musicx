@@ -72,7 +72,7 @@ public sealed class TagController(ITagRepository tagRepository,
 
         try
         {
-            var tag = await tagRepository.FindByIdAsync(id);
+            var tag = await tagRepository.FindOneByIdAsync(id);
 
             if (null == tag)
             {
@@ -99,7 +99,7 @@ public sealed class TagController(ITagRepository tagRepository,
 
         try
         {
-            var albums = await tagRepository.FindAsync(
+            var albums = await tagRepository.FindAllAsync(
                 filterExact, 
                 filterSimilitude,
                 filter
@@ -134,7 +134,7 @@ public sealed class TagController(ITagRepository tagRepository,
 
         try
         {
-            var albums = await tagRepository.FindIn(ids);
+            var albums = await tagRepository.FindInAsync(ids);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID tags ({stringIds}) - SUCCESS");
             return Ok(albums);

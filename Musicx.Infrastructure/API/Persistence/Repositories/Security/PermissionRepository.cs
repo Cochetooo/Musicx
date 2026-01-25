@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Security;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Security;
 using Musicx.Infrastructure.API.Persistence.Connection;
@@ -47,7 +48,7 @@ internal sealed class PermissionRepository(
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
-    public async Task<OutPermission?> FindByIdAsync(long id, IJoinSpecification<InPermission>? permissionQuerySpecification = null)
+    public async Task<OutPermission?> FindOneByIdAsync(long id, IJoinSpecification<InPermission>? permissionQuerySpecification = null)
     {
         var sql = new StringBuilder(builder.BuildSelect(permissionQuerySpecification));
         sql.Append($" WHERE p0.{PermissionColumns.Id} = @id")
@@ -65,7 +66,7 @@ internal sealed class PermissionRepository(
             .FromDicoToPermission();
     }
 
-    public async Task<List<OutPermission>> FindAsync(
+    public async Task<List<OutPermission>> FindAllAsync(
         bool? filterExact = null, double? filterSimilitude = null, string? filter = null,
         IJoinSpecification<InPermission>? joinSpec = null,
         OrderSpecification<InPermission>? orderSpec = null,
@@ -117,7 +118,7 @@ internal sealed class PermissionRepository(
             .ToList();
     }
 
-    public async Task<List<OutPermission>> FindIn(IEnumerable<long> ids,
+    public async Task<List<OutPermission>> FindInAsync(IEnumerable<long> ids,
         IJoinSpecification<InPermission>? joinSpec = null,
         OrderSpecification<InPermission>? orderSpec = null)
     {

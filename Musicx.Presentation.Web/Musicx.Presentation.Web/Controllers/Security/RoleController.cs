@@ -75,7 +75,7 @@ public sealed class RoleController(IRoleRepository roleRepository,
 
         try
         {
-            var role = await roleRepository.FindByIdAsync(id, joins);
+            var role = await roleRepository.FindOneByIdAsync(id, joins);
 
             if (null == role)
             {
@@ -105,7 +105,7 @@ public sealed class RoleController(IRoleRepository roleRepository,
 
         try
         {
-            var albums = await roleRepository.FindAsync(
+            var albums = await roleRepository.FindAllAsync(
                 filterExact, 
                 filterSimilitude,
                 filter,
@@ -145,7 +145,7 @@ public sealed class RoleController(IRoleRepository roleRepository,
 
         try
         {
-            var albums = await roleRepository.FindIn(ids, joins, order);
+            var albums = await roleRepository.FindInAsync(ids, joins, order);
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID roles ({stringIds}) - SUCCESS");
             return Ok(albums);

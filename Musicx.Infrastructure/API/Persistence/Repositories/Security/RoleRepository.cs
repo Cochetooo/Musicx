@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Security;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Security;
 using Musicx.Infrastructure.API.Persistence.Connection;
@@ -47,7 +48,7 @@ internal sealed class RoleRepository(
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
-    public async Task<OutRole?> FindByIdAsync(long id, IJoinSpecification<InRole>? roleQuerySpecification = null)
+    public async Task<OutRole?> FindOneByIdAsync(long id, IJoinSpecification<InRole>? roleQuerySpecification = null)
     {
         var sql = new StringBuilder(builder.BuildSelect(roleQuerySpecification));
         sql.Append($" WHERE r0.{RoleColumns.Id} = @id")
@@ -65,7 +66,7 @@ internal sealed class RoleRepository(
             .FromDicoToRole();
     }
 
-    public async Task<List<OutRole>> FindAsync(
+    public async Task<List<OutRole>> FindAllAsync(
         bool? filterExact = false, double? filterSimilitude = 0.4, string? filter = null,
         IJoinSpecification<InRole>? joinSpec = null,
         OrderSpecification<InRole>? orderSpec = null,
@@ -117,7 +118,7 @@ internal sealed class RoleRepository(
             .ToList();
     }
 
-    public async Task<List<OutRole>> FindIn(IEnumerable<long> ids,
+    public async Task<List<OutRole>> FindInAsync(IEnumerable<long> ids,
         IJoinSpecification<InRole>? joinSpec = null,
         OrderSpecification<InRole>? orderSpec = null)
     {

@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 
 namespace Musicx.Application.Shared.Interfaces.Persistence;
 
@@ -35,23 +36,26 @@ public interface IRepository<TIn, TOut>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
     /// <returns>An entity if the identifier has been found in the database, else <b>null</b></returns>
     /// <since>0.6.0</since>
-    Task<TOut?> FindByIdAsync(
+    Task<TOut?> FindOneByIdAsync(
         long id, 
         IJoinSpecification<TIn>? joinSpecification = null
     );
-    
+
     /// <summary>
     /// Retrieve all entities that matches filter criteria, or all entities if no filter is specified.
     /// </summary>
-    /// <param name="skip">Offset when retrieving all rows, useful for pagination.</param>
-    /// <param name="take">Maximum number of rows taken, prevents response from being too large.</param>
     /// <param name="filterExact">Use equality for the filter instead of a similarity algorithm</param>
     /// <param name="filterSimilitude">The similarity rate for the algorithm to find similar results.</param>
     /// <param name="filter">An expression that entities must match to be in the result.</param>
+    /// <param name="joinSpec"></param>
+    /// <param name="orderSpec"></param>
+    /// <param name="pagingOptions"></param>
+    /// <param name="skip">Offset when retrieving all rows, useful for pagination.</param>
+    /// <param name="take">Maximum number of rows taken, prevents response from being too large.</param>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
     /// <returns>A collection of entities as <b>List</b>, empty if no entity has been found matching filter criteria.</returns>
     /// <since>0.6.0</since>
-    Task<List<TOut>> FindAsync(
+    Task<List<TOut>> FindAllAsync(
         bool? filterExact = null,
         double? filterSimilitude = 0.4,
         string? filter = null,
@@ -64,10 +68,12 @@ public interface IRepository<TIn, TOut>
     /// Retrieve entities corresponding to all identifiers prompted.
     /// </summary>
     /// <param name="ids">A list of unique identifiers used to retrieve the entities.</param>
+    /// <param name="joinSpec"></param>
+    /// <param name="orderSpec"></param>
     /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
     /// <returns>A collection of entities as <b>List</b>, empty if no entity matches the IDs.</returns>
     /// <since>0.6.0</since>
-    Task<List<TOut>> FindIn(
+    Task<List<TOut>> FindInAsync(
         IEnumerable<long> ids, 
         IJoinSpecification<TIn>? joinSpec = null,
         OrderSpecification<TIn>? orderSpec = null

@@ -5,6 +5,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.Shared.Exceptions;
@@ -25,19 +26,19 @@ internal sealed class GenreRelationRepository(
     public Task DeleteAllAsync(IEnumerable<long> ids)
         => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
 
-    public Task<OutGenreRelation?> FindByIdAsync(long id, IJoinSpecification<InGenreRelation>? GenreRelationQuerySpecification = null)
+    public Task<OutGenreRelation?> FindOneByIdAsync(long id, IJoinSpecification<InGenreRelation>? GenreRelationQuerySpecification = null)
         => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
 
-    public Task<List<OutGenreRelation>> FindAsync(
+    public Task<List<OutGenreRelation>> FindAllAsync(
             bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
             IJoinSpecification<InGenreRelation>? joinSpec = null,
             OrderSpecification<InGenreRelation>? orderSpec = null,
             PagingOptions? pagingOptions = null)
         => throw new NotImplementedException("FindAsync is disabled on this repository.");
 
-    public Task<List<OutGenreRelation>> FindIn(IEnumerable<long> ids, 
-            IJoinSpecification<InGenreRelation>? joinSpec = null,
-            OrderSpecification<InGenreRelation>? orderSpec = null)
+    public Task<List<OutGenreRelation>> FindInAsync(IEnumerable<long> ids,
+        IJoinSpecification<InGenreRelation>? joinSpec = null,
+        OrderSpecification<InGenreRelation>? orderSpec = null)
         => throw new NotImplementedException("FindIn is disabled on this repository.");
 
     public async Task<long> GetCountAsync()

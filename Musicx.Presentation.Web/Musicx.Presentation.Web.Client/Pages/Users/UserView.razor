@@ -12,10 +12,10 @@
 @using Musicx.Presentation.Web.Client.Models.Auth
 
 @inject ILoggerFactory LoggerFactory
-@inject IGetUseCase<InUser, OutUser> UcGet
-@inject IGetAlbumAttributesByUser UcGetAlbumAttrs
+@inject IFindOneByIdService<InUser, OutUser> UcGet
+@inject IGetAlbumAttributesByUserService UcGetAlbumAttrs
 @inject IUserClientContext UserClientContext
-@inject IGetRatingDistribByUser<OutAlbum> UcGetAlbumRatingDistrib
+@inject IGetRatingDistribByUserService<OutAlbum> UcGetAlbumRatingDistrib
 
 @if (null == _user)
 {
