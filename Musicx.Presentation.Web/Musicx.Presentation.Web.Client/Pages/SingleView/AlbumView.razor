@@ -55,6 +55,7 @@ else
                          style="position: relative; width: 100%;"
                          @onclick="() => _isArtworkRevealed = !_isArtworkRevealed">
                         <MudImage Src="@_album.ArtworkUrl"
+                                  @key="_album.ArtworkUrl"
                                   Elevation="8"
                                   Class="@($"rounded-lg {(_album.IsExplicitContent && !_isArtworkRevealed ? "blurred" : "")}")"
                                   ObjectFit="ObjectFit.Cover"
@@ -81,6 +82,7 @@ else
                                         <MudStack AlignItems="AlignItems.Center" Spacing="1" Row>
                                             <MudIcon Icon="@Icons.Material.Filled.ArrowLeft" />
                                             <MudImage Src="@_previousAlbum.ArtworkUrl"
+                                                      @key="_previousAlbum.ArtworkUrl"
                                                       Elevation="4"
                                                       Class="rounded"
                                                       Width="24"
@@ -99,6 +101,7 @@ else
                                     <MudLink Href="@("/Album/" + _nextAlbum.Id)">
                                         <MudStack AlignItems="AlignItems.Center" Spacing="1" Row>
                                             <MudImage Src="@_nextAlbum.ArtworkUrl"
+                                                      @key="_nextAlbum.ArtworkUrl"
                                                       Elevation="4"
                                                       Class="rounded"
                                                       Width="24"

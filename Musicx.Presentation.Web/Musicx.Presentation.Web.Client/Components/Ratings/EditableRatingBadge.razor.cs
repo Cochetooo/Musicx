@@ -70,7 +70,7 @@ public partial class EditableRatingBadge
     {
         if (e.Key == "Enter" && _editingValue.HasValue)
         {
-            Value = (int)(_editingValue.Value * 100 / MaxValue);
+            Value = _editingValue.Value * 10000 / MaxValue;
             _isEditing = false;
             ValueChanged.InvokeAsync(Value);
         } 

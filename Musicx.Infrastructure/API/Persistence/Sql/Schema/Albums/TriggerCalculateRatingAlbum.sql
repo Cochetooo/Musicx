@@ -26,7 +26,7 @@ begin
         set
             album_rating_stats_count    = album_rating_stats_count + 1,
             album_rating_stats_sum      = album_rating_stats_sum + new.user_album_attrs_rating,
-            album_rating_stats_avg      = (album_rating_stats_sum + new.user_album_attrs_rating)::numeric / (album_rating_stats_count + 1)
+            album_rating_stats_avg      = round((album_rating_stats_sum + new.user_album_attrs_rating)::numeric / (album_rating_stats_count + 1), 2)
         where
             album_rating_stats_album_id = new.user_album_attrs_album_id;
         
@@ -40,7 +40,7 @@ begin
             set
                 album_rating_stats_count    = album_rating_stats_count + 1,
                 album_rating_stats_sum      = album_rating_stats_sum + new.user_album_attrs_rating,
-                album_rating_stats_avg      = (album_rating_stats_sum + new.user_album_attrs_rating)::numeric / (album_rating_stats_count + 1)
+                album_rating_stats_avg      = round((album_rating_stats_sum + new.user_album_attrs_rating)::numeric / (album_rating_stats_count + 1), 2)
             where
                 album_rating_stats_album_id = new.user_album_attrs_album_id;
 
@@ -55,7 +55,7 @@ begin
                 album_rating_stats_count    = album_rating_stats_count - 1,
                 album_rating_stats_sum      = album_rating_stats_sum - old.user_album_attrs_rating,
                 album_rating_stats_avg      = case when (album_rating_stats_count - 1) > 0
-                                                then (album_rating_stats_sum - old.user_album_attrs_rating)::numeric / (album_rating_stats_count - 1)
+                                                then round((album_rating_stats_sum - old.user_album_attrs_rating)::numeric / (album_rating_stats_count - 1), 2)
                                                 else 0 end
             where
                 album_rating_stats_album_id = new.user_album_attrs_album_id;
@@ -70,7 +70,7 @@ begin
             set
                 album_rating_stats_sum      = album_rating_stats_sum + (new.user_album_attrs_rating - old.user_album_attrs_rating),
                 album_rating_stats_avg      = case when album_rating_stats_count > 0
-                                                       then (album_rating_stats_sum + (new.user_album_attrs_rating - old.user_album_attrs_rating))::numeric / album_rating_stats_count
+                                                       then round((album_rating_stats_sum + (new.user_album_attrs_rating - old.user_album_attrs_rating))::numeric / album_rating_stats_count, 2)
                                                    else 0 end
             where
                 album_rating_stats_album_id = new.user_album_attrs_album_id;
@@ -87,7 +87,7 @@ begin
             album_rating_stats_count    = album_rating_stats_count - 1,
             album_rating_stats_sum      = album_rating_stats_sum - old.user_album_attrs_rating,
             album_rating_stats_avg      = case when (album_rating_stats_count - 1) > 0
-                                                   then (album_rating_stats_sum - old.user_album_attrs_rating)::numeric / (album_rating_stats_count - 1)
+                                                   then round((album_rating_stats_sum - old.user_album_attrs_rating)::numeric / (album_rating_stats_count - 1), 2)
                                                else 0 end
         where
             album_rating_stats_album_id = old.user_album_attrs_album_id;

@@ -99,7 +99,7 @@
                         @if (_album is { ArtworkUrl: not null })
                         {
                             <MudImage Src="@_album.ArtworkUrl" Alt="@_album.Name" Class="rounded-lg" Elevation="25"
-                                      Style="width: 192px; aspect-ratio: 1 / 1;"/>
+                                      @key="_album.ArtworkUrl" Style="width: 192px; aspect-ratio: 1 / 1;"/>
                         }
                     }
                 </MudField>

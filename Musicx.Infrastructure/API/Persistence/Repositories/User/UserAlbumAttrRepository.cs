@@ -305,11 +305,11 @@ internal sealed class UserAlbumAttrRepository(
     {
         var sql = """
                   SELECT 
-                      (user_album_attrs_rating / 10) * 10 AS range_floor,
+                      (user_album_attrs_rating / 1000) * 10 AS range_floor,
                       COUNT(*) AS count
                   FROM user_album_attrs
                   WHERE user_album_attrs_user_id = @userId
-                  GROUP BY (user_album_attrs_rating / 10) * 10
+                  GROUP BY (user_album_attrs_rating / 1000) * 10
                   ORDER BY range_floor;
                   """;
         

@@ -26,7 +26,7 @@ begin
         set
             song_rating_stats_count    = song_rating_stats_count + 1,
             song_rating_stats_sum      = song_rating_stats_sum + new.user_song_ratings_rating,
-            song_rating_stats_avg      = (song_rating_stats_sum + new.user_song_ratings_rating)::numeric / (song_rating_stats_count + 1)
+            song_rating_stats_avg      = round((song_rating_stats_sum + new.user_song_ratings_rating)::numeric / (song_rating_stats_count + 1), 2)
         where
             song_rating_stats_song_id = new.user_song_ratings_song_id;
 
@@ -40,7 +40,7 @@ begin
             set
                 song_rating_stats_sum      = song_rating_stats_sum + (new.user_song_ratings_rating - old.user_song_ratings_rating),
                 song_rating_stats_avg      = case when song_rating_stats_count > 0
-                                                        then (song_rating_stats_sum + (new.user_song_ratings_rating - old.user_song_ratings_rating))::numeric / song_rating_stats_count
+                                                        then round((song_rating_stats_sum + (new.user_song_ratings_rating - old.user_song_ratings_rating))::numeric / song_rating_stats_count, 2)
         else 0 end
             where
             song_rating_stats_song_id = new.user_song_ratings_song_id;
@@ -56,7 +56,7 @@ begin
         song_rating_stats_count    = song_rating_stats_count - 1,
         song_rating_stats_sum      = song_rating_stats_sum - old.user_song_ratings_rating,
         song_rating_stats_avg      = case when (song_rating_stats_count - 1) > 0
-                                                then (song_rating_stats_sum - old.user_song_ratings_rating)::numeric / (song_rating_stats_count - 1)
+                                                then round((song_rating_stats_sum - old.user_song_ratings_rating)::numeric / (song_rating_stats_count - 1), 2)
     else 0 end
 where
 song_rating_stats_song_id = old.user_song_ratings_song_id;

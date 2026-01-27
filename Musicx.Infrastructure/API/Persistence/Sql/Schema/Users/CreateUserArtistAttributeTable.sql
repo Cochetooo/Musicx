@@ -10,7 +10,7 @@ create table public.user_artist_attrs(
     user_artist_attrs_created_at                  timestamp without time zone,
     user_artist_attrs_updated_at                  timestamp without time zone,
     user_artist_attrs_follow                      bool,
-    user_artist_attrs_rating                      smallint check (user_artist_attrs_rating between 0 and 100),
+    user_artist_attrs_rating                      smallint check (user_artist_attrs_rating between 0 and 10000),
     primary key (user_artist_attrs_user_id, user_artist_attrs_artist_id)
 );
 

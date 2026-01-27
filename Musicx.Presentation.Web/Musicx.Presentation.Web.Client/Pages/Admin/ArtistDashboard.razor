@@ -65,6 +65,7 @@
                                 @if (context.Item.ArtworkUrl is not null)
                                 {
                                     <MudImage Src="@context.Item.ArtworkUrl"
+                                              @key="context.Item.ArtworkUrl"
                                               Alt="@context.Item.Name"
                                               Elevation="2"
                                               Width="24"

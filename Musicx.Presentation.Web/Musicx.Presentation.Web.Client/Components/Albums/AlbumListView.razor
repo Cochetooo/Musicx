@@ -16,6 +16,7 @@
             <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="py-1 animate-swipe-right">
                 <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                     <MudImage Src="@album.ArtworkUrl" Width="@((int)(Zoom * 48))" Height="@((int)(Zoom * 48))"
+                              @key="album.ArtworkUrl"
                               Class="rounded-lg mr-3" Elevation="8"/>
                     <MudStack Spacing="1">
                         <MudLink Href="@($"/Album/{album.Id}")">

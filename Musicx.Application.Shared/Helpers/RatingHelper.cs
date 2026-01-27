@@ -9,12 +9,12 @@ public static class RatingHelper
     private static readonly List<(decimal val, string color)> Stops = new()
     {
         (0.0m,   "#CD0000"), // bordeaux
-        (30.0m,  "#FF6347"), // salmon
-        (55.0m,  "#CDCD27"), // greeny-yellow
-        (65.0m,  "#27CD27"), // green
-        (72.0m,  "#2EAD69"), // seagreen
-        (80.0m,  "#00ADAD"), // cyan
-        (100.0m, "#9500FF")  // indigo
+        (3000.0m,  "#FF6347"), // salmon
+        (5500.0m,  "#CDCD27"), // greeny-yellow
+        (6500.0m,  "#27CD27"), // green
+        (7200.0m,  "#2EAD69"), // seagreen
+        (8000.0m,  "#00ADAD"), // cyan
+        (10000.0m, "#9500FF")  // indigo
     };
     
     public static string GetRatingFormatted(decimal? rating, RatingMode ratingMode)
@@ -29,17 +29,17 @@ public static class RatingHelper
         if (ratingMode == RatingMode.TextualShort || ratingMode == RatingMode.TextualDetailed)
         {
             TextualRating textual;
-            if (r <= 15) textual = TextualRating.Unlistenable;
-            else if (r <= 25) textual = TextualRating.Terrible;
-            else if (r <= 35) textual = TextualRating.Poor;
-            else if (r <= 45) textual = TextualRating.Mediocre;
-            else if (r <= 52) textual = TextualRating.Average;
-            else if (r <= 60) textual = TextualRating.Decent;
-            else if (r <= 65) textual = TextualRating.Good;
-            else if (r <= 70) textual = TextualRating.VeryGood;
-            else if (r <= 75) textual = TextualRating.Great;
-            else if (r <= 80) textual = TextualRating.Excellent;
-            else if (r <= 90) textual = TextualRating.Outstanding;
+            if (r <= 1500) textual = TextualRating.Unlistenable;
+            else if (r <= 2500) textual = TextualRating.Terrible;
+            else if (r <= 3500) textual = TextualRating.Poor;
+            else if (r <= 4500) textual = TextualRating.Mediocre;
+            else if (r <= 5200) textual = TextualRating.Average;
+            else if (r <= 6000) textual = TextualRating.Decent;
+            else if (r <= 6500) textual = TextualRating.Good;
+            else if (r <= 7000) textual = TextualRating.VeryGood;
+            else if (r <= 7500) textual = TextualRating.Great;
+            else if (r <= 8000) textual = TextualRating.Excellent;
+            else if (r <= 9000) textual = TextualRating.Outstanding;
             else textual = TextualRating.Masterpiece;
 
             if (ratingMode == RatingMode.TextualShort)
@@ -72,22 +72,22 @@ public static class RatingHelper
         if (ratingMode == RatingMode.TierList || ratingMode == RatingMode.TierListDetailed)
         {
             var tier = string.Empty;
-            if (r <= 20) tier = "D-";
-            else if (r <= 30) tier = "D";
-            else if (r <= 35) tier = "D+";
-            else if (r <= 40) tier = "C-";
-            else if (r <= 50) tier = "C";
-            else if (r <= 55) tier = "C+";
-            else if (r <= 60) tier = "B-";
-            else if (r <= 65) tier = "B";
-            else if (r <= 70) tier = "B+";
-            else if (r <= 75) tier = "A-";
-            else if (r <= 80) tier = "A";
-            else if (r <= 85) tier = "A+";
-            else if (r <= 90) tier = "S-";
-            else if (r <= 95) tier = "S";
-            else if (r < 100) tier = "S+";
-            else if (r == 100) tier = "S++";
+            if (r <= 2000) tier = "D-";
+            else if (r <= 3000) tier = "D";
+            else if (r <= 3500) tier = "D+";
+            else if (r <= 4000) tier = "C-";
+            else if (r <= 5000) tier = "C";
+            else if (r <= 5500) tier = "C+";
+            else if (r <= 6000) tier = "B-";
+            else if (r <= 6500) tier = "B";
+            else if (r <= 7000) tier = "B+";
+            else if (r <= 7500) tier = "A-";
+            else if (r <= 8000) tier = "A";
+            else if (r <= 8500) tier = "A+";
+            else if (r <= 9000) tier = "S-";
+            else if (r <= 9500) tier = "S";
+            else if (r < 10000) tier = "S+";
+            else if (r == 10000) tier = "S++";
 
             if (ratingMode == RatingMode.TierList)
             {
@@ -110,32 +110,32 @@ public static class RatingHelper
         {
             case RatingMode.OutOfFive:
                 denominator = 5;
-                scaled = r * denominator / 100;
+                scaled = r * denominator / 10000;
                 format = "0.##";
                 break;
             case RatingMode.OutOfTen:
                 denominator = 10;
-                scaled = r * denominator / 100;
+                scaled = r * denominator / 10000;
                 format = "0.##";
                 break;
             case RatingMode.OutOfTwenty:
                 denominator = 20;
-                scaled = r * denominator / 100;
+                scaled = r * denominator / 10000;
                 format = "0.##";
                 break;
             case RatingMode.OutOfFifty:
                 denominator = 50;
-                scaled = r * denominator / 100;
+                scaled = r * denominator / 10000;
                 format = "0.##";
                 break;
             case RatingMode.OutOfThousand:
                 denominator = 1000;
-                scaled = r * denominator / 100;
+                scaled = r * denominator / 10000;
                 format = "0"; // pas de décimales
                 break;
             case RatingMode.RatingStars:
                 denominator = 5;
-                scaled = r * denominator / 100;
+                scaled = r * denominator / 10000;
                 // arrondi au 0.5 le plus proche
                 scaled = Math.Round(scaled * 2, MidpointRounding.AwayFromZero) / 2;
                 format = scaled % 1 == 0 ? "0" : "0.0";
@@ -220,18 +220,18 @@ public static class RatingHelper
     
     public static int ToInt(this TextualRating r) => r switch
     {
-        TextualRating.Unlistenable => 5,
-        TextualRating.Terrible => 15,
-        TextualRating.Poor => 30,
-        TextualRating.Mediocre => 40,
-        TextualRating.Average => 50,
-        TextualRating.Decent => 60,
-        TextualRating.Good => 65,
-        TextualRating.VeryGood => 70,
-        TextualRating.Great => 75,
-        TextualRating.Excellent => 80,
-        TextualRating.Outstanding => 90,
-        TextualRating.Masterpiece => 100,
+        TextualRating.Unlistenable => 500,
+        TextualRating.Terrible => 1500,
+        TextualRating.Poor => 3000,
+        TextualRating.Mediocre => 4000,
+        TextualRating.Average => 5000,
+        TextualRating.Decent => 6000,
+        TextualRating.Good => 6500,
+        TextualRating.VeryGood => 7000,
+        TextualRating.Great => 7500,
+        TextualRating.Excellent => 8000,
+        TextualRating.Outstanding => 9000,
+        TextualRating.Masterpiece => 10000,
         _ => 0
     };
 

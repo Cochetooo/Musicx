@@ -323,7 +323,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             ChartType.Esoteric => $"ORDER BY (alst0.{AlbumRatingStatColumns.Average} * POWER(1.0 / (alst0.{AlbumRatingStatColumns.Count} + 1), 0.5)) DESC NULLS LAST",
             ChartType.Top => $@"
             ORDER BY (
-            (alst0.{AlbumRatingStatColumns.Average} * POWER(10 - {query.PopularityWeight}, 1.2)) +
+            ((alst0.{AlbumRatingStatColumns.Average} / 100.0) * POWER(10 - {query.PopularityWeight}, 1.3)) +
             (LOG(alst0.{AlbumRatingStatColumns.Count} + 1) * POWER({query.PopularityWeight}, 2.2))
             ) DESC NULLS LAST",
             _ => $"ORDER BY alst0.{AlbumRatingStatColumns.Average} DESC NULLS LAST"

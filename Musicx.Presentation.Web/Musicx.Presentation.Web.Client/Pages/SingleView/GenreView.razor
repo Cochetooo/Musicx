@@ -161,6 +161,7 @@ else
                                         <MudLink Href="@($"/Album/{@context.Id}")">
                                             <MudStack Justify="Justify.FlexStart" Row>
                                                 <MudImage Src="@context.ArtworkUrl" Alt="@context.Name"
+                                                          @key="context.ArtworkUrl"
                                                           Width="48" Height="48"
                                                           Class="rounded-lg"
                                                           Elevation="25"/>

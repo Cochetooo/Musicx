@@ -62,7 +62,7 @@
                         @if (null != _artist.ArtworkUrl)
                         {
                             <MudImage Src="@_artist.ArtworkUrl" Alt="@_artist.Name" Class="rounded-lg" Elevation="25"
-                                      Width="96" Height="96" />
+                                      @key="_artist.ArtworkUrl" Width="96" Height="96" />
                         }
                     }
                 </MudField>

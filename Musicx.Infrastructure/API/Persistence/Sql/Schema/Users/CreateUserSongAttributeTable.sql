@@ -9,7 +9,7 @@ create table public.user_song_attrs (
     user_song_attrs_song_id                   bigint references public.songs(song_id) on delete cascade,
     user_song_attrs_created_at                timestamp without time zone,
     user_song_attrs_updated_at                timestamp without time zone,
-    user_song_attrs_attr                    smallint not null check (user_song_attrs_attr between 0 and 100),
+    user_song_attrs_attr                    smallint not null check (user_song_attrs_attr between 0 and 10000),
     primary key (user_song_attrs_user_id, user_song_attrs_song_id)
 );
 

@@ -48,7 +48,7 @@ public partial class DonutRating
             0.22
         );
         
-        _ratingData = [(double)(Rating ?? 0), 100 - (double)(Rating ?? 0)];
+        _ratingData = [(double)(Rating ?? 0), 10000 - (double)(Rating ?? 0)];
         _ratingOptions.ChartPalette =
         [
             _ratingColor,

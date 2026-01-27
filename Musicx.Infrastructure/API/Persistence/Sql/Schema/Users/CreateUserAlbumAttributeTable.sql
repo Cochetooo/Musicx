@@ -9,7 +9,7 @@ create table public.user_album_attrs (
     user_album_attrs_album_id                    bigint references public.albums(album_id) on delete cascade,
     user_album_attrs_created_at                  timestamp without time zone,
     user_album_attrs_updated_at                  timestamp without time zone,
-    user_album_attrs_rating                      smallint check (user_album_attrs_rating between 0 and 100),
+    user_album_attrs_rating                      smallint check (user_album_attrs_rating between 0 and 10000),
     user_album_attrs_collection_type             integer,
     user_album_attrs_discovery_date              timestamp without time zone,
     user_album_attrs_review                      text,
