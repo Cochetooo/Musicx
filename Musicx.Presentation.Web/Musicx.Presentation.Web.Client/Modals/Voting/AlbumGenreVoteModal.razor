@@ -65,7 +65,7 @@
                         @bind-Text="_selectedInfluenceText"
                         @bind-Value="_selectedInfluenceGenre"
                         ToStringFunc="@(e => e?.CanonicalName ?? "")"
-                        SearchFunc="SearchGenre"/>
+                        SearchFunc="SearchInfluence"/>
                 
                     <MudIconButton Icon="@Icons.Material.Filled.Add" 
                                    Disabled="@(_selectedInfluenceGenre is null)"

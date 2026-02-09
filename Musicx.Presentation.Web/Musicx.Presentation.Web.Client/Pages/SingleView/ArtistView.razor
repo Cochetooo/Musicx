@@ -181,8 +181,18 @@ else
                         @if (_artist.CurrentCountry is not null)
                         {
                             <Descriptor>
-                                <DescriptorLabel>🌍 Country</DescriptorLabel>
-                                <DescriptorValue>@_artist.CurrentCountry</DescriptorValue>
+                                <DescriptorLabel>🌍 Location</DescriptorLabel>
+                                <DescriptorValue>
+                                    @_artist.CurrentCountry
+                                    @if (_artist.CurrentRegion is not null)
+                                    {
+                                        <span>, @_artist.CurrentRegion</span>
+                                    }
+                                    @if (_artist.CurrentTown is not null)
+                                    {
+                                        <span>, @_artist.CurrentTown</span>
+                                    }
+                                </DescriptorValue>
                             </Descriptor>
                         }
                         @if (_artist.Discriminator == ArtistDiscriminator.Band)

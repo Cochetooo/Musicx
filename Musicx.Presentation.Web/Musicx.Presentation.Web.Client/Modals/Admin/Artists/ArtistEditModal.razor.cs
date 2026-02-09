@@ -19,6 +19,7 @@ public partial class ArtistEditModal
     private List<OutArtist> _existingArtists = [];
 
     private bool _isLoading;
+    private bool _showOrigin;
 
     private MudTextField<string> _nameTextEdit = null!;
 
@@ -144,6 +145,15 @@ public partial class ArtistEditModal
 
         await UpdateArtwork();
     }
+    
+    /* private async Task<IEnumerable<string>> SearchRegion(string value)
+    {
+        if (string.IsNullOrWhiteSpace(_artist.CurrentCountry)) return [];
+
+        var url = $"https://secure.geonames.org/searchJSON?country={_artist.CurrentCountry}&featureCode=ADM1&maxRows=10&username=TON_USER&q={value}";
+        var json = await _http.GetFromJsonAsync<GeoNamesResponse>(url);
+        return json?.geonames.Select(g => g.name) ?? [];
+    } */
     
     private async Task<IEnumerable<string>>? SearchCountry(string? value, CancellationToken token)
     {

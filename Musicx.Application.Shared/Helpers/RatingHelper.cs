@@ -99,7 +99,7 @@ public static class RatingHelper
         
         if (ratingMode == RatingMode.Percentage)
         {
-            return $"{r:0.##}%";
+            return $"{(r/100):0.##}%";
         }
 
         decimal scaled;

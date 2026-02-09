@@ -36,4 +36,4 @@ create index ix_artists_trgm on public.artists using GIN (artist_name gin_trgm_o
 
 \i 'Artists/CreateArtistRatingStatTable.sql'
 
-\i 'Artists/CreateBandPersonArtistTable.sql'
+\i 'Artists/CreateBandMemberTable.sql'

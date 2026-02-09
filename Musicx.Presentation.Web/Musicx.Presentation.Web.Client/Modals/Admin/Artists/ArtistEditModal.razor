@@ -39,7 +39,48 @@
                     Variant="Variant.Text"/>
             </MudItem>
             
-            <MudItem xs="12" md="6">
+            <MudItem xs="12" md="4">
+                <MudAutocomplete T="string"
+                                 Label="Current Country"
+                                 Placeholder="Search country..."
+                                 HelperText="Current country"
+                                 SearchFunc="SearchCountry"
+                                 @bind-Value="_artist.CurrentCountry"/>
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <MudTextField 
+                    T="string"
+                    @bind-Text="_artist.CurrentRegion"
+                    HelperText="Current Region"
+                    Label="Current Region"
+                    Placeholder="Enter a current region..."
+                    Variant="Variant.Text" />
+                <!-- <MudAutocomplete T="string"
+                                 Label="Region"
+                                 Placeholder="Search region..."
+                                 HelperText="Current region"
+                                 SearchFunc="SearchRegion"
+                                 @bind-Value="_artist.CurrentRegion"/> -->
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <MudTextField 
+                    T="string"
+                    @bind-Text="_artist.CurrentTown"
+                    HelperText="Current Town"
+                    Label="Current Town"
+                    Placeholder="Enter a current town..."
+                    Variant="Variant.Text" />
+                <!-- <MudAutocomplete T="string"
+                                 Label="Town"
+                                 Placeholder="Search town..."
+                                 HelperText="Current town"
+                                 SearchFunc="SearchTown"
+                                 @bind-Value="_artist.CurrentTown"/> -->
+            </MudItem>
+            
+            <!-- <MudItem xs="12" md="6">
                 <MudAutocomplete
                     T="string"
                     Dense
@@ -49,6 +90,62 @@
                     SearchFunc="@SearchCountry"
                     @bind-Value="_artist.CurrentCountry"
                 />
+            </MudItem> -->
+            
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Secondary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="@(() => _showOrigin = !_showOrigin)">
+                    Origin location (optional)
+                </MudButton>
+            </MudItem>
+
+            <MudCollapse Expanded="_showOrigin">
+                <MudPaper Class="pa-4 mt-2 origin-box">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
+                        Only if different from current location
+                    </MudText>
+
+                    <MudGrid Class="mt-2">
+                        <MudItem xs="12" md="4">
+                            <MudAutocomplete T="string"
+                                             Label="Origin Country"
+                                             SearchFunc="SearchCountry"
+                                             @bind-Value="_artist.OriginCountry"/>
+                        </MudItem>
+
+                        <MudItem xs="12" md="4">
+                            <MudTextField 
+                                T="string"
+                                @bind-Text="_artist.OriginRegion"
+                                HelperText="Origin Region"
+                                Label="Origin Region"
+                                Placeholder="Enter a origin region..."
+                                Variant="Variant.Text" />
+                        </MudItem>
+
+                        <MudItem xs="12" md="4">
+                            <MudTextField 
+                                T="string"
+                                @bind-Text="_artist.OriginTown"
+                                HelperText="Origin Town"
+                                Label="Origin Town"
+                                Placeholder="Enter a origin town..."
+                                Variant="Variant.Text" />
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudCollapse>
+            
+            <MudItem xs="12">
+                <MudTextField T="string"
+                              Label="Description"
+                              Placeholder="Short biography / context..."
+                              Lines="5"
+                              MaxLength="2000"
+                              @bind-Text="_artist.Description"
+                              Variant="Variant.Text"/>
             </MudItem>
             
             <MudItem xs="12" md="6">
@@ -136,3 +233,11 @@
         <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
     </DialogActions>
 </MudDialog>
+
+<style>
+    .origin-box {
+        background: rgba(255,255,255,0.04);
+        border-left: 3px solid var(--mud-palette-secondary);
+        opacity: 0.85;
+    }
+</style>

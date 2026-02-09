@@ -141,4 +141,22 @@ public partial class AlbumGenreVoteModal
            && !_primaryGenres.Contains(x)
            && !_influenceGenres.Contains(x));
     }
+    
+    private async Task<IEnumerable<OutGenre>> SearchInfluence(string? value, CancellationToken token)
+    {
+        await Task.Delay(5, token);
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return [];
+        }
+
+        return _availableGenres.Where(x => 
+            x.CanonicalName
+                .ToLower()
+                .Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            && !_primaryGenres.Contains(x)
+            && !_influenceGenres.Contains(x)
+            && x.Type == GenreType.Subgenre);
+    }
 }

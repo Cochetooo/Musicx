@@ -2,10 +2,10 @@
 <div class="type-grid">
     @foreach (var type in Enum.GetValues<GenreType>())
     {
-        <div class="type-card @(Node.Type == type ? "selected" : "")"
+        <div class="my-2 type-card @(Node.Type == type ? "selected" : "")"
              @onclick="() => Select(type)">
-            <div class="type-title">@type</div>
-            <div class="type-desc">@type.ToDescriptionString()</div>
+            <MudText Typo="Typo.body1" Class="text-color-primary text-bold">@type.ToString().ToUpper()</MudText>
+            <MudText Typo="Typo.body2" Class="text-color-secondary text-italic">@type.ToDescriptionString()</MudText>
         </div>
     }
 </div>
