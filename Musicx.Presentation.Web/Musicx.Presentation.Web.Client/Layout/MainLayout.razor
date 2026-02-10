@@ -48,6 +48,7 @@
         @if (UserClientContext.CurrentUser is not null)
         {
             <MudImage Alt="@UserClientContext.CurrentUser.Name"
+                      @key="UserClientContext.CurrentUser.PictureUrl"
                       Width="36" Height="36"
                       Src="@UserClientContext.CurrentUser.PictureUrl"
                       Class="rounded-circle mr-2"

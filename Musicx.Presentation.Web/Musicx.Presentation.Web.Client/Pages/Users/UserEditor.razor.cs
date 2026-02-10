@@ -44,9 +44,20 @@ public partial class UserEditor
         var file = e.File;
         await using var stream = file.OpenReadStream(5_000_000);
         _user.PictureUrl = await UcSaveAvatar.ExecuteAsync(stream, file.ContentType);
+
+        await InvokeAsync(StateHasChanged);
     }
-    
-    private void SetRatingMode(RatingMode mode) => _user!.PrefRatingMode = mode;
+
+    private void SetRatingMode(RatingMode mode)
+    {
+        if (_user is null)
+        {
+            Snackbar.Add("User is null, cannot change rating mode.", Severity.Warning);
+            return;
+        }
+        
+        _user.PrefRatingMode = mode;
+    } 
 
     private async Task Save()
     {

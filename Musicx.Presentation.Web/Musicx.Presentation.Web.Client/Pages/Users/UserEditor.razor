@@ -87,26 +87,30 @@
 
             <MudStack Row Spacing="4">
                 <MudSwitch @bind-Value="_user.PrefDarkMode" Color="Color.Primary"
+                           Label="Dark Mode"
                            ThumbIcon="@Icons.Material.Filled.DarkMode" />
-
-                <MudSwitch @bind-Value="_user.PrefSimpleGenre" Color="Color.Secondary" />
-                <MudSwitch @bind-Value="_user.PrefShowRatings" Color="Color.Tertiary" />
+                <MudSwitch @bind-Value="_user.PrefSimpleGenre" Color="Color.Secondary"
+                           Label="Simple Album Genre Display" />
+                <MudSwitch @bind-Value="_user.PrefShowRatings" Color="Color.Tertiary"
+                           Label="Show Ratings" />
             </MudStack>
             
             <!-- Rating mode -->
             <MudDivider />
             <MudText Typo="Typo.h6">Rating Display Mode</MudText>
 
-            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary">
+            <MudStack Row Wrap="Wrap.Wrap" Justify="Justify.Center" Spacing="2" Class="rating-mode-group">
                 @foreach (var mode in RatingModes)
                 {
                     <MudButton Variant="@(_user.PrefRatingMode == mode.Item1 ? Variant.Filled : Variant.Outlined)"
+                               Color="Color.Secondary"
                                StartIcon="@mode.Item2"
+                               Style="min-width: 180px"
                                OnClick="@(()=>SetRatingMode(mode.Item1))">
                         @mode.Item1.ToDescriptionString()
                     </MudButton>
                 }
-            </MudButtonGroup>
+            </MudStack>
             
             <!-- Connected accounts -->
             <MudDivider />
@@ -140,3 +144,14 @@
         }
     </MudStack>
 </MudContainer>
+
+<style>
+    .rating-mode-group .mud-button-root {
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    
+    .rating-mode-group .mud-button-root:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    }
+</style>
