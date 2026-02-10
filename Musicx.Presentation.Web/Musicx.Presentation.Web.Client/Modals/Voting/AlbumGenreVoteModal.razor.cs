@@ -135,11 +135,17 @@ public partial class AlbumGenreVoteModal
         }
 
         return _availableGenres.Where(x => 
-            x.CanonicalName
-               .ToLower()
-               .Contains(value, StringComparison.InvariantCultureIgnoreCase)
-           && !_primaryGenres.Contains(x)
-           && !_influenceGenres.Contains(x));
+            (x.CanonicalName
+                .ToLower()
+                .Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            || (x.ShortName?
+                .ToLower()
+                .Contains(value, StringComparison.InvariantCultureIgnoreCase) ?? false))
+            && !_primaryGenres.Contains(x)
+            && !_influenceGenres.Contains(x)
+            && x.Type != GenreType.Genre && x.Type != GenreType.Localization
+            && x is { IsTaggable: true, IsVisible: true }
+        );
     }
     
     private async Task<IEnumerable<OutGenre>> SearchInfluence(string? value, CancellationToken token)
@@ -152,11 +158,16 @@ public partial class AlbumGenreVoteModal
         }
 
         return _availableGenres.Where(x => 
-            x.CanonicalName
-                .ToLower()
-                .Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            (x.CanonicalName
+                 .ToLower()
+                 .Contains(value, StringComparison.InvariantCultureIgnoreCase)
+             || (x.ShortName?
+                 .ToLower()
+                 .Contains(value, StringComparison.InvariantCultureIgnoreCase) ?? false))
             && !_primaryGenres.Contains(x)
             && !_influenceGenres.Contains(x)
-            && x.Type == GenreType.Subgenre);
+            && x.Type == GenreType.Subgenre
+            && x is { IsTaggable: true, IsVisible: true }
+        );
     }
 }

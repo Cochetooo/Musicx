@@ -1,8 +1,10 @@
+using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Infrastructure;
 using Musicx.Presentation.Web.Client;
 using Musicx.Presentation.Web.Components;
 using Musicx.Presentation.Web.Contexts;
 using Musicx.Presentation.Web.Middlewares.Auth;
+using Musicx.Presentation.Web.Storage;
 using _Imports = Musicx.Presentation.Web.Client._Imports;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +34,7 @@ builder.Services
 
 // Add Api dependencies
 builder.Services
+    .AddSingleton<IPublicFileRoot, WebRootFileRoot>()
     .AddScoped<IUserContext, UserContext>();
 
 // Add Swagger

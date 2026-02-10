@@ -38,23 +38,30 @@
         <!-- Search Box -->
         <MudTextField Immediate Label="Search"
                       T="string"
+                      ReadOnly
                       OnKeyDown="@SearchKeyDown" Variant="Variant.Filled"
                       Class="nav-search-field" @onfocus="OpenSearch"
                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"/>
 
         <MudSpacer/>
         
-        <!-- Light/Dark Mode Switch -->
-        <ThemeModeSwitch @bind-IsDarkMode="_isDarkMode" />
-        
         @if (UserClientContext.CurrentUser is not null)
         {
+            <MudImage Alt="@UserClientContext.CurrentUser.Name"
+                      Width="36" Height="36"
+                      Src="@UserClientContext.CurrentUser.PictureUrl"
+                      Class="rounded-circle mr-2"
+            />
+            
             <MudLink Color="Color.Inherit" Href="@($"/User/{UserClientContext.CurrentUser.Id}")">
                 <MudText Typo="Typo.subtitle1" Color="Color.Inherit">
                     @UserClientContext.CurrentUser.Name
                 </MudText>
             </MudLink>
         }
+        
+        <!-- Light/Dark Mode Switch -->
+        <ThemeModeSwitch @bind-IsDarkMode="_isDarkMode" />
 
         <!-- Others Menu -->
         <MudMenu

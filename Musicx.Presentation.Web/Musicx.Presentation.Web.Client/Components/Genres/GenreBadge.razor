@@ -11,7 +11,7 @@
                      Icon="@GetChipIcon()" Style="@GetChipStyle(Genre)" 
                      Class="@GetChipClass()" OnClose="@OnClose"
                      Label="@true">
-                @Genre.CanonicalName
+                @(Genre.ShortName ?? Genre.CanonicalName)
             </MudChip>
         }
         else
@@ -20,7 +20,7 @@
                      Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
                      Class="@GetChipClass()"
                      Label="@true">
-                @Genre.CanonicalName
+                @(Genre.ShortName ?? Genre.CanonicalName)
             </MudChip>
         }
     </MudLink>
@@ -34,7 +34,7 @@ else
                  Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
                  Class="@GetChipClass()" OnClose="@OnClose"
                  Label="@true">
-            @Genre.CanonicalName
+            @(Genre.ShortName ?? Genre.CanonicalName)
         </MudChip>
     }
     else
@@ -44,7 +44,7 @@ else
                  Style="@GetChipStyle(Genre)" Icon="@GetChipIcon()" 
                  Class="@GetChipClass()"
                  Label="@true">
-            @Genre.CanonicalName
+            @(Genre.ShortName ?? Genre.CanonicalName)
         </MudChip>
     }
 }
@@ -92,7 +92,7 @@ else
             GenreType.Scene => $"border:1px solid {gradient}; color:{textColor}; background:{gradient}; font-weight: 400; font-size: {fontSize};",
             GenreType.Movement => $"border:1px dashed {gradient}; color:{textColor}; background:{gradient}; font-weight: 400; font-size: {fontSize};",
             GenreType.Descriptor => $"background:{gradient}; color:{textColor}; opacity:0.85; border-radius:16px; font-size: 400; font-size: {fontSize};",
-            _ => $"background:{gradient}; color:{textColor}; font-size: {fontSize};"
+            _ => $"background:{gradient}; color:{textColor}; font-weight: 400; font-size: {fontSize};"
         };
     }
 

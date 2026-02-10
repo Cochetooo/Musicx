@@ -20,5 +20,8 @@ public enum GenreType
     Subgenre = 0,
     
     [Description("A sub-genre that is or was active in a specific period.")]
-    Movement = 3
+    Movement = 3,
+    
+    [Description("A localization genre that serves to localize a specific sub-genre. Used for example in folk or classical music.")]
+    Localization = 6,
 }

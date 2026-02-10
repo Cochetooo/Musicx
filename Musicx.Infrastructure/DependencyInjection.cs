@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Auth;
+using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Application.Api.Interfaces.Workers;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
@@ -42,6 +43,7 @@ using Musicx.Infrastructure.API.Persistence.Repositories.Security;
 using Musicx.Infrastructure.API.Persistence.Repositories.Song;
 using Musicx.Infrastructure.API.Persistence.Repositories.Tag;
 using Musicx.Infrastructure.API.Persistence.Repositories.User;
+using Musicx.Infrastructure.API.Storage;
 using Musicx.Infrastructure.API.Workers;
 using Musicx.Infrastructure.Desktop.Persistence;
 using Musicx.Infrastructure.Desktop.Persistence.Caches;
@@ -163,6 +165,8 @@ public static class DependencyInjection
         
         services.AddScoped<IAuthService, AuthService>();
 
+        services.AddScoped<IAvatarStorage, LocalAvatarStorage>();
+
         services.AddMusicxWeb();
         
         return services;
@@ -189,6 +193,7 @@ public static class DependencyInjection
         services.AddScoped<IGetAlbumByGenreService, GetAlbumByGenreService>();
         services.AddScoped<IGetSongByAlbumService, GetSongByAlbumService>();
         services.AddScoped(typeof(IGetRatingDistribByUserService<>), typeof(GetRatingDistribByUserService<>));
+        services.AddScoped<ISaveAvatarService,SaveAvatarService>();
 
         services.AddScoped<IAuthSignInService, AuthSignInService>();
         

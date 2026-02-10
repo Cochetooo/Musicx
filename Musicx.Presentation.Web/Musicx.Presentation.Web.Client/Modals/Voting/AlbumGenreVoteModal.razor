@@ -34,7 +34,7 @@
                         Placeholder="Search a genre..."
                         @bind-Text="_selectedPrimaryText"
                         @bind-Value="_selectedPrimaryGenre"
-                        ToStringFunc="@(e => e?.CanonicalName ?? "")"
+                        ToStringFunc="@(e => e?.ShortName ?? e?.CanonicalName ?? "")"
                         SearchFunc="SearchGenre"/>
                 
                     <MudIconButton Icon="@Icons.Material.Filled.Add" 
@@ -64,7 +64,7 @@
                         Placeholder="Search a genre..."
                         @bind-Text="_selectedInfluenceText"
                         @bind-Value="_selectedInfluenceGenre"
-                        ToStringFunc="@(e => e?.CanonicalName ?? "")"
+                        ToStringFunc="@(e => e?.ShortName ?? e?.CanonicalName ?? "")"
                         SearchFunc="SearchInfluence"/>
                 
                     <MudIconButton Icon="@Icons.Material.Filled.Add" 

@@ -19,8 +19,8 @@ internal sealed class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder
-            .UseSqlite($"Data Source={GetDatabasePath()}");
+        //optionsBuilder
+        //    .UseSqlite($"Data Source={GetDatabasePath()}");
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

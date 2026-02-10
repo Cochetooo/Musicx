@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
+using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Application.Shared.Enums;
+using Musicx.Application.Web.Interfaces.Models.Auth;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
 using Musicx.Presentation.Web.Contexts;
 
@@ -14,6 +17,7 @@ namespace Musicx.Presentation.Web.Controllers.User;
 [Route("api/users")]
 public sealed class UserController(IUserRepository userRepository,
     IAuthService authService,
+    IAvatarStorage avatarStorage,
     ILoggerProvider loggerProvider) : ControllerBase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserController));
@@ -222,6 +226,50 @@ public sealed class UserController(IUserRepository userRepository,
         {
             _logger.LogError($"❌ API : SAVE ALL users - ERROR: {ex.Message}");
             return BadRequest(ex);
+        }
+    }
+
+    [HttpPost("save-avatar")]
+    public async Task<ActionResult<string>> SaveAvatar([FromForm] IFormFile? avatar,
+        [FromServices] IUserContext userContext)
+    {
+        _logger.LogInformation($"🌍🏳️ API : SAVE AVATAR");
+        
+        if (userContext.CurrentUser is null)
+        {
+            return Unauthorized("User not logged in.");
+        }
+        
+        if (avatar is null || avatar.Length == 0)
+        {
+            return BadRequest("No file provided");
+        }
+
+        try
+        {
+            var userId = userContext.CurrentUser.Id; // ta méthode existante
+
+            await using var stream = avatar.OpenReadStream();
+
+            var url = await avatarStorage.SaveAsync(
+                userId,
+                stream,
+                avatar.ContentType,
+                HttpContext.RequestAborted
+            );
+
+            userContext.CurrentUser.PictureUrl = url;
+            // Persist new picture url
+            await userRepository.SaveAsync(userContext.CurrentUser.ToRaw());
+
+            _logger.LogInformation($"🌍✅ API : SAVE AVATAR - SUCCESS");
+
+            return Ok(url);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"❌ API : SAVE AVATAR - ERROR: {ex.Message}");
+            return BadRequest(ex.Message);
         }
     }
 }

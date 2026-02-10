@@ -1,0 +1,142 @@
+﻿@page "/User/Edit"
+@using System.Globalization
+@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Contracts.Dto.Requests.User
+
+@inject IUserClientContext UserClientContext
+@inject ISaveService<InUser> UcSave
+@inject ISaveAvatarService UcSaveAvatar
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-6 glass-card pa-6 animate-hover-up">
+    <MudStack Spacing="4">
+        <MudText Typo="Typo.h4" Class="montserrat text-bold text-color-primary">
+            Edit Profile
+        </MudText>
+        
+        @if (_user is null)
+        {
+            <MudAlert Severity="Severity.Warning">
+                Please sign in to edit your profile.
+            </MudAlert>
+        }
+        else
+        {
+            <!-- Avatar -->
+            <MudStack Row Spacing="4" AlignItems="AlignItems.Center">
+                <MudAvatar Size="Size.Large">
+                    <MudImage Src="@_user.PictureUrl" />
+                </MudAvatar>
+                
+                <MudFileUpload T="IBrowserFile"
+                               OnFilesChanged="OnAvatarSelected">
+                    <ActivatorContent>
+                        <MudFab Color="Color.Primary"
+                                Size="Size.Small"
+                                StartIcon="@Icons.Material.Filled.Image"
+                                Label="Upload avatar" />
+                    </ActivatorContent>
+                </MudFileUpload>
+            </MudStack>
+            
+            <!-- Bio -->
+            <MudTextField T="string"
+                          Label="Bio"
+                          Lines="5"
+                          Variant="Variant.Outlined"
+                          @bind-Value="_user.Biography" />
+            
+            <!-- Email + birthdate -->
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Email"
+                                  ReadOnly
+                                  Value="@_user.Email"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@(_user.EmailConfirmed ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Warning)" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTooltip Text="Cannot edit birth date">
+                        <MudTextField T="string" Label="Birth date"
+                                      Disabled="true"
+                                      Value="@_user.BirthDate?.ToString("dd MMM yyyy")" />
+                    </MudTooltip>
+                </MudItem>
+            </MudGrid>
+            
+            <!-- Password -->
+            <MudDivider />
+            <MudText Typo="Typo.h6">Change Password</MudText>
+
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="New password" InputType="InputType.Password" @bind-Value="_newPassword" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Confirm password" InputType="InputType.Password" @bind-Value="_confirmPassword" />
+                </MudItem>
+            </MudGrid>
+            
+            <!-- Preferences -->
+            <MudDivider />
+            <MudText Typo="Typo.h6">Preferences</MudText>
+
+            <MudStack Row Spacing="4">
+                <MudSwitch @bind-Value="_user.PrefDarkMode" Color="Color.Primary"
+                           ThumbIcon="@Icons.Material.Filled.DarkMode" />
+
+                <MudSwitch @bind-Value="_user.PrefSimpleGenre" Color="Color.Secondary" />
+                <MudSwitch @bind-Value="_user.PrefShowRatings" Color="Color.Tertiary" />
+            </MudStack>
+            
+            <!-- Rating mode -->
+            <MudDivider />
+            <MudText Typo="Typo.h6">Rating Display Mode</MudText>
+
+            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary">
+                @foreach (var mode in RatingModes)
+                {
+                    <MudButton Variant="@(_user.PrefRatingMode == mode.Item1 ? Variant.Filled : Variant.Outlined)"
+                               StartIcon="@mode.Item2"
+                               OnClick="@(()=>SetRatingMode(mode.Item1))">
+                        @mode.Item1.ToDescriptionString()
+                    </MudButton>
+                }
+            </MudButtonGroup>
+            
+            <!-- Connected accounts -->
+            <MudDivider />
+            <MudStack Row Spacing="4">
+                @if (_user.GoogleId is null)
+                {
+                    <MudButton StartIcon="@Icons.Material.Filled.AccountCircle"
+                               Color="Color.Error">
+                        Connect Google
+                    </MudButton>
+                }
+
+                @if (_user.LastFmUsername is null)
+                {
+                    <MudButton StartIcon="@Icons.Material.Filled.MusicNote"
+                               Color="Color.Warning">
+                        Connect LastFM
+                    </MudButton>
+                }
+            </MudStack>
+            
+            <MudText Typo="Typo.caption" Class="text-color-secondary">
+                Account created on @_user.CreatedAt.ToString("ddd dd MMM yyyy 'at' HH:mm:ss", CultureInfo.InvariantCulture)
+            </MudText>
+
+            <MudDivider />
+
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Save">
+                Save Changes
+            </MudButton>
+        }
+    </MudStack>
+</MudContainer>
