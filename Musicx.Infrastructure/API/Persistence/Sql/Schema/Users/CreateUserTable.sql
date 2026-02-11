@@ -35,6 +35,7 @@ create index ix_users_trgm on public.users using GIN (user_name gin_trgm_ops);
 \i 'Users/CreateUserArtistTagTable.sql'
 
 \i 'Users/CreateUserAlbumAttributeTable.sql'
+\i 'Users/CreateUserAlbumFavoriteTable.sql'
 \i 'Users/CreateUserAlbumTagTable.sql'
 
 \i 'Users/CreateUserSongAttributeTable.sql'
