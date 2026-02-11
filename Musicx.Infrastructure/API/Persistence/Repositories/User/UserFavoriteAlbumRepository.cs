@@ -20,15 +20,34 @@ internal sealed class UserFavoriteAlbumRepository(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserFavoriteAlbumRepository));
     
-    public Task DeleteAsync(long id)
+    public async Task DeleteAsync(long id)
     {
-        throw new NotImplementedException();
+        const string sql = $"DELETE FROM user_fav_album WHERE {UserFavoriteAlbumColumns.UserId} = @id";
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@id", id)
+        };
+
+        await connection.ExecuteTransactionAsync((sql, parameters));
+    }
+    
+    public async Task DeleteOneAsync(long userId, long albumId)
+    {
+        const string sql = $"DELETE FROM user_fav_album " +
+                           $"WHERE {UserFavoriteAlbumColumns.UserId} = @userId AND {UserFavoriteAlbumColumns.AlbumId} = @albumId";
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@userId", userId),
+            new("@albumId", albumId)
+        };
+
+        await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
     public Task DeleteAllAsync(IEnumerable<long> ids)
-    {
-        throw new NotImplementedException();
-    }
+        => throw new NotImplementedException();
 
     public Task<OutUserFavoriteAlbum?> FindOneByIdAsync(long id, IJoinSpecification<InUserFavoriteAlbum>? joinSpecification = null)
         => throw new NotImplementedException();

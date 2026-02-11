@@ -6,5 +6,6 @@ namespace Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 
 public interface IUserFavoriteAlbumRepository : IRepository<InUserFavoriteAlbum, OutUserFavoriteAlbum>
 {
+    Task DeleteOneAsync(long userId, long albumId);
     Task<IReadOnlyList<OutUserFavoriteAlbum>> FindByUserAsync(long userId);
 }
