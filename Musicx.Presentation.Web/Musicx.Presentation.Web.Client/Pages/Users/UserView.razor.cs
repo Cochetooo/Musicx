@@ -65,7 +65,7 @@ public partial class UserView
         _logger.LogInformation($"✅ User loaded: {_user.Name} ({_user.Id})");
         await InvokeAsync(StateHasChanged);
 
-        _albumRatingDistrib = await UcGetAlbumRatingDistrib.ExecuteAsync(_user.Id);
+        _albumRatingDistrib = await UcFindAlbumRatingDistrib.ExecuteAsync(_user.Id);
         _logger.LogInformation($"✅ Album Ratings Distribution loaded ({_user.Id})");
         
         await _albumRatingsTable.ReloadServerData();
@@ -87,7 +87,7 @@ public partial class UserView
         short sortDir = state.SortDirection == SortDirection.Ascending ? (short) 1 : (short) -1;
         var sortLabel = state.SortLabel;
         
-        var response = await UcGetAlbumAttrs.ExecuteAsync(
+        var response = await UcFindAlbumAttrs.ExecuteAsync(
             _user.Id, 
             pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),
             joins: new UserAlbumAttrJoinSpecification

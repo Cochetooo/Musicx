@@ -2,7 +2,9 @@
 @using Musicx.Application.Shared.Helpers
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
-@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Application.Web.Interfaces.UseCases.Album
+@using Musicx.Application.Web.Interfaces.UseCases.Song
+@using Musicx.Application.Web.Interfaces.UseCases.User.AlbumAttribute
 @using Musicx.Contracts.Dto.Requests.Album
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
@@ -14,10 +16,10 @@
 @using Musicx.Presentation.Web.Client.Modals.Voting
 
 @inject IFindOneByIdService<InAlbum, OutAlbum> UcGet
-@inject IGetAlbumByArtistService UcGetArtistAlbums
-@inject IGetSongByAlbumService UcGetSongs
-@inject IGetAlbumAttributesByAlbumService UcGetAlbumAttrs
-@inject IGetAlbumAttributeByAlbumUserService UcGetUserServiceAlbumAttr
+@inject IFindAlbumByArtistService UcGetArtistAlbums
+@inject IFindSongByAlbumService UcFindSongs
+@inject IFindAlbumAttributesByAlbumService UcFindAlbumAttrs
+@inject IFindAlbumAttributesByAlbumUserService UcFindUserServiceAlbumAttr
 @inject ISaveService<InUserAlbumAttribute> UcSaveUserAttrib
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
@@ -129,14 +131,14 @@ else
 
                     @if (_album.EnglishName is not null)
                     {
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-muted">
+                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-muted">
                             [@_album.EnglishName]
                         </MudText>
                     }
 
                     @if (_album.Artist is not null)
                     {
-                        <MudLink Typo="Typo.h6" Class="ml-2 montserrat text-color-secondary text-shadow"
+                        <MudLink Typo="Typo.h6" Class="ml-2 montserrat color-secondary text-shadow"
                                  Href="@($"/Artist/{_album.Artist.Id}")">
                             @if (_album.ArtistAlias is not null)
                             {
@@ -238,7 +240,7 @@ else
                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
                             Size="DonutRatingSize.Large"/>
 
-                        <MudText Typo="Typo.body1" Class="text-color-primary mt-2">
+                        <MudText Typo="Typo.body1" Class="color-primary mt-2">
                             @(_album.Stats?.Count ?? 0) ratings
                         </MudText>
                     </div>
@@ -248,29 +250,29 @@ else
                     <MudStack Justify="Justify.Center">
                         @if (null != _album.OriginalReleaseDate)
                         {
-                            <MudText Class="text-color-secondary text-light mt-2">
+                            <MudText>
                                 📅 Release Date:&nbsp;
 
-                                <MudText Inline Class="text-color-primary text-bold">
+                                <MudText Inline Class="color-primary text-bold">
                                     @_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")
                                 </MudText>
                             </MudText>
                         }
 
-                        <MudText Class="text-color-secondary text-light mt-2">
+                        <MudText Class="color-secondary text-light mt-2">
                             🎛️ Recording Dates:&nbsp;
 
-                            <MudText Inline Class="text-color-primary text-bold">
+                            <MudText Inline Class="color-primary text-bold">
                                 @(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?")
                                 &nbsp;->&nbsp;
                                 @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
                             </MudText>
                         </MudText>
 
-                        <MudText Class="text-color-secondary text-light mt-2">
+                        <MudText Class="color-secondary text-light mt-2">
                             💿 Release Type:&nbsp;
 
-                            <MudText Inline Class="text-color-primary text-bold">
+                            <MudText Inline Class="color-primary text-bold">
                                 @(_album.ReleaseType?.ToDescriptionString() ?? "-")
                             </MudText>
                         </MudText>
@@ -283,7 +285,7 @@ else
             <MudItem xs="12" md="5">
                 <!-- Track List -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">🎵 Tracks</MudText>
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">🎵 Tracks</MudText>
                     <MudDivider Class="my-3" />
                     <MudTable ReadOnly
                               Items="@_albumSongs"
@@ -339,14 +341,14 @@ else
             <MudItem xs="12" md="3">
                 <!-- Credit -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">📒 Credits</MudText>
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">📒 Credits</MudText>
             
                 </MudPaper>
             </MudItem>
             
             <MudItem xs="12" md="4">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">💽 Releases</MudText>
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">💽 Releases</MudText>
                     <MudDivider Class="my-3"/>
                     
                     <!-- Issues -->
@@ -365,7 +367,7 @@ else
         
         <!-- Reviews -->
         <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-            <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">📝 User Reviews</MudText>
+            <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">📝 User Reviews</MudText>
             <MudDivider Class="my-3" />
             
             <MudList T="RenderFragment">
@@ -389,7 +391,7 @@ else
             <MudItem xs="12" md="4">
                 <!-- Suggestions -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                         🔗 Similar Releases
                     </MudText>
                 </MudPaper>
@@ -398,7 +400,7 @@ else
             <MudItem xs="12" md="8">
                 <!-- Ratings et collections -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">🖍️ User Ratings & Collections</MudText>
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">🖍️ User Ratings & Collections</MudText>
                     <MudDivider Class="my-3" />
             
                     <MudTable @ref="_albumRatingsTable"
@@ -438,20 +440,20 @@ else
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel="Rating" Class="rating-col">
-                                <MudText Typo="Typo.h5" Class="text-color-primary text-bold rating-text"
+                                <MudText Typo="Typo.h5" Class="color-primary text-bold rating-text"
                                          Style="width: fit-content;">
                                     @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
                                 </MudText>
                             </MudTd>
                             <MudTd DataLabel="Name">
                                 <MudLink Href="@($"/User/{context.User.Id}")">
-                                    <MudText Typo="Typo.body1" Class="text-bold text-color-primary">
+                                    <MudText Typo="Typo.body1" Class="text-bold color-primary">
                                         @context.User.Name
                                     </MudText>
                                 </MudLink>
                             </MudTd>
                             <MudTd DataLabel="Date">
-                                <MudText Typo="Typo.caption" Class="text-color-secondary text-italic">
+                                <MudText Typo="Typo.caption" Class="color-secondary text-italic">
                                     @context.UpdatedAt.ToString("dd/MM/yyyy")
                                 </MudText>
                             </MudTd>

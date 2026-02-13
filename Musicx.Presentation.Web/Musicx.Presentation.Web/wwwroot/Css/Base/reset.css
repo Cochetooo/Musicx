@@ -1,0 +1,7 @@
+﻿* {
+    scrollbar-color: #767a7d transparent;
+}
+
+h1:focus {
+    outline: none;
+}

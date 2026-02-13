@@ -2,7 +2,7 @@
 @using System.Globalization
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
-@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Application.Web.Interfaces.UseCases.User.Avatar
 @using Musicx.Contracts.Dto.Requests.User
 
 @inject IUserClientContext UserClientContext
@@ -13,7 +13,7 @@
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-6 glass-card pa-6 animate-hover-up">
     <MudStack Spacing="4">
-        <MudText Typo="Typo.h4" Class="montserrat text-bold text-color-primary">
+        <MudText Typo="Typo.h4" Class="montserrat text-bold color-primary">
             Edit Profile
         </MudText>
         
@@ -132,7 +132,7 @@
                 }
             </MudStack>
             
-            <MudText Typo="Typo.caption" Class="text-color-secondary">
+            <MudText Typo="Typo.caption" Class="color-secondary">
                 Account created on @_user.CreatedAt.ToString("ddd dd MMM yyyy 'at' HH:mm:ss", CultureInfo.InvariantCulture)
             </MudText>
 

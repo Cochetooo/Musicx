@@ -13,32 +13,36 @@
 @inject IFindAllService<InSong, OutSong> UcListSongs
 @inject NavigationManager Navigation
 
-<div class="search-overlay" @onclick="OnBackdropClick" style="display:@(IsOpen ? "block" : "none")">
-    <div class="overlay-backdrop" @onclick="OnBackdropClick"></div>
+<HeadContent>
+    <link rel="stylesheet" href="Css/Features/Search/search-overlay.css" />
+</HeadContent>
+
+<div class="f-search-overlay" @onclick="OnBackdropClick" style="display:@(IsOpen ? "block" : "none")">
+    <div class="f-overlay-backdrop" @onclick="OnBackdropClick"></div>
     
-    <div class="overlay-wrapper" @ref="_wrapperRef" role="dialog" aria-modal="true">
-        <MudPaper Class="search-modal glass-paper animate-fade-in" Elevation="8" @onclick:stopPropagation>
-            <div class="search-input-row">
+    <div class="f-overlay-wrapper" @ref="_wrapperRef" role="dialog" aria-modal="true">
+        <MudPaper Class="f-search-modal glass-paper animate-fade-in" Elevation="8" @onclick:stopPropagation>
+            <div class="f-search-input-row">
                 <MudTextField @ref="_mudInput"
                               @bind-Value="_value"
                               Immediate
                               Placeholder="Search anything..."
                               OnKeyDown="@OnKeyDownHandler"
                               Variant="Variant.Filled"
-                              Class="search-input-mud"
+                              Class="f-search-input-mud"
                               Adornment="Adornment.End"
                               AdornmentIcon="@Icons.Material.Filled.Search"/>
                 
                 <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Default"
-                               OnClick="@Close" Class="close-btn"/>
+                               OnClick="@Close" Class="f-search-close-btn"/>
             </div>
             
-            <div class="search-body">
-                <div class="results-column">
+            <div class="f-search-body">
+                <div class="f-search-results-column">
                     @if (_isLoading)
                     {
-                        <div class="search-loading">
-                            <span class="loader"></span> 
+                        <div class="f-search-loading">
+                            <span class="f-search-loader"></span> 
                             <span class="loading-text">Loading...</span>
                         </div>
                     }
@@ -48,8 +52,8 @@
                         <div class="results-groups">
                             @foreach (var group in _searchResults)
                             {
-                                <div class="result-group">
-                                    <div class="group-header">
+                                <div class="f-search-result-group">
+                                    <div class="f-search-group-header">
                                         <MudText Typo="Typo.subtitle2" Class="group-title">
                                             @group.Key (@group.Value.Count)
                                         </MudText>
@@ -57,7 +61,7 @@
                                     <MudList T="RenderFragment" Dense>
                                         @foreach (var item in group.Value)
                                         {
-                                            <MudListItem Class="result-item animate-fade-in" OnClick="@(() => OnResultClick(item))">
+                                            <MudListItem Class="f-search-result-item animate-fade-in" OnClick="@(() => OnResultClick(item))">
                                                 <MudStack Row Spacing="2">
                                                     @if (item.Image is not null)
                                                     {
@@ -73,7 +77,7 @@
                                                         <MudText Typo="Typo.body1">
                                                             @item.Icon @item.Title
                                                         </MudText>
-                                                        <MudText Typo="Typo.body2" Class="text-color-secondary">
+                                                        <MudText Typo="Typo.body2" Class="color-secondary">
                                                             @item.Subtitle
                                                         </MudText>
                                                     </div>
@@ -92,7 +96,7 @@
                     }
                 </div>
                 
-                <div class="filters-column">
+                <div class="f-search-filters-column">
                     <MudPaper Elevation="0" Class="filters-panel glass-paper">
                         <MudText Typo="Typo.h6">Filters</MudText>
                         

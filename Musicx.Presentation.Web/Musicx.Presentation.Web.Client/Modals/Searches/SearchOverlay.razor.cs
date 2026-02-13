@@ -42,7 +42,7 @@ public partial class SearchOverlay
         
         await Task.Delay(80);
 
-        var targetSelector = ".search-input-mud input";
+        var targetSelector = ".f-search-input-mud input";
         await JS.InvokeVoidAsync("searchOverlay.openFromSelector", sourceSelector, targetSelector);
         await JS.InvokeVoidAsync("searchOverlay.focusInput", targetSelector);
     }

@@ -12,7 +12,7 @@
             </MudText>
             break;
         case ReleaseType.Lp:
-            <MudText Class="clamped-text-4 text-color-primary">
+            <MudText Class="clamped-text-4 color-primary">
                 @Album.Name
             </MudText>
             break;
@@ -30,7 +30,7 @@
             break;
     }
     
-    <MudText Class="clamped-text-4 text-light text-color-secondary" Typo="Typo.body2" Color="Color.Inherit">
+    <MudText Class="clamped-text-4 text-light color-secondary" Typo="Typo.body2" Color="Color.Inherit">
         @{
             var hasDate = Album.OriginalReleaseDate is not null;
             var hasArtist = ShowArtist && Album.Artist is not null;

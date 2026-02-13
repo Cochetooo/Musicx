@@ -1,0 +1,103 @@
+﻿/*
+    Background Colors
+ */
+
+.bg-default {
+    background-color: var(--mud-palette-background);
+}
+
+.bg-gray {
+    background-color: var(--mud-palette-background-gray);
+}
+
+.bg-surface {
+    background-color: var(--mud-palette-surface);
+}
+
+/*
+    Background Darken / Lighten
+ */
+
+.bg-info-darken {
+    background-color: var(--mud-palette-info-darken);
+}
+
+.bg-success-darken {
+    background-color: var(--mud-palette-success-darken);
+}
+
+.bg-warning-darken {
+    background-color: var(--mud-palette-warning-darken);
+}
+
+.bg-error-darken {
+    background-color: var(--mud-palette-error-darken);
+}
+
+.bg-info-lighten {
+    background-color: var(--mud-palette-info-lighten);
+}
+
+.bg-success-lighten {
+    background-color: var(--mud-palette-success-lighten);
+}
+
+.bg-warning-lighten {
+    background-color: var(--mud-palette-warning-lighten);
+}
+
+.bg-error-lighten {
+    background-color: var(--mud-palette-error-lighten);
+}
+
+/*
+    Foreground colors
+ */
+
+.color-primary {
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.color-secondary {
+    color: var(--mud-palette-text-secondary) !important;
+}
+
+.color-muted {
+    color: var(--mud-palette-text-disabled) !important;
+}
+
+/*
+    Foreground Colors Darken / Lighten
+ */
+
+.color-info-darken {
+    color: var(--mud-palette-info-darken);
+}
+
+.color-success-darken {
+    color: var(--mud-palette-success-darken);
+}
+
+.color-warning-darken {
+    color: var(--mud-palette-warning-darken);
+}
+
+.color-error-darken {
+    color: var(--mud-palette-error-darken);
+}
+
+.color-info-lighten {
+    color: var(--mud-palette-info-lighten);
+}
+
+.color-success-lighten {
+    color: var(--mud-palette-success-lighten);
+}
+
+.color-warning-lighten {
+    color: var(--mud-palette-warning-lighten);
+}
+
+.color-error-lighten {
+    color: var(--mud-palette-error-lighten);
+}

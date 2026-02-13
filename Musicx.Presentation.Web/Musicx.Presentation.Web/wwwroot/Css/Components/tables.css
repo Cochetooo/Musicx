@@ -1,0 +1,11 @@
+﻿.table tbody td,
+.table thead th {
+    height: auto;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    line-height: 1.2rem;
+}
+
+.table thead th {
+    font-weight: bold;
+}

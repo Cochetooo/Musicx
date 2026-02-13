@@ -107,7 +107,7 @@ public partial class ArtistView
 
         if (UserClientContext.CurrentUser is not null)
         {
-            _userAttrs = await UcGetUserServiceRatings.ExecuteAsync(
+            _userAttrs = await UcFindUserServiceRatings.ExecuteAsync(
                 userId: UserClientContext.CurrentUser.Id,
                 artistId: _artist.Id,
                 pagingOptions: new PagingOptions(Take: 100_000, Skip: 0)

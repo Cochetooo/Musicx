@@ -4,18 +4,17 @@
 @using Musicx.Application.Shared.Helpers
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
-@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Application.Web.Interfaces.UseCases.User.AlbumAttribute
+@using Musicx.Application.Web.Interfaces.UseCases.User.Ratings
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Albums
-@using Musicx.Presentation.Web.Client.Models.Auth
 
 @inject ILoggerFactory LoggerFactory
 @inject IFindOneByIdService<InUser, OutUser> UcGet
-@inject IGetAlbumAttributesByUserService UcGetAlbumAttrs
+@inject IFindAlbumAttributesByUserService UcFindAlbumAttrs
 @inject IUserClientContext UserClientContext
-@inject IGetRatingDistribByUserService<OutAlbum> UcGetAlbumRatingDistrib
+@inject IFindRatingDistribByUserService<OutAlbum> UcFindAlbumRatingDistrib
 
 @if (null == _user)
 {
@@ -45,7 +44,7 @@ else
                         @_user.Name
                     </MudText>
                     
-                    <MudText Typo="Typo.body2" Class="text-light text-color-secondary text-shadow mb-4">
+                    <MudText Typo="Typo.body2" Class="text-light color-secondary text-shadow mb-4">
                         @_user.Biography
                     </MudText>
                     
@@ -99,7 +98,7 @@ else
         <MudGrid Spacing="2">
             <MudItem xs="12" md="2">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                         Rating Distribution
                     </MudText>
 
@@ -114,7 +113,7 @@ else
                                 <MudText Class="montserrat"
                                          Typo="Typo.caption"
                                          Style="min-width: 100px;">
-                                    <span style="font-weight: 300;" class="text-color-secondary montserrat">
+                                    <span style="font-weight: 300;" class="color-secondary montserrat">
                                         <!-- @RatingHelper.GetRatingFormatted(ratingCount.Key - 9, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) - @RatingHelper.GetRatingFormatted(ratingCount.Key, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) -->
                                         @(ratingCount.Key - 9) - @ratingCount.Key
                                     </span>
@@ -135,7 +134,7 @@ else
                 </MudPaper>
                 
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                         Statistics
                     </MudText>
                     
@@ -144,7 +143,7 @@ else
                     <MudList T="RenderFragment" Dense>
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
-                                <MudText Typo="Typo.body1" Class="text-light montserrat text-color-primary">
+                                <MudText Typo="Typo.body1" Class="text-light montserrat color-primary">
                                     Average Rating
                                 </MudText>
                                 <MudText Typo="Typo.body1" Class="text-bold montserrat" Color="Color.Primary">
@@ -155,7 +154,7 @@ else
                         
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
-                                <MudText Typo="Typo.body1" Class="text-light montserrat text-color-primary">
+                                <MudText Typo="Typo.body1" Class="text-light montserrat color-primary">
                                     A-M artists ratio
                                 </MudText>
                                 <MudText Typo="Typo.body1" Class="text-bold montserrat" Color="Color.Primary">
@@ -166,10 +165,10 @@ else
                         
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
-                                <MudText Typo="Typo.body1" Class="text-light montserrat text-color-primary">
+                                <MudText Typo="Typo.body1" Class="text-light montserrat color-primary">
                                     Rating Variance
                                 </MudText>
-                                <MudText Typo="Typo.body1" Class="text-bold montserrat text-color-primary">
+                                <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
                                     --.--
                                 </MudText>
                             </MudStack>
@@ -177,7 +176,7 @@ else
                         
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
-                                <MudText Typo="Typo.body1" Class="text-light montserrat text-color-primary">
+                                <MudText Typo="Typo.body1" Class="text-light montserrat color-primary">
                                     Most Rated Release Year
                                 </MudText>
                                 <MudText Typo="Typo.body1" Class="text-bold montserrat" Color="Color.Primary">
@@ -202,7 +201,7 @@ else
                         <col style="width: 100px;"/>
                     </ColGroup>
                     <ToolBarContent>
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">Ratings (@_albumCount)</MudText>
+                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">Ratings (@_albumCount)</MudText>
                         <MudSpacer />
                         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search"
                                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
@@ -232,7 +231,7 @@ else
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Rating" Class="rating-col">
-                            <MudText Typo="Typo.h5" Class="text-color-primary text-bold rating-text"
+                            <MudText Typo="Typo.h5" Class="color-primary text-bold rating-text"
                                      Style="width: fit-content;">
                                 @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
                             </MudText>
@@ -259,10 +258,10 @@ else
                         </MudTd>
 
                         <MudTd DataLabel="Date" Style="justify-items: center;">
-                            <MudText Typo="Typo.body2" Class="text-color-primary text-light">
+                            <MudText Typo="Typo.body2" Class="color-primary text-light">
                                 @context.UpdatedAt.ToString("dd MMM", CultureInfo.CurrentCulture)
                             </MudText>
-                            <MudText Typo="Typo.body1" Class="text-color-primary text-bold">
+                            <MudText Typo="Typo.body1" Class="color-primary text-bold">
                                 @context.UpdatedAt.ToString("yyyy", CultureInfo.CurrentCulture)
                             </MudText>
                         </MudTd>
@@ -276,7 +275,7 @@ else
 
             <MudItem xs="12" md="3">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                         Favorites
                     </MudText>
                     
@@ -284,7 +283,7 @@ else
                 </MudPaper>
                 
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                         Friends
                     </MudText>
                     

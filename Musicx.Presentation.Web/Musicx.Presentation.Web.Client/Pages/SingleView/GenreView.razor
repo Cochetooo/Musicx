@@ -3,7 +3,7 @@
 @using Musicx.Application.Shared.Helpers
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
-@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Application.Web.Interfaces.UseCases.Album
 @using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Presentation.Web.Client.Components
@@ -12,7 +12,7 @@
 
 @inject ILoggerFactory LoggerProvider
 @inject IFindOneByIdService<InGenre, OutGenre> UcGet
-@inject IGetAlbumByGenreService UcAlbumByGenre
+@inject IFindAlbumByGenreService UcAlbumByGenre
 @inject IUserClientContext UserClientContext
 
 <MudBreadcrumbs Items="@_breadcrumb" />
@@ -34,7 +34,7 @@ else
                 <MudItem xs="12" md="4" Class="pa-2">
                     <MudCard>
                         <MudCardHeader>
-                            <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                            <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                                 Description
                             </MudText>
                         </MudCardHeader>
@@ -61,7 +61,7 @@ else
                     </MudCard>
                     
                     <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                             Hierarchy
                         </MudText>
                         
@@ -110,7 +110,7 @@ else
                 <MudItem xs="12" md="8" Class="pa-2">
                     <MudCard>
                         <MudCardHeader>
-                            <MudText Typo="Typo.h5" Class="montserrat text-bold text-color-primary">
+                            <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                                 Releases (@_albumCount)
                             </MudText>
                         </MudCardHeader>
@@ -177,7 +177,7 @@ else
                                     </MudTd>
 
                                     <MudTd DataLabel="Date">
-                                        <MudText Typo="Typo.caption" Class="text-color-primary text-light">
+                                        <MudText Typo="Typo.caption" Class="color-primary text-light">
                                             @context.OriginalReleaseDate?.ToString("dd MMM yy", CultureInfo.CurrentCulture)
                                         </MudText>
                                     </MudTd>
@@ -185,13 +185,13 @@ else
                                     <MudTd DataLabel="#">
                                         @if (context.Stats is not null)
                                         {
-                                            <MudText Typo="Typo.body2" Class="text-color-primary">
+                                            <MudText Typo="Typo.body2" Class="color-primary">
                                                 @context.Stats.Count
                                             </MudText>
                                         }
                                         else
                                         {
-                                            <MudText Typo="Typo.body2" Class="text-color-secondary">
+                                            <MudText Typo="Typo.body2" Class="color-secondary">
                                                 -
                                             </MudText>
                                         }

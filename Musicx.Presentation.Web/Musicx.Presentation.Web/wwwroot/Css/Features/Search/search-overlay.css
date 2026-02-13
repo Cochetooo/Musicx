@@ -1,0 +1,70 @@
+﻿/* Overlay & backdrop */
+.f-search-overlay { position: fixed; inset: 0; z-index: 1400; pointer-events: none; }
+.f-overlay-backdrop {
+    position: fixed; inset: 0; background: rgba(10,10,12,0.6); opacity: 0; transition: opacity 220ms ease;
+    backdrop-filter: blur(3px);
+}
+.f-search-overlay[style*="display:block"] .f-overlay-backdrop { opacity: 1; pointer-events: auto; }
+/* wrapper centers the modal */
+.f-overlay-wrapper { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+
+/* the modal card */
+.f-search-modal {
+    width: min(1100px, 92%);
+    height: 100%;
+    max-height: 82vh;
+    border-radius: 12px;
+    padding: 18px;
+    opacity: 0;
+    transform: translateY(8px) scale(0.995);
+    transition: opacity 200ms ease, transform 220ms cubic-bezier(.25,.1,.25,1);
+    overflow: hidden;
+}
+
+/* when overlay open (class toggled on documentElement by JS) */
+.f-search-overlay-open .f-overlay-backdrop { opacity: 1; pointer-events: auto; }
+.f-search-overlay-open .f-search-modal { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+/* input row */
+.f-search-input-row { position: relative; display:flex; align-items:center; gap:12px; }
+.f-search-input-row input { 
+    font-size: 1.6rem !important;
+    text-align: center;
+    padding: 12px 12px 10px !important;
+}
+
+/* result layout */
+.f-search-body { display:flex; gap:16px; margin-top:16px; }
+.f-search-results-column { flex: 1 1 60%; overflow:auto; max-height:70vh; padding-right:8px; }
+.f-search-filters-column { width: 260px; flex: 0 0 260px; }
+
+/* group header */
+.f-search-result-group { margin-bottom: 12px; }
+.f-search-group-header { font-weight:700; margin-bottom:6px; }
+.f-search-result-item { display:flex; gap:8px; align-items:center; padding:8px; border-radius:6px; transition: background 120ms ease; }
+.f-search-result-item:hover { background: rgba(255,255,255,0.02); }
+
+/* loader */
+.f-search-loading { display:flex; gap:8px; align-items:center; padding:8px; color:#ddd; }
+.f-search-loader {
+    width:16px; height:16px; border-radius:50%;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-top-color: rgba(255,255,255,0.9);
+    animation: spin 900ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Close button */
+.f-search-close-btn { margin-left: 8px; }
+
+/* subtle transitions on height changes */
+.f-search-results-column, .f-search-filters-column { transition: all 180ms ease; }
+
+/* nav input (in AppBar) to identify source */
+.nav-search-field input { cursor: text; }
+
+/* optional: small responsive tweaks */
+@media (max-width: 900px) {
+    .f-search-modal { width: 96%; padding: 12px; }
+    .f-search-filters-column { display:none; }
+}

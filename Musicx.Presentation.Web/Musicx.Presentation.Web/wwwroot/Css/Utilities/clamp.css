@@ -1,0 +1,13 @@
+﻿.clamped-text-2 { -webkit-line-clamp: 2; }
+.clamped-text-4 { -webkit-line-clamp: 4; }
+.clamped-text-6 { -webkit-line-clamp: 6; }
+
+.clamped-text-2,
+.clamped-text-4,
+.clamped-text-6 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}

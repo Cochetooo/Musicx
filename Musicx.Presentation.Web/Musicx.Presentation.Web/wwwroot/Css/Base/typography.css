@@ -1,0 +1,18 @@
+﻿* {
+    font-family: "Exo 2", "Helvetica Neue", sans-serif;
+    font-optical-sizing: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Montserrat", "Helvetica Neue", sans-serif;
+}
+
+.description, article {
+    font-family: "Literata", serif;
+    letter-spacing: 1px;
+    line-height: 1.6;
+}
+
+.montserrat {
+    font-family: "Montserrat", "Helvetica Neue", sans-serif !important;
+}

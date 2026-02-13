@@ -9,7 +9,7 @@
         <MudGrid>
             <MudItem xs="12" md="6">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">Track List</MudText>
+                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold color-primary">Track List</MudText>
                     <MudListExtended T="InSong" @bind-SelectedValue="_selectedSong" Gutters Padding>
                         @foreach (var song in _albumSongs)
                         {
@@ -21,14 +21,14 @@
             
             <MudItem xs="12" md="6">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">Genres associated</MudText>
+                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold color-primary">Genres associated</MudText>
                     
                 </MudPaper>
             </MudItem>
         </MudGrid>
         
         <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-            <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">Available Genres</MudText>
+            <MudText Typo="Typo.h6" Class="montserrat text-extra-bold color-primary">Available Genres</MudText>
                 
         </MudPaper>
     </DialogContent>

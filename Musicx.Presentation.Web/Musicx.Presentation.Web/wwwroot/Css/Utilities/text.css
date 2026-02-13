@@ -1,0 +1,31 @@
+﻿.text-italic {
+    font-style: italic;
+}
+
+.text-underline {
+    text-decoration: underline;
+}
+
+.text-strikethrough {
+    text-decoration: line-through;
+}
+
+.text-light {
+    font-weight: 300;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.text-mega-bold {
+    font-weight: 800;
+}
+
+.text-extra-bold {
+    font-weight: 900;
+}
+
+.text-shadow {
+    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+}

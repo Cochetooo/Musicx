@@ -84,7 +84,7 @@ public partial class AlbumView
         _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
         await InvokeAsync(StateHasChanged);
 
-        _albumSongs = await UcGetSongs.ExecuteAsync(_album.Id, order: new SongOrderSpecification
+        _albumSongs = await UcFindSongs.ExecuteAsync(_album.Id, order: new SongOrderSpecification
         {
             TrackNumber = 1,
             Title = 2
@@ -126,7 +126,7 @@ public partial class AlbumView
         // If a user is connected, we need to give a user_attribute object to the view
         if (UserClientContext.CurrentUser is not null)
         {
-            var existingAttr = await UcGetUserServiceAlbumAttr.ExecuteAsync(
+            var existingAttr = await UcFindUserServiceAlbumAttr.ExecuteAsync(
                 UserClientContext.CurrentUser.Id,
                 _album.Id);
 
@@ -160,7 +160,7 @@ public partial class AlbumView
             };
         }
         
-        var response = await UcGetAlbumAttrs.ExecuteAsync(
+        var response = await UcFindAlbumAttrs.ExecuteAsync(
             _album.Id, 
             order: new UserAlbumAttrOrderSpecification
             {
@@ -281,7 +281,7 @@ public partial class AlbumView
         });
         await InvokeAsync(StateHasChanged);
         
-        _albumUserAttribs = await UcGetAlbumAttrs.ExecuteAsync(_album!.Id);
+        _albumUserAttribs = await UcFindAlbumAttrs.ExecuteAsync(_album!.Id);
         _logger.LogInformation("✅ User attributes loaded.");
         await _albumRatingsTable.ReloadServerData();
         

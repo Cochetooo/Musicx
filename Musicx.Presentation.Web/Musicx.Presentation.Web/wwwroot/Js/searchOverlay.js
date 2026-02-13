@@ -15,7 +15,7 @@
         const src = document.querySelector(sourceSelector);
         const target = document.querySelector(targetSelector);
         if (!src || !target) {
-            document.documentElement.classList.add('search-overlay-open');
+            document.documentElement.classList.add('f-search-overlay-open');
             overlayOpen = true;
             return;
         }
@@ -49,7 +49,7 @@
         const scale = Math.min(scaleX, scaleY) * 1.03;
 
         // trigger overlay show
-        document.documentElement.classList.add('search-overlay-open');
+        document.documentElement.classList.add('f-search-overlay-open');
 
         // next frame: animate
         requestAnimationFrame(() => {
@@ -70,7 +70,7 @@
 
     function closeOverlay() {
         // simply remove class to hide overlay; you could implement reverse clone animation if you want
-        document.documentElement.classList.remove('search-overlay-open');
+        document.documentElement.classList.remove('f-search-overlay-open');
         overlayOpen = false;
     }
 

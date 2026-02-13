@@ -20,20 +20,20 @@
                               Class="rounded-lg mr-3" Elevation="8"/>
                     <MudStack Spacing="1">
                         <MudLink Href="@($"/Album/{album.Id}")">
-                            <MudText Typo="Typo.body1" Class="text-color-primary">
+                            <MudText Typo="Typo.body1" Class="color-primary">
                                 @album.Name
                                 @if (album.EnglishName is not null)
                                 {
-                                    <MudText Class="text-color-secondary">
+                                    <MudText Class="color-secondary">
                                         [@album.EnglishName]
                                     </MudText>
                                 }
                             </MudText>
                         </MudLink>
-                        <MudText Typo="Typo.caption" Class="text-color-secondary">
+                        <MudText Typo="Typo.caption" Class="color-secondary">
                             @if (album.ArtistAlias is not null)
                             {
-                                <span class="text-color-primary">@album.ArtistAlias · </span>
+                                <span class="color-primary">@album.ArtistAlias · </span>
                             }
                             @album.ReleaseType?.ToDescriptionString() ·
                             @album.OriginalReleaseDate?.ToString("yyyy") ·
@@ -71,7 +71,7 @@
                     <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.Small"/>
                     <MudText Typo="Typo.body2" Class="montserrat text-bold" Style="width: 50px; text-align: end;">
                         @(album.Stats?.Count ?? 0)
-                        <MudText Typo="Typo.caption" Class="text-color-secondary">
+                        <MudText Typo="Typo.caption" Class="color-secondary">
                             &nbsp;ratings
                         </MudText>
                     </MudText>

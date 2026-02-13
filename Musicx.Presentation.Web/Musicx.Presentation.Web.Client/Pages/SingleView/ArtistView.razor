@@ -1,7 +1,8 @@
 @page "/Artist/{id}"
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
-@using Musicx.Application.Web.Interfaces.UseCases.Specifics
+@using Musicx.Application.Web.Interfaces.UseCases.Album
+@using Musicx.Application.Web.Interfaces.UseCases.User.AlbumAttribute
 @using Musicx.Contracts.Dto.Requests.Artist
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
@@ -12,8 +13,8 @@
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 
 @inject IFindOneByIdService<InArtist, OutArtist> UcGet
-@inject IGetAlbumByArtistService UcGetAlbums
-@inject IGetAlbumAttributesByUserService UcGetUserServiceRatings
+@inject IFindAlbumByArtistService UcGetAlbums
+@inject IFindAlbumAttributesByUserService UcFindUserServiceRatings
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
 
@@ -51,24 +52,24 @@ else
                     @if (!string.IsNullOrWhiteSpace(_artist.CalculatedGenres))
                     {
                         <MudText Typo="Typo.body2" Color="Color.Primary"
-                                 Class="highlight-text text-bold">
+                                 Class="text-shadow text-bold">
                             @_artist.CalculatedGenres
                         </MudText>
 
                         <MudText Typo="Typo.caption" Color="Color.Secondary"
-                                 Class="highlight-text description">
+                                 Class="text-shadow description">
                             @_artist.CalculatedInfluences
                         </MudText>
                     }
 
                     <MudStack Row Class="mt-3" AlignItems="AlignItems.Center" Spacing="4">
-                        <MudText Typo="Typo.subtitle2" Class="highlight-text text-color-secondary">
+                        <MudText Typo="Typo.subtitle2" Class="text-shadow color-secondary">
                             👥 Followers: 0
                         </MudText>
-                        <MudText Typo="Typo.subtitle2" Class="highlight-text text-color-secondary">
+                        <MudText Typo="Typo.subtitle2" Class="text-shadow color-secondary">
                             💿 Releases: @_artistAlbums.Total
                         </MudText>
-                        <MudText Typo="Typo.subtitle2" Class="highlight-text text-color-secondary">
+                        <MudText Typo="Typo.subtitle2" Class="text-shadow color-secondary">
                             🌍 Country: <Flag CountryName="@_artist.CurrentCountry"/>
                         </MudText>
                     </MudStack>
@@ -131,7 +132,7 @@ else
             @* Main column: Releases *@
             <MudItem xs="12" md="9">
                 <MudPaper Class="glass-paper pa-4">
-                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold text-color-primary">💿 Releases</MudText>
+                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold color-primary">💿 Releases</MudText>
                     <MudDivider Class="my-3" />
 
                     @* TOOLBAR COMPONENT *@
