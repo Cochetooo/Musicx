@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Presentation.Web.Client.Modals.Admin.Artists;
 using Musicx.Presentation.Web.Client.Models;
@@ -20,7 +21,7 @@ public partial class ArtistDashboard
     private List<OutArtist> _filteredArtists = [];
     private HashSet<OutArtist> _selectedArtists = [];
 
-    private string _searchDataGrid = null!;
+    private string _searchDataGrid = string.Empty;
 
     private List<BreadcrumbItem> _breadcrumb =
     [
@@ -106,18 +107,13 @@ public partial class ArtistDashboard
 
     private void ApplySearchFilters()
     {
-        _logger.LogDebug($"🔎 ArtistDashboard : Apply Search Filters: {_searchDataGrid}");
+        _logger.LogDebug("🔎 ArtistDashboard : Apply Search Filters: {Search}", _searchDataGrid);
 
-        var keywords = string.IsNullOrWhiteSpace(_searchDataGrid)
-            ? []
-            : _searchDataGrid.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        _filteredArtists = _artists
-            .Where(a =>
-                keywords.Length == 0
-                || keywords.All(keyword =>
-                    a.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase)))
-            .ToList();
+        _filteredArtists = SearchKeywordHelper.FilterByKeywords(
+            _artists,
+            _searchDataGrid,
+            x => x.Name
+        );
     }
 
     private void KeyDownSearchInput(KeyboardEventArgs keyEvent)

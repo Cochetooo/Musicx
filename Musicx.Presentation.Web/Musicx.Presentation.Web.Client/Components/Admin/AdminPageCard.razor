@@ -1,0 +1,20 @@
+﻿@using MudBlazor
+
+<MudBreadcrumbs Items="@BreadcrumbItems" />
+
+<MudCard Class="@CardClass">
+    <MudCardHeader>
+        <MudText Typo="Typo.h4">@Title</MudText>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @ChildContent
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public IReadOnlyList<BreadcrumbItem> BreadcrumbItems { get; set; } = [];
+    [Parameter] public string CardClass { get; set; } = "py-4";
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = null!;
+}

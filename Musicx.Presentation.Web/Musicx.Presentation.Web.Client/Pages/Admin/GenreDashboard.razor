@@ -3,6 +3,7 @@
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Presentation.Web.Client.Components.Admin
 @using Musicx.Presentation.Web.Client.Modals.Admin.Genres
 @using Musicx.Presentation.Web.Client.Models
 @using Musicx.Presentation.Web.Client.Layout.Auth
@@ -13,78 +14,49 @@
 
 <AuthorizeView Permission="admin.genre.read">
     <ChildContent>
-        <MudBreadcrumbs Items="@_breadcrumb" />
+        <AdminPageCard Title="Genre Management" BreadcrumbItems="_breadcrumb">
+            <MudDataGrid T="OutGenre"
+                         Items="@_filteredGenres"
+                         RowsPerPage="20" Dense ColumnResizeMode="ResizeMode.Column"
+                         MultiSelection bind-SelectedItems="@_selectedGenres">
+                <ToolBarContent>
+                    <AdminGridToolbar Title="Genres"
+                                      SearchValue="@_searchDataGrid"
+                                      SearchValueChanged="@(value => _searchDataGrid = value)"
+                                      OnSearchKeyDown="@KeyDownSearchInput"
+                                      ViewMode="@_viewMode"
+                                      OnAdd="@ShowAddModal"
+                                      OnEnableDeleteMode="@EnableDeleteMode"
+                                      OnEnableNormalMode="@EnableNormalMode"
+                                      OnConfirmDelete="@ShowDeleteModal"
+                                      OnRefresh="@LoadData" />
+                </ToolBarContent>
+                
+                <Columns>
+                    <PropertyColumn Property="x => x.CanonicalName"/>
 
-        <MudCard Class="py-4">
-            <MudCardHeader>
-                <MudText Typo="Typo.h4">Genre Management</MudText>
-            </MudCardHeader>
-            
-            <MudCardContent>
-                <MudDataGrid T="OutGenre"
-                             Items="@_filteredGenres"
-                             RowsPerPage="20" Dense ColumnResizeMode="ResizeMode.Column"
-                             MultiSelection bind-SelectedItems="@_selectedGenres">
-                    <ToolBarContent>
-                        <MudText Typo="Typo.h6">Genres</MudText>
-                        <MudSpacer />
-                        <MudTextField
-                            @bind-Value="_searchDataGrid"
-                            Label="Search"
-                            OnKeyDown="@KeyDownSearchInput"
-                            Class="mr-2"
-                            AdornmentIcon="@Icons.Material.Filled.Search"
-                            Adornment="Adornment.End"
-                            Immediate
-                            Variant="Variant.Outlined" />
-                        <MudSpacer />
-                        <MudStack Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Row>
-                            @if (_viewMode == ViewMode.Normal)
-                            {
-                                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" Class="mr-2"
-                                               OnClick="@ShowAddModal" />
-                        
-                                <MudIconButton Icon="@Icons.Material.Filled.Remove" Color="Color.Error" Class="mr-2"
-                                               OnClick="@EnableDeleteMode" />
-                            }
-                            else if (_viewMode == ViewMode.Delete)
-                            {
-                                <MudIconButton Icon="@Icons.Material.Filled.Close" Class="mr-2"
-                                               OnClick="@EnableNormalMode" />
-                                <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Error" Class="mr-2"
-                                               OnClick="@ShowDeleteModal" />
-                            }
-                    
-                            <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="@LoadData" />
-                        </MudStack>
-                    </ToolBarContent>
-                    
-                    <Columns>
-                        <PropertyColumn Property="x => x.CanonicalName"/>
+                    <PropertyColumn Property="x => x.Description"/>
 
-                        <PropertyColumn Property="x => x.Description"/>
+                    <PropertyColumn Property="x => x.Type"/>
 
-                        <PropertyColumn Property="x => x.Type"/>
+                    <PropertyColumn Property="x => x.Color"/>
 
-                        <PropertyColumn Property="x => x.Color"/>
+                    <PropertyColumn Property="x => x.CreatedAt" Title="Created At"/>
 
-                        <PropertyColumn Property="x => x.CreatedAt" Title="Created At"/>
+                    <PropertyColumn Property="x => x.UpdatedAt" Title="Last Modification"/>
 
-                        <PropertyColumn Property="x => x.UpdatedAt" Title="Last Modification"/>
-
-                        <TemplateColumn CellClass="d-flex justify-end">
-                            <CellTemplate>
-                                <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                               OnClick="@(() => ShowEditModal(context.Item))"/>
-                            </CellTemplate>
-                        </TemplateColumn>
-                    </Columns>
-                    <PagerContent>
-                        <MudDataGridPager T="OutGenre" />
-                    </PagerContent>
-                </MudDataGrid>
-            </MudCardContent>
-        </MudCard>
+                    <TemplateColumn CellClass="d-flex justify-end">
+                        <CellTemplate>
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           OnClick="@(() => ShowEditModal(context.Item))"/>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="OutGenre" />
+                </PagerContent>
+            </MudDataGrid>
+        </AdminPageCard>
 
         <GenreEditModal @ref="_genreEditModal" OnSave="OnQuitModal" />
 

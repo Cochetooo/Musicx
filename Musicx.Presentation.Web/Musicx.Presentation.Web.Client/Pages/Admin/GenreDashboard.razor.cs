@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 using Musicx.Presentation.Web.Client.Modals.Admin.Genres;
@@ -22,7 +23,7 @@ public partial class GenreDashboard
     private List<OutGenre> _filteredGenres = [];
     private HashSet<OutGenre> _selectedGenres = [];
 
-    private string _searchDataGrid = null!;
+    private string _searchDataGrid = string.Empty;
 
     private List<BreadcrumbItem> _breadcrumb =
     [
@@ -33,7 +34,7 @@ public partial class GenreDashboard
 
     protected override void OnInitialized()
     {
-        _logger = LoggerProvider.CreateLogger(nameof(ArtistDashboard));
+        _logger = LoggerProvider.CreateLogger(nameof(GenreDashboard));
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -141,18 +142,13 @@ public partial class GenreDashboard
 
     private void ApplySearchFilters()
     {
-        _logger.LogDebug($"🔎 GenreDashboard : Apply Search Filters: {_searchDataGrid}");
+        _logger.LogDebug("🔎 GenreDashboard : Apply Search Filters: {Search}", _searchDataGrid);
 
-        var keywords = string.IsNullOrWhiteSpace(_searchDataGrid)
-            ? []
-            : _searchDataGrid.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        _filteredGenres = _genres
-            .Where(a =>
-                keywords.Length == 0
-                || keywords.All(keyword =>
-                    a.CanonicalName.Contains(keyword, StringComparison.OrdinalIgnoreCase)))
-            .ToList();
+        _filteredGenres = SearchKeywordHelper.FilterByKeywords(
+            _genres,
+            _searchDataGrid,
+            x => x.CanonicalName
+        );
     }
 
     private void KeyDownSearchInput(KeyboardEventArgs keyEvent)

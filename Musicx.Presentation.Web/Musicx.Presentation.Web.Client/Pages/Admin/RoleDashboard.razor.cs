@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using MudBlazor;
+using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.Security;
@@ -15,10 +16,10 @@ public partial class RoleDashboard
     private List<OutRole> _roles = [];
     private OutRole? _selectedRole;
 
-    private bool _addMode = false;
-    private bool _isModified = false;
+    private bool _addMode;
+    private bool _isModified;
     
-    private List<BreadcrumbItem> _breadcrumb =
+    private readonly List<BreadcrumbItem> _breadcrumb =
     [
         new("Musicx", href: "/"),
         new("Admin", href: "#"),
@@ -44,8 +45,8 @@ public partial class RoleDashboard
         _roles = await UcList.ExecuteAsync(joins: new RoleJoinSpecification
         {
             IncludePermissions = true
-        });
-        _permissions = await UcListPermissions.ExecuteAsync();
+        }, pagingOptions: new PagingOptions(Take: 10_000, Skip: 0));
+        _permissions = await UcListPermissions.ExecuteAsync(pagingOptions: new PagingOptions(Take: 10_000, Skip: 0));
 
         await InvokeAsync(StateHasChanged);
     }
