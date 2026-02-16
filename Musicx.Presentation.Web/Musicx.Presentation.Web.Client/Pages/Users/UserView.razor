@@ -15,6 +15,8 @@
 @inject IFindAlbumAttributesByUserService UcFindAlbumAttrs
 @inject IUserClientContext UserClientContext
 @inject IFindRatingDistribByUserService<OutAlbum> UcFindAlbumRatingDistrib
+@inject IDeleteService<InUserAlbumAttribute> UcDeleteAllRatings
+@inject IDialogService DialogService
 
 @if (null == _user)
 {
@@ -59,9 +61,9 @@ else
                             </MudLink>
                             
 
-                            <MudButton Color="Color.Dark" StartIcon="@Icons.Material.Filled.Settings"
+                            <MudButton Color="Color.Dark" StartIcon="@Icons.Material.Filled.SsidChart"
                                        Variant="Variant.Filled">
-                                Settings
+                                Stats
                             </MudButton>
                         </MudStack>
                     }
@@ -73,6 +75,7 @@ else
                         {
                                                     
                             <MudButton Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteForever"
+                                       OnClick="@OnClearRatingsButtonClicked"
                                        Variant="Variant.Filled">
                                 Clear Ratings
                             </MudButton>

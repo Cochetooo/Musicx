@@ -116,6 +116,27 @@ public partial class UserView
         };
     }
 
+    private async Task OnClearRatingsButtonClicked()
+    {
+        if (_user is null)
+        {
+            _logger.LogWarning("⚠️ User ID is null, cannot try to clear ratings.");
+            return;
+        }
+        
+        var result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Deleting all ratings cannot be undone! Are you sure you want to delete all your ratings?",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        if (result is not null && result.Value)
+        {
+            await UcDeleteAllRatings.ExecuteAsync(_user.Id);
+            await InvokeAsync(StateHasChanged);
+        }
+
+    }
+
     private void OnSearch(string text)
     {
         _searchString = text;
