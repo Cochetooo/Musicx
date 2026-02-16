@@ -53,9 +53,10 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (53, 
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (54, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (55, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (7, 1);
-INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (56, 1);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (57, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (58, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (59, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (60, 2);
-INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (61, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (61, 2);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (56, 2);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (62, 1);
