@@ -1,8 +1,9 @@
+using Musicx.Application.API.Persistence.Filtering;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
 
-namespace Musicx.Infrastructure.API.Persistence.FindQueries;
+namespace Musicx.Application.API.Persistence.Queries;
 
 /// <summary>
 /// Represents a query for filtering user album attributes.
@@ -14,15 +15,15 @@ namespace Musicx.Infrastructure.API.Persistence.FindQueries;
 /// <since>0.6.8</since>
 public record UserAlbumAttrFindQuery : IFindQuery<InUserAlbumAttribute>
 {
-    public string? Album { get; set; }
-    public string? Artist { get; set; }
+    public TextFilter? Album { get; set; }
+    public TextFilter? Artist { get; set; }
     public ICollection<long>? GenreIds { get; set; }
     public ICollection<long>? InfluenceIds { get; set; }
-    public string? Label { get; set; }
+    public TextFilter? Label { get; set; }
     public DateTime? MinDate { get; set; }
     public DateTime? MaxDate { get; set; }
     public decimal? MinRating { get; set; }
     public decimal? MaxRating { get; set; }
-    public string? Tag { get; set; }
-    public string? User { get; set; }
+    public TextFilter? Tag { get; set; }
+    public TextFilter? User { get; set; }
 }

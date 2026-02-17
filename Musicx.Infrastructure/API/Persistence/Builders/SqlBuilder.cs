@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Musicx.Application.API.Persistence.Filtering;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Persistence.Helpers;
@@ -345,4 +346,30 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     internal void Filter(ref string sql, string column, string filter, List<NpgsqlParameter> parameters,
         bool? filterExact = null, double? filterSimilitude = null)
         => Filter(ref sql, [column], filter, parameters, filterExact, filterSimilitude);
+
+    internal (string sql, object value) BuildTextCondition( 
+        string column, TextFilter filter, string paramName)
+    {
+        if (filter.Value is null)
+        {
+            return (string.Empty, string.Empty);
+        }
+        
+        return filter.Mode switch
+        {
+            TextMatchMode.Equals =>
+                ($"{column} = @{paramName}", filter.Value),
+
+            TextMatchMode.StartsWith =>
+                ($"{column} LIKE @{paramName}", $"{filter.Value}%"),
+
+            TextMatchMode.Contains =>
+                ($"{column} LIKE @{paramName}", $"%{filter.Value}%"),
+
+            TextMatchMode.EndsWith =>
+                ($"{column} LIKE @{paramName}", $"%{filter.Value}"),
+
+            _ => throw new NotSupportedException("Text Match Mode not supported.")
+        };
+    }
 }
