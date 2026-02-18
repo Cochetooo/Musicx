@@ -1,6 +1,4 @@
 ﻿using System.Globalization;
-using System.Text;
-using Microsoft.Extensions.Logging;
 using Musicx.Application.API.Persistence.Filtering;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;

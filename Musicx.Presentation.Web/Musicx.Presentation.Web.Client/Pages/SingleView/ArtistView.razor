@@ -25,11 +25,7 @@
 else
 {
     <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
-        <div class="artist-hero" style="--artist-url: url('@_artist.ArtworkUrl');">
-            <style>
-                .artist-hero::before { background-image: url("@_artist.ArtworkUrl"); }
-            </style>
-            
+        <div class="artist-hero" style="--hero-url: url('@_artist.ArtworkUrl');">
             <div class="artist-hero-content">
                 <div class="artist-hero-image glass-paper">
                     <MudImage Src="@_artist.ArtworkUrl" Alt="@_artist.Name"

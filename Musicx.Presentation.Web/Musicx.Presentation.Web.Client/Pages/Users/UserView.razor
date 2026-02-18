@@ -26,13 +26,7 @@ else
 {
     <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
         <!-- Bio -->
-        <div class="user-hero">
-            <style>
-                .user-hero::before {
-                    background-image: url('@_user.PictureUrl');
-                }
-            </style>
-            
+        <div class="user-hero" style="--hero-url: url('@_user.PictureUrl')">
             <div class="user-hero-content">
                 <div class="user-hero-image">
                     <MudImage Alt="Profile Picture" Width="192" Height="192"

@@ -1,58 +1,7 @@
 .user-hero {
-    position: relative;
-    width: 100%;
     min-height: 260px;
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: center;
-    padding: 2rem;
-    box-sizing: border-box;
-    overflow: hidden;
-    border-radius: 10px;
-}
-
-.user-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    filter: blur(24px) saturate(0.9) brightness(0.4);
-    transform: scale(1.06);
-    z-index: 0;
-}
-
-.user-hero::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(var(--mud-palette-surface), 0.28), rgba(0,0,0,0.32));
-    z-index: 1;
-    mix-blend-mode: multiply;
 }
 
 .user-hero-content {
-    position: relative;
-    z-index: 2;
-    display: grid;
     grid-template-columns: 256px 1fr 360px;
-    gap: 1.25rem;
-    align-items: start;
-}
-
-.user-hero-image img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
-
-.user-name {
-    font-family: Montserrat, sans-serif;
-    font-weight: 800;
-    line-height: 1;
-    font-size: clamp(2rem, 6vw, 4rem);
-    margin: 0;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(0.2,0.2,0.2,0.3)
 }

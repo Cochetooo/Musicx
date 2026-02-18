@@ -7,9 +7,14 @@
 @inject ICountService<OutSong> UcCountSongs
 @inject ICountService<OutGenre> UcCountGenres
 
+<HeadContent>
+    <link rel="stylesheet" href="Css/Features/Search/search-overlay.css" />
+    <link rel="stylesheet" href="Css/Features/Pages/home.css"/>
+</HeadContent>
+
 <MudGrid Class="home-container">
     <MudItem xs="12" Class="flex-center">
-        <MudCard Class="glass-card pa-6" Style="max-width: 950px; width: 90%; text-align: center;">
+        <MudCard Class="glass-card home-card pa-6">
             <MudText Typo="Typo.h1" Class="montserrat text-mega-bold">
                 Welcome to Musicx!
             </MudText>
@@ -18,20 +23,20 @@
             </MudText>
             
             <MudCarousel AutoCycle AutoCycleTime="TimeSpan.FromSeconds(4)"
-                         TData="RenderFragment" Style="height: 150px;"
+                         TData="RenderFragment" Class="home-carousel"
                          ShowArrows="@false" ShowBullets>
                 <MudCarouselItem Color="@Color.Primary">
-                    <div class="d-flex" style="height: 100%; justify-items: center; align-items: center;">
+                    <div class="d-flex home-carousel-card">
                         <MudText Typo="Typo.h3">🎶 Discover new artists</MudText>
                     </div>
                 </MudCarouselItem>
                 <MudCarouselItem Color="@Color.Secondary">
-                    <div class="d-flex" style="height: 100%; justify-items: center; align-items: center;">
+                    <div class="d-flex home-carousel-card">
                         <MudText Typo="Typo.h3">💿 Explore trending albums</MudText>
                     </div>
                 </MudCarouselItem>
                 <MudCarouselItem Color="@Color.Tertiary">
-                    <div class="d-flex" style="height: 100%; justify-items: center; align-items: center;">
+                    <div class="d-flex home-carousel-card">
                         <MudText Typo="Typo.h3">🎧 Dive into unique genres</MudText>
                     </div>
                 </MudCarouselItem>
@@ -39,19 +44,3 @@
         </MudCard>
     </MudItem>
 </MudGrid>
-
-<style>
-    .home-container {
-        height: 80vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-    .flex-center {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-</style>
