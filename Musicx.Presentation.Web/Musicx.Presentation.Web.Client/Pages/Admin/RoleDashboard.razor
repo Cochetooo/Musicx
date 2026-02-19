@@ -15,81 +15,131 @@
 <AuthorizeView Permission="admin.role.read">
     <ChildContent>
         <AdminPageCard Title="Role Management" BreadcrumbItems="_breadcrumb">
-            <MudGrid>
-                <MudItem xs="12" md="3" Class="pa-3">
-                    <MudList T="OutRole?" @bind-SelectedValue="_selectedRole">
-                        @foreach (var role in _roles)
-                        {
-                            <MudListItem Value="@role">
-                                <MudText Typo="Typo.body1" Style="justify-items: center;" 
-                                         Class="montserrat text-bold color-primary">
-                                    @role.Name.ToUpper()
-                                </MudText>
-                            </MudListItem>
-                        }
-                    </MudList>
-                </MudItem>
-        
-                <MudItem xs="12" md="6" Class="pa-3">
-                    @if (_selectedRole is not null)
-                    {
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
-                            Permissions
-                        </MudText>
-                        @if (_selectedRole.Permissions is not null)
-                        {
-                            <MudList T="OutPermission?" Class="animate-swipe-right">
-                                @foreach (var permission in _selectedRole.Permissions)
-                                {
-                                    <MudListItem Value="@permission">
-                                        <MudStack AlignItems="AlignItems.Center" Spacing="3" Row>
-                                            <MudIconButton Icon="@Icons.Material.Filled.Close" 
-                                                           OnClick="@(() => RemovePermission(permission))"
-                                                           Size="Size.Small"
-                                                           Color="Color.Error"/>
-                                            <MudText Typo="Typo.body2" Class="text-light montserrat color-secondary">
-                                                @permission.Name
-                                            </MudText>
-                                        </MudStack>
-                                    </MudListItem>
-                                }
-                            </MudList>
-                        }
-                        <MudStack Row>
-                            <MudIconButton Size="Size.Large" Color="Color.Primary" 
-                                           Icon="@(_addMode ? Icons.Material.Filled.Minimize : Icons.Material.Filled.Add)"
-                                           OnClick="@(() => _addMode = !_addMode)"/>
-                            
-                            <MudIconButton Size="Size.Large" Color="Color.Success"
-                                           OnClick="@Save"
-                                           Disabled="@(!_isModified)" Icon="@Icons.Material.Filled.Save"/>
-                        </MudStack>
-                    }
-                </MudItem>
+            <MudGrid Class="pa-4">
                 
-                <MudItem xs="12" md="3" Class="pa-3">
-                    @if (_selectedRole is not null && _addMode)
-                    {
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
-                            Available Permissions
+                <!-- ROLES -->
+                <MudItem xs="12" md="3">
+                    <MudPaper Class="pa-4 bg-surface glass-paper" Elevation="0">
+                        <MudText Typo="Typo.h6" Class="mb-3 montserrat text-bold">
+                            Roles
                         </MudText>
-                        <MudList T="OutPermission?" Class="animate-pop-bounce">
-                            @foreach (var permission in _permissions.Where(
-                                          p => !_selectedRole.Permissions?.Select(sp => sp.Id)
-                                              .Contains(p.Id) ?? true))
+
+                        <MudDivider Class="mb-2"/>
+
+                        <MudList T="OutRole?" @bind-SelectedValue="_selectedRole" Dense>
+                            @foreach (var role in _roles)
                             {
-                                <MudListItem Value="@permission" OnClick="@(() => AddPermission(permission))">
-                                    <MudStack AlignItems="AlignItems.Center" Spacing="3" Row>
-                                        <MudIconButton Icon="@Icons.Material.Filled.Close"
-                                                       Size="Size.Small" Color="Color.Error"/>
-                                        <MudText Typo="Typo.body2" Class="text-light montserrat color-secondary">
-                                            @permission.Name
-                                        </MudText>
-                                    </MudStack>
+                                <MudListItem Value="@role">
+                                    <MudText Typo="Typo.body1" Style="justify-items: center;"
+                                             Class="montserrat text-bold color-primary">
+                                        @role.Name.ToUpper()
+                                    </MudText>
                                 </MudListItem>
                             }
                         </MudList>
-                    }                   
+                    </MudPaper>
+                </MudItem>
+                
+                <MudItem xs="12" md="6">
+                    <MudPaper Class="pa-5 bg-default glass-paper" Elevation="0">
+                        @if (_selectedRole is not null)
+                        {
+                            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                                <MudText Typo="Typo.h5" Class="montserrat text-bold">
+                                    @_selectedRole.Name
+                                </MudText>
+                                
+                                <MudStack Row Spacing="2">
+                                    <MudIconButton 
+                                        Icon="@(_addMode ? Icons.Material.Filled.Minimize : Icons.Material.Filled.Add)"
+                                        Color="Color.Primary"
+                                        Variant="Variant.Filled"
+                                        OnClick="@(() => _addMode = !_addMode)"
+                                        Class="rounded-xl" />
+
+                                    <MudButton 
+                                        Variant="Variant.Filled"
+                                        Color="Color.Success"
+                                        Disabled="@(!_isModified)"
+                                        OnClick="@Save"
+                                        StartIcon="@Icons.Material.Filled.Save">
+                                        Save
+                                    </MudButton>
+                                </MudStack>
+                                
+                            </MudStack>
+                            
+                            <MudDivider Class="my-4" />
+                            
+                            <MudText Typo="Typo.subtitle2" Class="mb-3 color-secondary">
+                                Assigned permissions
+                            </MudText>
+                            
+                            <MudStack Spacing="2" Class="animate-swipe-right">
+                                @foreach (var permission in _selectedRole.Permissions ?? [])
+                                {
+                                    <MudPaper Class="pa-3 bg-gray rounded-xl" Elevation="0">
+                                        <MudStack AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Row>
+                                            <MudText Typo="Typo.body2" Class="text-light montserrat">
+                                                @permission.Name
+                                            </MudText>
+                                            
+                                            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                                           OnClick="@(() => RemovePermission(permission))"
+                                                           Size="Size.Small"
+                                                           Color="Color.Error"
+                                                           Variant="Variant.Text" />
+                                        </MudStack>
+                                    </MudPaper>
+                                }
+                            </MudStack>
+                        }
+                        else
+                        {
+                            <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="pa-10">
+                                <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" 
+                                         Size="Size.Large"
+                                         Color="Color.Primary"/>
+                                <MudText Class="mt-3">
+                                    Select a role to manage its permissions
+                                </MudText>
+                            </MudStack>
+                        }
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12" md="3">
+                    @if (_selectedRole is not null && _addMode)
+                    {
+                        <MudPaper Class="pa-4 bg-surface glass-paper" Elevation="0">
+                            
+                            <MudText Typo="Typo.h6" Class="mb-3 color-secondary">
+                                Available Permissions
+                            </MudText>
+
+                            <MudDivider Class="mb-3"/>
+                            
+                            <MudStack Spacing="2">
+                                @foreach (var permission in _permissions
+                                                .Where(p => !_selectedRole.Permissions?
+                                                .Select(sp => sp.Id)
+                                                .Contains(p.Id) ?? true))
+                                {
+                                    <MudPaper 
+                                        Class="pa-2 bg-gray rounded-lg animate-hover-up"
+                                        Elevation="0" @onclick="@(() => AddPermission(permission))">
+                                        <MudStack Justify="Justify.SpaceBetween" Row>
+                                            <MudText Typo="Typo.body2" Class="text-light montserrat">
+                                                @permission.Name
+                                            </MudText>
+                                            <MudIcon Icon="@Icons.Material.Filled.Add"
+                                                           Color="Color.Primary"/>
+                                        </MudStack>
+                                    </MudPaper>
+                                }
+                            </MudStack>
+                        </MudPaper>
+                    }
                 </MudItem>
             </MudGrid>
         </AdminPageCard>

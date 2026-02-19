@@ -17,8 +17,6 @@ public partial class AlbumTrackListEditModal
     private OutAlbum? _album;
     private readonly List<InSong> _songs = [];
 
-    private TimeSpan? _timeSpanDuration;
-
     private MudDialog _modalRef = null!;
 
     protected override void OnAfterRender(bool firstRender)

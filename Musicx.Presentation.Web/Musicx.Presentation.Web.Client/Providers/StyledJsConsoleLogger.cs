@@ -14,7 +14,10 @@ public sealed class StyledJsConsoleLoggerProvider(IJSRuntime jsRuntime) : ILogge
 
 public sealed class StyledJsConsoleLogger(string categoryName, IJSRuntime jsRuntime) : ILogger
 {
+    
+#pragma warning disable CS8633 // Nullability in constraints for type parameter doesn't match the constraints for type parameter in implicitly implemented interface method'.
     public IDisposable BeginScope<TState>(TState state) => null!;
+#pragma warning restore CS8633 // Nullability in constraints for type parameter doesn't match the constraints for type parameter in implicitly implemented interface method'.
     
     public bool IsEnabled(LogLevel logLevel) => true;
 

@@ -31,12 +31,12 @@ else
                         }
                         else if (DetailedView && Album.PrimaryGenres is not null && 0 < Album.PrimaryGenres.Count)
                         {
-                            <Div class="d-flex flex-wrap gap-1 mt-1">
+                            <div class="d-flex flex-wrap gap-1 mt-1">
                                 @foreach (var genre in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Subgenre || g.Genre.Type == GenreType.Fusion))
                                 {
                                     <GenreBadge Genre="@genre.Genre" Size="@Size" Clickable/>
                                 }
-                            </Div>
+                            </div>
                         }
                     </div>
                 </div>
@@ -51,12 +51,12 @@ else
                         🎶 Influences
                     </DescriptorLabel>
                     <DescriptorValue>
-                        <Div class="d-flex flex-wrap gap-1 mt-1">
+                        <div class="d-flex flex-wrap gap-1 mt-1">
                             @foreach (var genre in Album.InfluenceGenres)
                             {
                                 <GenreBadge Size="@Size" Genre="@genre.Genre" Influence Clickable />
                             }
-                        </Div>
+                        </div>
                     </DescriptorValue>
                 </Descriptor>
             }
@@ -68,12 +68,12 @@ else
                         🌍 Scenes
                     </DescriptorLabel>
                     <DescriptorValue>
-                        <Div class="d-flex flex-wrap gap-1 mt-1">
+                        <div class="d-flex flex-wrap gap-1 mt-1">
                             @foreach (var scene in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Scene))
                             {
                                 <GenreBadge Size="@Size" Genre="@scene.Genre" Clickable />
                             }
-                        </Div>
+                        </div>
                     </DescriptorValue>
                 </Descriptor>
             }
@@ -85,12 +85,12 @@ else
                         🗣️ Movements
                     </DescriptorLabel>
                     <DescriptorValue>
-                        <Div class="d-flex flex-wrap gap-1 mt-1">
+                        <div class="d-flex flex-wrap gap-1 mt-1">
                             @foreach (var movement in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Movement))
                             {
                                 <GenreBadge Size="@Size" Genre="@movement.Genre" Clickable />
                             }
-                        </Div>
+                        </div>
                     </DescriptorValue>
                 </Descriptor>
             }
@@ -102,12 +102,12 @@ else
                         Descriptors
                     </DescriptorLabel>
                     <DescriptorValue>
-                        <Div class="d-flex flex-wrap gap-1 mt-1">
+                        <div class="d-flex flex-wrap gap-1 mt-1">
                             @foreach (var descriptor in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Descriptor))
                             {
                                 <GenreBadge Size="@Size" Genre="@descriptor.Genre" />
                             }
-                        </Div>
+                        </div>
                     </DescriptorValue>
                 </Descriptor>
             }
@@ -129,7 +129,7 @@ else
                 }
                 else if (DetailedView && Album.PrimaryGenres is not null && 0 < Album.PrimaryGenres.Count)
                 {
-                    <Div class="d-flex flex-wrap gap-1 mt-1">
+                    <div class="d-flex flex-wrap gap-1 mt-1">
                         <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
                                  Label="true" Color="Color.Surface" Style="width: 150px;">
                             🟡 Genres
@@ -139,7 +139,7 @@ else
                         {
                             <GenreBadge Genre="@genre.Genre" Size="@Size" Clickable/>
                         }
-                    </Div>
+                    </div>
                 }
             </div>
         </div>
@@ -147,7 +147,7 @@ else
         <MudCollapse Expanded="@DetailedView">
             @if (Album.InfluenceGenres is not null && 0 < Album.InfluenceGenres.Count)
             {
-                <Div class="d-flex flex-wrap gap-1 mt-1">
+                <div class="d-flex flex-wrap gap-1 mt-1">
                     <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
                              Label="true" Color="Color.Dark" Style="width: 150px;">
                         💽 Influences
@@ -157,12 +157,12 @@ else
                     {
                         <GenreBadge Size="@Size" Genre="@genre.Genre" Influence Clickable/>
                     }
-                </Div>
+                </div>
             }
             
             @if (Album.PrimaryGenres is not null && Album.PrimaryGenres.Any(g => g.Genre.Type == GenreType.Scene))
             {
-                <Div class="d-flex flex-wrap gap-1 mt-1">
+                <div class="d-flex flex-wrap gap-1 mt-1">
                     <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
                              Label="true" Color="Color.Dark" Style="width: 150px;">
                         🌍 Scene
@@ -172,12 +172,12 @@ else
                     {
                         <GenreBadge Size="@Size" Genre="@scene.Genre" Clickable/>
                     }
-                </Div>
+                </div>
             }
             
             @if (Album.PrimaryGenres is not null && Album.PrimaryGenres.Any(g => g.Genre.Type == GenreType.Movement))
             {
-                <Div class="d-flex flex-wrap gap-1 mt-1">
+                <div class="d-flex flex-wrap gap-1 mt-1">
                     <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
                              Label="true" Color="Color.Dark" Style="width: 150px;">
                         🎉 Movement
@@ -187,12 +187,12 @@ else
                     {
                         <GenreBadge Size="@Size" Genre="@movement.Genre" Clickable/>
                     }
-                </Div>
+                </div>
             }
 
             @if (Album.PrimaryGenres is not null && Album.PrimaryGenres.Any(g => g.Genre.Type == GenreType.Descriptor))
             {
-                <Div class="d-flex flex-wrap gap-1 mt-1">
+                <div class="d-flex flex-wrap gap-1 mt-1">
                     <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
                              Label="true" Color="Color.Dark" Style="width: 150px;">
                         🎭 Descriptors
@@ -202,7 +202,7 @@ else
                     {
                         <GenreBadge Size="@Size" Genre="@descriptor.Genre"/>
                     }
-                </Div>
+                </div>
             }
         </MudCollapse>
     }

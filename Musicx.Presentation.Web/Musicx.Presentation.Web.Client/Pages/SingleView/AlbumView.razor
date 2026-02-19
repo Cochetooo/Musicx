@@ -46,8 +46,8 @@ else
         
         <div class="album-hero" style="--hero-url: url('@_album.ArtworkUrl');">
             <div class="album-hero-content">
-                <div class="album-hero-image">
-                    <div class="cursor-pointer pa-2" 
+                <div>
+                    <div class="cursor-pointer album-hero-image pa-2" 
                          style="position: relative; width: 100%;"
                          @onclick="() => _isArtworkRevealed = !_isArtworkRevealed">
                         <MudImage Src="@_album.ArtworkUrl"

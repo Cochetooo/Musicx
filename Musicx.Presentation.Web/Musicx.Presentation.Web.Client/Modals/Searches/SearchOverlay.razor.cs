@@ -12,7 +12,7 @@ namespace Musicx.Presentation.Web.Client.Modals.Searches;
 public partial class SearchOverlay
 {
     private ElementReference _wrapperRef;
-    private MudTextField<string> _mudInput;
+    private MudTextField<string> _mudInput = null!;
     private string _inputId = $"search-input-{Guid.NewGuid().ToString("N").Substring(0, 6)}";
     private bool IsOpen { get; set; }
     private string _value = "";
@@ -235,10 +235,10 @@ public partial class SearchOverlay
     public class SearchItem
     {
         public long Id { get; set; }
-        public string Category { get; set; }
+        public string Category { get; set; } = string.Empty;
         public string? Image { get; set; }
-        public string Title { get; set; }
-        public string Subtitle { get; set; }
-        public string Icon { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Subtitle { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
     }
 }

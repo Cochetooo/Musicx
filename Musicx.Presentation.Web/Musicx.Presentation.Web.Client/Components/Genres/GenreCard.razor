@@ -1,18 +1,18 @@
-<Div Class="@GetClasses()"
-     Style="@GetStyle()"
+<div class="@GetClasses()"
+     style="@GetStyle()"
      @onclick="ToggleExpand">
     <MudText Align="Align.Center" Typo="Typo.h6">@Genre.CanonicalName</MudText>
     
     @if (IsExpanded && Genre.Children?.Any() == true)
     {
-        <Div Class="children-container">
+        <div class="children-container">
             @foreach (var child in Genre.Children)
             {
                 <GenreCard Genre="child.Relation" Depth="Depth + 1" />
             }
-        </Div>
+        </div>
     }
-</Div>
+</div>
 
 <style>
     .genre-card {
