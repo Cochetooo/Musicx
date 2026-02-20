@@ -1,0 +1,6 @@
+﻿.accent-bar {
+    width: 4px;
+    height: 36px;
+    background: var(--mud-palette-primary);
+    border-radius: 4px;
+}

@@ -3,10 +3,12 @@
 @import url("Base/typography.css");
 
 @import url("Components/badges.css");
+@import url("Components/breadcrumb.css");
 @import url("Components/forms.css");
 @import url("Components/ratings.css");
 @import url("Components/tables.css");
 
+@import url("Effects/accent.css");
 @import url("Effects/glass.css");
 
 @import url("Features/HeroTitles/herotitles.css");

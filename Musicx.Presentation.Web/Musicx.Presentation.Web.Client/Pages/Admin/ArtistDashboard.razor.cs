@@ -3,6 +3,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Infrastructure.API.Persistence.Specifications.Artist;
 using Musicx.Presentation.Web.Client.Modals.Admin.Artists;
 using Musicx.Presentation.Web.Client.Models;
 
@@ -46,7 +47,13 @@ public partial class ArtistDashboard
     {
         _logger.LogInformation("🔄️ ArtistDashboard : UPDATE Data");
 
-        _artists = await UcList.ExecuteAsync(pagingOptions: new PagingOptions(Take: 1_000, Skip: 0));
+        _artists = await UcList.ExecuteAsync(
+            order: new ArtistOrderSpecification
+            {
+                Name = 1
+            },
+            pagingOptions: new PagingOptions(Take: 1_000, Skip: 0)
+        );
         _filteredArtists = new List<OutArtist>(_artists);
         
         await InvokeAsync(StateHasChanged);

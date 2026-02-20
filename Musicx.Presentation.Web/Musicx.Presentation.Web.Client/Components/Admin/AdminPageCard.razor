@@ -1,20 +1,81 @@
-﻿@using MudBlazor
+﻿<MudStack Spacing="4" Class="pa-4 animate-fade-in">
+    
+    <!-- HEADER -->
+    <MudPaper Class="pa-5 bg-surface glass-card header-card" Elevation="0">
+    
+        <MudStack Spacing="2">
 
-<MudBreadcrumbs Items="@BreadcrumbItems" />
+            <!-- Breadcrumb -->
+            <MudBreadcrumbs Items="@BreadcrumbItems"
+                            Class="c-modern-breadcrumb"/>
 
-<MudCard Class="@CardClass">
-    <MudCardHeader>
-        <MudText Typo="Typo.h4">@Title</MudText>
-    </MudCardHeader>
+            <!-- Title row -->
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
 
-    <MudCardContent>
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.overline" Class="text-uppercase color-secondary">
+                        Administration
+                    </MudText>
+
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudPaper Class="accent-bar"/>
+                        <MudText Typo="Typo.h3" Class="montserrat text-bold">
+                            @Title
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+
+                @if (HeaderActions is not null)
+                {
+                    <MudStack Row Spacing="2">
+                        @HeaderActions
+                    </MudStack>
+                }
+
+            </MudStack>
+
+        </MudStack>
+        
+    </MudPaper>
+    
+    <!-- CONTENT -->
+    <MudPaper Class="@($"pa-6 bg-default glass-card {CardClass}")"
+              Elevation="0">
+
         @ChildContent
-    </MudCardContent>
-</MudCard>
+
+    </MudPaper>
+    
+</MudStack>
 
 @code {
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
     [Parameter, EditorRequired] public IReadOnlyList<BreadcrumbItem> BreadcrumbItems { get; set; } = [];
     [Parameter] public string CardClass { get; set; } = "py-4";
+    [Parameter] public RenderFragment? HeaderActions { get; set; }
     [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = null!;
 }
+
+<style>
+    .header-card {
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Ligne subtile en bas du header */
+    .header-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 1px;
+        width: 100%;
+        background: linear-gradient(
+            to right,
+            transparent,
+            rgba(255,255,255,0.15),
+            transparent
+        );
+    }
+</style>

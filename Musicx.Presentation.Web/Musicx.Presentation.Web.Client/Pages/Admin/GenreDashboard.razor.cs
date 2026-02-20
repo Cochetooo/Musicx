@@ -54,7 +54,8 @@ public partial class GenreDashboard
         _genres = await UcList.ExecuteAsync(
             order: new GenreOrderSpecification
             {
-                CanonicalName = 1
+                CanonicalName = 1,
+                ShortName = 2
             },
             pagingOptions: new PagingOptions(Take: 10_000, Skip: 0)
         );
