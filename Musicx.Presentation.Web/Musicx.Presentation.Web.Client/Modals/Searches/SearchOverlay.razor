@@ -97,29 +97,83 @@
                 </div>
                 
                 <div class="f-search-filters-column">
-                    <MudPaper Elevation="0" Class="filters-panel glass-paper">
-                        <MudText Typo="Typo.h6">Filters</MudText>
+                    <MudPaper Elevation="0" Class="pa-5 bg-surface glass-paper">
                         
-                        <div class="filter-row">
-                            <MudSelect T="string" @bind-Value="_sortBy" Dense>
-                                <MudSelectItem Value="@("relevance")">Relevance</MudSelectItem>
-                                <MudSelectItem Value="@("popularity")">Popularity</MudSelectItem>
-                                <MudSelectItem Value="@("recent")">Most Recent</MudSelectItem>
-                            </MudSelect>
-                        </div>
-                        <div class="filter-row">
-                            <MudCheckBox T="bool" @bind-Value="_groupResults" Label="Group by category" />
-                        </div>
-                        <div class="filter-row">
-                            <MudCheckBox T="bool" @bind-Value="_exactSearch" Label="Exact search" />
-                        </div>
-                        <div class="filter-row">
-                            <MudSlider Min="1" Max="50" @bind-Value="_maxResults" Step="1" />
-                            <div>@_maxResults</div>
-                        </div>
-                        <div class="actions">
-                            <MudIconButton Icon="@Icons.Material.Filled.Search" OnClick="@ApplyFilters" />
-                        </div>
+                        <MudStack Spacing="4">
+                            <MudStack Spacing="1">
+                                <MudText Typo="Typo.h6">Search Filters</MudText>
+                                <MudText Typo="Typo.body2" Class="color-secondary">
+                                    Adjust how results are displayed and filtered.
+                                </MudText>
+                            </MudStack>
+                        
+                            <MudDivider />
+                            
+                            <!-- SORT -->
+                            <MudStack Spacing="1">
+                                <MudText Typo="Typo.subtitle2">Sort Results</MudText>
+
+                                <MudSelect Disabled
+                                           T="string"
+                                           @bind-Value="_sortBy"
+                                           Variant="Variant.Outlined"
+                                           Dense>
+                                    <MudSelectItem Value="@("relevance")">Relevance</MudSelectItem>
+                                    <MudSelectItem Value="@("popularity")">Popularity</MudSelectItem>
+                                    <MudSelectItem Value="@("recent")">Most Recent</MudSelectItem>
+                                </MudSelect>
+
+                                <MudText Typo="Typo.caption" Class="color-secondary">
+                                    Choose how results should be ordered.
+                                </MudText>
+                            </MudStack>
+
+                            <!-- GROUP -->
+                            <MudCheckBox Disabled
+                                         T="bool"
+                                         @bind-Value="_groupResults"
+                                         Label="Group results by category" />
+
+                            <MudText Typo="Typo.caption" Class="color-secondary">
+                                When enabled, results are organized into logical sections.
+                            </MudText>
+                            
+                            <!-- EXACT SEARCH -->
+                            <MudCheckBox T="bool"
+                                         @bind-Value="_exactSearch"
+                                         Label="Exact match search" />
+
+                            <MudText Typo="Typo.caption" Class="color-secondary">
+                                Only returns results that exactly match your search terms.
+                            </MudText>
+                            
+                            <MudDivider />
+                            
+                            <!-- MAX RESULTS -->
+                            <MudStack Spacing="1">
+                                <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+
+                                    <MudText Typo="Typo.subtitle2">
+                                        Maximum Results
+                                    </MudText>
+
+                                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">
+                                        @_maxResults results
+                                    </MudChip>
+
+                                </MudStack>
+
+                                <MudSlider Min="1"
+                                           Max="50"
+                                           Step="1"
+                                           ValueLabel="true"
+                                           @bind-Value="_maxResults" />
+
+                                <MudText Typo="Typo.caption" Class="color-secondary">
+                                    Limits the total number of results displayed.
+                                </MudText>
+                            </MudStack>
+                        </MudStack>
                     </MudPaper>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 
 public interface IPublicFileRoot
 {
-    string GetPath();
+    string GetWebRootPath();
+    string GetContentRootPath();
     string GetBaseUrl();
 }

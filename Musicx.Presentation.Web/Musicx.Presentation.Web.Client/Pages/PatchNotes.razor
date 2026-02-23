@@ -1,0 +1,115 @@
+﻿@page "/PatchNotes"
+@using Musicx.Application.Web.Interfaces.UseCases.PatchNotes
+
+@inject IPatchNotesService UcPatchNotes
+@inject ILoggerFactory LoggerFactory
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-6">
+    
+    <!-- HEADER -->
+    <MudPaper Class="pa-6 mb-6 bg-surface glass-paper" Elevation="0">
+
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.h3" Class="montserrat text-extra-bold">
+                🚀 Patch Notes
+            </MudText>
+
+            <MudText Typo="Typo.body2" Class="color-secondary">
+                The list of changes and improvements across versions.
+            </MudText>
+        </MudStack>
+
+    </MudPaper>
+    
+    <!-- VERSION SELECT -->
+    <MudPaper Class="pa-4 mb-6 bg-default glass-paper" Elevation="0">
+
+        <MudStack Row AlignItems="AlignItems.Center" Class="mb-4" Spacing="4">
+
+            <MudText Typo="Typo.subtitle1">
+                Major Version
+            </MudText>
+
+            <MudSelect T="string"
+                       Variant="Variant.Outlined"
+                       Dense
+                       ValueChanged="@OnMajorChanged"
+                       @bind-Text="_selectedMajor">
+
+                @foreach (var major in _majorVersions)
+                {
+                    <MudSelectItem Value="@major">@major.*</MudSelectItem>
+                }
+
+            </MudSelect>
+
+        </MudStack>
+        
+        <!-- MAIN CONTENT -->
+        <MudGrid>
+
+            <!-- SIDEBAR -->
+            <MudItem xs="12" md="3">
+
+                <MudPaper Class="pa-4 bg-surface glass-paper" Elevation="0">
+
+                    <MudText Typo="Typo.subtitle1" Class="mb-3">
+                        Minor Versions
+                    </MudText>
+
+                    <MudDivider Class="mb-3"/>
+
+                    <MudList Dense="true"
+                             @bind-SelectedValue="_selectedMinor">
+
+                        @foreach (var version in _minorVersions)
+                        {
+                            <MudListItem Value="@version"
+                                         OnClick="@(() => LoadPatch(version))">
+                                @version
+                            </MudListItem>
+                        }
+
+                    </MudList>
+
+                </MudPaper>
+
+            </MudItem>
+
+            <!-- CONTENT -->
+            <MudItem xs="12" md="9">
+
+                <MudPaper Class="pa-6 bg-default glass-paper" Elevation="0">
+
+                    @if (_isLoading)
+                    {
+                        <MudProgressCircular Indeterminate/>
+                    }
+                    else if (!string.IsNullOrWhiteSpace(_renderedHtml))
+                    {
+                        <MudText Typo="Typo.h3" Color="Color.Primary" Class="mb-4 montserrat text-mega-bold">
+                            Version @_selectedMinor
+                        </MudText>
+
+                        <MudDivider Class="mb-4"/>
+
+                        <MudText Class="markdown-body">
+                            @((MarkupString)_renderedHtml)
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudText Class="color-secondary">
+                            Select a version to view its changes.
+                        </MudText>
+                    }
+
+                </MudPaper>
+
+            </MudItem>
+
+        </MudGrid>
+
+    </MudPaper>
+    
+</MudContainer>

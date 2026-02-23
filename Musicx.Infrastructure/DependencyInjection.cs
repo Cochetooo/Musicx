@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Auth;
+using Musicx.Application.Api.Interfaces.PatchNotes;
 using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Application.Api.Interfaces.Workers;
 using Musicx.Application.Desktop.Interfaces.Persistence;
@@ -12,6 +13,7 @@ using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Application.Web.Interfaces.UseCases.Album;
+using Musicx.Application.Web.Interfaces.UseCases.PatchNotes;
 using Musicx.Application.Web.Interfaces.UseCases.Security;
 using Musicx.Application.Web.Interfaces.UseCases.Song;
 using Musicx.Application.Web.Interfaces.UseCases.User.AlbumAttribute;
@@ -27,6 +29,7 @@ using Musicx.Contracts.Dto.Requests.Song;
 using Musicx.Contracts.Dto.Requests.Tag;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Infrastructure.API.Auth;
+using Musicx.Infrastructure.API.PatchNotes;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Builders.Album;
 using Musicx.Infrastructure.API.Persistence.Builders.Artist;
@@ -56,6 +59,7 @@ using Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
 using Musicx.Infrastructure.Shared.UseCases.ExternalMusicData;
 using Musicx.Infrastructure.Web.UseCases;
 using Musicx.Infrastructure.Web.UseCases.Album;
+using Musicx.Infrastructure.Web.UseCases.PatchNotes;
 using Musicx.Infrastructure.Web.UseCases.Security;
 using Musicx.Infrastructure.Web.UseCases.Song;
 using Musicx.Infrastructure.Web.UseCases.User.AlbumAttribute;
@@ -172,7 +176,13 @@ public static class DependencyInjection
         
         services.AddScoped<IAuthService, AuthService>();
 
+        // Storage
+        
         services.AddScoped<IAvatarStorage, LocalAvatarStorage>();
+        
+        // Patch Notes
+
+        services.AddScoped<IPatchNoteService, FileSystemPatchNoteService>();
 
         services.AddMusicxWeb();
         
@@ -201,6 +211,8 @@ public static class DependencyInjection
         services.AddScoped<IFindSongByAlbumService, FindSongByAlbumService>();
         services.AddScoped(typeof(IFindRatingDistribByUserService<>), typeof(FindRatingDistribByUserService<>));
         services.AddScoped<ISaveAvatarService,SaveAvatarService>();
+
+        services.AddScoped<IPatchNotesService, PatchNotesService>();
 
         services.AddScoped<IAuthSignInService, AuthSignInService>();
         

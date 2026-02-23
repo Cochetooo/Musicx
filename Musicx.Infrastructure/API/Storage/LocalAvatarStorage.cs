@@ -17,7 +17,7 @@ public sealed class LocalAvatarStorage : IAvatarStorage
     
     public async Task<string> SaveAsync(long userId, Stream imageStream, string contentType, CancellationToken token = default)
     {
-        var basePath = _root.GetPath();
+        var basePath = _root.GetWebRootPath();
         var folder = Path.Combine(basePath, "Avatars", userId.ToString());
         Directory.CreateDirectory(folder);
         
@@ -33,7 +33,7 @@ public sealed class LocalAvatarStorage : IAvatarStorage
 
     public Task DeleteAsync(long userId, CancellationToken token = default)
     {
-        var path = Path.Combine(_root.GetPath(), "Avatars", userId.ToString());
+        var path = Path.Combine(_root.GetWebRootPath(), "Avatars", userId.ToString());
         
         if (Directory.Exists(path))
         {

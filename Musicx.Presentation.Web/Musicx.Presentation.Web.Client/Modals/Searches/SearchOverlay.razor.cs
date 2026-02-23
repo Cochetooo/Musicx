@@ -81,6 +81,12 @@ public partial class SearchOverlay
 
     private async Task OnKeyDownHandler(KeyboardEventArgs ev)
     {
+        // Avoid special keys
+        if (ev.CtrlKey || ev.AltKey || ev.MetaKey)
+        {
+            return;
+        }
+        
         if (ev.Key == "Escape")
         {
             await Close();
@@ -115,12 +121,14 @@ public partial class SearchOverlay
             
             _artistResults = await UcListArtists.ExecuteAsync(
                 pagingOptions: pagingOptions,
-                filter: _value
+                filter: _value,
+                filterExact: _exactSearch
             );
 
             _albumResults = await UcListAlbums.ExecuteAsync(
                 pagingOptions: pagingOptions,
                 filter: _value,
+                filterExact: _exactSearch,
                 joins: new AlbumJoinSpecification
                 {
                     IncludeArtist = true
@@ -129,12 +137,14 @@ public partial class SearchOverlay
 
             _genreResults = await UcListGenres.ExecuteAsync(
                 pagingOptions: pagingOptions,
-                filter: _value
+                filter: _value,
+                filterExact: _exactSearch
             );
 
             _songResults = await UcListSongs.ExecuteAsync(
                 pagingOptions: pagingOptions,
                 filter: _value,
+                filterExact: _exactSearch,
                 joins: new SongJoinSpecification
                 {
                     IncludeAlbum = true
@@ -143,7 +153,8 @@ public partial class SearchOverlay
 
             _userResults = await UcListUsers.ExecuteAsync(
                 pagingOptions: pagingOptions,
-                filter: _value
+                filter: _value,
+                filterExact: _exactSearch
             );
 
             if (_groupResults)

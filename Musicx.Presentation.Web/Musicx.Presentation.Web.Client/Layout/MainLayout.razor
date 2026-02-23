@@ -71,6 +71,14 @@
             Color="Color.Inherit"
             Icon="@Icons.Material.Filled.MoreVert">
             
+            <!-- Site > Patch Notes -->
+            <MudMenuItem Href="/PatchNotes"
+                         Icon="@Icons.Material.Filled.NewReleases"
+                         IconColor="Color.Primary"
+                         Label="Patch Notes" />
+            
+            <MudDivider/>
+
             <!-- User > Signup -->
             @if (UserClientContext.CurrentUser is null)
             {
@@ -78,7 +86,7 @@
                              Icon="@Icons.Material.Filled.PersonAdd"
                              IconColor="Color.Primary"
                              Label="Signup"/>
-            
+
                 <MudMenuItem OnClick="@OpenLogin"
                              Icon="@Icons.Material.Filled.Login"
                              IconColor="Color.Primary"
@@ -86,15 +94,8 @@
             }
             else
             {
-                <MudMenuItem OnClick="@SignOut"
-                             Icon="@Icons.Material.Filled.Logout"
-                             IconColor="Color.Primary"
-                             Label="Sign Out"/>
-                
-                @if (UserClientContext.Can("admin.dashboard.read"))
+                if (UserClientContext.Can("admin.dashboard.read"))
                 {
-                    <MudDivider />
-
                     <!-- Admin > Artist Dashboard -->
                     <MudMenuItem Href="/Admin/ArtistDashboard"
                                  Icon="@Icons.Material.Filled.Person"
@@ -106,13 +107,20 @@
                                  Icon="@Icons.Material.Filled.Piano"
                                  IconColor="Color.Primary"
                                  Label="Genre Dashboard"/>
-            
+
                     <!-- Admin > Role Dashboard -->
                     <MudMenuItem Href="/Admin/RoleDashboard"
                                  Icon="@Icons.Material.Filled.PersonPin"
                                  IconColor="Color.Primary"
                                  Label="Role Dashboard"/>
+
+                    <MudDivider/>
                 }
+
+                <MudMenuItem OnClick="@SignOut"
+                             Icon="@Icons.Material.Filled.Logout"
+                             IconColor="Color.Primary"
+                             Label="Sign Out"/>
             }
         </MudMenu>
     </MudAppBar>

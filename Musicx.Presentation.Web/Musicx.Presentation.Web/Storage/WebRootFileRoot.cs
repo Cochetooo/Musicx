@@ -4,7 +4,9 @@ namespace Musicx.Presentation.Web.Storage;
 
 public sealed class WebRootFileRoot(IWebHostEnvironment env, IHttpContextAccessor http) : IPublicFileRoot
 {
-    public string GetPath() => env.WebRootPath;
+    public string GetWebRootPath() => env.WebRootPath;
+    
+    public string GetContentRootPath() => env.ContentRootPath;
 
     public string GetBaseUrl()
     {
