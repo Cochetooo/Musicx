@@ -6,6 +6,7 @@ using Microsoft.JSInterop;
 using MudBlazor;
 using Musicx.Application.Desktop.Specifications;
 using Musicx.Application.Shared.Enums;
+using Musicx.Contracts.Dto.Responses.Genre;
 
 namespace Musicx.Presentation.Web.Client.Modals.Searches;
 
@@ -237,8 +238,8 @@ public partial class SearchOverlay
             "Album" => "💿",
             "Song" => "🎵",
             "User" => "👤",
-            "Genre" => "🏷️",
-            "Localization" => "📍",
+            "Genre" => "🎹",
+            "Localization" => "🌎",
             "Label" => "🏷️",
             _ => "•"
         };

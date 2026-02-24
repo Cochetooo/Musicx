@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 
 
 namespace Musicx.Infrastructure.Desktop.Persistence;

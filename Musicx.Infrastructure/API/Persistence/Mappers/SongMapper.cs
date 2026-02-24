@@ -3,6 +3,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests.Song;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
 using Musicx.Infrastructure.API.Persistence.Columns.Artist;

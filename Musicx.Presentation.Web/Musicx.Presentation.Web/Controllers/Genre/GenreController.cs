@@ -4,6 +4,7 @@ using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 using Musicx.Presentation.Web.Contexts;
 

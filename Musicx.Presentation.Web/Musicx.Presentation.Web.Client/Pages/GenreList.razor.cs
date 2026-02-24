@@ -1,6 +1,7 @@
 using Microsoft.JSInterop;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 
 namespace Musicx.Presentation.Web.Client.Pages;

@@ -1,7 +1,7 @@
 using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
 
-namespace Musicx.Contracts.Dto.Responses;
+namespace Musicx.Contracts.Dto.Responses.Genre;
 
 public sealed class OutGenre : BaseOutputModel
 {

@@ -1,4 +1,6 @@
-﻿namespace Musicx.Contracts.Dto.Responses;
+﻿using Musicx.Contracts.Dto.Responses.Genre;
+
+namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutGenreClosure : BaseOutputModel
 {

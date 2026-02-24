@@ -4,6 +4,7 @@ using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Presentation.Web.Client.Modals.Voting;

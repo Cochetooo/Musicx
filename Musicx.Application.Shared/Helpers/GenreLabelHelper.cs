@@ -1,4 +1,5 @@
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 
 namespace Musicx.Application.Shared.Helpers;
 

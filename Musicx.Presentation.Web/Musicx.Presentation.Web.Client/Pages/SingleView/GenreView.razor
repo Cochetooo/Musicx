@@ -6,128 +6,212 @@
 @using Musicx.Application.Web.Interfaces.UseCases.Album
 @using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Presentation.Web.Client.Components
+@using Musicx.Contracts.Dto.Responses.Genre
 @using Musicx.Presentation.Web.Client.Components.Albums
 @using Musicx.Presentation.Web.Client.Components.Ratings
+@using Musicx.Presentation.Web.Client.Helpers
 
 @inject ILoggerFactory LoggerProvider
 @inject IFindOneByIdService<InGenre, OutGenre> UcGet
 @inject IFindAlbumByGenreService UcAlbumByGenre
 @inject IUserClientContext UserClientContext
 
-<MudBreadcrumbs Items="@_breadcrumb" />
+<MudBreadcrumbs Items="@_breadcrumb" Class="mb-4" />
 
-@if (null == _genre)
+@if (_genre is null)
 {
-    <MudProgressCircular Indeterminate />
+    <MudPaper Class="pa-6 d-flex justify-center">
+        <MudProgressCircular Indeterminate Size="Size.Large" />
+    </MudPaper>
 }
 else
 {
-    <MudCard Class="mt-4">
-        <MudCardHeader Style="@GetHeaderStyle()">
-            <MudText Typo="Typo.h1" Class="pl-5 montserrat text-mega-bold" Style="font-size: 5rem; text-shadow: 1px 1px 5px #77777733">
-                @_genre.CanonicalName
-            </MudText>
-        </MudCardHeader>
+    <MudCard Class="mt-2 genre-page">
+        
+        <!-- HERO HEADER -->
+        <MudCardContent Class="pa-6">
+
+            <MudStack Spacing="1">
+
+                <!-- Title row -->
+                <MudStack Row AlignItems="AlignItems.Center" Style="@(GetHeaderStyle())" Class="rounded-lg pl-2" Spacing="2">
+
+                    <MudIcon Icon="@UiGenreHelper.GetGenreIcon(_genre)"
+                             Size="Size.Large"
+                             Color="Color.Default" />
+
+                    <MudTooltip Text="Click to toggle short / canonical name">
+                        <MudText Typo="Typo.h2"
+                                 Class="montserrat text-mega-bold genre-title"
+                                 @onclick="ToggleName">
+                            @DisplayedName
+                            <MudIcon Icon="@Icons.Material.Filled.SwapHoriz"
+                                     Class="ml-2 swap-icon" />
+                        </MudText>
+                    </MudTooltip>
+
+                </MudStack>
+
+                <!-- Aliases -->
+                @if (_genre.Aliases?.Any() == true)
+                {
+                    <MudStack Row Wrap="Wrap.Wrap" Spacing="1">
+                        @foreach (var alias in _genre.Aliases)
+                        {
+                            <MudChip Variant="Variant.Outlined"
+                                     Size="Size.Small"
+                                     T="string"
+                                     Color="Color.Secondary">
+                                @alias.Name
+                            </MudChip>
+                        }
+                    </MudStack>
+                }
+
+                <!-- Meta info -->
+                <MudStack Row Wrap="Wrap.Wrap" Spacing="2" Class="mt-2">
+
+                    <!-- Type -->
+                    <MudTooltip Text="@_genre.Type.ToDescriptionString()">
+                        <MudChip Color="Color.Primary" Variant="Variant.Filled" T="string">
+                            @_genre.Type
+                        </MudChip>
+                    </MudTooltip>
+
+                    <!-- Country -->
+                    @if (!string.IsNullOrWhiteSpace(_genre.CountryOrigin))
+                    {
+                        <MudChip Variant="Variant.Outlined"
+                                 Icon="@Icons.Material.Filled.Public"
+                                 T="string">
+                            @_genre.CountryOrigin
+                        </MudChip>
+                    }
+
+                    <!-- Era -->
+                    @if (_genre.EraStart is not null || _genre.EraEnd is not null)
+                    {
+                        <MudChip Variant="Variant.Outlined"
+                                 T="string"
+                                 Icon="@Icons.Material.Filled.Schedule">
+                            @FormatEra()
+                        </MudChip>
+                    }
+
+                </MudStack>
+
+            </MudStack>
+        </MudCardContent>
+        
+        <MudDivider />
+        
+        <!-- MAIN CONTENT -->
         <MudCardContent>
-            <MudGrid Class="ma-3">
-                <MudItem xs="12" md="4" Class="pa-2">
-                    <MudCard>
-                        <MudCardHeader>
-                            <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
+            <MudGrid>
+
+                <!-- LEFT COLUMN -->
+                <MudItem xs="12" md="4">
+
+                    <!-- Description -->
+                    <MudPaper Class="pa-4 bg-surface glass-paper mb-4">
+
+                        <MudStack Spacing="2">
+
+                            <MudText Typo="Typo.h6" Class="text-bold">
                                 Description
                             </MudText>
-                        </MudCardHeader>
-                        <MudCardContent>
+
                             <DonutRating
                                 Rating="@_albumsAvgRating"
                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                                Size="DonutRatingSize.Small"
-                            />
-                            
-                            @if (_genre.Description is not null)
-                            {
-                                <MudText Typo="Typo.body2" Class="description mt-2">
-                                    @_genre.Description
-                                </MudText>
-                            }
-                            else
-                            {
-                                <MudText Typo="Typo.body2" Class="description text-italic mt-2">
-                                    There is no description yet.
-                                </MudText>
-                            }
-                        </MudCardContent>
-                    </MudCard>
-                    
-                    <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
+                                Size="DonutRatingSize.Small" />
+
+                            <MudText Typo="Typo.body2">
+                                @(_genre.Description ?? "No description yet.")
+                            </MudText>
+
+                        </MudStack>
+
+                    </MudPaper>
+
+                    <!-- Hierarchy -->
+                    <MudPaper Class="pa-4 bg-surface glass-paper">
+
+                        <MudText Typo="Typo.h6" Class="text-bold mb-2">
                             Hierarchy
                         </MudText>
-                        
-                        <MudDivider Class="my-3" />
-                        
-                        @{
-                            var maxDepth = 0;
-                        }
-                        
-                        @if (_genre.Parents?.Any() == true)
-                        {
-                            maxDepth = _genre.Parents.Select(p => p.Depth).Max();
-                            
-                            foreach (var genre in _genre.Parents)
+
+                        <MudStack Spacing="1">
+                            @{
+                                var maxDepth = 0;
+                            }
+
+                            @if (_genre.Parents?.Any() == true)
                             {
-                                if (genre.Relation.Id != _genre.Id)
+                                maxDepth = _genre.Parents.Select(p => p.Depth).Max();
+
+                                foreach (var genre in _genre.Parents)
                                 {
-                                    <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Tertiary"
-                                             Class="@($"ml-{(maxDepth - genre.Depth)*4} d-block")">
-                                        @genre.Relation.CanonicalName
-                                    </MudLink>
+                                    if (genre.Relation.Id != _genre.Id)
+                                    {
+                                        <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Tertiary"
+                                                 Class="@($"ml-{(maxDepth - genre.Depth) * 4} d-block")">
+                                            @genre.Relation.CanonicalName
+                                        </MudLink>
+                                    }
                                 }
                             }
-                        }
-                        
-                        <MudLink Href="@($"/Genre/{_genre.Id}")" Color="Color.Primary" 
-                                 Class="@($"ml-{maxDepth * 4} d-block text-bold")">
-                            @_genre.CanonicalName
-                        </MudLink>
-                        
-                        @if (_genre.Children?.Any() == true)
-                        {
-                            foreach (var genre in _genre.Children)
+
+                            <MudLink Href="@($"/Genre/{_genre.Id}")" Color="Color.Primary"
+                                     Class="@($"ml-{maxDepth * 4} d-block text-bold")">
+                                @_genre.CanonicalName
+                            </MudLink>
+
+                            @if (_genre.Children?.Any() == true)
                             {
-                                if (genre.Relation.Id != _genre.Id && genre.Depth == 1)
+                                foreach (var genre in _genre.Children)
                                 {
-                                    <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Secondary"
-                                             Class="@($"ml-{(maxDepth + 1) * 4} d-block")">
-                                        @genre.Relation.CanonicalName
-                                    </MudLink>
+                                    if (genre.Relation.Id != _genre.Id && genre.Depth == 1)
+                                    {
+                                        <MudLink Href="@($"/Genre/{genre.Relation.Id}")" Color="Color.Secondary"
+                                                 Class="@($"ml-{(maxDepth + 1) * 4} d-block")">
+                                            @genre.Relation.CanonicalName
+                                        </MudLink>
+                                    }
                                 }
                             }
-                        }
+                        </MudStack>
+
                     </MudPaper>
+
                 </MudItem>
-                <MudItem xs="12" md="8" Class="pa-2">
-                    <MudCard>
-                        <MudCardHeader>
-                            <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
+
+                <!-- RIGHT COLUMN -->
+                <MudItem xs="12" md="8">
+
+                    <MudPaper Class="pa-4 glass-paper bg-surface">
+
+                        <MudStack Spacing="2">
+
+                            <MudText Typo="Typo.h6" Class="text-bold">
                                 Releases (@_albumCount)
                             </MudText>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <MudTable ServerData="@LoadAlbumsData" ReadOnly
+
+                            <MudTable ServerData="@LoadAlbumsData"
                                       @ref="_albumTable"
-                                      Elevation="8"
+                                      Dense
+                                      Hover
+                                      Elevation="0"
                                       Breakpoint="Breakpoint.Sm"
                                       RowClass="album-row"
-                                      RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Stats?.Average)}")"
-                                      Class="mt-4 pa-2 bg-surface animate-hover-up" Dense>
+                                      RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Stats?.Average)}")">
+
                                 <ColGroup>
-                                    <col style="width:3px;" />
+                                    <col style="width:3px;"/>
                                     <col/>
                                     <col style="width: 100px;"/>
                                     <col style="width: 120px;"/>
-                                    <col style="width: 75px;" />
+                                    <col style="width: 75px;"/>
                                     <col style="width: 100px;"/>
                                 </ColGroup>
                                 <HeaderContent>
@@ -173,7 +257,7 @@ else
                                     </MudTd>
 
                                     <MudTd DataLabel="Other Primary Genres">
-                                        
+
                                     </MudTd>
 
                                     <MudTd DataLabel="Date">
@@ -181,7 +265,7 @@ else
                                             @context.OriginalReleaseDate?.ToString("dd MMM yy", CultureInfo.CurrentCulture)
                                         </MudText>
                                     </MudTd>
-                                    
+
                                     <MudTd DataLabel="#">
                                         @if (context.Stats is not null)
                                         {
@@ -211,16 +295,39 @@ else
                                 <PagerContent>
                                     <MudTablePager/>
                                 </PagerContent>
+
                             </MudTable>
-                        </MudCardContent>
-                    </MudCard>
+
+                        </MudStack>
+
+                    </MudPaper>
+
                 </MudItem>
+
             </MudGrid>
         </MudCardContent>
     </MudCard>
 }
 
 <style>
+    .genre-title {
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .genre-title:hover {
+        opacity: 0.85;
+    }
+
+    .swap-icon {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .genre-title:hover .swap-icon {
+        opacity: 1;
+    }
+    
     .album-row {
         position: relative;
     }

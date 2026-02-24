@@ -3,6 +3,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 using Musicx.Presentation.Web.Client.Modals.Admin.Genres;
 using Musicx.Presentation.Web.Client.Models;

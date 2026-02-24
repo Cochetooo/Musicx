@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Nodes;
+using Musicx.Contracts.Dto.Responses.Genre;
 
 namespace Musicx.Contracts.Dto.Responses;
 

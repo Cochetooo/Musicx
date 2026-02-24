@@ -1,6 +1,5 @@
 ﻿.genre-badge {
     box-shadow: var(--mud-elevation-6);
-    transition: box-shadow 0.3s ease-in-out;
 }
 
 .genre-badge:hover {

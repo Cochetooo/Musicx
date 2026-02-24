@@ -1,4 +1,5 @@
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

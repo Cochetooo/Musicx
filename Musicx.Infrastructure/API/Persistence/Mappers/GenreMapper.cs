@@ -6,6 +6,7 @@ using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests.Genre;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Columns.Genre;
 using Musicx.Infrastructure.API.Persistence.Converters;
@@ -93,10 +94,16 @@ public static class GenreMapper
         Id = genre.Id,
         
         IsVisible = genre.IsVisible,
+        IsTaggable = genre.IsTaggable,
         CanonicalName = genre.CanonicalName,
         Type = genre.Type,
         
         Description = genre.Description,
-        Color = genre.Color
+        Color = genre.Color,
+        CountryOrigin = genre.CountryOrigin,
+        EraStart = genre.EraStart,
+        EraEnd = genre.EraEnd,
+        Metadata = genre.Metadata,
+        ShortName = genre.ShortName
     };
 }

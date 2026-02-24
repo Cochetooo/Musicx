@@ -20,14 +20,9 @@ public sealed class DeleteService<T>(
         
         var response = await httpClient.DeleteAsync(endpoint);
 
-        if (response.IsSuccessStatusCode)
-        {
-            _logger.LogInformation($"🌍✅ DELETE {endpoint} - SUCCESS");
-        }
-        else
-        {
-            _logger.LogInformation($"🌍❌ DELETE {endpoint} - ERROR : {response.StatusCode} | {response.ReasonPhrase}");
-        }
+        _logger.LogInformation(response.IsSuccessStatusCode
+            ? $"🌍✅ DELETE {endpoint} - SUCCESS"
+            : $"🌍❌ DELETE {endpoint} - ERROR : {response.StatusCode} | {response.ReasonPhrase}");
     }
 
     public void Execute(long id)

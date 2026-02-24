@@ -12,7 +12,7 @@ create table public.genre_relation (
     genre_relation_metadata             jsonb default '{}'::jsonb,
     genre_relation_type                 integer not null default 0,
     genre_relation_weight               numeric(5,4) not null default 1.0 CHECK (genre_relation_weight >= 0 AND genre_relation_weight <= 1),
-    unique (genre_relation_from_genre_id, genre_relation_to_genre_id, genre_relation_type)
+    unique (genre_relation_from_genre_id, genre_relation_to_genre_id)
 );
 
 alter table public.genre_relation owner to postgres;

@@ -3,6 +3,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
@@ -20,6 +21,12 @@ public partial class GenreView
     private readonly List<BreadcrumbItem>? _breadcrumb = [];
     private long _albumCount;
     private decimal? _albumsAvgRating;
+    private bool _useShortName;
+
+    private string DisplayedName => _useShortName &&
+                                     !string.IsNullOrWhiteSpace(_genre?.ShortName)
+        ? _genre.ShortName!
+        : _genre?.CanonicalName ?? string.Empty;
     
     private MudTable<OutAlbum>? _albumTable;
 
@@ -118,6 +125,18 @@ public partial class GenreView
             TotalItems = (int)response.Total,
             Items = response.Items
         };
+    }
+
+    private void ToggleName()
+    {
+        _useShortName = !_useShortName;
+    }
+    
+    private string FormatEra()
+    {
+        var start = _genre?.EraStart?.Year.ToString() ?? "?";
+        var end = _genre?.EraEnd?.Year.ToString() ?? "?";
+        return $"{start} – {end}";
     }
 
     private string GetHeaderStyle()

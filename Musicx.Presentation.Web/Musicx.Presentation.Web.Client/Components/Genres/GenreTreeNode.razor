@@ -1,37 +1,29 @@
-@using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Dto.Responses.Genre
 @using Musicx.Contracts.Dto.Responses.Specifics.Genres
 
-<div class="genre-node">
+<div class="genre-node @(Expanded ? "is-open" : string.Empty)">
     <div class="genre-node-header">
-        @if (Expandable)
-        {
-            <button class="expand-btn" @onclick="ToggleExpand">
-                @if (Loading)
-                {
-                    <MudProgressCircular Indeterminate Size="Size.Small" Class="loading-spinner" />
-                } 
-                else if (Expanded)
-                {
-                    <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.ExpandMore" />
-                }
-                else
-                {
-                    <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.ChevronRight" />
-                }
-            </button>
-        }
-        else
-        {
-            <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Remove" />
-        }
+        <button class="expand-btn" @onclick="ToggleExpand" disabled="@(!CanExpand)">
+            @if (Loading)
+            {
+                <MudProgressCircular Indeterminate Size="Size.Small" Class="loading-spinner" />
+            }
+            else if (Expanded)
+            {
+                <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.ExpandMore" />
+            }
+            else
+            {
+                <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.ChevronRight" />
+            }
+        </button>
         
         @if (Addable)
         {
-            <MudIconButton
-                Icon="@Icons.Material.Filled.Add"
-                Color="Color.Primary"
-                Disabled="@IsSelected"
-                OnClick="@(async () => await OnSelectionChange(true))"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                           Color="Color.Primary"
+                           Disabled="@IsSelected"
+                           OnClick="@(async () => await OnSelectionChange(true))" />
         }
         
         @if (Checkable)
@@ -47,15 +39,18 @@
     @if (Expanded)
     {
         <div class="genre-node-children animate-expand">
-            @if (Children != null)
+            @if (Children is not null)
             {
-                @foreach (var child in Children)
+                foreach (var child in Children)
                 {
-                    <GenreTreeNode Genre="child.Relation"
-                                   Checkable="Checkable"
-                                   Addable="Addable"
-                                   LoadChildrenAsync="LoadChildrenAsync"
-                                   OnSelectionChanged="OnSelectionChanged" />
+                    if (child.Relation.Id != Genre.Id)
+                    {
+                        <GenreTreeNode Genre="child.Relation"
+                                       Checkable="Checkable"
+                                       Addable="Addable"
+                                       LoadChildrenAsync="LoadChildrenAsync"
+                                       OnSelectionChanged="OnSelectionChanged" />
+                    }
                 }
             }
         </div>
@@ -74,13 +69,15 @@
     private bool Loading { get; set; }
     private bool IsSelected { get; set; }
     
+    private bool HasLoadedChildren { get; set; }
+    
     private IReadOnlyList<GenreClosureNode>? Children { get; set; }
 
-    private bool Expandable => Genre.Children?.Any() ?? false;
+    private bool CanExpand => ((Genre.Children?.Any() ?? false) && Genre.Children.Count > 1 ) || (LoadChildrenAsync is not null && !HasLoadedChildren);
 
     private async Task ToggleExpand()
     {
-        if (!Expandable)
+        if (!CanExpand)
         {
             return;
         }
@@ -99,6 +96,7 @@
                 Children = Genre.Children;
             }
 
+            HasLoadedChildren = true;
             Loading = false;
             Expanded = true;
         }

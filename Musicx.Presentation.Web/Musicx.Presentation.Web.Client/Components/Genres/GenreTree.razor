@@ -1,12 +1,11 @@
-@using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Dto.Responses.Genre
 @using Musicx.Contracts.Dto.Responses.Specifics.Genres
 @using Musicx.Contracts.Enums
-@inject ILoggerFactory LoggerFactory
 
 <div class="genre-tree">
     @foreach (var genre in RootGenres)
     {
-        @if (AllowedTypes is null || AllowedTypes.Contains(genre.Type))
+        if (AllowedTypes is null || AllowedTypes.Contains(genre.Type))
         {
             <GenreTreeNode Genre="genre"
                            Checkable="@Checkable"
@@ -18,36 +17,32 @@
 </div>
 
 @code {
-
-    private ILogger _logger = null!;
-
+    
     [Parameter] public IReadOnlyList<OutGenre> RootGenres { get; set; } = [];
     [Parameter] public bool Checkable { get; set; }
     [Parameter] public bool Addable { get; set; }
     [Parameter] public IReadOnlyCollection<GenreType>? AllowedTypes { get; set; }
     [Parameter] public EventCallback<IReadOnlyList<OutGenre>> SelectedGenresChanged { get; set; }
+    [Parameter] public Func<OutGenre, Task<IReadOnlyList<GenreClosureNode>>>? LoadChildrenAsync { get; set; }
 
-    private HashSet<OutGenre> _selected = [];
-
-    protected override void OnInitialized()
-    {
-        _logger = LoggerFactory.CreateLogger(nameof(GenreTree));
-    }
+    private readonly HashSet<long> _selectedGenreIds = [];
+    private readonly List<OutGenre> _selectedGenres = [];
 
     private async Task OnSelectionChanged(OutGenre genre, bool selected)
     {
         if (selected)
         {
-            _selected.Add(genre);
+            if (_selectedGenreIds.Add(genre.Id))
+            {
+                _selectedGenres.Add(genre);
+            }
         }
-        else
+        else if (_selectedGenreIds.Remove(genre.Id))
         {
-            _selected.Remove(genre);
+            _selectedGenres.RemoveAll(g => g.Id == genre.Id);
         }
 
-        await SelectedGenresChanged.InvokeAsync(_selected.ToList());
+        await SelectedGenresChanged.InvokeAsync(_selectedGenres.ToList());
     }
-    
-    [Parameter] public Func<OutGenre, Task<IReadOnlyList<GenreClosureNode>>>? LoadChildrenAsync { get; set; }
 
 }

@@ -1,3 +1,4 @@
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Contracts.Dto.Responses;

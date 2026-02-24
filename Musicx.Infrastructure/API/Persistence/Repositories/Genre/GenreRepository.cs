@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Genre;

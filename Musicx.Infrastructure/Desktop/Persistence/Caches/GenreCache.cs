@@ -1,6 +1,7 @@
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 
 
 namespace Musicx.Infrastructure.Desktop.Persistence.Caches;

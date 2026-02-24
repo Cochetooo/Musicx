@@ -1,30 +1,70 @@
 @using Musicx.Presentation.Web.Client.Components.Genres
 
-@*
-<MudTabs>
+<MudTabs Rounded PanelClass="pa-3">
     <MudTabPanel Text="Hierarchy (IsA)">
-        <GenreTree RelationType="IsA" />
+        <MudText Typo="Typo.subtitle2" Class="mb-2">Select parent genres</MudText>
+        <GenreTree RootGenres="RootGenres"
+                   Addable
+                   AllowedTypes="AllowedParentTypes"
+                   SelectedGenresChanged="OnParentsChanged"
+                   LoadChildrenAsync="LoadChildrenAsync" />
+
+        <MudDivider Class="my-3" />
+        <MudChipSet T="string">
+            @foreach (var relation in ParentRelations)
+            {
+                var genre = FindGenre(relation.FromGenreId);
+                if (genre is not null)
+                {
+                    <GenreBadge Genre="genre" Closable OnClose="@(() => RemoveRelation(relation))" />
+                }
+            }
+        </MudChipSet>
     </MudTabPanel>
 
     <MudTabPanel Text="Influences">
-        <GenreTree RelationType="InfluencedBy" />
+        <MudText Typo="Typo.subtitle2" Class="mb-2">Add inspiration genres</MudText>
+        <GenreTree RootGenres="RootGenres"
+                   Addable
+                   SelectedGenresChanged="OnInfluencesChanged"
+                   LoadChildrenAsync="LoadChildrenAsync" />
+        <MudDivider Class="my-3" />
+        <MudChipSet T="string">
+            @foreach (var relation in InfluenceRelations)
+            {
+                var genre = FindGenre(relation.FromGenreId);
+                if (genre is not null)
+                {
+                    <GenreBadge Genre="genre" Influence="true" Closable OnClose="@(() => RemoveRelation(relation))" />
+                }
+            }
+        </MudChipSet>
     </MudTabPanel>
 
     <MudTabPanel Text="Fusion">
-        <GenreTree RelationType="FusionOf" />
-        <MudSlider @bind-Value="_fusionWeight" Min="0" Max="1" />
+        <MudText Typo="Typo.subtitle2" Class="mb-2">Add source genres for fusion</MudText>
+        <GenreTree RootGenres="RootGenres"
+                   Addable
+                   AllowedTypes="AllowedFusionTypes"
+                   SelectedGenresChanged="OnFusionChanged"
+                   LoadChildrenAsync="LoadChildrenAsync" />
+        
+        <MudDivider Class="my-3" />
+        <MudStack Spacing="1">
+            @foreach (var relation in FusionRelations)
+            {
+                var genre = FindGenre(relation.FromGenreId);
+                if (genre is null)
+                {
+                    continue;
+                }
+                
+                <MudPaper Class="pa-2 d-flex align-center gap-2">
+                    <GenreBadge Genre="genre" Closable OnClose="@(() => RemoveRelation(relation))" />
+                    <MudSlider T="float" Min="0.1f" Max="1f" Step="0.05f" @bind-Value="relation.Weight" />
+                    <MudText Typo="Typo.caption">@relation.Weight.ToString("0.00")</MudText>
+                </MudPaper>
+            }
+        </MudStack>
     </MudTabPanel>
-
-    <MudTabPanel Text="Scenes">
-        <GenreTree RelationType="AssociatedWith" />
-    </MudTabPanel>
-
-    <MudTabPanel Text="Aliases">
-        <MudTextField @bind-Value="_newAlias" />
-        <MudButton OnClick="AddAlias" />
-    </MudTabPanel>
-
-    <MudTabPanel Text="Facets">
-        <FacetEditor />
-    </MudTabPanel>
-</MudTabs> *@
+</MudTabs>

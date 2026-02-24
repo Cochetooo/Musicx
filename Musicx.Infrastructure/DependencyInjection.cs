@@ -160,6 +160,7 @@ public static class DependencyInjection
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Album.IAlbumInfluenceRepository, AlbumInfluenceRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Artist.IArtistRepository, ArtistRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Genre.IGenreRepository, GenreRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Genre.IGenreRelationRepository, GenreRelationRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Security.IPermissionRepository, PermissionRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Security.IRoleRepository, RoleRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Tag.ITagRepository, TagRepository>();

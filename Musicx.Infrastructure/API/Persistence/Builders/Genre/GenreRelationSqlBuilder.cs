@@ -18,13 +18,7 @@ internal sealed class GenreRelationSqlBuilder(ILoggerProvider loggerProvider) : 
         var createCommandSql = BuildInsert("genre_relation",
             new Dictionary<string, object?>
             {
-                { GenreRelationColumns.FromGenreId, entity.FromGenreId },
-                { GenreRelationColumns.ToGenreId, entity.ToGenreId },
-                { GenreRelationColumns.CreatedAt, DateTime.Now },
-                { GenreRelationColumns.UpdatedAt, DateTime.Now },
-                { GenreRelationColumns.Metadata, entity.Metadata },
-                { GenreRelationColumns.Type, entity.Type },
-                { GenreRelationColumns.Weight, entity.Weight }
+                
             });
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
@@ -57,9 +51,43 @@ internal sealed class GenreRelationSqlBuilder(ILoggerProvider loggerProvider) : 
         await cmd.ExecuteNonQueryAsync();
     }
 
-    internal override Task ExecuteUpsert(InGenreRelation entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override async Task<object?> ExecuteUpsert(InGenreRelation entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        throw new NotImplementedException();
+        var now = DateTime.Now;
+
+        var query = BuildUpsert(
+            table: "genre_relation",
+            insertProperties: new Dictionary<string, object?>
+            {
+                { GenreRelationColumns.FromGenreId, entity.FromGenreId },
+                { GenreRelationColumns.ToGenreId, entity.ToGenreId },
+                { GenreRelationColumns.CreatedAt, now },
+                { GenreRelationColumns.UpdatedAt, now },
+                { GenreRelationColumns.Metadata, entity.Metadata },
+                { GenreRelationColumns.Type, entity.Type },
+                { GenreRelationColumns.Weight, entity.Weight }
+            },
+            conflictColumns:
+            [
+                GenreRelationColumns.FromGenreId,
+                GenreRelationColumns.ToGenreId
+            ],
+            updateProperties: new Dictionary<string, object?>
+            {
+                { GenreRelationColumns.UpdatedAt, now },
+                { GenreRelationColumns.Metadata, entity.Metadata },
+                { GenreRelationColumns.Type, entity.Type },
+                { GenreRelationColumns.Weight, entity.Weight }
+            }
+        );
+        
+        _logger.LogDebug(SqlHelper.InterpolateQuery(query.Query, query.Parameters));
+        
+        await using var cmd = new NpgsqlCommand(query.Query, connection, transaction);
+        cmd.Parameters.AddRange(query.Parameters.ToArray());
+        await cmd.ExecuteNonQueryAsync();
+
+        return null;
     }
 
     internal override string BuildSelect(IJoinSpecification<InGenreRelation>? querySpecification = null,
