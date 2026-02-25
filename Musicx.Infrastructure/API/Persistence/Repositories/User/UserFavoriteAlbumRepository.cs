@@ -45,19 +45,6 @@ internal sealed class UserFavoriteAlbumRepository(
 
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
-
-    public Task DeleteAllAsync(IEnumerable<long> ids)
-        => throw new NotImplementedException();
-
-    public Task<OutUserFavoriteAlbum?> FindOneByIdAsync(long id, IJoinSpecification<InUserFavoriteAlbum>? joinSpecification = null)
-        => throw new NotImplementedException();
-
-    public Task<List<OutUserFavoriteAlbum>> FindAllAsync(bool? filterExact = null, double? filterSimilitude = 0.4D, string? filter = null,
-        IJoinSpecification<InUserFavoriteAlbum>? joinSpec = null, OrderSpecification<InUserFavoriteAlbum>? orderSpec = null, PagingOptions? pagingOptions = null)
-        => throw new NotImplementedException();
-
-    public Task<List<OutUserFavoriteAlbum>> FindInAsync(IEnumerable<long> ids, IJoinSpecification<InUserFavoriteAlbum>? joinSpec = null, OrderSpecification<InUserFavoriteAlbum>? orderSpec = null)
-        => throw new NotImplementedException();
     
     public async Task<IReadOnlyList<OutUserFavoriteAlbum>> FindByUserAsync(long userId)
     {

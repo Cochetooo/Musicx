@@ -23,9 +23,6 @@ internal sealed class AlbumInfluenceRepository(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumInfluenceRepository));
     
-    public Task DeleteAsync(long id)
-        => throw new NotImplementedException("DeleteAsync is disabled on this repository.");
-    
     public async Task DeleteOneAsync(long albumId, long genreId, long taggerId)
     {
         const string sql = $"DELETE FROM album_influence " +
@@ -40,24 +37,6 @@ internal sealed class AlbumInfluenceRepository(
 
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
-
-    public Task DeleteAllAsync(IEnumerable<long> ids)
-        => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
-
-    public Task<OutAlbumInfluence?> FindOneByIdAsync(long id, IJoinSpecification<InAlbumInfluence>? albumInfluenceQuerySpecification = null)
-        => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
-
-    public Task<List<OutAlbumInfluence>> FindAllAsync(bool? filterExact = null, double? filterSimilitude = 0.4D,
-        string? filter = null,
-        IJoinSpecification<InAlbumInfluence>? joinSpec = null,
-        OrderSpecification<InAlbumInfluence>? orderSpec = null,
-        PagingOptions? pagingOptions = null)
-        => throw new NotImplementedException("FindAsync is disabled on this repository.");
-
-    public Task<List<OutAlbumInfluence>> FindInAsync(IEnumerable<long> ids,
-        IJoinSpecification<InAlbumInfluence>? joinSpec = null,
-        OrderSpecification<InAlbumInfluence>? orderSpec = null)
-        => throw new NotImplementedException("FindIn is disabled on this repository.");
     
     public Task<OutAlbumInfluence?> FindOneAsync(long albumId, long genreId, long taggerId)
         => throw new NotImplementedException("FindOneAsync is disabled on this repository.");

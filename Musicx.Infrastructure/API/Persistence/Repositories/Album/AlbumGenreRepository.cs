@@ -24,9 +24,6 @@ internal sealed class AlbumGenreRepository(
     ILoggerProvider loggerProvider) : IAlbumGenreRepository
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumGenreRepository));
-    
-    public Task DeleteAsync(long id)
-        => throw new NotImplementedException("DeleteAsync is disabled on this repository.");
 
     public async Task DeleteOneAsync(long albumId, long genreId, long taggerId)
     {
@@ -42,24 +39,6 @@ internal sealed class AlbumGenreRepository(
 
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
-
-    public Task DeleteAllAsync(IEnumerable<long> ids)
-        => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
-
-    public Task<OutAlbumGenre?> FindOneByIdAsync(long id, IJoinSpecification<InAlbumGenre>? albumGenreQuerySpecification = null)
-        => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
-
-    public Task<List<OutAlbumGenre>> FindAllAsync(bool? filterExact = null, double? filterSimilitude = 0.4D,
-        string? filter = null,
-        IJoinSpecification<InAlbumGenre>? joinSpec = null,
-        OrderSpecification<InAlbumGenre>? orderSpec = null,
-        PagingOptions? pagingOptions = null)
-        => throw new NotImplementedException("FindAsync is disabled on this repository.");
-
-    public Task<List<OutAlbumGenre>> FindInAsync(IEnumerable<long> ids,
-        IJoinSpecification<InAlbumGenre>? joinSpec = null,
-        OrderSpecification<InAlbumGenre>? orderSpec = null)
-        => throw new NotImplementedException("FindIn is disabled on this repository.");
 
     public async Task<OutAlbumGenre?> FindOneAsync(long albumId, long genreId, long taggerId)
     {

@@ -86,74 +86,12 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// This method appends a WHERE clause directly.
     /// Ensure no previous WHERE clause exists.
     /// </summary>
-    internal void Filter(ref string sql, IEnumerable<string> columns, 
+    internal void Filter(ref string sql, IEnumerable<string> columns,
         string filter, List<NpgsqlParameter> parameters,
         bool? filterExact = null, double? filterSimilitude = null)
-    {
-        if (string.IsNullOrWhiteSpace(filter) || !columns.Any())
-        {
-            return;
-        }
-
-        var paramName = "@filter";
-        // Add filter parameter once
-        parameters.Add(new NpgsqlParameter(paramName, filter));
-
-        string condition;
-        
-        if (filterExact is not null && filterExact.Value)
-        {
-            // Exact match via ILIKE
-            condition = string.Join(" OR ", columns.Select(c => $"{c} ILIKE {paramName}"));
-        }
-        else
-        {
-            // Approximate match via PostgreSQL similarity()
-            var similitude = (filterSimilitude ?? 0.4).ToString(CultureInfo.InvariantCulture);
-            condition = string.Join(" OR ", columns.Select(c => $"similarity({c}, {paramName}) > {similitude}"));
-        }
-        
-        sql += $" WHERE ({condition})";
-    }
+        => FilterBuilder.Filter(ref sql, columns, filter, parameters, filterExact, filterSimilitude);
     
     internal void Filter(ref string sql, string column, string filter, List<NpgsqlParameter> parameters,
         bool? filterExact = null, double? filterSimilitude = null)
-        => Filter(ref sql, [column], filter, parameters, filterExact, filterSimilitude);
-
-    /// <summary>
-    /// Builds a single text comparison condition
-    /// based on a TextFilter specification.
-    /// 
-    /// Returns:
-    /// - SQL fragment
-    /// - Associated parameter value
-    /// 
-    /// Does NOT inject parameter into command.
-    /// Caller must add it manually.
-    /// </summary>
-    internal (string sql, object value) BuildTextCondition( 
-        string column, TextFilter filter, string paramName)
-    {
-        if (filter.Value is null)
-        {
-            return (string.Empty, string.Empty);
-        }
-        
-        return filter.Mode switch
-        {
-            TextMatchMode.Equals =>
-                ($"{column} = @{paramName}", filter.Value),
-
-            TextMatchMode.StartsWith =>
-                ($"{column} LIKE @{paramName}", $"{filter.Value}%"),
-
-            TextMatchMode.Contains =>
-                ($"{column} LIKE @{paramName}", $"%{filter.Value}%"),
-
-            TextMatchMode.EndsWith =>
-                ($"{column} LIKE @{paramName}", $"%{filter.Value}"),
-
-            _ => throw new NotSupportedException("Text Match Mode not supported.")
-        };
-    }
+        => FilterBuilder.Filter(ref sql, column, filter, parameters, filterExact, filterSimilitude);
 }

@@ -54,61 +54,6 @@ internal sealed class UserAlbumAttrRepository(
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
 
-    public Task DeleteAllAsync(IEnumerable<long> ids)
-        => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
-
-    public Task<OutUserAlbumAttribute?> FindOneByIdAsync(long id, IJoinSpecification<InUserAlbumAttribute>? songQuerySpecification = null)
-        => throw new NotImplementedException("FindByIdAsync is disabled on this repository.");
-
-    public Task<List<OutUserAlbumAttribute>> FindAllAsync(
-            bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
-            IJoinSpecification<InUserAlbumAttribute>? joinSpec = null,
-            OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
-            PagingOptions? pagingOptions = null)
-        => throw new NotImplementedException("FindAsync is disabled on this repository.");
-
-    public Task<List<OutUserAlbumAttribute>> FindInAsync(IEnumerable<long> ids,
-        IJoinSpecification<InUserAlbumAttribute>? joinSpec = null,
-        OrderSpecification<InUserAlbumAttribute>? orderSpec = null)
-        => throw new NotImplementedException("FindIn is disabled on this repository.");
-
-    public Task<long> GetCountAsync()
-        => throw new NotImplementedException("GetCountAsync is disabled on this repository.");
-
-    public async Task<long> SaveAsync(InUserAlbumAttribute entity)
-    {
-        await using var conn = (NpgsqlConnection)connection.CreateConnection();
-        await conn.OpenAsync();
-        
-        await using var transaction = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            var exist = await FindOneAlbumFromUserAsync(entity.UserId, entity.AlbumId);
-            
-            if (exist is null)
-            {
-                await builder.ExecuteInsert(entity, conn, transaction);
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-            
-            await transaction.CommitAsync();
-        } 
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new RepositoryException("❌ SAVE Album : Could not persist.", ex, _logger);
-        }
-        
-        return -1;
-    }
-
-    public async Task<List<long>> SaveAllAsync(IEnumerable<InUserAlbumAttribute> entities)
-        => throw new NotImplementedException();
-
     public async Task<long> CountByAlbumIdAsync(long albumId)
     {
         await using var conn = (NpgsqlConnection)connection.CreateConnection();
@@ -300,17 +245,94 @@ internal sealed class UserAlbumAttrRepository(
             .SingleOrDefault()?
             .FromDicoToUserAlbumAttr();
     }
+    
+    public async Task<long> SaveAsync(InUserAlbumAttribute entity)
+    {
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        
+        await using var transaction = await conn.BeginTransactionAsync();
+        
+        try
+        {
+            var exist = await FindOneAlbumFromUserAsync(entity.UserId, entity.AlbumId);
+            
+            if (exist is null)
+            {
+                await builder.ExecuteInsert(entity, conn, transaction);
+            }
+            else
+            {
+                await builder.ExecuteUpdate(entity, conn, transaction);
+            }
+            
+            await transaction.CommitAsync();
+        } 
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw new RepositoryException("❌ SAVE Album : Could not persist.", ex, _logger);
+        }
+        
+        return -1;
+    }
 
     public async Task<OutUserRatingStats> GetUserRatingStatsAsync(long userId)
     {
         var sql = """
+                  WITH base AS (
+                      SELECT 
+                          u.user_album_attrs_rating AS rating,
+                          a.album_original_release_date,
+                          ar.artist_name
+                      FROM user_album_attrs u
+                      JOIN albums a 
+                          ON u.user_album_attrs_album_id = a.album_id
+                      JOIN artists ar
+                          ON a.album_artist_id = ar.artist_id
+                      WHERE u.user_album_attrs_user_id = @userId
+                  ),
+                  
+                  rating_buckets AS (
+                      SELECT 
+                          (rating / 1000) * 10 AS range_floor,
+                          COUNT(*) AS count
+                      FROM base
+                      GROUP BY (rating / 1000) * 10
+                  ),
+                  
+                  stats AS (
+                      SELECT
+                          AVG(rating)::float AS avg_rating,
+                          STDDEV_SAMP(rating)::float AS stddev,
+                          COUNT(*) FILTER (WHERE UPPER(LEFT(artist_name, 1)) BETWEEN 'A' AND 'M')::float
+                              /
+                          NULLIF(COUNT(*), 0)
+                          AS am_nz_ratio
+                      FROM base
+                  ),
+                  
+                  most_rated_year AS (
+                      SELECT 
+                          EXTRACT(YEAR FROM album_original_release_date)::int AS release_year,
+                          COUNT(*) AS count
+                      FROM base
+                      GROUP BY release_year
+                      ORDER BY count DESC
+                      LIMIT 1
+                  )
+                  
                   SELECT 
-                      (user_album_attrs_rating / 1000) * 10 AS range_floor,
-                      COUNT(*) AS count
-                  FROM user_album_attrs
-                  WHERE user_album_attrs_user_id = @userId
-                  GROUP BY (user_album_attrs_rating / 1000) * 10
-                  ORDER BY range_floor;
+                      rb.range_floor,
+                      rb.count,
+                      s.avg_rating,
+                      s.stddev,
+                      s.am_nz_ratio,
+                      my.release_year
+                  FROM rating_buckets rb
+                  CROSS JOIN stats s
+                  LEFT JOIN most_rated_year my ON TRUE
+                  ORDER BY rb.range_floor;
                   """;
         
         var parameters = new List<NpgsqlParameter>()
@@ -320,20 +342,46 @@ internal sealed class UserAlbumAttrRepository(
 
         var result = await connection.FetchListDynamicAsync(sql, parameters);
 
-        var ratingCounts = result
-            .Select(x =>
-            {
-                var dict = (IDictionary<string, object>)x;
-                var key = Convert.ToInt32(dict["range_floor"]);
-                var value = Convert.ToInt32(dict["count"]);
-                return new KeyValuePair<int, int>(key, value);
-            })
-            .ToDictionary(kv => kv.Key, kv => kv.Value);
+        var ratingCounts = new Dictionary<int, int>();
+
+        decimal averageRating = 0;
+        decimal standardDev = 0;
+        decimal ratio = 0;
+        short? mostRatedYear = null;
+
+        foreach (var row in result)
+        {
+            var dict = (IDictionary<string, object>)row;
+
+            ratingCounts[
+                Convert.ToInt32(dict["range_floor"])
+            ] = Convert.ToInt32(dict["count"]);
+
+            averageRating = dict["avg_rating"] is DBNull
+                ? 0
+                : Convert.ToDecimal(dict["avg_rating"]);
+
+            standardDev = dict["stddev"] is DBNull
+                ? 0
+                : Convert.ToDecimal(dict["stddev"]);
+
+            ratio = dict["am_nz_ratio"] is DBNull
+                ? 0
+                : Convert.ToDecimal(dict["am_nz_ratio"]);
+
+            mostRatedYear = dict["release_year"] is DBNull
+                ? null
+                : Convert.ToInt16(dict["release_year"]);
+        }
 
         return new OutUserRatingStats
         {
             UserId = userId,
-            RatingCounts = ratingCounts
+            RatingCounts = ratingCounts,
+            AverageRating = averageRating,
+            RatingStandardDev = standardDev,
+            ArtistNameRatioAMvsNZ = ratio,
+            MostRatedReleaseYear = mostRatedYear
         };
     }
 }

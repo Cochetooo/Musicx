@@ -8,7 +8,9 @@
 @using Musicx.Application.Web.Interfaces.UseCases.User.Ratings
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.Albums
+@using Musicx.Presentation.Web.Client.Components.Ratings
 
 @inject ILoggerFactory LoggerFactory
 @inject IFindOneByIdService<InUser, OutUser> UcGet
@@ -140,44 +142,46 @@ else
                     <MudList T="RenderFragment" Dense>
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
-                                <MudText Typo="Typo.body1" Class="text-light montserrat color-primary">
+                                <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
                                     Average Rating
                                 </MudText>
-                                <MudText Typo="Typo.body1" Class="text-bold montserrat" Color="Color.Primary">
-                                    --.--
-                                </MudText>
+                                <DonutRating Rating="@_albumRatingDistrib?.AverageRating"
+                                             Size="DonutRatingSize.ExtraSmall"
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"/>
                             </MudStack>
                         </MudListItem>
                         
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
-                                <MudText Typo="Typo.body1" Class="text-light montserrat color-primary">
+                                <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
                                     A-M artists ratio
                                 </MudText>
-                                <MudText Typo="Typo.body1" Class="text-bold montserrat" Color="Color.Primary">
-                                    --% / --%
+                                <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
+                                    @Math.Round(_albumRatingDistrib?.ArtistNameRatioAMvsNZ * 100 ?? 0)% / 
+                                    @(100 - Math.Round(_albumRatingDistrib?.ArtistNameRatioAMvsNZ * 100 ?? 0))%
                                 </MudText>
                             </MudStack>
                         </MudListItem>
                         
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
-                                <MudText Typo="Typo.body1" Class="text-light montserrat color-primary">
-                                    Rating Variance
+                                <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
+                                    Rating Standard Deviation
                                 </MudText>
                                 <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
-                                    --.--
+                                    ± @RatingHelper.GetRatingFormatted(_albumRatingDistrib?.RatingStandardDev, 
+                                        UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
                                 </MudText>
                             </MudStack>
                         </MudListItem>
                         
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
-                                <MudText Typo="Typo.body1" Class="text-light montserrat color-primary">
+                                <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
                                     Most Rated Release Year
                                 </MudText>
-                                <MudText Typo="Typo.body1" Class="text-bold montserrat" Color="Color.Primary">
-                                    2000
+                                <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
+                                    @(_albumRatingDistrib?.MostRatedReleaseYear.ToString() ?? "-")
                                 </MudText>
                             </MudStack>
                         </MudListItem>
@@ -198,7 +202,7 @@ else
                         <col style="width: 100px;"/>
                     </ColGroup>
                     <ToolBarContent>
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">Ratings (@_albumCount)</MudText>
+                        <MudText Typo="Typo.h4" Class="montserrat text-bold color-primary">Ratings (@_albumCount)</MudText>
                         <MudSpacer />
                         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search"
                                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
