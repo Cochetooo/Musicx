@@ -21,6 +21,30 @@ public partial class UserView
     private string _searchString = string.Empty;
 
     private OutUserRatingStats? _albumRatingDistrib;
+    private int _maxRatingDistribCount;
+
+    private int? UserAge
+    {
+        get
+        {
+            if (_user?.BirthDate is null)
+            {
+                return null;
+            }
+
+            var today = DateTime.Today;
+            var birth = _user.BirthDate.Value.Date;
+            
+            var age = today.Year - birth.Year;
+
+            if (birth.Date > today.AddYears(-age))
+            {
+                age--;
+            }
+
+            return age >= 0 ? age : null;
+        }
+    }
     
     [Parameter] public string? Id { get; set; }
     
@@ -66,6 +90,7 @@ public partial class UserView
         await InvokeAsync(StateHasChanged);
 
         _albumRatingDistrib = await UcFindAlbumRatingDistrib.ExecuteAsync(_user.Id);
+        _maxRatingDistribCount = _albumRatingDistrib?.RatingCounts.Values.Max() ?? 1;
         _logger.LogInformation($"✅ Album Ratings Distribution loaded ({_user.Id})");
         
         await _albumRatingsTable.ReloadServerData();

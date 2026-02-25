@@ -16,21 +16,40 @@
     </TitleContent>
     <DialogContent>
         <MudGrid Justify="Justify.Center">
+            
+            <MudItem xs="12" md="2">
+                <MudField Label="Artwork" Variant="Variant.Text">
+                    @if (_isLoading)
+                    {
+                        <MudProgressCircular Color="Color.Default" Indeterminate />
+                    }
+                    else
+                    {
+                        @if (null != _artist.ArtworkUrl)
+                        {
+                            <MudImage Src="@_artist.ArtworkUrl" Alt="@_artist.Name" Class="rounded-lg" Elevation="25"
+                                      @key="_artist.ArtworkUrl" Width="128" Height="128" />
+                        }
+                    }
+                </MudField>
+            </MudItem>
+            
             <MudItem xs="12" md="6">
-                <MudTextField 
+                <MudTextField
                     T="string"
                     TextChanged="@NameTextChanged"
                     Disabled="@(_artist.Id != 0)"
                     Immediate
                     @ref="_nameTextEdit" Label="Enter an artist..."
                     HelperText="Name (*)"
-                    Variant="Variant.Text" />
+                    Variant="Variant.Text"/>
             </MudItem>
-            
-            <MudFlexBreak />
-            
+
+            <MudFlexBreak/>
+            <MudDivider Class="my-2" />
+
             <MudItem xs="12" md="6">
-                <MudTextField 
+                <MudTextField
                     T="string"
                     @bind-Text="_artist.Alias"
                     HelperText="Alias"
@@ -39,6 +58,8 @@
                     Variant="Variant.Text"/>
             </MudItem>
             
+            <MudFlexBreak/>
+
             <MudItem xs="12" md="4">
                 <MudAutocomplete T="string"
                                  Label="Current Country"
@@ -49,49 +70,25 @@
             </MudItem>
 
             <MudItem xs="12" md="4">
-                <MudTextField 
+                <MudTextField
                     T="string"
                     @bind-Text="_artist.CurrentRegion"
                     HelperText="Current Region"
                     Label="Current Region"
                     Placeholder="Enter a current region..."
-                    Variant="Variant.Text" />
-                <!-- <MudAutocomplete T="string"
-                                 Label="Region"
-                                 Placeholder="Search region..."
-                                 HelperText="Current region"
-                                 SearchFunc="SearchRegion"
-                                 @bind-Value="_artist.CurrentRegion"/> -->
+                    Variant="Variant.Text"/>
             </MudItem>
 
             <MudItem xs="12" md="4">
-                <MudTextField 
+                <MudTextField
                     T="string"
                     @bind-Text="_artist.CurrentTown"
                     HelperText="Current Town"
                     Label="Current Town"
                     Placeholder="Enter a current town..."
-                    Variant="Variant.Text" />
-                <!-- <MudAutocomplete T="string"
-                                 Label="Town"
-                                 Placeholder="Search town..."
-                                 HelperText="Current town"
-                                 SearchFunc="SearchTown"
-                                 @bind-Value="_artist.CurrentTown"/> -->
+                    Variant="Variant.Text"/>
             </MudItem>
-            
-            <!-- <MudItem xs="12" md="6">
-                <MudAutocomplete
-                    T="string"
-                    Dense
-                    Placeholder="Search country..."
-                    Label="Choose a country..."
-                    HelperText="Country"
-                    SearchFunc="@SearchCountry"
-                    @bind-Value="_artist.CurrentCountry"
-                />
-            </MudItem> -->
-            
+
             <MudItem xs="12">
                 <MudButton Variant="Variant.Text"
                            Color="Color.Secondary"
@@ -116,28 +113,28 @@
                         </MudItem>
 
                         <MudItem xs="12" md="4">
-                            <MudTextField 
+                            <MudTextField
                                 T="string"
                                 @bind-Text="_artist.OriginRegion"
                                 HelperText="Origin Region"
                                 Label="Origin Region"
                                 Placeholder="Enter a origin region..."
-                                Variant="Variant.Text" />
+                                Variant="Variant.Text"/>
                         </MudItem>
 
                         <MudItem xs="12" md="4">
-                            <MudTextField 
+                            <MudTextField
                                 T="string"
                                 @bind-Text="_artist.OriginTown"
                                 HelperText="Origin Town"
                                 Label="Origin Town"
                                 Placeholder="Enter a origin town..."
-                                Variant="Variant.Text" />
+                                Variant="Variant.Text"/>
                         </MudItem>
                     </MudGrid>
                 </MudPaper>
             </MudCollapse>
-            
+
             <MudItem xs="12">
                 <MudTextField T="string"
                               Label="Description"
@@ -148,26 +145,12 @@
                               Variant="Variant.Text"/>
             </MudItem>
             
-            <MudItem xs="12" md="6">
-                <MudField Label="Artwork" Variant="Variant.Text">
-                    @if (_isLoading)
-                    {
-                        <MudProgressCircular Color="Color.Default" Indeterminate />
-                    }
-                    else
-                    {
-                        @if (null != _artist.ArtworkUrl)
-                        {
-                            <MudImage Src="@_artist.ArtworkUrl" Alt="@_artist.Name" Class="rounded-lg" Elevation="25"
-                                      @key="_artist.ArtworkUrl" Width="96" Height="96" />
-                        }
-                    }
-                </MudField>
-            </MudItem>
-            
+            <MudDivider Class="my-2" />
+
             <MudItem xs="12" md="6">
                 <MudSelect
                     @bind-Value="_artist.Discriminator" T="ArtistDiscriminator"
+                    Variant="Variant.Outlined"
                     Label="Type (*)" Placeholder="Select a type"
                     AdornmentIcon="@Icons.Material.Filled.Label">
                     <MudSelectItem Value="@(ArtistDiscriminator.Artist)">Generic</MudSelectItem>
@@ -176,18 +159,20 @@
                 </MudSelect>
             </MudItem>
             
+            <MudFlexBreak />
+
             <!-- Band -->
-            
+
             @if (_artist.Discriminator == ArtistDiscriminator.Band)
             {
                 <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Formation Date" @bind-Date="@_artist.FormationDate" />
+                    <MudDatePicker Label="Formation Date" @bind-Date="@_artist.FormationDate"/>
                 </MudItem>
-                
+
                 <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Split Date" @bind-Date="@_artist.SplitDate" />
+                    <MudDatePicker Label="Split Date" @bind-Date="@_artist.SplitDate"/>
                 </MudItem>
-            } 
+            }
             else if (_artist.Discriminator == ArtistDiscriminator.Person)
             {
                 <MudItem xs="12" md="6">
@@ -197,7 +182,7 @@
                         Label="First Name"
                         Placeholder="Enter a first name..."/>
                 </MudItem>
-                
+
                 <MudItem xs="12" md="6">
                     <MudTextField
                         T="string?"
@@ -205,16 +190,16 @@
                         Label="Last Name"
                         Placeholder="Enter a last name..."/>
                 </MudItem>
-                
+
                 <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Birth Date" @bind-Date="@_artist.BirthDate" />
+                    <MudDatePicker Label="Birth Date" @bind-Date="@_artist.BirthDate"/>
                 </MudItem>
-                
+
                 <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Death Date" @bind-Date="@_artist.DeathDate" />
+                    <MudDatePicker Label="Death Date" @bind-Date="@_artist.DeathDate"/>
                 </MudItem>
             }
-            
+
             @if (_existingArtists.Count > 0)
             {
                 <MudItem xs="12">

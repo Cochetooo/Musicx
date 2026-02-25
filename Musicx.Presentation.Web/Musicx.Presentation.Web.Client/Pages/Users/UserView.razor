@@ -8,7 +8,6 @@
 @using Musicx.Application.Web.Interfaces.UseCases.User.Ratings
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
-@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.Albums
 @using Musicx.Presentation.Web.Client.Components.Ratings
 
@@ -42,7 +41,14 @@ else
                         @_user.Name
                     </MudText>
                     
-                    <MudText Typo="Typo.body2" Class="text-light color-secondary text-shadow mb-4">
+                    @if (UserAge is not null)
+                    {
+                        <MudText Typo="Typo.body2" Class="text-light color-secondary text-shadow mb-2">
+                            @UserAge years old
+                        </MudText>
+                    }
+                    
+                    <MudText Typo="Typo.body2" Class="text-light color-primary text-shadow mb-4">
                         @_user.Biography
                     </MudText>
                     
@@ -111,7 +117,7 @@ else
                                 <!-- Label à gauche -->
                                 <MudText Class="montserrat"
                                          Typo="Typo.caption"
-                                         Style="min-width: 100px;">
+                                         Style="min-width: 80px;">
                                     <span style="font-weight: 300;" class="color-secondary montserrat">
                                         <!-- @RatingHelper.GetRatingFormatted(ratingCount.Key - 9, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) - @RatingHelper.GetRatingFormatted(ratingCount.Key, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) -->
                                         @(ratingCount.Key - 9) - @ratingCount.Key
@@ -125,7 +131,7 @@ else
                                 <MudProgressLinear Class="rating-bar flex-grow"
                                                    Style="@($"--bar-color:{RatingHelper.GetColorForRating((ratingCount.Key - 5) * 100)}; width: 100%")"
                                                    Rounded="true"
-                                                   Value="@(ratingCount.Value / (double)_albumCount * 100)"
+                                                   Value="@(ratingCount.Value / (double)_maxRatingDistribCount * 100)"
                                                    Size="Size.Large"/>
                             </MudStack>
                         }
