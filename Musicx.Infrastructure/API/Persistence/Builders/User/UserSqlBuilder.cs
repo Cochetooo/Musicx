@@ -20,7 +20,7 @@ internal sealed class UserSqlBuilder(
     {
         long userId;
 
-        var createCommandSql = BuildInsert("users",
+        var createCommandSql = InsertBuilder.Build("users",
             new Dictionary<string, object?>
             {
                 { UserColumns.CreatedAt, DateTime.Now },
@@ -56,7 +56,7 @@ internal sealed class UserSqlBuilder(
         {
             foreach (var role in entity.RoleIds)
             {
-                var roleSql = BuildInsert("user_role",
+                var roleSql = InsertBuilder.Build("user_role",
                     new Dictionary<string, object?>
                     {
                         { UserRoleColumns.UserId, userId },
@@ -82,9 +82,7 @@ internal sealed class UserSqlBuilder(
 
     internal override async Task ExecuteUpdate(InUser entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("users",
-            UserColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("users",
             new Dictionary<string, object?>
             {
                 { UserColumns.UpdatedAt, DateTime.Now },
@@ -102,7 +100,12 @@ internal sealed class UserSqlBuilder(
                 { UserColumns.PrefShowRatings, entity.PrefShowRatings },
                 { UserColumns.PrefSimpleGenre, entity.PrefSimpleGenre },
                 { UserColumns.PictureUrl, entity.PictureUrl }
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { UserColumns.Id, entity.Id }
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 
@@ -116,13 +119,14 @@ internal sealed class UserSqlBuilder(
         {
             foreach (var role in entity.RoleIds)
             {
-                var roleSql = BuildInsert("user_role",
+                var roleSql = InsertBuilder.Build("user_role",
                     new Dictionary<string, object?>
                     {
                         { UserRoleColumns.UserId, entity.Id },
                         { UserRoleColumns.RoleId, role }
                     },
-                    conflictAction: SqlConflictAction.Nothing);
+                    conflictAction: SqlConflictAction.Nothing
+                );
                 
                 _logger.LogDebug(SqlHelper.InterpolateQuery(roleSql.Query, roleSql.Parameters));
 

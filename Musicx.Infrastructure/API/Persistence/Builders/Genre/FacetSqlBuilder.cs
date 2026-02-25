@@ -16,7 +16,7 @@ internal sealed class FacetSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
     {
         long facetId;
 
-        var createCommandSql = BuildInsert("facets",
+        var createCommandSql = InsertBuilder.Build("facets",
             new Dictionary<string, object?>
             {
                 { FacetColumns.CreatedAt, DateTime.Now },
@@ -44,16 +44,19 @@ internal sealed class FacetSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
     internal override async Task ExecuteUpdate(InFacet entity, 
         NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("facets",
-            FacetColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("facets",
             new Dictionary<string, object?>
             {
                 { FacetColumns.UpdatedAt, DateTime.Now },
                 { FacetColumns.Description, entity.Description },
                 { FacetColumns.Name, entity.Name },
                 { FacetColumns.Type, entity.Type },
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { FacetColumns.Id, entity.Id },
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 

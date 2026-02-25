@@ -17,6 +17,8 @@ namespace Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
 /// <since>0.7.0</since>
 public interface IAlbumInfluenceRepository : IRepository<InAlbumInfluence, OutAlbumInfluence>
 {
+    Task DeleteOneAsync(long albumId, long genreId, long taggerId);
+    
     /// <summary>
     /// Retrieves a specific album–influence association for a given album, influence genre, and tagger.
     /// </summary>

@@ -20,7 +20,7 @@ internal sealed class ReleaseSqlBuilder(ILoggerProvider loggerProvider) : SqlBui
     {
         long releaseId;
 
-        var createCommandSql = BuildInsert("releases",
+        var createCommandSql = InsertBuilder.Build("releases",
             new Dictionary<string, object?>
             {
                 { ReleaseColumns.AlbumId, entity.AlbumId },
@@ -50,15 +50,17 @@ internal sealed class ReleaseSqlBuilder(ILoggerProvider loggerProvider) : SqlBui
     internal override async Task ExecuteUpdate(InRelease entity, NpgsqlConnection connection,
         NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("releases",
-            GenreAliasColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("releases",
             new Dictionary<string, object?>
             {
                 { ReleaseColumns.UpdatedAt, DateTime.Now },
                 { ReleaseColumns.CatalogNumber, entity.CatalogNumber },
                 { ReleaseColumns.IsVisible, entity.IsVisible },
                 { ReleaseColumns.ReleaseDate, entity.ReleaseDate }
+            },
+            new Dictionary<string, object?>
+            {
+                { GenreAliasColumns.Id, entity.Id }
             });
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));

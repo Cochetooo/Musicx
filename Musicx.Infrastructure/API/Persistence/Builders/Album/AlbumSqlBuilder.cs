@@ -22,7 +22,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
     {
         long albumId;
         
-        var createCommandSql = BuildInsert("albums",
+        var createCommandSql = InsertBuilder.Build("albums",
             new Dictionary<string, object?>
             {
                 { AlbumColumns.CreatedAt, DateTime.Now },
@@ -69,9 +69,7 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 
     internal override async Task ExecuteUpdate(InAlbum entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("albums",
-            AlbumColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("albums",
             new Dictionary<string, object?>
             {
                 { AlbumColumns.UpdatedAt, DateTime.Now },
@@ -91,7 +89,12 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { AlbumColumns.OriginalReleaseDate, entity.OriginalReleaseDate },
                 { AlbumColumns.ReleaseType, entity.ReleaseType },
                 { AlbumColumns.TrackTotal, entity.TrackTotal }
-        });
+            },
+            new Dictionary<string, object?>
+            {
+                { AlbumColumns.Id, entity.Id }
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 

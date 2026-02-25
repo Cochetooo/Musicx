@@ -7,6 +7,8 @@ using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
+using Musicx.Infrastructure.API.Persistence.Builders.Core.Commands;
+using Musicx.Infrastructure.API.Persistence.Columns.Album;
 using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.Shared.Exceptions;
 using Npgsql;
@@ -16,12 +18,28 @@ namespace Musicx.Infrastructure.API.Persistence.Repositories.Album;
 internal sealed class AlbumInfluenceRepository(
     IDbConnectionProvider connection,
     SqlBuilder<InAlbumInfluence> builder,
+    ManyToManySyncService manyToManySyncService,
     ILoggerProvider loggerProvider) : IAlbumInfluenceRepository
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumInfluenceRepository));
     
     public Task DeleteAsync(long id)
         => throw new NotImplementedException("DeleteAsync is disabled on this repository.");
+    
+    public async Task DeleteOneAsync(long albumId, long genreId, long taggerId)
+    {
+        const string sql = $"DELETE FROM album_influence " +
+                           $"WHERE {AlbumInfluenceColumns.TaggerId} = @taggerId AND {AlbumInfluenceColumns.AlbumId} = @albumId AND {AlbumInfluenceColumns.GenreId} = @genreId";
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@taggerId", taggerId),
+            new("@albumId", albumId),
+            new("@genreId", genreId)
+        };
+
+        await connection.ExecuteTransactionAsync((sql, parameters));
+    }
 
     public Task DeleteAllAsync(IEnumerable<long> ids)
         => throw new NotImplementedException("DeleteAllAsync is disabled on this repository.");
@@ -70,6 +88,13 @@ internal sealed class AlbumInfluenceRepository(
 
     public async Task<List<long>> SaveAllAsync(IEnumerable<InAlbumInfluence> entities)
     {
+        var albumInfluences = entities.ToList();
+
+        if (albumInfluences.Count == 0)
+        {
+            return [];
+        }
+        
         await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         
@@ -77,7 +102,24 @@ internal sealed class AlbumInfluenceRepository(
         
         try
         {
-            foreach (var entity in entities)
+            foreach (var group in albumInfluences.GroupBy(x => new { x.AlbumId, x.TaggerId }))
+            {
+                await manyToManySyncService.SyncAsync(
+                    table: "album_influence",
+                    keyColumn: AlbumInfluenceColumns.AlbumId,
+                    targetColumn: AlbumInfluenceColumns.GenreId,
+                    keyValue: group.Key.AlbumId,
+                    newValues: group.Select(x => x.GenreId).Distinct().ToList(),
+                    connection: conn,
+                    transaction: transaction,
+                    scopedColumns: new Dictionary<string, object?>
+                    {
+                        { AlbumInfluenceColumns.TaggerId, group.Key.TaggerId }
+                    }
+                );
+            }
+
+            foreach (var entity in albumInfluences)
             {
                 await builder.ExecuteUpsert(entity, conn, transaction);
             }

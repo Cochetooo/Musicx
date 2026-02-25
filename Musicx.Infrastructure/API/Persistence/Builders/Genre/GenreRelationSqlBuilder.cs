@@ -14,48 +14,17 @@ internal sealed class GenreRelationSqlBuilder(ILoggerProvider loggerProvider) : 
 
     internal override async Task<object?> ExecuteInsert(InGenreRelation entity, NpgsqlConnection connection,
         NpgsqlTransaction? transaction = null)
-    {
-        var createCommandSql = BuildInsert("genre_relation",
-            new Dictionary<string, object?>
-            {
-                
-            });
-        
-        _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
-
-        await using var cmd = new NpgsqlCommand(createCommandSql.Query, connection, transaction);
-        cmd.Parameters.AddRange(createCommandSql.Parameters.ToArray());
-        await cmd.ExecuteNonQueryAsync();
-
-        return null;
-    }
+        => throw new NotImplementedException();
 
     internal override async Task ExecuteUpdate(InGenreRelation entity, NpgsqlConnection connection,
         NpgsqlTransaction? transaction = null)
-    {
-        var updateCommandSql = BuildUpdate("genre_relation",
-            [GenreRelationColumns.FromGenreId, GenreRelationColumns.ToGenreId],
-            [entity.FromGenreId, entity.ToGenreId],
-            new Dictionary<string, object?>
-            {
-                { GenreRelationColumns.UpdatedAt, DateTime.Now },
-                { GenreRelationColumns.Metadata, entity.Metadata },
-                { GenreRelationColumns.Type, entity.Type },
-                { GenreRelationColumns.Weight, entity.Weight }
-            });
-        
-        _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
-
-        await using var cmd = new NpgsqlCommand(updateCommandSql.Query, connection, transaction);
-        cmd.Parameters.AddRange(updateCommandSql.Parameters.ToArray());
-        await cmd.ExecuteNonQueryAsync();
-    }
+        => throw new NotImplementedException();
 
     internal override async Task<object?> ExecuteUpsert(InGenreRelation entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
         var now = DateTime.Now;
 
-        var query = BuildUpsert(
+        var query = UpsertBuilder.Build(
             table: "genre_relation",
             insertProperties: new Dictionary<string, object?>
             {

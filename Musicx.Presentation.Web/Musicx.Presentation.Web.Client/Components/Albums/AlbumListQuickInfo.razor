@@ -6,24 +6,24 @@
     @switch (Album.ReleaseType)
     {
         case ReleaseType.Ep:
-            <MudText Class="clamped-text-4" Color="Color.Primary">
+            <MudText Class="clamped-text-4 color-primary">
                 @Album.Name 
                 <span class="release-type">[@Album.ReleaseType.ToDescriptionString()]</span>
             </MudText>
             break;
         case ReleaseType.Lp:
-            <MudText Class="clamped-text-4 color-primary">
+            <MudText Class="clamped-text-4 color-primary text-bold">
                 @Album.Name
             </MudText>
             break;
         case ReleaseType.Single:
-            <MudText Class="clamped-text-4 text-light" Color="Color.Primary">
+            <MudText Class="clamped-text-4 color-primary text-light">
                 @Album.Name 
                 <span class="release-type">[@Album.ReleaseType.ToDescriptionString()]</span>
             </MudText>
             break;
         default:
-            <MudText Class="clamped-text-4 text-light" Color="Color.Secondary">
+            <MudText Class="clamped-text-4 color-primary text-light">
                 @Album.Name 
                 <span class="release-type">[@Album.ReleaseType?.ToDescriptionString()]</span>
             </MudText>

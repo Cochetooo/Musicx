@@ -2,6 +2,7 @@ using Musicx.Application.API.Persistence.Filtering;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
+using Musicx.Contracts.Enums;
 
 namespace Musicx.Application.API.Persistence.Queries;
 
@@ -17,6 +18,7 @@ public record UserAlbumAttrFindQuery : IFindQuery<InUserAlbumAttribute>
 {
     public TextFilter? Album { get; set; }
     public TextFilter? Artist { get; set; }
+    public ICollection<ReleaseType>? ReleaseTypes { get; set; }
     public ICollection<long>? GenreIds { get; set; }
     public ICollection<long>? InfluenceIds { get; set; }
     public TextFilter? Label { get; set; }

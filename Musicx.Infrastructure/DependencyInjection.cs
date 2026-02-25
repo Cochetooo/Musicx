@@ -33,6 +33,7 @@ using Musicx.Infrastructure.API.PatchNotes;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Builders.Album;
 using Musicx.Infrastructure.API.Persistence.Builders.Artist;
+using Musicx.Infrastructure.API.Persistence.Builders.Core.Commands;
 using Musicx.Infrastructure.API.Persistence.Builders.Event;
 using Musicx.Infrastructure.API.Persistence.Builders.Genre;
 using Musicx.Infrastructure.API.Persistence.Builders.Label;
@@ -133,6 +134,8 @@ public static class DependencyInjection
         services.AddSingleton<IDbConnectionProvider, NpgsqlConnectionProvider>();
         
         // SQL Builder
+        services.AddScoped<ManyToManySyncService>();
+        
         services.AddScoped(typeof(SqlBuilder<InArtist>), typeof(ArtistSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InAlbum>), typeof(AlbumSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InAlbumGenre>), typeof(AlbumGenreSqlBuilder));

@@ -16,7 +16,7 @@ internal sealed class TagSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilder
     {
         long tagId;
 
-        var createCommandSql = BuildInsert("tags",
+        var createCommandSql = InsertBuilder.Build("tags",
             new Dictionary<string, object?>
             {
                 { TagColumns.CreatedAt, DateTime.Now },
@@ -46,14 +46,17 @@ internal sealed class TagSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilder
          * But we keep this function just in case we have to make a mass-edit thing someday.
          */
         
-        var updateCommandSql = BuildUpdate("tags",
-            TagColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("tags",
             new Dictionary<string, object?>
             {
                 { TagColumns.UpdatedAt, DateTime.Now },
                 { TagColumns.Name, entity.Name },
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { TagColumns.Id, entity.Id }
+            }
+        );
 
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 

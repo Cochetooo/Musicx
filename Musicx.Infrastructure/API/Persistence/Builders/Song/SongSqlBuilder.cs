@@ -22,7 +22,7 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
     {
         long songId;
 
-        var createCommandSql = BuildInsert("songs",
+        var createCommandSql = InsertBuilder.Build("songs",
             new Dictionary<string, object?>
             {
                 { SongColumns.CreatedAt, DateTime.Now },
@@ -53,7 +53,7 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
         {
             foreach (var primaryGenre in entity.PrimaryGenreIds)
             {
-                var primaryGenreSql = BuildInsert("song_genre",
+                var primaryGenreSql = InsertBuilder.Build("song_genre",
                     new Dictionary<string, object?>
                     {
                         { SongGenreColumns.SongId, songId },
@@ -72,7 +72,7 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
         {
             foreach (var influenceGenre in entity.InfluenceGenreIds)
             {
-                var influenceGenreSql = BuildInsert("song_influence",
+                var influenceGenreSql = InsertBuilder.Build("song_influence",
                     new Dictionary<string, object?>
                     {
                         { SongInfluenceColumns.SongId, songId },
@@ -93,9 +93,7 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
     internal override async Task ExecuteUpdate(InSong entity, NpgsqlConnection connection,
         NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("songs",
-            SongColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("songs",
             new Dictionary<string, object?>
             {
                 { SongColumns.UpdatedAt, DateTime.Now },
@@ -108,7 +106,12 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
                 { SongColumns.Title, entity.Title },
                 { SongColumns.TrackNumber, entity.TrackNumber },
                 { SongColumns.Type, entity.Type }
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { SongColumns.Id, entity.Id }
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 
@@ -122,13 +125,14 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
         {
             foreach (var primaryGenre in entity.PrimaryGenreIds)
             {
-                var primaryGenreSql = BuildInsert("song_genre",
+                var primaryGenreSql = InsertBuilder.Build("song_genre",
                     new Dictionary<string, object?>
                     {
                         { SongGenreColumns.SongId, entity.Id },
                         { SongGenreColumns.GenreId, primaryGenre },
                     },
-                    conflictAction: SqlConflictAction.Nothing);
+                    conflictAction: SqlConflictAction.Nothing
+                );
                 
                 _logger.LogDebug(SqlHelper.InterpolateQuery(primaryGenreSql.Query, primaryGenreSql.Parameters));
 
@@ -142,13 +146,14 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
         {
             foreach (var influenceGenre in entity.InfluenceGenreIds)
             {
-                var influenceGenreSql = BuildInsert("song_influence",
+                var influenceGenreSql = InsertBuilder.Build("song_influence",
                     new Dictionary<string, object?>
                     {
                         { SongInfluenceColumns.SongId, entity.Id },
                         { SongInfluenceColumns.GenreId, influenceGenre },
                     },
-                    conflictAction: SqlConflictAction.Nothing);
+                    conflictAction: SqlConflictAction.Nothing
+                );
                 
                 _logger.LogDebug(SqlHelper.InterpolateQuery(influenceGenreSql.Query, influenceGenreSql.Parameters));
 

@@ -18,7 +18,7 @@ internal sealed class UserAlbumAttrSqlBuilder(
     
     internal override async Task<object?> ExecuteInsert(InUserAlbumAttribute entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var createCommandSql = BuildInsert("user_album_attrs",
+        var createCommandSql = InsertBuilder.Build("user_album_attrs",
             new Dictionary<string, object?>
             {
                 { UserAlbumAttrColumns.AlbumId, entity.AlbumId },
@@ -44,9 +44,7 @@ internal sealed class UserAlbumAttrSqlBuilder(
 
     internal override async Task ExecuteUpdate(InUserAlbumAttribute entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var createCommandSql = BuildUpdate("user_album_attrs",
-            [UserAlbumAttrColumns.UserId, UserAlbumAttrColumns.AlbumId],
-            [entity.UserId, entity.AlbumId],
+        var createCommandSql = UpdateBuilder.Build("user_album_attrs",
             new Dictionary<string, object?>
             {
                 { UserAlbumAttrColumns.UpdatedAt, DateTime.Now },
@@ -54,7 +52,13 @@ internal sealed class UserAlbumAttrSqlBuilder(
                 { UserAlbumAttrColumns.DiscoveryDate, entity.DiscoveryDate },
                 { UserAlbumAttrColumns.Rating, entity.Rating },
                 { UserAlbumAttrColumns.Review, entity.Review },
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { UserAlbumAttrColumns.UserId, entity.UserId },
+                { UserAlbumAttrColumns.AlbumId, entity.AlbumId },
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
         

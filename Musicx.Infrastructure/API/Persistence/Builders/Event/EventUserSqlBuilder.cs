@@ -15,7 +15,7 @@ internal sealed class EventUserSqlBuilder(ILoggerProvider loggerProvider) : SqlB
     
     internal override async Task<object?> ExecuteInsert(InEventUser entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var createCommandSql = BuildInsert("event_user",
+        var createCommandSql = InsertBuilder.Build("event_user",
             new Dictionary<string, object?>
             {
                 { EventUserColumns.UserId, entity.UserId },
@@ -37,13 +37,16 @@ internal sealed class EventUserSqlBuilder(ILoggerProvider loggerProvider) : SqlB
 
     internal override async Task ExecuteUpdate(InEventUser entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("event_user",
-            [EventUserColumns.EventId, EventUserColumns.UserId],
-            [entity.EventId, entity.UserId],
+        var updateCommandSql = UpdateBuilder.Build("event_user",
             new Dictionary<string, object?>
             {
                 { EventUserColumns.Comment, entity.Comment },
                 { EventUserColumns.IsGoing, entity.IsGoing },
+            },
+            new Dictionary<string, object?>
+            {
+                { EventUserColumns.EventId, entity.EventId },
+                { EventUserColumns.UserId, entity.UserId },
             }
         );
         

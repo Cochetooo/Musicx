@@ -19,7 +19,7 @@ internal sealed class EventSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
     {
         long eventId;
 
-        var createCommandSql = BuildInsert("events",
+        var createCommandSql = InsertBuilder.Build("events",
             new Dictionary<string, object?>
             {
                 { EventColumns.CreatedAt, DateTime.Now },
@@ -58,9 +58,7 @@ internal sealed class EventSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
     internal override async Task ExecuteUpdate(InEvent entity, 
         NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("events",
-            EventColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("events",
             new Dictionary<string, object?>
             {
                 { EventColumns.UpdatedAt, DateTime.Now },
@@ -78,6 +76,10 @@ internal sealed class EventSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { EventColumns.Town, entity.Town },
                 { EventColumns.Venue, entity.Venue },
                 { EventColumns.ZipCode, entity.ZipCode }
+            }, 
+            new Dictionary<string, object?>
+            {
+                { EventColumns.Id, entity.Id }
             });
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));

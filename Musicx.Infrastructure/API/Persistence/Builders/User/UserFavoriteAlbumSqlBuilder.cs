@@ -27,7 +27,7 @@ internal sealed class UserFavoriteAlbumSqlBuilder(
     {
         var now = DateTime.Now;
 
-        var query = BuildUpsert(
+        var query = UpsertBuilder.Build(
             table: "user_fav_album",
             insertProperties: new Dictionary<string, object?>
             {

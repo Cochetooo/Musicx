@@ -19,7 +19,7 @@ internal sealed class AlbumInfluenceSqlBuilder(ILoggerProvider loggerProvider) :
     {
         var now = DateTime.Now;
 
-        var query = BuildUpsert(
+        var query = UpsertBuilder.Build(
             table: "album_influence",
             insertProperties: new Dictionary<string, object?>
             {

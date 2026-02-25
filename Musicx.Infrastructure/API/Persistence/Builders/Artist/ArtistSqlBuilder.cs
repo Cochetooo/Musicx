@@ -15,7 +15,7 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
     internal override async Task<object?> ExecuteInsert(InArtist entity,
         NpgsqlConnection conn, NpgsqlTransaction? transaction = null)
     {
-        var createCommandSql = BuildInsert("artists",
+        var createCommandSql = InsertBuilder.Build("artists",
             new Dictionary<string, object?>
             {
                 { ArtistColumns.CreatedAt, DateTime.Now },
@@ -53,9 +53,7 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
     internal override async Task ExecuteUpdate(InArtist entity,
         NpgsqlConnection conn, NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("artists",
-            ArtistColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("artists",
             new Dictionary<string, object?>
             {
                 { ArtistColumns.UpdatedAt, DateTime.Now },
@@ -77,6 +75,10 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
                 { ArtistColumns.LastName, entity.LastName },
                 { ArtistColumns.BirthDate, entity.BirthDate },
                 { ArtistColumns.DeathDate, entity.DeathDate }
+            },
+            new Dictionary<string, object?>
+            {
+                { ArtistColumns.Id, entity.Id }
             });
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));

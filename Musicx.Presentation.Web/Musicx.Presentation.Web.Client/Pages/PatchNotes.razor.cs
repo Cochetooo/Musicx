@@ -4,7 +4,7 @@ namespace Musicx.Presentation.Web.Client.Pages;
 
 public partial class PatchNotes
 {
-    private ILogger _logger;
+    private ILogger _logger = null!;
     
     private List<string> _majorVersions = [];
     private List<string> _minorVersions = [];

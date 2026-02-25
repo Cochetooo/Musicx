@@ -15,7 +15,7 @@ internal sealed class GenreFacetSqlBuilder(ILoggerProvider loggerProvider) : Sql
     internal override async Task<object?> ExecuteInsert(InGenreFacet entity, NpgsqlConnection connection,
         NpgsqlTransaction? transaction = null)
     {
-        var createCommandSql = BuildInsert("genre_facet",
+        var createCommandSql = InsertBuilder.Build("genre_facet",
             new Dictionary<string, object?>
             {
                 { GenreFacetColumns.GenreId, entity.GenreId },
@@ -39,16 +39,20 @@ internal sealed class GenreFacetSqlBuilder(ILoggerProvider loggerProvider) : Sql
     internal override async Task ExecuteUpdate(InGenreFacet entity, NpgsqlConnection connection,
         NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("genre_facet",
-            [GenreFacetColumns.GenreId, GenreFacetColumns.FacetId],
-            [entity.GenreId, entity.FacetId],
+        var updateCommandSql = UpdateBuilder.Build("genre_facet",
             new Dictionary<string, object?>
             {
                 { GenreFacetColumns.UpdatedAt, DateTime.Now },
                 { GenreFacetColumns.Confidence, entity.Confidence },
                 { GenreFacetColumns.Metadata, entity.Metadata },
                 { GenreFacetColumns.Value, entity.Value }
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { GenreFacetColumns.GenreId, entity.GenreId },
+                { GenreFacetColumns.FacetId, entity.FacetId },
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 

@@ -18,7 +18,7 @@ internal sealed class RoleSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
     {
         long roleId;
 
-        var createCommandSql = BuildInsert("roles",
+        var createCommandSql = InsertBuilder.Build("roles",
             new Dictionary<string, object?>
             {
                 { RoleColumns.CreatedAt, DateTime.Now },
@@ -41,7 +41,7 @@ internal sealed class RoleSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
         {
             foreach (var permission in entity.PermissionIds)
             {
-                var permissionSql = BuildInsert("role_permission",
+                var permissionSql = InsertBuilder.Build("role_permission",
                     new Dictionary<string, object?>
                     {
                         { RolePermissionColumns.RoleId, roleId },
@@ -61,14 +61,17 @@ internal sealed class RoleSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
 
     internal override async Task ExecuteUpdate(InRole entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("roles",
-            RoleColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("roles",
             new Dictionary<string, object?>
             {
                 { RoleColumns.UpdatedAt, DateTime.Now },
                 { RoleColumns.Name, entity.Name },
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { RoleColumns.Id, entity.Id }
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 
@@ -82,13 +85,14 @@ internal sealed class RoleSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
         {
             foreach (var permission in entity.PermissionIds)
             {
-                var permissionSql = BuildInsert("role_permission",
+                var permissionSql = InsertBuilder.Build("role_permission",
                     new Dictionary<string, object?>
                     {
                         { RolePermissionColumns.RoleId, entity.Id },
                         { RolePermissionColumns.PermissionId, permission }
                     },
-                    conflictAction: SqlConflictAction.Nothing);
+                    conflictAction: SqlConflictAction.Nothing
+                );
                 
                 _logger.LogDebug(SqlHelper.InterpolateQuery(permissionSql.Query, permissionSql.Parameters));
 

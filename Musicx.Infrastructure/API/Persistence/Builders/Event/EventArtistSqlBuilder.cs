@@ -15,7 +15,7 @@ internal sealed class EventArtistSqlBuilder(ILoggerProvider loggerProvider) : Sq
     
     internal override async Task<object?> ExecuteInsert(InEventArtist entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var createCommandSql = BuildInsert("event_artist",
+        var createCommandSql = InsertBuilder.Build("event_artist",
             new Dictionary<string, object?>
             {
                 { EventArtistColumns.ArtistId, entity.ArtistId },
@@ -37,13 +37,16 @@ internal sealed class EventArtistSqlBuilder(ILoggerProvider loggerProvider) : Sq
 
     internal override async Task ExecuteUpdate(InEventArtist entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("event_artist",
-            [EventArtistColumns.EventId, EventArtistColumns.ArtistId],
-            [entity.EventId, entity.ArtistId],
+        var updateCommandSql = UpdateBuilder.Build("event_artist",
             new Dictionary<string, object?>
             {
                 { EventArtistColumns.BeginDate, entity.BeginDate },
                 { EventArtistColumns.EndDate, entity.EndDate },
+            },
+            new Dictionary<string, object?>()
+            {
+                { EventArtistColumns.EventId, entity.EventId },
+                { EventArtistColumns.ArtistId, entity.ArtistId },
             }
         );
         

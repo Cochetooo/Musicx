@@ -16,7 +16,7 @@ internal sealed class PermissionSqlBuilder(ILoggerProvider loggerProvider) : Sql
     {
         long permissionId;
         
-        var createCommandSql = BuildInsert("permissions",
+        var createCommandSql = InsertBuilder.Build("permissions",
             new Dictionary<string, object?>
             {
                 { PermissionColumns.CreatedAt, DateTime.Now },
@@ -40,14 +40,17 @@ internal sealed class PermissionSqlBuilder(ILoggerProvider loggerProvider) : Sql
 
     internal override async Task ExecuteUpdate(InPermission entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("permissions",
-            PermissionColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("permissions",
             new Dictionary<string, object?>
             {
                 { PermissionColumns.UpdatedAt, DateTime.Now },
                 { PermissionColumns.Name, entity.Name },
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { PermissionColumns.Id, entity.Id }
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 

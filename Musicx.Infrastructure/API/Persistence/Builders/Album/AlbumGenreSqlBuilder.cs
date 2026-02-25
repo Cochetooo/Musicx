@@ -2,6 +2,7 @@
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Album;
+using Musicx.Infrastructure.API.Persistence.Builders.Core.Commands;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
 using Musicx.Infrastructure.API.Persistence.Columns.Genre;
 using Musicx.Infrastructure.API.Persistence.Columns.User;
@@ -19,7 +20,7 @@ internal sealed class AlbumGenreSqlBuilder(ILoggerProvider loggerProvider) : Sql
     {
         var now = DateTime.Now;
 
-        var query = BuildUpsert(
+        var query = UpsertBuilder.Build(
             table: "album_genre",
             insertProperties: new Dictionary<string, object?>
             {
@@ -56,10 +57,10 @@ internal sealed class AlbumGenreSqlBuilder(ILoggerProvider loggerProvider) : Sql
         return null;
     }
     
-    internal override async Task<object?> ExecuteInsert(InAlbumGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override Task<object?> ExecuteInsert(InAlbumGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
         => throw new NotImplementedException();
 
-    internal override async Task ExecuteUpdate(InAlbumGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override Task ExecuteUpdate(InAlbumGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
         => throw new NotImplementedException();
 
     internal override string BuildSelect(IJoinSpecification<InAlbumGenre>? querySpecification = null, bool distinct = false)

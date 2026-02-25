@@ -19,7 +19,7 @@ internal sealed class LabelSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
     {
         long labelId;
 
-        var createCommandSql = BuildInsert("labels",
+        var createCommandSql = InsertBuilder.Build("labels",
             new Dictionary<string, object?>
             {
                 { LabelColumns.CreatedAt, DateTime.Now },
@@ -55,16 +55,19 @@ internal sealed class LabelSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
     internal override async Task ExecuteUpdate(InLabel entity, NpgsqlConnection connection,
         NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("labels",
-            GenreAliasColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("labels",
             new Dictionary<string, object?>
             {
                 { LabelColumns.UpdatedAt, DateTime.Now },
                 { LabelColumns.Description, entity.Description },
                 { LabelColumns.IsVisible, entity.IsVisible },
                 { LabelColumns.Name, entity.Name }
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { LabelColumns.Id, entity.Id }
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 

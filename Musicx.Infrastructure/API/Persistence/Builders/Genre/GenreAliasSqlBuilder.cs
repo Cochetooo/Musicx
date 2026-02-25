@@ -17,7 +17,7 @@ internal sealed class GenreAliasSqlBuilder(ILoggerProvider loggerProvider) : Sql
     {
         long genreAliasId;
 
-        var createCommandSql = BuildInsert("genre_alias",
+        var createCommandSql = InsertBuilder.Build("genre_alias",
             new Dictionary<string, object?>
             {
                 { GenreAliasColumns.GenreId, entity.GenreId },
@@ -46,16 +46,19 @@ internal sealed class GenreAliasSqlBuilder(ILoggerProvider loggerProvider) : Sql
     internal override async Task ExecuteUpdate(InGenreAlias entity, NpgsqlConnection connection,
         NpgsqlTransaction? transaction = null)
     {
-        var updateCommandSql = BuildUpdate("genre_alias",
-            GenreAliasColumns.Id,
-            entity.Id,
+        var updateCommandSql = UpdateBuilder.Build("genre_alias",
             new Dictionary<string, object?>
             {
                 { GenreAliasColumns.UpdatedAt, DateTime.Now },
                 { GenreAliasColumns.Lang, entity.Lang },
                 { GenreAliasColumns.Metadata, entity.Metadata },
                 { GenreAliasColumns.Name, entity.Name },
-            });
+            },
+            new Dictionary<string, object?>
+            {
+                { GenreAliasColumns.GenreId, entity.GenreId },
+            }
+        );
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(updateCommandSql.Query, updateCommandSql.Parameters));
 

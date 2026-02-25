@@ -17,6 +17,8 @@ namespace Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
 /// <since>0.7.0</since>
 public interface IAlbumGenreRepository : IRepository<InAlbumGenre, OutAlbumGenre>
 {
+    Task DeleteOneAsync(long albumId, long genreId, long taggerId);
+    
     /// <summary>
     /// Retrieves a specific album–genre association for a given album, genre, and tagger.
     /// </summary>
