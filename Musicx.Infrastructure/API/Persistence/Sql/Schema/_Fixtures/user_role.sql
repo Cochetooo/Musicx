@@ -61,3 +61,4 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (61, 
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (56, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (62, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (63, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (64, 2);
