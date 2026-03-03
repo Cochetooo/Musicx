@@ -1,4 +1,6 @@
-﻿namespace Musicx.Contracts.Dto.Responses;
+﻿using Musicx.Contracts.Dto.Responses.User;
+
+namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutAuditLog : BaseOutputModel
 {

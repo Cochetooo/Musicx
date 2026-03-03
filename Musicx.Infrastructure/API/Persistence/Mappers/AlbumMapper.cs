@@ -87,12 +87,12 @@ public static class AlbumMapper
             }
             : null,
 
-        ArtistAlias = album.SafeGet<string>(AlbumColumns.ArtistAlias),
-        ArtworkUrl = album.SafeGet<string>(AlbumColumns.ArtworkUrl),
+        ArtistAlias = album.SafeGet<string?>(AlbumColumns.ArtistAlias),
+        ArtworkUrl = album.SafeGet<string?>(AlbumColumns.ArtworkUrl),
         BeginRecordDate = album.SafeGet<DateTime?>(AlbumColumns.BeginRecordDate),
-        DiscTotal = album.SafeGet<int>(AlbumColumns.DiscTotal),
+        DiscTotal = album.SafeGet<int?>(AlbumColumns.DiscTotal),
         EndRecordDate = album.SafeGet<DateTime?>(AlbumColumns.EndRecordDate),
-        EnglishName = album.SafeGet<string>(AlbumColumns.EnglishName),
+        EnglishName = album.SafeGet<string?>(AlbumColumns.EnglishName),
         IsExplicitContent = album.SafeGet<bool>(AlbumColumns.IsExplicitContent),
         IsFarRight = album.SafeGet<bool>(AlbumColumns.IsFarRight),
         IsGraphicContent = album.SafeGet<bool>(AlbumColumns.IsGraphicContent),
@@ -101,8 +101,8 @@ public static class AlbumMapper
         Name = album.SafeGet<string>(AlbumColumns.Name) ?? "",
         OriginalReleaseDate = album.SafeGet<DateTime?>(AlbumColumns.OriginalReleaseDate),
         ReleaseType = album.SafeGet<ReleaseType?>(AlbumColumns.ReleaseType),
-        SimplifiedGenreColor = album.SafeGet<string>(AlbumColumns.SimplifiedGenreColor),
-        SimplifiedGenreName = album.SafeGet<string>(AlbumColumns.SimplifiedGenreName),
+        SimplifiedGenreColor = album.SafeGet<string?>(AlbumColumns.SimplifiedGenreColor),
+        SimplifiedGenreName = album.SafeGet<string?>(AlbumColumns.SimplifiedGenreName),
         TotalDuration = album.SafeGet<long?>(AlbumColumns.TotalDuration),
         TrackTotal = album.SafeGet<int?>(AlbumColumns.TrackTotal),
     };

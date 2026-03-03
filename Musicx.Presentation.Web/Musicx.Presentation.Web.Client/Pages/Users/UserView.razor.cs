@@ -1,10 +1,13 @@
 ﻿using System.Resources;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
+using Musicx.Application.Web.Interfaces.Models.User.Ratings;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
 
 namespace Musicx.Presentation.Web.Client.Pages.Users;
@@ -14,14 +17,18 @@ public partial class UserView
     private ILogger _logger = null!;
 
     private MudTable<OutUserAlbumAttribute> _albumRatingsTable = null!;
+    private MudDialog _exportRatingsModal = null!;
     
     private OutUser? _user;
 
     private long _albumCount;
     private string _searchString = string.Empty;
 
+    private List<OutAlbum> _favAlbums = [];
+
     private OutUserRatingStats? _albumRatingDistrib;
     private int _maxRatingDistribCount;
+    private UserRatingsExportFormat _selectedExportFormat = UserRatingsExportFormat.Csv;
 
     private int? UserAge
     {
@@ -95,6 +102,24 @@ public partial class UserView
         
         await _albumRatingsTable.ReloadServerData();
         await InvokeAsync(StateHasChanged);
+
+        var bestUserRatings = await UcFindAlbumAttrs.ExecuteAsync(
+            _user.Id,
+            pagingOptions: new PagingOptions(Take: 6, Skip: 0),
+            joins: new UserAlbumAttrJoinSpecification
+            {
+                IncludeAlbumArtists = true
+            },
+            order: new UserAlbumAttrOrderSpecification
+            {
+                Rating = -1,
+                AlbumName = -2
+            });
+
+        _favAlbums = bestUserRatings
+            .Items
+            .Select(i => i.Album)
+            .ToList();
     }
     
     private async Task<TableData<OutUserAlbumAttribute>> LoadUserAttrData(TableState state, CancellationToken token)
@@ -113,7 +138,7 @@ public partial class UserView
         var sortLabel = state.SortLabel;
         
         var response = await UcFindAlbumAttrs.ExecuteAsync(
-            _user.Id, 
+            _user.Id,
             pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),
             joins: new UserAlbumAttrJoinSpecification
             {
@@ -160,6 +185,82 @@ public partial class UserView
             await InvokeAsync(StateHasChanged);
         }
 
+    }
+
+    private async Task OnExportRatingsButtonClicked()
+    {
+        await _exportRatingsModal.ShowAsync();
+    }
+
+    private async Task OnCancelExportButtonClicked()
+    {
+        await _exportRatingsModal.CloseAsync();
+    }
+
+    private async Task OnConfirmExportButtonClicked()
+    {
+        if (_user is null)
+        {
+            Snackbar.Add("User not found, cannot export ratings.", Severity.Warning);
+            await _exportRatingsModal.CloseAsync();
+            return;
+        }
+
+        var ratings = await LoadAllUserRatings();
+        if (ratings.Count == 0)
+        {
+            Snackbar.Add("No ratings to export.", Severity.Info);
+            await _exportRatingsModal.CloseAsync();
+            return;
+        }
+
+        var exportFile = UcExportRatings.Execute(ratings, _user.Name, _selectedExportFormat);
+        await JS.InvokeVoidAsync(
+            "fileDownload.downloadFileFromBytes",
+            exportFile.FileName,
+            exportFile.ContentType,
+            Convert.ToBase64String(exportFile.Content));
+
+        Snackbar.Add("Ratings exported successfully.", Severity.Success);
+        await _exportRatingsModal.CloseAsync();
+    }
+    
+    private async Task<List<OutUserAlbumAttribute>> LoadAllUserRatings()
+    {
+        if (_user is null)
+        {
+            return [];
+        }
+
+        const int pageSize = 250;
+        var result = new List<OutUserAlbumAttribute>();
+        var skip = 0;
+
+        while (true)
+        {
+            var page = await UcFindAlbumAttrs.ExecuteAsync(
+                _user.Id,
+                pagingOptions: new PagingOptions(Take: pageSize, Skip: skip),
+                joins: new UserAlbumAttrJoinSpecification
+                {
+                    IncludeAlbumArtists = true
+                });
+
+            if (page.Items.Count == 0)
+            {
+                break;
+            }
+
+            result.AddRange(page.Items);
+            skip += pageSize;
+
+            if (page.Items.Count < pageSize)
+            {
+                break;
+            }
+        }
+
+        return result;
     }
 
     private void OnSearch(string text)

@@ -7,6 +7,7 @@ using MudBlazor;
 using Musicx.Application.Desktop.Specifications;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses.Genre;
+using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Presentation.Web.Client.Modals.Searches;
 

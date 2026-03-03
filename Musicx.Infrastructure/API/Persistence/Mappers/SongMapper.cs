@@ -53,12 +53,12 @@ public static class SongMapper
                 GenreMapperJsonOptions)
             : null,
 
-        DiscNumber = song.SafeGet<int>(SongColumns.DiscNumber),
-        Duration = song.SafeGet<long>(SongColumns.Duration),
+        DiscNumber = song.SafeGet<int?>(SongColumns.DiscNumber),
+        Duration = song.SafeGet<long?>(SongColumns.Duration),
         IsVisible = song.SafeGet<bool>(SongColumns.IsVisible),
-        Lyrics = song.SafeGet<string>(SongColumns.Lyrics),
+        Lyrics = song.SafeGet<string?>(SongColumns.Lyrics),
         Title = song.SafeGet<string>(SongColumns.Title) ?? "",
-        TrackNumber = song.SafeGet<int>(SongColumns.TrackNumber),
+        TrackNumber = song.SafeGet<int?>(SongColumns.TrackNumber),
         Type = song.SafeGet<SongType>(SongColumns.Type)
     };
 

@@ -7,6 +7,7 @@ using Musicx.Application.Web.Interfaces.Models.Auth;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
 using Musicx.Presentation.Web.Contexts;

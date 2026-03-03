@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using Musicx.Application.Web.Interfaces.Models.Auth;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Presentation.Web.Client.Models.Auth;
 

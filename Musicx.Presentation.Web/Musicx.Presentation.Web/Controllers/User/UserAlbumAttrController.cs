@@ -272,7 +272,16 @@ public sealed class UserAlbumAttrController(
 
         try
         {
-            await repository.SaveAsync(userAlbumAttrDto);
+            if (userAlbumAttrDto.Rating == null
+                && userAlbumAttrDto.DiscoveryDate == null
+                && userAlbumAttrDto.Review == null)
+            {
+                await repository.DeleteAsync(userAlbumAttrDto.UserId, userAlbumAttrDto.AlbumId);
+            }
+            else
+            {
+                await repository.SaveAsync(userAlbumAttrDto);
+            }
 
             _logger.LogInformation($"🌍✅ API : SAVE user_album_attrs - SUCCESS");
             return Ok(0L);

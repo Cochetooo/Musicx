@@ -2,6 +2,7 @@
 using MudBlazor;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 

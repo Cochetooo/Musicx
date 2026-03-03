@@ -23,9 +23,21 @@
     background-image: var(--hero-url);
     background-size: cover;
     background-position: center;
-    filter: blur(24px) saturate(0.9) brightness(0.4);
     transform: scale(1.06);
     z-index: 0;
+}
+
+.hero-banner::before,
+.album-hero::before,
+.artist-hero::before {
+    filter: blur(24px) saturate(0.9) brightness(0.4);
+}
+
+/*
+    Treat user banner blurring filter differently because of user customization.
+ */
+.user-hero::before {
+    filter: var(--hero-filter);
 }
 
 .hero-banner::after,

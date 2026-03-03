@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Infrastructure.API.Auth;
 

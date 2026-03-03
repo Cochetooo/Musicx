@@ -15,7 +15,7 @@ public static class EventArtistMapper
         Artist = eventArtist.FromDicoToArtist(),
 
         BeginDate = eventArtist.SafeGet<DateTime?>(EventArtistColumns.BeginDate),
-        EndDate = eventArtist.SafeGet<DateTime>(EventArtistColumns.EndDate),
+        EndDate = eventArtist.SafeGet<DateTime?>(EventArtistColumns.EndDate),
     };
 
     public static InEventArtist ToRaw(this OutEventArtist eventArtist) => new()

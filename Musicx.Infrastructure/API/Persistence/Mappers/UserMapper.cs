@@ -3,6 +3,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests.User;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Columns.User;
 using Newtonsoft.Json;
@@ -32,6 +33,7 @@ public static class UserMapper
                 RoleMapperJsonOptions)
             : null,
 
+        BannerUrl = user.SafeGet<string?>(UserColumns.BannerUrl),
         Biography = user.SafeGet<string?>(UserColumns.Biography),
         BirthDate = user.SafeGet<DateTime?>(UserColumns.BirthDate),
         Email = user.SafeGet<string>(UserColumns.Email) ?? "",
@@ -39,8 +41,9 @@ public static class UserMapper
         Name = user.SafeGet<string>(UserColumns.Name) ?? "",
         GoogleId = user.SafeGet<string?>(UserColumns.GoogleId),
         LastFmUsername = user.SafeGet<string?>(UserColumns.LastFmUsername),
-        PasswordHash = user.SafeGet<string>(UserColumns.PasswordHash),
-        PasswordSalt = user.SafeGet<string>(UserColumns.PasswordSalt),
+        PasswordHash = user.SafeGet<string?>(UserColumns.PasswordHash),
+        PasswordSalt = user.SafeGet<string?>(UserColumns.PasswordSalt),
+        PrefBannerBlur = user.SafeGet<bool>(UserColumns.PrefBannerBlur),
         PrefDarkMode = user.SafeGet<bool>(UserColumns.PrefDarkMode),
         PrefRatingMode = user.SafeGet<RatingMode>(UserColumns.PrefRatingMode),
         PrefShowRatings = user.SafeGet<bool>(UserColumns.PrefShowRatings),
@@ -54,6 +57,7 @@ public static class UserMapper
 
         RoleIds = user.Roles?.Select(r => r.Id).ToList(),
 
+        BannerUrl = user.BannerUrl,
         Biography = user.Biography,
         BirthDate = user.BirthDate,
         Email = user.Email,
@@ -61,6 +65,7 @@ public static class UserMapper
         Name = user.Name,
         GoogleId = user.GoogleId,
         LastFmUsername = user.LastFmUsername,
+        PrefBannerBlur = user.PrefBannerBlur,
         PrefDarkMode = user.PrefDarkMode,
         PrefRatingMode = user.PrefRatingMode,
         PrefShowRatings = user.PrefShowRatings,

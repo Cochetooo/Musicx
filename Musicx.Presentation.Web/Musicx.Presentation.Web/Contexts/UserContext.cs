@@ -2,6 +2,7 @@
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Security;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Specifications.Security;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
 

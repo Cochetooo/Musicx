@@ -3,11 +3,13 @@
 @using System.Globalization
 @using Musicx.Application.Shared.Helpers
 @using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Application.Web.Interfaces.Models.User.Ratings
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.User.AlbumAttribute
 @using Musicx.Application.Web.Interfaces.UseCases.User.Ratings
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Dto.Responses.User
 @using Musicx.Presentation.Web.Client.Components.Albums
 @using Musicx.Presentation.Web.Client.Components.Ratings
 
@@ -17,7 +19,10 @@
 @inject IUserClientContext UserClientContext
 @inject IFindRatingDistribByUserService<OutAlbum> UcFindAlbumRatingDistrib
 @inject IDeleteService<InUserAlbumAttribute> UcDeleteAllRatings
+@inject IExportUserRatingsService UcExportRatings
 @inject IDialogService DialogService
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
 
 @if (null == _user)
 {
@@ -27,13 +32,17 @@ else
 {
     <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
         <!-- Bio -->
-        <div class="user-hero" style="--hero-url: url('@_user.PictureUrl')">
+        <div class="user-hero" style="--hero-url: url('@(_user.BannerUrl ?? _user.PictureUrl)');
+            --hero-filter: @(_user.PrefBannerBlur && _user.BannerUrl is not null ? "none" : "blur(24px) saturate(0.9) brightness(0.4)");">
             <div class="user-hero-content">
                 <div class="user-hero-image">
-                    <MudImage Alt="Profile Picture" Width="192" Height="192"
-                              @key="_user.PictureUrl"
-                              Elevation="8"
-                              Class="rounded-circle" Src="@_user.PictureUrl" />
+                    @if (_user.PictureUrl is not null)
+                    {
+                        <MudImage Alt="Profile Picture" Width="192" Height="192"
+                                  @key="_user.PictureUrl"
+                                  Elevation="8"
+                                  Class="rounded-circle" Src="@_user.PictureUrl"/>
+                    }
                 </div>
                 
                 <div>
@@ -61,12 +70,6 @@ else
                                     Edit Profile
                                 </MudButton>
                             </MudLink>
-                            
-
-                            <MudButton Color="Color.Dark" StartIcon="@Icons.Material.Filled.SsidChart"
-                                       Variant="Variant.Filled">
-                                Stats
-                            </MudButton>
                         </MudStack>
                     }
                 </div>
@@ -84,6 +87,7 @@ else
                         }
                         
                         <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Download"
+                                   OnClick="@OnExportRatingsButtonClicked"
                                    Variant="Variant.Filled">
                             Export Ratings
                         </MudButton>
@@ -174,9 +178,9 @@ else
                                 <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
                                     Rating Standard Deviation
                                 </MudText>
-                                <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
+                                <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary" Style="min-width: 50px;">
                                     ± @RatingHelper.GetRatingFormatted(_albumRatingDistrib?.RatingStandardDev, 
-                                        UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                          UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
                                 </MudText>
                             </MudStack>
                         </MudListItem>
@@ -287,6 +291,47 @@ else
                     </MudText>
                     
                     <MudDivider Class="my-3"/>
+                    
+                    <MudStack Row
+                              Wrap="Wrap.Wrap"
+                              Justify="Justify.Center"
+                              Spacing="3">
+                        
+                        @foreach (var album in _favAlbums)
+                        {
+                            <MudLink Href="@($"/Album/{album.Id}")"
+                                     Underline="Underline.None"
+                                     Class="album-link">
+                                
+                                <MudPaper Elevation="3"
+                                          Class="pa-2 album-card">
+                                    
+                                    <MudImage Src="@album.ArtworkUrl"
+                                              Alt="@album.Name"
+                                              Width="160"
+                                              Height="160"
+                                              Class="album-art rounded-lg" />
+                                    
+                                    <MudText Typo="Typo.subtitle2"
+                                             Align="Align.Center"
+                                             Class="mt-2 text-bold clamped-text-2">
+                                        @album.Name
+                                    </MudText>
+                                    
+                                    @if (album.Artist?.Name is not null)
+                                    {
+                                        <MudText Typo="Typo.subtitle2"
+                                                 Align="Align.Center"
+                                                 Class="color-secondary clamped-text-2">
+                                            @album.Artist.Name
+                                        </MudText>
+                                    }
+                                    
+                                </MudPaper>
+                            </MudLink>
+                        }
+                        
+                    </MudStack>
                 </MudPaper>
                 
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
@@ -298,11 +343,59 @@ else
                 </MudPaper>
             </MudItem>
         </MudGrid>
+        
+        <MudDialog @ref="_exportRatingsModal">
+            <TitleContent>
+                Export Ratings
+            </TitleContent>
+            <DialogContent>
+                <MudText Class="mb-2">Select the format you want to download.</MudText>
+                <MudRadioGroup T="UserRatingsExportFormat" @bind-Value="_selectedExportFormat">
+                    <MudRadio Value="@UserRatingsExportFormat.Csv" Color="Color.Primary">CSV (.csv)</MudRadio>
+                    <MudRadio Value="@UserRatingsExportFormat.Xlsx" Color="Color.Primary">Excel (.xlsx)</MudRadio>
+                    <MudRadio Value="@UserRatingsExportFormat.Json" Color="Color.Primary">JSON (.json)</MudRadio>
+                </MudRadioGroup>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="@OnCancelExportButtonClicked">
+                    Cancel
+                </MudButton>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Download" OnClick="@OnConfirmExportButtonClicked">
+                    Download
+                </MudButton>
+            </DialogActions>
+        </MudDialog>
+        
     </MudContainer>
 }
 
 <style>
     .rating-bar .mud-progress-linear-bar {
         background-color: var(--bar-color) !important;
+    }
+
+    .album-link {
+        text-decoration: none;
+    }
+
+    .album-card {
+        width: 180px;
+        transition: all 0.25s ease;
+        border-radius: 16px;
+    }
+
+    .album-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+
+    .album-art {
+        object-fit: cover;
+        border-radius: 14px;
+        transition: transform 0.25s ease;
+    }
+
+    .album-card:hover .album-art {
+        transform: scale(1.05);
     }
 </style>

@@ -66,6 +66,7 @@ using Musicx.Infrastructure.Web.UseCases.Song;
 using Musicx.Infrastructure.Web.UseCases.User.AlbumAttribute;
 using Musicx.Infrastructure.Web.UseCases.User.Avatar;
 using Musicx.Infrastructure.Web.UseCases.User.Ratings;
+using Musicx.Infrastructure.Web.UseCases.User.Ratings.Export;
 
 namespace Musicx.Infrastructure;
 
@@ -214,6 +215,10 @@ public static class DependencyInjection
         services.AddScoped<IFindAlbumByGenreService, FindAlbumByGenreService>();
         services.AddScoped<IFindSongByAlbumService, FindSongByAlbumService>();
         services.AddScoped(typeof(IFindRatingDistribByUserService<>), typeof(FindRatingDistribByUserService<>));
+        services.AddScoped<IExportUserRatingsService, ExportUserRatingsService>();
+        services.AddScoped<IUserRatingsExportFormatter, CsvUserRatingsExportFormatter>();
+        services.AddScoped<IUserRatingsExportFormatter, XlsxUserRatingsExportFormatter>();
+        services.AddScoped<IUserRatingsExportFormatter, JsonUserRatingsExportFormatter>();
         services.AddScoped<ISaveAvatarService,SaveAvatarService>();
 
         services.AddScoped<IPatchNotesService, PatchNotesService>();

@@ -1,3 +1,4 @@
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Contracts.Dto.Responses;
