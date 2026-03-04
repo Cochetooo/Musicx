@@ -37,6 +37,8 @@ public sealed class FileSystemPatchNoteService(
             _logger.LogError($"❌ Error while counting patch notes version : " + ex.Message + "\n" + ex.StackTrace);
         }
 
-        return result;
+        return result
+            .OrderByDescending(v => v.Key)
+            .ToDictionary();
     }
 }

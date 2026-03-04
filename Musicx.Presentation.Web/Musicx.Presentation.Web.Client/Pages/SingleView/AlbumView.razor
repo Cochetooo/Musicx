@@ -192,10 +192,12 @@ else
                                      Disabled="@(!UserClientContext.Can("album.edit"))"
                                      Variant="Variant.Filled"
                                      Label="⚙️" Style="align-self: auto;">
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="@EditAlbumShowModal">Edit Album Info</MudMenuItem>
+                                <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="@EditAlbumShowModal">Edit Album Info</MudMenuItem>
                             </MudMenu>
                         </MudButtonGroup>
                     </MudStack>
+                    
+                    <MudDivider Class="my-2" />
 
                     <GenreDetails Size="Size.Medium" Descriptor="false" Album="@_album" @bind-DetailedView="@_showDetailedView"/>
                     

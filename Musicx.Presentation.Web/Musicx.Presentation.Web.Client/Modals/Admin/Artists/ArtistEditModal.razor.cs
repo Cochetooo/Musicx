@@ -2,6 +2,7 @@ using System.Text.Json;
 using ISO3166;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Artist;
@@ -125,7 +126,9 @@ public partial class ArtistEditModal
             _isLoading = false;
             await InvokeAsync(StateHasChanged);
             
-            _existingArtists = await UcListExistingArtists.ExecuteAsync(filter: _artist.Name,
+            _existingArtists = await UcListExistingArtists.ExecuteAsync(
+                pagingOptions: new PagingOptions(Take: 1, Skip: 0),
+                filter: _artist.Name,
                 filterExact: true);
         }
         catch (TaskCanceledException)

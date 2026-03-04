@@ -47,17 +47,21 @@
         
         @if (UserClientContext.CurrentUser is not null)
         {
-            <MudImage Alt="@UserClientContext.CurrentUser.Name"
-                      @key="UserClientContext.CurrentUser.PictureUrl"
-                      Width="36" Height="36"
-                      Src="@UserClientContext.CurrentUser.PictureUrl"
-                      Class="rounded-circle mr-3"
-            />
-            
-            <MudLink Color="Color.Inherit" Href="@($"/User/{UserClientContext.CurrentUser.Id}")" Class="mr-2">
-                <MudText Typo="Typo.subtitle1" Color="Color.Inherit">
-                    @UserClientContext.CurrentUser.Name
-                </MudText>
+            <MudLink Color="Color.Inherit" Href="@($"/User/{UserClientContext.CurrentUser.Id}")" 
+                     Underline="Underline.None"
+                     Class="mr-2 animate-hover-up">
+                <MudStack Row Class="pa-2 rounded-lg bg-success-darken animate-pop-bounce" Spacing="3">
+                    <MudImage Alt="@UserClientContext.CurrentUser.Name"
+                              @key="UserClientContext.CurrentUser.PictureUrl"
+                              Width="36" Height="36"
+                              Src="@UserClientContext.CurrentUser.PictureUrl"
+                              Class="rounded-circle"
+                    />
+                    
+                    <MudText Typo="Typo.subtitle1" Color="Color.Inherit" Class="text-bold align-content-center">
+                        @UserClientContext.CurrentUser.Name
+                    </MudText>
+                </MudStack>
             </MudLink>
         }
         
