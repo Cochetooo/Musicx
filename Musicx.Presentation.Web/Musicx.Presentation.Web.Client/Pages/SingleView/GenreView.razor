@@ -242,7 +242,7 @@ else
                                 </HeaderContent>
                                 <RowTemplate>
                                     <MudTd DataLabel="Releases">
-                                        <MudLink Href="@($"/Album/{@context.Id}")">
+                                        <MudLink Href="@($"/Album/{context.Id}")">
                                             <MudStack Justify="Justify.FlexStart" Row>
                                                 <MudImage Src="@context.ArtworkUrl" Alt="@context.Name"
                                                           @key="context.ArtworkUrl"
