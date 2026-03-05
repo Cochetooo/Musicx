@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
+using Musicx.Application.Api.Models.Auth;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -84,6 +85,25 @@ internal sealed class UserRepository(
         return result
             .SingleOrDefault()?
             .FromDicoToUser();
+    }
+    
+    public async Task<OutUserAuth?> FindAuthByEmailAsync(string email,
+        IJoinSpecification<InUser>? joinSpec = null)
+    {
+        var sql = new StringBuilder(builder.BuildSelect(joinSpec));
+        sql.Append($" WHERE u0.{UserColumns.Email} = @email")
+            .Append(builder.BuildGroupBy(joinSpec));
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@email", email)
+        };
+
+        var result = await connection.FetchListDynamicAsync(sql.ToString(), parameters);
+
+        return result
+            .SingleOrDefault()?
+            .FromDicoToUserAuth();
     }
 
     public async Task<List<OutUser>> FindAllAsync(

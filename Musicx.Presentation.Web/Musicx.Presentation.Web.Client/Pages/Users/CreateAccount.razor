@@ -4,6 +4,7 @@
 @using Musicx.Contracts.Dto.Requests.User
 
 @inject ISaveService<InUser> UcSave
+@inject ISnackbar Snackbar
 @inject NavigationManager Navigation
 
 <MudBreadcrumbs Items="@_breadcrumb" />
@@ -45,6 +46,7 @@
 
             <MudDatePicker Label="Birth Date" 
                            Variant="Variant.Outlined" 
+                           MaxDate="@DateTime.Now"
                            @bind-Date="_user.BirthDate"/>
             
             <MudButton Color="Color.Primary" Size="Size.Large"

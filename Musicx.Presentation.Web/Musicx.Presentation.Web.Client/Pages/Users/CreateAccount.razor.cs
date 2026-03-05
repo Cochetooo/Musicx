@@ -23,7 +23,17 @@ public partial class CreateAccount
 
     private async Task Save()
     {
-        await UcSave.ExecuteAsync(_user);
-        Navigation.NavigateTo("/", forceLoad: true);
+        var response = await UcSave.ExecuteAsync(_user);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("New user created successfully!", Severity.Success);
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            Snackbar.Add($"Error while signing up : {response.ReasonPhrase}", Severity.Error);
+            _user.Password = null;
+        }
     }
 }

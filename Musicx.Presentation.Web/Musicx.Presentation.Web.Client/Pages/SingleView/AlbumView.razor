@@ -175,8 +175,9 @@ else
                             </MudMenu>
                         }
                         
-                        @if (UserClientContext.CurrentUser is not null &&
-                             UserClientContext.Can("album.rate"))
+                        @if (DateTime.UtcNow >= (_album.OriginalReleaseDate ?? DateTime.MinValue) &&
+                            UserClientContext.CurrentUser is not null &&
+                            UserClientContext.Can("album.rate"))
                         {
                             <EditableRatingBadge
                                 Editable
@@ -246,7 +247,7 @@ else
                     <MudStack Justify="Justify.Center">
                         @if (null != _album.OriginalReleaseDate)
                         {
-                            <MudText>
+                            <MudText Class="color-secondary text-light">
                                 📅 Release Date:&nbsp;
 
                                 <MudText Inline Class="color-primary text-bold">
@@ -489,7 +490,7 @@ else
 
 <style>
     .blurred {
-        filter: blur(10px);
+        filter: blur(15px);
     }
 
     .neighbor-album-text {

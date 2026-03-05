@@ -72,6 +72,7 @@
                         @bind-Date="@_album.OriginalReleaseDate"
                         Placeholder="Choose a date..."
                         Label="Release Date"
+                        MinDate="@(_artist?.BirthDate ?? _artist?.FormationDate)"
                         AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
                         Color="Color.Primary"
                         AnchorOrigin="Origin.BottomCenter"
@@ -83,6 +84,7 @@
                         @bind-DateRange="_recordingDates"
                         Placeholder="Choose dates..."
                         Label="Recording Dates"
+                        MinDate="@(_artist?.BirthDate ?? _artist?.FormationDate)"
                         MaxDate="@_album.OriginalReleaseDate"
                         PickerVariant="PickerVariant.Inline"/>
                 </MudStack>

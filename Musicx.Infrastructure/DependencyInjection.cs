@@ -223,6 +223,7 @@ public static class DependencyInjection
 
         services.AddScoped<IPatchNotesService, PatchNotesService>();
 
+        services.AddScoped<IAuthUserSavePasswordService, AuthUserSavePasswordService>();
         services.AddScoped<IAuthSignInService, AuthSignInService>();
         
         return services;

@@ -6,7 +6,7 @@ public static class Theme
 {
     public static readonly MudTheme DeepTheme = new()
     {
-        PaletteLight = new()
+        PaletteLight = new PaletteLight()
         {
             Primary = "#62b1ac",
             PrimaryDarken = "#589f99",
@@ -39,7 +39,7 @@ public static class Theme
             InfoLighten = "#92b2e5"
         },
 
-        PaletteDark = new()
+        PaletteDark = new PaletteDark()
         {
             Primary = "#62b1ac",
             PrimaryDarken = "#589f99",
@@ -96,7 +96,7 @@ public static class Theme
     
     public static readonly MudTheme MainTheme = new()
     {
-        PaletteLight = new()
+        PaletteLight = new PaletteLight()
         {
             Primary = Colors.Teal.Default,
             PrimaryDarken = Colors.Teal.Darken1,
@@ -111,7 +111,7 @@ public static class Theme
             
             AppbarBackground = Colors.Teal.Darken1,
         },
-        PaletteDark = new()
+        PaletteDark = new PaletteDark()
         {
             Primary = Colors.Teal.Lighten2,
             PrimaryDarken = Colors.Teal.Lighten1,

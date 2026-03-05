@@ -174,7 +174,7 @@ public partial class UserView
             return;
         }
         
-        var result = await DialogService.ShowMessageBox(
+        var result = await DialogService.ShowMessageBoxAsync(
             "Warning",
             "Deleting all ratings cannot be undone! Are you sure you want to delete all your ratings?",
             yesText: "Delete!", cancelText: "Cancel");

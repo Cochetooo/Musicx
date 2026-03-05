@@ -189,14 +189,68 @@ public sealed class UserController(IUserRepository userRepository,
     }
 
     [HttpPost]
-    public async Task<IActionResult> Save([FromBody] InUser userDto)
+    public async Task<IActionResult> Save([FromBody] InUser userDto,
+        [FromServices] IUserContext userContext)
     {
         _logger.LogInformation($"🌍🏳️ API : SAVE users");
 
         try
         {
-            // Convert password -> password hash + salt
-            authService.CreatePasswordHash(ref userDto);
+            if (0 == userDto.Id)
+            {
+                if (string.IsNullOrWhiteSpace(userDto.Password))
+                {
+                    return BadRequest("Password is required to create a user.");
+                }
+
+                var existingByEmail = await userRepository.FindByEmailAsync(userDto.Email);
+                if (existingByEmail is not null)
+                {
+                    return Conflict("A user with this email already exists.");
+                }
+
+                authService.CreatePasswordHash(ref userDto);
+            }
+            else
+            {
+                if (userContext.CurrentUser is null)
+                {
+                    return Unauthorized("You must be authenticated to edit a user.");
+                }
+
+                var isSelfEdit = userContext.CurrentUser.Id == userDto.Id;
+                var canEditOther = userContext.Can("moderation.user.save");
+
+                if (!isSelfEdit && !canEditOther)
+                {
+                    return Unauthorized("Not authorized to edit another user.");
+                }
+
+                var existingUser = await userRepository.FindOneByIdAsync(userDto.Id);
+                if (existingUser is null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                if (!string.Equals(existingUser.Email, userDto.Email, StringComparison.OrdinalIgnoreCase))
+                {
+                    var userWithEmail = await userRepository.FindByEmailAsync(userDto.Email);
+                    if (userWithEmail is not null && userWithEmail.Id != userDto.Id)
+                    {
+                        return Conflict("A user with this email already exists.");
+                    }
+                }
+
+                var existingAuth = await userRepository.FindAuthByEmailAsync(existingUser.Email);
+                if (existingAuth is null)
+                {
+                    return BadRequest("Could not resolve user credentials.");
+                }
+
+                userDto.PasswordHash = existingAuth.PasswordHash;
+                userDto.PasswordSalt = existingAuth.PasswordSalt;
+                userDto.Password = null;
+            }
             
             // Persist
             var result = await userRepository.SaveAsync(userDto);
@@ -208,6 +262,55 @@ public sealed class UserController(IUserRepository userRepository,
         {
             _logger.LogError($"❌ API : SAVE users - ERROR: {ex.Message}");
             return BadRequest(ex);
+        }
+    }
+    
+    [HttpPost("{id}/change-password")]
+    public async Task<IActionResult> ChangePassword([FromRoute] long id,
+        [FromBody] InUserPasswordChange request,
+        [FromServices] IUserContext userContext)
+    {
+        _logger.LogInformation($"🌍🏳️ API : CHANGE PASSWORD users ({id})");
+
+        if (string.IsNullOrWhiteSpace(request.NewPassword))
+        {
+            return BadRequest("New password is required.");
+        }
+
+        if (userContext.CurrentUser is null)
+        {
+            return Unauthorized("You must be authenticated to change a password.");
+        }
+
+        var isSelfEdit = userContext.CurrentUser.Id == id;
+        var canEditOther = userContext.Can("moderation.user.password.save");
+
+        if (!isSelfEdit && !canEditOther)
+        {
+            return Unauthorized("Not authorized to change another user's password.");
+        }
+
+        try
+        {
+            var existingUser = await userRepository.FindOneByIdAsync(id);
+            if (existingUser is null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var rawUser = existingUser.ToRaw();
+            rawUser.Password = request.NewPassword;
+            authService.CreatePasswordHash(ref rawUser);
+
+            await userRepository.SaveAsync(rawUser);
+
+            _logger.LogInformation($"🌍✅ API : CHANGE PASSWORD users ({id}) - SUCCESS");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"❌ API : CHANGE PASSWORD users ({id}) - ERROR: {ex.Message}");
+            return BadRequest(ex.Message);
         }
     }
     

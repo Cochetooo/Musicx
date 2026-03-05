@@ -27,27 +27,27 @@ public sealed class AuthService(
 
     public async Task<string> SignInAsync(string email, string password)
     {
-        var user = await userRepository.FindByEmailAsync(email, new UserJoinSpecification
+        var userAuth = await userRepository.FindAuthByEmailAsync(email, new UserJoinSpecification
         {
             IncludeRoles = true
         });
         
-        if (user is null)
+        if (userAuth is null)
         {
             throw new UnauthorizedAccessException("Invalid credentials : User not found");
         }
 
-        if (user.PasswordHash is null || user.PasswordSalt is null)
+        if (userAuth.PasswordHash is null || userAuth.PasswordSalt is null)
         {
             throw new UnauthorizedAccessException("Invalid credentials : Password not stored");
         }
 
-        if (!passwordHasher.VerifyPassword(password, user.PasswordHash, user.PasswordSalt))
+        if (!passwordHasher.VerifyPassword(password, userAuth.PasswordHash, userAuth.PasswordSalt))
         {
             throw new UnauthorizedAccessException("Invalid credentials : Password not correct");
         }
 
-        return tokenGenerator.Generate(user);
+        return tokenGenerator.Generate(userAuth.User);
     }
     
     // Côté client, supprimer le cookie / token

@@ -58,7 +58,25 @@ public partial class UserEditor
         }
         
         _user.PrefRatingMode = mode;
-    } 
+    }
+
+    private async Task SavePassword()
+    {
+        if (_user is null)
+        {
+            Snackbar.Add("User is null, cannot save password.", Severity.Warning);
+            return;
+        }
+        
+        if (string.IsNullOrWhiteSpace(_newPassword) || _newPassword != _confirmPassword)
+        {
+            Snackbar.Add("Password and confirm password are not the same!", Severity.Error);
+            return;
+        }
+        
+        await UcSavePassword.ExecuteAsync(_user.Id, _newPassword);
+        Snackbar.Add("User password has been saved.", Severity.Success);
+    }
 
     private async Task Save()
     {
@@ -69,11 +87,6 @@ public partial class UserEditor
         }
 
         var rawUser = _user.ToRaw();
-        
-        if (!string.IsNullOrWhiteSpace(_newPassword) && _newPassword == _confirmPassword)
-        {
-            rawUser.Password = _newPassword;
-        }
 
         await UcSave.ExecuteAsync(rawUser);
         Snackbar.Add("User has been saved.", Severity.Success);

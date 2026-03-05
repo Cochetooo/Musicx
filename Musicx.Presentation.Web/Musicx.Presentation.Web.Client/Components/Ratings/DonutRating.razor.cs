@@ -22,10 +22,11 @@ public partial class DonutRating
 
     private string _donutSize = string.Empty;
     private int _textSize;
-
-    private double[] _ratingData = [];
+    
     private string _ratingColor = string.Empty;
-    private readonly ChartOptions _ratingOptions = new();
+    private string _trackColor = string.Empty;
+
+    private double _radius, _strokeWidth, _circumference, _dashOffset;
 
     protected override void OnParametersSet()
     {
@@ -48,12 +49,21 @@ public partial class DonutRating
             0.22
         );
         
-        _ratingData = [(double)(Rating ?? 0), 10000 - (double)(Rating ?? 0)];
-        _ratingOptions.ChartPalette =
-        [
-            _ratingColor,
-            Colors.Gray.Darken3
-        ];
-        _ratingOptions.ShowToolTips = false;
+        _trackColor = ColorHelper.LightenColor("#1f1f1f", 0.24);
+
+        _strokeWidth = Size switch
+        {
+            DonutRatingSize.ExtraSmall => 9,
+            DonutRatingSize.Small => 10,
+            DonutRatingSize.Medium => 11,
+            DonutRatingSize.Large => 12,
+            _ => 10
+        };
+
+        _radius = 50 - (_strokeWidth / 2.0) - 1.0;
+        _circumference = 2 * Math.PI * _radius;
+
+        var normalizedRating = Math.Clamp((double)(Rating ?? 0) / 10000d, 0d, 1d);
+        _dashOffset = _circumference * (1d - normalizedRating);
     }
 }

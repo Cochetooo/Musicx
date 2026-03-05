@@ -58,6 +58,10 @@ public partial class ArtistEditModal
             var msg = await response.Content.ReadAsStringAsync();
             Snackbar.Add($"Could not save artist: {msg}", Severity.Error);
         }
+        else
+        {
+            Snackbar.Add($"New artist {_artist.Name} created successfully!", Severity.Success);
+        }
         
         await OnSave.InvokeAsync();
         await Hide();
@@ -70,7 +74,7 @@ public partial class ArtistEditModal
         if (null != artist)
         {
             _artist = artist.ToRaw();
-            await _nameTextEdit.SetText(_artist.Name);
+            await _nameTextEdit.SetTextAsync(_artist.Name);
             await InvokeAsync(StateHasChanged);
         }
         else

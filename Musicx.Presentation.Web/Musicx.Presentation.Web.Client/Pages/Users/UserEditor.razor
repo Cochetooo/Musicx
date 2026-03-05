@@ -2,11 +2,13 @@
 @using System.Globalization
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Application.Web.Interfaces.UseCases.Security
 @using Musicx.Application.Web.Interfaces.UseCases.User.Avatar
 @using Musicx.Contracts.Dto.Requests.User
 
 @inject IUserClientContext UserClientContext
 @inject ISaveService<InUser> UcSave
+@inject IAuthUserSavePasswordService UcSavePassword
 @inject ISaveAvatarService UcSaveAvatar
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation
@@ -33,12 +35,12 @@
                 
                 <MudFileUpload T="IBrowserFile"
                                OnFilesChanged="OnAvatarSelected">
-                    <ActivatorContent>
+                    <CustomContent>
                         <MudFab Color="Color.Primary"
                                 Size="Size.Small"
                                 StartIcon="@Icons.Material.Filled.Image"
                                 Label="Upload avatar" />
-                    </ActivatorContent>
+                    </CustomContent>
                 </MudFileUpload>
             </MudStack>
             

@@ -1,3 +1,4 @@
+using Musicx.Application.Api.Models.Auth;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
@@ -41,14 +42,19 @@ public static class UserMapper
         Name = user.SafeGet<string>(UserColumns.Name) ?? "",
         GoogleId = user.SafeGet<string?>(UserColumns.GoogleId),
         LastFmUsername = user.SafeGet<string?>(UserColumns.LastFmUsername),
-        PasswordHash = user.SafeGet<string?>(UserColumns.PasswordHash),
-        PasswordSalt = user.SafeGet<string?>(UserColumns.PasswordSalt),
         PrefBannerBlur = user.SafeGet<bool>(UserColumns.PrefBannerBlur),
         PrefDarkMode = user.SafeGet<bool>(UserColumns.PrefDarkMode),
         PrefRatingMode = user.SafeGet<RatingMode>(UserColumns.PrefRatingMode),
         PrefShowRatings = user.SafeGet<bool>(UserColumns.PrefShowRatings),
         PrefSimpleGenre = user.SafeGet<bool>(UserColumns.PrefSimpleGenre),
         PictureUrl = user.SafeGet<string?>(UserColumns.PictureUrl),
+    };
+    
+    public static OutUserAuth FromDicoToUserAuth(this IDictionary<string, object?> user) => new()
+    {
+        User = user.FromDicoToUser(),
+        PasswordHash = user.SafeGet<string?>(UserColumns.PasswordHash),
+        PasswordSalt = user.SafeGet<string?>(UserColumns.PasswordSalt),
     };
 
     public static InUser ToRaw(this OutUser user) => new()

@@ -1,17 +1,29 @@
-﻿@using Musicx.Application.Shared.Helpers
+﻿@using System.Globalization
+@using Musicx.Application.Shared.Helpers
+@using Musicx.Contracts.Enums
 
-<MudChart ChartType="ChartType.Donut"
-      InputData="@_ratingData"
-      ChartOptions="@_ratingOptions"
-      Width="@_donutSize" Height="@_donutSize"
-      Class="mud-chart-no-legend">
-    <CustomGraphics>
+<div class="donut-rating" style="--donut-size:@_donutSize; --progress-color:@_ratingColor; --track-color:@_trackColor;">
+    <svg class="donut-rating-svg" viewBox="0 0 100 100" role="img" aria-label="Album rating @Rating">
+        <circle class="donut-track"
+                cx="50" cy="50"
+                r="@_radius.ToString(CultureInfo.InvariantCulture)"
+                stroke-width="@_strokeWidth.ToString(CultureInfo.InvariantCulture)" />
+
+        <circle class="donut-progress"
+                cx="50"
+                cy="50"
+                r="@_radius.ToString(CultureInfo.InvariantCulture)"
+                stroke-width="@_strokeWidth.ToString(CultureInfo.InvariantCulture)"
+                stroke-dasharray="@_circumference.ToString(CultureInfo.InvariantCulture)"
+                stroke-dashoffset="@_dashOffset.ToString(CultureInfo.InvariantCulture)"
+                style="@($"--progress-length:{_circumference}; --progress-offset:{_dashOffset};")" />
+        
         @{
             var ratingText = RatingHelper.GetRatingFormatted(
                 Rating,
                 RatingMode
             );
-            
+
             string? top = null;
             string? bottom = null;
 
@@ -24,31 +36,40 @@
             {
                 var parts = ratingText.Split('/');
                 top = parts[0].Trim();
-                bottom = parts.Length > 1 ? parts[1].Trim() : null;
+                bottom = parts.Length > 1 ? "/ " + parts[1].Trim() : null;
+            }
+            else
+            {
+                if (ratingText.Length > 5)
+                {
+                    top = ratingText[..5];
+                    bottom = "-" + ratingText[5..];
+                }
             }
         }
-        
+
         <defs>
             <filter id="shadow">
                 <feDropShadow dx="0.2" dy="0.8" stdDeviation="1" flood-opacity="0.8" />
             </filter>
         </defs>
-        
+
         @if (top is null)
         {
-            double coeff = 6.0 / ratingText.Length;
-            coeff = Math.Max(Math.Min(coeff, 3.0), 0.8);
-            int size = (int) (_textSize * coeff);
-            
+            double coeff = 3.0 / ratingText.Length;
+            coeff = Math.Max(Math.Min(coeff, 1.2), 0.8);
+            int size = (int)(_textSize * coeff);
+
             <text>
                 <text class="donut-inner-text"
-                      x="50%" y="50%"
-                      fill="@_ratingColor"
+                      x="50" y="50"
+                      dy="0.05em"
                       filter="url(#shadow)"
+                      fill="@_ratingColor"
                       dominant-baseline="middle"
                       text-anchor="middle"
                       font-size="@(size)"
-                      font-weight="500">
+                      font-weight="@(RatingMode == RatingMode.TierList || RatingMode == RatingMode.TierListDetailed ? 800 : 500)">
                     @ratingText
                 </text>
             </text>
@@ -56,34 +77,31 @@
         else
         {
             <text>
-                <text x="50%" y="50%"
+                <text x="50" y="50"
                       text-anchor="middle"
                       filter="url(#shadow)"
-                      fill="@_ratingColor">
+                      class="donut-inner-text">
                     @if (Size != DonutRatingSize.ExtraSmall)
                     {
                         <!-- Partie haute -->
-                        <tspan x="50%" dy="-0.1em" font-size="@((int)(_textSize * 1.5))" 
+                        <tspan x="50" dy="0" font-size="@((int)(_textSize * 0.65))"
                                font-weight="400">@top</tspan>
 
                         <!-- Partie basse -->
-                        <tspan x="50%" dy="1.7em" style="font-family: Montserrat, serif;" 
-                               font-size="@(_textSize)" font-weight="600">/ @bottom</tspan>
+                        <tspan x="50" dy="1.8em"
+                               font-size="@(_textSize * 0.7)" font-weight="600">@bottom</tspan>
                     }
                     else
                     {
                         <!-- Partie haute -->
-                        <tspan x="50%" dy="0.4em" 
-                               font-size="@((int)(_textSize * 1.8))" font-weight="500">@top</tspan>
+                        <tspan x="50" dy="0.6em"
+                               font-size="@((int)(_textSize * 0.8))"
+                               font-weight="500">
+                            @top[0..5]
+                        </tspan>
                     }
                 </text>
             </text>
         }
-    </CustomGraphics>
-</MudChart>
-
-<style>
-    .mud-chart-no-legend .mud-chart-legend {
-        display: none;
-    }
-</style>
+    </svg>
+</div>

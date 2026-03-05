@@ -77,7 +77,7 @@ public partial class AlbumEditModal
             
             await InvokeAsync(StateHasChanged);
             
-            await _nameTextEdit.SetText(album.Name);
+            await _nameTextEdit.SetTextAsync(album.Name);
         }
     }
     

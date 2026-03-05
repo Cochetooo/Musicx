@@ -39,7 +39,7 @@ public partial class ArtistView
     private double _zoomLevel = 1.2;
     private (string sortBy, bool asc) _selectedSort = ("ReleaseDate", false);
     
-    private readonly List<ChartSeries> _historySeries = [];
+    /* private readonly List<ChartSeries> _historySeries = [];
     private readonly ChartOptions _historyChartOptions = new()
     {
         InterpolationOption = InterpolationOption.Periodic,
@@ -50,7 +50,7 @@ public partial class ArtistView
     {
         MatchBoundsToSize = true,
     };
-    private string[] _xAxisChartLabels = [];
+    private string[] _xAxisChartLabels = []; */
 
     protected override async Task OnParametersSetAsync()
         => await LoadArtist();
@@ -199,7 +199,7 @@ public partial class ArtistView
     
     private void UpdateChart()
     {
-        _historySeries.Clear();
+        /* _historySeries.Clear();
         _historySeries.Add(new ChartSeries
         {
             Name = "# of releases",
@@ -209,7 +209,7 @@ public partial class ArtistView
         _xAxisChartLabels = _releaseCountPerYears
             .Keys
             .Select(y => y.ToString())
-            .ToArray();
+            .ToArray(); */
     }
     
     private void CalculateReleasesPerYear()

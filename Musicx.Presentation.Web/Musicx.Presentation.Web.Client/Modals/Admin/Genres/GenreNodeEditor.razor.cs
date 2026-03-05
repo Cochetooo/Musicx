@@ -20,7 +20,7 @@ public partial class GenreNodeEditor
 
     public async Task UpdateCanonicalName(string newValue)
     {
-        await _nameTextEdit.SetText(newValue);
+        await _nameTextEdit.SetTextAsync(newValue);
         await InvokeAsync(StateHasChanged);
     }
 
