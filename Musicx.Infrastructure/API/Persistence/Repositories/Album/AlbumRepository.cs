@@ -310,12 +310,12 @@ internal sealed class AlbumRepository(
 
         try
         {
-            var result = await command.ExecuteScalarAsync();
             return Convert.ToInt32(await command.ExecuteScalarAsync());
         }
         catch (Exception ex)
         {
-            _logger.LogError("❌ Could not execute count by genre command for table album.");
+            _logger.LogError("❌ Could not execute count by genre command for table album: " + ex.Message
+                + "\n" + ex.StackTrace);
             return -1;
         }
     }

@@ -4,6 +4,7 @@ using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Specifications.Artist;
 using Musicx.Presentation.Web.Contexts;
 
@@ -84,6 +85,43 @@ public sealed class ArtistController(IArtistRepository artistRepository,
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID artists ({id}) - SUCCESS");
             return Ok(artist);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+
+    [HttpGet("by-genre/{genreId}")]
+    public async Task<ActionResult<OutGenericList<OutArtist>>> FindByGenre(
+        [FromRoute] long genreId,
+        [FromQuery] PagingOptions? paging = null)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND BY GENRE artists ({genreId})");
+
+        try
+        {
+            var artists = await artistRepository.FindByGenreIdAsync(
+                genreId, 
+                paging
+            );
+
+            if (0 == artists.Count)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND BY GENRE artists ({genreId}) - NOT FOUND");
+                return NoContent();
+            }
+
+            var artistCount = await artistRepository.GetCountByGenreIdAsync(genreId);
+
+            var response = new OutGenericList<OutArtist>
+            {
+                Items = artists.ToList(),
+                Total = artistCount
+            };
+            
+            _logger.LogInformation($"🌍✅ API : FIND BY GENRE artists ({genreId}) - SUCCESS");
+            return Ok(response);
         }
         catch (Exception ex)
         {

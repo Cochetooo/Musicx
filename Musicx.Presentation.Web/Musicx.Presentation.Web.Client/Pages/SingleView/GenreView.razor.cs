@@ -17,6 +17,7 @@ public partial class GenreView
     private ILogger _logger = null!;
 
     private OutGenre? _genre;
+    private OutGenericList<OutArtist> _topArtists = new();
 
     private readonly List<BreadcrumbItem>? _breadcrumb = [];
     private long _albumCount;
@@ -78,10 +79,19 @@ public partial class GenreView
         
         _logger.LogInformation($"✅ Genre loaded: {_genre.CanonicalName} ({_genre.Id})");
 
+        _topArtists = await UcArtistByGenre.ExecuteAsync(
+            _genre.Id, 
+            pagingOptions: new PagingOptions(Skip: 0, Take: 10)
+        );
+        
+        _logger.LogInformation($"✅ Artists loaded");
+
         if (_albumTable is not null)
         {
             await _albumTable.ReloadServerData();
         }
+        
+        _logger.LogInformation($"✅ Albums loaded");
         
         await InvokeAsync(StateHasChanged);
     }

@@ -177,11 +177,11 @@
             @if (_artist.Discriminator == ArtistDiscriminator.Band)
             {
                 <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Formation Date" @bind-Date="@_artist.FormationDate"/>
+                    <MudDatePicker Label="Formation Date" @bind-Date="@_artist.FormationDate" MaxDate="DateTime.Today" />
                 </MudItem>
 
                 <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Split Date" @bind-Date="@_artist.SplitDate"/>
+                    <MudDatePicker Label="Split Date" @bind-Date="@_artist.SplitDate" MaxDate="DateTime.Today" />
                 </MudItem>
             }
             else if (_artist.Discriminator == ArtistDiscriminator.Person)
@@ -203,11 +203,11 @@
                 </MudItem>
 
                 <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Birth Date" @bind-Date="@_artist.BirthDate"/>
+                    <MudDatePicker Label="Birth Date" @bind-Date="@_artist.BirthDate" MaxDate="DateTime.Today" />
                 </MudItem>
 
                 <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Death Date" @bind-Date="@_artist.DeathDate"/>
+                    <MudDatePicker Label="Death Date" @bind-Date="@_artist.DeathDate" MaxDate="DateTime.Today" />
                 </MudItem>
             }
         </MudGrid>

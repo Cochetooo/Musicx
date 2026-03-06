@@ -94,10 +94,10 @@
                     else
                     {
                         <!-- Partie haute -->
-                        <tspan x="50" dy="0.6em"
-                               font-size="@((int)(_textSize * 0.8))"
+                        <tspan x="50" dy="0.3em"
+                               font-size="@((int)(_textSize * 0.75))"
                                font-weight="500">
-                            @top[0..5]
+                            @(top.Length > 5 ? top[..5] : top)
                         </tspan>
                     }
                 </text>

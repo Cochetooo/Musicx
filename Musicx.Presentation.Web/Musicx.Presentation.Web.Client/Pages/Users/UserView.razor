@@ -50,12 +50,16 @@ else
                         @_user.Name
                     </MudText>
                     
-                    @if (UserAge is not null)
-                    {
-                        <MudText Typo="Typo.body2" Class="text-light color-secondary text-shadow mb-2">
-                            @UserAge years old
-                        </MudText>
-                    }
+                    
+                    <MudText Typo="Typo.body2" Class="text-light color-secondary text-shadow mb-2">
+                        @if (UserAge is not null)
+                        {
+                            @($"{UserAge} years old ⸱ ")
+                        }
+                        
+                        Joined @(DurationHelper.FormatYearMonthDayDuration(_user.CreatedAt, DateTime.Now)) ago
+                    </MudText>
+                    
                     
                     <MudText Typo="Typo.body2" Class="text-light color-primary text-shadow mb-4">
                         @_user.Biography

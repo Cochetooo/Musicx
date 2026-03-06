@@ -4,6 +4,7 @@
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Album
+@using Musicx.Application.Web.Interfaces.UseCases.Artist
 @using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.Genre
@@ -13,6 +14,7 @@
 
 @inject ILoggerFactory LoggerProvider
 @inject IFindOneByIdService<InGenre, OutGenre> UcGet
+@inject IFindArtistByGenreService UcArtistByGenre
 @inject IFindAlbumByGenreService UcAlbumByGenre
 @inject IUserClientContext UserClientContext
 
@@ -110,7 +112,7 @@ else
             <MudGrid>
 
                 <!-- LEFT COLUMN -->
-                <MudItem xs="12" md="4">
+                <MudItem xs="12" md="5">
 
                     <!-- Description -->
                     <MudPaper Class="pa-4 bg-surface glass-paper mb-4">
@@ -135,7 +137,7 @@ else
                     </MudPaper>
 
                     <!-- Hierarchy -->
-                    <MudPaper Class="pa-4 bg-surface glass-paper">
+                    <MudPaper Class="pa-4 bg-surface glass-paper mb-4">
 
                         <MudText Typo="Typo.h6" Class="text-bold mb-2">
                             Hierarchy
@@ -183,11 +185,45 @@ else
                         </MudStack>
 
                     </MudPaper>
+                    
+                    <!-- Top Artists -->
+                    <MudPaper Class="pa-4 bg-surface glass-paper mb-4">
+
+                        <MudStack Spacing="2">
+
+                            <MudText Typo="Typo.h6" Class="text-bold">
+                                Artists (@_topArtists.Total)
+                            </MudText>
+
+                            <MudList T="RenderFragment" Dense>
+                                @foreach (var artist in _topArtists.Items)
+                                {
+                                    <MudListItem>
+                                        <MudLink Underline="Underline.None" Href="@($"/Artist/{artist.Id}")" Class="animate-hover-up bg-gray">
+                                            <MudStack Row Spacing="2" AlignItems="AlignItems.Center">
+                                            
+                                                <MudImage Width="48" Height="48"
+                                                          Alt="@artist.Name" Class="rounded-lg"
+                                                          Src="@artist.ArtworkUrl"/>
+                                                
+                                                <MudText Typo="Typo.body1" Class="text-mega-bold color-primary clamped-text-2">
+                                                    @artist.Name
+                                                </MudText>
+                                            
+                                            </MudStack>
+                                        </MudLink>
+                                    </MudListItem>
+                                }
+                            </MudList>
+
+                        </MudStack>
+
+                    </MudPaper>
 
                 </MudItem>
 
                 <!-- RIGHT COLUMN -->
-                <MudItem xs="12" md="8">
+                <MudItem xs="12" md="7">
 
                     <MudPaper Class="pa-4 glass-paper bg-surface">
 

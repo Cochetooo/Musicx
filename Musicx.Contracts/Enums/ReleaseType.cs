@@ -26,7 +26,7 @@ public enum ReleaseType
     Ep = 4,
     [Description("🎤 Live")]
     Live = 5,
-    [Description("💿 Album")]
+    [Description("💿 LP")]
     Lp = 6,
     [Description("📼 Mixtape")]
     MixTape = 7,

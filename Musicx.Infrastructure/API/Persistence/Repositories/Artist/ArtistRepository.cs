@@ -7,11 +7,15 @@ using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Builders;
+using Musicx.Infrastructure.API.Persistence.Columns.Album;
 using Musicx.Infrastructure.API.Persistence.Columns.Artist;
+using Musicx.Infrastructure.API.Persistence.Columns.Genre;
 using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.Shared.Exceptions;
+using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Repositories.Artist;
@@ -62,6 +66,34 @@ internal sealed class ArtistRepository(
         return result
             .SingleOrDefault()?
             .FromDicoToArtist();
+    }
+    
+    public async Task<IReadOnlyList<OutArtist>> FindByGenreIdAsync(long genreId, PagingOptions? pagingOptions = null)
+    {
+        var sql = $"""
+                   SELECT ar0.*, COUNT(DISTINCT al0.{AlbumColumns.Id}) AS album_count 
+                   FROM artists ar0 
+                   JOIN albums al0 ON ar0.{ArtistColumns.Id} = al0.{AlbumColumns.ArtistId} 
+                   JOIN album_genre ag0 ON al0.{AlbumColumns.Id} = ag0.{AlbumGenreColumns.AlbumId} 
+                   JOIN genres g0 ON ag0.{AlbumGenreColumns.GenreId} = g0.{GenreColumns.Id} 
+                   WHERE g0.{GenreColumns.Id} = @genreId AND al0.{AlbumColumns.ReleaseType} = {(int)ReleaseType.Lp} 
+                   GROUP BY ar0.artist_id 
+                   ORDER BY album_count DESC 
+                   OFFSET @skip LIMIT @take
+                   """;
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@genreId", genreId),
+            new("@skip", pagingOptions?.Skip ?? 0),
+            new("@take", pagingOptions?.Take ?? 200)
+        };
+        
+        var result = await connection.FetchListDynamicAsync(sql, parameters);
+
+        return result
+            .Select(x => x.FromDicoToArtist())
+            .ToList();
     }
 
     public async Task<List<OutArtist>> FindAllAsync(
@@ -142,6 +174,43 @@ internal sealed class ArtistRepository(
 
     public async Task<long> GetCountAsync()
         => await connection.Count("artists");
+
+    public async Task<long> GetCountByGenreIdAsync(long genreId)
+    {
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@genreId", genreId),
+        };
+
+        var sql = $"""
+                   SELECT COUNT(DISTINCT ar0.artist_id) 
+                   FROM artists ar0 
+                   JOIN albums al0 ON ar0.{ArtistColumns.Id} = al0.{AlbumColumns.ArtistId} 
+                   JOIN album_genre ag0 ON al0.{AlbumColumns.Id} = ag0.{AlbumGenreColumns.AlbumId} 
+                   JOIN genres g0 ON ag0.{AlbumGenreColumns.GenreId} = g0.{GenreColumns.Id} 
+                   WHERE g0.{GenreColumns.Id} = @genreId AND al0.{AlbumColumns.ReleaseType} = {(int)ReleaseType.Lp} 
+                   """;
+
+        await using var command = new NpgsqlCommand(sql, conn);
+        
+        command.Parameters.AddRange(parameters.ToArray());
+        
+        _logger.LogDebug(SqlHelper.InterpolateQuery(sql, parameters));
+
+        try
+        {
+            return Convert.ToInt32(await command.ExecuteScalarAsync());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("❌ Could not execute count by genre command for table album: " + ex.Message
+                             + "\n" + ex.StackTrace);
+            return -1;
+        }
+    }
 
     public async Task<long> SaveAsync(InArtist entity)
     {
