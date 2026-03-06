@@ -172,6 +172,38 @@ public sealed class UserAlbumAttrController(
         }
     }
     
+    [HttpGet("genre-ratings/{userId}")]
+    public async Task<ActionResult<OutGenericList<OutUserGenreRating>>> FindGenreRatingsByUserId(
+        [FromRoute] long userId,
+        [FromQuery] bool weighted = false,
+        [FromQuery] PagingOptions? paging = null)
+    {
+        _logger.LogInformation($"🌍🏳️ API : GENRE RATINGS user_album_attrs BY user {userId} (weighted={weighted})");
+
+        try
+        {
+            var items = await repository.FindGenreRatingsByUserIdAsync(userId, weighted, paging);
+            var totalCount = await repository.CountGenreRatingsByUserIdAsync(userId);
+
+            if (items.Count == 0)
+            {
+                _logger.LogInformation($"🌍❔ API : GENRE RATINGS user_album_attrs BY user {userId} - NOT FOUND");
+                return NoContent();
+            }
+
+            _logger.LogInformation($"🌍✅ API : GENRE RATINGS user_album_attrs BY user {userId} - SUCCESS");
+            return Ok(new OutGenericList<OutUserGenreRating>
+            {
+                Items = items.ToList(),
+                Total = totalCount
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
     [HttpGet("by-user/{userId}/{albumId}")]
     public async Task<ActionResult<OutUserAlbumAttribute?>> FindOneAlbumFromUser([FromRoute] long userId,
         [FromRoute] long albumId)

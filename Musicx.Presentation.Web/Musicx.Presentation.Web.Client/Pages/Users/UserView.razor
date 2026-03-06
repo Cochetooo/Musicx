@@ -11,6 +11,7 @@
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.User
 @using Musicx.Presentation.Web.Client.Components.Albums
+@using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Components.Ratings
 
 @inject ILoggerFactory LoggerFactory
@@ -18,6 +19,7 @@
 @inject IFindAlbumAttributesByUserService UcFindAlbumAttrs
 @inject IUserClientContext UserClientContext
 @inject IFindRatingDistribByUserService<OutAlbum> UcFindAlbumRatingDistrib
+@inject IFindUserGenreRatingsService UcFindUserGenreRatings
 @inject IDeleteService<InUserAlbumAttribute> UcDeleteAllRatings
 @inject IExportUserRatingsService UcExportRatings
 @inject IDialogService DialogService
@@ -290,38 +292,97 @@ else
 
             <MudItem xs="12" md="3">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                    <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
+                            Top Genres
+                        </MudText>
+
+                        <MudSwitch @bind-Value="_showWeightedGenreRatings"
+                                   Color="Color.Tertiary"
+                                   LabelPlacement="Placement.Start"
+                                   Class="genre-rating-switch"
+                                   Label="@(_showWeightedGenreRatings ? "Weighted" : "Raw")"/>
+                    </MudStack>
+
+                    <MudDivider Class="my-3"/>
+
+                    @if (DisplayedGenreRatings.Count > 0)
+                    {
+                        <MudList Dense T="RenderFragment">
+                            @foreach (var genreRating in DisplayedGenreRatings)
+                            {
+                                <MudListItem>
+                                    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
+                                        <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+                                            <MudChip Color="Color.Default"
+                                                     Variant="Variant.Text"
+                                                     Class="color-primary text-bold"
+                                                     T="string"
+                                                     Style="@($"border: 1px solid #444; background-color: {genreRating.GenreColor ?? "#dddddd"}")">
+                                                @genreRating.GenreName
+                                            </MudChip>
+                                        </MudStack>
+
+                                        @if (_showWeightedGenreRatings)
+                                        {
+                                            <MudText Typo="Typo.body2"
+                                                     Class="text-bold"
+                                                     Style="@("color: " + GetGenreRatingPercentColor(genreRating))">
+                                                @GetGenreRatingPercentText(genreRating)
+                                            </MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudText Typo="Typo.body2" Class="text-bold color-primary">
+                                                @genreRating.AlbumCount album(s)
+                                            </MudText>
+                                        }
+                                    </MudStack>
+                                </MudListItem>
+                            }
+                        </MudList>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Class="color-secondary">
+                            No genre data available.
+                        </MudText>
+                    }
+                </MudPaper>
+                
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                         Favorites
                     </MudText>
-                    
+
                     <MudDivider Class="my-3"/>
-                    
+
                     <MudStack Row
                               Wrap="Wrap.Wrap"
                               Justify="Justify.Center"
                               Spacing="3">
-                        
+
                         @foreach (var album in _favAlbums)
                         {
                             <MudLink Href="@($"/Album/{album.Id}")"
                                      Underline="Underline.None"
                                      Class="album-link">
-                                
+
                                 <MudPaper Elevation="3"
                                           Class="pa-2 album-card">
-                                    
+
                                     <MudImage Src="@album.ArtworkUrl"
                                               Alt="@album.Name"
                                               Width="160"
                                               Height="160"
-                                              Class="album-art rounded-lg" />
-                                    
+                                              Class="album-art rounded-lg"/>
+
                                     <MudText Typo="Typo.subtitle2"
                                              Align="Align.Center"
                                              Class="mt-2 text-bold clamped-text-2">
                                         @album.Name
                                     </MudText>
-                                    
+
                                     @if (album.Artist?.Name is not null)
                                     {
                                         <MudText Typo="Typo.subtitle2"
@@ -330,19 +391,19 @@ else
                                             @album.Artist.Name
                                         </MudText>
                                     }
-                                    
+
                                 </MudPaper>
                             </MudLink>
                         }
-                        
+
                     </MudStack>
                 </MudPaper>
-                
+
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
                         Friends
                     </MudText>
-                    
+
                     <MudDivider Class="my-3"/>
                 </MudPaper>
             </MudItem>
@@ -401,5 +462,11 @@ else
 
     .album-card:hover .album-art {
         transform: scale(1.05);
+    }
+    
+    .genre-rating-switch {
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.05);
     }
 </style>

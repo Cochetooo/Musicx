@@ -11,6 +11,7 @@ using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
 using Musicx.Infrastructure.API.Persistence.Columns.Artist;
+using Musicx.Infrastructure.API.Persistence.Columns.Genre;
 using Musicx.Infrastructure.API.Persistence.Columns.User;
 using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.API.Persistence.Mappers;
@@ -140,6 +141,31 @@ internal sealed class UserAlbumAttrRepository(
             return -1;
         }
     }
+    
+    public async Task<long> CountGenreRatingsByUserIdAsync(long userId)
+    {
+        const string sql = """
+                           SELECT COUNT(*) FROM (
+                               SELECT g0.genre_id
+                               FROM genres g0
+                               JOIN album_genre ag0 ON g0.genre_id = ag0.album_genre_genre_id
+                               JOIN albums al0 ON ag0.album_genre_album_id = al0.album_id
+                               JOIN user_album_attrs uaa0 ON al0.album_id = uaa0.user_album_attrs_album_id
+                               WHERE uaa0.user_album_attrs_user_id = @userId
+                               GROUP BY g0.genre_id
+                           ) grouped_genres
+                           """;
+
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+
+        await using var command = new NpgsqlCommand(sql, conn);
+        command.Parameters.Add(new NpgsqlParameter("@userId", userId));
+
+        var count = await command.ExecuteScalarAsync();
+
+        return count is null ? 0 : Convert.ToInt64(count);
+    }
 
     public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindByAlbumIdAsync(long albumId, 
         OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
@@ -225,6 +251,89 @@ internal sealed class UserAlbumAttrRepository(
 
         return result
             .Select(x => x.FromDicoToUserAlbumAttr())
+            .ToList();
+    }
+    
+    public async Task<IReadOnlyList<OutUserGenreRating>> FindGenreRatingsByUserIdAsync(
+        long userId,
+        bool weighted = false,
+        PagingOptions? pagingOptions = null)
+    {
+        var sql = weighted
+            ? $"""
+               SELECT
+                   g0.{GenreColumns.Id} AS genre_id,
+                   g0.{GenreColumns.CanonicalName} AS genre_name,
+                   g0.{GenreColumns.Color} AS genre_color,
+                   COUNT(DISTINCT al0.{AlbumColumns.Id}) AS album_count,
+                   SUM(COALESCE((uaa0.{UserAlbumAttrColumns.Rating} - 5000.0) / 50.0, 0.0)) AS weighted_score,
+                   (
+                        (
+                            COUNT(DISTINCT al0.{AlbumColumns.Id}) * 
+                            AVG((uaa0.{UserAlbumAttrColumns.Rating} - 5000.0) / 50.0)
+                        )
+                        +
+                        (
+                            5 * (
+                                SELECT AVG((uaa.{UserAlbumAttrColumns.Rating} - 5000.0) / 50.0)
+                                FROM user_album_attrs uaa
+                                WHERE uaa.{UserAlbumAttrColumns.UserId} = @userId
+                            )
+                        )
+                    ) / (COUNT(DISTINCT al0.{AlbumColumns.Id}) + 10) AS weighted_percent
+               FROM genres g0
+               JOIN album_genre ag0 ON g0.{GenreColumns.Id} = ag0.{AlbumGenreColumns.GenreId}
+               JOIN albums al0 ON ag0.{AlbumGenreColumns.AlbumId} = al0.{AlbumColumns.Id}
+               JOIN user_album_attrs uaa0 ON al0.{AlbumColumns.Id} = uaa0.{UserAlbumAttrColumns.AlbumId}
+               WHERE uaa0.{UserAlbumAttrColumns.UserId} = @userId
+               GROUP BY g0.{GenreColumns.Id}, g0.{GenreColumns.CanonicalName}, g0.{GenreColumns.Color}
+               ORDER BY weighted_percent DESC, album_count DESC, g0.{GenreColumns.CanonicalName}
+               OFFSET @skip LIMIT @take
+               """
+            : $"""
+               SELECT
+                   g0.{GenreColumns.Id} AS genre_id,
+                   g0.{GenreColumns.CanonicalName} AS genre_name,
+                   g0.{GenreColumns.Color} AS genre_color,
+                   COUNT(DISTINCT al0.{AlbumColumns.Id}) AS album_count
+               FROM genres g0
+               JOIN album_genre ag0 ON g0.{GenreColumns.Id} = ag0.{AlbumGenreColumns.GenreId}
+               JOIN albums al0 ON ag0.{AlbumGenreColumns.AlbumId} = al0.{AlbumColumns.Id}
+               JOIN user_album_attrs uaa0 ON al0.{AlbumColumns.Id} = uaa0.{UserAlbumAttrColumns.AlbumId}
+               WHERE uaa0.{UserAlbumAttrColumns.UserId} = @userId
+               GROUP BY g0.{GenreColumns.Id}, g0.{GenreColumns.CanonicalName}, g0.{GenreColumns.Color}
+               ORDER BY album_count DESC, g0.{GenreColumns.CanonicalName}
+               OFFSET @skip LIMIT @take
+               """;
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@userId", userId),
+            new("@skip", pagingOptions?.Skip ?? 0),
+            new("@take", pagingOptions?.Take ?? 50)
+        };
+
+        var result = await connection.FetchListDynamicAsync(sql, parameters);
+
+        return result
+            .Select(row =>
+            {
+                var dict = (IDictionary<string, object>)row;
+
+                return new OutUserGenreRating
+                {
+                    Id = Convert.ToInt64(dict["genre_id"]),
+                    GenreName = Convert.ToString(dict["genre_name"]) ?? string.Empty,
+                    GenreColor = dict["genre_color"] is DBNull ? null : Convert.ToString(dict["genre_color"]),
+                    AlbumCount = Convert.ToInt64(dict["album_count"]),
+                    WeightedScore = dict.TryGetValue("weighted_score", out var weightedScore) && weightedScore is not DBNull
+                        ? Convert.ToDecimal(weightedScore)
+                        : null,
+                    WeightedPercent = dict.TryGetValue("weighted_percent", out var weightedPercent) && weightedPercent is not DBNull
+                        ? Convert.ToDecimal(weightedPercent)
+                        : null
+                };
+            })
             .ToList();
     }
 

@@ -218,6 +218,7 @@ public static class DependencyInjection
         services.AddScoped<IFindArtistByGenreService, FindArtistByGenreService>();
         services.AddScoped<IFindSongByAlbumService, FindSongByAlbumService>();
         services.AddScoped(typeof(IFindRatingDistribByUserService<>), typeof(FindRatingDistribByUserService<>));
+        services.AddScoped<IFindUserGenreRatingsService, FindUserGenreRatingsService>();
         services.AddScoped<IExportUserRatingsService, ExportUserRatingsService>();
         services.AddScoped<IUserRatingsExportFormatter, CsvUserRatingsExportFormatter>();
         services.AddScoped<IUserRatingsExportFormatter, XlsxUserRatingsExportFormatter>();

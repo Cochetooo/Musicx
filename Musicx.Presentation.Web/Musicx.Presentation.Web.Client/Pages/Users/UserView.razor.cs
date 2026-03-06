@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Application.Web.Interfaces.Models.User.Ratings;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
@@ -29,6 +30,13 @@ public partial class UserView
     private OutUserRatingStats? _albumRatingDistrib;
     private int _maxRatingDistribCount;
     private UserRatingsExportFormat _selectedExportFormat = UserRatingsExportFormat.Csv;
+    
+    private List<OutUserGenreRating> _genreRatingsRaw = [];
+    private List<OutUserGenreRating> _genreRatingsWeighted = [];
+    private bool _showWeightedGenreRatings;
+
+    private IReadOnlyList<OutUserGenreRating> DisplayedGenreRatings
+        => _showWeightedGenreRatings ? _genreRatingsWeighted : _genreRatingsRaw;
 
     private int? UserAge
     {
@@ -99,6 +107,12 @@ public partial class UserView
         _albumRatingDistrib = await UcFindAlbumRatingDistrib.ExecuteAsync(_user.Id);
         _maxRatingDistribCount = _albumRatingDistrib?.RatingCounts.Values.Max() ?? 1;
         _logger.LogInformation($"✅ Album Ratings Distribution loaded ({_user.Id})");
+        
+        var rawGenreRatings = await UcFindUserGenreRatings.ExecuteAsync(_user.Id, weighted: false, pagingOptions: new PagingOptions(Take: 12, Skip: 0));
+        _genreRatingsRaw = rawGenreRatings.Items;
+
+        var weightedGenreRatings = await UcFindUserGenreRatings.ExecuteAsync(_user.Id, weighted: true, pagingOptions: new PagingOptions(Take: 12, Skip: 0));
+        _genreRatingsWeighted = weightedGenreRatings.Items;
         
         await _albumRatingsTable.ReloadServerData();
         await InvokeAsync(StateHasChanged);
@@ -267,5 +281,26 @@ public partial class UserView
     {
         _searchString = text;
         _albumRatingsTable.ReloadServerData();
+    }
+    
+    private string GetGenreRatingPercentText(OutUserGenreRating genreRating)
+    {
+        if (genreRating.WeightedPercent is null)
+        {
+            return "-";
+        }
+
+        return $"{genreRating.WeightedPercent.Value:+0.##;-0.##;0}%";
+    }
+
+    private string GetGenreRatingPercentColor(OutUserGenreRating genreRating)
+    {
+        if (genreRating.WeightedPercent is null)
+        {
+            return "#777777";
+        }
+
+        var normalized = Math.Clamp((genreRating.WeightedPercent.Value + 100m) * 50m, 0m, 10000m);
+        return RatingHelper.GetColorForRating(normalized);
     }
 }
