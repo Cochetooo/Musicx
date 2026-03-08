@@ -5,6 +5,7 @@ using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 
@@ -22,6 +23,18 @@ public partial class GenreView
     private readonly List<BreadcrumbItem>? _breadcrumb = [];
     private long _albumCount;
     private decimal? _albumsAvgRating;
+    private IReadOnlyList<OutUserYearlyRating> _yearlyRatings = [];
+    private readonly List<ChartSeries<double>> _yearlyRatingsSeries = [];
+    private readonly LineChartOptions _lineChartOptions = new() 
+    {
+        InterpolationOption = InterpolationOption.NaturalSpline,
+        LineDisplayType = LineDisplayType.Area,
+        LineStrokeWidth = 5,
+        ShowLegend = false,
+        YAxisTicks = 10
+    };
+    
+    private string[] _yearlyRatingsXAxis = [];
     private bool _useShortName;
 
     private string DisplayedName => _useShortName &&
@@ -94,6 +107,12 @@ public partial class GenreView
         _logger.LogInformation($"✅ Albums loaded");
         
         await InvokeAsync(StateHasChanged);
+        
+        await LoadYearlyRatingsAsync();
+        
+        _logger.LogInformation($"✅ Yearly ratings loaded");
+        
+        await InvokeAsync(StateHasChanged);
     }
     
     private async Task<TableData<OutAlbum>> LoadAlbumsData(TableState state, CancellationToken token)
@@ -135,6 +154,34 @@ public partial class GenreView
             TotalItems = (int)response.Total,
             Items = response.Items
         };
+    }
+    
+    private async Task LoadYearlyRatingsAsync()
+    {
+        if (_genre is null || UserClientContext.CurrentUser is null)
+        {
+            _yearlyRatings = [];
+            _yearlyRatingsSeries.Clear();
+            _yearlyRatingsXAxis = [];
+            return;
+        }
+
+        var yearlyRatings = await UcUserYearlyRatings.ExecuteAsync(
+            bucketSize: 5,
+            genreId: _genre.Id);
+
+        _yearlyRatings = yearlyRatings ?? [];
+
+        _yearlyRatingsSeries.Clear();
+        _yearlyRatingsSeries.Add(new ChartSeries<double>
+        {
+            Name = "Average rating",
+            Data = _yearlyRatings.Select(r => (double)Math.Round(r.AverageRating / 500.0m, 2)).ToArray()
+        });
+
+        _yearlyRatingsXAxis = _yearlyRatings
+            .Select(r => r.YearBucketStart.ToString())
+            .ToArray();
     }
 
     private void ToggleName()

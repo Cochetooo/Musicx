@@ -283,6 +283,27 @@ public sealed class UserAlbumAttrController(
         }
     }
     
+    [HttpGet("yearly-ratings")]
+    public async Task<ActionResult<IReadOnlyList<OutUserYearlyRating>>> GetYearlyRatingsByUserId(
+        [FromQuery] int bucketSize = 5,
+        [FromQuery] long? genreId = null,
+        [FromQuery] long? userId = null)
+    {
+        _logger.LogInformation($"🌍🏳️ API : YEARLY RATING user_album_attrs");
+
+        try
+        {
+            var yearlyRatings = await repository.GetUserYearlyRatingsAsync(bucketSize, genreId, userId);
+
+            _logger.LogInformation($"🌍✅ API : YEARLY RATING user_album_attrs - SUCCESS");
+            return Ok(yearlyRatings);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Save([FromBody] InUserAlbumAttribute userAlbumAttrDto, 
         [FromServices] IUserContext userContext)

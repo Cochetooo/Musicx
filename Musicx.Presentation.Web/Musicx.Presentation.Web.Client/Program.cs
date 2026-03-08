@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
+using MudBlazor;
 using Musicx.Infrastructure;
 using Musicx.Presentation.Web.Client;
 using Musicx.Presentation.Web.Client.Handlers;
@@ -34,6 +35,7 @@ loggerFactory.AddProvider(new StyledJsConsoleLoggerProvider(jsRuntime));
 
 var logger = loggerFactory.CreateLogger(nameof(Program));
 
+MudGlobal.UnhandledExceptionHandler = exception => logger.LogError(exception, exception.Message);
 logger.LogInformation("🏳️ Started new Client Side Session.");
 
 await app.RunAsync();

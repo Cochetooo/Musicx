@@ -43,5 +43,7 @@ public interface IUserAlbumAttrsRepository : IRepository<InUserAlbumAttribute, O
     
     Task<OutUserAlbumAttribute?> FindOneAlbumFromUserAsync(long userId, long albumId);
     
+    Task<IReadOnlyList<OutUserYearlyRating>> GetUserYearlyRatingsAsync(int bucketSize = 5, long? genreId = null, long? userId = null);
+    
     Task<OutUserRatingStats> GetUserRatingStatsAsync(long userId);
 }

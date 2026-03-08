@@ -1,16 +1,16 @@
 ﻿.mud-dialog {
     background: transparent;
-    backdrop-filter: blur(10px) brightness(80%);
+    backdrop-filter: blur(8px) brightness(70%);
 }
 
 .mud-dialog-title {
-    background-color: rgba(30, 30, 30, .2);
+    background-color: rgba(30, 30, 30, .3);
 }
 
 .mud-dialog-content {
-    background-color: rgba(30, 30, 30, .1);
+    background-color: rgba(30, 30, 30, .2);
 }
 
 .mud-dialog-actions {
-    background-color: rgba(30, 30, 30, .3);
+    background-color: rgba(30, 30, 30, .4);
 }

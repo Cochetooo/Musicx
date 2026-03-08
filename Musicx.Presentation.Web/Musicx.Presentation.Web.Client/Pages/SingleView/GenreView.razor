@@ -5,6 +5,7 @@
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Album
 @using Musicx.Application.Web.Interfaces.UseCases.Artist
+@using Musicx.Application.Web.Interfaces.UseCases.User.Ratings
 @using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.Genre
@@ -16,6 +17,7 @@
 @inject IFindOneByIdService<InGenre, OutGenre> UcGet
 @inject IFindArtistByGenreService UcArtistByGenre
 @inject IFindAlbumByGenreService UcAlbumByGenre
+@inject IFindUserYearlyRatingsService UcUserYearlyRatings
 @inject IUserClientContext UserClientContext
 
 <MudBreadcrumbs Items="@_breadcrumb" Class="mb-4" />
@@ -181,6 +183,33 @@ else
                                         </MudLink>
                                     }
                                 }
+                            }
+                        </MudStack>
+
+                    </MudPaper>
+                    
+                    <MudPaper Class="pa-4 bg-surface glass-paper mb-4">
+
+                        <MudStack Spacing="2">
+                            <MudText Typo="Typo.h6" Class="text-bold">
+                                User ratings timeline
+                            </MudText>
+
+                            @if (_yearlyRatings.Count == 0)
+                            {
+                                <MudText Typo="Typo.body2" Class="color-secondary">
+                                    Not enough ratings for timeline.
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudChart ChartType="ChartType.Line"
+                                          ChartOptions="_lineChartOptions"
+                                          ChartSeries="@_yearlyRatingsSeries"
+                                          ChartLabels="@_yearlyRatingsXAxis"
+                                          Width="100%"
+                                          Height="260px"
+                                          T="double" />
                             }
                         </MudStack>
 

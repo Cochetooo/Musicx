@@ -29,6 +29,7 @@ public partial class ArtistEditModal
     private List<string> _countries = [];
 
     private MudDialog _modalRef = null!;
+    private bool _isEditing = false;
     
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
@@ -70,10 +71,11 @@ public partial class ArtistEditModal
     public async Task Show(OutArtist? artist = null)
     {
         await _modalRef.ShowAsync();
-        
-        if (null != artist)
+
+        _isEditing = artist is not null;
+        if (_isEditing)
         {
-            _artist = artist.ToRaw();
+            _artist = artist!.ToRaw();
             await _nameTextEdit.SetTextAsync(_artist.Name);
             await InvokeAsync(StateHasChanged);
         }
@@ -129,11 +131,14 @@ public partial class ArtistEditModal
             
             _isLoading = false;
             await InvokeAsync(StateHasChanged);
-            
-            _existingArtists = await UcListExistingArtists.ExecuteAsync(
-                pagingOptions: new PagingOptions(Take: 1, Skip: 0),
-                filter: _artist.Name,
-                filterExact: true);
+
+            if (!_isEditing)
+            {
+                _existingArtists = await UcListExistingArtists.ExecuteAsync(
+                    pagingOptions: new PagingOptions(Take: 1, Skip: 0),
+                    filter: _artist.Name,
+                    filterExact: true);
+            }
         }
         catch (TaskCanceledException)
         {

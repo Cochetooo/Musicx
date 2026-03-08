@@ -385,6 +385,50 @@ internal sealed class UserAlbumAttrRepository(
         
         return -1;
     }
+    
+    public async Task<IReadOnlyList<OutUserYearlyRating>> GetUserYearlyRatingsAsync(
+        int bucketSize = 5,
+        long? genreId = null,
+        long? userId = null)
+    {
+        if (bucketSize <= 0)
+        {
+            bucketSize = 5;
+        }
+
+        var sql = """
+                  SELECT *
+                  FROM get_user_album_yearly_ratings(@bucketSize, @genreId, @userId);
+                  """;
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@userId", userId ?? (object)DBNull.Value),
+            new("@bucketSize", bucketSize),
+            new("@genreId", genreId ?? (object)DBNull.Value)
+        };
+
+        var result = await connection.FetchListDynamicAsync(sql, parameters);
+
+        return result
+            .Select(row =>
+            {
+                var dict = (IDictionary<string, object>)row;
+
+                return new OutUserYearlyRating
+                {
+                    YearBucketStart = Convert.ToInt32(dict["year_bucket_start"]),
+                    YearBucketEnd = Convert.ToInt32(dict["year_bucket_end"]),
+                    YearBucketLabel = Convert.ToString(dict["year_bucket_label"]) ?? string.Empty,
+                    GenreId = dict["genre_id"] is DBNull ? null : Convert.ToInt64(dict["genre_id"]),
+                    GenreName = dict["genre_name"] is DBNull ? null : Convert.ToString(dict["genre_name"]),
+                    GenreColor = dict["genre_color"] is DBNull ? null : Convert.ToString(dict["genre_color"]),
+                    AverageRating = dict["average_rating"] is DBNull ? 0 : Convert.ToDecimal(dict["average_rating"]),
+                    RatingCount = Convert.ToInt32(dict["rating_count"])
+                };
+            })
+            .ToList();
+    }
 
     public async Task<OutUserRatingStats> GetUserRatingStatsAsync(long userId)
     {
