@@ -302,6 +302,17 @@ else
                                    LabelPlacement="Placement.Start"
                                    Class="genre-rating-switch"
                                    Label="@(_showWeightedGenreRatings ? "Weighted" : "Raw")"/>
+                        
+                        <MudButton OnClick="@OnExpandTopGenresButtonClicked">
+                            @if (_topGenresExpanded)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.ExpandLess" />
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.ExpandMore" />
+                            }
+                        </MudButton>
                     </MudStack>
 
                     <MudDivider Class="my-3"/>
@@ -309,7 +320,7 @@ else
                     @if (DisplayedGenreRatings.Count > 0)
                     {
                         <MudList Dense T="RenderFragment">
-                            @foreach (var genreRating in DisplayedGenreRatings)
+                            @foreach (var genreRating in DisplayedGenreRatings.Take(5))
                             {
                                 <MudListItem>
                                     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
@@ -339,6 +350,43 @@ else
                                         }
                                     </MudStack>
                                 </MudListItem>
+                            }
+                            
+                            @if (DisplayedGenreRatings.Count > 5)
+                            {
+                                <MudCollapse Expanded="@_topGenresExpanded">
+                                    @foreach (var genreRating in DisplayedGenreRatings.Skip(5))
+                                    {
+                                        <MudListItem>
+                                            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
+                                                <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+                                                    <MudChip Color="Color.Default"
+                                                             Variant="Variant.Text"
+                                                             Class="color-primary text-bold"
+                                                             T="string"
+                                                             Style="@($"border: 1px solid #444; background-color: {genreRating.GenreColor ?? "#dddddd"}")">
+                                                        @genreRating.GenreName
+                                                    </MudChip>
+                                                </MudStack>
+
+                                                @if (_showWeightedGenreRatings)
+                                                {
+                                                    <MudText Typo="Typo.body2"
+                                                             Class="text-bold"
+                                                             Style="@("color: " + GetGenreRatingPercentColor(genreRating))">
+                                                        @GetGenreRatingPercentText(genreRating)
+                                                    </MudText>
+                                                }
+                                                else
+                                                {
+                                                    <MudText Typo="Typo.body2" Class="text-bold color-primary">
+                                                        @genreRating.AlbumCount album(s)
+                                                    </MudText>
+                                                }
+                                            </MudStack>
+                                        </MudListItem>
+                                    }
+                                </MudCollapse>
                             }
                         </MudList>
                     }
