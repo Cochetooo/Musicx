@@ -1,4 +1,5 @@
-﻿using Musicx.Application.Shared.Enums;
+﻿using Musicx.Application.API.Persistence.Queries;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
@@ -21,16 +22,9 @@ public interface IUserAlbumAttrsRepository : IRepository<InUserAlbumAttribute, O
     Task<long> CountGenreRatingsByUserIdAsync(long userId);
     
     Task DeleteAsync(long userId, long albumId);
-    
-    Task<IReadOnlyList<OutUserAlbumAttribute>> FindByAlbumIdAsync(long albumId,
-        OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
-        PagingOptions? pagingOptions = null);
-    
-    Task<IReadOnlyList<OutUserAlbumAttribute>> FindByUserIdAsync(long userId,
-        long? artistId = null,
-        bool? filterExact = null,
-        double? filterSimilitude = 0.4,
-        string? filter = null,
+
+    Task<IReadOnlyList<OutUserAlbumAttribute>> FindAsync(
+        UserAlbumAttrFindQuery query,
         IJoinSpecification<InUserAlbumAttribute>? spec = null,
         OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
         PagingOptions? pagingOptions = null);

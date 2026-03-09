@@ -78,4 +78,70 @@ internal sealed class FilterBuilder
             _ => throw new NotSupportedException("Text Match Mode not supported.")
         };
     }
+    
+    internal void AppendTextFilter(
+        TextFilter? filter,
+        string column,
+        string parameterPrefix,
+        ICollection<string> clauses,
+        ICollection<NpgsqlParameter> parameters,
+        TextSearchFilterOptions? search)
+    {
+        if (filter is null || !filter.IsSet)
+        {
+            return;
+        }
+
+        if (search is { Exact: false } && filter.Mode == TextMatchMode.Contains)
+        {
+            var parameterName = $"@{parameterPrefix}Sim";
+            clauses.Add($"similarity({column}, {parameterName}) >= {search.Similarity.ToString(CultureInfo.InvariantCulture)}");
+            parameters.Add(new NpgsqlParameter(parameterName, filter.Value!));
+            return;
+        }
+
+        var (condition, value) = BuildTextCondition(column, filter, parameterPrefix);
+        if (string.IsNullOrWhiteSpace(condition))
+        {
+            return;
+        }
+
+        clauses.Add(condition);
+        parameters.Add(new NpgsqlParameter($"@{parameterPrefix}", value));
+    }
+    
+    internal void AppendAnyTextFilter(
+        TextFilter filter,
+        IEnumerable<string> columns,
+        string parameterPrefix,
+        ICollection<string> clauses,
+        ICollection<NpgsqlParameter> parameters,
+        TextSearchFilterOptions? search)
+    {
+        if (!filter.IsSet)
+        {
+            return;
+        }
+
+        var columnConditions = new List<string>();
+        foreach (var (column, index) in columns.Select((c, i) => (c, i)))
+        {
+            var scopedClauses = new List<string>();
+            var scopedParameters = new List<NpgsqlParameter>();
+            AppendTextFilter(filter, column, $"{parameterPrefix}{index}", scopedClauses, scopedParameters, search);
+            if (scopedClauses.Count == 1)
+            {
+                columnConditions.Add(scopedClauses[0]);
+                foreach (var parameter in scopedParameters)
+                {
+                    parameters.Add(parameter);
+                }
+            }
+        }
+
+        if (columnConditions.Count > 0)
+        {
+            clauses.Add($"({string.Join(" OR ", columnConditions)})");
+        }
+    }
 }

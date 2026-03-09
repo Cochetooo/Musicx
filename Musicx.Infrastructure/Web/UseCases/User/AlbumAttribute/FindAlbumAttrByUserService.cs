@@ -27,7 +27,7 @@ public sealed class FindAlbumAttrByUserService(
         PagingOptions? pagingOptions = null,
         CancellationToken cancellationToken = default)
     {
-        var endpoint = $"/api/user-album-attrs/by-user/{userId}?";
+        var endpoint = $"/api/user-album-attrs?userId={userId}&";
         endpoint += QueryStringHelper.SetUseCaseParameters(joins, order, pagingOptions);
 
         if (artistId is not null)
@@ -38,6 +38,8 @@ public sealed class FindAlbumAttrByUserService(
         if (filter is not null)
         {
             endpoint += $"&filter={filter}";
+            endpoint += $"&filterExact={filterExact ?? false}";
+            endpoint += $"&filterSimilitude={filterSimilitude ?? 0.4}";
         }
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);

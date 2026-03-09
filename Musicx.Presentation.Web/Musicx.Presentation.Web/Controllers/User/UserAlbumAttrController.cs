@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
@@ -86,80 +87,68 @@ public sealed class UserAlbumAttrController(
             return BadRequest(ex);
         }
     }
-    
-    [HttpGet("by-album/{albumId}")]
-    public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> FindByAlbumId([FromRoute] long albumId,
-        [FromQuery] UserAlbumAttrOrderSpecification? order = null,
-        [FromQuery] PagingOptions? paging = null)
-    {
-        _logger.LogInformation($"🌍🏳️ API : FIND BY ALBUM user_album_attrs ({albumId})");
 
-        try
-        {
-            var userAlbumAttrs = await repository.FindByAlbumIdAsync(albumId, order, paging);
-            var totalCount = await repository.CountByAlbumIdAsync(albumId);
-
-            if (0 == userAlbumAttrs.Count)
-            {
-                _logger.LogInformation($"🌍❔ API : FIND BY ALBUM user_album_attrs ({albumId}) - NOT FOUND");
-                return NoContent();
-            }
-            
-            _logger.LogInformation($"🌍✅ API : FIND BY ALBUM user_album_attrs ({albumId}) - SUCCESS");
-            return Ok(new OutGenericList<OutUserAlbumAttribute>
-            {
-                Items = userAlbumAttrs.ToList(),
-                Total = totalCount
-            });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex);
-        }
-    }
-    
-    [HttpGet("by-user/{userId}")]
-    public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> FindByUserId(
-        [FromRoute] long userId,
+    [HttpGet]
+    public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> Find(
+        [FromQuery] long? userId = null,
+        [FromQuery] long? albumId = null,
         [FromQuery] long? artistId = null,
-        [FromQuery] bool filterExact = false, 
+        [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
-        [FromQuery] string filter = "", 
+        [FromQuery] string filter = "",
+        [FromQuery] UserAlbumAttrFindQuery? query = null,
         [FromQuery] UserAlbumAttrJoinSpecification? joins = null,
         [FromQuery] UserAlbumAttrOrderSpecification? order = null,
         [FromQuery] PagingOptions? paging = null)
     {
-        _logger.LogInformation($"🌍🏳️ API : FIND BY USER user_album_attrs ({userId})");
+        _logger.LogInformation($"🌍🏳️ API : FIND user_album_attrs");
 
         try
         {
-            var userAlbumAttrs = await repository.FindByUserIdAsync(
-                userId,
-                artistId, 
-                filterExact, 
-                filterSimilitude, 
-                filter,
-                joins,
-                order,
-                paging
-            );
+            query ??= new UserAlbumAttrFindQuery();
+            query.UserId ??= userId;
+            query.AlbumId ??= albumId;
+            query.ArtistId ??= artistId;
+
+            if (!string.IsNullOrWhiteSpace(filter) && query.Album is null && query.Artist is null)
+            {
+                query.Search ??= new()
+                {
+                    Exact = filterExact,
+                    Similarity = filterSimilitude
+                };
+                query.Album = new(filter);
+            }
             
-            var totalCount = await repository.CountByUserIdAsync(
-                userId,
-                joins, 
-                artistId,
-                filterExact, 
-                filterSimilitude, 
-                filter
-            );
+            var userAlbumAttrs = await repository.FindAsync(query, joins, order, paging);
+
+            long totalCount;
+            if (query.UserId is not null)
+            {
+                totalCount = await repository.CountByUserIdAsync(
+                    query.UserId.Value,
+                    joins,
+                    query.ArtistId,
+                    query.Search?.Exact ?? filterExact,
+                    query.Search?.Similarity ?? filterSimilitude,
+                    filter
+                );
+            }
+            else if (query.AlbumId is not null)
+            {
+                totalCount = await repository.CountByAlbumIdAsync(query.AlbumId.Value);
+            }
+            else
+            {
+                totalCount = userAlbumAttrs.Count;
+            }
 
             if (0 == userAlbumAttrs.Count)
             {
-                _logger.LogInformation($"🌍❔ API : FIND BY USER user_album_attrs ({userId}) - NOT FOUND");
                 return NoContent();
             }
             
-            _logger.LogInformation($"🌍✅ API : FIND BY USER user_album_attrs ({userId}) - SUCCESS");
+            _logger.LogInformation($"🌍✅ API : FIND user_album_attrs - SUCCESS");
             return Ok(new OutGenericList<OutUserAlbumAttribute>
             {
                 Items = userAlbumAttrs.ToList(),

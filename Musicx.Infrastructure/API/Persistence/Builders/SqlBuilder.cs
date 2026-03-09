@@ -1,5 +1,8 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel;
+using System.Globalization;
 using Musicx.Application.API.Persistence.Filtering;
+using Musicx.Application.API.Persistence.Queries;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Infrastructure.API.Persistence.Builders.Core;
@@ -48,7 +51,14 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
     /// Builds a SELECT query with a given specification for joins.
     /// </summary>
     internal abstract string BuildSelect(IJoinSpecification<T>? spec = null, bool distinct = false);
-    
+
+    internal virtual (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
+        IFindQuery<T> query,
+        IJoinSpecification<T>? joinSpec,
+        OrderSpecification<T>? orderSpec,
+        PagingOptions? pagingOptions,
+        bool countOnly) => (string.Empty, []);
+
     /// <summary>
     /// Builds a GROUP BY clause with a given specification for joins.
     /// </summary>

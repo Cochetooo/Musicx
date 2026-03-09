@@ -23,7 +23,7 @@ public sealed class FindAlbumAttrByAlbumService(
         PagingOptions? pagingOptions = null, 
         CancellationToken cancellationToken = default)
     {
-        var endpoint = $"/api/user-album-attrs/by-album/{albumId}?";
+        var endpoint = $"/api/user-album-attrs?albumId={albumId}&";
         endpoint += QueryStringHelper.SetUseCaseParameters(null, orderSpec, pagingOptions);
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);

@@ -1,19 +1,17 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
-using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
-using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
 using Musicx.Infrastructure.API.Persistence.Columns.Artist;
 using Musicx.Infrastructure.API.Persistence.Columns.Genre;
 using Musicx.Infrastructure.API.Persistence.Columns.User;
-using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
 using Musicx.Infrastructure.Shared.Exceptions;
@@ -40,7 +38,7 @@ internal sealed class UserAlbumAttrRepository(
 
         await connection.ExecuteTransactionAsync((sql, parameters));
     }
-    
+
     public async Task DeleteAsync(long userId, long albumId)
     {
         const string sql = $"DELETE FROM user_album_attrs " +
@@ -53,6 +51,30 @@ internal sealed class UserAlbumAttrRepository(
         };
 
         await connection.ExecuteTransactionAsync((sql, parameters));
+    }
+
+    public async Task<long> CountGenreRatingsByUserIdAsync(long userId)
+    {
+        const string sql = """
+                           SELECT COUNT(*) FROM (
+                               SELECT g0.genre_id
+                               FROM genres g0
+                               JOIN album_genre ag0 ON g0.genre_id = ag0.album_genre_genre_id
+                               JOIN albums al0 ON ag0.album_genre_album_id = al0.album_id
+                               JOIN user_album_attrs uaa0 ON al0.album_id = uaa0.user_album_attrs_album_id
+                               WHERE uaa0.user_album_attrs_user_id = @userId
+                               GROUP BY g0.genre_id
+                           ) grouped_genres
+                           """;
+
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+
+        await using var command = new NpgsqlCommand(sql, conn);
+        command.Parameters.Add(new NpgsqlParameter("@userId", userId));
+        
+        var count = await command.ExecuteScalarAsync();
+        return count is null ? 0 : Convert.ToInt64(count);
     }
 
     public async Task<long> CountByAlbumIdAsync(long albumId)
@@ -88,42 +110,27 @@ internal sealed class UserAlbumAttrRepository(
         IJoinSpecification<InUserAlbumAttribute>? spec, long? artistId = null,
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null)
     {
-        await using var conn = (NpgsqlConnection)connection.CreateConnection();
-        await conn.OpenAsync();
-        
-        var parameters = new List<NpgsqlParameter>()
+        var query = new UserAlbumAttrFindQuery
         {
-            new("@userId", userId)
+            UserId = userId,
+            ArtistId = artistId,
+            Search = new()
+            {
+                Exact = filterExact ?? false,
+                Similarity = filterSimilitude ?? 0.4
+            },
+            Album = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
         };
         
-        var sql = $"SELECT COUNT(*) FROM user_album_attrs uaa0 "
-               + $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} ";
-
-        if (spec is UserAlbumAttrJoinSpecification uaaSpec)
-        {
-            if (uaaSpec.IncludeAlbumArtists)
-            {
-                sql += $"JOIN artists ar0 ON al0.{AlbumColumns.ArtistId} = ar0.{ArtistColumns.Id} ";
-            }
-        }
-
-        if (!string.IsNullOrWhiteSpace(filter))
-        {
-            builder.Filter(
-                sql: ref sql, 
-                columns: [$"al0.{AlbumColumns.Name}", $"ar0.{ArtistColumns.Name}"], 
-                filter: filter,
-                parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
-            );
-            sql += $" AND {UserAlbumAttrColumns.UserId} = @userId";
-        }
-        else
-        {
-            sql += $" WHERE {UserAlbumAttrColumns.UserId} = @userId";
-        }
+        var (sql, parameters) = builder.BuildFilteredQuery(
+            query: query,
+            joinSpec: spec,
+            orderSpec: null,
+            pagingOptions: null,
+            countOnly: true);
         
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
         await using var command = new NpgsqlCommand(sql, conn);
         
         command.Parameters.AddRange(parameters.ToArray());
@@ -133,122 +140,30 @@ internal sealed class UserAlbumAttrRepository(
         try
         {
             var result = await command.ExecuteScalarAsync();
-            return Convert.ToInt32(await command.ExecuteScalarAsync());
+            return result is null ? 0 : Convert.ToInt64(result);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _logger.LogError("❌ Could not execute count by user command for table user_album_attrs.");
             return -1;
         }
     }
-    
-    public async Task<long> CountGenreRatingsByUserIdAsync(long userId)
-    {
-        const string sql = """
-                           SELECT COUNT(*) FROM (
-                               SELECT g0.genre_id
-                               FROM genres g0
-                               JOIN album_genre ag0 ON g0.genre_id = ag0.album_genre_genre_id
-                               JOIN albums al0 ON ag0.album_genre_album_id = al0.album_id
-                               JOIN user_album_attrs uaa0 ON al0.album_id = uaa0.user_album_attrs_album_id
-                               WHERE uaa0.user_album_attrs_user_id = @userId
-                               GROUP BY g0.genre_id
-                           ) grouped_genres
-                           """;
 
-        await using var conn = (NpgsqlConnection)connection.CreateConnection();
-        await conn.OpenAsync();
-
-        await using var command = new NpgsqlCommand(sql, conn);
-        command.Parameters.Add(new NpgsqlParameter("@userId", userId));
-
-        var count = await command.ExecuteScalarAsync();
-
-        return count is null ? 0 : Convert.ToInt64(count);
-    }
-
-    public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindByAlbumIdAsync(long albumId, 
-        OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
-        PagingOptions? pagingOptions = null)
-    {
-        var sql = builder.BuildSelect();
-        var parameters = new List<NpgsqlParameter>();
-
-        sql += $" WHERE {UserAlbumAttrColumns.AlbumId} = @albumId";
-        parameters.Add(new NpgsqlParameter("@albumId", albumId));
-
-        if (orderSpec is not null)
-        {
-            sql += builder.BuildOrderBy(orderSpec);
-        }
-        else
-        {
-            sql += $" ORDER BY uaa0.{UserAlbumAttrColumns.UpdatedAt} DESC, u0.{UserColumns.Name}";
-        }
-        
-        sql += " OFFSET @skip LIMIT @take";
-        
-        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
-        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
-
-        var result = await connection.FetchListDynamicAsync(sql, parameters);
-
-        return result
-            .Select(x => x.FromDicoToUserAlbumAttr())
-            .ToList();
-    }
-
-    public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindByUserIdAsync(long userId, 
-        long? artistId = null, 
-        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
+    public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindAsync(
+        UserAlbumAttrFindQuery query,
         IJoinSpecification<InUserAlbumAttribute>? joinSpec = null,
         OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
         PagingOptions? pagingOptions = null)
     {
-        var sql = builder.BuildSelect(joinSpec);
-        var parameters = new List<NpgsqlParameter>();
-
-        if (!string.IsNullOrWhiteSpace(filter))
-        {
-            builder.Filter(
-                sql: ref sql, 
-                columns: [$"al0.{AlbumColumns.Name}", $"ar0.{ArtistColumns.Name}"], 
-                filter: filter,
-                parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
-            );
-            sql += $" AND {UserAlbumAttrColumns.UserId} = @userId";
-        }
-        else
-        {
-            sql += $" WHERE {UserAlbumAttrColumns.UserId} = @userId";
-        }
+        var (sql, parameters) = builder.BuildFilteredQuery(
+            query,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly: false);
         
-        parameters.Add(new NpgsqlParameter("@userId", userId));
-
-        if (artistId is not null)
-        {
-            sql += $" AND al0.{AlbumColumns.ArtistId} = @artistId";
-            parameters.Add(new NpgsqlParameter("@artistId", artistId));
-        }
-
-        if (orderSpec is not null)
-        {
-            sql += builder.BuildOrderBy(orderSpec);
-        }
-        else
-        {
-            sql += $" ORDER BY uaa0.{UserAlbumAttrColumns.UpdatedAt} DESC, u0.{UserColumns.Name}";
-        }
-        
-        sql += " OFFSET @skip LIMIT @take";
-        
-        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
-        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
-
         var result = await connection.FetchListDynamicAsync(sql, parameters);
-
+        
         return result
             .Select(x => x.FromDicoToUserAlbumAttr())
             .ToList();

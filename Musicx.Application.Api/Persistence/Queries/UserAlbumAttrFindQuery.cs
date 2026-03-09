@@ -16,8 +16,13 @@ namespace Musicx.Application.API.Persistence.Queries;
 /// <since>0.6.8</since>
 public record UserAlbumAttrFindQuery : IFindQuery<InUserAlbumAttribute>
 {
+    public long? AlbumId { get; set; }
+    public long? ArtistId { get; set; }
+    public long? UserId { get; set; }
+    public TextSearchFilterOptions? Search { get; set; }
     public TextFilter? Album { get; set; }
     public TextFilter? Artist { get; set; }
+    public TextFilter? Country { get; set; }
     public ICollection<ReleaseType>? ReleaseTypes { get; set; }
     public ICollection<long>? GenreIds { get; set; }
     public ICollection<long>? InfluenceIds { get; set; }
