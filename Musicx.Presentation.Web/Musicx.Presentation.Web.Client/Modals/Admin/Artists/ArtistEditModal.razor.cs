@@ -153,7 +153,7 @@ public partial class ArtistEditModal
 
     private async Task NameTextChanged(string newValue)
     {
-        _artist.Name = newValue;
+        _artist.Name = EnglishTitleCaseHelper.ToTitleCase(newValue);
 
         await UpdateArtwork();
     }

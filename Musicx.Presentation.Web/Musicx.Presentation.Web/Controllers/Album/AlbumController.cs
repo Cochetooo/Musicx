@@ -18,6 +18,22 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumController));
     
+    private static string? ValidateAlbumName(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+
+        if (EnglishTitleCaseHelper.IsValid(name))
+        {
+            return null;
+        }
+
+        var expected = EnglishTitleCaseHelper.ToTitleCase(name);
+        return $"Album name must use English title case. Expected: '{expected}'.";
+    }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] long id, [FromServices] IUserContext userContext)
     {
@@ -304,6 +320,12 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
             _logger.LogInformation($"🌍⛔ API : SAVE albums : NOT AUTHORIZED");
             return Unauthorized("Not authorized to save albums.");
         }
+        
+        var validationError = ValidateAlbumName(albumDto.Name);
+        if (validationError is not null)
+        {
+            return BadRequest(validationError);
+        }
 
         try
         {
@@ -329,6 +351,15 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
         {
             _logger.LogInformation($"🌍⛔ API : SAVE ALL albums : NOT AUTHORIZED");
             return Unauthorized("Not authorized to save albums.");
+        }
+        
+        var validationError = albumsDto
+            .Select(a => ValidateAlbumName(a.Name))
+            .FirstOrDefault(err => err is not null);
+
+        if (validationError is not null)
+        {
+            return BadRequest(validationError);
         }
 
         try

@@ -33,6 +33,7 @@ public partial class ArtistView
     private OutGenericList<OutUserAlbumAttribute>? _userAttrs;
     private Dictionary<ReleaseType, bool> _availableReleaseTypes = [];
     private Dictionary<int, int> _releaseCountPerYears = [];
+    private RatingHelper.ArtistRatingSummary _artistRatingSummary;
     
     private ReleasesViewMode _viewMode = ReleasesViewMode.List;
     private bool _groupByType = true;
@@ -94,6 +95,7 @@ public partial class ArtistView
             Name = 2
         });
         _filteredAlbums = new List<OutAlbum>(_artistAlbums.Items);
+        _artistRatingSummary = RatingHelper.CalculateArtistRatingSummary(_artistAlbums.Items);
         _logger.LogInformation("🎵 Retrieved {Count} albums for artist {ArtistId}", _artistAlbums.Total, _artist.Id);
         
         _availableReleaseTypes = _artistAlbums

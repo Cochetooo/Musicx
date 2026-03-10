@@ -1,0 +1,15 @@
+﻿.horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    scroll-behavior: smooth;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+    background: rgba(160, 160, 255, .45);
+    border-radius: 10px;
+}

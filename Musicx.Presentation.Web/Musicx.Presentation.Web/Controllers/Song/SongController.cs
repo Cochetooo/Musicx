@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Song;
 using Musicx.Application.Shared.Enums;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Song;
 using Musicx.Contracts.Dto.Responses;
@@ -16,6 +17,22 @@ public sealed class SongController(ISongRepository songRepository,
     ILoggerProvider loggerProvider) : ControllerBase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(SongController));
+    
+    private static string? ValidateSongTitle(string? title)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            return null;
+        }
+
+        if (EnglishTitleCaseHelper.IsValid(title))
+        {
+            return null;
+        }
+
+        var expected = EnglishTitleCaseHelper.ToTitleCase(title);
+        return $"Song title must use English title case. Expected: '{expected}'.";
+    }
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] long id,
@@ -212,6 +229,12 @@ public sealed class SongController(ISongRepository songRepository,
             _logger.LogInformation($"🌍⛔ API : SAVE songs : NOT AUTHORIZED");
             return Unauthorized("Not authorized to save songs.");
         }
+        
+        var validationError = ValidateSongTitle(songDto.Title);
+        if (validationError is not null)
+        {
+            return BadRequest(validationError);
+        }
 
         try
         {
@@ -237,6 +260,15 @@ public sealed class SongController(ISongRepository songRepository,
         {
             _logger.LogInformation($"🌍⛔ API : SAVE ALL songs : NOT AUTHORIZED");
             return Unauthorized("Not authorized to save songs.");
+        }
+        
+        var validationError = songsDto
+            .Select(s => ValidateSongTitle(s.Title))
+            .FirstOrDefault(err => err is not null);
+
+        if (validationError is not null)
+        {
+            return BadRequest(validationError);
         }
 
         try

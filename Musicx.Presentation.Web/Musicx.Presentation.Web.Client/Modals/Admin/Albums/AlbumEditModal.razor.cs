@@ -137,7 +137,7 @@ public partial class AlbumEditModal
     
     private async Task NameTextChanged(string newValue)
     {
-        _album.Name = newValue;
+        _album.Name = EnglishTitleCaseHelper.ToTitleCase(newValue);
 
         await UpdateArtwork();
     }

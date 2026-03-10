@@ -21,3 +21,6 @@ alter table public.user_album_attrs owner to postgres;
 create index ix_uaa_album on public.user_album_attrs (user_album_attrs_album_id);
 create index ix_uaa_user on public.user_album_attrs (user_album_attrs_user_id);
 create index ix_uaa_album_rating on public.user_album_attrs (user_album_attrs_album_id, user_album_attrs_rating) where user_album_attrs_rating is not null;
+
+\i '../Procedures/UserAlbumAttrs/GetUserAlbumYearlyRatings.sql';
+\i '../Procedures/UserAlbumAttrs/GetGenreRatingsByUserId.sql';

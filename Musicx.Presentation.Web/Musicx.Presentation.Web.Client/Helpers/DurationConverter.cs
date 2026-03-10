@@ -2,7 +2,7 @@ using MudBlazor;
 
 namespace Musicx.Presentation.Web.Client.Helpers;
     
-public sealed class DurationConverter : IConverter<long?, string?>
+public sealed class DurationConverter : IReversibleConverter<long?, string?>
 {
     public string? Convert(long? value)
     {

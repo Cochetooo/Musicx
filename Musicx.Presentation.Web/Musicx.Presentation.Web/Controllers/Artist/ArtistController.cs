@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Artist;
 using Musicx.Application.Shared.Enums;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
@@ -16,6 +17,22 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         ILoggerProvider loggerProvider) : ControllerBase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ArtistController));
+    
+    private static string? ValidateArtistName(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+
+        if (EnglishTitleCaseHelper.IsValid(name))
+        {
+            return null;
+        }
+
+        var expected = EnglishTitleCaseHelper.ToTitleCase(name);
+        return $"Artist name must use English title case. Expected: '{expected}'.";
+    }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] long id, 
@@ -222,6 +239,12 @@ public sealed class ArtistController(IArtistRepository artistRepository,
             _logger.LogInformation($"🌍⛔ API : SAVE artists : NOT AUTHORIZED");
             return Unauthorized("Not authorized to save artists.");
         }
+        
+        var validationError = ValidateArtistName(artistDto.Name);
+        if (validationError is not null)
+        {
+            return BadRequest(validationError);
+        }
 
         try
         {
@@ -247,6 +270,15 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         {
             _logger.LogInformation($"🌍⛔ API : SAVE ALL artists : NOT AUTHORIZED");
             return Unauthorized("Not authorized to save artists.");
+        }
+        
+        var validationError = artistsDto
+            .Select(a => ValidateArtistName(a.Name))
+            .FirstOrDefault(err => err is not null);
+
+        if (validationError is not null)
+        {
+            return BadRequest(validationError);
         }
 
         try

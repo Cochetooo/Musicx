@@ -175,36 +175,7 @@ internal sealed class UserAlbumAttrRepository(
         PagingOptions? pagingOptions = null)
     {
         var sql = weighted
-            ? $"""
-               SELECT
-                   g0.{GenreColumns.Id} AS genre_id,
-                   g0.{GenreColumns.CanonicalName} AS genre_name,
-                   g0.{GenreColumns.Color} AS genre_color,
-                   COUNT(DISTINCT al0.{AlbumColumns.Id}) AS album_count,
-                   SUM(COALESCE((uaa0.{UserAlbumAttrColumns.Rating} - 5000.0) / 50.0, 0.0)) AS weighted_score,
-                   (
-                        (
-                            COUNT(DISTINCT al0.{AlbumColumns.Id}) * 
-                            AVG((uaa0.{UserAlbumAttrColumns.Rating} - 5000.0) / 50.0)
-                        )
-                        +
-                        (
-                            5 * (
-                                SELECT AVG((uaa.{UserAlbumAttrColumns.Rating} - 5000.0) / 50.0)
-                                FROM user_album_attrs uaa
-                                WHERE uaa.{UserAlbumAttrColumns.UserId} = @userId
-                            )
-                        )
-                    ) / (COUNT(DISTINCT al0.{AlbumColumns.Id}) + 10) AS weighted_percent
-               FROM genres g0
-               JOIN album_genre ag0 ON g0.{GenreColumns.Id} = ag0.{AlbumGenreColumns.GenreId}
-               JOIN albums al0 ON ag0.{AlbumGenreColumns.AlbumId} = al0.{AlbumColumns.Id}
-               JOIN user_album_attrs uaa0 ON al0.{AlbumColumns.Id} = uaa0.{UserAlbumAttrColumns.AlbumId}
-               WHERE uaa0.{UserAlbumAttrColumns.UserId} = @userId
-               GROUP BY g0.{GenreColumns.Id}, g0.{GenreColumns.CanonicalName}, g0.{GenreColumns.Color}
-               ORDER BY weighted_percent DESC, album_count DESC, g0.{GenreColumns.CanonicalName}
-               OFFSET @skip LIMIT @take
-               """
+            ? $"SELECT * FROM get_genre_ratings_by_user_id(@userId, @skip, @take);"
             : $"""
                SELECT
                    g0.{GenreColumns.Id} AS genre_id,

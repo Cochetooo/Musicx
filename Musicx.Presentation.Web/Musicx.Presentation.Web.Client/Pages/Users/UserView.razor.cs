@@ -77,6 +77,9 @@ public partial class UserView
 
     private async Task Load()
     {
+        _topGenresFullLoaded = false;
+        _topGenresExpanded = false;
+        
         _albumCount = 0;
         _searchString = string.Empty;
         

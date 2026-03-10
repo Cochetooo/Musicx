@@ -6,6 +6,8 @@ namespace Musicx.Application.Shared.Helpers;
 
 public static class RatingHelper
 {
+    public readonly record struct ArtistRatingSummary(decimal? Rating, long RatingsCount);
+    
     private static readonly List<(decimal val, string color)> Stops = new()
     {
         (0.0m,   "#CD0000"), // bordeaux
@@ -146,11 +148,17 @@ public static class RatingHelper
 
         return $"{scaled.ToString(format)}";
     }
-
+    
     public static decimal? CalculateArtistRating(IList<OutAlbum> albums)
+    {
+        return CalculateArtistRatingSummary(albums).Rating;
+    }
+
+    public static ArtistRatingSummary CalculateArtistRatingSummary(IList<OutAlbum> albums)
     {
         decimal totalWeight = 0;
         decimal weightedSum = 0;
+        long ratingsCount = 0;
 
         foreach (var album in albums)
         {
@@ -176,7 +184,8 @@ public static class RatingHelper
             totalWeight += coeff * album.Stats.Count;
         }
         
-        return totalWeight > 0 ? weightedSum / totalWeight : null;
+        decimal? rating = totalWeight > 0 ? weightedSum / totalWeight : null;
+        return new ArtistRatingSummary(rating, ratingsCount);
     }
 
     public static string GetColorForRating(decimal? rating)

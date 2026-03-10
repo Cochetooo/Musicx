@@ -102,7 +102,8 @@ else
                 <div class="glass-paper donut-box pa-2">
                     <div style="justify-items: center" class="mb-2">
                         <MudText Typo="Typo.subtitle1" Class="montserrat text-bold">🌐 Global</MudText>
-                        <DonutRating Rating="@_artistAlbums.AverageRating" 
+                        <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.RatingsCount ratings</MudText>
+                        <DonutRating Rating="@_artistRatingSummary.Rating" 
                                      RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
                                      Size="DonutRatingSize.Medium" />
                     </div>

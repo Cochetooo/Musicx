@@ -38,7 +38,14 @@
                 
                 <PropertyColumn Property="x => x.TrackNumber" CellStyle="width: 60px;" Title="Track #"/>
                 
-                <PropertyColumn Property="x => x.Title" Title="Name"/>
+                <PropertyColumn Property="x => x.Title" Title="Name">
+                    <EditTemplate>
+                        <MudTextField T="string"
+                                      Text="@context.Item.Title"
+                                      TextChanged="@(value => { context.Item.Title = value; FormatSongTitle(context.Item); })"
+                                      Immediate="true" />
+                    </EditTemplate>
+                </PropertyColumn>
                 
                 <PropertyColumn Property="x => x.Type" CellStyle="width: 100px;">
                     <EditTemplate>

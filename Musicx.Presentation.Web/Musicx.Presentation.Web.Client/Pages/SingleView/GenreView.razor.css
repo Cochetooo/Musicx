@@ -1,0 +1,67 @@
+﻿.genre-page {
+    background: radial-gradient(circle at 20% 10%, rgba(123, 97, 255, 0.12), transparent 40%),
+    radial-gradient(circle at 80% 0%, rgba(0, 214, 201, 0.12), transparent 35%);
+}
+
+.genre-hero {
+    border: 1px solid rgba(255,255,255,0.12);
+}
+
+.genre-header {
+    min-height: 88px;
+}
+
+.genre-title { cursor: pointer; transition: transform .2s ease; }
+.genre-title:hover { transform: translateX(4px); }
+.swap-icon { opacity: 0; transition: opacity .2s ease; }
+.genre-title:hover .swap-icon { opacity: 1; }
+
+.genre-chip-pop { animation: float-up .45s ease; }
+
+.top-albums-track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: .5rem;
+}
+
+.top-album-card {
+    min-width: 260px;
+    max-width: 260px;
+    background: rgba(30, 30, 50, 0.55);
+    border: 1px solid rgba(255,255,255,.11);
+    padding: .7rem;
+    border-radius: 12px;
+}
+
+.artist-card {
+    display: block;
+    border: 1px solid rgba(255,255,255,.11);
+    border-radius: 12px;
+    padding: .75rem;
+    margin-bottom: .65rem;
+    background: rgba(12,17,35,.36);
+}
+
+.panel-animated { animation: fade-in-up .35s ease both; }
+
+.album-row { position: relative; }
+.album-row:before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background-color: var(--rating-color);
+    opacity: .9;
+}
+
+@keyframes float-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}

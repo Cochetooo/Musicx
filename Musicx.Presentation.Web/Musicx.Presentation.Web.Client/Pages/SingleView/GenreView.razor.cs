@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
@@ -15,46 +16,54 @@ public partial class GenreView
 {
     [Parameter] public string? Id { get; set; }
 
+    private sealed record GenreArtistCard(OutArtist Artist, decimal? Rating, long RatingsCount);
+
     private ILogger _logger = null!;
 
     private OutGenre? _genre;
-    private OutGenericList<OutArtist> _topArtists = new();
-
-    private readonly List<BreadcrumbItem>? _breadcrumb = [];
+    private OutGenericList<OutArtist> _artists = new();
+    
     private long _albumCount;
     private decimal? _albumsAvgRating;
     private IReadOnlyList<OutUserYearlyRating> _yearlyRatings = [];
     private readonly List<ChartSeries<double>> _yearlyRatingsSeries = [];
-    private readonly LineChartOptions _lineChartOptions = new() 
+    private readonly LineChartOptions _lineChartOptions = new()
     {
         InterpolationOption = InterpolationOption.NaturalSpline,
         LineDisplayType = LineDisplayType.Area,
-        LineStrokeWidth = 5,
+        LineStrokeWidth = 4,
         ShowLegend = false,
         YAxisTicks = 10
     };
     
     private string[] _yearlyRatingsXAxis = [];
     private bool _useShortName;
+    private MudTable<OutAlbum>? _albumTable;
+    private ElementReference _topAlbumsScroller;
+
+    private List<OutAlbum> _topAlbums = [];
+    private List<GenreArtistCard> _topArtists = [];
+
+    private bool _canScrollTopAlbumsLeft;
+    private bool _canScrollTopAlbumsRight;
 
     private string DisplayedName => _useShortName &&
                                      !string.IsNullOrWhiteSpace(_genre?.ShortName)
         ? _genre.ShortName!
         : _genre?.CanonicalName ?? string.Empty;
-    
-    private MudTable<OutAlbum>? _albumTable;
 
     protected override async Task OnParametersSetAsync()
     {
         await LoadGenre();
-
-        if (_breadcrumb is not null && _genre is not null)
+        
+        if (_topAlbums.Count == 0)
         {
-            _breadcrumb.Clear();
-            _breadcrumb.Add(new("Musicx", href: "/"));
-            _breadcrumb.Add(new("Genres", href: "#"));
-            _breadcrumb.Add(new(_genre.CanonicalName, href: "#"));
+            _canScrollTopAlbumsLeft = false;
+            _canScrollTopAlbumsRight = false;
+            return;
         }
+
+        await RefreshTopAlbumsArrows();
         
         await InvokeAsync(StateHasChanged);
     }
@@ -90,29 +99,65 @@ public partial class GenreView
             return;
         }
         
-        _logger.LogInformation($"✅ Genre loaded: {_genre.CanonicalName} ({_genre.Id})");
+        _artists = await UcArtistByGenre.ExecuteAsync(_genre.Id, pagingOptions: new PagingOptions(Skip: 0, Take: 50));
 
-        _topArtists = await UcArtistByGenre.ExecuteAsync(
-            _genre.Id, 
-            pagingOptions: new PagingOptions(Skip: 0, Take: 10)
-        );
-        
-        _logger.LogInformation($"✅ Artists loaded");
+        await BuildTopArtistsAsync();
+        await BuildTopAlbumsAsync();
 
         if (_albumTable is not null)
         {
             await _albumTable.ReloadServerData();
         }
         
-        _logger.LogInformation($"✅ Albums loaded");
-        
-        await InvokeAsync(StateHasChanged);
-        
         await LoadYearlyRatingsAsync();
+    }
+    
+    private async Task BuildTopArtistsAsync()
+    {
+        _topArtists.Clear();
+
+        foreach (var artist in _artists.Items)
+        {
+            var discography = await UcGetAlbums.ExecuteAsync(
+                artist.Id,
+                joins: new AlbumJoinSpecification { IncludeStats = true },
+                order: new AlbumOrderSpecification { OriginalReleaseDate = -1 });
+
+            var summary = RatingHelper.CalculateArtistRatingSummary(discography.Items);
+            _topArtists.Add(new GenreArtistCard(artist, summary.Rating, summary.RatingsCount));
+        }
+
+        _topArtists = _topArtists
+            .OrderByDescending(x => x.RatingsCount)
+            .ThenByDescending(x => x.Rating ?? 0)
+            .Take(12)
+            .ToList();
+    }
+
+    private async Task BuildTopAlbumsAsync()
+    {
+        if (_genre is null)
+        {
+            return;
+        }
         
-        _logger.LogInformation($"✅ Yearly ratings loaded");
-        
-        await InvokeAsync(StateHasChanged);
+        var response = await UcAlbumByGenre.ExecuteAsync(
+            genreId: _genre.Id,
+            genreOptions: GenreOptions.PrimaryGenre,
+            pagingOptions: new PagingOptions(Take: 10, Skip: 0),
+            order: new AlbumOrderSpecification { Name = 1 },
+            joins: new AlbumJoinSpecification
+            {
+                IncludeArtist = true,
+                IncludePrimaryGenres = true,
+                IncludeStats = true
+            });
+
+        _topAlbums = response.Items
+            .OrderByDescending(a => a.Stats?.Count ?? 0)
+            .ThenByDescending(a => a.Stats?.Average ?? 0)
+            .Take(10)
+            .ToList();
     }
     
     private async Task<TableData<OutAlbum>> LoadAlbumsData(TableState state, CancellationToken token)
@@ -147,7 +192,6 @@ public partial class GenreView
 
         _albumCount = response.Total;
         _albumsAvgRating = response.AverageRating;
-        await InvokeAsync(StateHasChanged);
 
         return new TableData<OutAlbum>
         {
@@ -184,10 +228,7 @@ public partial class GenreView
             .ToArray();
     }
 
-    private void ToggleName()
-    {
-        _useShortName = !_useShortName;
-    }
+    private void ToggleName() => _useShortName = !_useShortName;
     
     private string FormatEra()
     {
@@ -204,5 +245,34 @@ public partial class GenreView
             : "#ffffff";
         
         return $"background-color: {background}; color: {textColor}; font-weight: bold;";
+    }
+    
+    private async Task ScrollTopAlbumsAsync(string direction)
+    {
+        if (_topAlbums.Count == 0)
+        {
+            return;
+        }
+
+        await JsRuntime.InvokeVoidAsync("genreView.scrollHorizontal", _topAlbumsScroller, direction, 360);
+        await RefreshTopAlbumsArrows();
+    }
+
+
+    private Task ScrollTopAlbumsLeftAsync() => ScrollTopAlbumsAsync("left");
+    private Task ScrollTopAlbumsRightAsync() => ScrollTopAlbumsAsync("right");
+
+    private async Task RefreshTopAlbumsArrows()
+    {
+        var state = await JsRuntime.InvokeAsync<HorizontalScrollState>("genreView.getHorizontalState", _topAlbumsScroller);
+        _canScrollTopAlbumsLeft = state.CanScrollLeft;
+        _canScrollTopAlbumsRight = state.CanScrollRight;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private sealed class HorizontalScrollState
+    {
+        public bool CanScrollLeft { get; set; }
+        public bool CanScrollRight { get; set; }
     }
 }

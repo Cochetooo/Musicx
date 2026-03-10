@@ -7,7 +7,7 @@
 } 
 else if (Song.Type == SongType.Bonus)
 {
-    <MudText Typo="Typo.inherit" Color="Color.Secondary">
+    <MudText Typo="Typo.inherit" Color="Color.Default">
         @Song.Title
     </MudText>
     
@@ -17,21 +17,21 @@ else if (Song.Type == SongType.Bonus)
 }
 else if (Song.Type == SongType.Demo)
 {
-    <MudText Typo="Typo.inherit" Class="color-secondary text-italic">
+    <MudText Typo="Typo.inherit" Color="Color.Default">
         @Song.Title
     </MudText>
     
-    <MudChip Class="ml-2" T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Default" Label="@true">
+    <MudChip Class="ml-2" T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Warning" Label="@true">
         Demo
     </MudChip>
 }
 else if (Song.Type == SongType.Live)
 {
-    <MudText Typo="Typo.inherit" Color="Color.Tertiary">
+    <MudText Typo="Typo.inherit" Color="Color.Default" Class="text-italic">
         @Song.Title
     </MudText>
     
-    <MudChip Class="ml-2" T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Tertiary" Label="@true">
+    <MudChip Class="ml-2" T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Info" Label="@true">
         Live
     </MudChip>
 }

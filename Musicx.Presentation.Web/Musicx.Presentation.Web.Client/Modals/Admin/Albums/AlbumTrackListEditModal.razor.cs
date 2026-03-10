@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Song;
 using Musicx.Contracts.Dto.Responses;
@@ -78,11 +79,18 @@ public partial class AlbumTrackListEditModal
     {
         _songs.Add(new InSong());
     }
+    
+    private void FormatSongTitle(InSong song)
+    {
+        song.Title = EnglishTitleCaseHelper.ToTitleCase(song.Title);
+    }
 
     private void EnsureSongData()
     {
         foreach (var song in _songs)
         {
+            FormatSongTitle(song);
+            
             if (_album is not null)
             {
                 song.AlbumId = _album.Id;
