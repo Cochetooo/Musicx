@@ -82,7 +82,7 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
             return string.Empty;
         }
 
-        return $" ORDER BY {string.Join(", ", orderSpec.ToClauses().Select(c => c.Field + " " + c.Direction))}";
+        return $" ORDER BY {string.Join(", ", orderSpec.ToClauses().Select(c => c.Field + " " + c.Direction + (c.NullLast ? " NULLS LAST" : string.Empty)))}";
     }
 
     /// <summary>

@@ -99,7 +99,7 @@ public partial class GenreView
             return;
         }
         
-        _artists = await UcArtistByGenre.ExecuteAsync(_genre.Id, pagingOptions: new PagingOptions(Skip: 0, Take: 50));
+        _artists = await UcArtistByGenre.ExecuteAsync(_genre.Id, pagingOptions: new PagingOptions(Skip: 0, Take: 10));
 
         await BuildTopArtistsAsync();
         await BuildTopAlbumsAsync();
@@ -130,7 +130,6 @@ public partial class GenreView
         _topArtists = _topArtists
             .OrderByDescending(x => x.RatingsCount)
             .ThenByDescending(x => x.Rating ?? 0)
-            .Take(12)
             .ToList();
     }
 
@@ -145,7 +144,7 @@ public partial class GenreView
             genreId: _genre.Id,
             genreOptions: GenreOptions.PrimaryGenre,
             pagingOptions: new PagingOptions(Take: 10, Skip: 0),
-            order: new AlbumOrderSpecification { Name = 1 },
+            order: new AlbumOrderSpecification { RatingCount = -1, RatingAverage = -2, Name = 3 },
             joins: new AlbumJoinSpecification
             {
                 IncludeArtist = true,
@@ -153,11 +152,7 @@ public partial class GenreView
                 IncludeStats = true
             });
 
-        _topAlbums = response.Items
-            .OrderByDescending(a => a.Stats?.Count ?? 0)
-            .ThenByDescending(a => a.Stats?.Average ?? 0)
-            .Take(10)
-            .ToList();
+        _topAlbums = response.Items;
     }
     
     private async Task<TableData<OutAlbum>> LoadAlbumsData(TableState state, CancellationToken token)
@@ -192,6 +187,8 @@ public partial class GenreView
 
         _albumCount = response.Total;
         _albumsAvgRating = response.AverageRating;
+
+        await InvokeAsync(StateHasChanged);
 
         return new TableData<OutAlbum>
         {

@@ -20,6 +20,8 @@ public sealed record AlbumOrderSpecification : OrderSpecification<InAlbum>
     public short? Language { get; init; }
     public short? Name { get; init; }
     public short? OriginalReleaseDate { get; init; }
+    public short? RatingAverage { get; init; }
+    public short? RatingCount { get; init; }
     public short? ReleaseType { get; init; }
     public short? TrackTotal { get; init; }
 
@@ -47,6 +49,8 @@ public sealed record AlbumOrderSpecification : OrderSpecification<InAlbum>
             nameof(Language) => new($"al0.{AlbumColumns.Language}", dir),
             nameof(Name) => new($"al0.{AlbumColumns.Name}", dir),
             nameof(OriginalReleaseDate) => new($"al0.{AlbumColumns.OriginalReleaseDate}", dir),
+            nameof(RatingAverage) => new($"alst0.{AlbumRatingStatColumns.Average}", dir, true),
+            nameof(RatingCount) => new($"alst0.{AlbumRatingStatColumns.Count}", dir, true),
             nameof(ReleaseType) => new($"al0.{AlbumColumns.ReleaseType}", dir),
             nameof(TrackTotal) => new($"al0.{AlbumColumns.TrackTotal}", dir),
             _ => throw new ArgumentOutOfRangeException(nameof(propName), propName, null)

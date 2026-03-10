@@ -182,6 +182,7 @@ public static class RatingHelper
             
             weightedSum += album.Stats.Average * coeff * album.Stats.Count;
             totalWeight += coeff * album.Stats.Count;
+            ratingsCount += album.Stats.Count;
         }
         
         decimal? rating = totalWeight > 0 ? weightedSum / totalWeight : null;
