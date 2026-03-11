@@ -11,6 +11,7 @@
 @using Musicx.Contracts.Dto.Responses.Genre
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Albums
+@using Musicx.Presentation.Web.Client.Components.Charts
 @using Musicx.Presentation.Web.Client.Components.Ratings
 @using Musicx.Presentation.Web.Client.Helpers
 
@@ -145,14 +146,14 @@ else
                 </MudPaper>
 
                 <MudPaper Class="pa-4 mt-3 glass-paper panel-animated" Elevation="0">
-                    <MudText Typo="Typo.h6" Class="text-bold">User ratings timeline</MudText>
+                    <MudText Typo="Typo.h6" Class="text-bold">Ratings Evolution</MudText>
                     @if (_yearlyRatings.Count == 0)
                     {
                         <MudText Typo="Typo.body2" Class="color-secondary">Not enough ratings for timeline.</MudText>
                     }
                     else
                     {
-                        <MudChart ChartType="ChartType.Line" ChartOptions="_lineChartOptions" ChartSeries="@_yearlyRatingsSeries" ChartLabels="@_yearlyRatingsXAxis" Width="100%" Height="220px" T="double"/>
+                        <D3LineChart Data="_yearlyRatingsChartData" Height="220" />
                     }
                 </MudPaper>
             </MudItem>

@@ -9,6 +9,7 @@ using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
+using Musicx.Presentation.Web.Client.Components.Charts;
 
 namespace Musicx.Presentation.Web.Client.Pages.SingleView;
 
@@ -26,17 +27,8 @@ public partial class GenreView
     private long _albumCount;
     private decimal? _albumsAvgRating;
     private IReadOnlyList<OutUserYearlyRating> _yearlyRatings = [];
-    private readonly List<ChartSeries<double>> _yearlyRatingsSeries = [];
-    private readonly LineChartOptions _lineChartOptions = new()
-    {
-        InterpolationOption = InterpolationOption.NaturalSpline,
-        LineDisplayType = LineDisplayType.Area,
-        LineStrokeWidth = 4,
-        ShowLegend = false,
-        YAxisTicks = 10
-    };
+    private IReadOnlyList<D3LinePoint> _yearlyRatingsChartData = [];
     
-    private string[] _yearlyRatingsXAxis = [];
     private bool _useShortName;
     private MudTable<OutAlbum>? _albumTable;
     private ElementReference _topAlbumsScroller;
@@ -204,8 +196,7 @@ public partial class GenreView
         if (_genre is null || UserClientContext.CurrentUser is null)
         {
             _yearlyRatings = [];
-            _yearlyRatingsSeries.Clear();
-            _yearlyRatingsXAxis = [];
+            _yearlyRatingsChartData = [];
             return;
         }
 
@@ -216,16 +207,9 @@ public partial class GenreView
         _yearlyRatings = yearlyRatings ?? [];
         _albumsAvgRating = _yearlyRatings.Select(r => r.AverageRating).Average();
 
-        _yearlyRatingsSeries.Clear();
-        _yearlyRatingsSeries.Add(new ChartSeries<double>
-        {
-            Name = "Average rating",
-            Data = _yearlyRatings.Select(r => (double)Math.Round(r.AverageRating / 500.0m, 2)).ToArray()
-        });
-
-        _yearlyRatingsXAxis = _yearlyRatings
-            .Select(r => r.YearBucketStart.ToString())
-            .ToArray();
+        _yearlyRatingsChartData = _yearlyRatings
+            .Select(r => new D3LinePoint(r.YearBucketStart.ToString(), (double)Math.Round(r.AverageRating / 500.0m, 2)))
+            .ToList();
     }
 
     private void ToggleName() => _useShortName = !_useShortName;
