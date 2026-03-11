@@ -32,42 +32,51 @@
 else
 {
     <MudContainer MaxWidth="MaxWidth.False" Class="genre-page pa-2 pa-md-6 rounded-lg">
+        
         <MudPaper Class="pa-4 pa-md-6 mb-4 glass-paper genre-hero" Elevation="0">
+
             <MudStack Spacing="2">
-                <MudStack Row="true" Class="genre-header rounded-lg pa-3" AlignItems="AlignItems.Center" Spacing="2" Style="@(GetHeaderStyle())">
-                    <MudIcon Icon="@UiGenreHelper.GetGenreIcon(_genre)" Size="Size.Large"/>
+
+                <MudStack Row Class="genre-header rounded-lg pa-3" AlignItems="AlignItems.Center"
+                          Justify="Justify.SpaceBetween"
+                          Style="@(GetHeaderStyle())">
                     <MudTooltip Text="Click to toggle short / canonical name">
-                        <MudText Typo="Typo.h3" Class="montserrat text-mega-bold genre-title" @onclick="ToggleName">
+                        <MudText Typo="Typo.h2" Class="montserrat text-extra-bold genre-title pl-2" @onclick="ToggleName">
                             @DisplayedName
                             <MudIcon Icon="@Icons.Material.Filled.SwapHoriz" Class="ml-2 swap-icon"/>
                         </MudText>
+                        
+                        <MudStack Row Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Spacing="2">
+
+                            @if (_genre.Aliases?.Any() == true)
+                            {
+                                foreach (var alias in _genre.Aliases)
+                                {
+                                    <MudChip Variant="Variant.Outlined" Size="Size.Small" T="string"
+                                             Class="genre-chip-pop">@alias.Name</MudChip>
+                                }
+                            }
+
+                            <MudChip Color="Color.Primary" Icon="@UiGenreHelper.GetGenreIcon(_genre)"
+                                     Variant="Variant.Filled" T="string">
+                                @_genre.Type
+                            </MudChip>
+
+                            @if (!string.IsNullOrWhiteSpace(_genre.CountryOrigin))
+                            {
+                                <MudChip Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Public" T="string">@_genre.CountryOrigin</MudChip>
+                            }
+
+                            @if (_genre.EraStart is not null || _genre.EraEnd is not null)
+                            {
+                                <MudChip Variant="Variant.Outlined" T="string" Icon="@Icons.Material.Filled.Schedule">@FormatEra()</MudChip>
+                            }
+                        </MudStack>
                     </MudTooltip>
-                </MudStack>
 
-                <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Spacing="2">
                     <DonutRating Rating="@_albumsAvgRating" RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" Size="DonutRatingSize.Medium"/>
-                    
-                    @if (_genre.Aliases?.Any() == true)
-                    {
-                        foreach (var alias in _genre.Aliases)
-                        {
-                            <MudChip Variant="Variant.Outlined" Size="Size.Small" T="string" Class="genre-chip-pop">@alias.Name</MudChip>
-                        }
-                    }
-
-                    <MudChip Color="Color.Primary" Variant="Variant.Filled" T="string">@_genre.Type</MudChip>
-
-                    @if (!string.IsNullOrWhiteSpace(_genre.CountryOrigin))
-                    {
-                        <MudChip Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Public" T="string">@_genre.CountryOrigin</MudChip>
-                    }
-
-                    @if (_genre.EraStart is not null || _genre.EraEnd is not null)
-                    {
-                        <MudChip Variant="Variant.Outlined" T="string" Icon="@Icons.Material.Filled.Schedule">@FormatEra()</MudChip>
-                    }
                 </MudStack>
-                
+
                 <MudText Typo="Typo.body2">@(_genre.Description ?? "No description yet.")</MudText>
             </MudStack>
         </MudPaper>
@@ -85,7 +94,7 @@ else
                 @foreach (var album in _topAlbums)
                 {
                     <MudLink Href="@($"/Album/{album.Id}")" Class="top-album-card animate-hover-up">
-                        <MudImage Src="@album.ArtworkUrl" @key="album.ArtworkUrl" Alt="@album.Name" Style="width: 100%" Class="rounded-lg" Elevation="8" />
+                        <MudImage Src="@album.ArtworkUrl" @key="album.ArtworkUrl" Alt="@album.Name" Style="width: 100%" Class="rounded-lg" Elevation="8"/>
                         <MudText Typo="Typo.body1" Class="text-bold clamped-text-1 mt-2">@album.Name</MudText>
                         <MudText Typo="Typo.caption" Class="color-secondary clamped-text-1">@(album.Artist?.Name ?? album.ArtistAlias)</MudText>
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
@@ -134,7 +143,7 @@ else
                         }
                     </MudStack>
                 </MudPaper>
-                
+
                 <MudPaper Class="pa-4 mt-3 glass-paper panel-animated" Elevation="0">
                     <MudText Typo="Typo.h6" Class="text-bold">User ratings timeline</MudText>
                     @if (_yearlyRatings.Count == 0)
@@ -147,12 +156,12 @@ else
                     }
                 </MudPaper>
             </MudItem>
-            
+
             <MudItem xs="12" lg="5">
                 <MudPaper Class="pa-4 glass-paper panel-animated" Elevation="0">
                     <MudText Typo="Typo.h6" Class="text-bold">Releases (@_albumCount)</MudText>
-                    <MudTable ServerData="@LoadAlbumsData" @ref="_albumTable" Dense Hover Elevation="0" 
-                              Breakpoint="Breakpoint.Sm" RowClass="album-row" 
+                    <MudTable ServerData="@LoadAlbumsData" @ref="_albumTable" Dense Hover Elevation="0"
+                              Breakpoint="Breakpoint.Sm" RowClass="album-row"
                               RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Stats?.Average)}")">
                         <ColGroup>
                             <col style="width:3px;"/>
@@ -194,7 +203,7 @@ else
 
             <MudItem xs="12" lg="4">
                 <MudPaper Class="pa-4 glass-paper panel-animated" Elevation="0">
-                    <MudText Typo="Typo.h6" Class="text-bold mb-2">Artists (@_topArtists.Count)</MudText>
+                    <MudText Typo="Typo.h6" Class="text-bold mb-2">Popular Artists</MudText>
                     <MudGrid>
                         @foreach (var item in _topArtists)
                         {

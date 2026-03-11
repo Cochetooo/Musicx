@@ -64,7 +64,6 @@ public partial class GenreView
         }
 
         await RefreshTopAlbumsArrows();
-        
         await InvokeAsync(StateHasChanged);
     }
 
@@ -99,10 +98,15 @@ public partial class GenreView
             return;
         }
         
+        await InvokeAsync(StateHasChanged);
+        
         _artists = await UcArtistByGenre.ExecuteAsync(_genre.Id, pagingOptions: new PagingOptions(Skip: 0, Take: 10));
 
         await BuildTopArtistsAsync();
+        await InvokeAsync(StateHasChanged);
+        
         await BuildTopAlbumsAsync();
+        await InvokeAsync(StateHasChanged);
 
         if (_albumTable is not null)
         {
@@ -110,6 +114,7 @@ public partial class GenreView
         }
         
         await LoadYearlyRatingsAsync();
+        await InvokeAsync(StateHasChanged);
     }
     
     private async Task BuildTopArtistsAsync()
@@ -186,9 +191,6 @@ public partial class GenreView
         );
 
         _albumCount = response.Total;
-        _albumsAvgRating = response.AverageRating;
-
-        await InvokeAsync(StateHasChanged);
 
         return new TableData<OutAlbum>
         {
@@ -210,8 +212,9 @@ public partial class GenreView
         var yearlyRatings = await UcUserYearlyRatings.ExecuteAsync(
             bucketSize: 5,
             genreId: _genre.Id);
-
+        
         _yearlyRatings = yearlyRatings ?? [];
+        _albumsAvgRating = _yearlyRatings.Select(r => r.AverageRating).Average();
 
         _yearlyRatingsSeries.Clear();
         _yearlyRatingsSeries.Add(new ChartSeries<double>
@@ -237,11 +240,9 @@ public partial class GenreView
     private string GetHeaderStyle()
     {
         var background = _genre!.Color ?? ColorHelper.DarkColor;
-        var textColor = ColorHelper.IsColorLight(background)
-            ? ColorHelper.DarkColor
-            : "#ffffff";
+        background += "66"; // Add transparency
         
-        return $"background-color: {background}; color: {textColor}; font-weight: bold;";
+        return $"background: linear-gradient(to right, {background} 0%, {background} 60%, transparent 100%); font-weight: bold;";
     }
     
     private async Task ScrollTopAlbumsAsync(string direction)
