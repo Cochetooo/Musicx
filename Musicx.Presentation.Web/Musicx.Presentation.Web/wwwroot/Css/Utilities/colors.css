@@ -6,6 +6,11 @@
     background-color: var(--mud-palette-background);
 }
 
+.bg-main {
+    background: radial-gradient(circle at 20% 10%, rgba(123, 97, 255, 0.12), transparent 40%),
+    radial-gradient(circle at 80% 0%, rgba(0, 214, 201, 0.12), transparent 35%);
+}
+
 .bg-gray {
     background-color: var(--mud-palette-background-gray);
 }

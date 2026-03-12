@@ -32,7 +32,7 @@
 }
 else
 {
-    <MudContainer MaxWidth="MaxWidth.False" Class="genre-page pa-2 pa-md-6 rounded-lg">
+    <MudContainer MaxWidth="MaxWidth.False" Class="bg-main pa-2 pa-md-6 rounded-lg">
         
         <MudPaper Class="pa-4 pa-md-6 mb-4 glass-paper genre-hero" Elevation="0">
 
@@ -187,8 +187,19 @@ else
                                     </MudStack>
                                 </MudLink>
                             </MudTd>
-                            <MudTd DataLabel="Date"><MudText Typo="Typo.caption" Class="color-primary text-light">@context.OriginalReleaseDate?.ToString("MMM yyyy", CultureInfo.CurrentCulture)</MudText></MudTd>
-                            <MudTd DataLabel="#"><MudText Typo="Typo.body2" Class="color-primary">@((context.Stats?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture))</MudText></MudTd>
+                            <MudTd DataLabel="Date">
+                                <MudText Typo="Typo.body2" Class="color-primary text-light">
+                                    @context.OriginalReleaseDate?.ToString("dd MMM", CultureInfo.CurrentCulture)
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="color-primary text-bold">
+                                    @context.OriginalReleaseDate?.ToString("yyyy", CultureInfo.CurrentCulture)
+                                </MudText>
+                            </MudTd>
+                            <MudTd DataLabel="#">
+                                <MudText Typo="Typo.body2" Class="color-primary">
+                                    @((context.Stats?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture))
+                                </MudText>
+                            </MudTd>
                             <MudTd DataLabel="Rating">
                                 <MudChip T="string" Class="text-bold" Label="true" Style="@($"background-color:{RatingHelper.GetColorForRating(context.Stats?.Average)};color:white")">
                                     @RatingHelper.GetRatingFormatted(context.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
@@ -231,11 +242,6 @@ else
 }
 
 <style>
-    .genre-page {
-        background: radial-gradient(circle at 20% 10%, rgba(123, 97, 255, 0.12), transparent 40%),
-        radial-gradient(circle at 80% 0%, rgba(0, 214, 201, 0.12), transparent 35%);
-    }
-
     .genre-hero {
         border: 1px solid rgba(255,255,255,0.12);
     }

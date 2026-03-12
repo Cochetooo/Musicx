@@ -1,4 +1,81 @@
 ﻿window.d3Charts = {
+    renderDivergingBarChart: (element, options) => {
+        if (!element || !window.d3 || !options?.data?.length) {
+            if (element) {
+                element.innerHTML = '';
+            }
+            return;
+        }
+        
+        const d3 = window.d3;
+        const {
+            data,
+            barHeight = 25,
+            marginTop = 12,
+            marginRight = 16,
+            marginBottom = 30,
+            marginLeft = 42,
+            width = 220,
+            height = Math.ceil((data.length + 0.1) * barHeight) + marginTop + marginBottom
+        } = options;
+        
+        const x = d3.scaleLinear()
+            .domain(d3.extent(data, d => d.value))
+            .rangeRound([marginLeft, width - marginRight]);
+        
+        const y = d3.scaleBand()
+            .domain(data.map(d => d.Label))
+            .padding(0.1);
+        
+        const format = d3.format(metric === "absolute" ? "+,d" : "+.1%");
+        const tickFormat = metric === "absolute" ? d3.formatPrefix("+.1", 1e6) : d3.format("+.0%");
+        
+        const svg = d3
+            .select(element)
+            .append("svg")
+            .attr("viewBox", [0, 0, width, height])
+            .attr("preserveAspectRatio", "none");
+        
+        svg.append("g")
+            .selectAll()
+            .data(data)
+            .join("rect")
+            .attr("fill", (d) => d3.schemeRdBu[3][d.value > 0 ? 2 : 0])
+            .attr("x", (d) => x(Math.min(d.value, 0)))
+            .attr("y", (d) => y(d.Label))
+            .attr("width", d => Math.abs(x(d.value) - x(0)))
+            .attr("height", y.bandwidth());
+        
+        svg.append("g")
+            .attr("font-family", "Montserrat")
+            .attr("font-size", 10)
+            .selectAll()
+            .data(data)
+            .join("text")
+            .attr("text-anchor", d => d.value < 0 ? "end" : "start")
+            .attr("x", (d) => x(d.value) + Math.sign(d.value - 0) * 4)
+            .attr("y", (d) => y(d.State) + y.bandwidth() / 2)
+            .attr("dy", "0.35em")
+            .text(d => format(d.value));
+
+        svg.append("g")
+            .attr("transform", `translate(0,${marginTop})`)
+            .call(d3.axisTop(x).ticks(width / 80).tickFormat(tickFormat))
+            .call(g => g.selectAll(".tick line").clone()
+                .attr("y2", height - marginTop - marginBottom)
+                .attr("stroke-opacity", 0.1))
+            .call(g => g.select(".domain").remove());
+
+        svg.append("g")
+            .attr("transform", `translate(${x(0)},0)`)
+            .call(d3.axisLeft(y).tickSize(0).tickPadding(6))
+            .call(g => g.selectAll(".tick text").filter((d, i) => data[i].value < 0)
+                .attr("text-anchor", "start")
+                .attr("x", 6));
+        
+        return svg.node();
+    },
+    
     renderLineChart: (element, options) => {
         if (!element || !window.d3 || !options?.points?.length) {
             if (element) {

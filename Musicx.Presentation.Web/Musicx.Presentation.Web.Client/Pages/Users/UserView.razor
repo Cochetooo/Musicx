@@ -166,19 +166,7 @@ else
                                              RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"/>
                             </MudStack>
                         </MudListItem>
-                        
-                        <MudListItem>
-                            <MudStack Row Justify="Justify.SpaceBetween">
-                                <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
-                                    A-M artists ratio
-                                </MudText>
-                                <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
-                                    @Math.Round(_albumRatingDistrib?.ArtistNameRatioAMvsNZ * 100 ?? 0)% / 
-                                    @(100 - Math.Round(_albumRatingDistrib?.ArtistNameRatioAMvsNZ * 100 ?? 0))%
-                                </MudText>
-                            </MudStack>
-                        </MudListItem>
-                        
+                                                
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
                                 <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
@@ -201,6 +189,18 @@ else
                                 </MudText>
                             </MudStack>
                         </MudListItem>
+                        
+                        <MudListItem>
+                            <MudStack Row Justify="Justify.SpaceBetween">
+                                <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
+                                    A-M artists ratio
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
+                                    @Math.Round(_albumRatingDistrib?.ArtistNameRatioAMvsNZ * 100 ?? 0)% / 
+                                    @(100 - Math.Round(_albumRatingDistrib?.ArtistNameRatioAMvsNZ * 100 ?? 0))%
+                                </MudText>
+                            </MudStack>
+                        </MudListItem>
                     </MudList>
                 </MudPaper>
             </MudItem>
@@ -210,7 +210,7 @@ else
                           Breakpoint="Breakpoint.Sm"
                           RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Rating)}")"
                           @ref="_albumRatingsTable"
-                          Class="mt-4 pa-2 bg-surface animate-hover-up" Dense>
+                          Class="mt-4 pa-2 bg-main animate-hover-up" Dense>
                     <ColGroup>
                         <col />
                         <col style="width: 100%;"/>
@@ -218,9 +218,12 @@ else
                         <col style="width: 100px;"/>
                     </ColGroup>
                     <ToolBarContent>
-                        <MudText Typo="Typo.h4" Class="montserrat text-bold color-primary">Ratings (@_albumCount)</MudText>
+                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
+                            Ratings ⸱ <span class="text-light">@_albumCount</span>
+                        </MudText>
                         <MudSpacer />
-                        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search"
+                        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search for ratings..."
+                                      Variant="Variant.Outlined"
                                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
                                       IconSize="Size.Medium" Class="mt-0" />
                     </ToolBarContent>
