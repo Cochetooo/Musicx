@@ -7,6 +7,8 @@
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.Genre
 @using Musicx.Contracts.Dto.Responses.User
+@using Musicx.Presentation.Web.Client.Components
+@using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Internal
 @inject IJSRuntime JS
 @inject IFindAllService<InArtist, OutArtist> UcListArtists
 @inject IFindAllService<InAlbum, OutAlbum> UcListAlbums
@@ -76,10 +78,17 @@
                                                     }
 
                                                     <div>
-                                                        <MudText Typo="Typo.body1">
+                                                        <MudText Typo="Typo.body1" Class="text-bold">
                                                             @item.Icon @item.Title
                                                         </MudText>
-                                                        <MudText Typo="Typo.body2" Class="color-secondary">
+                                                        <MudText Typo="Typo.body2" Class="color-secondary text-light">
+                                                            @if (item.Country is not null)
+                                                            {
+                                                                <span class="mr-1">
+                                                                    <Flag CountryName="@item.Country"/>
+                                                                </span>
+                                                            }
+                                                            
                                                             @item.Subtitle
                                                         </MudText>
                                                     </div>

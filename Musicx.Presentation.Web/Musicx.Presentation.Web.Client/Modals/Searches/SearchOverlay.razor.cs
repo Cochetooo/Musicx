@@ -166,6 +166,7 @@ public partial class SearchOverlay
                     {
                         Id = a.Id,
                         Category = "Artist",
+                        Country = a.CurrentCountry,
                         Image = a.ArtworkUrl,
                         Icon = GetIconForCategory("Artist"),
                         Subtitle = a.CalculatedGenres ?? "",
@@ -250,6 +251,7 @@ public partial class SearchOverlay
         public long Id { get; set; }
         public string Category { get; set; } = string.Empty;
         public string? Image { get; set; }
+        public string? Country { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Subtitle { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
