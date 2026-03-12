@@ -13,7 +13,7 @@ using Musicx.Infrastructure.API.Persistence.Specifications.User;
 
 namespace Musicx.Presentation.Web.Client.Pages.Users;
 
-public partial class UserView
+public partial class UserView : IAsyncDisposable
 {
     private ILogger _logger = null!;
 
@@ -36,6 +36,8 @@ public partial class UserView
     private List<OutUserGenreRating> _genreRatingsRaw = [];
     private List<OutUserGenreRating> _genreRatingsWeighted = [];
     private bool _showWeightedGenreRatings;
+    
+    private IJSObjectReference? _fileDownloadModule;
 
     private IReadOnlyList<OutUserGenreRating> DisplayedGenreRatings
         => _showWeightedGenreRatings ? _genreRatingsWeighted : _genreRatingsRaw;
@@ -251,8 +253,9 @@ public partial class UserView
         }
 
         var exportFile = UcExportRatings.Execute(ratings, _user.Name, _selectedExportFormat);
-        await JS.InvokeVoidAsync(
-            "fileDownload.downloadFileFromBytes",
+        _fileDownloadModule ??= await JS.InvokeAsync<IJSObjectReference>("import", "/Js/fileDownload.js");
+        await _fileDownloadModule.InvokeVoidAsync(
+            "downloadFileFromBytes",
             exportFile.FileName,
             exportFile.ContentType,
             Convert.ToBase64String(exportFile.Content));
@@ -313,6 +316,14 @@ public partial class UserView
     {
         _searchString = text;
         _albumRatingsTable.ReloadServerData();
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_fileDownloadModule is not null)
+        {
+            await _fileDownloadModule.DisposeAsync();
+        }
     }
     
     private string GetGenreRatingPercentText(OutUserGenreRating genreRating)

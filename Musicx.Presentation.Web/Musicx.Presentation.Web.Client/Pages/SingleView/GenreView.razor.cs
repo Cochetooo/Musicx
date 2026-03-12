@@ -5,6 +5,7 @@ using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
+using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
@@ -13,16 +14,13 @@ using Musicx.Presentation.Web.Client.Components.Charts;
 
 namespace Musicx.Presentation.Web.Client.Pages.SingleView;
 
-public partial class GenreView
+public partial class GenreView : IAsyncDisposable
 {
     [Parameter] public string? Id { get; set; }
-
-    private sealed record GenreArtistCard(OutArtist Artist, decimal? Rating, long RatingsCount);
 
     private ILogger _logger = null!;
 
     private OutGenre? _genre;
-    private OutGenericList<OutArtist> _artists = new();
     
     private long _albumCount;
     private decimal? _albumsAvgRating;
@@ -34,10 +32,12 @@ public partial class GenreView
     private ElementReference _topAlbumsScroller;
 
     private List<OutAlbum> _topAlbums = [];
-    private List<GenreArtistCard> _topArtists = [];
+    private List<OutArtistAlbumSummary> _topArtists = [];
 
     private bool _canScrollTopAlbumsLeft;
     private bool _canScrollTopAlbumsRight;
+    
+    private IJSObjectReference? _genreViewModule;
 
     private string DisplayedName => _useShortName &&
                                      !string.IsNullOrWhiteSpace(_genre?.ShortName)
@@ -78,78 +78,29 @@ public partial class GenreView
             return;
         }
 
-        _genre = await UcGet.ExecuteAsync(genreId, joins: new GenreJoinSpecification
-        {
-            IncludeParents = true,
-            IncludeChildren = true
-        });
+        var dataView = await UcGenreDataView.ExecuteAsync(genreId, UserClientContext.CurrentUser?.Id);
 
-        if (_genre is null)
+        if (dataView is null)
         {
-            _logger.LogError("❌ No genre found for ID: {Id}", Id);
+            _logger.LogError("❌ No genre data view found for ID: {Id}", Id);
             return;
         }
         
-        await InvokeAsync(StateHasChanged);
+        _genre = dataView.Genre;
+        _topArtists = dataView.TopArtists.ToList();
+        _topAlbums = dataView.TopAlbums.Items;
+        _yearlyRatings = dataView.YearlyRatings;
+        _albumsAvgRating = dataView.AlbumsAverageRating;
+        _yearlyRatingsChartData = _yearlyRatings
+            .Select(r => new D3LinePoint(r.YearBucketStart.ToString(), (double)Math.Round(r.AverageRating / 500.0m, 2)))
+            .ToList();
         
-        _artists = await UcArtistByGenre.ExecuteAsync(_genre.Id, pagingOptions: new PagingOptions(Skip: 0, Take: 10));
-
-        await BuildTopArtistsAsync();
-        await InvokeAsync(StateHasChanged);
-        
-        await BuildTopAlbumsAsync();
         await InvokeAsync(StateHasChanged);
 
         if (_albumTable is not null)
         {
             await _albumTable.ReloadServerData();
         }
-        
-        await LoadYearlyRatingsAsync();
-        await InvokeAsync(StateHasChanged);
-    }
-    
-    private async Task BuildTopArtistsAsync()
-    {
-        _topArtists.Clear();
-
-        foreach (var artist in _artists.Items)
-        {
-            var discography = await UcGetAlbums.ExecuteAsync(
-                artist.Id,
-                joins: new AlbumJoinSpecification { IncludeStats = true },
-                order: new AlbumOrderSpecification { OriginalReleaseDate = -1 });
-
-            var summary = RatingHelper.CalculateArtistRatingSummary(discography.Items);
-            _topArtists.Add(new GenreArtistCard(artist, summary.Rating, summary.RatingsCount));
-        }
-
-        _topArtists = _topArtists
-            .OrderByDescending(x => x.RatingsCount)
-            .ThenByDescending(x => x.Rating ?? 0)
-            .ToList();
-    }
-
-    private async Task BuildTopAlbumsAsync()
-    {
-        if (_genre is null)
-        {
-            return;
-        }
-        
-        var response = await UcAlbumByGenre.ExecuteAsync(
-            genreId: _genre.Id,
-            genreOptions: GenreOptions.PrimaryGenre,
-            pagingOptions: new PagingOptions(Take: 10, Skip: 0),
-            order: new AlbumOrderSpecification { RatingCount = -1, RatingAverage = -2, Name = 3 },
-            joins: new AlbumJoinSpecification
-            {
-                IncludeArtist = true,
-                IncludePrimaryGenres = true,
-                IncludeStats = true
-            });
-
-        _topAlbums = response.Items;
     }
     
     private async Task<TableData<OutAlbum>> LoadAlbumsData(TableState state, CancellationToken token)
@@ -190,27 +141,6 @@ public partial class GenreView
             Items = response.Items
         };
     }
-    
-    private async Task LoadYearlyRatingsAsync()
-    {
-        if (_genre is null || UserClientContext.CurrentUser is null)
-        {
-            _yearlyRatings = [];
-            _yearlyRatingsChartData = [];
-            return;
-        }
-
-        var yearlyRatings = await UcUserYearlyRatings.ExecuteAsync(
-            bucketSize: 5,
-            genreId: _genre.Id);
-        
-        _yearlyRatings = yearlyRatings ?? [];
-        _albumsAvgRating = _yearlyRatings.Select(r => r.AverageRating).Average();
-
-        _yearlyRatingsChartData = _yearlyRatings
-            .Select(r => new D3LinePoint(r.YearBucketStart.ToString(), (double)Math.Round(r.AverageRating / 500.0m, 2)))
-            .ToList();
-    }
 
     private void ToggleName() => _useShortName = !_useShortName;
     
@@ -236,7 +166,9 @@ public partial class GenreView
             return;
         }
 
-        await JsRuntime.InvokeVoidAsync("genreView.scrollHorizontal", _topAlbumsScroller, direction, 360);
+        _genreViewModule ??= await JsRuntime.InvokeAsync<IJSObjectReference>("import", "/Js/genreView.js");
+        await _genreViewModule.InvokeVoidAsync("scrollHorizontal", _topAlbumsScroller, direction, 360);
+        
         await RefreshTopAlbumsArrows();
     }
 
@@ -246,10 +178,20 @@ public partial class GenreView
 
     private async Task RefreshTopAlbumsArrows()
     {
-        var state = await JsRuntime.InvokeAsync<HorizontalScrollState>("genreView.getHorizontalState", _topAlbumsScroller);
+        _genreViewModule ??= await JsRuntime.InvokeAsync<IJSObjectReference>("import", "/Js/genreView.js");
+        var state = await _genreViewModule.InvokeAsync<HorizontalScrollState>("getHorizontalState", _topAlbumsScroller);
+        
         _canScrollTopAlbumsLeft = state.CanScrollLeft;
         _canScrollTopAlbumsRight = state.CanScrollRight;
         await InvokeAsync(StateHasChanged);
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_genreViewModule is not null)
+        {
+            await _genreViewModule.DisposeAsync();
+        }
     }
 
     private sealed class HorizontalScrollState

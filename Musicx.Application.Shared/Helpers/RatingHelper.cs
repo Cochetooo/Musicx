@@ -1,13 +1,12 @@
 using System.Text.RegularExpressions;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Application.Shared.Helpers;
 
 public static class RatingHelper
 {
-    public readonly record struct ArtistRatingSummary(decimal? Rating, long RatingsCount);
-    
     private static readonly List<(decimal val, string color)> Stops = new()
     {
         (0.0m,   "#CD0000"), // bordeaux
@@ -154,7 +153,7 @@ public static class RatingHelper
         return CalculateArtistRatingSummary(albums).Rating;
     }
 
-    public static ArtistRatingSummary CalculateArtistRatingSummary(IList<OutAlbum> albums)
+    public static OutArtistRatingSummary CalculateArtistRatingSummary(IList<OutAlbum> albums)
     {
         decimal totalWeight = 0;
         decimal weightedSum = 0;
@@ -186,7 +185,11 @@ public static class RatingHelper
         }
         
         decimal? rating = totalWeight > 0 ? weightedSum / totalWeight : null;
-        return new ArtistRatingSummary(rating, ratingsCount);
+        return new OutArtistRatingSummary
+        {
+            Rating = rating,
+            Count = ratingsCount
+        };
     }
 
     public static string GetColorForRating(decimal? rating)

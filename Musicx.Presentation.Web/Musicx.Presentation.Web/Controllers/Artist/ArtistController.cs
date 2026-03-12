@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Artist;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Specifications.Artist;
 using Musicx.Presentation.Web.Contexts;
@@ -14,7 +16,8 @@ namespace Musicx.Presentation.Web.Controllers.Artist;
 [ApiController]
 [Route("api/artists")]
 public sealed class ArtistController(IArtistRepository artistRepository,
-        ILoggerProvider loggerProvider) : ControllerBase
+    IArtistDataViewBuilder artistDataViewBuilder,
+    ILoggerProvider loggerProvider) : ControllerBase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ArtistController));
     
@@ -139,6 +142,34 @@ public sealed class ArtistController(IArtistRepository artistRepository,
             
             _logger.LogInformation($"🌍✅ API : FIND BY GENRE artists ({genreId}) - SUCCESS");
             return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
+    [HttpGet("{id}/data-view")]
+    public async Task<ActionResult<OutArtistDataView>> FindDataView(
+        [FromRoute] long id,
+        [FromServices] IUserContext userContext,
+        [FromQuery] long? userId = null)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND DATA VIEW artists ({id})");
+
+        try
+        {
+            var effectiveUserId = userId ?? userContext.CurrentUser?.Id;
+            var view = await artistDataViewBuilder.BuildAsync(new ArtistDataViewQuery(id, effectiveUserId));
+
+            if (view is null)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND DATA VIEW artists ({id}) - NOT FOUND");
+                return NoContent();
+            }
+
+            _logger.LogInformation($"🌍✅ API : FIND DATA VIEW artists ({id}) - SUCCESS");
+            return Ok(view);
         }
         catch (Exception ex)
         {

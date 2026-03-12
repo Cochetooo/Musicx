@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Auth;
+using Musicx.Application.Api.Interfaces.Caching;
+using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.PatchNotes;
 using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Application.Api.Interfaces.Workers;
@@ -14,6 +16,7 @@ using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Application.Web.Interfaces.UseCases.Album;
 using Musicx.Application.Web.Interfaces.UseCases.Artist;
+using Musicx.Application.Web.Interfaces.UseCases.Genre;
 using Musicx.Application.Web.Interfaces.UseCases.PatchNotes;
 using Musicx.Application.Web.Interfaces.UseCases.Security;
 using Musicx.Application.Web.Interfaces.UseCases.Song;
@@ -30,6 +33,8 @@ using Musicx.Contracts.Dto.Requests.Song;
 using Musicx.Contracts.Dto.Requests.Tag;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Infrastructure.API.Auth;
+using Musicx.Infrastructure.API.Caching;
+using Musicx.Infrastructure.API.DataViews;
 using Musicx.Infrastructure.API.PatchNotes;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Builders.Album;
@@ -62,6 +67,7 @@ using Musicx.Infrastructure.Shared.UseCases.ExternalMusicData;
 using Musicx.Infrastructure.Web.UseCases;
 using Musicx.Infrastructure.Web.UseCases.Album;
 using Musicx.Infrastructure.Web.UseCases.Artist;
+using Musicx.Infrastructure.Web.UseCases.Genre;
 using Musicx.Infrastructure.Web.UseCases.PatchNotes;
 using Musicx.Infrastructure.Web.UseCases.Security;
 using Musicx.Infrastructure.Web.UseCases.Song;
@@ -173,6 +179,12 @@ public static class DependencyInjection
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserRepository, UserRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserAlbumAttrsRepository, UserAlbumAttrRepository>();
         
+        // Data Views / Cache abstractions
+        services.AddScoped<IDataViewCacheProvider, NoOpDataViewCacheProvider>();
+        services.AddScoped<IDataViewCacheKeyFactory, DataViewCacheKeyFactory>();
+        services.AddScoped<IArtistDataViewBuilder, ArtistDataViewBuilder>();
+        services.AddScoped<IGenreDataViewBuilder, GenreDataViewBuilder>();
+        
         // Audit
         services.AddScoped<IAuditPublisher, RabbitMqAuditPublisher>();
         
@@ -215,7 +227,9 @@ public static class DependencyInjection
         services.AddScoped<IFindAlbumByArtistService, FindAlbumByArtistService>();
         services.AddScoped<IFindAlbumByChartService, FindAlbumByChartService>();
         services.AddScoped<IFindAlbumByGenreService, FindAlbumByGenreService>();
+        services.AddScoped<IFindArtistDataViewService, FindArtistDataViewService>();
         services.AddScoped<IFindArtistByGenreService, FindArtistByGenreService>();
+        services.AddScoped<IFindGenreDataViewService, FindGenreDataViewService>();
         services.AddScoped<IFindSongByAlbumService, FindSongByAlbumService>();
         services.AddScoped(typeof(IFindRatingDistribByUserService<>), typeof(FindRatingDistribByUserService<>));
         services.AddScoped<IFindUserYearlyRatingsService, FindUserYearlyRatingsService>();

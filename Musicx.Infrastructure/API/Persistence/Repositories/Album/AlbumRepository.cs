@@ -107,6 +107,39 @@ internal sealed class AlbumRepository(
             .ToList();
     }
     
+    public async Task<Dictionary<long, List<OutAlbum>>> FindByArtistIdsAsync(
+        IEnumerable<long> artistIds,
+        IJoinSpecification<InAlbum>? joinSpec = null,
+        OrderSpecification<InAlbum>? orderSpecification = null)
+    {
+        var ids = artistIds.Distinct().ToArray();
+        if (ids.Length == 0)
+        {
+            return new Dictionary<long, List<OutAlbum>>();
+        }
+
+        var sql = builder.BuildSelect(joinSpec);
+        sql += $" WHERE al0.{AlbumColumns.ArtistId} = ANY(@artistIds)" + builder.BuildGroupBy(joinSpec);
+
+        if (orderSpecification is not null)
+        {
+            sql += builder.BuildOrderBy(orderSpecification);
+        }
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@artistIds", ids)
+        };
+
+        var result = await connection.FetchListDynamicAsync(sql, parameters);
+
+        return result
+            .Select(x => x.FromDicoToAlbum())
+            .Where(x => x.ArtistId is not null)
+            .GroupBy(x => x.ArtistId!.Value)
+            .ToDictionary(x => x.Key, x => x.ToList());
+    }
+    
     public async Task<List<OutAlbum>> FindByGenreIdAsync(long genreId, 
         int genreOptions,
         IJoinSpecification<InAlbum>? joinSpec = null,

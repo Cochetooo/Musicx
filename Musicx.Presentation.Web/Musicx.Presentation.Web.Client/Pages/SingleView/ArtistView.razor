@@ -2,6 +2,7 @@
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Album
+@using Musicx.Application.Web.Interfaces.UseCases.Artist
 @using Musicx.Application.Web.Interfaces.UseCases.User.AlbumAttribute
 @using Musicx.Contracts.Dto.Requests.Artist
 @using Musicx.Contracts.Dto.Responses
@@ -12,9 +13,7 @@
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 
-@inject IFindOneByIdService<InArtist, OutArtist> UcGet
-@inject IFindAlbumByArtistService UcGetAlbums
-@inject IFindAlbumAttributesByUserService UcFindUserServiceRatings
+@inject IFindArtistDataViewService UcArtistDataView
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
 
@@ -102,7 +101,7 @@ else
                 <div class="glass-paper donut-box pa-2">
                     <div style="justify-items: center" class="mb-2">
                         <MudText Typo="Typo.subtitle1" Class="montserrat text-bold">🌐 Global</MudText>
-                        <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.RatingsCount ratings</MudText>
+                        <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.Count ratings</MudText>
                         <DonutRating Rating="@_artistRatingSummary.Rating" 
                                      RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
                                      Size="DonutRatingSize.Medium" />

@@ -5,6 +5,7 @@
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Album
 @using Musicx.Application.Web.Interfaces.UseCases.Artist
+@using Musicx.Application.Web.Interfaces.UseCases.Genre
 @using Musicx.Application.Web.Interfaces.UseCases.User.Ratings
 @using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
@@ -17,11 +18,8 @@
 
 @inject ILoggerFactory LoggerProvider
 @inject IJSRuntime JsRuntime
-@inject IFindOneByIdService<InGenre, OutGenre> UcGet
-@inject IFindArtistByGenreService UcArtistByGenre
 @inject IFindAlbumByGenreService UcAlbumByGenre
-@inject IFindAlbumByArtistService UcGetAlbums
-@inject IFindUserYearlyRatingsService UcUserYearlyRatings
+@inject IFindGenreDataViewService UcGenreDataView
 @inject IUserClientContext UserClientContext
 
 @if (_genre is null)

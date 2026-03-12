@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace Musicx.Presentation.Web.Client.Components.Charts;
 
-public partial class D3LineChart
+public partial class D3LineChart : IAsyncDisposable
 {
     [Parameter] public IReadOnlyList<D3LinePoint> Data { get; set; } = [];
     [Parameter] public int Height { get; set; } = 220;
@@ -18,6 +18,8 @@ public partial class D3LineChart
     
     private ElementReference _containerRef;
     private bool _renderPending = true;
+
+    private IJSObjectReference? _chartModule;
     
     protected override void OnParametersSet()
     {
@@ -31,9 +33,10 @@ public partial class D3LineChart
             return;
         }
 
+        _chartModule ??= await JS.InvokeAsync<IJSObjectReference>("import", "/Js/charts/lineChart.js");
         _renderPending = false;
 
-        await JS.InvokeVoidAsync("d3Charts.renderLineChart", _containerRef, new
+        await _chartModule.InvokeVoidAsync("renderLineChart", _containerRef, new
         {
             height = Height,
             marginTop = MarginTop,
@@ -54,7 +57,11 @@ public partial class D3LineChart
     
     public async ValueTask DisposeAsync()
     {
-        await JS.InvokeVoidAsync("d3Charts.clearChart", _containerRef);
+        if (_chartModule is not null)
+        {
+            await _chartModule.InvokeVoidAsync("clearChart", _containerRef);
+            await _chartModule.DisposeAsync();
+        }
     }
 }
 

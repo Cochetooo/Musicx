@@ -145,6 +145,47 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
             return BadRequest(ex);
         }
     }
+    
+    [HttpGet("by-artist")]
+    public async Task<ActionResult<Dictionary<long, OutAlbumList>>> FindByArtistIds(
+        [FromQuery] long[] artistIds,
+        [FromQuery] AlbumJoinSpecification? joins = null,
+        [FromQuery] AlbumOrderSpecification? order = null)
+    {
+        var stringIds = string.Join(',', artistIds);
+        _logger.LogInformation($"🌍🏳️ API : FIND BY ARTISTS albums ({stringIds})");
+
+        if (artistIds.Length == 0)
+        {
+            return BadRequest("❌ You must provide at least one artist ID.");
+        }
+
+        try
+        {
+            var albumsByArtist = await albumRepository.FindByArtistIdsAsync(artistIds, joins, order);
+            var response = albumsByArtist.ToDictionary(
+                x => x.Key,
+                x => new OutAlbumList
+                {
+                    Items = x.Value,
+                    Total = x.Value.Count,
+                    AverageRating = RatingHelper.CalculateArtistRating(x.Value)
+                });
+
+            if (response.Count == 0)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND BY ARTISTS albums ({stringIds}) - NOT FOUND");
+                return NoContent();
+            }
+
+            _logger.LogInformation($"🌍✅ API : FIND BY ARTISTS albums ({stringIds}) - SUCCESS");
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
 
     [HttpGet("by-chart")]
     public async Task<ActionResult<OutAlbumList>> FindByChart([FromQuery] AlbumChartQuery query)

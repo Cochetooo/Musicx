@@ -47,6 +47,11 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
         IJoinSpecification<InAlbum>? joinSpec = null,
         OrderSpecification<InAlbum>? orderSpecification = null);
     
+    Task<Dictionary<long, List<OutAlbum>>> FindByArtistIdsAsync(
+        IEnumerable<long> artistIds,
+        IJoinSpecification<InAlbum>? joinSpec = null,
+        OrderSpecification<InAlbum>? orderSpecification = null);
+    
     /// <summary>
     /// Retrieves albums associated with the specified genre.
     /// </summary>

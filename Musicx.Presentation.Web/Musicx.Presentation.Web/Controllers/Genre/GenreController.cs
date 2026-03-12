@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Genre;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
+using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 using Musicx.Presentation.Web.Contexts;
 
@@ -13,6 +15,7 @@ namespace Musicx.Presentation.Web.Controllers.Genre;
 [ApiController]
 [Route("api/genres")]
 public sealed class GenreController(IGenreRepository genreRepository,
+    IGenreDataViewBuilder genreDataViewBuilder,
     ILoggerProvider loggerProvider) : ControllerBase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(GenreController));
@@ -86,6 +89,34 @@ public sealed class GenreController(IGenreRepository genreRepository,
             
             _logger.LogInformation($"🌍✅ API : FIND BY ID genres ({id}) - SUCCESS");
             return Ok(genre);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
+    [HttpGet("{id}/data-view")]
+    public async Task<ActionResult<OutGenreDataView>> FindDataView(
+        [FromRoute] long id,
+        [FromServices] IUserContext userContext,
+        [FromQuery] long? userId = null)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND DATA VIEW genres ({id})");
+
+        try
+        {
+            var effectiveUserId = userId ?? userContext.CurrentUser?.Id;
+            var view = await genreDataViewBuilder.BuildAsync(new GenreDataViewQuery(id, effectiveUserId));
+
+            if (view is null)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND DATA VIEW genres ({id}) - NOT FOUND");
+                return NoContent();
+            }
+
+            _logger.LogInformation($"🌍✅ API : FIND DATA VIEW genres ({id}) - SUCCESS");
+            return Ok(view);
         }
         catch (Exception ex)
         {

@@ -3,6 +3,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
@@ -33,25 +34,12 @@ public partial class ArtistView
     private OutGenericList<OutUserAlbumAttribute>? _userAttrs;
     private Dictionary<ReleaseType, bool> _availableReleaseTypes = [];
     private Dictionary<int, int> _releaseCountPerYears = [];
-    private RatingHelper.ArtistRatingSummary _artistRatingSummary;
+    private OutArtistRatingSummary _artistRatingSummary;
     
     private ReleasesViewMode _viewMode = ReleasesViewMode.List;
     private bool _groupByType = true;
     private double _zoomLevel = 1.2;
     private (string sortBy, bool asc) _selectedSort = ("ReleaseDate", false);
-    
-    /* private readonly List<ChartSeries> _historySeries = [];
-    private readonly ChartOptions _historyChartOptions = new()
-    {
-        InterpolationOption = InterpolationOption.Periodic,
-        MaxNumYAxisTicks = 20,
-        YAxisTicks = 1
-    };
-    private readonly AxisChartOptions _axisChartOptions = new()
-    {
-        MatchBoundsToSize = true,
-    };
-    private string[] _xAxisChartLabels = []; */
 
     protected override async Task OnParametersSetAsync()
         => await LoadArtist();
@@ -73,30 +61,22 @@ public partial class ArtistView
             return;
         }
         
-        _artist = await UcGet.ExecuteAsync(artistId);
+        var dataView = await UcArtistDataView.ExecuteAsync(artistId, UserClientContext.CurrentUser?.Id);
 
-        if (_artist is null)
+        if (dataView is null)
         {
             _logger.LogError("⚠️ No artist found for ID: {Id}", Id);
             return;
         }
 
+        _artist = dataView.Artist;
+        _artistAlbums = dataView.Albums;
+        _artistRatingSummary = dataView.RatingSummary;
+        _userAttrs = dataView.UserAttributes;
+
         _logger.LogInformation($"✅ Artist loaded: {_artist.Name} ({_artist.Id})");
-        await InvokeAsync(StateHasChanged);
         
-        _artistAlbums = await UcGetAlbums.ExecuteAsync(_artist.Id, joins: new AlbumJoinSpecification
-        {
-            IncludePrimaryGenres = true,
-            IncludeInfluenceGenres = true,
-            IncludeStats = true
-        }, order: new AlbumOrderSpecification
-        {
-            OriginalReleaseDate = 1,
-            Name = 2
-        });
         _filteredAlbums = new List<OutAlbum>(_artistAlbums.Items);
-        _artistRatingSummary = RatingHelper.CalculateArtistRatingSummary(_artistAlbums.Items);
-        _logger.LogInformation("🎵 Retrieved {Count} albums for artist {ArtistId}", _artistAlbums.Total, _artist.Id);
         
         _availableReleaseTypes = _artistAlbums
             .Items
@@ -104,20 +84,6 @@ public partial class ArtistView
             .Select(s => s.ReleaseType!.Value)
             .Distinct()
             .ToDictionary(r => r, r => r is ReleaseType.Lp or ReleaseType.MixTape or ReleaseType.Soundtrack);
-        
-        await InvokeAsync(StateHasChanged);
-
-        if (UserClientContext.CurrentUser is not null)
-        {
-            _userAttrs = await UcFindUserServiceRatings.ExecuteAsync(
-                userId: UserClientContext.CurrentUser.Id,
-                artistId: _artist.Id,
-                pagingOptions: new PagingOptions(Take: 100_000, Skip: 0)
-            );
-        }
-     
-        CalculateReleasesPerYear();
-        UpdateChart();
         
         await InvokeAsync(StateHasChanged);
         

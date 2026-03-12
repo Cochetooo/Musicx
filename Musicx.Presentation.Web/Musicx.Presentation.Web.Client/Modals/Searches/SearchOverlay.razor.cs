@@ -11,7 +11,7 @@ using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Presentation.Web.Client.Modals.Searches;
 
-public partial class SearchOverlay
+public partial class SearchOverlay : IAsyncDisposable
 {
     private ElementReference _wrapperRef;
     private MudTextField<string> _mudInput = null!;
@@ -37,6 +37,8 @@ public partial class SearchOverlay
     private bool _groupResults = true;
     private bool _exactSearch;
 
+    private IJSObjectReference? _searchOverlayModule;
+
     public async Task OpenFromNavAsync(string sourceSelector)
     {
         IsOpen = true;
@@ -45,8 +47,9 @@ public partial class SearchOverlay
         await Task.Delay(80);
 
         var targetSelector = ".f-search-input-mud input";
-        await JS.InvokeVoidAsync("searchOverlay.openFromSelector", sourceSelector, targetSelector);
-        await JS.InvokeVoidAsync("searchOverlay.focusInput", targetSelector);
+        _searchOverlayModule ??= await JS.InvokeAsync<IJSObjectReference>("import", "/Js/searchOverlay.js");
+        await _searchOverlayModule.InvokeVoidAsync("openFromSelector", sourceSelector, targetSelector);
+        await _searchOverlayModule.InvokeVoidAsync("focusInput", targetSelector);
     }
     
     private void OnBackdropClick() => _ = Close();
@@ -58,7 +61,9 @@ public partial class SearchOverlay
             return;
         }
 
-        await JS.InvokeVoidAsync("searchOverlay.closeOverlay");
+        _searchOverlayModule ??= await JS.InvokeAsync<IJSObjectReference>("import", "/Js/searchOverlay.js");
+        await _searchOverlayModule.InvokeVoidAsync("closeOverlay");
+        
         IsOpen = false;
         await OnClose.InvokeAsync(_value);
         
@@ -232,6 +237,16 @@ public partial class SearchOverlay
         await Close();
         _value = "";
         Navigation.NavigateTo($"/{item.Category}/{item.Id}");
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_searchOverlayModule is not null)
+        {
+            await _searchOverlayModule.DisposeAsync();
+        }
+
+        _cts?.Dispose();
     }
 
     private string GetIconForCategory(string category) => category switch
