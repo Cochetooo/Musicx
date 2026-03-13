@@ -117,7 +117,7 @@ internal sealed class UserAlbumAttrRepository(
                 Exact = filterExact ?? false,
                 Similarity = filterSimilitude ?? 0.4
             },
-            Album = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+            RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
         };
         
         var (sql, parameters) = builder.BuildFilteredQuery(

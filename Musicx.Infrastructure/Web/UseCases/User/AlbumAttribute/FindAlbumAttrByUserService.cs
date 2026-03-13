@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Globalization;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
@@ -39,7 +40,7 @@ public sealed class FindAlbumAttrByUserService(
         {
             endpoint += $"&filter={filter}";
             endpoint += $"&filterExact={filterExact ?? false}";
-            endpoint += $"&filterSimilitude={filterSimilitude ?? 0.4}";
+            endpoint += $"&filterSimilitude={filterSimilitude?.ToString(CultureInfo.InvariantCulture) ?? "0.4"}";
         }
         
         _logger.LogInformation("🌍🏳️ GET " + endpoint);

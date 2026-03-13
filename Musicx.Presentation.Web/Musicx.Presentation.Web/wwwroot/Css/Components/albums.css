@@ -1,0 +1,8 @@
+.album-presentation-card {
+    min-width: 260px;
+    max-width: 260px;
+    background: rgba(30, 30, 50, 0.55);
+    border: 1px solid rgba(255,255,255,.11);
+    padding: .7rem;
+    border-radius: 12px;
+}

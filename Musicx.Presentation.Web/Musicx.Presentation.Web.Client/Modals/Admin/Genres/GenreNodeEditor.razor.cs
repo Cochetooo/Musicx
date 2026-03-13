@@ -24,8 +24,13 @@ public partial class GenreNodeEditor
         await InvokeAsync(StateHasChanged);
     }
 
-    private async void NameTextChanged(string newValue)
+    private async void NameTextChanged(string? newValue)
     {
+        if (string.IsNullOrWhiteSpace(newValue) || newValue == Node.CanonicalName)
+        {
+            return;
+        }
+        
         Node.CanonicalName = newValue;
         await ValidateNameExists(newValue);
     }

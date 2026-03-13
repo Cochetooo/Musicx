@@ -117,7 +117,7 @@ public sealed class UserAlbumAttrController(
                     Exact = filterExact,
                     Similarity = filterSimilitude
                 };
-                query.Album = new(filter);
+                query.RawSearch = new(filter);
             }
             
             var userAlbumAttrs = await repository.FindAsync(query, joins, order, paging);

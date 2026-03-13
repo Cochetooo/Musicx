@@ -92,7 +92,7 @@ else
             <div class="top-albums-track horizontal-scroll" @ref="_topAlbumsScroller">
                 @foreach (var album in _topAlbums)
                 {
-                    <MudLink Href="@($"/Album/{album.Id}")" Class="top-album-card animate-hover-up">
+                    <MudLink Href="@($"/Album/{album.Id}")" Class="album-presentation-card animate-hover-up">
                         <MudImage Src="@album.ArtworkUrl" @key="album.ArtworkUrl" Alt="@album.Name" Style="width: 100%" Class="rounded-lg" Elevation="8"/>
                         <MudText Typo="Typo.body1" Class="text-bold clamped-text-1 mt-2">@album.Name</MudText>
                         <MudText Typo="Typo.caption" Class="color-secondary clamped-text-1">@(album.Artist?.Name ?? album.ArtistAlias)</MudText>
@@ -261,15 +261,6 @@ else
         overflow-x: auto;
         scroll-behavior: smooth;
         padding-bottom: .5rem;
-    }
-
-    .top-album-card {
-        min-width: 260px;
-        max-width: 260px;
-        background: rgba(30, 30, 50, 0.55);
-        border: 1px solid rgba(255,255,255,.11);
-        padding: .7rem;
-        border-radius: 12px;
     }
 
     .artist-card {

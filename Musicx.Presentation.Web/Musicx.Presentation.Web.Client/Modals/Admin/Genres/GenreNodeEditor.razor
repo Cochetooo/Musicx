@@ -4,7 +4,7 @@
     <MudItem xs="8">
         <MudTextField Label="Name"
                       Immediate
-                      TextChanged="NameTextChanged"
+                      TextChanged="@NameTextChanged"
                       @ref="_nameTextEdit"
                       @bind-Value="Node.CanonicalName" />
         

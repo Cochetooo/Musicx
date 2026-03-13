@@ -191,6 +191,20 @@ internal sealed class UserAlbumAttrSqlBuilder(
         FilterBuilder.AppendTextFilter(userAlbumAttrQuery.Album, $"al0.{AlbumColumns.Name}", "album", clauses, parameters, userAlbumAttrQuery.Search);
         FilterBuilder.AppendTextFilter(userAlbumAttrQuery.Artist, $"ar0.{ArtistColumns.Name}", "artist", clauses, parameters, userAlbumAttrQuery.Search);
         FilterBuilder.AppendTextFilter(userAlbumAttrQuery.User, $"u0.{UserColumns.Name}", "user", clauses, parameters, userAlbumAttrQuery.Search);
+
+        if (userAlbumAttrQuery.RawSearch is not null)
+        {
+            FilterBuilder.AppendAnyTextFilter(
+                userAlbumAttrQuery.RawSearch, 
+                [$"al0.{AlbumColumns.Name}", $"ar0.{ArtistColumns.Name}", $"u0.{UserColumns.Name}", $"ar0.{ArtistColumns.CurrentCountry}",
+                    $"ar0.{ArtistColumns.OriginCountry}", $"ar0.{ArtistColumns.CurrentRegion}", $"ar0.{ArtistColumns.OriginRegion}",
+                    $"ar0.{ArtistColumns.CurrentTown}", $"ar0.{ArtistColumns.OriginTown}", $"al0.{AlbumColumns.Language}"],
+                "search",
+                clauses,
+                parameters,
+                userAlbumAttrQuery.Search
+            );
+        }
         
         if (userAlbumAttrQuery.Country is not null)
         {

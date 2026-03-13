@@ -146,6 +146,8 @@ public partial class AlbumView
         }
         
         await InvokeAsync(StateHasChanged);
+        
+        await _albumRatingsTable.ReloadServerData();
     }
 
     private async Task<TableData<OutUserAlbumAttribute>> LoadUserAttrData(TableState state, CancellationToken token)

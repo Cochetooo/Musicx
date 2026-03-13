@@ -2,6 +2,7 @@
 @import url("Base/reset.css");
 @import url("Base/typography.css");
 
+@import url("Components/albums.css");
 @import url("Components/badges.css");
 @import url("Components/breadcrumb.css");
 @import url("Components/carousel.css");

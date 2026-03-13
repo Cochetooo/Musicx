@@ -31,6 +31,7 @@ public record UserAlbumAttrFindQuery : IFindQuery<InUserAlbumAttribute>
     public DateTime? MaxDate { get; set; }
     public decimal? MinRating { get; set; }
     public decimal? MaxRating { get; set; }
+    public TextFilter? RawSearch { get; set; }
     public TextFilter? Tag { get; set; }
     public TextFilter? User { get; set; }
 }

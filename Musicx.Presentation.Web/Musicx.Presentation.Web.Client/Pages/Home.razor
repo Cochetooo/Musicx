@@ -1,12 +1,18 @@
 ﻿@page "/"
+@using System.Globalization
+@using Musicx.Application.Shared.Helpers
+@using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests.Album
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.Genre
 
+@inject IFindAllService<InAlbum, OutAlbum> UcGetLatestAlbums
 @inject ICountService<OutArtist> UcCountArtists
 @inject ICountService<OutAlbum> UcCountAlbums
 @inject ICountService<OutSong> UcCountSongs
 @inject ICountService<OutGenre> UcCountGenres
+@inject IUserClientContext UserClientContext
 
 <HeadContent>
     <link rel="stylesheet" href="Css/Features/Search/search-overlay.css" />
@@ -15,12 +21,12 @@
 
 <MudGrid Class="home-container">
     <MudItem xs="12" Class="flex-center">
-        <MudCard Class="glass-card home-card pa-6">
+        <MudCard Class="bg-main home-card pa-6">
             <MudText Typo="Typo.h1" Class="montserrat text-mega-bold">
-                Welcome to Musicx!
+                Welcome to <span class="text-extra-bold" style="font-size: 10rem">Musicx!</span>
             </MudText>
             <MudText Typo="Typo.body1" Class="mb-4 color-secondary">
-                Counting @_artistCount artists, @_albumCount albums, @_songCount songs & @_genreCount genres
+                @_artistCount artists, @_albumCount albums, @_songCount songs & @_genreCount genres
             </MudText>
             
             <MudCarousel AutoCycle AutoCycleTime="TimeSpan.FromSeconds(4)"
@@ -43,5 +49,30 @@
                 </MudCarouselItem>
             </MudCarousel>
         </MudCard>
+    </MudItem>
+    
+    <MudItem xs="12" Class="flex-center">
+        <MudPaper Class="glass-paper" Style="justify-items: center">
+            <MudText Typo="Typo.h4" Class="montserrat text-bold">
+                Latest Releases
+            </MudText>
+            
+            <MudStack Row Spacing="6">
+                @foreach (var album in _latestAlbums)
+                {
+                    <MudLink Href="@($"/Album/{album.Id}")" Class="album-presentation-card animate-hover-up">
+                        <MudImage Src="@album.ArtworkUrl" @key="album.ArtworkUrl" Alt="@album.Name" Style="width: 100%" Class="rounded-lg" Elevation="8"/>
+                        <MudText Typo="Typo.body1" Class="text-bold clamped-text-1 mt-2">@album.Name</MudText>
+                        <MudText Typo="Typo.caption" Class="color-secondary clamped-text-1">@(album.Artist?.Name ?? album.ArtistAlias)</MudText>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                            <MudChip T="string" Size="Size.Small" Class="text-bold" Style="@($"background-color:{RatingHelper.GetColorForRating(album.Stats?.Average)};color:white")">
+                                @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                            </MudChip>
+                            <MudText Typo="Typo.caption" Class="color-secondary">@((album.Stats?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)) ratings</MudText>
+                        </MudStack>
+                    </MudLink>
+                }
+            </MudStack>
+        </MudPaper>
     </MudItem>
 </MudGrid>

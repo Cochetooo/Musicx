@@ -154,7 +154,6 @@ public partial class GenreEditModal
         var genres = await UcFindAllGenres.ExecuteAsync(
             joins: new GenreJoinSpecification
             {
-                IncludeChildren = true,
                 IncludeParents = true
             }, 
             pagingOptions: new PagingOptions(Take: 10_000, Skip: 0),
@@ -185,6 +184,7 @@ public partial class GenreEditModal
         });
         
         genre.Children = (hydratedGenre?.Children ?? [])
+            .Where(c => c.Depth == 1)
             .OrderBy(c => c.Relation.CanonicalName)
             .ToList();
         
