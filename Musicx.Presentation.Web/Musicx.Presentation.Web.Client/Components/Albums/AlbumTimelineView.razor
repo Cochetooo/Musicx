@@ -1,20 +1,16 @@
-﻿<div class="releases-timeline">
-    <div class="timeline-axis" style="display:flex; gap:24px;">
-        <!-- @foreach(var year in yearsOrdered)
-        {
-            <div style="min-width:120px; display:flex; flex-direction:column; align-items:center;">
-                <div class="year">@year</div>
-                <div style="height:120px; display:flex; flex-direction:column; justify-content:space-between;">
-                    @foreach(var (album, idx) in buckets[year].Select((a,i)=>(a,i)))
-                    {
-                        var pos = idx % 2 == 0 ? "flex-start" : "flex-end";
-                        <div style="margin-top:8px; align-self:@pos; width:100px;">
-                            <img src="@album.ArtworkUrl" style="width:100px; border-radius:6px" />
-                            <div style="text-align:center; font-size:0.8rem">@album.Name</div>
-                        </div>
-                    }
-                </div>
-            </div>
-        } -->
-    </div>
-</div>
+﻿@using Musicx.Presentation.Web.Client.Components.Charts
+@inject NavigationManager Navigation
+
+<MudStack Spacing="2">
+    <MudStack Row Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Spacing="2">
+        <MudText Typo="Typo.caption" Class="color-secondary">Years / Graduation</MudText>
+        <MudSelect T="int" Value="@YearTickInterval" ValueChanged="OnYearTickIntervalChanged" Dense="true" Variant="Variant.Outlined" Style="max-width:130px;">
+            <MudSelectItem Value="1">1 year</MudSelectItem>
+            <MudSelectItem Value="2">2 years</MudSelectItem>
+            <MudSelectItem Value="5">5 years</MudSelectItem>
+            <MudSelectItem Value="10">10 years</MudSelectItem>
+        </MudSelect>
+    </MudStack>
+    
+    <D3AlbumTimelineChart Albums="@TimelineAlbums" Height="380" YearTickInterval="@YearTickInterval" OnAlbumClicked="OnAlbumClicked" />
+</MudStack>

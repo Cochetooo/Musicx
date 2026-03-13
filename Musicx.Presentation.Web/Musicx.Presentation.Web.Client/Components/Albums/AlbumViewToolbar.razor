@@ -1,57 +1,91 @@
 ﻿@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Pages.SingleView
-<MudPaper Class="pa-2 mb-3 glass-paper">
+
+<MudPaper Class="pa-3 mb-3 glass-paper toolbar-shell">
     <MudStack Wrap="Wrap.Wrap" Style="width: 100%" AlignItems="AlignItems.Center"
-              Spacing="3" Row>
+              Spacing="2" Row>
         <MudTextField Placeholder="Search releases..."
+                      Label="Search"
                       Immediate
+                      Margin="Margin.Dense"
                       T="string"
                       Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search"
                       Value="@_searchText"
-                      ValueChanged="@OnInput"/>
+                      ValueChanged="@OnInput"
+                      Class="toolbar-item toolbar-search"/>
 
-        <MudSelect T="(string, bool)" Value="@SelectedSort" ValueChanged="@(v => { SelectedSort = v; RaiseSort(v); })" 
-                   Label="Sort By" Variant="Variant.Outlined">
-            <MudSelectItem Value="@(("ReleaseDate", false))">Release Date ↓</MudSelectItem>
-            <MudSelectItem Value="@(("ReleaseDate", true))">Release Date ↑</MudSelectItem>
-            <MudSelectItem Value="@(("Name", false))">Name ↓</MudSelectItem>
-            <MudSelectItem Value="@(("Name", true))">Name ↑</MudSelectItem>
-            <MudSelectItem Value="@(("GlobalRating", false))">Global Rating ↓</MudSelectItem>
-            <MudSelectItem Value="@(("GlobalRating", true))">Global Rating ↑</MudSelectItem>
-            <MudSelectItem Value="@(("MyRating", false))">My Rating ↓</MudSelectItem>
-            <MudSelectItem Value="@(("MyRating", true))">My Rating ↑</MudSelectItem>
-            <MudSelectItem Value="@(("NbRating", false))">Number of Ratings ↓</MudSelectItem>
-            <MudSelectItem Value="@(("NbRating", true))">Number of Ratings ↑</MudSelectItem>
+        <MudSelect T="(string, bool)"
+                   Value="@SelectedSort"
+                   ValueChanged="@OnSortChanged"
+                   Label="Tri"
+                   Margin="Margin.Dense"
+                   Variant="Variant.Outlined"
+                   Class="toolbar-item toolbar-select">
+            <MudSelectItem Value="@(("ReleaseDate", false))">Date de sortie ↓</MudSelectItem>
+            <MudSelectItem Value="@(("ReleaseDate", true))">Date de sortie ↑</MudSelectItem>
+            <MudSelectItem Value="@(("Name", false))">Nom ↓</MudSelectItem>
+            <MudSelectItem Value="@(("Name", true))">Nom ↑</MudSelectItem>
+            <MudSelectItem Value="@(("GlobalRating", false))">Note globale ↓</MudSelectItem>
+            <MudSelectItem Value="@(("GlobalRating", true))">Note globale ↑</MudSelectItem>
+            <MudSelectItem Value="@(("MyRating", false))">Ma note ↓</MudSelectItem>
+            <MudSelectItem Value="@(("MyRating", true))">Ma note ↑</MudSelectItem>
+            <MudSelectItem Value="@(("NbRating", false))">Nb. de notes ↓</MudSelectItem>
+            <MudSelectItem Value="@(("NbRating", true))">Nb. de notes ↑</MudSelectItem>
         </MudSelect>
 
-        <MudButtonGroup Size="Size.Medium">
-            <MudIconButton Icon="@(_viewMode == ReleasesViewMode.List ? Icons.Material.Filled.List : Icons.Material.Outlined.List)"
-                           Variant="Variant.Filled"
-                           OnClick="@(() => ChangeView(ReleasesViewMode.List))"/>
-            <MudIconButton Icon="@(_viewMode == ReleasesViewMode.Grid ? Icons.Material.Filled.GridView : Icons.Material.Outlined.GridView)"
-                           Variant="Variant.Filled"
-                           OnClick="@(() => ChangeView(ReleasesViewMode.Grid))"/>
-            <MudIconButton Icon="@(_viewMode == ReleasesViewMode.Timeline ? Icons.Material.Filled.Timeline : Icons.Material.Outlined.Timeline)"
-                           Variant="Variant.Filled"
-                           OnClick="@(() => ChangeView(ReleasesViewMode.Timeline))"/>
-        </MudButtonGroup>
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="toolbar-item">
+            <MudText Typo="Typo.caption" Class="view-mode-label">Display Mode</MudText>
+            <MudButtonGroup Size="Size.Small" Class="view-mode-group">
+                <MudButton StartIcon="@(_viewMode == ReleasesViewMode.List ? Icons.Material.Filled.List : Icons.Material.Outlined.List)"
+                           Variant="@GetViewVariant(ReleasesViewMode.List)"
+                           Color="@GetViewColor(ReleasesViewMode.List)"
+                           Class="view-mode-btn"
+                           OnClick="@(() => ChangeView(ReleasesViewMode.List))">
+                    Liste
+                </MudButton>
+                <MudButton StartIcon="@(_viewMode == ReleasesViewMode.Grid ? Icons.Material.Filled.GridView : Icons.Material.Outlined.GridView)"
+                           Variant="@GetViewVariant(ReleasesViewMode.Grid)"
+                           Color="@GetViewColor(ReleasesViewMode.Grid)"
+                           Class="view-mode-btn"
+                           OnClick="@(() => ChangeView(ReleasesViewMode.Grid))">
+                    Grille
+                </MudButton>
+                <MudButton StartIcon="@(_viewMode == ReleasesViewMode.Timeline ? Icons.Material.Filled.Timeline : Icons.Material.Outlined.Timeline)"
+                           Variant="@GetViewVariant(ReleasesViewMode.Timeline)"
+                           Color="@GetViewColor(ReleasesViewMode.Timeline)"
+                           Class="view-mode-btn"
+                           OnClick="@(() => ChangeView(ReleasesViewMode.Timeline))">
+                    Timeline
+                </MudButton>
+            </MudButtonGroup>
+        </MudStack>
 
-        <MudSlider T="double" Min="1.2" Max="2.4" Step="0.1" Value="@_zoom" ValueChanged="@(v =>
-                                                                                          {
-                                                                                              _zoom = v;
-                                                                                              OnZoomChanged.InvokeAsync(v);
-                                                                                          })" Style="width:140px;"/>
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="toolbar-item zoom-block">
+            <MudText Typo="Typo.caption">Zoom (@_zoom.ToString("0.0")x)</MudText>
+            <MudSlider T="double"
+                       Min="1.2"
+                       Max="2.4"
+                       Step="0.1"
+                       Value="@_zoom"
+                       ValueChanged="@OnZoomValueChanged"
+                       Class="toolbar-zoom"/>
+        </MudStack>
 
-        <MudSwitch T="bool" Value="@_groupBy"
-                   ValueChanged="@(v =>
-                                 {
-                                     _groupBy = v;
-                                     OnGroupByChanged.InvokeAsync(v);
-                                 })"
-                   Color="Color.Primary" Label="Group by type"/>
+        <MudSwitch T="bool"
+                   Value="@_groupBy"
+                   ValueChanged="@OnGroupByValueChanged"
+                   Color="Color.Primary"
+                   Label="Group by type"
+                   Class="toolbar-item"/>
 
-        <MudSelect T="RatingMode" Value="@_selectedRatingMode" ValueChanged="@ChangeRatingMode">
+        <MudSelect T="RatingMode"
+                   Value="@_selectedRatingMode"
+                   ValueChanged="@ChangeRatingMode"
+                   Label="Rating Mode"
+                   Margin="Margin.Dense"
+                   Variant="Variant.Outlined"
+                   Class="toolbar-item toolbar-select">
             @foreach (var rm in Enum.GetValues<RatingMode>())
             {
                 <MudSelectItem Value="rm">@rm.ToDescriptionString()</MudSelectItem>
@@ -60,16 +94,67 @@
 
         @if (AllowAdd)
         {
-            <MudTooltip>
-                <ChildContent>
-                    <MudIconButton Color="Color.Success"
-                                   Icon="@Icons.Material.Filled.AddBox"
-                                   OnClick="@(() => OnNewRelease.InvokeAsync(null))"/>
-                </ChildContent>
-                <TooltipContent>
-                    Add New Release
-                </TooltipContent>
+            <MudTooltip Text="Add a New Release">
+                <MudFab Color="Color.Success"
+                        Size="Size.Small"
+                        Icon="@Icons.Material.Filled.Add"
+                        Label="Add"
+                        OnClick="@(() => OnNewRelease.InvokeAsync(null))"
+                        Class="toolbar-item add-release-btn"/>
             </MudTooltip>
         }
     </MudStack>
 </MudPaper>
+
+<style>
+    .toolbar-shell {
+        border-radius: 12px;
+    }
+
+    .toolbar-item {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .toolbar-item:hover {
+        transform: translateY(-1px);
+    }
+
+    .toolbar-search {
+        min-width: 220px;
+    }
+
+    .toolbar-select {
+        min-width: 190px;
+    }
+
+    .zoom-block {
+        min-width: 200px;
+    }
+
+    .toolbar-zoom {
+        width: 150px;
+    }
+
+    .view-mode-label {
+        margin-right: 2px;
+        opacity: 0.8;
+    }
+
+    .view-mode-group {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .view-mode-btn {
+        min-width: 95px;
+        transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+
+    .view-mode-btn:active {
+        transform: scale(0.98);
+    }
+
+    .add-release-btn {
+        box-shadow: var(--mud-elevation-4);
+    }
+</style>

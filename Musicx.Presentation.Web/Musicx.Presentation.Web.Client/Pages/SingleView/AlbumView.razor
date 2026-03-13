@@ -9,6 +9,7 @@
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
+@using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Ratings
 @using Musicx.Presentation.Web.Client.Components.Songs
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
@@ -282,8 +283,8 @@ else
             <MudItem xs="12" md="5">
                 <!-- Track List -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">🎵 Tracks</MudText>
-                    <MudDivider Class="my-3" />
+                    <PanelTitle Text="🎵 Tracks" />
+                    <MudDivider Class="my-3"/>
                     <MudTable ReadOnly
                               Items="@_albumSongs"
                               Elevation="8"
@@ -323,7 +324,7 @@ else
                             </MudTFootRow>
                         </FooterContent>
                     </MudTable>
-                    
+
                     @if (UserClientContext.Can("album.edit"))
                     {
                         <MudButton Variant="Variant.Filled" Color="Color.Error"
@@ -338,35 +339,34 @@ else
             <MudItem xs="12" md="3">
                 <!-- Credit -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">📒 Credits</MudText>
-            
+                    <PanelTitle Text="📒 Credits" />
                 </MudPaper>
             </MudItem>
             
             <MudItem xs="12" md="4">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">💽 Releases</MudText>
+                    <PanelTitle Text="💽 Releases" />
                     <MudDivider Class="my-3"/>
-                    
+
                     <!-- Issues -->
-                        <MudList T="string">
-                            @if (_album.Releases is not null)
+                    <MudList T="string">
+                        @if (_album.Releases is not null)
+                        {
+                            foreach (var release in _album.Releases)
                             {
-                                foreach (var release in _album.Releases)
-                                {
-                                    <MudListItem>@release.Label?.Name - @release.CatalogNumber</MudListItem>
-                                }
+                                <MudListItem>@release.Label?.Name - @release.CatalogNumber</MudListItem>
                             }
-                        </MudList>
+                        }
+                    </MudList>
                 </MudPaper>
             </MudItem>
         </MudGrid>
         
         <!-- Reviews -->
         <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-            <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">📝 User Reviews</MudText>
-            <MudDivider Class="my-3" />
-            
+            <PanelTitle Text="📝 Reviews" />
+            <MudDivider Class="my-3"/>
+
             <MudList T="RenderFragment">
                 <MudListItem>
                     <MudText Class="text-bold">User123</MudText>
@@ -374,9 +374,9 @@ else
                     <MudText Typo="Typo.body2">Contenu de la review…</MudText>
                 </MudListItem>
             </MudList>
-            
-            <MudDivider Class="my-2" />
-            
+
+            <MudDivider Class="my-2"/>
+
             <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="pa-3">
                 <MudText Typo="Typo.h5" Class="text-bold">Staff Review</MudText>
                 <MudText Typo="Typo.caption" Class="text-color-disabled">Staff · 02/01/2023</MudText>
@@ -388,18 +388,16 @@ else
             <MudItem xs="12" md="4">
                 <!-- Suggestions -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
-                        🔗 Similar Releases
-                    </MudText>
+                    <PanelTitle Text="🔗 Similar Releases" />
                 </MudPaper>
             </MudItem>
             
             <MudItem xs="12" md="8">
                 <!-- Ratings et collections -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">🖍️ User Ratings & Collections</MudText>
-                    <MudDivider Class="my-3" />
-            
+                    <PanelTitle Text="🔢 Ratings" />
+                    <MudDivider Class="my-3"/>
+
                     <MudTable @ref="_albumRatingsTable"
                               Striped Bordered="false"
                               Dense
@@ -408,10 +406,10 @@ else
                               RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Rating)}")"
                               Breakpoint="Breakpoint.Sm">
                         <ColGroup>
-                            <col />
-                            <col style="width: 100%" />
-                            <col style="width: 100px" />
-                            <col style="width: 100px" />
+                            <col/>
+                            <col style="width: 100%"/>
+                            <col style="width: 100px"/>
+                            <col style="width: 100px"/>
                         </ColGroup>
                         <HeaderContent>
                             <MudTh>
@@ -459,7 +457,7 @@ else
                             </MudTd>
                         </RowTemplate>
                         <PagerContent>
-                            <MudTablePager />
+                            <MudTablePager/>
                         </PagerContent>
                     </MudTable>
                 </MudPaper>
@@ -476,11 +474,11 @@ else
         </MudPaper> -->
                 
         <!-- Tileset Artist Disco -->
-        <MudExpansionPanels Class="mt-4">
+        <!-- <MudExpansionPanels Class="mt-4">
             <MudExpansionPanel Text="Artist Discography">
                 
             </MudExpansionPanel>
-        </MudExpansionPanels>
+        </MudExpansionPanels> -->
     </MudContainer>
 }
 

@@ -174,12 +174,12 @@ public static class RatingHelper
                 _ => 0.15m
             };
 
-            if (album.Stats is null)
+            if (album.Stats is null || album.Stats.Average is null)
             {
                 continue;
             }
             
-            weightedSum += album.Stats.Average * coeff * album.Stats.Count;
+            weightedSum += album.Stats.Average.Value * coeff * album.Stats.Count;
             totalWeight += coeff * album.Stats.Count;
             ratingsCount += album.Stats.Count;
         }

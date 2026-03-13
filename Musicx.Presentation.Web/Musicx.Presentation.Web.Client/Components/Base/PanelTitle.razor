@@ -1,0 +1,14 @@
+﻿<MudText Typo="Typo.h5" Class="text-mega-bold animate-dust-in color-primary">
+    @Text
+    @(Count is not null ? " ⸱ " : string.Empty)
+    @if (Count is not null)
+    {
+        <span class="text-light">@Count</span>
+    }
+</MudText>
+
+@code
+{
+    [Parameter] public string Text { get; set; } = string.Empty;
+    [Parameter] public string? Count { get; set; }
+}

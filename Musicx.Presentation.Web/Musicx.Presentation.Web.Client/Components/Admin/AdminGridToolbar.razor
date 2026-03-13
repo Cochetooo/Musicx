@@ -1,10 +1,11 @@
-﻿@using Musicx.Presentation.Web.Client.Models
+﻿@using Musicx.Presentation.Web.Client.Components.Base
+@using Musicx.Presentation.Web.Client.Models
 
-<MudText Typo="Typo.h6">@Title</MudText>
+<PanelTitle Text="@Title" />
 <MudSpacer />
 <MudTextField
     Value="@SearchValue"
-    ValueChanged="SearchValueChanged"
+    ValueChanged="@SearchValueChanged"
     Label="Search"
     OnKeyDown="@OnSearchKeyDown"
     Class="mr-2"

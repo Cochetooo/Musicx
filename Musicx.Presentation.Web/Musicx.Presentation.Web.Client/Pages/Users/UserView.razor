@@ -11,6 +11,7 @@
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.User
 @using Musicx.Presentation.Web.Client.Components.Albums
+@using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Components.Ratings
 
@@ -113,10 +114,7 @@ else
         <MudGrid Spacing="2">
             <MudItem xs="12" md="2">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
-                        Rating Distribution
-                    </MudText>
-
+                    <PanelTitle Text="Rating Distribution" />
                     <MudDivider Class="my-3"/>
 
                     @if (_albumRatingDistrib is not null && _albumCount > 0)
@@ -149,10 +147,7 @@ else
                 </MudPaper>
                 
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
-                        Statistics
-                    </MudText>
-                    
+                    <PanelTitle Text="Statistics" />
                     <MudDivider Class="my-3"/>
                     
                     <MudList T="RenderFragment" Dense>
@@ -203,7 +198,14 @@ else
                         </MudListItem>
                     </MudList>
                 </MudPaper>
+                
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                    <PanelTitle Text="Friends" />
+                    <MudDivider Class="my-3"/>
+                </MudPaper>
+                
             </MudItem>
+            
             <MudItem xs="12" md="7">
                 <MudTable ServerData="@LoadUserAttrData" ReadOnly
                           Elevation="8"
@@ -218,14 +220,13 @@ else
                         <col style="width: 100px;"/>
                     </ColGroup>
                     <ToolBarContent>
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
-                            Ratings ⸱ <span class="text-light">@_albumCount</span>
-                        </MudText>
-                        <MudSpacer />
-                        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search for ratings..."
+                        <PanelTitle Text="Ratings" Count="@_albumCount.ToString()" />
+                        <MudSpacer/>
+                        
+                        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search for ratings..."
                                       Variant="Variant.Outlined"
                                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
-                                      IconSize="Size.Medium" Class="mt-0" />
+                                      IconSize="Size.Medium" Class="mt-0"/>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh>
@@ -296,24 +297,22 @@ else
             <MudItem xs="12" md="3">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-                        <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
-                            Top Genres
-                        </MudText>
+                        <PanelTitle Text="Favourite Genres" />
 
                         <MudSwitch @bind-Value="_showWeightedGenreRatings"
                                    Color="Color.Tertiary"
                                    LabelPlacement="Placement.Start"
                                    Class="genre-rating-switch"
                                    Label="@(_showWeightedGenreRatings ? "Weighted" : "Raw")"/>
-                        
+
                         <MudButton OnClick="@OnExpandTopGenresButtonClicked">
                             @if (_topGenresExpanded)
                             {
-                                <MudIcon Icon="@Icons.Material.Filled.ExpandLess" />
+                                <MudIcon Icon="@Icons.Material.Filled.ExpandLess"/>
                             }
                             else
                             {
-                                <MudIcon Icon="@Icons.Material.Filled.ExpandMore" />
+                                <MudIcon Icon="@Icons.Material.Filled.ExpandMore"/>
                             }
                         </MudButton>
                     </MudStack>
@@ -402,10 +401,7 @@ else
                 </MudPaper>
                 
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
-                        Favorites
-                    </MudText>
-
+                    <PanelTitle Text="Favourite Albums" />
                     <MudDivider Class="my-3"/>
 
                     <MudStack Row
@@ -448,14 +444,6 @@ else
                         }
 
                     </MudStack>
-                </MudPaper>
-
-                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">
-                        Friends
-                    </MudText>
-
-                    <MudDivider Class="my-3"/>
                 </MudPaper>
             </MudItem>
         </MudGrid>

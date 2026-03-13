@@ -9,6 +9,7 @@
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Albums
+@using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Ratings
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
@@ -128,35 +129,36 @@ else
             @* Main column: Releases *@
             <MudItem xs="12" md="9">
                 <MudPaper Class="bg-main pa-4">
-                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-primary">Releases</MudText>
-                    <MudDivider Class="my-3" />
+                    <PanelTitle Text="Releases" />
+                    <MudDivider Class="my-3"/>
 
                     @* TOOLBAR COMPONENT *@
                     <AlbumViewToolbar OnSearch="OnSearch" OnSort="OnSort" OnViewModeChanged="OnViewModeChanged"
-                                   OnZoomChanged="OnZoomChanged" OnGroupByChanged="OnToggleGroup"
-                                   OnRatingModeChanged="OnRatingModeChanged" AllowAdd="@UserClientContext.Can("artist.album.add")"
-                                   OnNewRelease="AddAlbumShowModal"
-                                   SelectedSort="@_selectedSort" />
+                                      OnZoomChanged="OnZoomChanged" OnGroupByChanged="OnToggleGroup"
+                                      OnRatingModeChanged="OnRatingModeChanged" AllowAdd="@UserClientContext.Can("artist.album.add")"
+                                      OnNewRelease="AddAlbumShowModal" SelectedSort="@_selectedSort"
+                                      InitialViewMode="@_viewMode" InitialRatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"/>
 
                     @* Main view switcher: List / Grid / Timeline *@
                     @if (_viewMode == ReleasesViewMode.List)
                     {
-                        <AlbumListView Albums="@_filteredAlbums" Zoom="@_zoomLevel" 
-                                            UserRatings="@_userAttrs"
-                                            RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
-                                            IsGrouped="@_groupByType" />
+                        <AlbumListView Albums="@_filteredAlbums" Zoom="@_zoomLevel"
+                                       UserRatings="@_userAttrs"
+                                       RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                       IsGrouped="@_groupByType"/>
                     }
                     else if (_viewMode == ReleasesViewMode.Grid)
                     {
-                        <AlbumGridView Albums="@_filteredAlbums" Zoom="@_zoomLevel" 
-                                            RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
-                                            ShowRating
-                                            ShowRatingCount
-                                            IsGrouped="@_groupByType" />
+                        <AlbumGridView Albums="@_filteredAlbums" Zoom="@_zoomLevel"
+                                       RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                       ShowRating
+                                       ShowRatingCount
+                                       IsGrouped="@_groupByType"/>
                     }
                     else if (_viewMode == ReleasesViewMode.Timeline)
                     {
-                        <AlbumTimelineView />
+                        <AlbumTimelineView Albums="@(_filteredAlbums
+                                .Where(a =>  a.Stats?.Average is not null && a.Stats.Average > 0).ToList())" />
                     }
                 </MudPaper>
             </MudItem>
@@ -164,7 +166,7 @@ else
             <!-- Side column: Details -->
             <MudItem xs="12" md="3">
                 <MudPaper Class="glass-paper pa-4">
-                    <MudText Typo="Typo.h6" Class="montserrat text-extra-bold">ℹ️ Info</MudText>
+                    <PanelTitle Text="Info" />
                     <MudDivider Class="my-2" />
 
                     <MudList Dense="true" T="RenderFragment">

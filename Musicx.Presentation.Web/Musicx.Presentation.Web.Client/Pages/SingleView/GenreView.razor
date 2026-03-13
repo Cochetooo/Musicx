@@ -12,6 +12,7 @@
 @using Musicx.Contracts.Dto.Responses.Genre
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Albums
+@using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Charts
 @using Musicx.Presentation.Web.Client.Components.Ratings
 @using Musicx.Presentation.Web.Client.Helpers
@@ -82,7 +83,7 @@ else
 
         <MudPaper Class="pa-4 pa-md-6 mb-4 glass-paper" Elevation="0">
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-2">
-                <MudText Typo="Typo.h5" Class="text-bold">Top albums</MudText>
+                <PanelTitle Text="Top Albums" />
                 <MudStack Row="true" Spacing="1">
                     <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" Disabled="@(!_canScrollTopAlbumsLeft)" OnClick="@ScrollTopAlbumsLeftAsync"/>
                     <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" Disabled="@(!_canScrollTopAlbumsRight)" OnClick="@ScrollTopAlbumsRightAsync"/>
@@ -110,7 +111,7 @@ else
         <MudGrid Spacing="3">
             <MudItem xs="12" lg="3">
                 <MudPaper Class="pa-4 mt-3 glass-paper panel-animated" Elevation="0">
-                    <MudText Typo="Typo.h6" Class="text-bold mb-2">Hierarchy</MudText>
+                    <PanelTitle Text="Hierarchy" />
                     <MudStack Spacing="1">
                         @{ var maxDepth = 0; }
                         @if (_genre.Parents?.Any() == true)
@@ -144,7 +145,7 @@ else
                 </MudPaper>
 
                 <MudPaper Class="pa-4 mt-3 glass-paper panel-animated" Elevation="0">
-                    <MudText Typo="Typo.h6" Class="text-bold">Ratings Evolution</MudText>
+                    <PanelTitle Text="Ratings Evolution" />
                     @if (_yearlyRatings.Count == 0)
                     {
                         <MudText Typo="Typo.body2" Class="color-secondary">Not enough ratings for timeline.</MudText>
@@ -158,19 +159,27 @@ else
 
             <MudItem xs="12" lg="5">
                 <MudPaper Class="pa-4 glass-paper panel-animated" Elevation="0">
-                    <MudText Typo="Typo.h6" Class="text-bold">Releases (@_albumCount)</MudText>
+                    <PanelTitle Text="Releases" Count="@_albumCount.ToString()" />
                     <MudTable ServerData="@LoadAlbumsData" @ref="_albumTable" Dense Hover Elevation="0"
                               Breakpoint="Breakpoint.Sm" RowClass="album-row"
                               RowStyleFunc="@((item, _) => $"--rating-color:{RatingHelper.GetColorForRating(item.Stats?.Average)}")">
+                        
+                        
                         <ColGroup>
+                            <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
                             <col style="width:3px;"/>
                             <col/>
                             <col style="width: 115px;"/>
                             <col style="width: 95px;"/>
                             <col style="width: 115px;"/>
+                            </MudHidden>
                         </ColGroup>
+                        
                         <HeaderContent>
-                            <MudTh Style="padding: 0;"></MudTh>
+                            <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
+                                <MudTh Style="padding: 0;"></MudTh>
+                            </MudHidden>
+                            
                             <MudTh>Album</MudTh>
                             <MudTh>Date</MudTh>
                             <MudTh>#</MudTh>
@@ -213,7 +222,7 @@ else
 
             <MudItem xs="12" lg="4">
                 <MudPaper Class="pa-4 glass-paper panel-animated" Elevation="0">
-                    <MudText Typo="Typo.h6" Class="text-bold mb-2">Popular Artists</MudText>
+                    <PanelTitle Text="Popular Artists" />
                     <MudGrid>
                         @foreach (var item in _topArtists)
                         {
@@ -273,7 +282,7 @@ else
     }
 
     .panel-animated { animation: fade-in-up .35s ease both; }
-
+    
     .album-row { position: relative; }
     .album-row:before {
         content: '';
