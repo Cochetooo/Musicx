@@ -38,13 +38,8 @@ public partial class AlbumViewToolbar
         }
     }
 
-    void OnInput(string? v)
+    void OnInput(string v)
     {
-        if (string.IsNullOrWhiteSpace(v) || v == _searchText)
-        {
-            return;
-        }
-        
         _searchText = v;
         OnSearch.InvokeAsync(v);
     }
