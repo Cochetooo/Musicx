@@ -6,6 +6,7 @@ using Musicx.Application.Api.Interfaces.Persistence.Repositories.Genre;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
@@ -44,7 +45,11 @@ public sealed class GenreDataViewBuilder(
             return null;
         }
 
-        var artistsTask = artistRepository.FindByGenreIdAsync(query.GenreId, new PagingOptions(Skip: 0, Take: 10));
+        var artistsTask = artistRepository.FindByGenreIdAsync(
+            query.GenreId, 
+            pagingOptions: new PagingOptions(Skip: 0, Take: 10)
+        );
+        
         var topAlbumsTask = albumRepository.FindByGenreIdAsync(
             genreId: query.GenreId,
             genreOptions: GenreOptions.PrimaryGenre,
@@ -96,7 +101,7 @@ public sealed class GenreDataViewBuilder(
         var result = new OutGenreDataView
         {
             Genre = genre,
-            Artists = new OutGenericList<Musicx.Contracts.Dto.Responses.OutArtist>
+            Artists = new OutGenericList<OutArtist>
             {
                 Items = artists.ToList(),
                 Total = await artistRepository.GetCountByGenreIdAsync(query.GenreId)

@@ -105,8 +105,6 @@ public partial class SearchOverlay : IAsyncDisposable
         }
     }
 
-    private void ApplyFilters() => _ = DoSearchAsync();
-
     private async Task DoSearchAsync()
     {
         if (_cts is not null)

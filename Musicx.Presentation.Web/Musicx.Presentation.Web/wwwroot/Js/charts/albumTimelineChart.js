@@ -241,7 +241,11 @@ export function renderAlbumTimelineChart(element, options) {
                 .attr('transform', `translate(${xScale(album.releaseDate.getFullYear())}, ${yScale(album.rating)}) scale(1.22)`);
 
             tooltip
-                .html(`<div class="album-timeline-tooltip__title">${album.name}</div><div class="album-timeline-tooltip__rating">${Math.round(album.rating)}</div>`)
+                .html(`<div class="album-timeline-tooltip__title">${album.name}</div><div class="album-timeline-tooltip__rating">${new Intl.DateTimeFormat('fr-FR', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                }).format(album.releaseDate)}</div>`)
                 .style('opacity', 1)
                 .style('left', `${event.offsetX + 16}px`)
                 .style('top', `${event.offsetY - 10}px`);

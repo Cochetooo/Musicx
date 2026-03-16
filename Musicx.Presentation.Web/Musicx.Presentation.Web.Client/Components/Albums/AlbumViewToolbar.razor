@@ -22,16 +22,16 @@
                    Margin="Margin.Dense"
                    Variant="Variant.Outlined"
                    Class="toolbar-item toolbar-select">
-            <MudSelectItem Value="@(("ReleaseDate", false))">Date de sortie ↓</MudSelectItem>
-            <MudSelectItem Value="@(("ReleaseDate", true))">Date de sortie ↑</MudSelectItem>
-            <MudSelectItem Value="@(("Name", false))">Nom ↓</MudSelectItem>
-            <MudSelectItem Value="@(("Name", true))">Nom ↑</MudSelectItem>
-            <MudSelectItem Value="@(("GlobalRating", false))">Note globale ↓</MudSelectItem>
-            <MudSelectItem Value="@(("GlobalRating", true))">Note globale ↑</MudSelectItem>
-            <MudSelectItem Value="@(("MyRating", false))">Ma note ↓</MudSelectItem>
-            <MudSelectItem Value="@(("MyRating", true))">Ma note ↑</MudSelectItem>
-            <MudSelectItem Value="@(("NbRating", false))">Nb. de notes ↓</MudSelectItem>
-            <MudSelectItem Value="@(("NbRating", true))">Nb. de notes ↑</MudSelectItem>
+            <MudSelectItem Value="@(("ReleaseDate", false))">Release Date ↓</MudSelectItem>
+            <MudSelectItem Value="@(("ReleaseDate", true))">Release Date ↑</MudSelectItem>
+            <MudSelectItem Value="@(("Name", false))">Name ↓</MudSelectItem>
+            <MudSelectItem Value="@(("Name", true))">Name ↑</MudSelectItem>
+            <MudSelectItem Value="@(("GlobalRating", false))">Global Rating ↓</MudSelectItem>
+            <MudSelectItem Value="@(("GlobalRating", true))">Global Rating ↑</MudSelectItem>
+            <MudSelectItem Value="@(("MyRating", false))">My rating ↓</MudSelectItem>
+            <MudSelectItem Value="@(("MyRating", true))">My rating ↑</MudSelectItem>
+            <MudSelectItem Value="@(("NbRating", false))">Nb. ratings ↓</MudSelectItem>
+            <MudSelectItem Value="@(("NbRating", true))">Nb. ratings ↑</MudSelectItem>
         </MudSelect>
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="toolbar-item">
@@ -42,14 +42,14 @@
                            Color="@GetViewColor(ReleasesViewMode.List)"
                            Class="view-mode-btn"
                            OnClick="@(() => ChangeView(ReleasesViewMode.List))">
-                    Liste
+                    List
                 </MudButton>
                 <MudButton StartIcon="@(_viewMode == ReleasesViewMode.Grid ? Icons.Material.Filled.GridView : Icons.Material.Outlined.GridView)"
                            Variant="@GetViewVariant(ReleasesViewMode.Grid)"
                            Color="@GetViewColor(ReleasesViewMode.Grid)"
                            Class="view-mode-btn"
                            OnClick="@(() => ChangeView(ReleasesViewMode.Grid))">
-                    Grille
+                    Grid
                 </MudButton>
                 <MudButton StartIcon="@(_viewMode == ReleasesViewMode.Timeline ? Icons.Material.Filled.Timeline : Icons.Material.Outlined.Timeline)"
                            Variant="@GetViewVariant(ReleasesViewMode.Timeline)"

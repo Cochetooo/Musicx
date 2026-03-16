@@ -158,7 +158,10 @@ else
                     else if (_viewMode == ReleasesViewMode.Timeline)
                     {
                         <AlbumTimelineView Albums="@(_filteredAlbums
-                                .Where(a =>  a.Stats?.Average is not null && a.Stats.Average > 0).ToList())" />
+                                .Where(a =>  a.Stats?.Average is not null && a.Stats.Average > 0 
+                                    && (a.ReleaseType == ReleaseType.Lp || a.ReleaseType == ReleaseType.DjMix 
+                                    || a.ReleaseType == ReleaseType.Demo || a.ReleaseType == ReleaseType.Ep))
+                                .ToList())" />
                     }
                 </MudPaper>
             </MudItem>
