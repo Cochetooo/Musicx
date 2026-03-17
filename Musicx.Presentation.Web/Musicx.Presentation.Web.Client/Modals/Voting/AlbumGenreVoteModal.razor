@@ -1,3 +1,4 @@
+@using Musicx.Application.Shared.Helpers
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
@@ -5,6 +6,7 @@
 @using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.Genre
+@using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Genres
 
 @inject ILoggerFactory LoggerFactory
@@ -14,74 +16,257 @@
 @inject ISaveAllService<InAlbumGenre> UcVoteAlbumGenre
 @inject ISaveAllService<InAlbumInfluence> UcVoteAlbumInfluence
 
-<MudDialog @ref="_modalRef" Class="pa-2">
+<MudDialog @ref="_modalRef" Class="pa-2 genre-vote-dialog">
     <TitleContent>
-        Album Genre Votes
+        <div class="modal-title-row">
+            <PanelTitle Text="Album Genre Votes" />
+            <MudTooltip Text="Vote per category. You can vote + or -. Avoid abusing the system: do not vote off topic (ex: death metal on a pop album).">
+                <MudIconButton Icon="@Icons.Material.Filled.HelpOutline" Color="Color.Info" Variant="Variant.Outlined" Size="Size.Small"/>
+            </MudTooltip>
+        </div>
     </TitleContent>
     <DialogContent>
-        <MudGrid Justify="Justify.Center">
-            <!-- Primary Genres -->
-            
-            <MudItem xs="12">
-                <MudText Typo="Typo.h3" Class="text-mega-bold">
-                    Primary Genres
-                </MudText>
-            
-                <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Row>
-                    <MudAutocomplete
-                        T="OutGenre?"
-                        Dense
-                        MaxItems="25"
-                        Placeholder="Search a genre..."
-                        @bind-Text="_selectedPrimaryText"
-                        @bind-Value="_selectedPrimaryGenre"
-                        ToStringFunc="@(e => e?.ShortName ?? e?.CanonicalName ?? "")"
-                        SearchFunc="SearchGenre"/>
-                
-                    <MudIconButton Icon="@Icons.Material.Filled.Add" 
-                                   Disabled="@(_selectedPrimaryGenre is null)"
-                                   OnClick="@AddPrimaryGenre"/>
-                </MudStack>
-            
-                @foreach (var genre in _primaryGenres)
+        <div class="hex-wheel-wrap">
+            <div class="hex-links" aria-hidden="true">
+                @foreach (var link in _links)
                 {
-                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeletePrimaryGenre(genre))" />
+                    <div class="hex-link @link.CssClass">
+                        @for (var i = 0; i < 6; i++)
+                        {
+                            <span class="link-hex"></span>
+                        }
+                    </div>
                 }
-            </MudItem>
+            </div>
             
-            
-            <!-- Influence Genres -->
-            
-            <MudItem xs="12">
-                <MudText Typo="Typo.h3" Class="text-mega-bold">
-                    Influence Genres
-                </MudText>
-            
-                <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Row>
-                    <MudAutocomplete
-                        T="OutGenre?"
-                        Dense
-                        MaxItems="25"
-                        Placeholder="Search a genre..."
-                        @bind-Text="_selectedInfluenceText"
-                        @bind-Value="_selectedInfluenceGenre"
-                        ToStringFunc="@(e => e?.ShortName ?? e?.CanonicalName ?? "")"
-                        SearchFunc="SearchInfluence"/>
-                
-                    <MudIconButton Icon="@Icons.Material.Filled.Add" 
-                                   Disabled="@(_selectedInfluenceGenre is null)"
-                                   OnClick="@AddInfluenceGenre"/>
-                </MudStack>
-            
-                @foreach (var genre in _influenceGenres)
+            <div class="hex-wheel-grid">
+                @foreach (var section in _sections)
                 {
-                    <GenreBadge Genre="@genre" Closable OnClose="@(() => OnDeleteInfluenceGenre(genre))" />
+                    <div class="@("zone " + section.CssClass)">
+                        <MudText Typo="Typo.subtitle1" Class="section-title">
+                            @(section.Title)
+                        </MudText>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+                            <MudAutocomplete
+                                T="OutGenre?"
+                                Dense
+                                MaxItems="20"
+                                Placeholder="Add a genre..."
+                                Value="GetSelectedGenre(section.Key)"
+                                ValueChanged="genre => SetSelectedGenre(section.Key, genre)"
+                                Text="GetSelectedText(section.Key)"
+                                TextChanged="text => SetSelectedText(section.Key, text)"
+                                ToStringFunc="@(e => e?.ShortName ?? e?.CanonicalName ?? string.Empty)"
+                                SearchFunc="(value, token) => SearchBySection(section.Key, value, token)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="() => AddGenre(section.Key)" Disabled="@(GetSelectedGenre(section.Key) is null)" />
+                        </MudStack>
+
+                        <div class="badges-scroll">
+                            @foreach (var genreVote in GetVotes(section.Key))
+                            {
+                                var background = genreVote.Genre.Color ?? ColorHelper.DarkColor;
+                                var transparentBackground = ColorHelper.ToRgba(background, 0.45);
+                                
+                                <div class="vote-badge @(genreVote.IsExpanded ? "expanded" : string.Empty)" 
+                                     style="@($"background: linear-gradient(135deg, {background}, {transparentBackground}")">
+                                    <div class="vote-badge-head" @onclick="() => ToggleExpanded(section.Key, genreVote.Genre.Id)">
+                                        <span class="genre-name">@GenreLabel(genreVote.Genre)</span>
+                                        <span class="score">+ @genreVote.PositiveCount / - @genreVote.NegativeCount</span>
+                                        <div class="vote-actions" @onclick:stopPropagation>
+                                            <MudIconButton Icon="@Icons.Material.Filled.ThumbUp" Color="@(genreVote.UserVote == VoteDirection.Positive ? Color.Success : Color.Default)" Size="Size.Small" OnClick="() => Vote(section.Key, genreVote.Genre, VoteDirection.Positive)" />
+                                            <MudIconButton Icon="@Icons.Material.Filled.ThumbDown" Color="@(genreVote.UserVote == VoteDirection.Negative ? Color.Error : Color.Default)" Size="Size.Small" OnClick="() => Vote(section.Key, genreVote.Genre, VoteDirection.Negative)" />
+                                            <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Default" Size="Size.Small" OnClick="() => RemoveVote(section.Key, genreVote.Genre.Id)" />
+                                        </div>
+                                    </div>
+
+                                    @if (genreVote.IsExpanded)
+                                    {
+                                        <div class="vote-details-hex">
+                                            <div class="vote-list pos">
+                                                <strong>Agree</strong>
+                                                @if (genreVote.PositiveUsers.Count == 0)
+                                                {
+                                                    <span>No vote.</span>
+                                                }
+                                                else
+                                                {
+                                                    @foreach (var name in genreVote.PositiveUsers)
+                                                    {
+                                                        <span>@name</span>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="vote-list neg">
+                                                <strong>Disagree</strong>
+                                                @if (genreVote.NegativeUsers.Count == 0)
+                                                {
+                                                    <span>No vote.</span>
+                                                }
+                                                else
+                                                {
+                                                    @foreach (var name in genreVote.NegativeUsers)
+                                                    {
+                                                        <span>@name</span>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
                 }
-            </MudItem>
-        </MudGrid>
+            </div>
+        </div>
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Primary" OnClick="@Save">Save</MudButton>
         <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
     </DialogActions>
 </MudDialog>
+
+<style>
+    .genre-vote-dialog {
+        min-width: min(1200px, 95vw);
+    }
+
+    .modal-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .hex-wheel-wrap {
+        position: relative;
+        padding: 18px;
+    }
+
+    .hex-wheel-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        grid-template-areas:
+        "main primary descriptor"
+        "scene . movement"
+        ". influence .";
+        gap: 20px;
+    }
+
+    .zone {
+        min-height: 230px;
+        padding: 12px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(15, 20, 28, 0.92), rgba(10, 12, 18, 0.92));
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        box-shadow: 0 0 20px rgba(0, 0, 0, .35);
+        animation: fade-up .35s ease;
+    }
+
+    .zone-main { grid-area: main; }
+    .zone-primary { grid-area: primary; }
+    .zone-descriptor { grid-area: descriptor; }
+    .zone-scene { grid-area: scene; }
+    .zone-movement { grid-area: movement; }
+    .zone-influence { grid-area: influence; }
+
+    .section-title { margin-bottom: 8px; }
+
+    .badges-scroll {
+        max-height: 280px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-right: 4px;
+    }
+
+    .vote-badge {
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 12px;
+        transition: .2s ease;
+    }
+
+    .vote-badge:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(131, 88, 255, .2);
+    }
+
+    .vote-badge-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        cursor: pointer;
+    }
+
+    .genre-name { font-weight: 700; flex: 1; }
+    .score { font-size: .8rem; color: #c9cfda; }
+    .vote-actions { display: flex; align-items: center; }
+
+    .vote-details-hex {
+        margin: 0 8px 8px;
+        clip-path: polygon(25% 4%, 75% 4%, 96% 50%, 75% 96%, 25% 96%, 4% 50%);
+        border: 1px solid #6f7686;
+        padding: 16px;
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        gap: 10px;
+        background: rgba(20, 24, 33, 0.95);
+    }
+
+    .vote-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+        font-size: .82rem;
+    }
+
+    .vote-list span {
+        padding: 2px 8px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.08);
+    }
+
+    .vote-list.pos strong { color: #79ffac; }
+    .vote-list.neg strong { color: #ff8585; }
+
+    .hex-links {
+        position: absolute;
+        inset: 18px;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .hex-link {
+        position: absolute;
+        display: flex;
+        gap: 8px;
+    }
+
+    .link-hex {
+        width: 12px;
+        height: 12px;
+        clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%);
+        background: hsl(var(--h), 90%, 62%);
+        box-shadow: 0 0 12px hsl(var(--h), 90%, 62%);
+        animation: rainbow 4s linear infinite;
+    }
+
+    .link-hex:nth-child(1) { --h: 0; }
+    .link-hex:nth-child(2) { --h: 60; }
+    .link-hex:nth-child(3) { --h: 120; }
+    .link-hex:nth-child(4) { --h: 180; }
+    .link-hex:nth-child(5) { --h: 240; }
+    .link-hex:nth-child(6) { --h: 300; }
+
+    .l-main-primary { top: 8%; left: 26%; transform: rotate(12deg); }
+    .l-primary-descriptor { top: 8%; right: 23%; transform: rotate(-12deg); }
+    .l-descriptor-movement { top: 36%; right: 11%; transform: rotate(60deg); }
+    .l-movement-influence { bottom: 15%; right: 30%; transform: rotate(160deg); }
+    .l-influence-scene { bottom: 15%; left: 30%; transform: rotate(200deg); }
+    .l-scene-main { top: 36%; left: 11%; transform: rotate(-60deg); }
+</style>

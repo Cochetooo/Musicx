@@ -20,7 +20,8 @@
                               Class="rounded-lg mr-3" Elevation="8"/>
                     <MudStack Spacing="1">
                         <MudLink Href="@($"/Album/{album.Id}")">
-                            <MudText Typo="Typo.body1" Class="color-primary">
+                            <MudText Typo="Typo.body1" Class="@("color-primary" 
+                                                              + (album.Stats is { Average: > 7200, Count: >= 10 } ? " text-mega-bold" : string.Empty))">
                                 @album.Name
                                 @if (album.EnglishName is not null)
                                 {

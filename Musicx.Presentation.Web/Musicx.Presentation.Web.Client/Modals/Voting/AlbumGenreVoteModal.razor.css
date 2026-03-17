@@ -1,0 +1,17 @@
+﻿
+
+@media (max-width: 900px) {
+    .hex-links { display: none; }
+    .hex-wheel-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "primary"
+            "main"
+            "descriptor"
+            "scene"
+            "movement"
+            "influence";
+    }
+
+    .zone { min-height: 210px; }
+}
