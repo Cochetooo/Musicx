@@ -163,6 +163,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(SqlBuilder<InRole>), typeof(RoleSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InTag>), typeof(TagSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InUser>), typeof(UserSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InUserArtistAttribute>), typeof(UserArtistAttrSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InUserAlbumAttribute>), typeof(UserAlbumAttrSqlBuilder));
 
         // Repositories
@@ -177,6 +178,7 @@ public static class DependencyInjection
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Security.IRoleRepository, RoleRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Tag.ITagRepository, TagRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserRepository, UserRepository>();
+        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserArtistAttrsRepository, UserArtistAttrRepository>();
         services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserAlbumAttrsRepository, UserAlbumAttrRepository>();
         
         // Data Views / Cache abstractions

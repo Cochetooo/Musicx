@@ -32,7 +32,9 @@ else
                         else if (DetailedView && Album.PrimaryGenres is not null && 0 < Album.PrimaryGenres.Count)
                         {
                             <div class="d-flex flex-wrap gap-1 mt-1">
-                                @foreach (var genre in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Subgenre || g.Genre.Type == GenreType.Fusion))
+                                @foreach (var genre in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Subgenre 
+                                        || g.Genre.Type == GenreType.Fusion || g.Genre.Type == GenreType.Localization
+                                              || g.Genre.Type == GenreType.Genre))
                                 {
                                     <GenreBadge Genre="@genre.Genre" Size="@Size" Clickable/>
                                 }
@@ -135,7 +137,9 @@ else
                             🟡 Genres
                         </MudChip>
                         
-                        @foreach (var genre in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Subgenre || g.Genre.Type == GenreType.Fusion))
+                        @foreach (var genre in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Subgenre 
+                                || g.Genre.Type == GenreType.Fusion || g.Genre.Type == GenreType.Localization
+                                || g.Genre.Type == GenreType.Genre))
                         {
                             <GenreBadge Genre="@genre.Genre" Size="@Size" Clickable/>
                         }

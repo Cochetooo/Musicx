@@ -5,6 +5,7 @@
 @using Musicx.Application.Web.Interfaces.UseCases.Artist
 @using Musicx.Application.Web.Interfaces.UseCases.User.AlbumAttribute
 @using Musicx.Contracts.Dto.Requests.Artist
+@using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
@@ -15,6 +16,8 @@
 @using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 
 @inject IFindArtistDataViewService UcArtistDataView
+@inject ISaveService<InUserArtistAttribute> UcSaveArtistAttr
+@inject HttpClient Http
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
 
@@ -60,7 +63,7 @@ else
 
                     <MudStack Row Class="mt-3" AlignItems="AlignItems.Center" Spacing="4">
                         <MudText Typo="Typo.subtitle2" Class="text-shadow color-secondary">
-                            👥 Followers: 0
+                            👥 Followers: @_followersCount
                         </MudText>
                         <MudText Typo="Typo.subtitle2" Class="text-shadow color-secondary">
                             💿 Releases: @_artistAlbums.Total
@@ -72,18 +75,17 @@ else
 
                     <div class="mt-4">
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                            <MudTooltip>
+                            <MudTooltip Text="@(_isCurrentUserFollowing ? "Unfollow this artist" : "Follow this artist")">
                                 <ChildContent>
-                                    <MudToggleIconButton
-                                        Size="Size.Large"
-                                        Color="Color.Dark"
-                                        ToggledColor="Color.Warning"
-                                        Variant="Variant.Text"
-                                        Icon="@Icons.Material.Filled.Star"/>
+                                    <MudButton Class="@("artist-follow-button " + (_isCurrentUserFollowing ? "is-following" : string.Empty))"
+                                               Variant="Variant.Filled"
+                                               Color="@(_isCurrentUserFollowing ? Color.Warning : Color.Dark)"
+                                               StartIcon="@(_isCurrentUserFollowing ? Icons.Material.Filled.Star : Icons.Material.Filled.StarOutline)"
+                                               Disabled="@(UserClientContext.CurrentUser is null || !UserClientContext.Can("user.album.attrs.save"))"
+                                               OnClick="@ToggleArtistFollowAsync">
+                                        <span>@(_isCurrentUserFollowing ? "Following" : "Follow")</span>
+                                    </MudButton>
                                 </ChildContent>
-                                <TooltipContent>
-                                    Add Favourite
-                                </TooltipContent>
                             </MudTooltip>
 
                             @* small place for quick actions *@
@@ -110,13 +112,15 @@ else
                     <MudStack Justify="Justify.SpaceAround" Row Spacing="2">
                         <div style="justify-items: center">
                             <MudText Typo="Typo.subtitle2" Class="montserrat">⭐ Fan Rating</MudText>
-                            <DonutRating Rating="@null"
+                            <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.FanCount ratings</MudText>
+                            <DonutRating Rating="@_artistRatingSummary.FanRating"
                                          RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
                                          Size="DonutRatingSize.Small"/>
                         </div>
                         <div style="justify-items: center">
                             <MudText Typo="Typo.subtitle2" Class="montserrat">👤 Non-Fan Rating</MudText>
-                            <DonutRating Rating="@null"
+                            <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.NonFanCount ratings</MudText>
+                            <DonutRating Rating="@_artistRatingSummary.NonFanRating"
                                          RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
                                          Size="DonutRatingSize.Small"/>
                         </div>

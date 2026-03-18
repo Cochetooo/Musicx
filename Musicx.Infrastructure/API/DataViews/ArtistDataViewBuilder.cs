@@ -18,6 +18,7 @@ public sealed class ArtistDataViewBuilder(
     IArtistRepository artistRepository,
     IAlbumRepository albumRepository,
     IUserAlbumAttrsRepository userAlbumAttrsRepository,
+    IUserArtistAttrsRepository userArtistAttrsRepository,
     IDataViewCacheProvider cache,
     IDataViewCacheKeyFactory cacheKeyFactory) : IArtistDataViewBuilder
 {
@@ -76,6 +77,10 @@ public sealed class ArtistDataViewBuilder(
                 Total = count
             };
         }
+        
+        var followersCount = await userArtistAttrsRepository.CountFollowersByArtistAsync(query.ArtistId);
+        var isCurrentUserFollowing = query.UserId is not null
+                                     && await userArtistAttrsRepository.FindOneAsync(query.UserId.Value, query.ArtistId) is { Follow: true };
 
         var result = new OutArtistDataView
         {
@@ -87,7 +92,9 @@ public sealed class ArtistDataViewBuilder(
                 Total = albums.Count
             },
             RatingSummary = ratingSummary,
-            UserAttributes = userAlbumAttrsList
+            UserAttributes = userAlbumAttrsList,
+            FollowersCount = followersCount,
+            IsCurrentUserFollowing = isCurrentUserFollowing
         };
 
         await cache.SetAsync(cacheKey, result, TimeSpan.FromMinutes(5), cancellationToken);

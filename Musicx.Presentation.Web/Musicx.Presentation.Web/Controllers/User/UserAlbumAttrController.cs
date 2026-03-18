@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
@@ -16,6 +17,9 @@ namespace Musicx.Presentation.Web.Controllers.User;
 [Route("api/user-album-attrs")]
 public sealed class UserAlbumAttrController(
     IUserAlbumAttrsRepository repository,
+    IUserArtistAttrsRepository userArtistAttrsRepository,
+    IUserRepository userRepository,
+    IAlbumRepository albumRepository,
     ILoggerProvider loggerProvider) : ControllerBase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(UserAlbumAttrController));
@@ -323,6 +327,22 @@ public sealed class UserAlbumAttrController(
             else
             {
                 await repository.SaveAsync(userAlbumAttrDto);
+                
+                if (userAlbumAttrDto.Rating is >= 7000)
+                {
+                    var user = await userRepository.FindOneByIdAsync(userAlbumAttrDto.UserId);
+                    var album = await albumRepository.FindOneByIdAsync(userAlbumAttrDto.AlbumId);
+
+                    if (user?.PrefAutoFollow == true && album?.ArtistId is { } artistId)
+                    {
+                        await userArtistAttrsRepository.SaveAsync(new InUserArtistAttribute
+                        {
+                            UserId = userAlbumAttrDto.UserId,
+                            ArtistId = artistId,
+                            Follow = true
+                        });
+                    }
+                }
             }
 
             _logger.LogInformation($"🌍✅ API : SAVE user_album_attrs - SUCCESS");

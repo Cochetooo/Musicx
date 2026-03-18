@@ -1,7 +1,9 @@
+using System.Net;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
@@ -34,7 +36,9 @@ public partial class ArtistView
     private OutGenericList<OutUserAlbumAttribute>? _userAttrs;
     private Dictionary<ReleaseType, bool> _availableReleaseTypes = [];
     private Dictionary<int, int> _releaseCountPerYears = [];
-    private OutArtistRatingSummary _artistRatingSummary;
+    private OutArtistRatingSummary _artistRatingSummary = new();
+    private bool _isCurrentUserFollowing;
+    private long _followersCount;
     
     private ReleasesViewMode _viewMode = ReleasesViewMode.List;
     private bool _groupByType = true;
@@ -73,6 +77,8 @@ public partial class ArtistView
         _artistAlbums = dataView.Albums;
         _artistRatingSummary = dataView.RatingSummary;
         _userAttrs = dataView.UserAttributes;
+        _isCurrentUserFollowing = dataView.IsCurrentUserFollowing;
+        _followersCount = dataView.FollowersCount;
 
         _logger.LogInformation($"✅ Artist loaded: {_artist.Name} ({_artist.Id})");
         
@@ -219,6 +225,30 @@ public partial class ArtistView
     private void ToggleReleaseType(KeyValuePair<ReleaseType, bool> releaseType)
     {
         _availableReleaseTypes[releaseType.Key] = !releaseType.Value;
+    }
+    
+    private async Task ToggleArtistFollowAsync()
+    {
+        if (_artist is null || UserClientContext.CurrentUser is null || !UserClientContext.Can("user.album.attrs.save"))
+        {
+            return;
+        }
+
+        if (_isCurrentUserFollowing)
+        {
+            await Http.DeleteAsync($"/api/user-artist-attrs/{UserClientContext.CurrentUser.Id}/{_artist.Id}");
+        }
+        else
+        {
+            await UcSaveArtistAttr.ExecuteAsync(new InUserArtistAttribute
+            {
+                UserId = UserClientContext.CurrentUser.Id,
+                ArtistId = _artist.Id,
+                Follow = true
+            });
+        }
+
+        await LoadArtist();
     }
 
     private async Task EditArtistShowModal()

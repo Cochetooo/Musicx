@@ -18,6 +18,7 @@ create table public.users (
     user_name                   varchar(50) not null unique CHECK (char_length(user_name) >= 3),
     user_password_hash          text,
     user_password_salt          text,
+    user_pref_auto_follow       bool not null default false,
     user_pref_banner_blur       bool not null default false,
     user_pref_dark_mode         bool not null default false,
     user_pref_rating_mode       integer not null default 1,

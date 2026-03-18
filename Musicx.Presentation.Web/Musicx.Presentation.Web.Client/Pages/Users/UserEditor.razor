@@ -1,5 +1,6 @@
 ﻿@page "/User/Edit"
 @using System.Globalization
+@using Musicx.Application.Shared.Helpers
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Security
@@ -87,7 +88,7 @@
             <MudDivider/>
             <MudText Typo="Typo.h6">Preferences</MudText>
 
-            <MudStack Row Spacing="4">
+            <MudStack Row Spacing="4" Wrap="Wrap.Wrap">
                 <MudSwitch @bind-Value="_user.PrefDarkMode" Color="Color.Primary"
                            Label="Dark Mode"
                            ThumbIcon="@Icons.Material.Filled.DarkMode"/>
@@ -95,7 +96,13 @@
                            Label="Simple Album Genre Display"/>
                 <MudSwitch @bind-Value="_user.PrefShowRatings" Color="Color.Tertiary"
                            Label="Show Ratings"/>
+                <MudSwitch @bind-Value="_user.PrefAutoFollow" Color="Color.Warning"
+                           Label="Auto-follow artists with a good rating"
+                           ThumbIcon="@Icons.Material.Filled.AutoAwesome"/>
             </MudStack>
+            <MudText Typo="Typo.caption" Class="color-secondary">
+                When enabled, rating an album above @(RatingHelper.GetRatingFormatted(7000m, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)) automatically follows its artist.
+            </MudText>
 
             <!-- Rating mode -->
             <MudDivider/>

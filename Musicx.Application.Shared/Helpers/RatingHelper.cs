@@ -152,8 +152,28 @@ public static class RatingHelper
     {
         return CalculateArtistRatingSummary(albums).Rating;
     }
-
+    
     public static OutArtistRatingSummary CalculateArtistRatingSummary(IList<OutAlbum> albums)
+    {
+        var global = CalculateWeightedRating(albums, album => album.Stats?.Average, album => album.Stats?.Count ?? 0);
+        var fans = CalculateWeightedRating(albums, album => album.Stats?.FanAverage, album => album.Stats?.FanCount ?? 0);
+        var nonFans = CalculateWeightedRating(albums, album => album.Stats?.NonFanAverage, album => album.Stats?.NonFanCount ?? 0);
+
+        return new OutArtistRatingSummary
+        {
+            Rating = global.Rating,
+            Count = global.Count,
+            FanRating = fans.Rating,
+            FanCount = fans.Count,
+            NonFanRating = nonFans.Rating,
+            NonFanCount = nonFans.Count
+        };
+    }
+    
+    private static (decimal? Rating, long Count) CalculateWeightedRating(
+        IList<OutAlbum> albums,
+        Func<OutAlbum, decimal?> ratingSelector,
+        Func<OutAlbum, int> countSelector)
     {
         decimal totalWeight = 0;
         decimal weightedSum = 0;
@@ -173,23 +193,21 @@ public static class RatingHelper
                 ReleaseType.Remix => 0.2m,
                 _ => 0.15m
             };
+            
+            var rating = ratingSelector(album);
+            var count = countSelector(album);
 
-            if (album.Stats is null || album.Stats.Average is null)
+            if (rating is null || count <= 0)
             {
                 continue;
             }
-            
-            weightedSum += album.Stats.Average.Value * coeff * album.Stats.Count;
-            totalWeight += coeff * album.Stats.Count;
-            ratingsCount += album.Stats.Count;
+
+            weightedSum += rating.Value * coeff * count;
+            totalWeight += coeff * count;
+            ratingsCount += count;
         }
-        
-        decimal? rating = totalWeight > 0 ? weightedSum / totalWeight : null;
-        return new OutArtistRatingSummary
-        {
-            Rating = rating,
-            Count = ratingsCount
-        };
+
+        return (totalWeight > 0 ? weightedSum / totalWeight : null, ratingsCount);
     }
 
     public static string GetColorForRating(decimal? rating)

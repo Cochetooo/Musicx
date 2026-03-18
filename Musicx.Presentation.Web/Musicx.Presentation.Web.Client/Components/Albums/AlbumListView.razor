@@ -1,4 +1,5 @@
-﻿@using Musicx.Presentation.Web.Client.Components.Ratings
+﻿@using Musicx.Application.Shared.Helpers
+@using Musicx.Presentation.Web.Client.Components.Ratings
 
 @foreach (var group in GroupedAlbums)
 {
@@ -21,7 +22,7 @@
                     <MudStack Spacing="1">
                         <MudLink Href="@($"/Album/{album.Id}")">
                             <MudText Typo="Typo.body1" Class="@("color-primary" 
-                                                              + (album.Stats is { Average: > 7200, Count: >= 10 } ? " text-mega-bold" : string.Empty))">
+                                                              + (album.Stats is { Average: > 7200, Count: >= 10 } ? " text-extra-bold" : string.Empty))">
                                 @album.Name
                                 @if (album.EnglishName is not null)
                                 {
@@ -53,7 +54,7 @@
                     </MudStack>
                 </MudStack>
 
-                <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Class="album-list-rating-hover-card">
                     @{
                         var rating = UserRatings?.Items
                             .FirstOrDefault(ur => ur.Album.Id == album.Id)
@@ -69,13 +70,24 @@
                         }
                     }
 
-                    <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.Small"/>
-                    <MudText Typo="Typo.body2" Class="montserrat text-bold" Style="width: 50px; text-align: end;">
-                        @(album.Stats?.Count ?? 0)
-                        <MudText Typo="Typo.caption" Class="color-secondary">
-                            &nbsp;ratings
+                    <div class="album-list-rating-summary">
+                        <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.Small"/>
+                        <MudText Typo="Typo.body2" Class="montserrat text-bold" Style="width: 50px; text-align: end;">
+                            @(album.Stats?.Count ?? 0)
+                            <MudText Typo="Typo.caption" Class="color-secondary">
+                                &nbsp;ratings
+                            </MudText>
                         </MudText>
-                    </MudText>
+                    </div>
+                    
+                    <div class="album-list-rating-details">
+                        <div class="album-list-rating-pill">
+                            ⭐ @RatingHelper.GetRatingFormatted(album.Stats?.FanAverage, RatingMode) · @(album.Stats?.FanCount ?? 0)
+                        </div>
+                        <div class="album-list-rating-pill">
+                            👤 @RatingHelper.GetRatingFormatted(album.Stats?.NonFanAverage, RatingMode) · @(album.Stats?.NonFanCount ?? 0)
+                        </div>
+                    </div>
                 </MudStack>
             </MudStack>
 
@@ -83,3 +95,42 @@
         }
     </MudPaper>
 }
+
+<style>
+    .album-list-rating-hover-card {
+        position: relative;
+    }
+
+    .album-list-rating-summary {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .album-list-rating-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        max-width: 0;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateX(-4px);
+        transition: max-width 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .album-list-rating-hover-card:hover .album-list-rating-details {
+        max-width: 220px;
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .album-list-rating-pill {
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.2rem 0.55rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+</style>

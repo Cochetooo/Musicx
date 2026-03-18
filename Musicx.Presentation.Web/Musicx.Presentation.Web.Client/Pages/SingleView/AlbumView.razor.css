@@ -5,3 +5,36 @@
 .album-hero-content {
     grid-template-columns: 480px 1fr 320px;
 }
+
+.album-rating-hover-card {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.album-rating-hover-summary {
+    justify-items: center;
+    width: 100%;
+}
+
+.album-rating-hover-details {
+    display: grid;
+    gap: 0.75rem;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: max-height 0.22s ease, opacity 0.22s ease, transform 0.22s ease;
+}
+
+.album-rating-hover-card:hover .album-rating-hover-details {
+    max-height: 220px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.album-rating-mini-card {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 0.65rem 0.8rem;
+    background: rgba(255, 255, 255, 0.04);
+}
