@@ -71,7 +71,8 @@ INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (70, 
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (71, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (72, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (73, 2);
-INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (76, 1);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (75, 2);
 INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (74, 2);
-INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (77, 1);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (77, 2);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (76, 2);
+INSERT INTO public.user_role (user_role_user_id, user_role_role_id) VALUES (78, 1);
