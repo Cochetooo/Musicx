@@ -5,6 +5,7 @@ using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Enums;
@@ -36,7 +37,7 @@ public partial class ArtistView
     private OutGenericList<OutUserAlbumAttribute>? _userAttrs;
     private Dictionary<ReleaseType, bool> _availableReleaseTypes = [];
     private Dictionary<int, int> _releaseCountPerYears = [];
-    private OutArtistRatingSummary _artistRatingSummary = new();
+    private OutArtistRatingStat _artistRatingSummary = new();
     private bool _isCurrentUserFollowing;
     private long _followersCount;
     
@@ -75,7 +76,7 @@ public partial class ArtistView
 
         _artist = dataView.Artist;
         _artistAlbums = dataView.Albums;
-        _artistRatingSummary = dataView.RatingSummary;
+        _artistRatingSummary = dataView.Artist.Stats;
         _userAttrs = dataView.UserAttributes;
         _isCurrentUserFollowing = dataView.IsCurrentUserFollowing;
         _followersCount = dataView.FollowersCount;
@@ -169,62 +170,6 @@ public partial class ArtistView
             UserClientContext.CurrentUser.PrefRatingMode = mode;
             // @TODO Persist change
         }
-    }
-    
-    private void UpdateChart()
-    {
-        /* _historySeries.Clear();
-        _historySeries.Add(new ChartSeries
-        {
-            Name = "# of releases",
-            Data = _releaseCountPerYears.Select(g => (double) g.Value).ToArray()
-        });
-        
-        _xAxisChartLabels = _releaseCountPerYears
-            .Keys
-            .Select(y => y.ToString())
-            .ToArray(); */
-    }
-    
-    private void CalculateReleasesPerYear()
-    {
-        if (null == _artist)
-        {
-            _logger.LogWarning("⚠️ Cannot calculate releases: artist is null");
-            return;
-        }
-        
-        var albumsWithDate = _artistAlbums
-            .Items
-            .Where(a => a is
-            {
-                OriginalReleaseDate: not null, 
-                ReleaseType: ReleaseType.Lp or ReleaseType.Ep or ReleaseType.MixTape or ReleaseType.Soundtrack
-            })
-            .ToList();
-
-        if (0 == albumsWithDate.Count)
-        {
-            _logger.LogWarning("⚠️ Cannot calculate releases: No album with release date.");
-            _releaseCountPerYears.Clear();
-            return;
-        }
-
-        int minYear = albumsWithDate.Min(a => a.OriginalReleaseDate!.Value.Year);
-        int maxYear = _artist.SplitDate?.Year ?? DateTime.Now.Year;
-
-        var grouped = albumsWithDate
-            .GroupBy(a => a.OriginalReleaseDate!.Value.Year)
-            .ToDictionary(g => g.Key, g => g.Count());
-
-        _releaseCountPerYears = Enumerable
-            .Range(minYear, maxYear - minYear + 1)
-            .ToDictionary(year => year, year => grouped.TryGetValue(year, out var value) ? value : 0);
-    }
-    
-    private void ToggleReleaseType(KeyValuePair<ReleaseType, bool> releaseType)
-    {
-        _availableReleaseTypes[releaseType.Key] = !releaseType.Value;
     }
     
     private async Task ToggleArtistFollowAsync()

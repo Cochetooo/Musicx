@@ -155,31 +155,25 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         if (albumQuerySpecification.IncludeStats)
         {
             selects.Add("alst0.*");
-            selects.Add($"(SELECT AVG(uaa1.{UserAlbumAttrColumns.Rating}) FILTER (WHERE uaa1.{UserAlbumAttrColumns.Rating} IS NOT NULL) " +
-                        $"FROM user_album_attrs uaa1 " +
-                        $"JOIN user_artist_attrs uar1 ON uar1.{UserArtistAttrColumns.UserId} = uaa1.{UserAlbumAttrColumns.UserId} " +
-                        $"AND uar1.{UserArtistAttrColumns.ArtistId} = al0.{AlbumColumns.ArtistId} " +
-                        $"AND COALESCE(uar1.{UserArtistAttrColumns.Follow}, false) = true " +
-                        $"WHERE uaa1.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id}) AS {AlbumRatingStatColumns.FanAverage}");
-            selects.Add($"(SELECT COUNT(*) FILTER (WHERE uaa1.{UserAlbumAttrColumns.Rating} IS NOT NULL) " +
-                        $"FROM user_album_attrs uaa1 " +
-                        $"JOIN user_artist_attrs uar1 ON uar1.{UserArtistAttrColumns.UserId} = uaa1.{UserAlbumAttrColumns.UserId} " +
-                        $"AND uar1.{UserArtistAttrColumns.ArtistId} = al0.{AlbumColumns.ArtistId} " +
-                        $"AND COALESCE(uar1.{UserArtistAttrColumns.Follow}, false) = true " +
-                        $"WHERE uaa1.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id}) AS {AlbumRatingStatColumns.FanCount}");
-            selects.Add($"(SELECT AVG(uaa2.{UserAlbumAttrColumns.Rating}) FILTER (WHERE uaa2.{UserAlbumAttrColumns.Rating} IS NOT NULL) " +
-                        $"FROM user_album_attrs uaa2 " +
-                        $"LEFT JOIN user_artist_attrs uar2 ON uar2.{UserArtistAttrColumns.UserId} = uaa2.{UserAlbumAttrColumns.UserId} " +
-                        $"AND uar2.{UserArtistAttrColumns.ArtistId} = al0.{AlbumColumns.ArtistId} " +
-                        $"WHERE uaa2.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} " +
-                        $"AND COALESCE(uar2.{UserArtistAttrColumns.Follow}, false) = false) AS {AlbumRatingStatColumns.NonFanAverage}");
-            selects.Add($"(SELECT COUNT(*) FILTER (WHERE uaa2.{UserAlbumAttrColumns.Rating} IS NOT NULL) " +
-                        $"FROM user_album_attrs uaa2 " +
-                        $"LEFT JOIN user_artist_attrs uar2 ON uar2.{UserArtistAttrColumns.UserId} = uaa2.{UserAlbumAttrColumns.UserId} " +
-                        $"AND uar2.{UserArtistAttrColumns.ArtistId} = al0.{AlbumColumns.ArtistId} " +
-                        $"WHERE uaa2.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} " +
-                        $"AND COALESCE(uar2.{UserArtistAttrColumns.Follow}, false) = false) AS {AlbumRatingStatColumns.NonFanCount}");
+            selects.Add($"alfst0.{AlbumRatingStatColumns.FanAverage}");
+            selects.Add($"alfst0.{AlbumRatingStatColumns.FanCount}");
+            selects.Add($"alfst0.{AlbumRatingStatColumns.NonFanAverage}");
+            selects.Add($"alfst0.{AlbumRatingStatColumns.NonFanCount}");
             joins.Add($"LEFT JOIN album_rating_stats alst0 ON al0.{AlbumColumns.Id} = alst0.{AlbumRatingStatColumns.AlbumId}");
+            joins.Add($"""
+                        LEFT JOIN LATERAL (
+                        SELECT
+                                AVG(uaa0.{UserAlbumAttrColumns.Rating}) FILTER (WHERE COALESCE(uar0.{UserArtistAttrColumns.Follow}, false) = true) AS {AlbumRatingStatColumns.FanAverage},
+                                (COUNT(uaa0.{UserAlbumAttrColumns.Rating}) FILTER (WHERE COALESCE(uar0.{UserArtistAttrColumns.Follow}, false) = true))::int AS {AlbumRatingStatColumns.FanCount},
+                                AVG(uaa0.{UserAlbumAttrColumns.Rating}) FILTER (WHERE COALESCE(uar0.{UserArtistAttrColumns.Follow}, false) = false) AS {AlbumRatingStatColumns.NonFanAverage},
+                                (COUNT(uaa0.{UserAlbumAttrColumns.Rating}) FILTER (WHERE COALESCE(uar0.{UserArtistAttrColumns.Follow}, false) = false))::int AS {AlbumRatingStatColumns.NonFanCount}
+                                FROM user_album_attrs uaa0
+                                    LEFT JOIN user_artist_attrs uar0 ON uar0.{UserArtistAttrColumns.UserId} = uaa0.{UserAlbumAttrColumns.UserId}
+                                AND uar0.{UserArtistAttrColumns.ArtistId} = al0.{AlbumColumns.ArtistId}
+                                WHERE uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id}
+                                AND uaa0.{UserAlbumAttrColumns.Rating} IS NOT NULL
+                        ) alfst0 ON TRUE
+                        """);
         }
 
         return distinct
@@ -207,6 +201,10 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         if (albumQuerySpecification.IncludeStats)
         {
             groupings.Add($"alst0.{AlbumRatingStatColumns.AlbumId}");
+            groupings.Add($"alfst0.{AlbumRatingStatColumns.FanAverage}");
+            groupings.Add($"alfst0.{AlbumRatingStatColumns.FanCount}");
+            groupings.Add($"alfst0.{AlbumRatingStatColumns.NonFanAverage}");
+            groupings.Add($"alfst0.{AlbumRatingStatColumns.NonFanCount}");
         }
         
         return $" GROUP BY {string.Join(", ", groupings)}";

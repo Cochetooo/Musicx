@@ -90,7 +90,7 @@ public sealed class GenreDataViewBuilder(
                 {
                     ArtistId = artist.Id,
                     Artist = artist,
-                    Rating = summary.Rating,
+                    Rating = summary.Average,
                     RatingsCount = summary.Count
                 };
             })

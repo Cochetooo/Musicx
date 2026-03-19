@@ -1,3 +1,4 @@
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Contracts.Dto.Responses;
@@ -18,6 +19,7 @@ public sealed class OutArtist : BaseOutputModel
     public string? OriginCountry { get; set; }
     public string? OriginRegion { get; set; }
     public string? OriginTown { get; set; }
+    public OutArtistRatingStat? Stats { get; set; }
 
     public IReadOnlyList<OutArtist> Members { get; set; } = [];
     public DateTime? FormationDate { get; set; }

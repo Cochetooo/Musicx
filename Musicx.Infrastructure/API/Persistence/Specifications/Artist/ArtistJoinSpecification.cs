@@ -21,4 +21,10 @@ public class ArtistJoinSpecification : IJoinSpecification<InArtist>
     /// </summary>
     /// <since>0.6.1</since>
     public bool IncludeBands { get; set; }
+    
+    /// <summary>
+    /// Include rating stats derived from album ratings.
+    /// </summary>
+    /// <since>0.7.3</since>
+    public bool IncludeStats { get; set; }
 }

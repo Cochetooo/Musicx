@@ -85,6 +85,10 @@ public static class AlbumMapper
                 Average = album.SafeGet<decimal>(AlbumRatingStatColumns.Average),
                 Count = album.SafeGet<int>(AlbumRatingStatColumns.Count),
                 Sum = album.SafeGet<long>(AlbumRatingStatColumns.Sum),
+                FanAverage = album.SafeGet<decimal?>(AlbumRatingStatColumns.FanAverage),
+                FanCount = album.SafeGet<int>(AlbumRatingStatColumns.FanCount),
+                NonFanAverage = album.SafeGet<decimal?>(AlbumRatingStatColumns.NonFanAverage),
+                NonFanCount = album.SafeGet<int>(AlbumRatingStatColumns.NonFanCount),
             }
             : null,
 

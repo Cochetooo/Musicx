@@ -3,6 +3,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests.Artist;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Columns.Artist;
 
@@ -31,6 +32,17 @@ public static class ArtistMapper
         OriginCountry = artist.SafeGet<string?>(ArtistColumns.OriginCountry),
         OriginRegion = artist.SafeGet<string?>(ArtistColumns.OriginRegion),
         OriginTown = artist.SafeGet<string?>(ArtistColumns.OriginTown),
+        Stats = artist.SafeGet<long?>(ArtistRatingStatColumns.ArtistId) != null
+            ? new OutArtistRatingStat
+            {
+                Average = artist.SafeGet<decimal?>(ArtistRatingStatColumns.Average),
+                Count = artist.SafeGet<long>(ArtistRatingStatColumns.Count),
+                FanAverage = artist.SafeGet<decimal?>(ArtistRatingStatColumns.FanAverage),
+                FanCount = artist.SafeGet<long>(ArtistRatingStatColumns.FanCount),
+                NonFanAverage = artist.SafeGet<decimal?>(ArtistRatingStatColumns.NonFanAverage),
+                NonFanCount = artist.SafeGet<long>(ArtistRatingStatColumns.NonFanCount),
+            }
+            : null,
 
         Discriminator = artist.SafeGet<ArtistDiscriminator>(ArtistColumns.Discriminator),
 

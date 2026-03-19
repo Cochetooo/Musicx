@@ -7,7 +7,6 @@ public sealed class OutArtistDataView
 {
     public OutArtist Artist { get; set; } = null!;
     public OutAlbumList Albums { get; set; } = new();
-    public OutArtistRatingSummary RatingSummary { get; set; } = new();
     public bool IsCurrentUserFollowing { get; set; }
     public long FollowersCount { get; set; }
     public OutGenericList<OutUserAlbumAttribute>? UserAttributes { get; set; }

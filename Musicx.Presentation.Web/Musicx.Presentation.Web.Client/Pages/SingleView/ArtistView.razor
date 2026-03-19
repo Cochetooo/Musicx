@@ -105,22 +105,20 @@ else
                     <div style="justify-items: center" class="mb-2">
                         <MudText Typo="Typo.subtitle1" Class="montserrat text-bold">🌐 Global</MudText>
                         <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.Count ratings</MudText>
-                        <DonutRating Rating="@_artistRatingSummary.Rating" 
+                        <DonutRating Rating="@_artistRatingSummary.Average" 
                                      RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
                                      Size="DonutRatingSize.Medium" />
                     </div>
                     <MudStack Justify="Justify.SpaceAround" Row Spacing="2">
                         <div style="justify-items: center">
                             <MudText Typo="Typo.subtitle2" Class="montserrat">⭐ Fan Rating</MudText>
-                            <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.FanCount ratings</MudText>
-                            <DonutRating Rating="@_artistRatingSummary.FanRating"
+                            <DonutRating Rating="@_artistRatingSummary.FanAverage"
                                          RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
                                          Size="DonutRatingSize.Small"/>
                         </div>
                         <div style="justify-items: center">
                             <MudText Typo="Typo.subtitle2" Class="montserrat">👤 Non-Fan Rating</MudText>
-                            <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.NonFanCount ratings</MudText>
-                            <DonutRating Rating="@_artistRatingSummary.NonFanRating"
+                            <DonutRating Rating="@_artistRatingSummary.NonFanAverage"
                                          RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
                                          Size="DonutRatingSize.Small"/>
                         </div>
@@ -201,6 +199,23 @@ else
                                 </DescriptorValue>
                             </Descriptor>
                         }
+                        @if (_artist.OriginCountry is not null)
+                        {
+                            <Descriptor>
+                                <DescriptorLabel>🌏 Origin Location</DescriptorLabel>
+                                <DescriptorValue>
+                                    @_artist.OriginCountry
+                                    @if (_artist.OriginRegion is not null)
+                                    {
+                                        <span>, @_artist.OriginRegion</span>
+                                    }
+                                    @if (_artist.OriginTown is not null)
+                                    {
+                                        <span>, @_artist.OriginTown</span>
+                                    }
+                                </DescriptorValue>
+                            </Descriptor>
+                        }
                         @if (_artist.Discriminator == ArtistDiscriminator.Band)
                         {
                             if (null != _artist.FormationDate)
@@ -229,6 +244,26 @@ else
                         }
                         @if (_artist.Discriminator == ArtistDiscriminator.Person)
                         {
+                            if (null != _artist.FirstName || null != _artist.LastName)
+                            {
+                                <Descriptor>
+                                    <DescriptorLabel>
+                                        🔤 Name
+                                    </DescriptorLabel>
+                                    <DescriptorValue>
+                                        @if (_artist.FirstName is not null)
+                                        {
+                                            @(_artist.FirstName + " ");
+                                        }
+                                        
+                                        @if (_artist.LastName is not null)
+                                        {
+                                            @_artist.LastName
+                                        }
+                                    </DescriptorValue>
+                                </Descriptor>
+                            }
+                            
                             if (null != _artist.BirthDate)
                             {
                                 <Descriptor>

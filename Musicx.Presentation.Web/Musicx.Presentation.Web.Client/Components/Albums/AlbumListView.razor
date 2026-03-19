@@ -82,10 +82,12 @@
                     
                     <div class="album-list-rating-details">
                         <div class="album-list-rating-pill">
-                            ⭐ @RatingHelper.GetRatingFormatted(album.Stats?.FanAverage, RatingMode) · @(album.Stats?.FanCount ?? 0)
+                            ⭐ @RatingHelper.GetRatingFormatted(album.Stats?.FanAverage, RatingMode) 
+                            <span class="text-light color-secondary">· @(album.Stats?.FanCount ?? 0)</span>
                         </div>
                         <div class="album-list-rating-pill">
-                            👤 @RatingHelper.GetRatingFormatted(album.Stats?.NonFanAverage, RatingMode) · @(album.Stats?.NonFanCount ?? 0)
+                            👤 @RatingHelper.GetRatingFormatted(album.Stats?.NonFanAverage, RatingMode) 
+                            <span class="text-light color-secondary">· @(album.Stats?.NonFanCount ?? 0)</span>
                         </div>
                     </div>
                 </MudStack>

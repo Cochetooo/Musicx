@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Enums;
 
@@ -150,22 +151,22 @@ public static class RatingHelper
     
     public static decimal? CalculateArtistRating(IList<OutAlbum> albums)
     {
-        return CalculateArtistRatingSummary(albums).Rating;
+        return CalculateArtistRatingSummary(albums).Average;
     }
     
-    public static OutArtistRatingSummary CalculateArtistRatingSummary(IList<OutAlbum> albums)
+    public static OutArtistRatingStat CalculateArtistRatingSummary(IList<OutAlbum> albums)
     {
         var global = CalculateWeightedRating(albums, album => album.Stats?.Average, album => album.Stats?.Count ?? 0);
         var fans = CalculateWeightedRating(albums, album => album.Stats?.FanAverage, album => album.Stats?.FanCount ?? 0);
         var nonFans = CalculateWeightedRating(albums, album => album.Stats?.NonFanAverage, album => album.Stats?.NonFanCount ?? 0);
 
-        return new OutArtistRatingSummary
+        return new OutArtistRatingStat
         {
-            Rating = global.Rating,
+            Average = global.Rating,
             Count = global.Count,
-            FanRating = fans.Rating,
+            FanAverage = fans.Rating,
             FanCount = fans.Count,
-            NonFanRating = nonFans.Rating,
+            NonFanAverage = nonFans.Rating,
             NonFanCount = nonFans.Count
         };
     }

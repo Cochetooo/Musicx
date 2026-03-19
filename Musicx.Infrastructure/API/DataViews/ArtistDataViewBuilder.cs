@@ -9,8 +9,9 @@ using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
-using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
+using Musicx.Infrastructure.API.Persistence.Specifications.Artist;
+using AlbumJoinSpecification = Musicx.Infrastructure.API.Persistence.Specifications.Album.AlbumJoinSpecification;
 
 namespace Musicx.Infrastructure.API.DataViews;
 
@@ -31,7 +32,10 @@ public sealed class ArtistDataViewBuilder(
             return cached;
         }
 
-        var artist = await artistRepository.FindOneByIdAsync(query.ArtistId);
+        var artist = await artistRepository.FindOneByIdAsync(query.ArtistId, new ArtistJoinSpecification
+        {
+            IncludeStats = true
+        });
 
         if (artist is null)
         {
@@ -51,8 +55,11 @@ public sealed class ArtistDataViewBuilder(
                 Name = 2
             }
         );
-        
-        var ratingSummary = RatingHelper.CalculateArtistRatingSummary(albums);
+
+        if (artist.Stats is null)
+        {
+            artist.Stats = RatingHelper.CalculateArtistRatingSummary(albums);
+        }
 
         OutGenericList<OutUserAlbumAttribute>? userAlbumAttrsList = null;
 
@@ -91,7 +98,6 @@ public sealed class ArtistDataViewBuilder(
                 Items = albums,
                 Total = albums.Count
             },
-            RatingSummary = ratingSummary,
             UserAttributes = userAlbumAttrsList,
             FollowersCount = followersCount,
             IsCurrentUserFollowing = isCurrentUserFollowing

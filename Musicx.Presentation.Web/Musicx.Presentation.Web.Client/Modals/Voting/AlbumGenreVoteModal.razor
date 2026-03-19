@@ -42,7 +42,7 @@
             <div class="hex-wheel-grid">
                 @foreach (var section in _sections)
                 {
-                    <div class="@("zone " + section.CssClass)">
+                    <div class="@("zone bg-main " + section.CssClass)">
                         <MudText Typo="Typo.subtitle1" Class="section-title">
                             @(section.Title)
                         </MudText>
@@ -159,7 +159,6 @@
         min-height: 230px;
         padding: 12px;
         border-radius: 14px;
-        background: linear-gradient(180deg, rgba(15, 20, 28, 0.92), rgba(10, 12, 18, 0.92));
         border: 1px solid rgba(255, 255, 255, 0.09);
         box-shadow: 0 0 20px rgba(0, 0, 0, .35);
         animation: fade-up .35s ease;
