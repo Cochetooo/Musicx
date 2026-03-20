@@ -9,11 +9,11 @@ public sealed class UcFetchArtistInfo(
 {
     public async Task<FetchArtistInfoResponse> ExecuteAsync(FetchArtistInfoRequest request)
     {
-        var result = await externalMusicDataProvider.GetArtistInfoAsync(request.Name, request.CancellationToken);
+        var result = await externalMusicDataProvider.GetArtistArtworkAsync(request.Name, request.CancellationToken);
 
         return new FetchArtistInfoResponse
         (
-            Artist: result
+            SearchResult: result
         );
     }
 

@@ -7,110 +7,257 @@
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 
-<MudDialog @ref="_modalRef" Class="pa-2">
+<MudDialog @ref="_modalRef" Class="album-modal pa-2">
     <TitleContent>
-        Album Editing
+        <MudStack Spacing="0">
+            <MudText Typo="Typo.h5">@(_isEditing ? "Edit album" : "Create album")</MudText>
+            <MudText Typo="Typo.body2" Class="color-secondary">
+                Define albums data
+            </MudText>
+        </MudStack>
     </TitleContent>
     <DialogContent>
-        <MudGrid Justify="Justify.Center">
-            <MudItem xs="12" md="7">
-                <MudTextField
-                    T="string"
-                    TextChanged="@NameTextChanged"
-                    Disabled="@(_album.Id != 0)"
-                    Immediate
-                    @ref="_nameTextEdit" Placeholder="Enter an album..."
-                    ShrinkLabel="true"
-                    Label="Name (*)" Variant="Variant.Text"/>
-            </MudItem>
-            
-            <MudItem xs="12" md="2">
-                <MudSelect
-                    @bind-Value="_album.ReleaseType" T="ReleaseType?"
-                    Label="Release Type" Placeholder="Select a type"
-                    AdornmentIcon="@Icons.Material.Filled.Label">
-                    @foreach (var releaseType in Enum.GetValues<ReleaseType>().OrderBy(a => a.ToString()))
-                    {
-                        <MudSelectItem T="ReleaseType?" Value="@releaseType">@releaseType.ToDescriptionString()</MudSelectItem>
-                    }
-                </MudSelect>
-            </MudItem>
-            
-            <MudFlexBreak />
-            
-            <MudItem xs="12" md="3">
-                <MudStack Spacing="2">
-                    <MudTextField
-                        T="string?"
-                        Immediate
-                        @bind-Text="_album.ArtistAlias"
-                        ShrinkLabel="true"
-                        HelperText="In case artist used another name during that album"
-                        HelperTextOnFocus="true"
-                        Label="Artist Alias" Variant="Variant.Text"/>
+        <MudGrid Class="album-layout">
+            <MudItem xs="12" lg="8">
+                <MudStack Spacing="3">
+                    <MudPaper Class="pa-4 album-section" Elevation="0">
+                        <MudStack Spacing="3">
+                            <div>
+                                <MudText Typo="Typo.subtitle1">Basics</MudText>
+                                <MudText Typo="Typo.body2" Class="color-secondary">Strict minimum to identify the album</MudText>
+                            </div>
 
-                    <MudTextField
-                        T="string?"
-                        Immediate
-                        @bind-Text="_album.EnglishName"
-                        ShrinkLabel="true"
-                        Pattern="^[A-Za-z0-9\s\p{P}]*$"
-                        HelperText="In case album name is not using latin alphabet"
-                        HelperTextOnFocus="true"
-                        Label="English Name" Variant="Variant.Text"/>
+                            <MudGrid>
+                                <MudItem xs="12" md="8">
+                                    <MudTextField T="string"
+                                                  TextChanged="@NameTextChanged"
+                                                  Disabled="@(_album.Id != 0)"
+                                                  Immediate
+                                                  @ref="_nameTextEdit"
+                                                  Placeholder="Enter an album..."
+                                                  Label="Album title (*)"
+                                                  Variant="Variant.Outlined" />
+                                </MudItem>
 
-                    <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist Content" Color="Color.Primary"/>
+                                <MudItem xs="12" md="4">
+                                    <MudSelect @bind-Value="_album.ReleaseType"
+                                               T="ReleaseType?"
+                                               Label="Release type"
+                                               Variant="Variant.Outlined">
+                                        @foreach (var releaseType in Enum.GetValues<ReleaseType>().OrderBy(a => a.ToString()))
+                                        {
+                                            <MudSelectItem T="ReleaseType?" Value="@releaseType">@releaseType.ToDescriptionString()</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
 
-                    <MudSwitch @bind-Value="_album.IsExplicitContent" Label="NSFW Content" Color="Color.Primary"/>
-                    
-                    <MudSwitch @bind-Value="_album.IsGraphicContent" Label="Graphic/Gore Content" Color="Color.Primary"/>
+                                <MudItem xs="12" md="6">
+                                    <MudDatePicker @bind-Date="@_album.OriginalReleaseDate"
+                                                   Placeholder="Choose a date..."
+                                                   Label="Release date"
+                                                   MinDate="@(_artist?.BirthDate ?? _artist?.FormationDate)"
+                                                   Editable
+                                                   Clearable
+                                                   Variant="Variant.Outlined" />
+                                </MudItem>
+
+                                <MudItem xs="12" md="6">
+                                    <MudDateRangePicker @bind-DateRange="_recordingDates"
+                                                        Placeholder="Choose dates..."
+                                                        Label="Recording dates"
+                                                        MinDate="@(_artist?.BirthDate ?? _artist?.FormationDate)"
+                                                        MaxDate="@_album.OriginalReleaseDate"
+                                                        Variant="Variant.Outlined" />
+                                </MudItem>
+                            </MudGrid>
+                        </MudStack>
+                    </MudPaper>
+
+                    <MudPaper Class="pa-4 album-section" Elevation="0">
+                        <MudStack Spacing="3">
+                            <div>
+                                <MudText Typo="Typo.subtitle1">Display & alternate naming</MudText>
+                                <MudText Typo="Typo.body2" Class="color-secondary">Only if album need to be displayed alternatively.</MudText>
+                            </div>
+
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField T="string?"
+                                                  Immediate
+                                                  @bind-Text="_album.ArtistAlias"
+                                                  HelperText="If the artist used another alias for this release"
+                                                  Label="Artist alias"
+                                                  Variant="Variant.Outlined" />
+                                </MudItem>
+
+                                <MudItem xs="12" md="6">
+                                    <MudTextField T="string?"
+                                                  Immediate
+                                                  @bind-Text="_album.EnglishName"
+                                                  Pattern="^[A-Za-z0-9\s\p{P}]*$"
+                                                  HelperText="If the title needs a latin-alphabet variant"
+                                                  Label="English name"
+                                                  Variant="Variant.Outlined" />
+                                </MudItem>
+                            </MudGrid>
+                        </MudStack>
+                    </MudPaper>
+
+                    <MudPaper Class="pa-4 album-section" Elevation="0">
+                        <MudStack Spacing="2">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                                <div>
+                                    <MudText Typo="Typo.subtitle1">Content warnings</MudText>
+                                    <MudText Typo="Typo.body2" Class="color-secondary">Group flags here avoid flood the modal.</MudText>
+                                </div>
+                                <MudButton Variant="Variant.Text" OnClick="ToggleAdvancedFlags">
+                                    @(_showAdvancedFlags ? "Hide" : "Show")
+                                </MudButton>
+                            </MudStack>
+
+                            <MudCollapse Expanded="_showAdvancedFlags">
+                                <MudStack Class="warning-switches" Spacing="1">
+                                    <MudSwitch @bind-Value="_album.IsFarRight" Label="National Socialist content" Color="Color.Primary" />
+                                    <MudSwitch @bind-Value="_album.IsExplicitContent" Label="NSFW content" Color="Color.Primary" />
+                                    <MudSwitch @bind-Value="_album.IsGraphicContent" Label="Graphic / gore content" Color="Color.Primary" />
+                                </MudStack>
+                            </MudCollapse>
+                        </MudStack>
+                    </MudPaper>
                 </MudStack>
             </MudItem>
             
-            <MudItem xs="12" md="3">
-                <MudStack Spacing="2">
-                    <MudDatePicker
-                        @bind-Date="@_album.OriginalReleaseDate"
-                        Placeholder="Choose a date..."
-                        Label="Release Date"
-                        MinDate="@(_artist?.BirthDate ?? _artist?.FormationDate)"
-                        AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
-                        Color="Color.Primary"
-                        AnchorOrigin="Origin.BottomCenter"
-                        TransformOrigin="Origin.TopCenter"
-                        Editable
-                        Clearable/>
+            <MudItem xs="12" lg="4">
+                <MudPaper Class="pa-4 album-section artwork-panel" Elevation="0">
+                    <MudStack Spacing="3">
+                        <div>
+                            <MudText Typo="Typo.subtitle1">Artwork</MudText>
+                            <MudText Typo="Typo.body2" Class="color-secondary">3 best-fit suggestions or custom import.</MudText>
+                        </div>
 
-                    <MudDateRangePicker
-                        @bind-DateRange="_recordingDates"
-                        Placeholder="Choose dates..."
-                        Label="Recording Dates"
-                        MinDate="@(_artist?.BirthDate ?? _artist?.FormationDate)"
-                        MaxDate="@_album.OriginalReleaseDate"
-                        PickerVariant="PickerVariant.Inline"/>
-                </MudStack>
-            </MudItem>
-            
-            <MudItem xs="12" md="3">
-                <MudField Label="Artwork" Variant="Variant.Text">
-                    @if (_isLoading)
-                    {
-                        <MudProgressCircular Color="Color.Default" Indeterminate/>
-                    }
-                    else
-                    {
-                        @if (_album is { ArtworkUrl: not null })
+                        <div class="artwork-preview-shell">
+                            @if (_isArtworkLoading)
+                            {
+                                <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate />
+                            }
+                            else if (!string.IsNullOrWhiteSpace(CurrentArtworkPreview))
+                            {
+                                <MudImage Src="@CurrentArtworkPreview"
+                                          Alt="@_album.Name"
+                                          Class="artwork-preview rounded-lg"
+                                          Elevation="12"
+                                          @key="CurrentArtworkPreview" />
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Album" Size="Size.Large" Class="color-secondary" />
+                            }
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(_pendingArtworkFileName))
                         {
-                            <MudImage Src="@_album.ArtworkUrl" Alt="@_album.Name" Class="rounded-lg" Elevation="25"
-                                      @key="_album.ArtworkUrl" Style="width: 192px; aspect-ratio: 1 / 1;"/>
+                            <MudAlert Severity="Severity.Info" Dense="true">
+                                Custom file ready: @_pendingArtworkFileName
+                            </MudAlert>
                         }
-                    }
-                </MudField>
+
+                        <MudFileUpload T="IBrowserFile" OnFilesChanged="OnArtworkFileSelected">
+                            <CustomContent>
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Material.Filled.Upload"
+                                           OnClick="@context.OpenFilePickerAsync">
+                                    Upload custom artwork
+                                </MudButton>
+                            </CustomContent>
+                        </MudFileUpload>
+
+                        <MudDivider />
+
+                        @if (_artworkCandidates.Count == 0 && !string.IsNullOrWhiteSpace(_album.Name) && !_isArtworkLoading)
+                        {
+                            <MudText Typo="Typo.body2" Class="color-secondary">No suggestion.</MudText>
+                        }
+                        else
+                        {
+                            <MudStack Spacing="2">
+                                @foreach (var candidate in _artworkCandidates)
+                                {
+                                    <MudPaper Class="@("artwork-choice " + (candidate.Url == _selectedArtworkUrl ? "selected" : string.Empty))"
+                                              Elevation="0"
+                                              @onclick="() => SelectArtworkCandidate(candidate)">
+                                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                                            <MudImage Src="@candidate.Url" Width="64" Height="64" Class="rounded-lg" />
+                                            <div class="flex-grow-1">
+                                                <MudText Typo="Typo.body1">@candidate.Source</MudText>
+                                                <MudText Typo="Typo.caption" Class="color-secondary">@candidate.Label</MudText>
+                                                <MudChip T="string" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary">
+                                                    Score @candidate.Score
+                                                </MudChip>
+                                            </div>
+                                        </MudStack>
+                                    </MudPaper>
+                                }
+                            </MudStack>
+                        }
+                    </MudStack>
+                </MudPaper>
             </MudItem>
         </MudGrid>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Primary" OnClick="@Save">Save</MudButton>
-        <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Save">Save</MudButton>
+        <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="@Hide">Close</MudButton>
     </DialogActions>
 </MudDialog>
+
+<style>
+    .album-layout {
+        align-items: stretch;
+    }
+
+    .album-section {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        border-radius: 20px;
+    }
+
+    .artwork-panel {
+        position: sticky;
+        top: 0;
+    }
+
+    .artwork-preview-shell {
+        min-height: 220px;
+        display: grid;
+        place-items: center;
+        border-radius: 20px;
+        background: radial-gradient(circle at top, rgba(99, 102, 241, 0.22), rgba(15, 23, 42, 0.45));
+        border: 1px dashed rgba(255,255,255,0.16);
+    }
+
+    .artwork-preview {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+    }
+
+    .artwork-choice {
+        cursor: pointer;
+        padding: 12px;
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.08);
+        transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .artwork-choice:hover,
+    .artwork-choice.selected {
+        transform: translateY(-1px);
+        border-color: rgba(99, 102, 241, 0.65);
+        background: rgba(99, 102, 241, 0.12);
+    }
+
+    .warning-switches {
+        padding: 8px 0;
+    }
+</style>

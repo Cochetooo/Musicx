@@ -10,218 +10,374 @@
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 
-<MudDialog @ref="_modalRef" Class="pa-2">
+<MudDialog @ref="_modalRef" Class="artist-modal pa-2">
     <TitleContent>
-        Artist Editing
+        <MudStack Spacing="0">
+            <MudText Typo="Typo.h5">@(_isEditing ? "Edit artist" : "Create artist")</MudText>
+            <MudText Typo="Typo.body2" Class="color-secondary">
+                Name & Type first, details after.
+            </MudText>
+        </MudStack>
     </TitleContent>
     <DialogContent>
-        <MudGrid Justify="Justify.Center">
-            
-            <MudItem xs="12" md="2">
-                <MudField Label="Artwork" Variant="Variant.Text">
-                    @if (_isLoading)
-                    {
-                        <MudProgressCircular Color="Color.Default" Indeterminate />
-                    }
-                    else
-                    {
-                        @if (null != _artist.ArtworkUrl)
+        @if (!_isEditing && _wizardStep == 1)
+        {
+            <MudStack Spacing="4" Class="artist-setup-step">
+                <MudPaper Class="pa-5 artist-section" Elevation="0">
+                    <MudStack Spacing="3">
+                        <div>
+                            <MudText Typo="Typo.h6">1. Choose a title</MudText>
+                            <MudText Typo="Typo.body2" Class="color-secondary">Le nom et le type sont décidés avant d'ouvrir le reste du formulaire.</MudText>
+                        </div>
+
+                        <MudTextField T="string"
+                                      TextChanged="@NameTextChanged"
+                                      Immediate
+                                      @ref="_nameTextEdit"
+                                      Label="Artist title (*)"
+                                      Variant="Variant.Outlined"/>
+
+                        @if (_existingArtists.Count > 0)
                         {
-                            <MudImage Src="@_artist.ArtworkUrl" Alt="@_artist.Name" Class="rounded-lg" Elevation="25"
-                                      @key="_artist.ArtworkUrl" Width="128" Height="128" />
+                            <MudAlert Severity="Severity.Info">
+                                This name already exists for @_existingArtists.Count artists. Please verify before creating a new entry.
+                            </MudAlert>
                         }
-                    }
-                </MudField>
-            </MudItem>
-            
-            <MudItem xs="12" md="6">
-                <MudTextField
-                    T="string"
-                    TextChanged="@NameTextChanged"
-                    Disabled="@(_artist.Id != 0)"
-                    Immediate
-                    @ref="_nameTextEdit" Label="Enter an artist..."
-                    HelperText="Name (*)"
-                    Variant="Variant.Text"/>
-                
-                
-                @if (_existingArtists.Count > 0)
-                {
-                    <MudAlert Severity="Severity.Info" Class="mb-3">
-                        This name already exists for @_existingArtists.Count artists.<br/>
-                        Please verify first that the artist you want to create does not already exist in our database<br/>
-                        before submitting your request.<br/>
-                        Not respecting this validation could cost you your privilege to create and edit artists.
-                    </MudAlert>
-                }
-            </MudItem>
-
-            <MudFlexBreak/>
-            <MudDivider Class="my-2" />
-
-            <MudItem xs="12" md="6">
-                <MudTextField
-                    T="string"
-                    @bind-Text="_artist.Alias"
-                    HelperText="Alias"
-                    Label="Enter an alias for the artist..."
-                    Placeholder="AKA..."
-                    Variant="Variant.Text"/>
-            </MudItem>
-            
-            <MudFlexBreak/>
-
-            <MudItem xs="12" md="4">
-                <MudAutocomplete T="string"
-                                 Label="Current Country"
-                                 Placeholder="Search country..."
-                                 HelperText="Current country"
-                                 SearchFunc="SearchCountry"
-                                 @bind-Value="_artist.CurrentCountry"/>
-            </MudItem>
-
-            <MudItem xs="12" md="4">
-                <MudTextField
-                    T="string"
-                    @bind-Text="_artist.CurrentRegion"
-                    HelperText="Current Region"
-                    Label="Current Region"
-                    Placeholder="Enter a current region..."
-                    Variant="Variant.Text"/>
-            </MudItem>
-
-            <MudItem xs="12" md="4">
-                <MudTextField
-                    T="string"
-                    @bind-Text="_artist.CurrentTown"
-                    HelperText="Current Town"
-                    Label="Current Town"
-                    Placeholder="Enter a current town..."
-                    Variant="Variant.Text"/>
-            </MudItem>
-
-            <MudItem xs="12">
-                <MudButton Variant="Variant.Text"
-                           Color="Color.Secondary"
-                           StartIcon="@Icons.Material.Filled.Add"
-                           OnClick="@(() => _showOrigin = !_showOrigin)">
-                    Origin location (optional)
-                </MudButton>
-            </MudItem>
-
-            <MudCollapse Expanded="_showOrigin">
-                <MudPaper Class="pa-4 mt-2 origin-box">
-                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
-                        Only if different from current location
-                    </MudText>
-
-                    <MudGrid Class="mt-2">
-                        <MudItem xs="12" md="4">
-                            <MudAutocomplete T="string"
-                                             Label="Origin Country"
-                                             SearchFunc="SearchCountry"
-                                             @bind-Value="_artist.OriginCountry"/>
-                        </MudItem>
-
-                        <MudItem xs="12" md="4">
-                            <MudTextField
-                                T="string"
-                                @bind-Text="_artist.OriginRegion"
-                                HelperText="Origin Region"
-                                Label="Origin Region"
-                                Placeholder="Enter a origin region..."
-                                Variant="Variant.Text"/>
-                        </MudItem>
-
-                        <MudItem xs="12" md="4">
-                            <MudTextField
-                                T="string"
-                                @bind-Text="_artist.OriginTown"
-                                HelperText="Origin Town"
-                                Label="Origin Town"
-                                Placeholder="Enter a origin town..."
-                                Variant="Variant.Text"/>
-                        </MudItem>
-                    </MudGrid>
+                    </MudStack>
                 </MudPaper>
-            </MudCollapse>
+                
+                <MudPaper Class="pa-5 artist-section" Elevation="0">
+                    <MudStack Spacing="3">
+                        <div>
+                            <MudText Typo="Typo.h6">2. Choose a profile type</MudText>
+                            <MudText Typo="Typo.body2" Class="color-secondary">Même logique visuelle que le GenreEditModal, mais orientée artiste.</MudText>
+                        </div>
+                        
+                        <div class="artist-type-grid">
+                            @foreach (var option in _artistTypeOptions)
+                            {
+                                <MudPaper Class="@("artist-type-card " + (_artist.Discriminator == option.Value ? "selected" : string.Empty))"
+                                          Elevation="0"
+                                          @onclick="() => SelectArtistType(option.Value)">
+                                    <MudIcon Icon="@option.Icon" Size="Size.Large" Color="Color.Secondary" />
+                                    <MudText Typo="Typo.subtitle1">@option.Title</MudText>
+                                    <MudText Typo="Typo.body2" Class="color-secondary">@option.Description</MudText>
+                                </MudPaper>
+                            }
+                        </div>
+                    </MudStack>
+                </MudPaper>
+            </MudStack>
+        }
+        else
+        {
+            <MudGrid>
+                <MudItem xs="12" lg="8">
+                    <MudStack Spacing="3">
+                        <MudPaper Class="pa-4 artist-section" Elevation="0">
+                            <MudStack Spacing="3">
+                                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
+                                    <div>
+                                        <MudText Typo="Typo.subtitle1">Core identity</MudText>
+                                        <MudText Typo="Typo.body2" Class="color-secondary">Le nom et le type restent visibles, sans reprendre toute la surcharge en haut.</MudText>
+                                    </div>
+                                    @if (!_isEditing)
+                                    {
+                                        <MudButton Variant="Variant.Text" OnClick="GoBackToIdentityStep">Edit title & type</MudButton>
+                                    }
+                                </MudStack>
 
-            <MudItem xs="12">
-                <MudTextField T="string"
-                              Label="Description"
-                              Placeholder="Short biography / context..."
-                              Lines="5"
-                              MaxLength="2000"
-                              @bind-Text="_artist.Description"
-                              Variant="Variant.Text"/>
-            </MudItem>
-            
-            <MudDivider Class="my-2" />
+                                <MudGrid>
+                                    <MudItem xs="12" md="7">
+                                        <MudTextField T="string"
+                                                      TextChanged="@NameTextChanged"
+                                                      Disabled="@(_artist.Id != 0)"
+                                                      Immediate
+                                                      Label="Artist title (*)"
+                                                      Variant="Variant.Outlined"
+                                                      @ref="_detailNameTextEdit"/>
+                                    </MudItem>
 
-            <MudItem xs="12" md="6">
-                <MudSelect
-                    @bind-Value="_artist.Discriminator" T="ArtistDiscriminator"
-                    Variant="Variant.Outlined"
-                    Label="Type (*)" Placeholder="Select a type"
-                    AdornmentIcon="@Icons.Material.Filled.Label">
-                    <MudSelectItem Value="@(ArtistDiscriminator.Artist)">Generic</MudSelectItem>
-                    <MudSelectItem Value="@(ArtistDiscriminator.Band)">Band</MudSelectItem>
-                    <MudSelectItem Value="@(ArtistDiscriminator.Person)">Person</MudSelectItem>
-                </MudSelect>
-            </MudItem>
-            
-            <MudFlexBreak />
+                                    <MudItem xs="12" md="5">
+                                        <MudSelect @bind-Value="_artist.Discriminator"
+                                                   T="ArtistDiscriminator"
+                                                   Variant="Variant.Outlined"
+                                                   Label="Type (*)">
+                                            <MudSelectItem Value="@(ArtistDiscriminator.Artist)">Generic</MudSelectItem>
+                                            <MudSelectItem Value="@(ArtistDiscriminator.Band)">Band</MudSelectItem>
+                                            <MudSelectItem Value="@(ArtistDiscriminator.Person)">Artist</MudSelectItem>
+                                        </MudSelect>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudStack>
+                        </MudPaper>
 
-            <!-- Band -->
+                        <MudPaper Class="pa-4 artist-section" Elevation="0">
+                            <MudStack Spacing="3">
+                                <div>
+                                    <MudText Typo="Typo.subtitle1">Presentation</MudText>
+                                    <MudText Typo="Typo.body2" Class="color-secondary">Alias et bio courte en priorité.</MudText>
+                                </div>
 
-            @if (_artist.Discriminator == ArtistDiscriminator.Band)
-            {
-                <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Formation Date" @bind-Date="@_artist.FormationDate" MaxDate="DateTime.Today" />
+                                <MudTextField T="string"
+                                              @bind-Text="_artist.Alias"
+                                              Label="Alias"
+                                              Placeholder="AKA..."
+                                              Variant="Variant.Outlined"/>
+
+                                <MudTextField T="string"
+                                              Label="Description"
+                                              Placeholder="Short biography / context..."
+                                              Lines="5"
+                                              MaxLength="2000"
+                                              @bind-Text="_artist.Description"
+                                              Variant="Variant.Outlined"/>
+                            </MudStack>
+                        </MudPaper>
+
+                        <MudPaper Class="pa-4 artist-section" Elevation="0">
+                            <MudStack Spacing="3">
+                                <div>
+                                    <MudText Typo="Typo.subtitle1">Location</MudText>
+                                    <MudText Typo="Typo.body2" Class="color-secondary">Localisation actuelle, puis origine si elle diffère.</MudText>
+                                </div>
+
+                                <MudGrid>
+                                    <MudItem xs="12" md="4">
+                                        <MudAutocomplete T="string"
+                                                         Label="Current country"
+                                                         Placeholder="Search country..."
+                                                         SearchFunc="SearchCountry"
+                                                         @bind-Value="_artist.CurrentCountry"
+                                                         Variant="Variant.Outlined"/>
+                                    </MudItem>
+                                    <MudItem xs="12" md="4">
+                                        <MudTextField T="string"
+                                                      @bind-Text="_artist.CurrentRegion"
+                                                      Label="Current region"
+                                                      Variant="Variant.Outlined"/>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="4">
+                                        <MudTextField T="string"
+                                                      @bind-Text="_artist.CurrentTown"
+                                                      Label="Current town"
+                                                      Variant="Variant.Outlined"/>
+                                    </MudItem>
+                                </MudGrid>
+
+                                <MudButton Variant="Variant.Text"
+                                           Color="Color.Secondary"
+                                           StartIcon="@(_showOrigin ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                           OnClick="ToggleOrigin">
+                                    Origin location (optional)
+                                </MudButton>
+
+                                <MudCollapse Expanded="_showOrigin">
+                                    <MudGrid>
+                                        <MudItem xs="12" md="4">
+                                            <MudAutocomplete T="string"
+                                                             Label="Origin country"
+                                                             SearchFunc="SearchCountry"
+                                                             @bind-Value="_artist.OriginCountry"
+                                                             Variant="Variant.Outlined"/>
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="4">
+                                            <MudTextField T="string"
+                                                          @bind-Text="_artist.OriginRegion"
+                                                          Label="Origin region"
+                                                          Variant="Variant.Outlined"/>
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="4">
+                                            <MudTextField T="string"
+                                                          @bind-Text="_artist.OriginTown"
+                                                          Label="Origin town"
+                                                          Variant="Variant.Outlined"/>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudCollapse>
+                            </MudStack>
+                        </MudPaper>
+
+                        <MudPaper Class="pa-4 artist-section" Elevation="0">
+                            <MudStack Spacing="3">
+                                <MudText Typo="Typo.subtitle1">Specific details</MudText>
+
+                                @if (_artist.Discriminator == ArtistDiscriminator.Band)
+                                {
+                                    <MudGrid>
+                                        <MudItem xs="12" md="6">
+                                            <MudDatePicker Label="Formation date" @bind-Date="@_artist.FormationDate" MaxDate="DateTime.Today" Variant="Variant.Outlined"/>
+                                        </MudItem>
+                                        <MudItem xs="12" md="6">
+                                            <MudDatePicker Label="Split date" @bind-Date="@_artist.SplitDate" MaxDate="DateTime.Today" Variant="Variant.Outlined"/>
+                                        </MudItem>
+                                    </MudGrid>
+                                }
+                                else if (_artist.Discriminator == ArtistDiscriminator.Person)
+                                {
+                                    <MudGrid>
+                                        <MudItem xs="12" md="6">
+                                            <MudTextField T="string?" @bind-Text="_artist.FirstName" Label="First name" Variant="Variant.Outlined"/>
+                                        </MudItem>
+                                        <MudItem xs="12" md="6">
+                                            <MudTextField T="string?" @bind-Text="_artist.LastName" Label="Last name" Variant="Variant.Outlined"/>
+                                        </MudItem>
+                                        <MudItem xs="12" md="6">
+                                            <MudDatePicker Label="Birth date" @bind-Date="@_artist.BirthDate" MaxDate="DateTime.Today" Variant="Variant.Outlined"/>
+                                        </MudItem>
+                                        <MudItem xs="12" md="6">
+                                            <MudDatePicker Label="Death date" @bind-Date="@_artist.DeathDate" MaxDate="DateTime.Today" Variant="Variant.Outlined"/>
+                                        </MudItem>
+                                    </MudGrid>
+                                }
+                                else
+                                {
+                                    <MudText Typo="Typo.body2" Class="color-secondary">Generic profiles do not require extra identity fields.</MudText>
+                                }
+                            </MudStack>
+                        </MudPaper>
+                    </MudStack>
                 </MudItem>
+                <MudItem xs="12" lg="4">
+                    <MudPaper Class="pa-4 artist-section artwork-panel" Elevation="0">
+                        <MudStack Spacing="3">
+                            <div>
+                                <MudText Typo="Typo.subtitle1">Artwork</MudText>
+                                <MudText Typo="Typo.body2" Class="color-secondary">Suggestions multi-sources + upload perso, toujours figées côté stockage.</MudText>
+                            </div>
 
-                <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Split Date" @bind-Date="@_artist.SplitDate" MaxDate="DateTime.Today" />
-                </MudItem>
-            }
-            else if (_artist.Discriminator == ArtistDiscriminator.Person)
-            {
-                <MudItem xs="12" md="6">
-                    <MudTextField
-                        T="string?"
-                        @bind-Text="_artist.FirstName"
-                        Label="First Name"
-                        Placeholder="Enter a first name..."/>
-                </MudItem>
+                            <div class="artwork-preview-shell">
+                                @if (_isArtworkLoading)
+                                {
+                                    <MudProgressCircular Color="Color.Primary" Indeterminate/>
+                                }
+                                else if (!string.IsNullOrWhiteSpace(CurrentArtworkPreview))
+                                {
+                                    <MudImage Src="@CurrentArtworkPreview"
+                                              Alt="@_artist.Name"
+                                              Class="artwork-preview rounded-lg"
+                                              Elevation="12"
+                                              @key="CurrentArtworkPreview"/>
+                                }
+                                else
+                                {
+                                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large" Class="color-secondary"/>
+                                }
+                            </div>
 
-                <MudItem xs="12" md="6">
-                    <MudTextField
-                        T="string?"
-                        @bind-Text="_artist.LastName"
-                        Label="Last Name"
-                        Placeholder="Enter a last name..."/>
-                </MudItem>
+                            @if (!string.IsNullOrWhiteSpace(_pendingArtworkFileName))
+                            {
+                                <MudAlert Severity="Severity.Info" Dense="true">Custom file ready: @_pendingArtworkFileName</MudAlert>
+                            }
 
-                <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Birth Date" @bind-Date="@_artist.BirthDate" MaxDate="DateTime.Today" />
-                </MudItem>
+                            <MudFileUpload T="IBrowserFile" OnFilesChanged="OnArtworkFileSelected">
+                                <CustomContent>
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               StartIcon="@Icons.Material.Filled.Upload"
+                                               OnClick="@context.OpenFilePickerAsync">
+                                        Upload custom artwork
+                                    </MudButton>
+                                </CustomContent>
+                            </MudFileUpload>
 
-                <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Death Date" @bind-Date="@_artist.DeathDate" MaxDate="DateTime.Today" />
+                            <MudDivider/>
+
+                            <MudStack Spacing="2">
+                                @foreach (var candidate in _artworkCandidates)
+                                {
+                                    <MudPaper Class="@("artwork-choice " + (candidate.Url == _selectedArtworkUrl ? "selected" : string.Empty))"
+                                              Elevation="0"
+                                              @onclick="() => SelectArtworkCandidate(candidate)">
+                                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                                            <MudImage Src="@candidate.Url" Width="64" Height="64" Class="rounded-lg"/>
+                                            <div class="flex-grow-1">
+                                                <MudText Typo="Typo.body1">@candidate.Source</MudText>
+                                                <MudText Typo="Typo.caption" Class="color-secondary">@candidate.Label</MudText>
+                                                <MudChip T="string" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary">
+                                                    Score @candidate.Score
+                                                </MudChip>
+                                            </div>
+                                        </MudStack>
+                                    </MudPaper>
+                                }
+                            </MudStack>
+                        </MudStack>
+                    </MudPaper>
                 </MudItem>
-            }
-        </MudGrid>
+            </MudGrid>
+        }
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Primary" OnClick="@Save">Save</MudButton>
-        <MudButton Color="Color.Secondary" OnClick="@Hide">Close</MudButton>
+        @if (!_isEditing && _wizardStep == 1)
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@(!CanContinueIdentityStep)" OnClick="GoToDetailsStep">Continue</MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Save">Save</MudButton>
+        }
+
+        <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="@Hide">Close</MudButton>
     </DialogActions>
 </MudDialog>
 
 <style>
-    .origin-box {
-        background: rgba(255,255,255,0.04);
-        border-left: 3px solid var(--mud-palette-secondary);
-        opacity: 0.85;
+    .artist-section {
+        border: 1px solid rgba(255,255,255,0.08);
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        border-radius: 20px;
+    }
+
+    .artist-setup-step {
+        max-width: 980px;
+        margin: 0 auto;
+    }
+
+    .artist-type-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .artist-type-card,
+    .artwork-choice {
+        cursor: pointer;
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,0.08);
+        transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .artist-type-card:hover,
+    .artist-type-card.selected,
+    .artwork-choice:hover,
+    .artwork-choice.selected {
+        transform: translateY(-2px);
+        border-color: rgba(99, 102, 241, 0.65);
+        background: rgba(99, 102, 241, 0.12);
+    }
+
+    .artwork-panel {
+        position: sticky;
+        top: 0;
+    }
+
+    .artwork-preview-shell {
+        min-height: 220px;
+        display: grid;
+        place-items: center;
+        border-radius: 20px;
+        background: radial-gradient(circle at top, rgba(99, 102, 241, 0.22), rgba(15, 23, 42, 0.45));
+        border: 1px dashed rgba(255,255,255,0.16);
+    }
+
+    .artwork-preview {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
     }
 </style>

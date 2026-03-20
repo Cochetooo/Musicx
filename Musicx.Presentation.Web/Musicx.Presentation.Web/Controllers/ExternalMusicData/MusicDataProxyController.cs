@@ -27,7 +27,7 @@ public sealed class MusicDataProxyController(
         
         _logger.LogInformation($"🌍✅ API : GET external/artist ({name}) - SUCCESS");
 
-        return Ok(response.Artist);
+        return Ok(response.SearchResult);
     }
     
     [HttpGet("album")]
@@ -45,6 +45,6 @@ public sealed class MusicDataProxyController(
         
         _logger.LogInformation($"🌍✅ API : GET external/album ({name}) - SUCCESS");
 
-        return Ok(response.Album);
+        return Ok(response.SearchResult);
     }
 }

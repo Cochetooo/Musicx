@@ -35,11 +35,12 @@ public partial class GenreEditModal
     {
         await EnsureGenreTreeLoadedAsync();
         
-        await _modalRef.ShowAsync();
         Clean();
+        await _modalRef.ShowAsync();
 
         if (genre is null)
         {
+            await InvokeAsync(StateHasChanged);
             return;
         }
         
@@ -50,8 +51,9 @@ public partial class GenreEditModal
             IncludeAliases = true
         }) ?? genre;
         
-        _state.Node = genre.ToRaw();
-        await _nodeEditor.UpdateCanonicalName(genre.CanonicalName);
+        _state.Node = completeGenre.ToRaw();
+        await InvokeAsync(StateHasChanged);
+        await _nodeEditor.UpdateCanonicalName(_state.Node.CanonicalName);
 
         if (completeGenre.Relations is not null)
         {

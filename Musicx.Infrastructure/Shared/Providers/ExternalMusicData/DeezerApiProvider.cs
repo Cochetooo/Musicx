@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Artwork;
 using Musicx.Infrastructure.Shared.Models.ExternalMusicData;
 
 namespace Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
@@ -15,7 +16,7 @@ public sealed class DeezerApiProvider(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(DeezerApiProvider));
     
-    public async Task<OutArtist?> GetArtistInfoAsync(string name, CancellationToken ct = default)
+    public async Task<OutArtworkCandidate?> GetArtistArtworkAsync(string name, string normalizedName, CancellationToken ct = default)
     {
         var endpoint = $"{configuration["Apis:Deezer:BaseUrl"]}search?q=artist:\"{Uri.EscapeDataString(name)}\"";
         _logger.LogInformation($"🌍🏳️ DEEZER : GET {endpoint}️");
@@ -55,7 +56,15 @@ public sealed class DeezerApiProvider(
             _logger.LogDebug("ℹ️ DEEZER : Artwork Url Info : " + artist.ArtworkUrl);
             
             _logger.LogInformation($"🌍✅ DEEZER : GET {endpoint} - SUCCESS");
-            return artist;
+            
+            return IExternalMusicDataProvider.BuildCandidate(
+                url: artist.ArtworkUrl,
+                source: "Deezer",
+                label: artist.Name,
+                width: 1200,
+                height: 1200,
+                score: IExternalMusicDataProvider.ComputeScore(normalizedName, StringHelper.Normalize(artist.Name)) + 12
+            );
         }
         catch (Exception ex)
         {
@@ -64,6 +73,47 @@ public sealed class DeezerApiProvider(
         }
     }
 
-    public async Task<OutAlbum?> GetAlbumInfoAsync(string name, string artist, CancellationToken ct = default)
-        => null;
+    public async Task<OutArtworkCandidate?> GetAlbumArtworkAsync(string name, string artist,
+        string normalizedName, string normalizedArtist, CancellationToken ct = default)
+    {
+        var endpoint = $"{configuration["Apis:Deezer:BaseUrl"]}search?q=album:\"{Uri.EscapeDataString(name)}\" artist:\"{Uri.EscapeDataString(artist)}\"";
+        var json = await httpClient.GetStringAsync(endpoint, ct);
+        using var document = JsonDocument.Parse(json);
+
+        if (!document.RootElement.TryGetProperty("data", out var data) || data.GetArrayLength() == 0)
+        {
+            return null;
+        }
+
+        var best = data.EnumerateArray()
+            .Select(entry =>
+            {
+                var albumName = entry.GetProperty("album").GetProperty("title").GetString() ?? string.Empty;
+                var artistName = entry.GetProperty("artist").GetProperty("name").GetString() ?? string.Empty;
+                var url = entry.GetProperty("album").TryGetProperty("cover_xl", out var xl)
+                    ? xl.GetString()
+                    : entry.GetProperty("album").GetProperty("cover_big").GetString();
+                var score = IExternalMusicDataProvider.ComputeAlbumScore(
+                    normalizedName, normalizedArtist, StringHelper.Normalize(albumName), StringHelper.Normalize(artistName));
+
+                return new { AlbumName = albumName, ArtistName = artistName, Url = url, Score = score };
+            })
+            .Where(x => !string.IsNullOrWhiteSpace(x.Url))
+            .OrderByDescending(x => x.Score)
+            .FirstOrDefault();
+
+        if (best is null)
+        {
+            return null;
+        }
+
+        return IExternalMusicDataProvider.BuildCandidate(
+            url: best.Url!, 
+            source: "Deezer", 
+            label: $"{best.ArtistName} — {best.AlbumName}", 
+            width: 1200, 
+            height: 1200, 
+            score: best.Score + 12
+        );
+    }
 }

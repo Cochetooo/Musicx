@@ -1,11 +1,16 @@
-using System.Text.Json;
+using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Artwork;
 using Musicx.Infrastructure.API.Persistence.Mappers;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 
@@ -21,18 +26,52 @@ public partial class AlbumEditModal
 
     private DateRange? _recordingDates;
 
-    private bool _isLoading;
+    private bool _isEditing;
+    private bool _isArtworkLoading;
+    private bool _showAdvancedFlags;
 
     private MudTextField<string> _nameTextEdit = null!;
 
     private CancellationTokenSource? _artworkCts;
 
     private MudDialog _modalRef = null!;
+    
+    private readonly List<OutArtworkCandidate> _artworkCandidates = [];
+    private string? _selectedArtworkUrl;
+    private IBrowserFile? _pendingArtworkFile;
+    private string? _pendingArtworkFileName;
+
+    private string? CurrentArtworkPreview => _pendingArtworkFile is not null ? _selectedArtworkUrl ?? _album.ArtworkUrl : _selectedArtworkUrl ?? _album.ArtworkUrl;
+
 
     protected override void OnInitialized()
     {
         _logger = LoggerFactory.CreateLogger(nameof(AlbumEditModal));
-        _album = new InAlbum();
+        _album = CreateEmptyAlbum();
+    }
+    
+    public async Task Show(OutArtist artist, OutAlbum? album = null)
+    {
+        _artist = artist;
+        _isEditing = album is not null;
+        _showAdvancedFlags = false;
+        _pendingArtworkFile = null;
+        _pendingArtworkFileName = null;
+        _artworkCandidates.Clear();
+
+        _album = album?.ToRaw() ?? CreateEmptyAlbum();
+        _album.ArtistId = _artist.Id;
+        _selectedArtworkUrl = _album.ArtworkUrl;
+        _recordingDates = new DateRange(_album.BeginRecordDate, _album.EndRecordDate);
+        
+        await _modalRef.ShowAsync();
+        await InvokeAsync(StateHasChanged);
+        await _nameTextEdit.SetTextAsync(_album.Name);
+
+        if (!string.IsNullOrWhiteSpace(_album.Name))
+        {
+            await FetchArtworkCandidatesAsync();
+        }
     }
 
     private async Task Save()
@@ -40,8 +79,8 @@ public partial class AlbumEditModal
         _album.BeginRecordDate = _recordingDates?.Start;
         _album.EndRecordDate = _recordingDates?.End;
         
-        _logger.LogInformation($"💾 Saving album {_album.Name}...");
-
+        _album.ArtworkUrl = _selectedArtworkUrl ?? _album.ArtworkUrl;
+        
         var response = await UcSave.ExecuteAsync(_album);
         
         if (!response.IsSuccessStatusCode)
@@ -49,8 +88,25 @@ public partial class AlbumEditModal
             Snackbar.Add($"Could not save album: {response.ReasonPhrase}", Severity.Error);
             return;
         }
+        
+        var responseContent = await response.Content.ReadAsStringAsync();
+        if (!long.TryParse(responseContent, out var albumId))
+        {
+            albumId = _album.Id;
+        }
 
-        _logger.LogInformation("✅ Album saved successfully!");
+        _album.Id = albumId;
+
+        var persistedArtworkUrl = await PersistArtworkAsync(albumId);
+        if (!string.IsNullOrWhiteSpace(persistedArtworkUrl) && persistedArtworkUrl != _album.ArtworkUrl)
+        {
+            _album.ArtworkUrl = persistedArtworkUrl;
+            var artworkSaveResponse = await UcSave.ExecuteAsync(_album);
+            if (!artworkSaveResponse.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Album saved but artwork could not be persisted locally.", Severity.Warning);
+            }
+        }
         Snackbar.Add("Album saved successfully!", Severity.Success);
         
         Clean();
@@ -58,80 +114,72 @@ public partial class AlbumEditModal
         await OnSave.InvokeAsync();
         await Hide();
     }
-
-    public async Task Show(OutArtist artist, OutAlbum? album = null)
-    {
-        _artist = artist;
-        _album.ArtistId = _artist.Id;
-        
-        await _modalRef.ShowAsync();
-        
-        if (null != album)
-        {
-            _album = album.ToRaw();
-
-            _recordingDates = new DateRange(
-                _album.BeginRecordDate,
-                _album.EndRecordDate
-            );
-            
-            await InvokeAsync(StateHasChanged);
-            
-            await _nameTextEdit.SetTextAsync(album.Name);
-        }
-    }
     
     private async Task Hide()
     {
         await _modalRef.CloseAsync();
     }
 
-    private async Task UpdateArtwork()
+    private async Task FetchArtworkCandidatesAsync()
     {
-        _isLoading = true;
+        _isArtworkLoading = true;
         await InvokeAsync(StateHasChanged);
+        
         _artworkCts?.Cancel();
         _artworkCts?.Dispose();
 
         _artworkCts = new CancellationTokenSource();
 
-        if (string.IsNullOrWhiteSpace(_album.Name))
+        if (string.IsNullOrWhiteSpace(_album.Name) || string.IsNullOrWhiteSpace(_artist?.Name))
         {
-            _isLoading = false;
+            _isArtworkLoading = false;
             return;
         }
 
         try
         {
-            await Task.Delay(1_000, _artworkCts.Token);
+            await Task.Delay(500, _artworkCts.Token);
 
-            var content = await Http.GetStringAsync(
-                $"api/external/album?name={Uri.EscapeDataString(_album.Name)}&artist={Uri.EscapeDataString(_artist!.Name)}",
-                _artworkCts.Token
-            );
-
-            var response = JsonSerializer.Deserialize<OutAlbum?>(content, JsonHelper.OptionsDefault);
+            var response = await Http.GetStringAsync(
+                $"api/artworks/album-options?name={Uri.EscapeDataString(_album.Name)}&artist={Uri.EscapeDataString(_artist.Name)}",
+                _artworkCts.Token);
             
-            if (null == response)
+            _logger.LogInformation(response);
+
+            var result = JsonConvert.DeserializeObject<FetchAlbumInfoResponse>(response)?.SearchResult;
+
+            _artworkCandidates.Clear();
+            
+            _logger.LogInformation("Result is null: " + (result is null) + " candidates : " + (result?.Candidates is null)
+                + " count : " + result?.Candidates?.Count);
+            if (result?.Candidates is not null)
             {
-                _logger.LogWarning($"⚠️ Album not found: {_album.Name}");
-                _isLoading = false;
-                return;
+                _logger.LogInformation("adding range candidates.");
+                _artworkCandidates.AddRange(result.Candidates);
             }
-            
-            _logger.LogInformation("ℹ️ Retrieved Artwork Url : " + response.ArtworkUrl);
-            _album.ArtworkUrl = response.ArtworkUrl;
-            _isLoading = false;
-            await InvokeAsync(StateHasChanged);
+
+            _logger.LogInformation("pendingArtworkFile: " + _pendingArtworkFile + " second cond: " + ((string.IsNullOrWhiteSpace(_selectedArtworkUrl) ||
+                !_selectedArtworkUrl.Contains("/Artists/",
+                    StringComparison.OrdinalIgnoreCase))));
+            if (_pendingArtworkFile is null && (string.IsNullOrWhiteSpace(_selectedArtworkUrl) ||
+                                                !_selectedArtworkUrl.Contains("/Artists/",
+                                                    StringComparison.OrdinalIgnoreCase)))
+            {
+                _selectedArtworkUrl = _artworkCandidates.FirstOrDefault()?.Url ?? _selectedArtworkUrl;
+                _logger.LogInformation("selectedArtworkUrl : " + _selectedArtworkUrl);
+            }
         }
         catch (TaskCanceledException)
-        {
-
-        }
+        { }
         catch (Exception ex)
         {
             _logger.LogError("❌ Error while retrieving artwork : " + ex.Message);
-            _isLoading = false;
+        }
+        finally
+        {
+            _logger.LogInformation("InvokeAsync StateHasChanged");
+            _isArtworkLoading = false;
+            await InvokeAsync(StateHasChanged);
         }
     }
     
@@ -139,13 +187,87 @@ public partial class AlbumEditModal
     {
         _album.Name = EnglishTitleCaseHelper.ToTitleCase(newValue);
 
-        await UpdateArtwork();
+        await FetchArtworkCandidatesAsync();
+    }
+    
+    private void ToggleAdvancedFlags() => _showAdvancedFlags = !_showAdvancedFlags;
+    
+    private void SelectArtworkCandidate(OutArtworkCandidate candidate)
+    {
+        _pendingArtworkFile = null;
+        _pendingArtworkFileName = null;
+        _selectedArtworkUrl = candidate.Url;
+    }
+
+    private void OnArtworkFileSelected(InputFileChangeEventArgs args)
+    {
+        var file = args.File;
+
+        _pendingArtworkFile = file;
+        _pendingArtworkFileName = file.Name;
+        _selectedArtworkUrl = _artworkCandidates.FirstOrDefault()?.Url ?? _selectedArtworkUrl;
+    }
+    
+    private async Task<string?> PersistArtworkAsync(long albumId)
+    {
+        if (_artist is null || albumId == 0)
+        {
+            return _album.ArtworkUrl;
+        }
+
+        if (_pendingArtworkFile is not null)
+        {
+            using var form = new MultipartFormDataContent();
+            await using var stream = _pendingArtworkFile.OpenReadStream(10_000_000);
+            form.Add(new StreamContent(stream), "file", _pendingArtworkFile.Name);
+
+            var response = await Http.PostAsync($"api/artworks/artists/{_artist.Id}/albums/{albumId}", form);
+            if (!response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Album saved but custom artwork upload failed.", Severity.Warning);
+                return _album.ArtworkUrl;
+            }
+
+            _pendingArtworkFile = null;
+            _pendingArtworkFileName = null;
+            _selectedArtworkUrl = await response.Content.ReadAsStringAsync();
+            _selectedArtworkUrl = _selectedArtworkUrl.Trim('"');
+            return _selectedArtworkUrl;
+        }
+
+        if (string.IsNullOrWhiteSpace(_selectedArtworkUrl) || _selectedArtworkUrl.Contains("/Artists/", StringComparison.OrdinalIgnoreCase))
+        {
+            return _selectedArtworkUrl;
+        }
+
+        using var importForm = new MultipartFormDataContent
+        {
+            { new StringContent(_selectedArtworkUrl), "remoteUrl" }
+        };
+
+        var importResponse = await Http.PostAsync($"api/artworks/artists/{_artist.Id}/albums/{albumId}", importForm);
+        if (!importResponse.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Album saved but external artwork import failed.", Severity.Warning);
+            return _album.ArtworkUrl;
+        }
+
+        _selectedArtworkUrl = (await importResponse.Content.ReadAsStringAsync()).Trim('"');
+        return _selectedArtworkUrl;
     }
 
     private void Clean()
     {
-        _album = new InAlbum();
-
+        _album = CreateEmptyAlbum();
         _recordingDates = null;
+        _selectedArtworkUrl = null;
+        _pendingArtworkFile = null;
+        _pendingArtworkFileName = null;
+        _artworkCandidates.Clear();
     }
+    
+    private static InAlbum CreateEmptyAlbum() => new()
+    {
+        IsVisible = true
+    };
 }

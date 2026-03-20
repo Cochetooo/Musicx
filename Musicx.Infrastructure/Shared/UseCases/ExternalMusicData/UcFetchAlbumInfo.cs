@@ -8,7 +8,7 @@ public sealed class UcFetchAlbumInfo(
 {
     public async Task<FetchAlbumInfoResponse> ExecuteAsync(FetchAlbumInfoRequest request)
     {
-        var result = await externalMusicDataProvider.GetAlbumInfoAsync(
+        var result = await externalMusicDataProvider.GetAlbumArtworkAsync(
             request.Name,
             request.Artist,
             request.CancellationToken);

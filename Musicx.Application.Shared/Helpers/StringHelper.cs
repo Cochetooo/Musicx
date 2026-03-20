@@ -30,6 +30,13 @@ public static class StringHelper
         return d[n, m];
     }
     
+    public static string Normalize(string? value)
+        => string.Join(' ', (value ?? string.Empty)
+            .ToLowerInvariant()
+            .Select(c => char.IsLetterOrDigit(c) ? c : ' ')
+            .ToString()?
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? []);
+    
     public static string SplitCamelCase(this string input) =>
         Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
 }

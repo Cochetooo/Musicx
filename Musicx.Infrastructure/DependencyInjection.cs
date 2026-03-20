@@ -97,6 +97,7 @@ public static class DependencyInjection
         services.AddScoped<IExternalMusicDataProvider, LastFmApiProvider>();
         services.AddScoped<IExternalMusicDataProvider, DeezerApiProvider>();
         services.AddScoped<IExternalMusicDataProvider, ItunesApiProvider>();
+        services.AddScoped<IExternalMusicDataProvider, WikipediaApiProvider>();
 
         services.AddScoped<ExternalMusicDataService>();
 
@@ -200,6 +201,7 @@ public static class DependencyInjection
         // Storage
         
         services.AddScoped<IAvatarStorage, LocalAvatarStorage>();
+        services.AddScoped<IArtworkStorage, LocalArtworkStorage>();
         
         // Patch Notes
 

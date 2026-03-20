@@ -100,6 +100,7 @@ public static class GenreMapper
         
         Description = genre.Description,
         Color = genre.Color,
+        Confidence = genre.Confidence,
         CountryOrigin = genre.CountryOrigin,
         EraStart = genre.EraStart,
         EraEnd = genre.EraEnd,
