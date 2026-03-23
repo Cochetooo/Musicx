@@ -7,6 +7,7 @@ using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;

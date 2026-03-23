@@ -7,6 +7,7 @@ using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artwork;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Newtonsoft.Json;

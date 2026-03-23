@@ -2,6 +2,7 @@
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Requests.Artist
 @using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Dto.Responses.Artist
 @using Musicx.Contracts.Enums
 
 @inject ILoggerFactory LoggerProvider
@@ -48,10 +49,7 @@
                 
                 <MudPaper Class="pa-5 artist-section" Elevation="0">
                     <MudStack Spacing="3">
-                        <div>
-                            <MudText Typo="Typo.h6">2. Choose a profile type</MudText>
-                            <MudText Typo="Typo.body2" Class="color-secondary">This can be modified at anytime.</MudText>
-                        </div>
+                        <MudText Typo="Typo.h6">2. Choose a profile type</MudText>
                         
                         <div class="artist-type-grid">
                             @foreach (var option in _artistTypeOptions)
@@ -77,10 +75,8 @@
                         <MudPaper Class="pa-4 artist-section" Elevation="0">
                             <MudStack Spacing="3">
                                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
-                                    <div>
-                                        <MudText Typo="Typo.subtitle1">Core identity</MudText>
-                                        <MudText Typo="Typo.body2" Class="color-secondary">Le nom et le type restent visibles, sans reprendre toute la surcharge en haut.</MudText>
-                                    </div>
+                                    <MudText Typo="Typo.subtitle1">Base information</MudText>
+                                    
                                     @if (!_isEditing)
                                     {
                                         <MudButton Variant="Variant.Text" OnClick="GoBackToIdentityStep">Edit title & type</MudButton>
@@ -113,10 +109,7 @@
 
                         <MudPaper Class="pa-4 artist-section" Elevation="0">
                             <MudStack Spacing="3">
-                                <div>
-                                    <MudText Typo="Typo.subtitle1">Presentation</MudText>
-                                    <MudText Typo="Typo.body2" Class="color-secondary">Alias et bio courte en priorité.</MudText>
-                                </div>
+                                <MudText Typo="Typo.subtitle1">Presentation</MudText>
 
                                 <MudTextField T="string"
                                               @bind-Text="_artist.Alias"
@@ -136,10 +129,7 @@
 
                         <MudPaper Class="pa-4 artist-section" Elevation="0">
                             <MudStack Spacing="3">
-                                <div>
-                                    <MudText Typo="Typo.subtitle1">Location</MudText>
-                                    <MudText Typo="Typo.body2" Class="color-secondary">Localisation actuelle, puis origine si elle diffère.</MudText>
-                                </div>
+                                <MudText Typo="Typo.subtitle1">Location</MudText>
 
                                 <MudGrid>
                                     <MudItem xs="12" md="4">
@@ -243,10 +233,7 @@
                 <MudItem xs="12" lg="4">
                     <MudPaper Class="pa-4 artist-section artwork-panel" Elevation="0">
                         <MudStack Spacing="3">
-                            <div>
-                                <MudText Typo="Typo.subtitle1">Artwork</MudText>
-                                <MudText Typo="Typo.body2" Class="color-secondary">Suggestions multi-sources + upload perso, toujours figées côté stockage.</MudText>
-                            </div>
+                            <MudText Typo="Typo.subtitle1">Artwork</MudText>
 
                             <div class="artwork-preview-shell">
                                 @if (_isArtworkLoading)

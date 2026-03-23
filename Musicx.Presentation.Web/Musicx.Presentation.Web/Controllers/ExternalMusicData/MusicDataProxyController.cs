@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 
 namespace Musicx.Presentation.Web.Controllers.ExternalMusicData;
 

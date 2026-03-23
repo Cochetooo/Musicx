@@ -1,3 +1,4 @@
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Contracts.Dto.Responses;

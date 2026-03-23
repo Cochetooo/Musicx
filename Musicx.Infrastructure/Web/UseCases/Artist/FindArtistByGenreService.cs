@@ -5,6 +5,7 @@ using Musicx.Application.Shared.Helpers;
 using Musicx.Application.Web.Interfaces.UseCases.Artist;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.Web.Helpers;
 

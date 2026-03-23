@@ -1,7 +1,9 @@
-﻿using Musicx.Application.Api.Interfaces.Caching;
+﻿using System.Text.Json;
+using Musicx.Application.Api.Interfaces.Caching;
 using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Artist;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Genre;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
@@ -17,6 +19,7 @@ namespace Musicx.Infrastructure.API.DataViews;
 
 public sealed class ArtistDataViewBuilder(
     IArtistRepository artistRepository,
+    IGenreRepository genreRepository,
     IAlbumRepository albumRepository,
     IUserAlbumAttrsRepository userAlbumAttrsRepository,
     IUserArtistAttrsRepository userArtistAttrsRepository,
@@ -98,6 +101,11 @@ public sealed class ArtistDataViewBuilder(
                 Items = albums,
                 Total = albums.Count
             },
+            PrimaryGenres = await BuildGenreStatsAsync(artist.CalculatedGenreCounts, cancellationToken),
+            Influences = await BuildGenreStatsAsync(artist.CalculatedInfluenceCounts, cancellationToken),
+            Descriptors = await BuildGenreStatsAsync(artist.CalculatedDescriptorCounts, cancellationToken),
+            Scenes = await BuildGenreStatsAsync(artist.CalculatedSceneCounts, cancellationToken),
+            Movements = await BuildGenreStatsAsync(artist.CalculatedMovementCounts, cancellationToken),
             UserAttributes = userAlbumAttrsList,
             FollowersCount = followersCount,
             IsCurrentUserFollowing = isCurrentUserFollowing
@@ -105,5 +113,51 @@ public sealed class ArtistDataViewBuilder(
 
         await cache.SetAsync(cacheKey, result, TimeSpan.FromMinutes(5), cancellationToken);
         return result;
+    }
+    
+    private async Task<IReadOnlyList<OutArtistGenreStat>> BuildGenreStatsAsync(string? serializedStats, CancellationToken cancellationToken)
+    {
+        var parsedStats = ParseGenreStats(serializedStats);
+        if (0 == parsedStats.Count)
+        {
+            return [];
+        }
+
+        var genres = await genreRepository.FindInAsync(parsedStats.Select(x => x.GenreId));
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var genreById = genres.ToDictionary(x => x.Id);
+
+        return parsedStats
+            .Where(x => genreById.ContainsKey(x.GenreId))
+            .Select(x => new OutArtistGenreStat
+            {
+                Genre = genreById[x.GenreId],
+                AlbumCount = x.Count
+            })
+            .ToList();
+    }
+    
+    private static List<ArtistGenreCountRow> ParseGenreStats(string? serializedStats)
+    {
+        if (string.IsNullOrWhiteSpace(serializedStats))
+        {
+            return [];
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<List<ArtistGenreCountRow>>(serializedStats, JsonHelper.OptionsDefault) ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
+    }
+
+    private sealed class ArtistGenreCountRow
+    {
+        public long GenreId { get; set; }
+        public int Count { get; set; }
     }
 }

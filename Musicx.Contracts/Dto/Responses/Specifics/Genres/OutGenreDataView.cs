@@ -1,4 +1,5 @@
-﻿using Musicx.Contracts.Dto.Responses.Genre;
+﻿using Musicx.Contracts.Dto.Responses.Artist;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;

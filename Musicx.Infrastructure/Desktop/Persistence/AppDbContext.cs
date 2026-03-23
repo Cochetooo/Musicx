@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Genre;
 
 

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artwork;
 using Musicx.Infrastructure.Shared.Models.ExternalMusicData;
 

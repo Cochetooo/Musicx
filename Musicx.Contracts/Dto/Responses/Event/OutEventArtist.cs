@@ -1,4 +1,6 @@
-﻿namespace Musicx.Contracts.Dto.Responses;
+﻿using Musicx.Contracts.Dto.Responses.Artist;
+
+namespace Musicx.Contracts.Dto.Responses;
 
 public sealed class OutEventArtist : BaseOutputModel
 {

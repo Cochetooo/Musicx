@@ -6,6 +6,7 @@ using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Requests.Label;
 using Musicx.Contracts.Dto.Requests.Song;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Genre;
 
 

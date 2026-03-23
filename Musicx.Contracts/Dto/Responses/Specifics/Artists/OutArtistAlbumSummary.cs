@@ -1,4 +1,6 @@
-﻿namespace Musicx.Contracts.Dto.Responses.Specifics.Artists;
+﻿using Musicx.Contracts.Dto.Responses.Artist;
+
+namespace Musicx.Contracts.Dto.Responses.Specifics.Artists;
 
 public sealed class OutArtistAlbumSummary
 {

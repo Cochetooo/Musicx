@@ -11,6 +11,11 @@ public static class ArtistColumns
     public const string ArtworkUrl = "artist_artwork_url";
     public const string CalculatedGenres = "artist_calculated_genres";
     public const string CalculatedInfluences = "artist_calculated_influences";
+    public const string CalculatedGenreCounts = "artist_calculated_genre_counts";
+    public const string CalculatedInfluenceCounts = "artist_calculated_influence_counts";
+    public const string CalculatedDescriptorCounts = "artist_calculated_descriptor_counts";
+    public const string CalculatedSceneCounts = "artist_calculated_scene_counts";
+    public const string CalculatedMovementCounts = "artist_calculated_movement_counts";
     public const string CurrentCountry = "artist_current_country";
     public const string CurrentRegion = "artist_current_region";
     public const string CurrentTown = "artist_current_town";

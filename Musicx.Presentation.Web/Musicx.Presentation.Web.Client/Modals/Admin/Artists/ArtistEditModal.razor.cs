@@ -10,6 +10,7 @@ using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artwork;
 using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Mappers;

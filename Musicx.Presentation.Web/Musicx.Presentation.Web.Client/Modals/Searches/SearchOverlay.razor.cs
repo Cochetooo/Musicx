@@ -6,6 +6,7 @@ using Microsoft.JSInterop;
 using MudBlazor;
 using Musicx.Application.Desktop.Specifications;
 using Musicx.Application.Shared.Enums;
+using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.User;
 

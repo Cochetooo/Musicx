@@ -10,6 +10,7 @@
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Albums
+@using Musicx.Presentation.Web.Client.Components.Artists
 @using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Ratings
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
@@ -48,18 +49,12 @@ else
 
                     <MudDivider Class="my-2"/>
 
-                    @if (!string.IsNullOrWhiteSpace(_artist.CalculatedGenres))
-                    {
-                        <MudText Typo="Typo.body2" Color="Color.Primary"
-                                 Class="text-shadow text-bold">
-                            @_artist.CalculatedGenres
-                        </MudText>
-
-                        <MudText Typo="Typo.caption" Color="Color.Secondary"
-                                 Class="text-shadow description">
-                            @_artist.CalculatedInfluences
-                        </MudText>
-                    }
+                    <ArtistGenreSummary PrimaryGenres="@_primaryGenres"
+                                        Influences="@_influences"
+                                        Descriptors="@_descriptors"
+                                        Scenes="@_scenes"
+                                        Movements="@_movements"
+                                        SimpleMode="@_simpleGenreMode" />
 
                     <MudStack Row Class="mt-3" AlignItems="AlignItems.Center" Spacing="4">
                         <MudText Typo="Typo.subtitle2" Class="text-shadow color-secondary">

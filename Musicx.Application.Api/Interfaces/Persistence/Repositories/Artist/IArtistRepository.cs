@@ -2,6 +2,7 @@
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Artist;
 
 namespace Musicx.Application.Api.Interfaces.Persistence.Repositories.Artist;
 

@@ -1,15 +1,10 @@
-using System.Net;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using Musicx.Application.Shared.Enums;
-using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Enums;
-using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 using Musicx.Presentation.Web.Client.Modals.Admin.Artists;
 
@@ -33,13 +28,17 @@ public partial class ArtistView
     
     private OutArtist? _artist;
     private OutAlbumList _artistAlbums = new();
+    private IReadOnlyList<OutArtistGenreStat> _primaryGenres = [];
+    private IReadOnlyList<OutArtistGenreStat> _influences = [];
+    private IReadOnlyList<OutArtistGenreStat> _descriptors = [];
+    private IReadOnlyList<OutArtistGenreStat> _scenes = [];
+    private IReadOnlyList<OutArtistGenreStat> _movements = [];
     private List<OutAlbum> _filteredAlbums = [];
     private OutGenericList<OutUserAlbumAttribute>? _userAttrs;
-    private Dictionary<ReleaseType, bool> _availableReleaseTypes = [];
-    private Dictionary<int, int> _releaseCountPerYears = [];
     private OutArtistRatingStat _artistRatingSummary = new();
     private bool _isCurrentUserFollowing;
     private long _followersCount;
+    private bool _simpleGenreMode;
     
     private ReleasesViewMode _viewMode = ReleasesViewMode.List;
     private bool _groupByType = true;
@@ -76,21 +75,25 @@ public partial class ArtistView
 
         _artist = dataView.Artist;
         _artistAlbums = dataView.Albums;
-        _artistRatingSummary = dataView.Artist.Stats;
+        
+        if (dataView.Artist.Stats is not null)
+        {
+            _artistRatingSummary = dataView.Artist.Stats;
+        }
+        
         _userAttrs = dataView.UserAttributes;
         _isCurrentUserFollowing = dataView.IsCurrentUserFollowing;
         _followersCount = dataView.FollowersCount;
+        _primaryGenres = dataView.PrimaryGenres;
+        _influences = dataView.Influences;
+        _descriptors = dataView.Descriptors;
+        _scenes = dataView.Scenes;
+        _movements = dataView.Movements;
+        _simpleGenreMode = UserClientContext.CurrentUser?.PrefSimpleGenre ?? false;
 
         _logger.LogInformation($"✅ Artist loaded: {_artist.Name} ({_artist.Id})");
         
         _filteredAlbums = new List<OutAlbum>(_artistAlbums.Items);
-        
-        _availableReleaseTypes = _artistAlbums
-            .Items
-            .Where(s => s.ReleaseType.HasValue)
-            .Select(s => s.ReleaseType!.Value)
-            .Distinct()
-            .ToDictionary(r => r, r => r is ReleaseType.Lp or ReleaseType.MixTape or ReleaseType.Soundtrack);
         
         await InvokeAsync(StateHasChanged);
         

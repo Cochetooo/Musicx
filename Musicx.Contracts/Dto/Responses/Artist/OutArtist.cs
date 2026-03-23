@@ -1,7 +1,6 @@
-using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Enums;
 
-namespace Musicx.Contracts.Dto.Responses;
+namespace Musicx.Contracts.Dto.Responses.Artist;
 
 public sealed class OutArtist : BaseOutputModel
 {
@@ -9,6 +8,11 @@ public sealed class OutArtist : BaseOutputModel
     public string? ArtworkUrl { get; set; }
     public string? CalculatedGenres { get; set; }
     public string? CalculatedInfluences { get; set; }
+    public string? CalculatedGenreCounts { get; set; }
+    public string? CalculatedInfluenceCounts { get; set; }
+    public string? CalculatedDescriptorCounts { get; set; }
+    public string? CalculatedSceneCounts { get; set; }
+    public string? CalculatedMovementCounts { get; set; }
     public string? CurrentCountry { get; set; }
     public string? CurrentRegion { get; set; }
     public string? CurrentTown { get; set; }
