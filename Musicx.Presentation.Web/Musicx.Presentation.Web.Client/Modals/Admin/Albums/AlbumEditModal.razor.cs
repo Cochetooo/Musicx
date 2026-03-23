@@ -143,41 +143,33 @@ public partial class AlbumEditModal
             var response = await Http.GetStringAsync(
                 $"api/artworks/album-options?name={Uri.EscapeDataString(_album.Name)}&artist={Uri.EscapeDataString(_artist.Name)}",
                 _artworkCts.Token);
-            
-            _logger.LogInformation(response);
 
             var result = JsonConvert.DeserializeObject<FetchAlbumInfoResponse>(response)?.SearchResult;
 
             _artworkCandidates.Clear();
-            
-            _logger.LogInformation("Result is null: " + (result is null) + " candidates : " + (result?.Candidates is null)
-                + " count : " + result?.Candidates?.Count);
+
             if (result?.Candidates is not null)
             {
-                _logger.LogInformation("adding range candidates.");
                 _artworkCandidates.AddRange(result.Candidates);
             }
 
-            _logger.LogInformation("pendingArtworkFile: " + _pendingArtworkFile + " second cond: " + ((string.IsNullOrWhiteSpace(_selectedArtworkUrl) ||
-                !_selectedArtworkUrl.Contains("/Artists/",
-                    StringComparison.OrdinalIgnoreCase))));
             if (_pendingArtworkFile is null && (string.IsNullOrWhiteSpace(_selectedArtworkUrl) ||
                                                 !_selectedArtworkUrl.Contains("/Artists/",
                                                     StringComparison.OrdinalIgnoreCase)))
             {
                 _selectedArtworkUrl = _artworkCandidates.FirstOrDefault()?.Url ?? _selectedArtworkUrl;
-                _logger.LogInformation("selectedArtworkUrl : " + _selectedArtworkUrl);
             }
+            
+            _isArtworkLoading = false;
+            await InvokeAsync(StateHasChanged);
         }
         catch (TaskCanceledException)
-        { }
+        {
+            
+        }
         catch (Exception ex)
         {
             _logger.LogError("❌ Error while retrieving artwork : " + ex.Message);
-        }
-        finally
-        {
-            _logger.LogInformation("InvokeAsync StateHasChanged");
             _isArtworkLoading = false;
             await InvokeAsync(StateHasChanged);
         }

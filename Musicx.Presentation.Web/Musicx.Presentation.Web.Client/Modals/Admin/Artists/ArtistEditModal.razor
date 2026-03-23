@@ -27,7 +27,7 @@
                     <MudStack Spacing="3">
                         <div>
                             <MudText Typo="Typo.h6">1. Choose a title</MudText>
-                            <MudText Typo="Typo.body2" Class="color-secondary">Le nom et le type sont décidés avant d'ouvrir le reste du formulaire.</MudText>
+                            <MudText Typo="Typo.body2" Class="color-secondary">This cannot be changed later.</MudText>
                         </div>
 
                         <MudTextField T="string"
@@ -50,7 +50,7 @@
                     <MudStack Spacing="3">
                         <div>
                             <MudText Typo="Typo.h6">2. Choose a profile type</MudText>
-                            <MudText Typo="Typo.body2" Class="color-secondary">Même logique visuelle que le GenreEditModal, mais orientée artiste.</MudText>
+                            <MudText Typo="Typo.body2" Class="color-secondary">This can be modified at anytime.</MudText>
                         </div>
                         
                         <div class="artist-type-grid">
@@ -90,12 +90,11 @@
                                 <MudGrid>
                                     <MudItem xs="12" md="7">
                                         <MudTextField T="string"
-                                                      TextChanged="@NameTextChanged"
-                                                      Disabled="@(_artist.Id != 0)"
+                                                      Disabled
                                                       Immediate
-                                                      Label="Artist title (*)"
+                                                      Label="Artist title"
                                                       Variant="Variant.Outlined"
-                                                      @ref="_detailNameTextEdit"/>
+                                                      Text="@_artist.Name"/>
                                     </MudItem>
 
                                     <MudItem xs="12" md="5">

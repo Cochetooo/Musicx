@@ -127,7 +127,7 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         if (genreQuerySpecification.IncludeRelations)
         {
             selects.Add($"(SELECT json_agg(jsonb_build_object('relation', gr.*, 'related_genre', rg.*)) FROM genre_relation gr " +
-                        $"JOIN rg ON gr.{GenreRelationColumns.ToGenreId} = rg.{GenreColumns.Id} " +
+                        $"JOIN genres rg ON gr.{GenreRelationColumns.ToGenreId} = rg.{GenreColumns.Id} " +
                         $"WHERE gr.{GenreRelationColumns.FromGenreId} = g0.{GenreColumns.Id}) AS relations");
         }
 

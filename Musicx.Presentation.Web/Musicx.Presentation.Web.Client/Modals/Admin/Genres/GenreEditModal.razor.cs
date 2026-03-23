@@ -20,7 +20,7 @@ public partial class GenreEditModal
 
     private MudDialog _modalRef = null!;
     
-    private GenreNodeEditor _nodeEditor = null!;
+    private GenreNodeEditor? _nodeEditor;
 
     private readonly GenreEditState _state = new();
 
@@ -53,7 +53,15 @@ public partial class GenreEditModal
         
         _state.Node = completeGenre.ToRaw();
         await InvokeAsync(StateHasChanged);
-        await _nodeEditor.UpdateCanonicalName(_state.Node.CanonicalName);
+
+        if (_nodeEditor is not null)
+        {
+            await _nodeEditor.UpdateCanonicalName(_state.Node.CanonicalName);
+        }
+        else
+        {
+            _logger.LogWarning("⚠️ Node Editor component is null, cannot update canonical name field.");
+        }
 
         if (completeGenre.Relations is not null)
         {
@@ -200,12 +208,11 @@ public partial class GenreEditModal
             IsVisible = true,
             IsTaggable = true
         };
-        
         _state.Relations.Clear();
         _state.Aliases.Clear();
         _state.Facets.Clear();
         _state.Step = 1;
         
-        _nodeEditor.Clean();
+        _nodeEditor?.Clean();
     }
 }

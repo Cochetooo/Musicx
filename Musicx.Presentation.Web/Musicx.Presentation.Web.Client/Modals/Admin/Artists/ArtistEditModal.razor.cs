@@ -39,9 +39,7 @@ public partial class ArtistEditModal
     private int _wizardStep;
 
     private MudTextField<string> _nameTextEdit = null!;
-    private MudTextField<string> _detailNameTextEdit = null!;
     private bool _hydrateIdentityName;
-    private bool _hydrateDetailName;
     private CancellationTokenSource? _artworkCts;
     private MudDialog _modalRef = null!;
     
@@ -84,7 +82,6 @@ public partial class ArtistEditModal
         await InvokeAsync(StateHasChanged);
 
         _hydrateIdentityName = _wizardStep == 1;
-        _hydrateDetailName = _wizardStep == 2;
 
         if (!string.IsNullOrWhiteSpace(_artist.Name))
         {
@@ -159,32 +156,26 @@ public partial class ArtistEditModal
             var response = await Http.GetStringAsync(
                 $"api/artworks/artist-options?name={Uri.EscapeDataString(_artist.Name)}",
                 _artworkCts.Token);
-            
-            _logger.LogInformation(response);
 
             var result = JsonConvert.DeserializeObject<FetchArtistInfoResponse>(response)?.SearchResult;
 
             _artworkCandidates.Clear();
-
-            _logger.LogInformation("Result is null: " + (result is null) + " candidates : " + (result?.Candidates is null)
-                                   + " count : " + result?.Candidates?.Count);
             
             if (result?.Candidates is not null)
             {
                 _logger.LogInformation("adding range candidates.");
                 _artworkCandidates.AddRange(result.Candidates);
             }
-
-            _logger.LogInformation("pendingArtworkFile: " + _pendingArtworkFile + " second cond: " + ((string.IsNullOrWhiteSpace(_selectedArtworkUrl) ||
-                !_selectedArtworkUrl.Contains("/Artists/",
-                    StringComparison.OrdinalIgnoreCase))));
+            
             if (_pendingArtworkFile is null && (string.IsNullOrWhiteSpace(_selectedArtworkUrl) ||
                                                 !_selectedArtworkUrl.Contains("/Artists/",
                                                     StringComparison.OrdinalIgnoreCase)))
             {
                 _selectedArtworkUrl = _artworkCandidates.FirstOrDefault()?.Url ?? _selectedArtworkUrl;
-                _logger.LogInformation("selectedArtworkUrl : " + _selectedArtworkUrl);
             }
+            
+            _isArtworkLoading = false;
+            await InvokeAsync(StateHasChanged);
         }
         catch (TaskCanceledException)
         {
@@ -193,10 +184,6 @@ public partial class ArtistEditModal
         catch (Exception ex)
         {
             _logger.LogError("❌ Error while retrieving artwork : " + ex.Message);
-        }
-        finally
-        {
-            _logger.LogInformation("InvokeAsync StateHasChanged");
             _isArtworkLoading = false;
             await InvokeAsync(StateHasChanged);
         }
@@ -253,7 +240,6 @@ public partial class ArtistEditModal
     private void GoToDetailsStep()
     {
         _wizardStep = 2;
-        _hydrateDetailName = true;
     }
 
     private void GoBackToIdentityStep()
@@ -341,12 +327,6 @@ public partial class ArtistEditModal
         {
             _hydrateIdentityName = false;
             await _nameTextEdit.SetTextAsync(_artist.Name);
-        }
-
-        if (_hydrateDetailName)
-        {
-            _hydrateDetailName = false;
-            await _detailNameTextEdit.SetTextAsync(_artist.Name);
         }
     }
 }

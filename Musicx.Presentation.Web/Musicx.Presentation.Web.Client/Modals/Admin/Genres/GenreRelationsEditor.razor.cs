@@ -32,13 +32,7 @@ public partial class GenreRelationsEditor
 
     private void OnParentsChanged(IReadOnlyList<OutGenre> genres)
     {
-        Relations.AddRange(genres.Select(g => new InGenreRelation
-        {
-            Type = GenreRelationType.IsA,
-            FromGenreId = g.Id,
-            ToGenreId = 0,
-            Weight = 1f
-        }));
+        AddUnique(genres, GenreRelationType.IsA, 1f);
     }
 
     private void OnInfluencesChanged(IReadOnlyList<OutGenre> genres)
