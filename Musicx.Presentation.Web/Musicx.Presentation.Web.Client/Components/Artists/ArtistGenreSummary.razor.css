@@ -1,0 +1,152 @@
+﻿.artist-genre-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-top: 0.4rem;
+}
+
+.artist-genre-summary-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.artist-genre-summary-caption {
+    color: var(--mud-palette-text-secondary);
+    letter-spacing: 0.01em;
+}
+
+.artist-genre-summary-toggle {
+    flex-shrink: 0;
+    border-radius: 999px;
+}
+
+.artist-genre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 0.95rem;
+}
+
+.artist-genre-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.85rem 0.95rem 0.95rem;
+    border-radius: 20px;
+    border: 1px solid color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
+    background:
+            linear-gradient(180deg,
+            color-mix(in srgb, var(--mud-palette-surface) 96%, transparent),
+            color-mix(in srgb, var(--mud-palette-background-gray) 86%, transparent));
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+}
+
+.artist-genre-card.is-primary {
+    border-color: color-mix(in srgb, var(--mud-palette-primary) 22%, transparent);
+}
+
+.artist-genre-card.is-influence {
+    border-color: color-mix(in srgb, var(--mud-palette-secondary) 18%, transparent);
+}
+
+.artist-genre-card.is-scene,
+.artist-genre-card.is-descriptor,
+.artist-genre-card.is-subgenre {
+    border-color: color-mix(in srgb, var(--mud-palette-text-primary) 9%, transparent);
+}
+
+.artist-genre-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.artist-genre-section-title {
+    font-family: "Space Grotesk", "Segoe UI", sans-serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mud-palette-text-secondary);
+}
+
+.artist-genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    align-items: center;
+}
+
+.artist-genre-tag {
+    --artist-genre-start: rgba(43, 51, 51, 0.24);
+    --artist-genre-end: rgba(43, 51, 51, 0.08);
+    --artist-genre-border: rgba(43, 51, 51, 0.2);
+    --artist-genre-glow: rgba(43, 51, 51, 0.12);
+    --artist-genre-text: var(--mud-palette-text-primary);
+    --artist-genre-shadow: rgba(0, 0, 0, 0.18);
+    --artist-genre-opacity: 1;
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 0.36rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--artist-genre-border);
+    color: var(--artist-genre-text);
+    opacity: var(--artist-genre-opacity);
+    text-decoration: none;
+    background:
+            linear-gradient(135deg, var(--artist-genre-start), var(--artist-genre-end)),
+            linear-gradient(180deg,
+            color-mix(in srgb, var(--mud-palette-surface) 92%, transparent),
+            color-mix(in srgb, var(--mud-palette-background-gray) 72%, transparent));
+    box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.16),
+            0 8px 18px -14px var(--artist-genre-glow);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+}
+
+.artist-genre-tag:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--artist-genre-border) 75%, white 25%);
+    box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.22),
+            0 14px 24px -18px var(--artist-genre-glow);
+}
+
+.artist-genre-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: "Space Grotesk", "Segoe UI", sans-serif;
+    font-size: 0.86rem;
+    line-height: 1.15;
+    text-shadow: 0 1px 0 var(--artist-genre-shadow);
+}
+
+.artist-genre-tag.is-weight-1 .artist-genre-name { font-weight: 500; }
+.artist-genre-tag.is-weight-2 .artist-genre-name { font-weight: 575; }
+.artist-genre-tag.is-weight-3 .artist-genre-name { font-weight: 650; }
+.artist-genre-tag.is-weight-4 .artist-genre-name { font-weight: 720; }
+
+.artist-genre-tag.is-influence-item .artist-genre-name {
+    font-style: italic;
+    font-weight: 300 !important;
+}
+
+.artist-genre-tag.is-scene-item,
+.artist-genre-tag.is-movement {
+    border-radius: 16px;
+}
+
+.artist-genre-tag.is-movement {
+    border-style: dashed;
+}
+
+@media (max-width: 960px) {
+    .artist-genre-grid {
+        grid-template-columns: 1fr;
+    }
+}

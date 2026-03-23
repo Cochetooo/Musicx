@@ -1,146 +1,52 @@
 ﻿@using Musicx.Contracts.Dto.Responses.Specifics.Artists
 @using Musicx.Contracts.Enums
 
-<div class="artist-genre-grid">
-    @RenderSection("Genres", "artist-genre-card is-primary", PreviewPrimaryGenres, SectionKind.Primary)
-    @RenderSection("Subgenres", "artist-genre-card is-subgenre", PreviewSubgenres, SectionKind.Subgenre)
-    @RenderSection("Influences", "artist-genre-card is-influence", PreviewInfluences, SectionKind.Influence)
-    @RenderSection("Scenes & Movements", "artist-genre-card is-scene", PreviewScenesAndMovements, SectionKind.SceneMovement)
-    @RenderSection("Descriptors", "artist-genre-card is-descriptor", PreviewDescriptors, SectionKind.Descriptor)
+<div class="artist-genre-summary">
+    @if (HasOverflow)
+    {
+        <div class="artist-genre-summary-toolbar">
+            <MudText Typo="Typo.caption" Class="artist-genre-summary-caption">
+                Genre palette
+            </MudText>
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Default"
+                       Size="Size.Small"
+                       Class="artist-genre-summary-toggle"
+                       OnClick="ToggleExpanded">
+                @(_expanded ? "Show less" : "Show more")
+            </MudButton>
+        </div>
+    }
+
+    <div class="artist-genre-grid @(_expanded ? "is-expanded" : string.Empty)">
+        @foreach (var section in Sections)
+        {
+            var stats = GetVisibleStats(section);
+
+            if (0 == stats.Count)
+            {
+                continue;
+            }
+
+            var maxCount = GetMaxCount(stats);
+
+            <section class="@(section.CardClass)">
+                <header class="artist-genre-section-header">
+                    <span class="artist-genre-section-title">@(section.Title)</span>
+                </header>
+
+                <div class="artist-genre-tags">
+                    @foreach (var stat in stats)
+                    {
+                        <a class="@GetItemClass(section.Kind, stat, maxCount)"
+                           href="@($"/Genre/{stat.Genre.Id}")"
+                           title="@GetItemTitle(stat)"
+                           style="@GetTagStyle(section.Kind, stat, maxCount)">
+                            <span class="artist-genre-name">@GetDisplayName(stat)</span>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+    </div>
 </div>
-
-<style>
-    .artist-genre-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-        gap: 0.9rem;
-    }
-    
-    .artist-genre-kicker {
-        font-family: "Space Grotesk", "Segoe UI", sans-serif;
-        font-weight: 700;
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
-    }
-
-    .artist-genre-subtitle {
-        color: var(--mud-palette-text-secondary);
-    }
-
-    .artist-genre-toggle {
-        flex-shrink: 0;
-    }
-
-    .artist-genre-grid-expanded {
-        padding-top: 0.35rem;
-    }
-
-    .artist-genre-card {
-        display: flex;
-        flex-direction: column;
-        gap: 0.85rem;
-        padding: 1rem 1.05rem;
-        border-radius: 18px;
-        border: 1px solid color-mix(in srgb, var(--mud-palette-primary) 12%, transparent);
-        background:
-            linear-gradient(180deg,
-            color-mix(in srgb, var(--mud-palette-surface) 92%, transparent),
-            color-mix(in srgb, var(--mud-palette-background-gray) 74%, transparent));
-        box-shadow: 0 16px 38px rgba(0, 0, 0, 0.08);
-    }
-
-    .artist-genre-card.is-primary {
-        border-color: color-mix(in srgb, var(--mud-palette-primary) 26%, transparent);
-    }
-
-    .artist-genre-card.is-influence {
-        border-color: color-mix(in srgb, var(--mud-palette-secondary) 20%, transparent);
-    }
-
-    .artist-genre-card.is-scene,
-    .artist-genre-card.is-descriptor,
-    .artist-genre-card.is-subgenre {
-        border-color: color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
-    }
-
-    .artist-genre-section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.75rem;
-    }
-
-    .artist-genre-section-title {
-        font-family: "Space Grotesk", "Segoe UI", sans-serif;
-        font-size: 0.82rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        color: var(--mud-palette-text-secondary);
-    }
-
-    .artist-genre-section-count {
-        font-size: 0.74rem;
-        color: var(--mud-palette-text-disabled);
-    }
-
-    .artist-genre-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.45rem 0.7rem;
-        align-items: baseline;
-    }
-
-    .artist-genre-tag {
-        display: inline-flex;
-        align-items: baseline;
-        gap: 0.32rem;
-        color: inherit;
-        text-decoration: none;
-        line-height: 1.2;
-        transition: transform 0.16s ease, color 0.16s ease, opacity 0.16s ease;
-        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-    }
-
-    .artist-genre-tag:hover {
-        transform: translateY(-1px);
-        color: var(--mud-palette-primary);
-    }
-
-    .artist-genre-tag .artist-genre-count {
-        font-family: "Space Grotesk", "Segoe UI", sans-serif;
-        font-size: 0.72rem;
-        color: var(--mud-palette-text-disabled);
-    }
-
-    .artist-genre-tag.is-weight-1 { font-weight: 400; }
-    .artist-genre-tag.is-weight-2 { font-weight: 500; }
-    .artist-genre-tag.is-weight-3 { font-weight: 600; }
-    .artist-genre-tag.is-weight-4 { font-weight: 700; }
-    .artist-genre-tag.is-weight-5 { font-weight: 800; }
-
-    .artist-genre-card.is-influence .artist-genre-tag {
-        font-style: italic;
-        opacity: 0.82;
-    }
-
-    .artist-genre-card.is-influence .artist-genre-tag.is-weight-1 { font-weight: 300; }
-    .artist-genre-card.is-influence .artist-genre-tag.is-weight-2 { font-weight: 400; }
-    .artist-genre-card.is-influence .artist-genre-tag.is-weight-3 { font-weight: 500; }
-
-    .artist-genre-card.is-subgenre .artist-genre-tag,
-    .artist-genre-card.is-scene .artist-genre-tag,
-    .artist-genre-card.is-descriptor .artist-genre-tag {
-        color: color-mix(in srgb, var(--mud-palette-text-primary) 90%, var(--mud-palette-primary));
-    }
-
-    .artist-genre-tag.is-movement {
-        letter-spacing: 0.02em;
-    }
-
-    .artist-genre-tag.is-scene-item {
-        text-decoration: underline;
-        text-decoration-color: color-mix(in srgb, var(--mud-palette-primary) 25%, transparent);
-        text-underline-offset: 0.18em;
-    }
-</style>
