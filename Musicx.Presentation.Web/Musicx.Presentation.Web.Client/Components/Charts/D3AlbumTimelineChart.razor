@@ -10,9 +10,9 @@
     }
 
     .album-timeline-tooltip {
-        background: linear-gradient(135deg, rgba(21, 17, 38, 0.95), rgba(34, 23, 56, 0.95));
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: color-mix(in srgb, var(--mud-palette-surface) 94%, transparent);
+        color: var(--mud-palette-text-primary);
+        border: 1px solid color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
         border-radius: 0.75rem;
         padding: 0.45rem 0.6rem;
         box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
@@ -32,6 +32,16 @@
     .album-timeline-tooltip__rating {
         margin-top: 0.1rem;
         font-size: 0.7rem;
+        color: var(--mud-palette-text-secondary);
+    }
+
+    .mud-theme-dark .album-timeline-tooltip {
+        background: linear-gradient(135deg, rgba(21, 17, 38, 0.95), rgba(34, 23, 56, 0.95));
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .mud-theme-dark .album-timeline-tooltip__rating {
         color: rgba(255, 255, 255, 0.78);
     }
 </style>

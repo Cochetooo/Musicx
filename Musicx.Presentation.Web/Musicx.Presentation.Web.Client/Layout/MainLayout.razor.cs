@@ -23,10 +23,11 @@ public partial class MainLayout
             return;
         }
         
-        _isDarkMode = await _mudThemeProvider.GetSystemDarkModeAsync();
         _logger = LoggerFactory.CreateLogger(nameof(MainLayout));
-
+        
+        
         await UserClientContext.RefreshAsync();
+        _isDarkMode = UserClientContext.CurrentUser?.PrefDarkMode ?? await _mudThemeProvider.GetSystemDarkModeAsync();
 
         await InvokeAsync(StateHasChanged);
     }

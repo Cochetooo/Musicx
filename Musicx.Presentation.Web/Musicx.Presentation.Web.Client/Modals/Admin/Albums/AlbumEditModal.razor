@@ -217,9 +217,17 @@
     }
 
     .album-section {
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        border: 1px solid color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
+        background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--mud-palette-surface) 94%, white 6%),
+            color-mix(in srgb, var(--mud-palette-background) 92%, transparent));
         border-radius: 20px;
+    }
+
+    .mud-theme-dark .album-section {
+        border-color: rgba(255, 255, 255, 0.08);
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
     }
 
     .artwork-panel {
@@ -232,8 +240,16 @@
         display: grid;
         place-items: center;
         border-radius: 20px;
+        background: radial-gradient(
+            circle at top,
+            color-mix(in srgb, var(--mud-palette-primary) 22%, transparent),
+            color-mix(in srgb, var(--mud-palette-surface) 70%, transparent));
+        border: 1px dashed color-mix(in srgb, var(--mud-palette-primary) 24%, transparent);
+    }
+
+    .mud-theme-dark .artwork-preview-shell {
         background: radial-gradient(circle at top, rgba(99, 102, 241, 0.22), rgba(15, 23, 42, 0.45));
-        border: 1px dashed rgba(255,255,255,0.16);
+        border-color: rgba(255, 255, 255, 0.16);
     }
 
     .artwork-preview {
@@ -246,8 +262,12 @@
         cursor: pointer;
         padding: 12px;
         border-radius: 16px;
-        border: 1px solid rgba(255,255,255,0.08);
+        border: 1px solid color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
         transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .mud-theme-dark .artwork-choice {
+        border-color: rgba(255,255,255,0.08);
     }
 
     .artwork-choice:hover,

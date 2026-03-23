@@ -1,4 +1,16 @@
-﻿.hero-banner,
+﻿:root {
+    --mx-hero-text-primary: #ffffff;
+    --mx-hero-text-secondary: rgba(255, 255, 255, 0.82);
+    --mx-hero-text-muted: rgba(255, 255, 255, 0.7);
+    --mx-hero-overlay-top: rgba(17, 24, 39, 0.42);
+    --mx-hero-overlay-bottom: rgba(0, 0, 0, 0.58);
+    --mx-hero-panel-bg: rgba(15, 23, 42, 0.24);
+    --mx-hero-panel-border: rgba(255, 255, 255, 0.12);
+    --mx-hero-input-color: var(--mx-hero-text-primary);
+    --mx-hero-input-placeholder: var(--mx-hero-text-secondary);
+}
+
+.hero-banner,
 .album-hero,
 .artist-hero,
 .user-hero {
@@ -47,7 +59,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(var(--mud-palette-surface), 0.28), rgba(0, 0, 0, 0.32));
+    background: linear-gradient(180deg, var(--mx-hero-overlay-top), var(--mx-hero-overlay-bottom));
     z-index: 1;
     mix-blend-mode: multiply;
 }
@@ -61,6 +73,124 @@
     display: grid;
     gap: 1.25rem;
     align-items: start;
+    color: var(--mx-hero-text-primary);
+}
+
+.hero-banner-content .mud-typography,
+.album-hero-content .mud-typography,
+.artist-hero-content .mud-typography,
+.user-hero-content .mud-typography,
+.hero-banner-content .mud-link,
+.album-hero-content .mud-link,
+.artist-hero-content .mud-link,
+.user-hero-content .mud-link,
+.hero-banner-content .neighbor-album-text,
+.album-hero-content .neighbor-album-text,
+.artist-hero-content .neighbor-album-text,
+.user-hero-content .neighbor-album-text {
+    color: inherit;
+}
+
+.hero-banner-content .color-primary,
+.album-hero-content .color-primary,
+.artist-hero-content .color-primary,
+.user-hero-content .color-primary,
+.hero-banner-content .mud-typography.color-primary,
+.album-hero-content .mud-typography.color-primary,
+.artist-hero-content .mud-typography.color-primary,
+.user-hero-content .mud-typography.color-primary {
+    color: var(--mx-hero-text-primary) !important;
+}
+
+.hero-banner-content .color-secondary,
+.album-hero-content .color-secondary,
+.artist-hero-content .color-secondary,
+.user-hero-content .color-secondary,
+.hero-banner-content .mud-typography.color-secondary,
+.album-hero-content .mud-typography.color-secondary,
+.artist-hero-content .mud-typography.color-secondary,
+.user-hero-content .mud-typography.color-secondary {
+    color: var(--mx-hero-text-secondary) !important;
+}
+
+.hero-banner-content .color-muted,
+.album-hero-content .color-muted,
+.artist-hero-content .color-muted,
+.user-hero-content .color-muted,
+.hero-banner-content .mud-typography.color-muted,
+.album-hero-content .mud-typography.color-muted,
+.artist-hero-content .mud-typography.color-muted,
+.user-hero-content .mud-typography.color-muted {
+    color: var(--mx-hero-text-muted) !important;
+}
+
+.hero-banner .glass-paper,
+.album-hero .glass-paper,
+.artist-hero .glass-paper,
+.user-hero .glass-paper {
+    background: var(--mx-hero-panel-bg);
+    border-color: var(--mx-hero-panel-border);
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.18);
+}
+
+.hero-banner-content .animate-text,
+.album-hero-content .animate-text,
+.artist-hero-content .animate-text,
+.user-hero-content .animate-text {
+    background: linear-gradient(
+            90deg,
+            var(--mx-hero-text-primary) 0%,
+            var(--mx-hero-text-primary) 35%,
+            var(--mx-hero-text-secondary) 45%,
+            var(--mx-hero-text-secondary) 55%,
+            var(--mx-hero-text-primary) 65%,
+            var(--mx-hero-text-primary) 100%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.hero-banner-content .mud-divider,
+.album-hero-content .mud-divider,
+.artist-hero-content .mud-divider,
+.user-hero-content .mud-divider {
+    border-color: color-mix(in srgb, var(--mx-hero-text-primary) 14%, transparent);
+}
+
+.hero-banner-content .mud-input-slot,
+.album-hero-content .mud-input-slot,
+.artist-hero-content .mud-input-slot,
+.user-hero-content .mud-input-slot,
+.hero-banner-content .mud-input > input,
+.album-hero-content .mud-input > input,
+.artist-hero-content .mud-input > input,
+.user-hero-content .mud-input > input,
+.hero-banner-content .mud-select-input,
+.album-hero-content .mud-select-input,
+.artist-hero-content .mud-select-input,
+.user-hero-content .mud-select-input,
+.hero-banner-content .mud-input-adornment,
+.album-hero-content .mud-input-adornment,
+.artist-hero-content .mud-input-adornment,
+.user-hero-content .mud-input-adornment {
+    color: var(--mx-hero-input-color) !important;
+}
+
+.hero-banner-content input::placeholder,
+.album-hero-content input::placeholder,
+.artist-hero-content input::placeholder,
+.user-hero-content input::placeholder {
+    color: var(--mx-hero-input-placeholder) !important;
+    opacity: 1;
+}
+
+.hero-banner-content .mud-input-outlined-border,
+.album-hero-content .mud-input-outlined-border,
+.artist-hero-content .mud-input-outlined-border,
+.user-hero-content .mud-input-outlined-border {
+    border-color: color-mix(in srgb, var(--mx-hero-text-primary) 18%, transparent) !important;
 }
 
 .hero-banner-image img,
@@ -82,6 +212,6 @@
     line-height: 1;
     font-size: clamp(2rem, 6vw, 4rem);
     margin: 0;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0.2, 0.2, 0.2, 0.3);
+    color: var(--mx-hero-text-primary);
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }

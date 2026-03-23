@@ -1,9 +1,50 @@
 .album-hero {
     min-height: 420px;
+    --mx-hero-overlay-top: rgba(255, 255, 255, 0.14);
+    --mx-hero-overlay-bottom: rgba(15, 23, 42, 0.40);
+    --mx-hero-panel-bg: rgba(15, 23, 42, 0.20);
+    --mx-hero-panel-border: rgba(255, 255, 255, 0.08);
+}
+
+.album-hero::before {
+    filter: blur(24px) saturate(0.92) brightness(0.52);
+}
+
+.mud-theme-dark .album-hero {
+    --mx-hero-overlay-top: rgba(17, 24, 39, 0.42);
+    --mx-hero-overlay-bottom: rgba(0, 0, 0, 0.58);
+    --mx-hero-panel-bg: rgba(15, 23, 42, 0.24);
+    --mx-hero-panel-border: rgba(255, 255, 255, 0.12);
+}
+
+.mud-theme-dark .album-hero::before {
+    filter: blur(24px) saturate(0.9) brightness(0.4);
 }
 
 .album-hero-content {
     grid-template-columns: 480px 1fr 320px;
+}
+
+.album-hero .mud-card-actions .glass-paper,
+.album-hero .album-rating-mini-card {
+    background: rgba(15, 23, 42, 0.18);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.album-hero .mud-button-root.mud-button-text,
+.album-hero .mud-button-root.mud-button-outlined {
+    color: var(--mx-hero-text-primary);
+    border-color: color-mix(in srgb, var(--mx-hero-text-primary) 18%, transparent);
+}
+
+.album-hero .editable-rating-input {
+    min-width: 120px;
+}
+
+.album-hero .editable-rating-input .mud-input-slot,
+.album-hero .editable-rating-input input,
+.album-hero .editable-rating-input .mud-input-adornment {
+    color: var(--mx-hero-text-primary) !important;
 }
 
 .album-rating-hover-card {

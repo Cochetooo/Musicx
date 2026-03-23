@@ -4,6 +4,11 @@
     position: fixed; inset: 0; background: rgba(10,10,12,0.6); opacity: 0; transition: opacity 220ms ease;
     backdrop-filter: blur(3px);
 }
+
+.mud-theme-dark .f-overlay-backdrop {
+    background: rgba(10, 10, 12, 0.6);
+}
+
 .f-search-overlay[style*="display:block"] .f-overlay-backdrop { opacity: 1; pointer-events: auto; }
 /* wrapper centers the modal */
 .f-overlay-wrapper { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
@@ -42,14 +47,14 @@
 .f-search-result-group { margin-bottom: 12px; }
 .f-search-group-header { font-weight:700; margin-bottom:6px; }
 .f-search-result-item { display:flex; gap:8px; align-items:center; padding:8px; border-radius:6px; transition: background 120ms ease; }
-.f-search-result-item:hover { background: rgba(255,255,255,0.02); }
+.f-search-result-item:hover { background: color-mix(in srgb, var(--mud-palette-primary) 10%, transparent); }
 
 /* loader */
-.f-search-loading { display:flex; gap:8px; align-items:center; padding:8px; color:#ddd; }
+.f-search-loading { display:flex; gap:8px; align-items:center; padding:8px; color:var(--mud-palette-text-secondary); }
 .f-search-loader {
     width:16px; height:16px; border-radius:50%;
-    border: 2px solid rgba(255,255,255,0.15);
-    border-top-color: rgba(255,255,255,0.9);
+    border: 2px solid color-mix(in srgb, var(--mud-palette-text-primary) 14%, transparent);
+    border-top-color: var(--mud-palette-primary);
     animation: spin 900ms linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -62,6 +67,30 @@
 
 /* nav input (in AppBar) to identify source */
 .nav-search-field input { cursor: text; }
+
+.f-search-modal {
+    background: color-mix(in srgb, var(--mud-palette-surface) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
+    box-shadow: 0 30px 90px color-mix(in srgb, var(--mud-palette-text-primary) 14%, transparent);
+}
+
+.f-search-group-header,
+.group-title,
+.search-hint,
+.loading-text {
+    color: var(--mud-palette-text-primary);
+}
+
+.f-search-results-column,
+.f-search-filters-column {
+    color: var(--mud-palette-text-primary);
+}
+
+.mud-theme-dark .f-search-modal {
+    background: color-mix(in srgb, var(--mud-palette-surface) 84%, rgba(2, 6, 23, 0.65));
+    border-color: color-mix(in srgb, white 10%, transparent);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+}
 
 /* optional: small responsive tweaks */
 @media (max-width: 900px) {

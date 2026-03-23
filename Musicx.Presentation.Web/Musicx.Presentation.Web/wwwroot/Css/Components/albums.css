@@ -1,8 +1,16 @@
 .album-presentation-card {
     min-width: 260px;
     max-width: 260px;
-    background: rgba(30, 30, 50, 0.55);
-    border: 1px solid rgba(255,255,255,.11);
+    background: color-mix(in srgb, var(--mud-palette-surface) 94%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
+    color: var(--mud-palette-text-primary);
     padding: .7rem;
     border-radius: 12px;
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
+}
+
+.mud-theme-dark .album-presentation-card {
+    background: rgba(30, 30, 50, 0.55);
+    border-color: rgba(255,255,255,.11);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
 }

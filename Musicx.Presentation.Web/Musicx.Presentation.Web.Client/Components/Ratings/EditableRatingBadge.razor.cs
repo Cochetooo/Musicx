@@ -25,6 +25,16 @@ public partial class EditableRatingBadge
         RatingMode == RatingMode.OutOfFive || RatingMode == RatingMode.OutOfTen
             || RatingMode == RatingMode.OutOfFifty || RatingMode == RatingMode.Percentage
             || RatingMode == RatingMode.OutOfThousand || RatingMode == RatingMode.OutOfTwenty;
+    
+    private static string GetBadgeStyle(int? value, bool withMinWidth = true)
+    {
+        var background = RatingHelper.GetColorForRating(value);
+        var textColor = ColorHelper.IsColorLight(background)
+            ? ColorHelper.DarkColor
+            : "white";
+        var minWidth = withMinWidth ? "min-width:80px;" : string.Empty;
+        return $"background-color:{background};color:{textColor};{minWidth}font-weight:600;";
+    }
 
     private int MaxValue => RatingMode switch
     {

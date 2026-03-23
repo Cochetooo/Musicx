@@ -82,7 +82,15 @@ export function renderAlbumTimelineChart(element, options) {
 
     const width = Math.max(element.clientWidth || 860, 420);
     const safeInterval = Math.max(1, Number(yearTickInterval) || 1);
-
+    const styles = getComputedStyle(element);
+    const rootStyles = getComputedStyle(document.documentElement);
+    const textPrimary = styles.getPropertyValue('--mud-palette-text-primary').trim()
+        || rootStyles.getPropertyValue('--mud-palette-text-primary').trim()
+        || '#1f2937';
+    const dividerColor = styles.getPropertyValue('--mud-palette-divider').trim()
+        || rootStyles.getPropertyValue('--mud-palette-divider').trim()
+        || 'rgba(148, 163, 184, 0.28)';
+    
     const parsedAlbums = albums
         .map(album => ({
             id: album.id,
@@ -149,16 +157,16 @@ export function renderAlbumTimelineChart(element, options) {
         .append('g')
         .attr('transform', `translate(0, ${height - marginBottom})`)
         .call(xAxis)
-        .call(group => group.select('.domain').attr('stroke', 'rgba(255,255,255,0.25)'))
-        .call(group => group.selectAll('.tick line').attr('stroke', 'rgba(255,255,255,0.18)'))
-        .call(group => group.selectAll('.tick text').attr('fill', 'rgba(255,255,255,0.82)').style('font-size', '11px'));
-
+        .call(group => group.select('.domain').attr('stroke', dividerColor))
+        .call(group => group.selectAll('.tick line').attr('stroke', dividerColor))
+        .call(group => group.selectAll('.tick text').attr('fill', textPrimary).style('font-size', '11px'));
+    
     svg
         .append('g')
         .attr('transform', `translate(${marginLeft},0)`)
         .call(d3.axisLeft(yScale).ticks(5).tickSize(-(width - marginLeft - marginRight)).tickFormat(() => ''))
         .call(group => group.select('.domain').remove())
-        .call(group => group.selectAll('.tick line').attr('stroke', 'rgba(255,255,255,0.14)'))
+        .call(group => group.selectAll('.tick line').attr('stroke', dividerColor))
         .call(group => group.selectAll('.tick text').remove());
 
     const lineGenerator = d3

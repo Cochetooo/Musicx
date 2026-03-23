@@ -1,8 +1,33 @@
 .artist-hero {
     min-height: 420px;
+    --mx-hero-text-primary: var(--mud-palette-text-primary);
+    --mx-hero-text-secondary: var(--mud-palette-text-secondary);
+    --mx-hero-text-muted: var(--mud-palette-text-disabled);
+    --mx-hero-overlay-top: rgba(255, 255, 255, 0.76);
+    --mx-hero-overlay-bottom: rgba(255, 255, 255, 0.52);
+    --mx-hero-panel-bg: color-mix(in srgb, var(--mud-palette-surface) 90%, transparent);
+    --mx-hero-panel-border: color-mix(in srgb, var(--mud-palette-text-primary) 8%, transparent);
+    --mx-hero-input-color: var(--mud-palette-text-primary);
+    --mx-hero-input-placeholder: var(--mud-palette-text-secondary);
 }
 
 .artist-hero::before {
+    filter: blur(24px) saturate(0.88) brightness(0.9);
+}
+
+.mud-theme-dark .artist-hero {
+    --mx-hero-text-primary: #ffffff;
+    --mx-hero-text-secondary: rgba(255, 255, 255, 0.82);
+    --mx-hero-text-muted: rgba(255, 255, 255, 0.7);
+    --mx-hero-overlay-top: rgba(17, 24, 39, 0.34);
+    --mx-hero-overlay-bottom: rgba(0, 0, 0, 0.48);
+    --mx-hero-panel-bg: rgba(15, 23, 42, 0.24);
+    --mx-hero-panel-border: rgba(255, 255, 255, 0.12);
+    --mx-hero-input-color: #ffffff;
+    --mx-hero-input-placeholder: rgba(255, 255, 255, 0.82);
+}
+
+.mud-theme-dark .artist-hero::before {
     filter: blur(24px) saturate(0.9) brightness(0.55);
 }
 

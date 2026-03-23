@@ -6,7 +6,7 @@
     {
         if (Editable && Value is not null)
         {
-            <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;font-weight:600;")"
+            <MudChip Style="@GetBadgeStyle(Value)"
                      OnClick="@ToggleCollapse"
                      OnClose="@DeleteRating"
                      Variant="Variant.Filled"
@@ -19,7 +19,7 @@
         }
         else
         {
-            <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;font-weight:600;")"
+            <MudChip Style="@GetBadgeStyle(Value)"
                      OnClick="@ToggleCollapse"
                      Variant="@(Editable ? Variant.Filled : Variant.Outlined)"
                      Size="@Size"
@@ -44,7 +44,7 @@
         {
             if (Editable && Value is not null)
             {
-                <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;font-weight:600;")"
+                <MudChip Style="@GetBadgeStyle(Value)"
                          OnClick="@ToggleEdit"
                          OnClose="@DeleteRating"
                          Variant="Variant.Filled"
@@ -57,7 +57,7 @@
             }
             else
             {
-                <MudChip Style="@($"background-color: {RatingHelper.GetColorForRating(Value)};color:white;min-width:80px;font-weight:600;")"
+                <MudChip Style="@GetBadgeStyle(Value)"
                          OnClick="@ToggleEdit"
                          Variant="@(Editable ? Variant.Filled : Variant.Outlined)"
                          Class="glass-card"
@@ -78,7 +78,7 @@
                 Style="max-width: 120px;"
                 Immediate
                 Variant="Variant.Outlined"
-                Class="w-20"
+                Class="w-20 editable-rating-input"
                 OnBlur="@CancelEdit"
                 OnKeyDown="@HandleNumericKey"/>
         }
@@ -99,7 +99,7 @@
                 @foreach (var option in GetTextualOptions())
                 {
                     var optionValue = option.ToInt();
-                    <MudChip Style="@($"background-color:{RatingHelper.GetColorForRating(optionValue)};color:white;font-weight:600;")"
+                    <MudChip Style="@GetBadgeStyle(optionValue, false)"
                              Selected="@(Value == optionValue)"
                              OnClick="@(() => SetTextual(option))"
                              Label="true"
