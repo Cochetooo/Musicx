@@ -25,22 +25,31 @@
     <MudAppBar Elevation="1" Color="Color.Primary">
         <!-- Brand -->
         <MudIconButton Icon="@Icons.Material.Filled.MusicNote" Color="Color.Inherit" Edge="Edge.Start"/>
-        <MudButton Variant="Variant.Text" OnClick="@NavigateHome" Class="mr-4" Color="Color.Inherit">
+        <MudButton Variant="Variant.Text" OnClick="@NavigateHome" 
+                   Class="mr-4 d-none d-sm-flex" Color="Color.Inherit">
             MUSICX
         </MudButton>
         
         <!-- Pages -->
-        <MudLink Href="/Charts" Underline="Underline.None" Typo="Typo.subtitle1" Color="Color.Inherit" Class="mr-4">Charts</MudLink>
-        <MudLink Href="/Genres" Underline="Underline.None" Typo="Typo.subtitle1" Color="Color.Inherit">Genres</MudLink>
+        <MudLink Href="/Charts" Underline="Underline.None" Typo="Typo.subtitle1" 
+                 Color="Color.Inherit" Class="mr-4 d-none d-sm-flex">
+            Charts
+        </MudLink>
+        <MudLink Href="/Genres" Underline="Underline.None" Typo="Typo.subtitle1" 
+                 Color="Color.Inherit" Class="d-none d-sm-flex">
+            Genres
+        </MudLink>
         
         <MudSpacer />
         
         <!-- Search Box -->
-        <MudTextField Immediate Label="Search anything (artist, album, song, genre, user...)"
+        <MudTextField Immediate 
+                      Label="Search anything (artist, album, song, genre, user...)"
                       T="string"
                       ReadOnly
                       OnKeyDown="@SearchKeyDown" Variant="Variant.Filled"
-                      Class="nav-search-field" @onfocus="OpenSearch"
+                      Class="nav-search-field" 
+                      @onfocus="OpenSearch"
                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"/>
 
         <MudSpacer/>
@@ -58,7 +67,8 @@
                               Class="rounded-circle"
                     />
                     
-                    <MudText Typo="Typo.subtitle1" Color="Color.Inherit" Class="text-bold align-content-center">
+                    <MudText Typo="Typo.subtitle1" Color="Color.Inherit" 
+                             Class="text-bold align-content-center d-none d-md-flex">
                         @UserClientContext.CurrentUser.Name
                     </MudText>
                 </MudStack>
@@ -80,6 +90,18 @@
                          Icon="@Icons.Material.Filled.NewReleases"
                          IconColor="Color.Primary"
                          Label="Patch Notes" />
+            
+            <MudMenuItem Href="/Charts"
+                         Icon="@Icons.Material.Filled.BarChart"
+                         IconColor="Color.Primary"
+                         Label="Charts"
+                         Class="d-flex d-sm-none"/>
+            
+            <MudMenuItem Href="/Genres"
+                         Icon="@Icons.Material.Filled.Piano"
+                         IconColor="Color.Primary"
+                         Label="Genres"
+                         Class="d-flex d-sm-none"/>
             
             <MudDivider/>
 

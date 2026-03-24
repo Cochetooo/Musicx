@@ -65,6 +65,12 @@
 /* subtle transitions on height changes */
 .f-search-results-column, .f-search-filters-column { transition: all 180ms ease; }
 
+.nav-search-field {
+    max-width: 400px;
+    min-width: 120px;
+    flex: 1;
+}
+
 /* nav input (in AppBar) to identify source */
 .nav-search-field input { cursor: text; }
 
@@ -96,4 +102,15 @@
 @media (max-width: 900px) {
     .f-search-modal { width: 96%; padding: 12px; }
     .f-search-filters-column { display:none; }
+}
+
+@media (max-width: 600px) {
+    .nav-search-field {
+        min-width: 80px;
+        font-size: 0.8rem;
+    }
+    
+    .nav-search-field .mud-input-label {
+        font-size: 0.7rem;
+    }
 }
