@@ -1,24 +1,5 @@
-﻿@using Musicx.Contracts.Dto.Responses.Specifics.Artists
-@using Musicx.Contracts.Enums
-
-<div class="artist-genre-summary">
-    @if (HasOverflow)
-    {
-        <div class="artist-genre-summary-toolbar">
-            <MudText Typo="Typo.caption" Class="artist-genre-summary-caption">
-                Genre palette
-            </MudText>
-            <MudButton Variant="Variant.Text"
-                       Color="Color.Default"
-                       Size="Size.Small"
-                       Class="artist-genre-summary-toggle"
-                       OnClick="ToggleExpanded">
-                @(_expanded ? "Show less" : "Show more")
-            </MudButton>
-        </div>
-    }
-
-    <div class="artist-genre-grid @(_expanded ? "is-expanded" : string.Empty)">
+﻿<div class="artist-genre-summary">
+    <div class="artist-genre-grid">
         @foreach (var section in Sections)
         {
             var stats = GetVisibleStats(section);

@@ -5,7 +5,7 @@
     --mx-hero-text-muted: var(--mud-palette-text-disabled);
     --mx-hero-overlay-top: rgba(255, 255, 255, 0.76);
     --mx-hero-overlay-bottom: rgba(255, 255, 255, 0.52);
-    --mx-hero-panel-bg: color-mix(in srgb, var(--mud-palette-surface) 90%, transparent);
+    --mx-hero-panel-bg: color-mix(in srgb, var(--mud-palette-surface) 80%, transparent);
     --mx-hero-panel-border: color-mix(in srgb, var(--mud-palette-text-primary) 8%, transparent);
     --mx-hero-input-color: var(--mud-palette-text-primary);
     --mx-hero-input-placeholder: var(--mud-palette-text-secondary);

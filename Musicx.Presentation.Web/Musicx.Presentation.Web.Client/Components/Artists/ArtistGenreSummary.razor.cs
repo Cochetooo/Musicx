@@ -14,8 +14,7 @@ public partial class ArtistGenreSummary
     [Parameter] public IReadOnlyList<OutArtistGenreStat> Scenes { get; set; } = [];
     [Parameter] public IReadOnlyList<OutArtistGenreStat> Movements { get; set; } = [];
     [Parameter] public bool SimpleMode { get; set; }
-
-    private bool _expanded;
+    
     private bool _initialized;
 
     private IReadOnlyList<OutArtistGenreStat> AllPrimaryGenres =>
@@ -30,8 +29,8 @@ public partial class ArtistGenreSummary
     private IReadOnlyList<ArtistGenreSection> Sections => new List<ArtistGenreSection>
     {
         CreateSection("Genres", "artist-genre-card is-primary", AllPrimaryGenres, 1, SectionKind.Primary),
-        CreateSection("Subgenres", "artist-genre-card is-subgenre", AllSubgenres, 3, SectionKind.Subgenre),
-        CreateSection("Influences", "artist-genre-card is-influence", Influences, 5, SectionKind.Influence),
+        CreateSection("Subgenres", "artist-genre-card is-subgenre", AllSubgenres, 6, SectionKind.Subgenre),
+        CreateSection("Influences", "artist-genre-card is-influence", Influences, 6, SectionKind.Influence),
         CreateSection("Scenes & Movements", "artist-genre-card is-scene", AllScenesAndMovements, 3, SectionKind.SceneMovement),
         CreateSection("Descriptors", "artist-genre-card is-descriptor", Descriptors, 15, SectionKind.Descriptor)
     }.Where(x => x.AllStats.Count > 0).ToList();
@@ -44,12 +43,9 @@ public partial class ArtistGenreSummary
         {
             return;
         }
-
-        _expanded = !SimpleMode;
+        
         _initialized = true;
     }
-
-    private void ToggleExpanded() => _expanded = !_expanded;
 
     private static ArtistGenreSection CreateSection(
         string title,
@@ -72,7 +68,7 @@ public partial class ArtistGenreSummary
     }
     
     private IReadOnlyList<OutArtistGenreStat> GetVisibleStats(ArtistGenreSection section)
-        => _expanded ? section.AllStats : section.PreviewStats;
+        => section.PreviewStats;
     
     private static int GetMaxCount(IReadOnlyList<OutArtistGenreStat> stats)
         => Math.Max(1, stats.Max(x => x.AlbumCount));
@@ -125,14 +121,14 @@ public partial class ArtistGenreSummary
         var isLight = ColorHelper.IsColorLight(baseColor);
         var ratio = maxCount <= 0 ? 0 : (double)stat.AlbumCount / maxCount;
         var emphasis = Math.Clamp(0.35 + ratio * 0.45, 0.35, 0.80);
-        var startAlpha = kind == SectionKind.Influence ? 0.25 + emphasis * 0.14 : 0.28 + emphasis * 0.18;
-        var endAlpha = kind == SectionKind.Influence ? 0.17 + emphasis * 0.08 : 0.20 + emphasis * 0.12;
+        var startAlpha = kind == SectionKind.Influence ? 0.35 + emphasis * 0.14 : 0.38 + emphasis * 0.18;
+        var endAlpha = kind == SectionKind.Influence ? 0.27 + emphasis * 0.08 : 0.30 + emphasis * 0.12;
         var endColor = isLight
             ? ColorHelper.Interpolate(baseColor, "#FFFFFF", 0.72)
             : ColorHelper.Interpolate(baseColor, "#FFFFFF", 0.24);
         var borderAlpha = isLight ? 0.42 : 0.28;
         var glowAlpha = kind == SectionKind.Influence ? 0.10 : 0.16;
-        var textColor = isLight ? ColorHelper.DarkColor : "#ffffff";
+        var textColor = "#ffffff";
         var shadowColor = isLight ? "rgba(255,255,255,0.20)" : "rgba(0,0,0,0.24)";
 
         return string.Join(";", [

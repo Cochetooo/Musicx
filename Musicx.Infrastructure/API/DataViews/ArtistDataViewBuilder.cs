@@ -35,62 +35,103 @@ public sealed class ArtistDataViewBuilder(
             return cached;
         }
 
-        var artist = await artistRepository.FindOneByIdAsync(query.ArtistId, new ArtistJoinSpecification
+        var artistTask = artistRepository.FindOneByIdAsync(query.ArtistId, new ArtistJoinSpecification
         {
             IncludeStats = true
         });
-
-        if (artist is null)
-        {
-            return null;
-        }
-
-        var albums = await albumRepository.FindByArtistIdAsync(
-            query.ArtistId, 
+        
+        var albumsTask = albumRepository.FindByArtistIdAsync(
+            query.ArtistId,
             new AlbumJoinSpecification
             {
                 IncludePrimaryGenres = true,
                 IncludeInfluenceGenres = true,
                 IncludeStats = true
-            }, new AlbumOrderSpecification
+            },
+            new AlbumOrderSpecification
             {
                 OriginalReleaseDate = 1,
                 Name = 2
             }
         );
-
-        if (artist.Stats is null)
-        {
-            artist.Stats = RatingHelper.CalculateArtistRatingSummary(albums);
-        }
-
-        OutGenericList<OutUserAlbumAttribute>? userAlbumAttrsList = null;
-
+        
+        Task<List<OutUserAlbumAttribute>> userAlbumAttrsTask = Task.FromResult<List<OutUserAlbumAttribute>>([]);
+        Task<long> userAlbumAttrsCountTask = Task.FromResult(0L);
+        Task<bool> isFollowingTask = Task.FromResult(false);
+        
         if (query.UserId is not null)
         {
-            var userAlbumAttrs = await userAlbumAttrsRepository.FindAsync(new UserAlbumAttrFindQuery
+            userAlbumAttrsTask = userAlbumAttrsRepository.FindAsync(
+                new UserAlbumAttrFindQuery
                 {
                     UserId = query.UserId,
                     ArtistId = query.ArtistId
                 },
                 pagingOptions: new PagingOptions(100_000, 0)
-            );
+            ).ContinueWith(t => t.Result.ToList(), cancellationToken);
 
-            var count = await userAlbumAttrsRepository.CountByUserIdAsync(
+            userAlbumAttrsCountTask = userAlbumAttrsRepository.CountByUserIdAsync(
                 query.UserId.Value,
                 null,
-                query.ArtistId);
+                query.ArtistId
+            );
 
-            userAlbumAttrsList = new OutGenericList<OutUserAlbumAttribute>
-            {
-                Items = userAlbumAttrs.ToList(),
-                Total = count
-            };
+            isFollowingTask = userArtistAttrsRepository
+                .FindOneAsync(query.UserId.Value, query.ArtistId)
+                .ContinueWith(t => t.Result is { Follow: true }, cancellationToken);
         }
         
-        var followersCount = await userArtistAttrsRepository.CountFollowersByArtistAsync(query.ArtistId);
-        var isCurrentUserFollowing = query.UserId is not null
-                                     && await userArtistAttrsRepository.FindOneAsync(query.UserId.Value, query.ArtistId) is { Follow: true };
+        var followersCountTask = userArtistAttrsRepository.CountFollowersByArtistAsync(query.ArtistId);
+
+        await Task.WhenAll(
+            artistTask,
+            albumsTask,
+            userAlbumAttrsTask,
+            userAlbumAttrsCountTask,
+            followersCountTask,
+            isFollowingTask
+        );
+        
+        var artist = await artistTask;
+        if (artist is null)
+        {
+            return null;
+        }
+        
+        var albums = await albumsTask;
+
+        if (artist.Stats is null)
+        {
+            artist.Stats = RatingHelper.CalculateArtistRatingSummary(albums);
+        }
+        
+        var primaryGenresTask = BuildGenreStatsAsync(artist.CalculatedGenreCounts, cancellationToken);
+        var influencesTask = BuildGenreStatsAsync(artist.CalculatedInfluenceCounts, cancellationToken);
+        var descriptorsTask = BuildGenreStatsAsync(artist.CalculatedDescriptorCounts, cancellationToken);
+        var scenesTask = BuildGenreStatsAsync(artist.CalculatedSceneCounts, cancellationToken);
+        var movementsTask = BuildGenreStatsAsync(artist.CalculatedMovementCounts, cancellationToken);
+        
+        await Task.WhenAll(primaryGenresTask, influencesTask, descriptorsTask, scenesTask, movementsTask);
+
+        var primaryGenres = await primaryGenresTask;
+        var influences = await influencesTask;
+        
+        var primaryGenreIds = primaryGenres.Select(g => g.Genre.Id).ToHashSet();
+
+        influences = influences
+            .Where(g => !primaryGenreIds.Contains(g.Genre.Id))
+            .ToList();
+        
+        OutGenericList<OutUserAlbumAttribute>? userAlbumAttrsList = null;
+
+        if (query.UserId is not null)
+        {
+            userAlbumAttrsList = new OutGenericList<OutUserAlbumAttribute>
+            {
+                Items = await userAlbumAttrsTask,
+                Total = await userAlbumAttrsCountTask
+            };
+        }
 
         var result = new OutArtistDataView
         {
@@ -101,17 +142,18 @@ public sealed class ArtistDataViewBuilder(
                 Items = albums,
                 Total = albums.Count
             },
-            PrimaryGenres = await BuildGenreStatsAsync(artist.CalculatedGenreCounts, cancellationToken),
-            Influences = await BuildGenreStatsAsync(artist.CalculatedInfluenceCounts, cancellationToken),
-            Descriptors = await BuildGenreStatsAsync(artist.CalculatedDescriptorCounts, cancellationToken),
-            Scenes = await BuildGenreStatsAsync(artist.CalculatedSceneCounts, cancellationToken),
-            Movements = await BuildGenreStatsAsync(artist.CalculatedMovementCounts, cancellationToken),
+            PrimaryGenres = primaryGenres,
+            Influences = influences,
+            Descriptors = await descriptorsTask,
+            Scenes = await scenesTask,
+            Movements = await movementsTask,
             UserAttributes = userAlbumAttrsList,
-            FollowersCount = followersCount,
-            IsCurrentUserFollowing = isCurrentUserFollowing
+            FollowersCount = await followersCountTask,
+            IsCurrentUserFollowing = await isFollowingTask
         };
-
+        
         await cache.SetAsync(cacheKey, result, TimeSpan.FromMinutes(5), cancellationToken);
+
         return result;
     }
     
