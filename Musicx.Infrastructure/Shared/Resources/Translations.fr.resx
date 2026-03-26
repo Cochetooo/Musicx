@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>
+            System.Resources.ResXResourceReader, System.Windows.Forms, ...
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>
+            System.Resources.ResXResourceWriter, System.Windows.Forms, ...
+        </value>
+    </resheader>
+
+    <data name="Web.Nav.Charts" xml:space="preserve"><value>Classements</value></data>
+    <data name="Web.Nav.Genres" xml:space="preserve"><value>Genres</value></data>
+    <data name="Web.Nav.SearchLabel" xml:space="preserve"><value>Rechercher (artiste, album, chanson, genre, utilisateur...)</value></data>
+    <data name="Web.Nav.PatchNotes" xml:space="preserve"><value>Notes de version</value></data>
+    <data name="Web.Nav.Signup" xml:space="preserve"><value>Créer un compte</value></data>
+    <data name="Web.Nav.SignIn" xml:space="preserve"><value>Connexion</value></data>
+    <data name="Web.Nav.SignOut" xml:space="preserve"><value>Déconnexion</value></data>
+    
+    <data name="Web.Home.Welcome" xml:space="preserve"><value>Bienvenue sur</value></data>
+    <data name="Web.Home.Stats" xml:space="preserve"><value>{0} artistes, {1} albums, {2} chansons et {3} genres</value></data>
+    <data name="Web.Home.DiscoverArtists" xml:space="preserve"><value>🎶 Découvrir de nouveaux artistes</value></data>
+    <data name="Web.Home.ExploreAlbums" xml:space="preserve"><value>💿 Explorer les albums tendance</value></data>
+    <data name="Web.Home.UniqueGenres" xml:space="preserve"><value>🎧 Explorer des genres uniques</value></data>
+    <data name="Web.Home.LatestReleases" xml:space="preserve"><value>Dernières sorties</value></data>
+    
+    <data name="Web.Common.Ratings" xml:space="preserve"><value>notes</value></data>
+    
+    <data name="Web.Search.Placeholder" xml:space="preserve"><value>Rechercher...</value></data>
+    <data name="Web.Search.Loading" xml:space="preserve"><value>Chargement...</value></data>
+    <data name="Web.Search.EmptyHint" xml:space="preserve"><value>Tapez quelque chose pour afficher des résultats...</value></data>
+</root>

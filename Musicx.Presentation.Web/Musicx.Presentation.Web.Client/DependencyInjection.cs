@@ -1,6 +1,7 @@
 using MudBlazor;
 using MudBlazor.Services;
 using Musicx.Application.Web.Interfaces.Models.Auth;
+using Musicx.Infrastructure;
 using Musicx.Presentation.Web.Client.Models.Auth;
 
 namespace Musicx.Presentation.Web.Client;
@@ -19,6 +20,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IUserClientContext, UserClientContext>();
+        services.AddMusicxLocalization(ServiceLifetime.Scoped);
         
         return services;
     } 

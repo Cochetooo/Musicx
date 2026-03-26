@@ -1,4 +1,5 @@
-﻿@using Musicx.Application.Web.Interfaces.UseCases
+﻿@using Musicx.Application.Shared.Interfaces.Localization
+@using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests.Album
 @using Musicx.Contracts.Dto.Requests.Artist
 @using Musicx.Contracts.Dto.Requests.Genre
@@ -17,6 +18,7 @@
 @inject IFindAllService<InUser, OutUser> UcListUsers
 @inject IFindAllService<InSong, OutSong> UcListSongs
 @inject NavigationManager Navigation
+@inject ITranslationService T
 
 <HeadContent>
     <link rel="stylesheet" href="Css/Features/Search/search-overlay.css" />
@@ -31,7 +33,7 @@
                 <MudTextField @ref="_mudInput"
                               @bind-Value="_value"
                               Immediate
-                              Placeholder="Search anything..."
+                              Placeholder="@T["Web.Search.Placeholder"]"
                               OnKeyDown="@OnKeyDownHandler"
                               Variant="Variant.Filled"
                               Class="f-search-input-mud"
@@ -48,7 +50,7 @@
                     {
                         <div class="f-search-loading">
                             <span class="f-search-loader"></span> 
-                            <span class="loading-text">Loading...</span>
+                            <span class="loading-text">@T["Web.Search.Loading"]</span>
                         </div>
                     }
 
@@ -104,7 +106,7 @@
                     }
                     else
                     {
-                        <div class="search-hint">Type something to display results...</div>
+                        <div class="search-hint">@T["Web.Search.EmptyHint"]</div>
                     }
                 </div>
                 

@@ -1,3 +1,5 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Infrastructure;
 using Musicx.Presentation.Web.Client;
@@ -17,6 +19,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddLocalization();
 
 builder.Services.AddCors(options =>
 {
@@ -66,6 +70,21 @@ else
 }
 
 // Use Middlewares
+
+var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("fr") };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures,
+    RequestCultureProviders = 
+    [
+        new QueryStringRequestCultureProvider(),
+        new CookieRequestCultureProvider(),
+        new AcceptLanguageHeaderRequestCultureProvider()
+    ]
+});
+
 app.UseMiddleware<AuthenticationMiddleware>();
 
 app.MapStaticAssets();

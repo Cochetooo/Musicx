@@ -10,6 +10,7 @@ using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Application.Api.Interfaces.Workers;
 using Musicx.Application.Desktop.Interfaces.Persistence;
 using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
+using Musicx.Application.Shared.Interfaces.Localization;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
@@ -63,6 +64,7 @@ using Musicx.Infrastructure.Desktop.Persistence.Repositories;
 using Musicx.Infrastructure.Desktop.Services.LocalLibrary;
 using Musicx.Infrastructure.Shared.Logging;
 using Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
+using Musicx.Infrastructure.Shared.Services.Localization;
 using Musicx.Infrastructure.Shared.UseCases.ExternalMusicData;
 using Musicx.Infrastructure.Web.UseCases;
 using Musicx.Infrastructure.Web.UseCases.Album;
@@ -84,6 +86,15 @@ public static class DependencyInjection
     {
         builder.AddProvider(new Log4NetLoggerProvider(configFile));
         return builder;
+    }
+
+    public static IServiceCollection AddMusicxLocalization(this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+    {
+        var descriptor = new ServiceDescriptor(typeof(ITranslationService), typeof(ResxTranslationService), lifetime);
+        services.Add(descriptor);
+
+        return services;
     }
     
     /// <summary>

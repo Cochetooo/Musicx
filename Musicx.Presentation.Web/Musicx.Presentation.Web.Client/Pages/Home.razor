@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using System.Globalization
 @using Musicx.Application.Shared.Helpers
+@using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests.Album
@@ -14,6 +15,7 @@
 @inject ICountService<OutSong> UcCountSongs
 @inject ICountService<OutGenre> UcCountGenres
 @inject IUserClientContext UserClientContext
+@inject ITranslationService T
 
 <HeadContent>
     <link rel="stylesheet" href="Css/Features/Search/search-overlay.css" />
@@ -24,10 +26,10 @@
     <MudItem xs="12" Class="flex-center">
         <MudCard Class="bg-main home-card pa-6">
             <MudText Typo="Typo.h1" Class="montserrat text-mega-bold">
-                Welcome to <span class="text-extra-bold" style="font-size: 10rem">Musicx!</span>
+                @T["Web.Home.Welcome"] <span class="text-extra-bold" style="font-size: 10rem">Musicx!</span>
             </MudText>
             <MudText Typo="Typo.body1" Class="mb-4 color-secondary">
-                @_artistCount artists, @_albumCount albums, @_songCount songs & @_genreCount genres
+                @T.Get("Web.Home.Stats", _artistCount, _albumCount, _songCount, _genreCount)
             </MudText>
             
             <MudCarousel AutoCycle AutoCycleTime="TimeSpan.FromSeconds(4)"
@@ -35,17 +37,17 @@
                          ShowArrows="@false" ShowBullets>
                 <MudCarouselItem Color="@Color.Primary">
                     <div class="d-flex home-carousel-card">
-                        <MudText Typo="Typo.h3">🎶 Discover new artists</MudText>
+                        <MudText Typo="Typo.h3">@T["Web.Home.DiscoverArtists"]</MudText>
                     </div>
                 </MudCarouselItem>
                 <MudCarouselItem Color="@Color.Secondary">
                     <div class="d-flex home-carousel-card">
-                        <MudText Typo="Typo.h3">💿 Explore trending albums</MudText>
+                        <MudText Typo="Typo.h3">@T["Web.Home.ExploreAlbums"]</MudText>
                     </div>
                 </MudCarouselItem>
                 <MudCarouselItem Color="@Color.Tertiary">
                     <div class="d-flex home-carousel-card">
-                        <MudText Typo="Typo.h3">🎧 Dive into unique genres</MudText>
+                        <MudText Typo="Typo.h3">@T["Web.Home.UniqueGenres"]</MudText>
                     </div>
                 </MudCarouselItem>
             </MudCarousel>
@@ -55,7 +57,7 @@
     <MudItem xs="12" Class="flex-center">
         <MudPaper Class="glass-paper" Style="justify-items: center">
             <MudText Typo="Typo.h4" Class="montserrat text-bold">
-                Latest Releases
+                @T["Web.Home.LatestReleases"]
             </MudText>
             
             <MudStack Row Spacing="6">
@@ -69,7 +71,9 @@
                             <MudChip T="string" Size="Size.Small" Class="text-bold" Style="@($"background-color:{RatingHelper.GetColorForRating(album.Stats?.Average)};color:white")">
                                 @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
                             </MudChip>
-                            <MudText Typo="Typo.caption" Class="color-secondary">@((album.Stats?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)) ratings</MudText>
+                            <MudText Typo="Typo.caption" Class="color-secondary">
+                                @((album.Stats?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)) @T["Web.Common.Ratings"]
+                            </MudText>
                         </MudStack>
                     </MudLink>
                 }
