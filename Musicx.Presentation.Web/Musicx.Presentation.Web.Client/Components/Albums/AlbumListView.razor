@@ -1,4 +1,5 @@
 ﻿@using Musicx.Application.Shared.Helpers
+@using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Components.Ratings
 
 @foreach (var group in GroupedAlbums)
@@ -41,14 +42,7 @@
                             @album.OriginalReleaseDate?.ToString("yyyy") ·
                             @if (album.SimplifiedGenreName is not null)
                             {
-                                <MudChip
-                                    Size="Size.Small"
-                                    T="string"
-                                    Class="py-1 px-3 ma-1 genre-badge"
-                                    Style="@GetSimplifiedGenreStyle(album)"
-                                    Label="@true">
-                                    @album.SimplifiedGenreName
-                                </MudChip>
+                                <SimplifiedGenreBadge Label="@album.SimplifiedGenreName" Color="@album.SimplifiedGenreColor"/>
                             }
                         </MudText>
                     </MudStack>

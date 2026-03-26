@@ -1,4 +1,5 @@
 ﻿@using Musicx.Application.Shared.Helpers
+@using Musicx.Presentation.Web.Client.Helpers
 
 <span class="simplified-genre-badge" style="@GetStyle()" @attributes="AdditionalAttributes">
     @Label
@@ -9,24 +10,7 @@
     public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
 
     [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
-    [Parameter, EditorRequired] public string Color { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string? Color { get; set; } = string.Empty;
 
-    private string GetStyle()
-    {
-        var baseColor = string.IsNullOrWhiteSpace(Color) ? ColorHelper.DarkColor : Color;
-        var isLight = ColorHelper.IsColorLight(baseColor);
-        var endColor = isLight
-            ? ColorHelper.Interpolate(baseColor, "#FFFFFF", 0.72)
-            : ColorHelper.Interpolate(baseColor, "#FFFFFF", 0.24);
-        var borderAlpha = isLight ? 0.42 : 0.28;
-
-        return string.Join(";", [
-            $"--artist-genre-start:{ColorHelper.ToRgba(baseColor, 0.56)}",
-            $"--artist-genre-end:{ColorHelper.ToRgba(endColor, 0.36)}",
-            $"--artist-genre-border:{ColorHelper.ToRgba(baseColor, borderAlpha)}",
-            $"--artist-genre-glow:{ColorHelper.ToRgba(baseColor, 0.14)}",
-            "--artist-genre-text:#ffffff",
-            "--artist-genre-shadow:rgba(0,0,0,0.20)"
-        ]);
-    }
+    private string GetStyle() => GenreBadgeStyleBuilder.Build(Color);
 }

@@ -63,24 +63,12 @@ else
     }
     
     private string GetBadgeStyle()
-    {
-        var baseColor = Genre.Color ?? ColorHelper.DarkColor;
-        var isLight = ColorHelper.IsColorLight(baseColor);
-        var endColor = isLight
-            ? ColorHelper.Interpolate(baseColor, "#FFFFFF", 0.72)
-            : ColorHelper.Interpolate(baseColor, "#FFFFFF", 0.24);
-        var borderAlpha = isLight ? 0.42 : 0.28;
-
-        return string.Join(";", [
-            $"--artist-genre-start:{ColorHelper.ToRgba(baseColor, Influence ? 0.46 : 0.56)}",
-            $"--artist-genre-end:{ColorHelper.ToRgba(endColor, Influence ? 0.30 : 0.36)}",
-            $"--artist-genre-border:{ColorHelper.ToRgba(baseColor, borderAlpha)}",
-            $"--artist-genre-glow:{ColorHelper.ToRgba(baseColor, Influence ? 0.08 : 0.14)}",
-            $"--artist-genre-text:#ffffff",
-            $"--artist-genre-shadow:rgba(0,0,0,0.20)",
-            $"font-size:{GetFontSize()}"
-        ]);
-    }
+        => GenreBadgeStyleBuilder.Build(
+            Genre.Color,
+            startAlpha: Influence ? 0.46 : 0.56,
+            endAlpha: Influence ? 0.30 : 0.36,
+            glowAlpha: Influence ? 0.08 : 0.14,
+            fontSize: GetFontSize());
 
     private string GetFontSize() => Size switch
     {

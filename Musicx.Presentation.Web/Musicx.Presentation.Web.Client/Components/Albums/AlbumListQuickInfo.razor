@@ -1,6 +1,7 @@
 @using Musicx.Application.Shared.Helpers
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
+@using Musicx.Presentation.Web.Client.Components.Genres
 
 <div @attributes="AdditionalAttributes">
     @switch (Album.ReleaseType)
@@ -56,14 +57,7 @@
     {
         if (Album.SimplifiedGenreName is not null)
         {
-            <MudChip
-                Size="Size.Small"
-                T="string"
-                Label="true"
-                Class="py-1 px-3 ma-0 genre-badge"
-                Style="@GetSimplifiedGenreStyle(Album)">
-                @Album.SimplifiedGenreName
-            </MudChip>
+            <SimplifiedGenreBadge Label="@Album.SimplifiedGenreName" Color="@Album.SimplifiedGenreColor" />
         }
     }
 </div>
@@ -76,9 +70,6 @@
     [Parameter, EditorRequired] public OutAlbum Album { get; set; } = null!;
     [Parameter] public bool ShowArtist { get; set; }
     [Parameter] public bool ShowGenres { get; set; }
-
-    private string GetSimplifiedGenreStyle(OutAlbum album)
-        => $"background: {album.SimplifiedGenreColor}; color: {(ColorHelper.IsColorLight(album.SimplifiedGenreColor!) ? ColorHelper.DarkColor : "white")}";
 }
 
 <style>

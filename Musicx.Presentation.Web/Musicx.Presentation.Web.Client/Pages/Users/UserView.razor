@@ -14,6 +14,7 @@
 @using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Components.Ratings
+@using Musicx.Presentation.Web.Client.Features.Users.ViewModels.UserGenreRatings
 
 @inject ILoggerFactory LoggerFactory
 @inject IFindOneByIdService<InUser, OutUser> UcGet
@@ -26,6 +27,8 @@
 @inject IDialogService DialogService
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
+
+@inject UserGenreRatingsViewModel GenreRatingsViewModel
 
 @if (null == _user)
 {
@@ -299,14 +302,14 @@ else
                     <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
                         <PanelTitle Text="Favourite Genres" />
 
-                        <MudSwitch @bind-Value="_showWeightedGenreRatings"
+                        <MudSwitch @bind-Value="GenreRatingsViewModel.ShowWeighted"
                                    Color="Color.Tertiary"
                                    LabelPlacement="Placement.Start"
                                    Class="genre-rating-switch"
-                                   Label="@(_showWeightedGenreRatings ? "Weighted" : "Raw")"/>
+                                   Label="@(GenreRatingsViewModel.ShowWeighted ? "Weighted" : "Raw")"/>
 
                         <MudButton OnClick="@OnExpandTopGenresButtonClicked">
-                            @if (_topGenresExpanded)
+                            @if (GenreRatingsViewModel.TopGenresExpanded)
                             {
                                 <MudIcon Icon="@Icons.Material.Filled.ExpandLess"/>
                             }
@@ -319,10 +322,10 @@ else
 
                     <MudDivider Class="my-3"/>
 
-                    @if (DisplayedGenreRatings.Count > 0)
+                    @if (GenreRatingsViewModel.DisplayedGenreRatings.Count > 0)
                     {
                         <MudList Dense T="RenderFragment">
-                            @foreach (var genreRating in DisplayedGenreRatings.Take(5))
+                            @foreach (var genreRating in GenreRatingsViewModel.DisplayedGenreRatings.Take(5))
                             {
                                 <MudListItem>
                                     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
@@ -336,7 +339,7 @@ else
                                             </MudChip>
                                         </MudStack>
 
-                                        @if (_showWeightedGenreRatings)
+                                        @if (GenreRatingsViewModel.ShowWeighted)
                                         {
                                             <MudText Typo="Typo.body2"
                                                      Class="text-bold"
@@ -354,24 +357,18 @@ else
                                 </MudListItem>
                             }
                             
-                            @if (DisplayedGenreRatings.Count > 5)
+                            @if (GenreRatingsViewModel.DisplayedGenreRatings.Count > 5)
                             {
-                                <MudCollapse Expanded="@_topGenresExpanded">
-                                    @foreach (var genreRating in DisplayedGenreRatings.Skip(5))
+                                <MudCollapse Expanded="@GenreRatingsViewModel.TopGenresExpanded">
+                                    @foreach (var genreRating in GenreRatingsViewModel.DisplayedGenreRatings.Skip(5))
                                     {
                                         <MudListItem>
                                             <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
                                                 <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
-                                                    <MudChip Color="Color.Default"
-                                                             Variant="Variant.Text"
-                                                             Class="color-primary text-bold"
-                                                             T="string"
-                                                             Style="@($"border: 1px solid #444; background-color: {genreRating.GenreColor ?? "#dddddd"}")">
-                                                        @genreRating.GenreName
-                                                    </MudChip>
+                                                    <SimplifiedGenreBadge Label="@genreRating.GenreName" Color="@genreRating.GenreColor" class="color-primary text-bold"/>
                                                 </MudStack>
 
-                                                @if (_showWeightedGenreRatings)
+                                                @if (GenreRatingsViewModel.ShowWeighted)
                                                 {
                                                     <MudText Typo="Typo.body2"
                                                              Class="text-bold"

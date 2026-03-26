@@ -30,10 +30,4 @@ public partial class AlbumListView
         if (t == ReleaseType.Single) return 3;
         return 2;
     }
-    
-    private string GetSimplifiedGenreStyle(OutAlbum album)
-        =>
-            $"background: {album.SimplifiedGenreColor}; color: {(ColorHelper.IsColorLight(album.SimplifiedGenreColor!) 
-                ? ColorHelper.DarkColor 
-                : "white")};";
 }

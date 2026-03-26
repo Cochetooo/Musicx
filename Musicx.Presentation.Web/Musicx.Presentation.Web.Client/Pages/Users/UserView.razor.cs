@@ -25,22 +25,13 @@ public partial class UserView : IAsyncDisposable
     private long _albumCount;
     private string _searchString = string.Empty;
 
-    private bool _topGenresExpanded, _topGenresFullLoaded;
-
     private List<OutAlbum> _favAlbums = [];
 
     private OutUserRatingStats? _albumRatingDistrib;
     private int _maxRatingDistribCount;
     private UserRatingsExportFormat _selectedExportFormat = UserRatingsExportFormat.Csv;
     
-    private List<OutUserGenreRating> _genreRatingsRaw = [];
-    private List<OutUserGenreRating> _genreRatingsWeighted = [];
-    private bool _showWeightedGenreRatings;
-    
     private IJSObjectReference? _fileDownloadModule;
-
-    private IReadOnlyList<OutUserGenreRating> DisplayedGenreRatings
-        => _showWeightedGenreRatings ? _genreRatingsWeighted : _genreRatingsRaw;
 
     private int? UserAge
     {
@@ -79,8 +70,7 @@ public partial class UserView : IAsyncDisposable
 
     private async Task Load()
     {
-        _topGenresFullLoaded = false;
-        _topGenresExpanded = false;
+        GenreRatingsViewModel.Reset();
         
         _albumCount = 0;
         _searchString = string.Empty;
@@ -115,7 +105,7 @@ public partial class UserView : IAsyncDisposable
         _maxRatingDistribCount = _albumRatingDistrib?.RatingCounts.Values.Max() ?? 1;
         _logger.LogInformation($"✅ Album Ratings Distribution loaded ({_user.Id})");
 
-        await LoadTopGenres(5);
+        await GenreRatingsViewModel.LoadAsync(UcFindUserGenreRatings, _user.Id, 5);
         _logger.LogInformation($"✅ Top genres loaded.");
         
         await _albumRatingsTable.ReloadServerData();
@@ -138,26 +128,6 @@ public partial class UserView : IAsyncDisposable
             .Items
             .Select(i => i.Album)
             .ToList();
-    }
-
-    private async Task LoadTopGenres(long count)
-    {
-        if (_user is null)
-        {
-            _logger.LogWarning($"⚠️ Could not load top genres because user is null.");
-            return;
-        }
-
-        if (count > 5)
-        {
-            _topGenresFullLoaded = true;
-        }
-        
-        var rawGenreRatings = await UcFindUserGenreRatings.ExecuteAsync(_user.Id, weighted: false, pagingOptions: new PagingOptions(Take: count, Skip: 0));
-        _genreRatingsRaw = rawGenreRatings.Items;
-
-        var weightedGenreRatings = await UcFindUserGenreRatings.ExecuteAsync(_user.Id, weighted: true, pagingOptions: new PagingOptions(Take: count, Skip: 0));
-        _genreRatingsWeighted = weightedGenreRatings.Items;
     }
     
     private async Task<TableData<OutUserAlbumAttribute>> LoadUserAttrData(TableState state, CancellationToken token)
@@ -266,12 +236,12 @@ public partial class UserView : IAsyncDisposable
 
     private async Task OnExpandTopGenresButtonClicked()
     {
-        _topGenresExpanded = !_topGenresExpanded;
-        
-        if (!_topGenresFullLoaded)
+        if (_user is null)
         {
-            await LoadTopGenres(50);
+            return;
         }
+        
+        await GenreRatingsViewModel.ToggleExpandedAsync(UcFindUserGenreRatings, _user.Id);
     }
     
     private async Task<List<OutUserAlbumAttribute>> LoadAllUserRatings()
