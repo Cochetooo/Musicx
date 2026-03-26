@@ -96,29 +96,32 @@ else
                     </div>
                 </div>
                 
-                <div class="glass-paper donut-box pa-2">
-                    <div style="justify-items: center" class="mb-2">
-                        <MudText Typo="Typo.subtitle1" Class="montserrat text-bold">🌐 Global</MudText>
-                        <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.Count ratings</MudText>
-                        <DonutRating Rating="@_artistRatingSummary.Average" 
-                                     RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
-                                     Size="DonutRatingSize.Medium" />
+                @if (UserClientContext.CurrentUser?.PrefShowRatings ?? true)
+                {
+                    <div class="glass-paper donut-box pa-2">
+                        <div style="justify-items: center" class="mb-2">
+                            <MudText Typo="Typo.subtitle1" Class="montserrat text-bold">🌐 Global</MudText>
+                            <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.Count ratings</MudText>
+                            <DonutRating Rating="@_artistRatingSummary.Average"
+                                         RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                         Size="DonutRatingSize.Medium"/>
+                        </div>
+                        <MudStack Justify="Justify.SpaceAround" Row Spacing="2">
+                            <div style="justify-items: center">
+                                <MudText Typo="Typo.subtitle2" Class="montserrat">⭐ Fan Rating</MudText>
+                                <DonutRating Rating="@_artistRatingSummary.FanAverage"
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                             Size="DonutRatingSize.Small"/>
+                            </div>
+                            <div style="justify-items: center">
+                                <MudText Typo="Typo.subtitle2" Class="montserrat">👤 Non-Fan Rating</MudText>
+                                <DonutRating Rating="@_artistRatingSummary.NonFanAverage"
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                             Size="DonutRatingSize.Small"/>
+                            </div>
+                        </MudStack>
                     </div>
-                    <MudStack Justify="Justify.SpaceAround" Row Spacing="2">
-                        <div style="justify-items: center">
-                            <MudText Typo="Typo.subtitle2" Class="montserrat">⭐ Fan Rating</MudText>
-                            <DonutRating Rating="@_artistRatingSummary.FanAverage"
-                                         RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                                         Size="DonutRatingSize.Small"/>
-                        </div>
-                        <div style="justify-items: center">
-                            <MudText Typo="Typo.subtitle2" Class="montserrat">👤 Non-Fan Rating</MudText>
-                            <DonutRating Rating="@_artistRatingSummary.NonFanAverage"
-                                         RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                                         Size="DonutRatingSize.Small"/>
-                        </div>
-                    </MudStack>
-                </div>
+                }
             </div>
         </div>
         
@@ -142,14 +145,15 @@ else
                         <AlbumListView Albums="@_filteredAlbums" Zoom="@_zoomLevel"
                                        UserRatings="@_userAttrs"
                                        RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                       ShowRatings="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
                                        IsGrouped="@_groupByType"/>
                     }
                     else if (_viewMode == ReleasesViewMode.Grid)
                     {
                         <AlbumGridView Albums="@_filteredAlbums" Zoom="@_zoomLevel"
                                        RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                                       ShowRating
-                                       ShowRatingCount
+                                       ShowRating="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
+                                       ShowRatingCount="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
                                        IsGrouped="@_groupByType"/>
                     }
                     else if (_viewMode == ReleasesViewMode.Timeline)

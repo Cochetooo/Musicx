@@ -177,7 +177,9 @@
         <AlbumGridView Albums="@_outAlbumList.Items"
                        IsGrouped="false"
                        RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                       ShowRank ShowRating ShowRatingCount
+                       ShowRank 
+                       ShowRating="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
+                       ShowRatingCount="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
                        Zoom="2"/>
 
     </MudPaper>

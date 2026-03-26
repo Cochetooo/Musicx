@@ -5,51 +5,28 @@
 
 @if (Clickable)
 {
-    <MudLink Href="@($"/Genre/{Genre.Id}")" @attributes="AdditionalAttributes">
-        @if (Closable)
-        {
-            <MudChip T="string" Size="@Size" 
-                     Icon="@UiGenreHelper.GetGenreIcon(Genre)" Style="@GetChipStyle(Genre)" 
-                     Class="animate-hover-up" OnClose="@OnClose"
-                     Label="@true">
-                @(Genre.ShortName ?? Genre.CanonicalName)
-            </MudChip>
-        }
-        else
-        {
-            <MudChip T="string" Size="@Size" 
-                     Style="@GetChipStyle(Genre)" Icon="@UiGenreHelper.GetGenreIcon(Genre)" 
-                     Class="animate-hover-up"
-                     Label="@true">
-                @(Genre.ShortName ?? Genre.CanonicalName)
-            </MudChip>
-        }
+    <MudLink Href="@($"/Genre/{Genre.Id}")" @attributes="AdditionalAttributes" Style="text-decoration:none;">
+        <span class="@GetBadgeClass()" style="@GetBadgeStyle()">
+            <MudIcon Icon="@GetGenreIcon()" Size="Size.Small" Class="mr-1" />
+            <span class="artist-genre-name">@(Genre.ShortName ?? Genre.CanonicalName)</span>
+        </span>
     </MudLink>
 }
 else
 {
-    @if (Closable)
-    {
-        <MudChip T="string" Size="@Size"
-                 @attributes="AdditionalAttributes"
-                 Style="@GetChipStyle(Genre)" Icon="@UiGenreHelper.GetGenreIcon(Genre)" 
-                 Class="animate-hover-up" OnClose="@OnClose"
-                 Label="@true">
-            @(Genre.ShortName ?? Genre.CanonicalName)
-        </MudChip>
-    }
-    else
-    {
-        <MudChip T="string" Size="@Size" 
-                 @attributes="AdditionalAttributes"
-                 Style="@GetChipStyle(Genre)" Icon="@UiGenreHelper.GetGenreIcon(Genre)" 
-                 Class="animate-hover-up"
-                 Label="@true">
-            @(Genre.ShortName ?? Genre.CanonicalName)
-        </MudChip>
-    }
+    <span class="@GetBadgeClass()" style="@GetBadgeStyle()" @attributes="AdditionalAttributes">
+        <MudIcon Icon="@GetGenreIcon()" Size="Size.Small" Class="mr-1" />
+        <span class="artist-genre-name">@(Genre.ShortName ?? Genre.CanonicalName)</span>
+        @if (Closable)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                           Size="Size.Small"
+                           Class="ml-1"
+                           OnClick="@OnClose"
+                           Color="Color.Inherit" />
+        }
+    </span>
 }
-
 
 @code {
 
@@ -63,37 +40,119 @@ else
     [Parameter] public Size Size { get; set; } = Size.Medium;
     [Parameter] public EventCallback OnClose { get; set; }
 
-    private string GetChipStyle(OutGenre genre)
+    private string GetBadgeClass()
     {
-        var background = genre.Color ?? ColorHelper.DarkColor;
-        var transparentBackground = ColorHelper.ToRgba(background, 0.45);
-        
-        var textColor = ColorHelper.IsColorLight(background)
-            ? ColorHelper.DarkColor
-            : "#ffffff";
-        
-        var fontSize = Size switch
-        {
-            Size.Small => "14px",
-            Size.Medium => "16px",
-            Size.Large => "18px",
-            _ => "16px"
-        } ;
-
-        var gradient = $"linear-gradient(135deg, {background}, {transparentBackground})";
+        var classes = new List<string> { "artist-genre-tag", "genre-badge-unified", "is-weight-2" };
 
         if (Influence)
         {
-            return $"background:{gradient}; opacity: 0.75; color:{textColor}; font-weight: 200; font-size: {fontSize};";
+            classes.Add("is-influence-item");
         }
         
-        return Genre.Type switch
+        if (Genre.Type == GenreType.Scene)
         {
-            GenreType.Subgenre => $"background:{gradient}; color:{textColor}; font-weight:500; font-size: {fontSize};",
-            GenreType.Scene => $"border:1px solid {gradient}; color:{textColor}; background:{gradient}; font-weight: 400; font-size: {fontSize};",
-            GenreType.Movement => $"border:1px dashed {gradient}; color:{textColor}; background:{gradient}; font-weight: 400; font-size: {fontSize};",
-            GenreType.Descriptor => $"background:{gradient}; color:{textColor}; opacity:0.85; border-radius:16px; font-size: 400; font-size: {fontSize};",
-            _ => $"background:{gradient}; color:{textColor}; font-weight: 400; font-size: {fontSize};"
-        };
+            classes.Add("is-scene-item");
+        }
+
+        if (Genre.Type == GenreType.Movement)
+        {
+            classes.Add("is-movement");
+        }
+        
+        return string.Join(" ", classes);
     }
+    
+    private string GetBadgeStyle()
+    {
+        var baseColor = Genre.Color ?? ColorHelper.DarkColor;
+        var isLight = ColorHelper.IsColorLight(baseColor);
+        var endColor = isLight
+            ? ColorHelper.Interpolate(baseColor, "#FFFFFF", 0.72)
+            : ColorHelper.Interpolate(baseColor, "#FFFFFF", 0.24);
+        var borderAlpha = isLight ? 0.42 : 0.28;
+
+        return string.Join(";", [
+            $"--artist-genre-start:{ColorHelper.ToRgba(baseColor, Influence ? 0.46 : 0.56)}",
+            $"--artist-genre-end:{ColorHelper.ToRgba(endColor, Influence ? 0.30 : 0.36)}",
+            $"--artist-genre-border:{ColorHelper.ToRgba(baseColor, borderAlpha)}",
+            $"--artist-genre-glow:{ColorHelper.ToRgba(baseColor, Influence ? 0.08 : 0.14)}",
+            $"--artist-genre-text:#ffffff",
+            $"--artist-genre-shadow:rgba(0,0,0,0.20)",
+            $"font-size:{GetFontSize()}"
+        ]);
+    }
+
+    private string GetFontSize() => Size switch
+    {
+        Size.Small => "0.78rem",
+        Size.Large => "0.95rem",
+        _ => "0.86rem"
+    };
+
+    private string GetGenreIcon() => Genre.Type switch
+    {
+        GenreType.Subgenre => Icons.Material.Filled.Label,
+        GenreType.Fusion => Icons.Material.Filled.MergeType,
+        GenreType.Scene => Icons.Material.Filled.LocationOn,
+        GenreType.Movement => Icons.Material.Filled.Waves,
+        GenreType.Descriptor => Icons.Material.Filled.LocalOffer,
+        _ => Icons.Material.Filled.MusicNote
+    };
 }
+
+<style>
+    .artist-genre-tag {
+        --artist-genre-start: rgba(43, 51, 51, 0.24);
+        --artist-genre-end: rgba(43, 51, 51, 0.08);
+        --artist-genre-border: rgba(43, 51, 51, 0.2);
+        --artist-genre-glow: rgba(43, 51, 51, 0.12);
+        --artist-genre-text: var(--mud-palette-text-primary);
+        --artist-genre-shadow: rgba(0, 0, 0, 0.18);
+        --artist-genre-opacity: 1;
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        padding: 0.32rem 0.65rem;
+        border-radius: 999px;
+        border: 1px solid var(--artist-genre-border);
+        color: var(--artist-genre-text);
+        opacity: var(--artist-genre-opacity);
+        text-decoration: none;
+        background: linear-gradient(135deg, var(--artist-genre-start), var(--artist-genre-end));
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 8px 18px -14px var(--artist-genre-glow);
+    }
+
+    .artist-genre-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: "Space Grotesk", "Segoe UI", sans-serif;
+        line-height: 1.15;
+        text-shadow: 0 1px 0 var(--artist-genre-shadow);
+        font-weight: 575;
+    }
+
+    .artist-genre-tag.is-influence-item .artist-genre-name {
+        font-style: italic;
+        font-weight: 300 !important;
+    }
+
+    .artist-genre-tag.is-scene-item,
+    .artist-genre-tag.is-movement {
+        border-radius: 16px;
+    }
+
+    .artist-genre-tag.is-movement {
+        border-style: dashed;
+    }
+
+    .artist-genre-tag:hover {
+        transform: translateY(-1px);
+    }
+
+    .genre-badge-unified .mud-icon-button-root {
+        width: 20px;
+        height: 20px;
+        padding: 0;
+    }
+</style>

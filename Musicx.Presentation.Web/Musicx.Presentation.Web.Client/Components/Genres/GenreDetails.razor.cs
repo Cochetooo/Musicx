@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 
@@ -42,10 +41,4 @@ public partial class GenreDetails
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
     }
-
-    private string GetSimplifiedGenreStyle(OutAlbum album)
-        =>
-            $"background: {album.SimplifiedGenreColor}; color: {(ColorHelper.IsColorLight(album.SimplifiedGenreColor!) 
-                ? ColorHelper.DarkColor 
-                : "white")}; letter-spacing: 0.5px;";
 }

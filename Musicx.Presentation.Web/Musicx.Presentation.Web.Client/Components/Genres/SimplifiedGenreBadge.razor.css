@@ -1,0 +1,34 @@
+﻿.simplified-genre-badge {
+    --artist-genre-start: rgba(43, 51, 51, 0.24);
+    --artist-genre-end: rgba(43, 51, 51, 0.08);
+    --artist-genre-border: rgba(43, 51, 51, 0.2);
+    --artist-genre-glow: rgba(43, 51, 51, 0.12);
+    --artist-genre-text: var(--mud-palette-text-primary);
+    --artist-genre-shadow: rgba(0, 0, 0, 0.18);
+
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 0.32rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--artist-genre-border);
+    color: var(--artist-genre-text);
+    text-decoration: none;
+    background:
+            linear-gradient(135deg, var(--artist-genre-start), var(--artist-genre-end)),
+            linear-gradient(180deg,
+            color-mix(in srgb, var(--mud-palette-surface) 92%, transparent),
+            color-mix(in srgb, var(--mud-palette-background-gray) 72%, transparent));
+    box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.16),
+            0 8px 18px -14px var(--artist-genre-glow);
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: "Space Grotesk", "Segoe UI", sans-serif;
+    line-height: 1.15;
+    font-size: 0.86rem;
+    font-weight: 575;
+    text-shadow: 0 1px 0 var(--artist-genre-shadow);
+}

@@ -11,6 +11,7 @@ public sealed class InUser : BaseInputModel
     public bool PrefAutoFollow { get; set; } = true;
     public bool PrefBannerBlur { get; set; } = true;
     public bool PrefDarkMode { get; set; } = true;
+    public string PrefLanguage { get; set; } = "en";
     public RatingMode PrefRatingMode { get; set; } = RatingMode.OutOfTen;
     public bool PrefShowRatings { get; set; } = true;
     public bool PrefSimpleGenre { get; set; }

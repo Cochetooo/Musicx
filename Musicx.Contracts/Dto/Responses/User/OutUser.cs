@@ -18,6 +18,7 @@ public sealed class OutUser : BaseOutputModel
     public bool PrefAutoFollow { get; set; }
     public bool PrefBannerBlur { get; set; }
     public bool PrefDarkMode { get; set; }
+    public string PrefLanguage { get; set; } = "en";
     public RatingMode PrefRatingMode { get; set; }
     public bool PrefShowRatings { get; set; }
     public bool PrefSimpleGenre { get; set; }

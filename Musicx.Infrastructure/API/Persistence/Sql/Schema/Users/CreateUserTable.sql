@@ -21,6 +21,7 @@ create table public.users (
     user_pref_auto_follow       bool not null default false,
     user_pref_banner_blur       bool not null default false,
     user_pref_dark_mode         bool not null default false,
+    user_pref_language          varchar(10) not null default 'en',
     user_pref_rating_mode       integer not null default 1,
     user_pref_show_ratings      bool not null default true,
     user_pref_simple_genre      bool not null default false,

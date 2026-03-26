@@ -12,6 +12,7 @@ public partial class AlbumListView
     [Parameter] public double Zoom { get; set; } = 1.0;
     [Parameter] public bool IsGrouped { get; set; } = true;
     [Parameter] public RatingMode RatingMode { get; set; }
+    [Parameter] public bool ShowRatings { get; set; } = true;
     [Parameter] public OutGenericList<OutUserAlbumAttribute>? UserRatings { get; set; }
     
     private Dictionary<ReleaseType, List<OutAlbum>> GroupedAlbums => 

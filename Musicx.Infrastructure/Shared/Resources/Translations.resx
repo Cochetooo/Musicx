@@ -19,11 +19,15 @@
 
     <data name="Web.Nav.Charts" xml:space="preserve"><value>Charts</value></data>
     <data name="Web.Nav.Genres" xml:space="preserve"><value>Genres</value></data>
-    <data name="Web.Nav.SearchLabel" xml:space="preserve"><value>Search anything (artist, album, song, genre, user...)</value></data>
+    <data name="Web.Nav.Language" xml:space="preserve"><value>Language</value></data>
     <data name="Web.Nav.PatchNotes" xml:space="preserve"><value>Patch notes</value></data>
+    <data name="Web.Nav.RatingMode" xml:space="preserve"><value>Rating mode</value></data>
+    <data name="Web.Nav.SearchLabel" xml:space="preserve"><value>Search anything (artist, album, song, genre, user...)</value></data>
+    <data name="Web.Nav.ShowRatings" xml:space="preserve"><value>Show ratings</value></data>
     <data name="Web.Nav.Signup" xml:space="preserve"><value>Sign up</value></data>
     <data name="Web.Nav.SignIn" xml:space="preserve"><value>Sign in</value></data>
     <data name="Web.Nav.SignOut" xml:space="preserve"><value>Sign out</value></data>
+    <data name="Web.Nav.Version" xml:space="preserve"><value>Version {0}</value></data>
     
     <data name="Web.Home.Welcome" xml:space="preserve"><value>Welcome to</value></data>
     <data name="Web.Home.Stats" xml:space="preserve"><value>{0} artists, {1} albums, {2} songs &amp; {3} genres</value></data>

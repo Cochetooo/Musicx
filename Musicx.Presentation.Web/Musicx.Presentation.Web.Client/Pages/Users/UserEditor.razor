@@ -6,6 +6,7 @@
 @using Musicx.Application.Web.Interfaces.UseCases.Security
 @using Musicx.Application.Web.Interfaces.UseCases.User.Avatar
 @using Musicx.Contracts.Dto.Requests.User
+@using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Base
 
 @inject IUserClientContext UserClientContext
@@ -103,6 +104,25 @@
             <MudText Typo="Typo.caption" Class="color-secondary">
                 When enabled, rating an album above @(RatingHelper.GetRatingFormatted(7000m, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)) automatically follows its artist.
             </MudText>
+            
+            <MudDivider/>
+            
+            <!-- Language -->
+            <MudText Typo="Typo.h6">Language</MudText>
+            <MudSelect T="string"
+                       Label="Preferred language"
+                       Variant="Variant.Outlined"
+                       @bind-Value="_user.PrefLanguage">
+                @foreach (var language in Languages)
+                {
+                    <MudSelectItem Value="@language.Code">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                            <Flag CountryName="@language.CountryName" />
+                            <MudText>@language.Label</MudText>
+                        </MudStack>
+                    </MudSelectItem>
+                }
+            </MudSelect>
 
             <!-- Rating mode -->
             <MudDivider/>

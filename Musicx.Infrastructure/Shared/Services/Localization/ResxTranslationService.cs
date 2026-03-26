@@ -14,7 +14,20 @@ public sealed class ResxTranslationService : ITranslationService
 
     public CultureInfo CurrentCulture { get; private set; } = CultureInfo.CurrentUICulture;
 
-    public string this[string key] => _resourceManager.GetString(key, CurrentCulture) ?? $"!{key}!";
+    public string this[string key]
+    {
+        get
+        {
+            try
+            {
+                return _resourceManager.GetString(key, CurrentCulture) ?? $"!{key}!";
+            }
+            catch (MissingManifestResourceException)
+            {
+                return $"!{key}!";
+            }
+        }
+    }
 
     public string Get(string key, params object[] args)
     {

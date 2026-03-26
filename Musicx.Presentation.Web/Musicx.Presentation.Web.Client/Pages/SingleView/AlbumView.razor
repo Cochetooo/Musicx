@@ -231,73 +231,76 @@ else
                     }
                 </div>
                 
-                <div style="width: 100%" class="pa-2">
-                    <div class="album-rating-hover-card">
-                        <div class="album-rating-hover-summary">
-                            <DonutRating
-                                Rating="@_album.Stats?.Average"
-                                RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                                Size="DonutRatingSize.Large"/>
-                            
-                            <MudText Typo="Typo.body1" Class="color-primary mt-2 text-bold">
-                                @(_album.Stats?.Count ?? 0) ratings
-                            </MudText>
-                            <MudText Typo="Typo.caption" Class="color-secondary">
-                                Hover to compare fans vs non-fans
-                            </MudText>
-                        </div>
-                        
-                        <div class="album-rating-hover-details">
-                            <div class="album-rating-mini-card">
-                                <MudText Typo="Typo.caption" Class="text-bold">⭐ Fans</MudText>
-                                <MudText Typo="Typo.caption" Class="color-secondary">@(_album.Stats?.FanCount ?? 0) ratings</MudText>
-                                <MudText Typo="Typo.body2" Class="text-bold color-primary">
-                                    @RatingHelper.GetRatingFormatted(_album.Stats?.FanAverage, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
-                                </MudText>
-                            </div>
-                            <div class="album-rating-mini-card">
-                                <MudText Typo="Typo.caption" Class="text-bold">👤 Non-Fans</MudText>
-                                <MudText Typo="Typo.caption" Class="color-secondary">@(_album.Stats?.NonFanCount ?? 0) ratings</MudText>
-                                <MudText Typo="Typo.body2" Class="text-bold color-primary">
-                                    @RatingHelper.GetRatingFormatted(_album.Stats?.NonFanAverage, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
-                                </MudText>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <MudDivider Class="my-2" />
+                @if (UserClientContext.CurrentUser?.PrefShowRatings ?? true)
+                {
+                    <div style="width: 100%" class="pa-2">
+                        <div class="album-rating-hover-card">
+                            <div class="album-rating-hover-summary">
+                                <DonutRating
+                                    Rating="@_album.Stats?.Average"
+                                    RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                    Size="DonutRatingSize.Large"/>
 
-                    <MudStack Justify="Justify.Center">
-                        @if (null != _album.OriginalReleaseDate)
-                        {
-                            <MudText Class="color-secondary text-light">
-                                📅 Release Date:&nbsp;
+                                <MudText Typo="Typo.body1" Class="color-primary mt-2 text-bold">
+                                    @(_album.Stats?.Count ?? 0) ratings
+                                </MudText>
+                                <MudText Typo="Typo.caption" Class="color-secondary">
+                                    Hover to compare fans vs non-fans
+                                </MudText>
+                            </div>
+
+                            <div class="album-rating-hover-details">
+                                <div class="album-rating-mini-card">
+                                    <MudText Typo="Typo.caption" Class="text-bold">⭐ Fans</MudText>
+                                    <MudText Typo="Typo.caption" Class="color-secondary">@(_album.Stats?.FanCount ?? 0) ratings</MudText>
+                                    <MudText Typo="Typo.body2" Class="text-bold color-primary">
+                                        @RatingHelper.GetRatingFormatted(_album.Stats?.FanAverage, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                    </MudText>
+                                </div>
+                                <div class="album-rating-mini-card">
+                                    <MudText Typo="Typo.caption" Class="text-bold">👤 Non-Fans</MudText>
+                                    <MudText Typo="Typo.caption" Class="color-secondary">@(_album.Stats?.NonFanCount ?? 0) ratings</MudText>
+                                    <MudText Typo="Typo.body2" Class="text-bold color-primary">
+                                        @RatingHelper.GetRatingFormatted(_album.Stats?.NonFanAverage, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                    </MudText>
+                                </div>
+                            </div>
+                        </div>
+
+                        <MudDivider Class="my-2"/>
+
+                        <MudStack Justify="Justify.Center">
+                            @if (null != _album.OriginalReleaseDate)
+                            {
+                                <MudText Class="color-secondary text-light">
+                                    📅 Release Date:&nbsp;
+
+                                    <MudText Inline Class="color-primary text-bold">
+                                        @_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")
+                                    </MudText>
+                                </MudText>
+                            }
+
+                            <MudText Class="color-secondary text-light mt-2">
+                                🎛️ Recording Dates:&nbsp;
 
                                 <MudText Inline Class="color-primary text-bold">
-                                    @_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")
+                                    @(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                                    &nbsp;->&nbsp;
+                                    @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
                                 </MudText>
                             </MudText>
-                        }
 
-                        <MudText Class="color-secondary text-light mt-2">
-                            🎛️ Recording Dates:&nbsp;
+                            <MudText Class="color-secondary text-light mt-2">
+                                💿 Release Type:&nbsp;
 
-                            <MudText Inline Class="color-primary text-bold">
-                                @(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?")
-                                &nbsp;->&nbsp;
-                                @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                                <MudText Inline Class="color-primary text-bold">
+                                    @(_album.ReleaseType?.ToDescriptionString() ?? "-")
+                                </MudText>
                             </MudText>
-                        </MudText>
-
-                        <MudText Class="color-secondary text-light mt-2">
-                            💿 Release Type:&nbsp;
-
-                            <MudText Inline Class="color-primary text-bold">
-                                @(_album.ReleaseType?.ToDescriptionString() ?? "-")
-                            </MudText>
-                        </MudText>
-                    </MudStack>
-                </div>
+                        </MudStack>
+                    </div>
+                }
             </div>
         </div>
         

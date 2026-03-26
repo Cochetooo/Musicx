@@ -67,14 +67,17 @@
                         <MudImage Src="@album.ArtworkUrl" @key="album.ArtworkUrl" Alt="@album.Name" Style="width: 100%" Class="rounded-lg" Elevation="8"/>
                         <MudText Typo="Typo.body1" Class="text-bold clamped-text-1 mt-2">@album.Name</MudText>
                         <MudText Typo="Typo.caption" Class="color-secondary clamped-text-1">@(album.Artist?.Name ?? album.ArtistAlias)</MudText>
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
-                            <MudChip T="string" Size="Size.Small" Class="text-bold" Style="@($"background-color:{RatingHelper.GetColorForRating(album.Stats?.Average)};color:white")">
-                                @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
-                            </MudChip>
-                            <MudText Typo="Typo.caption" Class="color-secondary">
-                                @((album.Stats?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)) @T["Web.Common.Ratings"]
-                            </MudText>
-                        </MudStack>
+                        @if (UserClientContext.CurrentUser?.PrefShowRatings ?? true)
+                        {
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                <MudChip T="string" Size="Size.Small" Class="text-bold" Style="@($"background-color:{RatingHelper.GetColorForRating(album.Stats?.Average)};color:white")">
+                                    @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                </MudChip>
+                                <MudText Typo="Typo.caption" Class="color-secondary">
+                                    @((album.Stats?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)) @T["Web.Common.Ratings"]
+                                </MudText>
+                            </MudStack>
+                        }
                     </MudLink>
                 }
             </MudStack>

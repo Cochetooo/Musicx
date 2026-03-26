@@ -20,6 +20,7 @@ public static class UserColumns
     public const string PrefAutoFollow = "user_pref_auto_follow";
     public const string PrefBannerBlur = "user_pref_banner_blur";
     public const string PrefDarkMode = "user_pref_dark_mode";
+    public const string PrefLanguage = "user_pref_language";
     public const string PrefRatingMode = "user_pref_rating_mode";
     public const string PrefShowRatings = "user_pref_show_ratings";
     public const string PrefSimpleGenre = "user_pref_simple_genre";

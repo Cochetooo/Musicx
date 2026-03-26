@@ -28,6 +28,12 @@ public partial class UserEditor
         new(RatingMode.TextualDetailed, Icons.Material.Filled.Description),
         new(RatingMode.RatingStars, Icons.Material.Filled.StarRate),
     ];
+    
+    private readonly List<(string Code, string Label, string CountryName)> Languages =
+    [
+        ("en", "English", "United States"),
+        ("fr", "Français", "France")
+    ];
 
     protected override void OnInitialized()
     {

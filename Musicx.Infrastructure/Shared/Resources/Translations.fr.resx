@@ -19,11 +19,15 @@
 
     <data name="Web.Nav.Charts" xml:space="preserve"><value>Classements</value></data>
     <data name="Web.Nav.Genres" xml:space="preserve"><value>Genres</value></data>
-    <data name="Web.Nav.SearchLabel" xml:space="preserve"><value>Rechercher (artiste, album, chanson, genre, utilisateur...)</value></data>
+    <data name="Web.Nav.Language" xml:space="preserve"><value>Language</value></data>
     <data name="Web.Nav.PatchNotes" xml:space="preserve"><value>Notes de version</value></data>
+    <data name="Web.Nav.RatingMode" xml:space="preserve"><value>Mode de notation</value></data>
+    <data name="Web.Nav.SearchLabel" xml:space="preserve"><value>Rechercher (artiste, album, chanson, genre, utilisateur...)</value></data>
+    <data name="Web.Nav.ShowRatings" xml:space="preserve"><value>Afficher les notes</value></data>
     <data name="Web.Nav.Signup" xml:space="preserve"><value>Créer un compte</value></data>
     <data name="Web.Nav.SignIn" xml:space="preserve"><value>Connexion</value></data>
     <data name="Web.Nav.SignOut" xml:space="preserve"><value>Déconnexion</value></data>
+    <data name="Web.Nav.Version" xml:space="preserve"><value>Version {0}</value></data>
     
     <data name="Web.Home.Welcome" xml:space="preserve"><value>Bienvenue sur</value></data>
     <data name="Web.Home.Stats" xml:space="preserve"><value>{0} artistes, {1} albums, {2} chansons et {3} genres</value></data>

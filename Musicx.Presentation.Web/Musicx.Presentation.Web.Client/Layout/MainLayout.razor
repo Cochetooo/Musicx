@@ -1,5 +1,8 @@
 ﻿@using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Application.Web.Interfaces.UseCases
+@using Musicx.Contracts.Dto.Requests.User
+@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Themes
 @using Musicx.Presentation.Web.Client.Modals.Users
@@ -11,6 +14,7 @@
 @inject ILoggerFactory LoggerFactory
 @inject HttpClient Http
 @inject ISnackbar Snackbar
+@inject ISaveService<InUser> UcSaveUser
 @inject ITranslationService T
 
 <MudThemeProvider @bind-IsDarkMode="_isDarkMode" @ref="_mudThemeProvider" Theme="Theme.DeepTheme" />
@@ -149,13 +153,68 @@
                              Icon="@Icons.Material.Filled.Logout"
                              IconColor="Color.Primary"
                              Label="@T["Web.Nav.SignOut"]"/>
+                
+                <MudDivider />
+                
+                <MudMenuItem Icon="@Icons.Material.Filled.Visibility"
+                             IconColor="Color.Primary">
+                    <ChildContent>
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Style="width: 100%;">
+                            <MudText>@T["Web.Nav.ShowRatings"]</MudText>
+                            <MudSpacer/>
+                            <MudSwitch T="bool"
+                                       Value="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
+                                       ValueChanged="ToggleRatings"
+                                       Color="Color.Primary"/>
+                        </MudStack>
+                    </ChildContent>
+                </MudMenuItem>
+                
+                <MudMenuItem Icon="@Icons.Material.Filled.StarRate"
+                             IconColor="Color.Primary">
+                    <ChildContent>
+                        <MudSelect T="RatingMode"
+                                   Dense="true"
+                                   Label="@T["Web.Nav.RatingMode"]"
+                                   Value="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)"
+                                   ValueChanged="ChangeRatingMode"
+                                   Variant="Variant.Outlined">
+                            @foreach (var mode in _quickRatingModes)
+                            {
+                                <MudSelectItem Value="@mode">@mode.ToDescriptionString()</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </ChildContent>
+                </MudMenuItem>
+                
+                <MudMenuItem Icon="@Icons.Material.Filled.Translate"
+                             IconColor="Color.Primary">
+                    <ChildContent>
+                        <MudSelect T="string"
+                                   Dense="true"
+                                   Label="@T["Web.Nav.Language"]"
+                                   Value="@(UserClientContext.CurrentUser?.PrefLanguage ?? "en")"
+                                   ValueChanged="@ChangeLanguage"
+                                   Variant="Variant.Outlined">
+                            @foreach (var language in _languages)
+                            {
+                                <MudSelectItem Value="@language.Code">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                                        <Flag CountryName="@language.CountryName"/>
+                                        <MudText>@language.Label</MudText>
+                                    </MudStack>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </ChildContent>
+                </MudMenuItem>
             }
             
             <MudMenuItem
                 Icon="@Icons.Material.Filled.Numbers"
                 IconColor="Color.Primary"
                 Disabled="true"
-                Label="Version 0.7.4"/>
+                Label="@T.Get("Web.Nav.Version", "0.7.4")"/>
         </MudMenu>
     </MudAppBar>
     

@@ -54,43 +54,46 @@
                     </MudStack>
                 </MudStack>
 
-                <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Class="album-list-rating-hover-card">
-                    @{
-                        var rating = UserRatings?.Items
-                            .FirstOrDefault(ur => ur.Album.Id == album.Id)
-                            ?.Rating;
+                @if (ShowRatings)
+                {
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Class="album-list-rating-hover-card">
+                        @{
+                            var rating = UserRatings?.Items
+                                .FirstOrDefault(ur => ur.Album.Id == album.Id)
+                                ?.Rating;
 
-                        if (rating is not null)
-                        {
-                            <EditableRatingBadge
-                                Editable="@false"
-                                Size="Size.Small"
-                                RatingMode="RatingMode"
-                                Value="@rating"/>
+                            if (rating is not null)
+                            {
+                                <EditableRatingBadge
+                                    Editable="@false"
+                                    Size="Size.Small"
+                                    RatingMode="RatingMode"
+                                    Value="@rating"/>
+                            }
                         }
-                    }
 
-                    <div class="album-list-rating-summary">
-                        <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.Small"/>
-                        <MudText Typo="Typo.body2" Class="montserrat text-bold" Style="width: 50px; text-align: end;">
-                            @(album.Stats?.Count ?? 0)
-                            <MudText Typo="Typo.caption" Class="color-secondary">
-                                &nbsp;ratings
+                        <div class="album-list-rating-summary">
+                            <DonutRating Rating="@album.Stats?.Average" RatingMode="RatingMode" Size="DonutRatingSize.Small"/>
+                            <MudText Typo="Typo.body2" Class="montserrat text-bold" Style="width: 50px; text-align: end;">
+                                @(album.Stats?.Count ?? 0)
+                                <MudText Typo="Typo.caption" Class="color-secondary">
+                                    &nbsp;ratings
+                                </MudText>
                             </MudText>
-                        </MudText>
-                    </div>
+                        </div>
                     
-                    <div class="album-list-rating-details">
-                        <div class="album-list-rating-pill">
-                            ⭐ @RatingHelper.GetRatingFormatted(album.Stats?.FanAverage, RatingMode) 
-                            <span class="text-light color-secondary">· @(album.Stats?.FanCount ?? 0)</span>
+                        <div class="album-list-rating-details">
+                            <div class="album-list-rating-pill">
+                                ⭐ @RatingHelper.GetRatingFormatted(album.Stats?.FanAverage, RatingMode) 
+                                <span class="text-light color-secondary">· @(album.Stats?.FanCount ?? 0)</span>
+                            </div>
+                            <div class="album-list-rating-pill">
+                                👤 @RatingHelper.GetRatingFormatted(album.Stats?.NonFanAverage, RatingMode) 
+                                <span class="text-light color-secondary">· @(album.Stats?.NonFanCount ?? 0)</span>
+                            </div>
                         </div>
-                        <div class="album-list-rating-pill">
-                            👤 @RatingHelper.GetRatingFormatted(album.Stats?.NonFanAverage, RatingMode) 
-                            <span class="text-light color-secondary">· @(album.Stats?.NonFanCount ?? 0)</span>
-                        </div>
-                    </div>
-                </MudStack>
+                    </MudStack>
+                }
             </MudStack>
 
             <MudDivider Class="my-1"/>
