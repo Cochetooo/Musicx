@@ -28,8 +28,7 @@ public partial class ArtistGenreSummary
 
     private IReadOnlyList<ArtistGenreSection> Sections => new List<ArtistGenreSection>
     {
-        CreateSection("Genres", "artist-genre-card is-primary", AllPrimaryGenres, 1, SectionKind.Primary),
-        CreateSection("Subgenres", "artist-genre-card is-subgenre", AllSubgenres, 6, SectionKind.Subgenre),
+        CreateSection("Genres", "artist-genre-card is-subgenre", AllSubgenres, 6, SectionKind.Subgenre),
         CreateSection("Influences", "artist-genre-card is-influence", Influences, 6, SectionKind.Influence),
         CreateSection("Scenes & Movements", "artist-genre-card is-scene", AllScenesAndMovements, 3, SectionKind.SceneMovement),
         CreateSection("Descriptors", "artist-genre-card is-descriptor", Descriptors, 15, SectionKind.Descriptor)

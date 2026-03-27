@@ -1,9 +1,12 @@
-﻿using Musicx.Application.Shared.Helpers;
+﻿using System.Text.RegularExpressions;
+using Musicx.Application.Shared.Helpers;
 
 namespace Musicx.Presentation.Web.Client.Helpers;
 
 public static class GenreBadgeStyleBuilder
 {
+    private static readonly Regex HexColorRegex = new(@"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b", RegexOptions.Compiled);
+    
     public static string Build(
         string? color,
         double startAlpha = 0.56,
@@ -34,5 +37,51 @@ public static class GenreBadgeStyleBuilder
         }
 
         return string.Join(";", styles);
+    }
+    
+    public static string BuildSimplified(string? colorOrGradient)
+    {
+        var colors = ExtractPalette(colorOrGradient);
+        var primary = colors[0];
+        var secondary = colors.Count > 1
+            ? colors[1]
+            : ColorHelper.Interpolate(primary, "#FFFFFF", 0.38);
+
+        var isMultiColor = colors.Count > 1;
+        var gradient = isMultiColor
+            ? $"conic-gradient(from 210deg at 50% 50%, {ColorHelper.ToRgba(primary, 0.84)} 0deg, {ColorHelper.ToRgba(secondary, 0.76)} 160deg, {ColorHelper.ToRgba(primary, 0.80)} 360deg)"
+            : $"radial-gradient(circle at 25% 20%, {ColorHelper.ToRgba(primary, 0.86)} 0%, {ColorHelper.ToRgba(secondary, 0.72)} 72%, {ColorHelper.ToRgba(primary, 0.64)} 100%)";
+
+        var baseColor = ColorHelper.NormalizeColor(primary);
+        var borderColor = ColorHelper.ToRgba(baseColor, ColorHelper.IsColorLight(baseColor) ? 0.38 : 0.24);
+
+        return string.Join(";", new[]
+        {
+            Build(baseColor),
+            $"--simplified-genre-gradient:{gradient}",
+            $"--artist-genre-border:{borderColor}"
+        });
+    }
+
+    private static List<string> ExtractPalette(string? colorOrGradient)
+    {
+        var fallback = new List<string> { ColorHelper.DarkColor };
+
+        if (string.IsNullOrWhiteSpace(colorOrGradient))
+        {
+            return fallback;
+        }
+
+        var matches = HexColorRegex.Matches(colorOrGradient);
+        if (matches.Count == 0)
+        {
+            return new List<string> { ColorHelper.NormalizeColor(colorOrGradient) };
+        }
+
+        return matches
+            .Select(m => ColorHelper.NormalizeColor(m.Value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Take(4)
+            .ToList();
     }
 }

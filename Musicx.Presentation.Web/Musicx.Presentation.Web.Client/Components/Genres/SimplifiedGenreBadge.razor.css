@@ -14,8 +14,10 @@
     border: 1px solid var(--artist-genre-border);
     color: var(--artist-genre-text);
     text-decoration: none;
+    --simplified-genre-gradient: radial-gradient(circle at 25% 20%, var(--artist-genre-start) 0%, var(--artist-genre-end) 72%, var(--artist-genre-start) 100%);
+    
     background:
-            linear-gradient(135deg, var(--artist-genre-start), var(--artist-genre-end)),
+            var(--simplified-genre-gradient),
             linear-gradient(180deg,
             color-mix(in srgb, var(--mud-palette-surface) 92%, transparent),
             color-mix(in srgb, var(--mud-palette-background-gray) 72%, transparent));

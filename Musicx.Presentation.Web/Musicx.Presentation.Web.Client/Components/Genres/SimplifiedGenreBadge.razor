@@ -1,5 +1,4 @@
-﻿@using Musicx.Application.Shared.Helpers
-@using Musicx.Presentation.Web.Client.Helpers
+﻿@using Musicx.Presentation.Web.Client.Helpers
 
 <span class="simplified-genre-badge" style="@GetStyle()" @attributes="AdditionalAttributes">
     @Label
@@ -12,5 +11,5 @@
     [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
     [Parameter, EditorRequired] public string? Color { get; set; } = string.Empty;
 
-    private string GetStyle() => GenreBadgeStyleBuilder.Build(Color);
+    private string GetStyle() => GenreBadgeStyleBuilder.BuildSimplified(Color);
 }
