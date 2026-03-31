@@ -22,7 +22,8 @@ public partial class MainLayout
     private readonly List<(string Code, string Label, string CountryName)> _languages =
     [
         ("en", "English", "United States"),
-        ("fr", "Français", "France")
+        ("fr", "Français", "France"),
+        ("de", "Deutsch", "Germany")
     ];
     
     private readonly List<RatingMode> _quickRatingModes =

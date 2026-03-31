@@ -71,7 +71,7 @@ else
 
 // Use Middlewares
 
-var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("fr") };
+var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("fr"), new CultureInfo("de") };
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
     DefaultRequestCulture = new RequestCulture("en"),

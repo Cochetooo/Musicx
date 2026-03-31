@@ -32,7 +32,8 @@ public partial class UserEditor
     private readonly List<(string Code, string Label, string CountryName)> Languages =
     [
         ("en", "English", "United States"),
-        ("fr", "Français", "France")
+        ("fr", "Français", "France"),
+        ("de", "Deutsch", "Germany")
     ];
 
     protected override void OnInitialized()

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>
+            System.Resources.ResXResourceReader, System.Windows.Forms, ...
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>
+            System.Resources.ResXResourceWriter, System.Windows.Forms, ...
+        </value>
+    </resheader>
+    
+    <data name="Web.Common.Ratings" xml:space="preserve">
+        <value>Bewertungen</value>
+    </data>
+    <data name="Web.Home.DiscoverArtists" xml:space="preserve">
+        <value>🎶 Entdecke neue Künstler</value>
+    </data>
+    <data name="Web.Home.ExploreAlbums" xml:space="preserve">
+        <value>💿 Entdecke angesagte Alben</value>
+    </data>
+    <data name="Web.Home.LatestReleases" xml:space="preserve">
+        <value>Neueste Veröffentlichungen</value>
+    </data>
+    <data name="Web.Home.Stats" xml:space="preserve">
+        <value>{0} Künstler, {1} Alben, {2} Lieder &amp; {3} Genres</value>
+    </data>
+    <data name="Web.Home.UniqueGenres" xml:space="preserve">
+        <value>🎧 Tauchen Sie ein in einzigartige Genres</value>
+    </data>
+    <data name="Web.Home.Welcome" xml:space="preserve">
+        <value>Willkommen bei</value>
+    </data>
+    <data name="Web.Nav.Charts" xml:space="preserve">
+        <value>Hitliste</value>
+    </data>
+    <data name="Web.Nav.Genres" xml:space="preserve">
+        <value>Genres</value>
+    </data>
+    <data name="Web.Nav.Language" xml:space="preserve">
+        <value>Sprache</value>
+    </data>
+    <data name="Web.Nav.PatchNotes" xml:space="preserve">
+        <value>Patch-Hinweise</value>
+    </data>
+    <data name="Web.Nav.RatingMode" xml:space="preserve">
+        <value>Bewertungsmodus</value>
+    </data>
+    <data name="Web.Nav.SearchLabel" xml:space="preserve">
+        <value>Suche nach allem (Künstler, Album, Lied, Genre, Benutzer...)</value>
+    </data>
+    <data name="Web.Nav.ShowRatings" xml:space="preserve">
+        <value>Bewertungen anzeigen</value>
+    </data>
+    <data name="Web.Nav.SignIn" xml:space="preserve">
+        <value>Anmelden</value>
+    </data>
+    <data name="Web.Nav.SignOut" xml:space="preserve">
+        <value>Abmelden</value>
+    </data>
+    <data name="Web.Nav.Signup" xml:space="preserve">
+        <value>Sich einschreiben</value>
+    </data>
+    <data name="Web.Nav.Version" xml:space="preserve">
+        <value>Version {0}</value>
+    </data>
+    <data name="Web.Search.EmptyHint" xml:space="preserve">
+        <value>Geben Sie etwas ein, um Ergebnisse anzuzeigen...</value>
+    </data>
+    <data name="Web.Search.Loading" xml:space="preserve">
+        <value>Laden...</value>
+    </data>
+    <data name="Web.Search.Placeholder" xml:space="preserve">
+        <value>Suche nach beliebigen Dingen...</value>
+    </data>
+</root>
