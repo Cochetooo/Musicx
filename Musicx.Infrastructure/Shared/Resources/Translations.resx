@@ -41,4 +41,43 @@
     <data name="Web.Search.Placeholder" xml:space="preserve"><value>Search anything...</value></data>
     <data name="Web.Search.Loading" xml:space="preserve"><value>Loading...</value></data>
     <data name="Web.Search.EmptyHint" xml:space="preserve"><value>Type something to display results...</value></data>
+    <data name="Web.Common.Search" xml:space="preserve">
+        <value>Search</value>
+    </data>
+    <data name="Web.AdminPageCard.Administration" xml:space="preserve">
+        <value>Administration</value>
+    </data>
+    <data name="Web.AlbumTimelineView.YearsGraduation" xml:space="preserve">
+        <value>Years / Graduation</value>
+    </data>
+    <data name="Web.AlbumTimelineView.Years" xml:space="preserve">
+        <value>{0} year(s)</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.SearchReleases" xml:space="preserve">
+        <value>Search releases...</value>
+    </data>
+    <data name="Web.Common.Sort" xml:space="preserve">
+        <value>Sort</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.ReleaseDate" xml:space="preserve">
+        <value>Release Date</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.ReleaseName" xml:space="preserve">
+        <value>Release Name</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.GlobalRating" xml:space="preserve">
+        <value>Global Rating</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.PersonalRating" xml:space="preserve">
+        <value>Personal Rating</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.NbRatings" xml:space="preserve">
+        <value>Nb. Ratings</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.DisplayMode" xml:space="preserve">
+        <value>Display Mode</value>
+    </data>
+    <data name="Web.Common.List" xml:space="preserve">
+        <value>List</value>
+    </data>
 </root>

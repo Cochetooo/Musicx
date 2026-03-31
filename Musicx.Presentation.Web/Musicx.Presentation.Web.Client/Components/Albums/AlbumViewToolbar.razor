@@ -1,11 +1,13 @@
-﻿@using Musicx.Contracts.Enums
+﻿@using Musicx.Application.Shared.Interfaces.Localization
+@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Pages.SingleView
+@inject ITranslationService T
 
 <MudPaper Class="pa-3 mb-3 glass-paper toolbar-shell">
     <MudStack Wrap="Wrap.Wrap" Style="width: 100%" AlignItems="AlignItems.Center"
               Spacing="2" Row>
-        <MudTextField Placeholder="Search releases..."
-                      Label="Search"
+        <MudTextField Placeholder="@T["Web.AlbumViewToolbar.SearchReleases"]"
+                      Label="@T["Web.Common.Search"]"
                       Immediate
                       Margin="Margin.Dense"
                       T="string"
@@ -18,31 +20,31 @@
         <MudSelect T="(string, bool)"
                    Value="@SelectedSort"
                    ValueChanged="@OnSortChanged"
-                   Label="Tri"
+                   Label="@T["Web.Common.Sort"]"
                    Margin="Margin.Dense"
                    Variant="Variant.Outlined"
                    Class="toolbar-item toolbar-select">
-            <MudSelectItem Value="@(("ReleaseDate", false))">Release Date ↓</MudSelectItem>
-            <MudSelectItem Value="@(("ReleaseDate", true))">Release Date ↑</MudSelectItem>
-            <MudSelectItem Value="@(("Name", false))">Name ↓</MudSelectItem>
-            <MudSelectItem Value="@(("Name", true))">Name ↑</MudSelectItem>
-            <MudSelectItem Value="@(("GlobalRating", false))">Global Rating ↓</MudSelectItem>
-            <MudSelectItem Value="@(("GlobalRating", true))">Global Rating ↑</MudSelectItem>
-            <MudSelectItem Value="@(("MyRating", false))">My rating ↓</MudSelectItem>
-            <MudSelectItem Value="@(("MyRating", true))">My rating ↑</MudSelectItem>
-            <MudSelectItem Value="@(("NbRating", false))">Nb. ratings ↓</MudSelectItem>
-            <MudSelectItem Value="@(("NbRating", true))">Nb. ratings ↑</MudSelectItem>
+            <MudSelectItem Value="@(("ReleaseDate", false))">@T["Web.AlbumViewToolbar.ReleaseDate"] ↓</MudSelectItem>
+            <MudSelectItem Value="@(("ReleaseDate", true))">@T["Web.AlbumViewToolbar.ReleaseDate"] ↑</MudSelectItem>
+            <MudSelectItem Value="@(("Name", false))">@T["Web.AlbumViewToolbar.ReleaseName"] ↓</MudSelectItem>
+            <MudSelectItem Value="@(("Name", true))">@T["Web.AlbumViewToolbar.ReleaseName"] ↑</MudSelectItem>
+            <MudSelectItem Value="@(("GlobalRating", false))">@T["Web.AlbumViewToolbar.GlobalRating"] ↓</MudSelectItem>
+            <MudSelectItem Value="@(("GlobalRating", true))">@T["Web.AlbumViewToolbar.GlobalRating"] ↑</MudSelectItem>
+            <MudSelectItem Value="@(("MyRating", false))">@T["Web.AlbumViewToolbar.PersonalRating"] ↓</MudSelectItem>
+            <MudSelectItem Value="@(("MyRating", true))">@T["Web.AlbumViewToolbar.PersonalRating"] ↑</MudSelectItem>
+            <MudSelectItem Value="@(("NbRating", false))">@T["Web.AlbumViewToolbar.NbRatings"] ↓</MudSelectItem>
+            <MudSelectItem Value="@(("NbRating", true))">@T["Web.AlbumViewToolbar.NbRatings"] ↑</MudSelectItem>
         </MudSelect>
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="toolbar-item">
-            <MudText Typo="Typo.caption" Class="view-mode-label">Display Mode</MudText>
+            <MudText Typo="Typo.caption" Class="view-mode-label">@T["Web.AlbumViewToolbar.DisplayMode"]</MudText>
             <MudButtonGroup Size="Size.Small" Class="view-mode-group">
                 <MudButton StartIcon="@(_viewMode == ReleasesViewMode.List ? Icons.Material.Filled.List : Icons.Material.Outlined.List)"
                            Variant="@GetViewVariant(ReleasesViewMode.List)"
                            Color="@GetViewColor(ReleasesViewMode.List)"
                            Class="view-mode-btn"
                            OnClick="@(() => ChangeView(ReleasesViewMode.List))">
-                    List
+                    @T["Web.Common.List"]
                 </MudButton>
                 <MudButton StartIcon="@(_viewMode == ReleasesViewMode.Grid ? Icons.Material.Filled.GridView : Icons.Material.Outlined.GridView)"
                            Variant="@GetViewVariant(ReleasesViewMode.Grid)"

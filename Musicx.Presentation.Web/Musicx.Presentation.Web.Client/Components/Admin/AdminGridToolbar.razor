@@ -1,12 +1,15 @@
-﻿@using Musicx.Presentation.Web.Client.Components.Base
+﻿@using Musicx.Application.Shared.Interfaces.Localization
+@using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Models
+
+@inject ITranslationService T
 
 <PanelTitle Text="@Title" />
 <MudSpacer />
 <MudTextField
     Value="@SearchValue"
     ValueChanged="@SearchValueChanged"
-    Label="Search"
+    Label="@T["Web.Common.Search"]"
     OnKeyDown="@OnSearchKeyDown"
     Class="mr-2"
     AdornmentIcon="@Icons.Material.Filled.Search"

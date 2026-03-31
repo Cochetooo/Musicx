@@ -1,6 +1,8 @@
 ﻿@using Musicx.Application.Shared.Helpers
+@using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Components.Ratings
+@inject ITranslationService T
 
 @foreach (var group in GroupedAlbums)
 {
@@ -71,7 +73,7 @@
                             <MudText Typo="Typo.body2" Class="montserrat text-bold" Style="width: 50px; text-align: end;">
                                 @(album.Stats?.Count ?? 0)
                                 <MudText Typo="Typo.caption" Class="color-secondary">
-                                    &nbsp;ratings
+                                    &nbsp;@T["Web.Common.Ratings"]
                                 </MudText>
                             </MudText>
                         </div>

@@ -1,4 +1,7 @@
-﻿<MudStack Spacing="4" Class="pa-4 animate-fade-in">
+﻿@using Musicx.Application.Shared.Interfaces.Localization
+@inject ITranslationService T
+
+<MudStack Spacing="4" Class="pa-4 animate-fade-in">
     
     <!-- HEADER -->
     <MudPaper Class="pa-5 bg-surface glass-card header-card" Elevation="0">
@@ -14,7 +17,7 @@
 
                 <MudStack Spacing="1">
                     <MudText Typo="Typo.overline" Class="text-uppercase color-secondary">
-                        Administration
+                        @T["Web.AdminPageCard.Administration"]
                     </MudText>
 
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="2">

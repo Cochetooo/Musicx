@@ -193,7 +193,7 @@
                         <MudSelect T="string"
                                    Dense="true"
                                    Label="@T["Web.Nav.Language"]"
-                                   Value="@(UserClientContext.CurrentUser?.PrefLanguage ?? "en")"
+                                   Value="@(UserClientContext.CurrentUser?.PrefLanguage ?? "en-US")"
                                    ValueChanged="@ChangeLanguage"
                                    Variant="Variant.Outlined">
                             @foreach (var language in _languages)

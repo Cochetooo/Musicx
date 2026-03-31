@@ -1,14 +1,16 @@
-﻿@using Musicx.Presentation.Web.Client.Components.Charts
+﻿@using Musicx.Application.Shared.Interfaces.Localization
+@using Musicx.Presentation.Web.Client.Components.Charts
 @inject NavigationManager Navigation
+@inject ITranslationService T
 
 <MudStack Spacing="2">
     <MudStack Row Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Spacing="2">
-        <MudText Typo="Typo.caption" Class="color-secondary">Years / Graduation</MudText>
+        <MudText Typo="Typo.caption" Class="color-secondary">@T["Web.AlbumTimelineView.YearsGraduation"]</MudText>
         <MudSelect T="int" Value="@YearTickInterval" ValueChanged="OnYearTickIntervalChanged" Dense="true" Variant="Variant.Outlined" Style="max-width:130px;">
-            <MudSelectItem Value="1">1 year</MudSelectItem>
-            <MudSelectItem Value="2">2 years</MudSelectItem>
-            <MudSelectItem Value="5">5 years</MudSelectItem>
-            <MudSelectItem Value="10">10 years</MudSelectItem>
+            <MudSelectItem Value="1">@T.Get("Web.AlbumTimelineView.Years", 1)</MudSelectItem>
+            <MudSelectItem Value="2">@T.Get("Web.AlbumTimelineView.Years", 2)</MudSelectItem>
+            <MudSelectItem Value="5">@T.Get("Web.AlbumTimelineView.Years", 5)</MudSelectItem>
+            <MudSelectItem Value="10">@T.Get("Web.AlbumTimelineView.Years", 10)</MudSelectItem>
         </MudSelect>
     </MudStack>
     

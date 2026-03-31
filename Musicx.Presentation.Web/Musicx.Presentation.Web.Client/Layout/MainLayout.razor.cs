@@ -21,9 +21,9 @@ public partial class MainLayout
     
     private readonly List<(string Code, string Label, string CountryName)> _languages =
     [
-        ("en", "English", "United States"),
-        ("fr", "Français", "France"),
-        ("de", "Deutsch", "Germany")
+        ("en-US", "English", "United States"),
+        ("fr-FR", "Français", "France"),
+        ("de-DE", "Deutsch", "Germany")
     ];
     
     private readonly List<RatingMode> _quickRatingModes =
@@ -100,7 +100,7 @@ public partial class MainLayout
     
     private void ApplyUserLanguagePreference()
     {
-        var pref = UserClientContext.CurrentUser?.PrefLanguage;
+        var pref = UserClientContext.CurrentUser?.PrefLanguage?.Trim();
         _logger.LogInformation("🗣️ User Language is : " + pref);
         
         if (string.IsNullOrWhiteSpace(pref))
@@ -108,7 +108,23 @@ public partial class MainLayout
             return;
         }
 
-        T.SetCulture(new CultureInfo(pref));
+        var normalizedLanguageCode = pref.ToLowerInvariant() switch
+        {
+            "en" or "en-us" => "en-US",
+            "fr" or "fr-fr" => "fr-FR",
+            "de" or "de-de" => "de-DE",
+            _ => pref
+        };
+
+        try
+        {
+            T.SetCulture(new CultureInfo(normalizedLanguageCode));
+        }
+        catch (CultureNotFoundException)
+        {
+            _logger.LogWarning("⚠️ Unsupported language code '{LanguageCode}', fallback to en-US.", pref);
+            T.SetCulture(new CultureInfo("en-US"));
+        }
     }
     
     private async Task SaveCurrentUserPreferences()
