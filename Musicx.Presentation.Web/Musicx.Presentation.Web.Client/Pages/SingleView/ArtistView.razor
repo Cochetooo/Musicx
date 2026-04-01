@@ -101,23 +101,31 @@ else
                     <div class="glass-paper donut-box pa-2">
                         <div style="justify-items: center" class="mb-2">
                             <MudText Typo="Typo.subtitle1" Class="montserrat text-bold">🌐 Global</MudText>
+                            <div>
+                                <DonutRating Rating="@_artistRatingSummary.Average"
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                             Size="DonutRatingSize.Medium"/>
+                            </div>
                             <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.Count ratings</MudText>
-                            <DonutRating Rating="@_artistRatingSummary.Average"
-                                         RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                                         Size="DonutRatingSize.Medium"/>
                         </div>
                         <MudStack Justify="Justify.SpaceAround" Row Spacing="2">
                             <div style="justify-items: center">
                                 <MudText Typo="Typo.subtitle2" Class="montserrat">⭐ Fan Rating</MudText>
-                                <DonutRating Rating="@_artistRatingSummary.FanAverage"
-                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                                             Size="DonutRatingSize.Small"/>
+                                <div>
+                                    <DonutRating Rating="@_artistRatingSummary.FanAverage"
+                                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                                 Size="DonutRatingSize.Small"/>
+                                </div>
+                                <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.FanCount ratings</MudText>
                             </div>
                             <div style="justify-items: center">
                                 <MudText Typo="Typo.subtitle2" Class="montserrat">👤 Non-Fan Rating</MudText>
-                                <DonutRating Rating="@_artistRatingSummary.NonFanAverage"
-                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
-                                             Size="DonutRatingSize.Small"/>
+                                <div>
+                                    <DonutRating Rating="@_artistRatingSummary.NonFanAverage"
+                                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                                 Size="DonutRatingSize.Small"/>
+                                </div>
+                                <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.NonFanCount ratings</MudText>
                             </div>
                         </MudStack>
                     </div>

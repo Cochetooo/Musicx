@@ -2,6 +2,7 @@
 
 @using System.Globalization
 @using Musicx.Application.Shared.Helpers
+@using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.Models.User.Ratings
 @using Musicx.Application.Web.Interfaces.UseCases
@@ -27,6 +28,7 @@
 @inject IDialogService DialogService
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
+@inject ITranslationService T
 
 @inject UserGenreRatingsViewModel GenreRatingsViewModel
 
@@ -60,10 +62,10 @@ else
                     <MudText Typo="Typo.body2" Class="text-light color-secondary text-shadow mb-2">
                         @if (UserAge is not null)
                         {
-                            @($"{UserAge} years old ⸱ ")
+                            @T.Get("Web.UserView.AgeYearsOld", UserAge) <text> ⸱ </text>
                         }
                         
-                        Joined @(DurationHelper.FormatYearMonthDayDuration(_user.CreatedAt, DateTime.Now)) ago
+                        @T.Get("Web.UserView.JoinedAgo", DurationHelper.FormatYearMonthDayDuration(_user.CreatedAt, DateTime.Now))
                     </MudText>
                     
                     
@@ -77,7 +79,7 @@ else
                             <MudLink Href="/User/Edit">
                                 <MudButton Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.Edit"
                                            Variant="Variant.Filled">
-                                    Edit Profile
+                                    @T["Web.UserView.EditProfile"]
                                 </MudButton>
                             </MudLink>
                         </MudStack>
@@ -92,21 +94,21 @@ else
                             <MudButton Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteForever"
                                        OnClick="@OnClearRatingsButtonClicked"
                                        Variant="Variant.Filled">
-                                Clear Ratings
+                                @T["Web.UserView.ClearRatings"]
                             </MudButton>
                         }
                         
                         <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Download"
                                    OnClick="@OnExportRatingsButtonClicked"
                                    Variant="Variant.Filled">
-                            Export Ratings
+                            @T["Web.UserView.ExportRatings"]
                         </MudButton>
                         
                         @if (_user.Id != UserClientContext.CurrentUser?.Id)
                         {
                             <MudButton Color="Color.Secondary" StartIcon="@Icons.Material.Filled.PersonAdd"
                                        Variant="Variant.Filled">
-                                Follow
+                                @T["Web.Common.Follow"]
                             </MudButton>
                         }
                     </MudStack>
@@ -117,7 +119,7 @@ else
         <MudGrid Spacing="2">
             <MudItem xs="12" md="2">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="Rating Distribution" />
+                    <PanelTitle Text="@T["Web.UserView.RatingDistribution"]" />
                     <MudDivider Class="my-3"/>
 
                     @if (_albumRatingDistrib is not null && _albumCount > 0)
@@ -150,14 +152,14 @@ else
                 </MudPaper>
                 
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="Statistics" />
+                    <PanelTitle Text="@T["Web.UserView.Statistics"]" />
                     <MudDivider Class="my-3"/>
                     
                     <MudList T="RenderFragment" Dense>
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
                                 <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
-                                    Average Rating
+                                    @T["Web.UserView.AverageRating"]
                                 </MudText>
                                 <DonutRating Rating="@_albumRatingDistrib?.AverageRating"
                                              Size="DonutRatingSize.ExtraSmall"
@@ -168,7 +170,7 @@ else
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
                                 <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
-                                    Rating Standard Deviation
+                                    @T["Web.UserView.RatingStandardDeviation"]
                                 </MudText>
                                 <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary" Style="min-width: 50px;">
                                     ± @RatingHelper.GetRatingFormatted(_albumRatingDistrib?.RatingStandardDev, 
@@ -180,7 +182,7 @@ else
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
                                 <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
-                                    Most Rated Release Year
+                                    @T["Web.UserView.MostRatedReleaseYear"]
                                 </MudText>
                                 <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
                                     @(_albumRatingDistrib?.MostRatedReleaseYear.ToString() ?? "-")
@@ -191,7 +193,7 @@ else
                         <MudListItem>
                             <MudStack Row Justify="Justify.SpaceBetween">
                                 <MudText Typo="Typo.body1" Class="text-light montserrat color-secondary">
-                                    A-M artists ratio
+                                    @T["Web.UserView.ArtistsRatioAM"]
                                 </MudText>
                                 <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
                                     @Math.Round(_albumRatingDistrib?.ArtistNameRatioAMvsNZ * 100 ?? 0)% / 
@@ -203,7 +205,7 @@ else
                 </MudPaper>
                 
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="Friends" />
+                    <PanelTitle Text="@T["Web.UserView.Friends"]" />
                     <MudDivider Class="my-3"/>
                 </MudPaper>
                 
@@ -223,10 +225,10 @@ else
                         <col style="width: 100px;"/>
                     </ColGroup>
                     <ToolBarContent>
-                        <PanelTitle Text="Ratings" Count="@_albumCount.ToString()" />
+                        <PanelTitle Text="@T["Web.UserView.Ratings"]" Count="@_albumCount.ToString()" />
                         <MudSpacer/>
                         
-                        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search for ratings..."
+                        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="@T["Web.UserView.SearchRatings"]"
                                       Variant="Variant.Outlined"
                                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
                                       IconSize="Size.Medium" Class="mt-0"/>
@@ -234,22 +236,22 @@ else
                     <HeaderContent>
                         <MudTh>
                             <MudTableSortLabel SortLabel="Rating" SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Rating ?? 0))">
-                                Rating
+                                @T["Web.UserView.Rating"]
                             </MudTableSortLabel>
                         </MudTh>
                         <MudTh>
                             <MudTableSortLabel SortLabel="Album" SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.Album.Artist?.Name ?? string.Empty))">
-                                Album
+                                @T["Web.UserView.Album"]
                             </MudTableSortLabel>
                         </MudTh>
                         <MudTh>
                             <MudTableSortLabel SortLabel="Collection" SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.CollectionType ?? 0))">
-                                Collection
+                                @T["Web.UserView.Collection"]
                             </MudTableSortLabel>
                         </MudTh>
                         <MudTh>
                             <MudTableSortLabel SortLabel="Date" SortBy="@(new Func<OutUserAlbumAttribute, object>(x => x.UpdatedAt))">
-                                Date
+                                @T["Web.UserView.Date"]
                             </MudTableSortLabel>
                         </MudTh>
                     </HeaderContent>
@@ -300,13 +302,13 @@ else
             <MudItem xs="12" md="3">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
                     <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-                        <PanelTitle Text="Favourite Genres" />
+                        <PanelTitle Text="@T["Web.UserView.FavouriteGenres"]" />
 
                         <MudSwitch @bind-Value="GenreRatingsViewModel.ShowWeighted"
                                    Color="Color.Tertiary"
                                    LabelPlacement="Placement.Start"
                                    Class="genre-rating-switch"
-                                   Label="@(GenreRatingsViewModel.ShowWeighted ? "Weighted" : "Raw")"/>
+                                   Label="@(GenreRatingsViewModel.ShowWeighted ? T["Web.UserView.Weighted"] : T["Web.UserView.Raw"])"/>
 
                         <MudButton OnClick="@OnExpandTopGenresButtonClicked">
                             @if (GenreRatingsViewModel.TopGenresExpanded)
@@ -330,13 +332,7 @@ else
                                 <MudListItem>
                                     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
                                         <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
-                                            <MudChip Color="Color.Default"
-                                                     Variant="Variant.Text"
-                                                     Class="color-primary text-bold"
-                                                     T="string"
-                                                     Style="@($"border: 1px solid #444; background-color: {genreRating.GenreColor ?? "#dddddd"}")">
-                                                @genreRating.GenreName
-                                            </MudChip>
+                                            <GenreBadge Genre="@MapGenreBadge(genreRating)" Clickable Size="Size.Small" />
                                         </MudStack>
 
                                         @if (GenreRatingsViewModel.ShowWeighted)
@@ -350,7 +346,7 @@ else
                                         else
                                         {
                                             <MudText Typo="Typo.body2" Class="text-bold color-primary">
-                                                @genreRating.AlbumCount album(s)
+                                                @T.Get("Web.UserView.AlbumsCount", genreRating.AlbumCount)
                                             </MudText>
                                         }
                                     </MudStack>
@@ -365,7 +361,7 @@ else
                                         <MudListItem>
                                             <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
                                                 <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
-                                                    <SimplifiedGenreBadge Label="@genreRating.GenreName" Color="@genreRating.GenreColor" class="color-primary text-bold"/>
+                                                    <GenreBadge Genre="@MapGenreBadge(genreRating)" Clickable Size="Size.Small" />
                                                 </MudStack>
 
                                                 @if (GenreRatingsViewModel.ShowWeighted)
@@ -379,7 +375,7 @@ else
                                                 else
                                                 {
                                                     <MudText Typo="Typo.body2" Class="text-bold color-primary">
-                                                        @genreRating.AlbumCount album(s)
+                                                        @T.Get("Web.UserView.AlbumsCount", genreRating.AlbumCount)
                                                     </MudText>
                                                 }
                                             </MudStack>
@@ -392,13 +388,13 @@ else
                     else
                     {
                         <MudText Typo="Typo.body2" Class="color-secondary">
-                            No genre data available.
+                            @T["Web.UserView.NoGenreData"]
                         </MudText>
                     }
                 </MudPaper>
                 
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="Favourite Albums" />
+                    <PanelTitle Text="@T["Web.UserView.FavouriteAlbums"]" />
                     <MudDivider Class="my-3"/>
 
                     <MudStack Row
@@ -447,10 +443,10 @@ else
         
         <MudDialog @ref="_exportRatingsModal">
             <TitleContent>
-                Export Ratings
+                @T["Web.UserView.ExportRatings"]
             </TitleContent>
             <DialogContent>
-                <MudText Class="mb-2">Select the format you want to download.</MudText>
+                <MudText Class="mb-2">@T["Web.UserView.SelectExportFormat"]</MudText>
                 <MudRadioGroup T="UserRatingsExportFormat" @bind-Value="_selectedExportFormat">
                     <MudRadio Value="@UserRatingsExportFormat.Csv" Color="Color.Primary">CSV (.csv)</MudRadio>
                     <MudRadio Value="@UserRatingsExportFormat.Xlsx" Color="Color.Primary">Excel (.xlsx)</MudRadio>
@@ -459,10 +455,10 @@ else
             </DialogContent>
             <DialogActions>
                 <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="@OnCancelExportButtonClicked">
-                    Cancel
+                    @T["Web.Common.Cancel"]
                 </MudButton>
                 <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Download" OnClick="@OnConfirmExportButtonClicked">
-                    Download
+                    @T["Web.Common.Download"]
                 </MudButton>
             </DialogActions>
         </MudDialog>

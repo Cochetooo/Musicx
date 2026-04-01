@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Musicx.Application.Shared.Styling;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
@@ -10,13 +11,13 @@ public static class RatingHelper
 {
     private static readonly List<(decimal val, string color)> Stops = new()
     {
-        (0.0m,   "#CD0000"), // bordeaux
-        (3000.0m,  "#FF6347"), // salmon
-        (5500.0m,  "#CDCD27"), // greeny-yellow
-        (6500.0m,  "#27CD27"), // green
-        (7200.0m,  "#2EAD69"), // seagreen
-        (8000.0m,  "#00ADAD"), // cyan
-        (10000.0m, "#9500FF")  // indigo
+        (0.0m, UiColorPalette.Rating.VeryLow),
+        (3000.0m, UiColorPalette.Rating.Low),
+        (5500.0m, UiColorPalette.Rating.Mid),
+        (6500.0m, UiColorPalette.Rating.Good),
+        (7200.0m, UiColorPalette.Rating.Great),
+        (8000.0m, UiColorPalette.Rating.Excellent),
+        (10000.0m, UiColorPalette.Rating.Masterpiece)
     };
     
     public static string GetRatingFormatted(decimal? rating, RatingMode ratingMode)
@@ -215,7 +216,7 @@ public static class RatingHelper
     {
         if (rating is null)
         {
-            return "#77777777";
+            return UiColorPalette.Rating.Null;
         }
 
         for (int i = 0; i < Stops.Count - 1; i++)

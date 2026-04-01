@@ -80,4 +80,106 @@
     <data name="Web.Common.List" xml:space="preserve">
         <value>List</value>
     </data>
+    <data name="Web.Common.Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Web.Common.Download" xml:space="preserve">
+        <value>Download</value>
+    </data>
+    <data name="Web.Common.Warning" xml:space="preserve">
+        <value>Warning</value>
+    </data>
+    <data name="Web.Common.Delete" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="Web.Common.Follow" xml:space="preserve">
+        <value>Follow</value>
+    </data>
+    <data name="Web.UserView.AgeYearsOld" xml:space="preserve">
+        <value>{0} years old</value>
+    </data>
+    <data name="Web.UserView.JoinedAgo" xml:space="preserve">
+        <value>Joined {0} ago</value>
+    </data>
+    <data name="Web.UserView.EditProfile" xml:space="preserve">
+        <value>Edit profile</value>
+    </data>
+    <data name="Web.UserView.ClearRatings" xml:space="preserve">
+        <value>Clear ratings</value>
+    </data>
+    <data name="Web.UserView.ExportRatings" xml:space="preserve">
+        <value>Export ratings</value>
+    </data>
+    <data name="Web.UserView.RatingDistribution" xml:space="preserve">
+        <value>Rating distribution</value>
+    </data>
+    <data name="Web.UserView.Statistics" xml:space="preserve">
+        <value>Statistics</value>
+    </data>
+    <data name="Web.UserView.AverageRating" xml:space="preserve">
+        <value>Average rating</value>
+    </data>
+    <data name="Web.UserView.RatingStandardDeviation" xml:space="preserve">
+        <value>Rating standard deviation</value>
+    </data>
+    <data name="Web.UserView.MostRatedReleaseYear" xml:space="preserve">
+        <value>Most rated release year</value>
+    </data>
+    <data name="Web.UserView.ArtistsRatioAM" xml:space="preserve">
+        <value>A–M artists ratio</value>
+    </data>
+    <data name="Web.UserView.Friends" xml:space="preserve">
+        <value>Friends</value>
+    </data>
+    <data name="Web.UserView.Ratings" xml:space="preserve">
+        <value>Ratings</value>
+    </data>
+    <data name="Web.UserView.SearchRatings" xml:space="preserve">
+        <value>Search ratings...</value>
+    </data>
+    <data name="Web.UserView.Rating" xml:space="preserve">
+        <value>Rating</value>
+    </data>
+    <data name="Web.UserView.Album" xml:space="preserve">
+        <value>Album</value>
+    </data>
+    <data name="Web.UserView.Collection" xml:space="preserve">
+        <value>Collection</value>
+    </data>
+    <data name="Web.UserView.Date" xml:space="preserve">
+        <value>Date</value>
+    </data>
+    <data name="Web.UserView.FavouriteGenres" xml:space="preserve">
+        <value>Favourite genres</value>
+    </data>
+    <data name="Web.UserView.Weighted" xml:space="preserve">
+        <value>Weighted</value>
+    </data>
+    <data name="Web.UserView.Raw" xml:space="preserve">
+        <value>Raw</value>
+    </data>
+    <data name="Web.UserView.AlbumsCount" xml:space="preserve">
+        <value>{0} album(s)</value>
+    </data>
+    <data name="Web.UserView.NoGenreData" xml:space="preserve">
+        <value>No genre data available.</value>
+    </data>
+    <data name="Web.UserView.FavouriteAlbums" xml:space="preserve">
+        <value>Favourite albums</value>
+    </data>
+    <data name="Web.UserView.SelectExportFormat" xml:space="preserve">
+        <value>Select the format you want to download.</value>
+    </data>
+    <data name="Web.UserView.DeleteRatingsWarning" xml:space="preserve">
+        <value>Deleting all ratings cannot be undone. Are you sure you want to continue?</value>
+    </data>
+    <data name="Web.UserView.UserNotFoundExport" xml:space="preserve">
+        <value>User not found, cannot export ratings.</value>
+    </data>
+    <data name="Web.UserView.NoRatingsToExport" xml:space="preserve">
+        <value>No ratings to export.</value>
+    </data>
+    <data name="Web.UserView.RatingsExportSuccess" xml:space="preserve">
+        <value>Ratings exported successfully.</value>
+    </data>
 </root>

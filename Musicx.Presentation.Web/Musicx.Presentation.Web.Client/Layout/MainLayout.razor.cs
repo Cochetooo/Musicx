@@ -112,7 +112,7 @@ public partial class MainLayout
         {
             "en" or "en-us" => "en-US",
             "fr" or "fr-fr" => "fr-FR",
-            "de" or "de-de" => "de-DE",
+            "de" or "de-de" => "de",
             _ => pref
         };
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using MudBlazor;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Application.Shared.Styling;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Presentation.Web.Client.Components.Ratings;
@@ -46,10 +45,9 @@ public partial class DonutRating
 
         _ratingColor = ColorHelper.LightenColor(
             RatingHelper.GetColorForRating(Rating),
-            0.22
+            0.2
         );
-        
-        _trackColor = ColorHelper.LightenColor("#1f1f1f", 0.24);
+        _trackColor = UiColorPalette.Rating.Track;
 
         _strokeWidth = Size switch
         {

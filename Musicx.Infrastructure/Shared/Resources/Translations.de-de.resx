@@ -119,4 +119,106 @@
     <data name="Web.Common.List" xml:space="preserve">
         <value>Liste</value>
     </data>
+    <data name="Web.Common.Cancel" xml:space="preserve">
+        <value>Abbrechen</value>
+    </data>
+    <data name="Web.Common.Download" xml:space="preserve">
+        <value>Herunterladen</value>
+    </data>
+    <data name="Web.Common.Warning" xml:space="preserve">
+        <value>Warnung</value>
+    </data>
+    <data name="Web.Common.Delete" xml:space="preserve">
+        <value>Löschen</value>
+    </data>
+    <data name="Web.Common.Follow" xml:space="preserve">
+        <value>Folgen</value>
+    </data>
+    <data name="Web.UserView.AgeYearsOld" xml:space="preserve">
+        <value>{0} Jahre alt</value>
+    </data>
+    <data name="Web.UserView.JoinedAgo" xml:space="preserve">
+        <value>Seit {0} dabei</value>
+    </data>
+    <data name="Web.UserView.EditProfile" xml:space="preserve">
+        <value>Profil bearbeiten</value>
+    </data>
+    <data name="Web.UserView.ClearRatings" xml:space="preserve">
+        <value>Bewertungen löschen</value>
+    </data>
+    <data name="Web.UserView.ExportRatings" xml:space="preserve">
+        <value>Bewertungen exportieren</value>
+    </data>
+    <data name="Web.UserView.RatingDistribution" xml:space="preserve">
+        <value>Bewertungsverteilung</value>
+    </data>
+    <data name="Web.UserView.Statistics" xml:space="preserve">
+        <value>Statistiken</value>
+    </data>
+    <data name="Web.UserView.AverageRating" xml:space="preserve">
+        <value>Durchschnittsbewertung</value>
+    </data>
+    <data name="Web.UserView.RatingStandardDeviation" xml:space="preserve">
+        <value>Standardabweichung der Bewertungen</value>
+    </data>
+    <data name="Web.UserView.MostRatedReleaseYear" xml:space="preserve">
+        <value>Am häufigsten bewertetes Veröffentlichungsjahr</value>
+    </data>
+    <data name="Web.UserView.ArtistsRatioAM" xml:space="preserve">
+        <value>A–M Künstlerverhältnis</value>
+    </data>
+    <data name="Web.UserView.Friends" xml:space="preserve">
+        <value>Freunde</value>
+    </data>
+    <data name="Web.UserView.Ratings" xml:space="preserve">
+        <value>Bewertungen</value>
+    </data>
+    <data name="Web.UserView.SearchRatings" xml:space="preserve">
+        <value>Bewertungen suchen...</value>
+    </data>
+    <data name="Web.UserView.Rating" xml:space="preserve">
+        <value>Bewertung</value>
+    </data>
+    <data name="Web.UserView.Album" xml:space="preserve">
+        <value>Album</value>
+    </data>
+    <data name="Web.UserView.Collection" xml:space="preserve">
+        <value>Sammlung</value>
+    </data>
+    <data name="Web.UserView.Date" xml:space="preserve">
+        <value>Datum</value>
+    </data>
+    <data name="Web.UserView.FavouriteGenres" xml:space="preserve">
+        <value>Lieblingsgenres</value>
+    </data>
+    <data name="Web.UserView.Weighted" xml:space="preserve">
+        <value>Gewichtet</value>
+    </data>
+    <data name="Web.UserView.Raw" xml:space="preserve">
+        <value>Roh</value>
+    </data>
+    <data name="Web.UserView.AlbumsCount" xml:space="preserve">
+        <value>{0} Album/Alben</value>
+    </data>
+    <data name="Web.UserView.NoGenreData" xml:space="preserve">
+        <value>Keine Genre-Daten verfügbar.</value>
+    </data>
+    <data name="Web.UserView.FavouriteAlbums" xml:space="preserve">
+        <value>Lieblingsalben</value>
+    </data>
+    <data name="Web.UserView.SelectExportFormat" xml:space="preserve">
+        <value>Wähle das gewünschte Download-Format.</value>
+    </data>
+    <data name="Web.UserView.DeleteRatingsWarning" xml:space="preserve">
+        <value>Das Löschen aller Bewertungen kann nicht rückgängig gemacht werden. Möchtest du fortfahren?</value>
+    </data>
+    <data name="Web.UserView.UserNotFoundExport" xml:space="preserve">
+        <value>Benutzer nicht gefunden, Export nicht möglich.</value>
+    </data>
+    <data name="Web.UserView.NoRatingsToExport" xml:space="preserve">
+        <value>Keine Bewertungen zum Exportieren.</value>
+    </data>
+    <data name="Web.UserView.RatingsExportSuccess" xml:space="preserve">
+        <value>Bewertungen erfolgreich exportiert.</value>
+    </data>
 </root>

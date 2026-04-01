@@ -80,4 +80,106 @@
     <data name="Web.Common.List" xml:space="preserve">
         <value>Liste</value>
     </data>
+    <data name="Web.Common.Cancel" xml:space="preserve">
+        <value>Annuler</value>
+    </data>
+    <data name="Web.Common.Download" xml:space="preserve">
+        <value>Télécharger</value>
+    </data>
+    <data name="Web.Common.Warning" xml:space="preserve">
+        <value>Attention</value>
+    </data>
+    <data name="Web.Common.Delete" xml:space="preserve">
+        <value>Supprimer</value>
+    </data>
+    <data name="Web.Common.Follow" xml:space="preserve">
+        <value>Suivre</value>
+    </data>
+    <data name="Web.UserView.AgeYearsOld" xml:space="preserve">
+        <value>{0} ans</value>
+    </data>
+    <data name="Web.UserView.JoinedAgo" xml:space="preserve">
+        <value>Inscrit depuis {0}</value>
+    </data>
+    <data name="Web.UserView.EditProfile" xml:space="preserve">
+        <value>Modifier le profil</value>
+    </data>
+    <data name="Web.UserView.ClearRatings" xml:space="preserve">
+        <value>Effacer les notes</value>
+    </data>
+    <data name="Web.UserView.ExportRatings" xml:space="preserve">
+        <value>Exporter les notes</value>
+    </data>
+    <data name="Web.UserView.RatingDistribution" xml:space="preserve">
+        <value>Distribution des notes</value>
+    </data>
+    <data name="Web.UserView.Statistics" xml:space="preserve">
+        <value>Statistiques</value>
+    </data>
+    <data name="Web.UserView.AverageRating" xml:space="preserve">
+        <value>Note moyenne</value>
+    </data>
+    <data name="Web.UserView.RatingStandardDeviation" xml:space="preserve">
+        <value>Écart-type des notes</value>
+    </data>
+    <data name="Web.UserView.MostRatedReleaseYear" xml:space="preserve">
+        <value>Année de sortie la plus notée</value>
+    </data>
+    <data name="Web.UserView.ArtistsRatioAM" xml:space="preserve">
+        <value>Ratio artistes A–M</value>
+    </data>
+    <data name="Web.UserView.Friends" xml:space="preserve">
+        <value>Amis</value>
+    </data>
+    <data name="Web.UserView.Ratings" xml:space="preserve">
+        <value>Notes</value>
+    </data>
+    <data name="Web.UserView.SearchRatings" xml:space="preserve">
+        <value>Rechercher des notes...</value>
+    </data>
+    <data name="Web.UserView.Rating" xml:space="preserve">
+        <value>Note</value>
+    </data>
+    <data name="Web.UserView.Album" xml:space="preserve">
+        <value>Album</value>
+    </data>
+    <data name="Web.UserView.Collection" xml:space="preserve">
+        <value>Collection</value>
+    </data>
+    <data name="Web.UserView.Date" xml:space="preserve">
+        <value>Date</value>
+    </data>
+    <data name="Web.UserView.FavouriteGenres" xml:space="preserve">
+        <value>Genres favoris</value>
+    </data>
+    <data name="Web.UserView.Weighted" xml:space="preserve">
+        <value>Pondéré</value>
+    </data>
+    <data name="Web.UserView.Raw" xml:space="preserve">
+        <value>Brut</value>
+    </data>
+    <data name="Web.UserView.AlbumsCount" xml:space="preserve">
+        <value>{0} album(s)</value>
+    </data>
+    <data name="Web.UserView.NoGenreData" xml:space="preserve">
+        <value>Aucune donnée de genre disponible.</value>
+    </data>
+    <data name="Web.UserView.FavouriteAlbums" xml:space="preserve">
+        <value>Albums favoris</value>
+    </data>
+    <data name="Web.UserView.SelectExportFormat" xml:space="preserve">
+        <value>Sélectionnez le format à télécharger.</value>
+    </data>
+    <data name="Web.UserView.DeleteRatingsWarning" xml:space="preserve">
+        <value>La suppression de toutes les notes est définitive. Voulez-vous continuer ?</value>
+    </data>
+    <data name="Web.UserView.UserNotFoundExport" xml:space="preserve">
+        <value>Utilisateur introuvable, export impossible.</value>
+    </data>
+    <data name="Web.UserView.NoRatingsToExport" xml:space="preserve">
+        <value>Aucune note à exporter.</value>
+    </data>
+    <data name="Web.UserView.RatingsExportSuccess" xml:space="preserve">
+        <value>Notes exportées avec succès.</value>
+    </data>
 </root>

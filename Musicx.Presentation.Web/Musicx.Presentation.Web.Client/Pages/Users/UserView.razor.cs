@@ -6,9 +6,11 @@ using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Application.Web.Interfaces.Models.User.Ratings;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Contracts.Dto.Responses.User;
+using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
 
 namespace Musicx.Presentation.Web.Client.Pages.Users;
@@ -183,9 +185,9 @@ public partial class UserView : IAsyncDisposable
         }
         
         var result = await DialogService.ShowMessageBoxAsync(
-            "Warning",
-            "Deleting all ratings cannot be undone! Are you sure you want to delete all your ratings?",
-            yesText: "Delete!", cancelText: "Cancel");
+            T["Web.Common.Warning"],
+            T["Web.UserView.DeleteRatingsWarning"],
+            yesText: T["Web.Common.Delete"], cancelText: T["Web.Common.Cancel"]);
 
         if (result is not null && result.Value)
         {
@@ -209,7 +211,7 @@ public partial class UserView : IAsyncDisposable
     {
         if (_user is null)
         {
-            Snackbar.Add("User not found, cannot export ratings.", Severity.Warning);
+            Snackbar.Add(T["Web.UserView.UserNotFoundExport"], Severity.Warning);
             await _exportRatingsModal.CloseAsync();
             return;
         }
@@ -217,7 +219,7 @@ public partial class UserView : IAsyncDisposable
         var ratings = await LoadAllUserRatings();
         if (ratings.Count == 0)
         {
-            Snackbar.Add("No ratings to export.", Severity.Info);
+            Snackbar.Add(T["Web.UserView.NoRatingsToExport"], Severity.Info);
             await _exportRatingsModal.CloseAsync();
             return;
         }
@@ -230,7 +232,7 @@ public partial class UserView : IAsyncDisposable
             exportFile.ContentType,
             Convert.ToBase64String(exportFile.Content));
 
-        Snackbar.Add("Ratings exported successfully.", Severity.Success);
+        Snackbar.Add(T["Web.UserView.RatingsExportSuccess"], Severity.Success);
         await _exportRatingsModal.CloseAsync();
     }
 
@@ -281,6 +283,16 @@ public partial class UserView : IAsyncDisposable
 
         return result;
     }
+    
+    private static OutGenre MapGenreBadge(OutUserGenreRating genreRating)
+        => new()
+        {
+            Id = genreRating.Id,
+            CanonicalName = genreRating.GenreName,
+            ShortName = genreRating.GenreName,
+            Color = genreRating.GenreColor,
+            Type = GenreType.Subgenre
+        };
 
     private void OnSearch(string text)
     {

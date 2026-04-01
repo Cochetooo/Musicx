@@ -30,10 +30,11 @@ public partial class EditableRatingBadge
     {
         var background = RatingHelper.GetColorForRating(value);
         var textColor = ColorHelper.IsColorLight(background)
-            ? ColorHelper.DarkColor
-            : "white";
+            ? "#111827"
+            : "#F8FAFC";
         var minWidth = withMinWidth ? "min-width:80px;" : string.Empty;
-        return $"background-color:{background};color:{textColor};{minWidth}font-weight:600;";
+        return $"background:linear-gradient(145deg,{ColorHelper.ToRgba(background, 0.84)},{ColorHelper.ToRgba(background, 0.58)});" +
+               $"border:1px solid {ColorHelper.ToRgba(background, 0.95)};color:{textColor};{minWidth}font-weight:650;";
     }
 
     private int MaxValue => RatingMode switch
