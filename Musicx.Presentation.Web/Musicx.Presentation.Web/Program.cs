@@ -73,12 +73,10 @@ else
 
 var supportedCultures = new[]
 {
-    new CultureInfo("en"),
-    new CultureInfo("en-US"),
-    new CultureInfo("fr"),
-    new CultureInfo("fr-FR"),
     new CultureInfo("de"),
-    new CultureInfo("de-DE")
+    new CultureInfo("en"),
+    new CultureInfo("fr"),
+    new CultureInfo("it"),
 };
 app.UseRequestLocalization(new RequestLocalizationOptions
 {

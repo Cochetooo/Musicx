@@ -21,9 +21,10 @@ public partial class MainLayout
     
     private readonly List<(string Code, string Label, string CountryName)> _languages =
     [
-        ("en-US", "English", "United States"),
-        ("fr-FR", "Français", "France"),
-        ("de-DE", "Deutsch", "Germany")
+        ("de", "Deutsch", "Germany"),
+        ("en", "English", "United States"),
+        ("fr", "Français", "France"),
+        ("it", "Italiano", "Italy")
     ];
     
     private readonly List<RatingMode> _quickRatingModes =
@@ -108,22 +109,14 @@ public partial class MainLayout
             return;
         }
 
-        var normalizedLanguageCode = pref.ToLowerInvariant() switch
-        {
-            "en" or "en-us" => "en-US",
-            "fr" or "fr-fr" => "fr-FR",
-            "de" or "de-de" => "de",
-            _ => pref
-        };
-
         try
         {
-            T.SetCulture(new CultureInfo(normalizedLanguageCode));
+            T.SetCulture(new CultureInfo(pref));
         }
         catch (CultureNotFoundException)
         {
-            _logger.LogWarning("⚠️ Unsupported language code '{LanguageCode}', fallback to en-US.", pref);
-            T.SetCulture(new CultureInfo("en-US"));
+            _logger.LogWarning("⚠️ Unsupported language code '{LanguageCode}', fallback to english.", pref);
+            T.SetCulture(new CultureInfo("en"));
         }
     }
     

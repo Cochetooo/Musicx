@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>
+            System.Resources.ResXResourceReader, System.Windows.Forms, ...
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>
+            System.Resources.ResXResourceWriter, System.Windows.Forms, ...
+        </value>
+    </resheader>
+
+    <data name="Web.Nav.Charts" xml:space="preserve"><value>Classifiche</value></data>
+    <data name="Web.Nav.Genres" xml:space="preserve"><value>Generi</value></data>
+    <data name="Web.Nav.Language" xml:space="preserve"><value>Lingua</value></data>
+    <data name="Web.Nav.PatchNotes" xml:space="preserve"><value>Note di versione</value></data>
+    <data name="Web.Nav.RatingMode" xml:space="preserve"><value>Modalità di valutazione</value></data>
+    <data name="Web.Nav.SearchLabel" xml:space="preserve"><value>Cerca (artista, album, brano, genere, utente...)</value></data>
+    <data name="Web.Nav.ShowRatings" xml:space="preserve"><value>Mostra valutazioni</value></data>
+    <data name="Web.Nav.Signup" xml:space="preserve"><value>Crea un account</value></data>
+    <data name="Web.Nav.SignIn" xml:space="preserve"><value>Accedi</value></data>
+    <data name="Web.Nav.SignOut" xml:space="preserve"><value>Disconnetti</value></data>
+    <data name="Web.Nav.Version" xml:space="preserve"><value>Versione {0}</value></data>
+
+    <data name="Web.Home.Welcome" xml:space="preserve"><value>Benvenuto su</value></data>
+    <data name="Web.Home.Stats" xml:space="preserve"><value>{0} artisti, {1} album, {2} brani e {3} generi</value></data>
+    <data name="Web.Home.DiscoverArtists" xml:space="preserve"><value>🎶 Scopri nuovi artisti</value></data>
+    <data name="Web.Home.ExploreAlbums" xml:space="preserve"><value>💿 Esplora gli album di tendenza</value></data>
+    <data name="Web.Home.UniqueGenres" xml:space="preserve"><value>🎧 Esplora generi unici</value></data>
+    <data name="Web.Home.LatestReleases" xml:space="preserve"><value>Ultime uscite</value></data>
+
+    <data name="Web.Common.Ratings" xml:space="preserve"><value>valutazioni</value></data>
+
+    <data name="Web.Search.Placeholder" xml:space="preserve"><value>Cerca...</value></data>
+    <data name="Web.Search.Loading" xml:space="preserve"><value>Caricamento...</value></data>
+    <data name="Web.Search.EmptyHint" xml:space="preserve"><value>Digita qualcosa per visualizzare i risultati...</value></data>
+    <data name="Web.Common.Search" xml:space="preserve">
+        <value>Cerca</value>
+    </data>
+    <data name="Web.AdminPageCard.Administration" xml:space="preserve">
+        <value>Amministrazione</value>
+    </data>
+    <data name="Web.AlbumTimelineView.YearsGraduation" xml:space="preserve">
+        <value>Anni / Graduazione</value>
+    </data>
+    <data name="Web.AlbumTimelineView.Years" xml:space="preserve">
+        <value>{0} anno/i</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.SearchReleases" xml:space="preserve">
+        <value>Cerca uscite...</value>
+    </data>
+    <data name="Web.Common.Sort" xml:space="preserve">
+        <value>Ordina</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.ReleaseDate" xml:space="preserve">
+        <value>Anno di uscita</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.ReleaseName" xml:space="preserve">
+        <value>Nome</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.GlobalRating" xml:space="preserve">
+        <value>Valutazione globale</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.PersonalRating" xml:space="preserve">
+        <value>Valutazione personale</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.NbRatings" xml:space="preserve">
+        <value>N. valutazioni</value>
+    </data>
+    <data name="Web.AlbumViewToolbar.DisplayMode" xml:space="preserve">
+        <value>Tipo di visualizzazione</value>
+    </data>
+    <data name="Web.Common.List" xml:space="preserve">
+        <value>Lista</value>
+    </data>
+    <data name="Web.Common.Cancel" xml:space="preserve">
+        <value>Annulla</value>
+    </data>
+    <data name="Web.Common.Download" xml:space="preserve">
+        <value>Scarica</value>
+    </data>
+    <data name="Web.Common.Warning" xml:space="preserve">
+        <value>Attenzione</value>
+    </data>
+    <data name="Web.Common.Delete" xml:space="preserve">
+        <value>Elimina</value>
+    </data>
+    <data name="Web.Common.Follow" xml:space="preserve">
+        <value>Segui</value>
+    </data>
+    <data name="Web.UserView.AgeYearsOld" xml:space="preserve">
+        <value>{0} anni</value>
+    </data>
+    <data name="Web.UserView.JoinedAgo" xml:space="preserve">
+        <value>Iscritto da {0}</value>
+    </data>
+    <data name="Web.UserView.EditProfile" xml:space="preserve">
+        <value>Modifica profilo</value>
+    </data>
+    <data name="Web.UserView.ClearRatings" xml:space="preserve">
+        <value>Cancella valutazioni</value>
+    </data>
+    <data name="Web.UserView.ExportRatings" xml:space="preserve">
+        <value>Esporta valutazioni</value>
+    </data>
+    <data name="Web.UserView.RatingDistribution" xml:space="preserve">
+        <value>Distribuzione delle valutazioni</value>
+    </data>
+    <data name="Web.UserView.Statistics" xml:space="preserve">
+        <value>Statistiche</value>
+    </data>
+    <data name="Web.UserView.AverageRating" xml:space="preserve">
+        <value>Valutazione media</value>
+    </data>
+    <data name="Web.UserView.RatingStandardDeviation" xml:space="preserve">
+        <value>Deviazione standard delle valutazioni</value>
+    </data>
+    <data name="Web.UserView.MostRatedReleaseYear" xml:space="preserve">
+        <value>Anno di uscita più valutato</value>
+    </data>
+    <data name="Web.UserView.ArtistsRatioAM" xml:space="preserve">
+        <value>Rapporto artisti A–M</value>
+    </data>
+    <data name="Web.UserView.Friends" xml:space="preserve">
+        <value>Amici</value>
+    </data>
+    <data name="Web.UserView.Ratings" xml:space="preserve">
+        <value>Valutazioni</value>
+    </data>
+    <data name="Web.UserView.SearchRatings" xml:space="preserve">
+        <value>Cerca valutazioni...</value>
+    </data>
+    <data name="Web.UserView.Rating" xml:space="preserve">
+        <value>Valutazione</value>
+    </data>
+    <data name="Web.UserView.Album" xml:space="preserve">
+        <value>Album</value>
+    </data>
+    <data name="Web.UserView.Collection" xml:space="preserve">
+        <value>Collezione</value>
+    </data>
+    <data name="Web.UserView.Date" xml:space="preserve">
+        <value>Data</value>
+    </data>
+    <data name="Web.UserView.FavouriteGenres" xml:space="preserve">
+        <value>Generi preferiti</value>
+    </data>
+    <data name="Web.UserView.Weighted" xml:space="preserve">
+        <value>Ponderato</value>
+    </data>
+    <data name="Web.UserView.Raw" xml:space="preserve">
+        <value>Grezzo</value>
+    </data>
+    <data name="Web.UserView.AlbumsCount" xml:space="preserve">
+        <value>{0} album</value>
+    </data>
+    <data name="Web.UserView.NoGenreData" xml:space="preserve">
+        <value>Nessun dato sui generi disponibile.</value>
+    </data>
+    <data name="Web.UserView.FavouriteAlbums" xml:space="preserve">
+        <value>Album preferiti</value>
+    </data>
+    <data name="Web.UserView.SelectExportFormat" xml:space="preserve">
+        <value>Seleziona il formato da scaricare.</value>
+    </data>
+    <data name="Web.UserView.DeleteRatingsWarning" xml:space="preserve">
+        <value>L'eliminazione di tutte le valutazioni è definitiva. Vuoi continuare?</value>
+    </data>
+    <data name="Web.UserView.UserNotFoundExport" xml:space="preserve">
+        <value>Utente non trovato, esportazione impossibile.</value>
+    </data>
+    <data name="Web.UserView.NoRatingsToExport" xml:space="preserve">
+        <value>Nessuna valutazione da esportare.</value>
+    </data>
+    <data name="Web.UserView.RatingsExportSuccess" xml:space="preserve">
+        <value>Valutazioni esportate con successo.</value>
+    </data>
+</root>
