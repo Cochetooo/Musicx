@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Musicx.Application.API.Persistence.Queries;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
@@ -192,4 +194,26 @@ internal sealed class UserSqlBuilder(
 
     internal override string BuildGroupBy(IJoinSpecification<InUser>? querySpecification = null)
         => $" GROUP BY u0.{UserColumns.Id}";
+    
+    internal override (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
+        IFindQuery<InUser> query,
+        IJoinSpecification<InUser>? joinSpec,
+        OrderSpecification<InUser>? orderSpec,
+        PagingOptions? pagingOptions,
+        bool countOnly)
+    {
+        if (query is not UserFindQuery typedQuery)
+        {
+            return (string.Empty, []);
+        }
+
+        return BuildDefaultFilteredQuery(
+            typedQuery,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly,
+            [$"u0.{UserColumns.Name}"],
+            $"u0.{UserColumns.Name}");
+    }
 }

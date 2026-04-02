@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests.Album;
@@ -295,7 +296,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
     
     [HttpGet]
-    public async Task<ActionResult<OutAlbumList>> Find(
+    public async Task<ActionResult<OutGenericList<OutAlbum>>> Find(
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
@@ -315,15 +316,17 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
         try
         {
             var albums = await albumRepository.FindAsync(
-                filterExact,
-                filterSimilitude, 
-                filter,
+                new AlbumFindQuery
+                {
+                    Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                },
                 joins,
                 order,
                 paging
             );
             
-            if (0 == albums.Count)
+            if (0 == albums.Total)
             {
                 _logger.LogInformation($"🌍❔ API : FIND albums - NOT FOUND");
                 return NoContent();

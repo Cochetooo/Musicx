@@ -78,50 +78,20 @@ internal sealed class TagRepository(
             return new OutGenericList<OutTag>();
         }
         
-        var sql = builder.BuildSelect();
-
-        var parameters = new List<NpgsqlParameter>();
-
-        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
-        {
-            builder.Filter(
-                sql: ref sql, 
-                column: $"t0.{TagColumns.Name}", 
-                filter: query.RawSearch.Value!,
-                parameters: parameters, 
-                filterExact: query!.Search?.Exact ?? false, 
-                filterSimilitude: query!.Search?.Similarity ?? 0.4
-            );
-        }
-        
-        sql += builder.BuildGroupBy();
-
-        if (orderSpec is not null)
-        {
-            sql += builder.BuildOrderBy(orderSpec);
-        }
-        else
-        {
-            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
-            {
-                sql += $" ORDER BY similarity(t0.{TagColumns.Name}, @filter) DESC";
-            }
-            else
-            {
-                sql += $" ORDER BY t0.{TagColumns.Name}";
-            }
-        }
-        
-        sql +=  " OFFSET @skip LIMIT @take";
-        
-        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
-        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
-        
+        var (sql, parameters) = builder.BuildFilteredQuery(
+            typedQuery,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly: false);
         var result = await connection.FetchListDynamicAsync(sql, parameters);
-        
-        return result
-            .Select(x => x.FromDicoToTag())
-            .ToList();
+        var total = await CountAsync(typedQuery, joinSpec);
+
+        return new OutGenericList<OutTag>
+        {
+            Items = result.Select(x => x.FromDicoToTag()).ToList(),
+            Total = total
+        };
     }
 
     public async Task<List<OutTag>> FindInAsync(IEnumerable<long> ids,
@@ -153,7 +123,18 @@ internal sealed class TagRepository(
 
     public async Task<long> CountAsync(IFindQuery<InTag>? query = null,
         IJoinSpecification<InTag>? joinSpec = null)
-        => await connection.Count("tags");
+    {
+        var typedQuery = query as TagFindQuery ?? new TagFindQuery();
+        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, null, null, true);
+
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        await using var command = new NpgsqlCommand(sql, conn);
+        command.Parameters.AddRange(parameters.ToArray());
+
+        var result = await command.ExecuteScalarAsync();
+        return result is null ? 0 : Convert.ToInt64(result);
+    }
 
     public async Task<long> SaveAsync(InTag entity)
     {

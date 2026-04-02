@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Security;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -66,56 +67,26 @@ internal sealed class PermissionRepository(
             .FromDicoToPermission();
     }
 
-    public async Task<List<OutPermission>> FindAsync(
+    public async Task<OutGenericList<OutPermission>> FindAsync(
         IFindQuery<InPermission>? query,
         IJoinSpecification<InPermission>? joinSpec = null,
         OrderSpecification<InPermission>? orderSpec = null,
         PagingOptions? pagingOptions = null)
     {
-        var sql = builder.BuildSelect(joinSpec);
-
-        var parameters = new List<NpgsqlParameter>();
-
-        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
+        if (query is not PermissionFindQuery typedQuery)
         {
-            builder.Filter(
-                sql: ref sql, 
-                column: $"p0.{PermissionColumns.Name}", 
-                filter: query.RawSearch.Value!,
-                parameters: parameters, 
-                filterExact: query!.Search?.Exact ?? false, 
-                filterSimilitude: query!.Search?.Similarity ?? 0.4
-            );
+            return new OutGenericList<OutPermission>();
         }
         
-        sql += builder.BuildGroupBy(joinSpec);
-
-        if (orderSpec is not null)
-        {
-            sql += builder.BuildOrderBy(orderSpec);
-        }
-        else
-        {
-            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
-            {
-                sql += $" ORDER BY similarity(p0.{PermissionColumns.Name}, @filter) DESC";
-            }
-            else
-            {
-                sql += $" ORDER BY al0.{PermissionColumns.Name}";
-            }
-        }
-
-        sql += " OFFSET @skip LIMIT @take";
-        
-        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
-        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
-        
+        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, orderSpec, pagingOptions, false);
         var result = await connection.FetchListDynamicAsync(sql, parameters);
+        var total = await CountAsync(typedQuery, joinSpec);
         
-        return result
-            .Select(x => x.FromDicoToPermission())
-            .ToList();
+        return new OutGenericList<OutPermission>
+        {
+            Items = result.Select(x => x.FromDicoToPermission()).ToList(),
+            Total = total
+        };
     }
 
     public async Task<List<OutPermission>> FindInAsync(IEnumerable<long> ids,
@@ -147,7 +118,18 @@ internal sealed class PermissionRepository(
 
     public async Task<long> CountAsync(IFindQuery<InPermission>? query = null,
         IJoinSpecification<InPermission>? joinSpec = null)
-        => await connection.Count("permissions");
+    {
+        var typedQuery = query as PermissionFindQuery ?? new PermissionFindQuery();
+        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, null, null, true);
+        
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        await using var command = new NpgsqlCommand(sql, conn);
+        command.Parameters.AddRange(parameters.ToArray());
+        
+        var result = await command.ExecuteScalarAsync();
+        return result is null ? 0 : Convert.ToInt64(result);
+    }
     
     public async Task<long> SaveAsync(InPermission entity)
     {

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Musicx.Application.API.Persistence.Queries;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
@@ -209,7 +211,27 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
     }
 
     internal override string BuildGroupBy(IJoinSpecification<InArtist>? spec = null)
+        => $" GROUP BY ar0.{ArtistColumns.Id}";
+    
+    internal override (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
+        IFindQuery<InArtist> query,
+        IJoinSpecification<InArtist>? joinSpec,
+        OrderSpecification<InArtist>? orderSpec,
+        PagingOptions? pagingOptions,
+        bool countOnly)
     {
-        throw new NotImplementedException();
+        if (query is not ArtistFindQuery typedQuery)
+        {
+            return (string.Empty, []);
+        }
+
+        return BuildDefaultFilteredQuery(
+            typedQuery,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly,
+            [$"ar0.{ArtistColumns.Name}", $"ar0.{ArtistColumns.Alias}"],
+            $"ar0.{ArtistColumns.Name}");
     }
 }

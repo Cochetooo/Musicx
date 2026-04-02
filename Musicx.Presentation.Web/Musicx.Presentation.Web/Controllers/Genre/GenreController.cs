@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Genre;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Genres;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 using Musicx.Presentation.Web.Contexts;
 
@@ -125,7 +127,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OutGenre>>> Find(
+    public async Task<ActionResult<OutGenericList<OutGenre>>> Find(
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
@@ -138,15 +140,17 @@ public sealed class GenreController(IGenreRepository genreRepository,
         try
         {
             var genres = await genreRepository.FindAsync(
-                filterExact, 
-                filterSimilitude, 
-                filter,
+                new GenreFindQuery
+                {
+                    Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                },
                 joins,
                 order,
                 paging
             );
             
-            if (0 == genres.Count)
+            if (0 == genres.Total)
             {
                 _logger.LogInformation($"🌍❔ API : FIND genres - NOT FOUND");
                 return NoContent();

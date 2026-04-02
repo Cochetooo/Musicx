@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Tag;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Tag;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Presentation.Web.Contexts;
 
 namespace Musicx.Presentation.Web.Controllers.Tag;
@@ -90,7 +92,7 @@ public sealed class TagController(ITagRepository tagRepository,
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OutTag>>> Find(
+    public async Task<ActionResult<OutGenericList<OutTag>>> Find(
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "")
@@ -99,13 +101,13 @@ public sealed class TagController(ITagRepository tagRepository,
 
         try
         {
-            var albums = await tagRepository.FindAsync(
-                filterExact, 
-                filterSimilitude,
-                filter
-            );
+            var albums = await tagRepository.FindAsync(new TagFindQuery
+            {
+                Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+            });
             
-            if (0 == albums.Count)
+            if (0 == albums.Total)
             {
                 _logger.LogInformation($"🌍❔ API : FIND tags - NOT FOUND");
                 return NoContent();

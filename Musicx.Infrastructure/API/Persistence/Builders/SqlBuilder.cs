@@ -57,6 +57,69 @@ internal abstract class SqlBuilder<T> where T : BaseInputModel
         OrderSpecification<T>? orderSpec,
         PagingOptions? pagingOptions,
         bool countOnly) => (string.Empty, []);
+    
+    /// <summary>
+    /// Builds a standard filtered query for entities with a unique identifier.
+    /// </summary>
+    /// <param name="query">Typed find query.</param>
+    /// <param name="joinSpec">Optional join specification.</param>
+    /// <param name="orderSpec">Optional ordering specification.</param>
+    /// <param name="pagingOptions">Optional paging options.</param>
+    /// <param name="countOnly">When true, only emits COUNT SQL.</param>
+    /// <param name="searchColumns">Columns targeted by raw search.</param>
+    /// <param name="defaultOrderColumn">Default order column when no order spec is provided.</param>
+    /// <returns>SQL string and associated parameters.</returns>
+    protected (string Sql, List<NpgsqlParameter> Parameters) BuildDefaultFilteredQuery(
+        IFindQuery<T> query,
+        IJoinSpecification<T>? joinSpec,
+        OrderSpecification<T>? orderSpec,
+        PagingOptions? pagingOptions,
+        bool countOnly,
+        IReadOnlyCollection<string> searchColumns,
+        string defaultOrderColumn)
+    {
+        var sql = BuildSelect(joinSpec);
+        var parameters = new List<NpgsqlParameter>();
+
+        if (query.RawSearch is not null && searchColumns.Count > 0)
+        {
+            Filter(
+                ref sql,
+                searchColumns,
+                query.RawSearch.Value ?? string.Empty,
+                parameters,
+                query.Search?.Exact ?? false,
+                query.Search?.Similarity ?? 0.4
+            );
+        }
+
+        sql += BuildGroupBy(joinSpec);
+
+        if (countOnly)
+        {
+            return ($"SELECT COUNT(*) FROM ({sql}) q0", parameters);
+        }
+
+        if (!countOnly)
+        {
+            if (orderSpec is not null)
+            {
+                sql += BuildOrderBy(orderSpec);
+            }
+            else
+            {
+                sql += !string.IsNullOrWhiteSpace(query.RawSearch?.Value)
+                    ? $" ORDER BY similarity({defaultOrderColumn}, @filter) DESC"
+                    : $" ORDER BY {defaultOrderColumn}";
+            }
+
+            sql += " OFFSET @skip LIMIT @take";
+            parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
+            parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
+        }
+
+        return (sql, parameters);
+    }
 
     /// <summary>
     /// Builds a GROUP BY clause with a given specification for joins.

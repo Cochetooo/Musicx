@@ -42,11 +42,16 @@ public partial class RoleDashboard
     {
         _logger.LogInformation("🔄️ RoleDashboard : UPDATE Data");
         
-        _roles = await UcList.ExecuteAsync(joins: new RoleJoinSpecification
-        {
-            IncludePermissions = true
-        }, pagingOptions: new PagingOptions(Take: 10_000, Skip: 0));
-        _permissions = await UcListPermissions.ExecuteAsync(pagingOptions: new PagingOptions(Take: 10_000, Skip: 0));
+        _roles = 
+            (await UcList.ExecuteAsync(joins: new RoleJoinSpecification
+            {
+                IncludePermissions = true
+            }, pagingOptions: new PagingOptions(Take: 10_000, Skip: 0)))
+            .Items;
+        
+        _permissions = 
+            (await UcListPermissions.ExecuteAsync(pagingOptions: new PagingOptions(Take: 10_000, Skip: 0)))
+            .Items;
 
         await InvokeAsync(StateHasChanged);
     }

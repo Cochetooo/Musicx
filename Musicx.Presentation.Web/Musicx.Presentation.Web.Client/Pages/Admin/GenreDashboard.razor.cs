@@ -52,14 +52,14 @@ public partial class GenreDashboard
     {
         _logger.LogInformation("🔄️ GenreDashboard : UPDATE Data");
 
-        _genres = await UcList.ExecuteAsync(
+        _genres = (await UcList.ExecuteAsync(
             order: new GenreOrderSpecification
             {
                 CanonicalName = 1,
                 ShortName = 2
             },
             pagingOptions: new PagingOptions(Take: 10_000, Skip: 0)
-        );
+        )).Items;
         _filteredGenres = new List<OutGenre>(_genres);
         
         await InvokeAsync(StateHasChanged);
@@ -137,8 +137,8 @@ public partial class GenreDashboard
 
         return new GridData<OutGenre>
         {
-            TotalItems = response.Count,
-            Items = response
+            TotalItems = (int)response.Total,
+            Items = response.Items
         };
     }
 

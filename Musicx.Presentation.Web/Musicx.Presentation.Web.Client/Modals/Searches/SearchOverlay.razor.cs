@@ -125,13 +125,13 @@ public partial class SearchOverlay : IAsyncDisposable
 
             var pagingOptions = new PagingOptions(_maxResults, 0);
             
-            _artistResults = await UcListArtists.ExecuteAsync(
+            _artistResults = (await UcListArtists.ExecuteAsync(
                 pagingOptions: pagingOptions,
                 filter: _value,
                 filterExact: _exactSearch
-            );
+            )).Items;
 
-            _albumResults = await UcListAlbums.ExecuteAsync(
+            _albumResults = (await UcListAlbums.ExecuteAsync(
                 pagingOptions: pagingOptions,
                 filter: _value,
                 filterExact: _exactSearch,
@@ -139,15 +139,15 @@ public partial class SearchOverlay : IAsyncDisposable
                 {
                     IncludeArtist = true
                 }
-            );
+            )).Items;
 
-            _genreResults = await UcListGenres.ExecuteAsync(
+            _genreResults = (await UcListGenres.ExecuteAsync(
                 pagingOptions: pagingOptions,
                 filter: _value,
                 filterExact: _exactSearch
-            );
+            )).Items;
 
-            _songResults = await UcListSongs.ExecuteAsync(
+            _songResults = (await UcListSongs.ExecuteAsync(
                 pagingOptions: pagingOptions,
                 filter: _value,
                 filterExact: _exactSearch,
@@ -155,13 +155,13 @@ public partial class SearchOverlay : IAsyncDisposable
                 {
                     IncludeAlbum = true
                 }
-            );
+            )).Items;
 
-            _userResults = await UcListUsers.ExecuteAsync(
+            _userResults = (await UcListUsers.ExecuteAsync(
                 pagingOptions: pagingOptions,
                 filter: _value,
                 filterExact: _exactSearch
-            );
+            )).Items;
 
             if (_groupResults)
             {

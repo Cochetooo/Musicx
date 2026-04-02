@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.Api.Models.Auth;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -106,56 +107,26 @@ internal sealed class UserRepository(
             .FromDicoToUserAuth();
     }
 
-    public async Task<List<OutUser>> FindAsync(
-        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
+    public async Task<OutGenericList<OutUser>> FindAsync(
+        IFindQuery<InUser>? query,
         IJoinSpecification<InUser>? joinSpec = null,
         OrderSpecification<InUser>? orderSpec = null,
         PagingOptions? pagingOptions = null)
     {
-        var sql = builder.BuildSelect(joinSpec);
-
-        var parameters = new List<NpgsqlParameter>();
-
-        if (!string.IsNullOrWhiteSpace(filter))
+        if (query is not UserFindQuery typedQuery)
         {
-            builder.Filter(
-                sql: ref sql, 
-                column: $"u0.{UserColumns.Name}", 
-                filter: filter,
-                parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
-            );
+            return new OutGenericList<OutUser>();
         }
         
-        sql += builder.BuildGroupBy(joinSpec);
-
-        if (orderSpec is not null)
-        {
-            sql += builder.BuildOrderBy(orderSpec);
-        }
-        else
-        {
-            if (!string.IsNullOrWhiteSpace(filter))
-            {
-                sql += $" ORDER BY similarity(u0.{UserColumns.Name}, @filter) DESC";
-            }
-            else
-            {
-                sql += $" ORDER BY u0.{UserColumns.Name}";
-            }
-        }
-        
-        sql +=  " OFFSET @skip LIMIT @take";
-        
-        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
-        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
-        
+        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, orderSpec, pagingOptions, false);
         var result = await connection.FetchListDynamicAsync(sql, parameters);
+        var total = await CountAsync(typedQuery, joinSpec);
         
-        return result
-            .Select(x => x.FromDicoToUser())
-            .ToList();
+        return new OutGenericList<OutUser>
+        {
+            Items = result.Select(x => x.FromDicoToUser()).ToList(),
+            Total = total
+        };
     }
 
     public async Task<List<OutUser>> FindInAsync(IEnumerable<long> ids,
@@ -185,8 +156,21 @@ internal sealed class UserRepository(
             .ToList();
     }
 
-    public async Task<long> CountAsync()
-        => await connection.Count("users");
+    public async Task<long> CountAsync(
+        IFindQuery<InUser>? query = null,
+        IJoinSpecification<InUser>? spec = null)
+    {
+        var typedQuery = query as UserFindQuery ?? new UserFindQuery();
+        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, spec, null, null, true);
+        
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        await using var command = new NpgsqlCommand(sql, conn);
+        command.Parameters.AddRange(parameters.ToArray());
+        
+        var result = await command.ExecuteScalarAsync();
+        return result is null ? 0 : Convert.ToInt64(result);
+    }
     
     public async Task<long> SaveAsync(InUser entity)
     {

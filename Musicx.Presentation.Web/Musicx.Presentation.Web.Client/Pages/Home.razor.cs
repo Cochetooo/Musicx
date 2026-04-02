@@ -20,7 +20,7 @@ public partial class Home
         _songCount = await UcCountSongs.ExecuteAsync();
         _genreCount = await UcCountGenres.ExecuteAsync();
 
-        _latestAlbums = await UcGetLatestAlbums.ExecuteAsync(
+        _latestAlbums = (await UcGetLatestAlbums.ExecuteAsync(
             joins: new AlbumJoinSpecification
             {
                 IncludeArtist = true,
@@ -32,7 +32,7 @@ public partial class Home
                 Name = 2
             },
             pagingOptions: new PagingOptions(Take: 5, Skip: 0)
-        );
+        )).Items;
 
         await InvokeAsync(StateHasChanged);
     }

@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Web.Interfaces.UseCases;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.Web.Helpers;
 
 namespace Musicx.Infrastructure.Web.UseCases;
@@ -19,7 +20,7 @@ public sealed class FindAllService<TIn, TOut>(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(FindAllService<TIn, TOut>));
     
-    public async Task<List<TOut>> ExecuteAsync(
+    public async Task<OutGenericList<TOut>> ExecuteAsync(
         bool? filterExact = null, 
         double? filterSimilitude = null, 
         string? filter = null, 
@@ -52,12 +53,12 @@ public sealed class FindAllService<TIn, TOut>(
         {
             var response = await httpClient.GetStringAsync(endpoint);
 
-            var json = JsonSerializer.Deserialize<List<TOut>>(response, JsonHelper.OptionsDefault);
+            var json = JsonSerializer.Deserialize<OutGenericList<TOut>>(response, JsonHelper.OptionsDefault);
             
             if (null == json)
             {
                 _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
-                return [];
+                return new OutGenericList<TOut> { Items = [], Total = 0 };
             }
         
             _logger.LogInformation($"🌍✅ GET {endpoint} - SUCCESS");
@@ -67,11 +68,11 @@ public sealed class FindAllService<TIn, TOut>(
         catch (Exception ex)
         {
             _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : An error has occured: {ex.Message}");
-            return [];
+            return new OutGenericList<TOut> { Items = [], Total = 0 };
         }
     }
 
-    public List<TOut> Execute(
+    public OutGenericList<TOut> Execute(
         bool? filterExact = null, 
         double? filterSimilitude = null, 
         string? filter = null, 

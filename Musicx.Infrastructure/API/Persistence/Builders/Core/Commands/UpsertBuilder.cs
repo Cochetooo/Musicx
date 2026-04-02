@@ -17,12 +17,13 @@ internal sealed class UpsertBuilder
     public SqlStatement Build(
         string table,
         IDictionary<string, object?> insertProperties,
-        string[] conflictColumns,
+        string[]? conflictColumns,
         IDictionary<string, object?> updateProperties,
+        string? conflictConstraint = null,
         string? returningColumn = null)
     {
-        if (conflictColumns is null || conflictColumns.Length == 0)
-            throw new ArgumentException("Conflict columns cannot be empty for an UPSERT.");
+        if ((conflictColumns is null || conflictColumns.Length == 0) && string.IsNullOrWhiteSpace(conflictConstraint))
+            throw new ArgumentException("Conflict target cannot be empty for an UPSERT.");
 
         // 1️⃣ Build base INSERT
         var insertStatement = _insertBuilder.Build(
@@ -48,7 +49,9 @@ internal sealed class UpsertBuilder
         // 3️⃣ Compose final SQL
         var sql =
             insertStatement.Query +
-            $" ON CONFLICT ({string.Join(", ", conflictColumns)})" +
+            (string.IsNullOrWhiteSpace(conflictConstraint)
+                ? $" ON CONFLICT ({string.Join(", ", conflictColumns!)})"
+                : $" ON CONFLICT ON CONSTRAINT {conflictConstraint}") +
             $" DO UPDATE SET {string.Join(", ", updateSetters)}";
 
         // 4️⃣ Merge parameters (INSERT + UPDATE)

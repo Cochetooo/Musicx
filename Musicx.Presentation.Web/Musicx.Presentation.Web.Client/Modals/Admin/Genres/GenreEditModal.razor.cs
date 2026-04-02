@@ -174,6 +174,7 @@ public partial class GenreEditModal
         );
         
         _rootGenres = genres
+            .Items
             .Where(g => g.Parents is null || g.Parents.Count < 2) // 2 because closure relationship contains the genre itself.
             .OrderBy(g => g.CanonicalName)
             .ToList();

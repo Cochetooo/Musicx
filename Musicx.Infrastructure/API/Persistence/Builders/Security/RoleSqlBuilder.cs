@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Musicx.Application.API.Persistence.Queries;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Security;
@@ -144,4 +146,26 @@ internal sealed class RoleSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
 
     internal override string BuildGroupBy(IJoinSpecification<InRole>? querySpecification = null)
         => $" GROUP BY r0.{RoleColumns.Id}";
+    
+    internal override (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
+        IFindQuery<InRole> query,
+        IJoinSpecification<InRole>? joinSpec,
+        OrderSpecification<InRole>? orderSpec,
+        PagingOptions? pagingOptions,
+        bool countOnly)
+    {
+        if (query is not RoleFindQuery typedQuery)
+        {
+            return (string.Empty, []);
+        }
+
+        return BuildDefaultFilteredQuery(
+            typedQuery,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly,
+            [$"r0.{RoleColumns.Name}"],
+            $"r0.{RoleColumns.Name}");
+    }
 }

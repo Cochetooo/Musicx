@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Security;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Security;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Specifications.Security;
 using Musicx.Presentation.Web.Contexts;
 
@@ -93,7 +95,7 @@ public sealed class RoleController(IRoleRepository roleRepository,
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OutRole>>> Find(
+    public async Task<ActionResult<OutGenericList<OutRole>>> Find(
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
@@ -106,15 +108,17 @@ public sealed class RoleController(IRoleRepository roleRepository,
         try
         {
             var albums = await roleRepository.FindAsync(
-                filterExact, 
-                filterSimilitude,
-                filter,
+                new RoleFindQuery
+                {
+                    Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                },
                 joins,
                 order,
                 paging
             );
             
-            if (0 == albums.Count)
+            if (0 == albums.Total)
             {
                 _logger.LogInformation($"🌍❔ API : FIND roles - NOT FOUND");
                 return NoContent();

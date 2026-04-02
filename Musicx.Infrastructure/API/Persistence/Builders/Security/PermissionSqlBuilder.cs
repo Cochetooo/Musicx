@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Musicx.Application.API.Persistence.Queries;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Security;
@@ -85,4 +87,26 @@ internal sealed class PermissionSqlBuilder(ILoggerProvider loggerProvider) : Sql
 
     internal override string BuildGroupBy(IJoinSpecification<InPermission>? querySpecification = null)
         => $" GROUP BY p0.{PermissionColumns.Id}";
+    
+    internal override (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
+        IFindQuery<InPermission> query,
+        IJoinSpecification<InPermission>? joinSpec,
+        OrderSpecification<InPermission>? orderSpec,
+        PagingOptions? pagingOptions,
+        bool countOnly)
+    {
+        if (query is not PermissionFindQuery typedQuery)
+        {
+            return (string.Empty, []);
+        }
+
+        return BuildDefaultFilteredQuery(
+            typedQuery,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly,
+            [$"p0.{PermissionColumns.Name}"],
+            $"p0.{PermissionColumns.Name}");
+    }
 }

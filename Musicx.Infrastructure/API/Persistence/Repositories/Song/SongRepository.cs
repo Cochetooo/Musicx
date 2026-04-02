@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Song;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -67,55 +68,26 @@ internal sealed class SongRepository(
             .FromDicoToSong();
     }
 
-    public async Task<List<OutSong>> FindAsync(
+    public async Task<OutGenericList<OutSong>> FindAsync(
         IFindQuery<InSong>? query,
         IJoinSpecification<InSong>? joinSpec = null,
         OrderSpecification<InSong>? orderSpec = null,
         PagingOptions? pagingOptions = null)
     {
-        var sql = builder.BuildSelect(joinSpec);
-        var parameters = new List<NpgsqlParameter>();
-
-        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
+        if (query is not SongFindQuery typedQuery)
         {
-            builder.Filter(
-                sql: ref sql, 
-                column: $"s0.{SongColumns.Title}", 
-                filter: query.RawSearch.Value!,
-                parameters: parameters, 
-                filterExact: query!.Search?.Exact ?? false, 
-                filterSimilitude: query!.Search?.Similarity ?? 0.4
-            );
+            return new OutGenericList<OutSong>();
         }
         
-        sql += builder.BuildGroupBy(joinSpec);
-        
-        if (orderSpec is not null)
-        {
-            sql += builder.BuildOrderBy(orderSpec);
-        }
-        else
-        {
-            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
-            {
-                sql += $" ORDER BY similarity(s0.{SongColumns.Title}, @filter) DESC";
-            }
-            else
-            {
-                sql += $" ORDER BY s0.{SongColumns.Title}";
-            }
-        }
-        
-        sql +=  " OFFSET @skip LIMIT @take";
-        
-        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
-        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
-
+        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, orderSpec, pagingOptions, false);
         var result = await connection.FetchListDynamicAsync(sql, parameters);
-
-        return result
-            .Select(x => x.FromDicoToSong())
-            .ToList();
+        var total = await CountAsync(typedQuery, joinSpec);
+        
+        return new OutGenericList<OutSong>
+        {
+            Items = result.Select(x => x.FromDicoToSong()).ToList(),
+            Total = total
+        };
     }
 
     public async Task<List<OutSong>> FindByAlbumIdAsync(long albumId, 
@@ -176,7 +148,18 @@ internal sealed class SongRepository(
 
     public async Task<long> CountAsync(IFindQuery<InSong>? query = null,
         IJoinSpecification<InSong>? joinSpec = null)
-        => await connection.Count("songs");
+    {
+        var typedQuery = query as SongFindQuery ?? new SongFindQuery();
+        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, null, null, true);
+        
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        await using var command = new NpgsqlCommand(sql, conn);
+        command.Parameters.AddRange(parameters.ToArray());
+        
+        var result = await command.ExecuteScalarAsync();
+        return result is null ? 0 : Convert.ToInt64(result);
+    }
 
     public async Task<long> SaveAsync(InSong entity)
     {

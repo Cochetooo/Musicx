@@ -3,11 +3,13 @@ using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.Api.Interfaces.Storage;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Web.Interfaces.Models.Auth;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Users;
 using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Mappers;
@@ -138,7 +140,7 @@ public sealed class UserController(IUserRepository userRepository,
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OutUser>>> Find(
+    public async Task<ActionResult<OutGenericList<OutUser>>> Find(
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
@@ -151,15 +153,17 @@ public sealed class UserController(IUserRepository userRepository,
         try
         {
             var albums = await userRepository.FindAsync(
-                filterExact, 
-                filterSimilitude,
-                filter, 
+                new UserFindQuery
+                {
+                    Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                },
                 joins,
                 order,
                 paging
             );
             
-            if (0 == albums.Count)
+            if (0 == albums.Total)
             {
                 _logger.LogInformation($"🌍❔ API : FIND users - NOT FOUND");
                 return NoContent();

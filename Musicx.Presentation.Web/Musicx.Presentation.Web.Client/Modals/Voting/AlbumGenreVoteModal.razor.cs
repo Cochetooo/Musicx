@@ -80,7 +80,9 @@ public partial class AlbumGenreVoteModal
     {
         _logger = LoggerFactory.CreateLogger(nameof(AlbumGenreVoteModal));
         
-        _availableGenres = await UcListGenres.ExecuteAsync(pagingOptions: new PagingOptions(100_000, 0));
+        _availableGenres = 
+            (await UcListGenres.ExecuteAsync(pagingOptions: new PagingOptions(100_000, 0)))
+            .Items;
         
         foreach (var section in _sections)
         {

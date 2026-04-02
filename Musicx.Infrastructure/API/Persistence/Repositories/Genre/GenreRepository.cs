@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Genre;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -67,55 +68,27 @@ internal sealed class GenreRepository(
             .FromDicoToGenre();
     }
 
-    public async Task<List<OutGenre>> FindAsync(
+    public async Task<OutGenericList<OutGenre>> FindAsync(
         IFindQuery<InGenre>? query,
         IJoinSpecification<InGenre>? joinSpec = null,
         OrderSpecification<InGenre>? orderSpec = null,
         PagingOptions? pagingOptions = null)
     {
-        var sql = builder.BuildSelect(joinSpec);
-        var parameters = new List<NpgsqlParameter>();
-
-        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
+        if (query is not GenreFindQuery typedQuery)
         {
-            builder.Filter(
-                sql: ref sql, 
-                column: $"g0.{GenreColumns.CanonicalName}", 
-                filter: query.RawSearch.Value!,
-                parameters: parameters, 
-                filterExact: query!.Search?.Exact ?? false, 
-                filterSimilitude: query!.Search?.Similarity ?? 0.4
-            );
+            return new OutGenericList<OutGenre>();
         }
         
-        sql += builder.BuildGroupBy(joinSpec);
-        
-        if (orderSpec is not null)
-        {
-            sql += builder.BuildOrderBy(orderSpec);
-        }
-        else
-        {
-            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
-            {
-                sql += $" ORDER BY similarity(g0.{GenreColumns.CanonicalName}, @filter) DESC";
-            }
-            else
-            {
-                sql += $" ORDER BY g0.{GenreColumns.CanonicalName}";
-            }
-        }
-        
-        sql += " OFFSET @skip LIMIT @take";
-        
-        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
-        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
+        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, orderSpec, pagingOptions, false);
 
         var result = await connection.FetchListDynamicAsync(sql, parameters);
-
-        return result
-            .Select(x => x.FromDicoToGenre())
-            .ToList();
+        var total = await CountAsync(typedQuery, joinSpec);
+        
+        return new OutGenericList<OutGenre>
+        {
+            Items = result.Select(x => x.FromDicoToGenre()).ToList(),
+            Total = total
+        };
     }
 
     public async Task<List<OutGenre>> FindInAsync(IEnumerable<long> ids,
@@ -147,7 +120,18 @@ internal sealed class GenreRepository(
 
     public async Task<long> CountAsync(IFindQuery<InGenre>? query = null,
         IJoinSpecification<InGenre>? joinSpec = null)
-        => await connection.Count("genres");
+    {
+        var typedQuery = query as GenreFindQuery ?? new GenreFindQuery();
+        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, null, null, true);
+        
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        await using var command = new NpgsqlCommand(sql, conn);
+        command.Parameters.AddRange(parameters.ToArray());
+        
+        var result = await command.ExecuteScalarAsync();
+        return result is null ? 0 : Convert.ToInt64(result);
+    }
 
     public async Task<long> SaveAsync(InGenre entity)
     {

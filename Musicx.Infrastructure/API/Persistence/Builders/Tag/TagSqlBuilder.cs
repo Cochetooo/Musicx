@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Musicx.Application.API.Persistence.Queries;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Tag;
@@ -89,4 +91,26 @@ internal sealed class TagSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilder
     
     internal override string BuildGroupBy(IJoinSpecification<InTag>? querySpecification = null)
         => $"GROUP BY t0.{TagColumns.Id}";
+    
+    internal override (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
+        IFindQuery<InTag> query,
+        IJoinSpecification<InTag>? joinSpec,
+        OrderSpecification<InTag>? orderSpec,
+        PagingOptions? pagingOptions,
+        bool countOnly)
+    {
+        if (query is not TagFindQuery typedQuery)
+        {
+            return (string.Empty, []);
+        }
+
+        return BuildDefaultFilteredQuery(
+            typedQuery,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly,
+            [$"t0.{TagColumns.Name}"],
+            $"t0.{TagColumns.Name}");
+    }
 }

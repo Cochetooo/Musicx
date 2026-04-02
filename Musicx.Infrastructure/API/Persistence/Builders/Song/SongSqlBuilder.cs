@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Desktop.Specifications;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Song;
@@ -251,5 +253,27 @@ internal sealed class SongSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
         }
         
         return $" GROUP BY {string.Join(", ", groupings)}";
+    }
+    
+    internal override (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
+        IFindQuery<InSong> query,
+        IJoinSpecification<InSong>? joinSpec,
+        OrderSpecification<InSong>? orderSpec,
+        PagingOptions? pagingOptions,
+        bool countOnly)
+    {
+        if (query is not SongFindQuery typedQuery)
+        {
+            return (string.Empty, []);
+        }
+
+        return BuildDefaultFilteredQuery(
+            typedQuery,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly,
+            [$"s0.{SongColumns.Title}"],
+            $"s0.{SongColumns.Title}");
     }
 }

@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Song;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Song;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Specifications.Song;
 using Musicx.Presentation.Web.Contexts;
 using SongJoinSpecification = Musicx.Application.Desktop.Specifications.SongJoinSpecification;
@@ -137,7 +139,7 @@ public sealed class SongController(ISongRepository songRepository,
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OutSong>>> Find(
+    public async Task<ActionResult<OutGenericList<OutSong>>> Find(
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
@@ -150,15 +152,17 @@ public sealed class SongController(ISongRepository songRepository,
         try
         {
             var songs = await songRepository.FindAsync(
-                filterExact, 
-                filterSimilitude,
-                filter, 
+                new SongFindQuery
+                {
+                    Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                },
                 joins, 
                 order,
                 paging
             );
             
-            if (0 == songs.Count)
+            if (0 == songs.Total)
             {
                 _logger.LogInformation($"🌍❔ API : FIND songs - NOT FOUND");
                 return NoContent();

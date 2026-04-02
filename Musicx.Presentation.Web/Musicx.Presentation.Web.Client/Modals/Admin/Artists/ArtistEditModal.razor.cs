@@ -212,7 +212,7 @@ public partial class ArtistEditModal
             filter: _artist.Name,
             filterExact: true);
 
-        _existingArtists.AddRange(artists);
+        _existingArtists.AddRange(artists.Items);
     }
 
     /* private async Task<IEnumerable<string>> SearchRegion(string value)

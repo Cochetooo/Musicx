@@ -26,13 +26,13 @@ public partial class GenreList
 
     private async Task Load()
     {
-        _genres = await UcList.ExecuteAsync(
+        _genres = (await UcList.ExecuteAsync(
             pagingOptions: new PagingOptions(Take: 100_000, Skip: 0),
             joins: new GenreJoinSpecification
             {
                 IncludeChildren = true,
                 IncludeParents = true
-            });
+            })).Items;
         
         _logger.LogInformation("✅ Genres retrieved successfully!");
         await InvokeAsync(StateHasChanged);

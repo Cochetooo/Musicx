@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Security;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Security;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Specifications.Security;
 using Musicx.Presentation.Web.Contexts;
 
@@ -92,7 +94,7 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OutPermission>>> Find(
+    public async Task<ActionResult<OutGenericList<OutPermission>>> Find(
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
@@ -104,13 +106,15 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
         try
         {
             var albums = await permissionRepository.FindAsync(
-                filterExact,
-                filterSimilitude,
-                filter,
+                new PermissionFindQuery
+                {
+                    Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                },
                 orderSpec: order,
                 pagingOptions: paging);
             
-            if (0 == albums.Count)
+            if (0 == albums.Total)
             {
                 _logger.LogInformation($"🌍❔ API : FIND permissions - NOT FOUND");
                 return NoContent();

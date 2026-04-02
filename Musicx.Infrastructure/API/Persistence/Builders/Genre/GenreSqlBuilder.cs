@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Musicx.Application.API.Persistence.Queries;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Genre;
@@ -148,4 +150,26 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
 
     internal override string BuildGroupBy(IJoinSpecification<InGenre>? spec = null)
         => $" GROUP BY g0.{GenreColumns.Id}";
+    
+    internal override (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
+        IFindQuery<InGenre> query,
+        IJoinSpecification<InGenre>? joinSpec,
+        OrderSpecification<InGenre>? orderSpec,
+        PagingOptions? pagingOptions,
+        bool countOnly)
+    {
+        if (query is not GenreFindQuery typedQuery)
+        {
+            return (string.Empty, []);
+        }
+
+        return BuildDefaultFilteredQuery(
+            typedQuery,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly,
+            [$"g0.{GenreColumns.CanonicalName}"],
+            $"g0.{GenreColumns.CanonicalName}");
+    }
 }

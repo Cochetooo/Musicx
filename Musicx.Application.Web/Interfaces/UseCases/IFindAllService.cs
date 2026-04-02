@@ -2,6 +2,7 @@
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 
 namespace Musicx.Application.Web.Interfaces.UseCases;
 
@@ -9,7 +10,7 @@ public interface IFindAllService<TIn, TOut>
     where TIn : BaseInputModel
     where TOut : BaseOutputModel
 {
-    Task<List<TOut>> ExecuteAsync(
+    Task<OutGenericList<TOut>> ExecuteAsync(
         bool? filterExact = null, 
         double? filterSimilitude = null, 
         string? filter = null, 
@@ -18,7 +19,7 @@ public interface IFindAllService<TIn, TOut>
         PagingOptions? pagingOptions = null
     );
     
-    List<TOut> Execute(
+    OutGenericList<TOut> Execute(
         bool? filterExact = null, 
         double? filterSimilitude = null, 
         string? filter = null, 
