@@ -137,7 +137,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
         
         try
         {
-            var genres = await genreRepository.FindAllAsync(
+            var genres = await genreRepository.FindAsync(
                 filterExact, 
                 filterSimilitude, 
                 filter,
@@ -195,7 +195,7 @@ public sealed class GenreController(IGenreRepository genreRepository,
         
         try
         {
-            var count = await genreRepository.GetCountAsync();
+            var count = await genreRepository.CountAsync();
             
             _logger.LogInformation($"🌍✅ API : COUNT genres - SUCCESS");
             return Ok(count);

@@ -21,6 +21,7 @@ using Musicx.Application.Web.Interfaces.UseCases.Genre;
 using Musicx.Application.Web.Interfaces.UseCases.PatchNotes;
 using Musicx.Application.Web.Interfaces.UseCases.Security;
 using Musicx.Application.Web.Interfaces.UseCases.Song;
+using Musicx.Application.Web.Interfaces.UseCases.User;
 using Musicx.Application.Web.Interfaces.UseCases.User.AlbumAttribute;
 using Musicx.Application.Web.Interfaces.UseCases.User.Avatar;
 using Musicx.Application.Web.Interfaces.UseCases.User.Ratings;
@@ -73,6 +74,7 @@ using Musicx.Infrastructure.Web.UseCases.Genre;
 using Musicx.Infrastructure.Web.UseCases.PatchNotes;
 using Musicx.Infrastructure.Web.UseCases.Security;
 using Musicx.Infrastructure.Web.UseCases.Song;
+using Musicx.Infrastructure.Web.UseCases.User;
 using Musicx.Infrastructure.Web.UseCases.User.AlbumAttribute;
 using Musicx.Infrastructure.Web.UseCases.User.Avatar;
 using Musicx.Infrastructure.Web.UseCases.User.Ratings;
@@ -196,8 +198,10 @@ public static class DependencyInjection
         // Data Views / Cache abstractions
         services.AddScoped<IDataViewCacheProvider, NoOpDataViewCacheProvider>();
         services.AddScoped<IDataViewCacheKeyFactory, DataViewCacheKeyFactory>();
+        services.AddScoped<IAlbumDataViewBuilder, AlbumDataViewBuilder>();
         services.AddScoped<IArtistDataViewBuilder, ArtistDataViewBuilder>();
         services.AddScoped<IGenreDataViewBuilder, GenreDataViewBuilder>();
+        services.AddScoped<IUserDataViewBuilder, UserDataViewBuilder>();
         
         // Audit
         services.AddScoped<IAuditPublisher, RabbitMqAuditPublisher>();
@@ -242,11 +246,13 @@ public static class DependencyInjection
         services.AddScoped<IFindAlbumByArtistService, FindAlbumByArtistService>();
         services.AddScoped<IFindAlbumByChartService, FindAlbumByChartService>();
         services.AddScoped<IFindAlbumByGenreService, FindAlbumByGenreService>();
+        services.AddScoped<IFindAlbumDataViewService, FindAlbumDataViewService>();
         services.AddScoped<IFindArtistDataViewService, FindArtistDataViewService>();
         services.AddScoped<IFindArtistByGenreService, FindArtistByGenreService>();
         services.AddScoped<IFindGenreDataViewService, FindGenreDataViewService>();
         services.AddScoped<IFindSongByAlbumService, FindSongByAlbumService>();
         services.AddScoped(typeof(IFindRatingDistribByUserService<>), typeof(FindRatingDistribByUserService<>));
+        services.AddScoped<IFindUserDataViewService, FindUserDataViewService>();
         services.AddScoped<IFindUserYearlyRatingsService, FindUserYearlyRatingsService>();
         services.AddScoped<IFindUserGenreRatingsService, FindUserGenreRatingsService>();
         services.AddScoped<IExportUserRatingsService, ExportUserRatingsService>();

@@ -5,3 +5,13 @@
 .user-hero-content {
     grid-template-columns: 256px 1fr 360px;
 }
+
+:deep(.user-hero),
+:deep(.album-hero) {
+    border-radius: 16px;
+}
+
+:deep(.animate-hover-up) {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+}

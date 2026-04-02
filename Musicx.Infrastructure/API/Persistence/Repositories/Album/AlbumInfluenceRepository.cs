@@ -41,7 +41,8 @@ internal sealed class AlbumInfluenceRepository(
     public Task<OutAlbumInfluence?> FindOneAsync(long albumId, long genreId, long taggerId)
         => throw new NotImplementedException("FindOneAsync is disabled on this repository.");
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync(IFindQuery<InAlbumInfluence>? query = null,
+        IJoinSpecification<InAlbumInfluence>? joinSpec = null)
         => await connection.Count("album_influence");
 
     public async Task<long> SaveAsync(InAlbumInfluence entity)

@@ -20,7 +20,8 @@ internal sealed class GenreRelationRepository(
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(GenreRelationRepository));
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync(IFindQuery<InGenreRelation>? query = null,
+        IJoinSpecification<InGenreRelation>? joinSpec = null)
         => await connection.Count("genre_relation");
 
     public async Task<long> SaveAsync(InGenreRelation entity)

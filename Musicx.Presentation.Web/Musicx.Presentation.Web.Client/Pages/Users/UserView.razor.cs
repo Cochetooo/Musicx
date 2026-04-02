@@ -76,60 +76,56 @@ public partial class UserView : IAsyncDisposable
         
         _albumCount = 0;
         _searchString = string.Empty;
+        _favAlbums.Clear();
         
-        if (string.IsNullOrWhiteSpace(Id))
+        if (!TryGetUserId(out var userId))
         {
-            _logger.LogError("❌ Album ID is null or empty.");
-            return;
-        }
-        
-        if (!long.TryParse(Id, out var userId))
-        {
-            _logger.LogError("❌ Invalid User ID format: {Id}", Id);
+            Snackbar.Add(T["Web.UserView.InvalidUser"], Severity.Warning);
             return;
         }
 
-        _user = await UcGet.ExecuteAsync(userId, new UserJoinSpecification
+        var dataView = await UcUserDataView.ExecuteAsync(userId, UserClientContext.CurrentUser?.Id);
+        if (dataView is null)
         {
-            IncludeRoles = true
-        });
-
-        if (_user == null)
-        {
-            _logger.LogError("❌ User has not been found.");
+            _logger.LogError("❌ User DataView has not been found.");
+            Snackbar.Add(T["Web.UserView.UserNotFound"], Severity.Warning);
             return;
         }
 
-        _logger.LogInformation($"✅ User loaded: {_user.Name} ({_user.Id})");
-        await InvokeAsync(StateHasChanged);
-
-        _albumRatingDistrib = await UcFindAlbumRatingDistrib.ExecuteAsync(_user.Id);
+        _user = dataView.User;
+        _albumRatingDistrib = dataView.RatingStats;
         _maxRatingDistribCount = _albumRatingDistrib?.RatingCounts.Values.Max() ?? 1;
-        _logger.LogInformation($"✅ Album Ratings Distribution loaded ({_user.Id})");
+        _favAlbums = dataView.FavoriteAlbums.ToList();
 
-        await GenreRatingsViewModel.LoadAsync(UcFindUserGenreRatings, _user.Id, 5);
-        _logger.LogInformation($"✅ Top genres loaded.");
+        if (dataView.TopGenres.Count > 0)
+        {
+            await GenreRatingsViewModel.LoadAsync(UcFindUserGenreRatings, _user.Id, 5);
+        }
+
+        _logger.LogInformation("✅ User loaded from DataView: {Name} ({Id})", _user.Name, _user.Id);
         
+        await InvokeAsync(StateHasChanged);
         await _albumRatingsTable.ReloadServerData();
         await InvokeAsync(StateHasChanged);
+    }
+    
+    private bool TryGetUserId(out long userId)
+    {
+        userId = 0;
 
-        var bestUserRatings = await UcFindAlbumAttrs.ExecuteAsync(
-            _user.Id,
-            pagingOptions: new PagingOptions(Take: 6, Skip: 0),
-            joins: new UserAlbumAttrJoinSpecification
-            {
-                IncludeAlbumArtists = true
-            },
-            order: new UserAlbumAttrOrderSpecification
-            {
-                Rating = -1,
-                AlbumName = -2
-            });
+        if (string.IsNullOrWhiteSpace(Id))
+        {
+            _logger.LogError("❌ User ID is null or empty.");
+            return false;
+        }
 
-        _favAlbums = bestUserRatings
-            .Items
-            .Select(i => i.Album)
-            .ToList();
+        if (!long.TryParse(Id, out userId))
+        {
+            _logger.LogError("❌ Invalid User ID format: {Id}", Id);
+            return false;
+        }
+
+        return true;
     }
     
     private async Task<TableData<OutUserAlbumAttribute>> LoadUserAttrData(TableState state, CancellationToken token)
@@ -167,7 +163,6 @@ public partial class UserView : IAsyncDisposable
         );
 
         _albumCount = response.Total;
-        await InvokeAsync(StateHasChanged);
 
         return new TableData<OutUserAlbumAttribute>
         {
@@ -180,7 +175,6 @@ public partial class UserView : IAsyncDisposable
     {
         if (_user is null)
         {
-            _logger.LogWarning("⚠️ User ID is null, cannot try to clear ratings.");
             return;
         }
         
@@ -192,7 +186,8 @@ public partial class UserView : IAsyncDisposable
         if (result is not null && result.Value)
         {
             await UcDeleteAllRatings.ExecuteAsync(_user.Id);
-            await InvokeAsync(StateHasChanged);
+            Snackbar.Add(T["Web.Common.Success"], Severity.Success);
+            await Load();
         }
 
     }
@@ -255,9 +250,8 @@ public partial class UserView : IAsyncDisposable
 
         const int pageSize = 250;
         var result = new List<OutUserAlbumAttribute>();
-        var skip = 0;
 
-        while (true)
+        for (var skip = 0; ; skip += pageSize)
         {
             var page = await UcFindAlbumAttrs.ExecuteAsync(
                 _user.Id,
@@ -273,7 +267,6 @@ public partial class UserView : IAsyncDisposable
             }
 
             result.AddRange(page.Items);
-            skip += pageSize;
 
             if (page.Items.Count < pageSize)
             {

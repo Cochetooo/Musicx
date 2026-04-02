@@ -99,7 +99,7 @@ public sealed class TagController(ITagRepository tagRepository,
 
         try
         {
-            var albums = await tagRepository.FindAllAsync(
+            var albums = await tagRepository.FindAsync(
                 filterExact, 
                 filterSimilitude,
                 filter
@@ -152,7 +152,7 @@ public sealed class TagController(ITagRepository tagRepository,
         
         try
         {
-            var count = await tagRepository.GetCountAsync();
+            var count = await tagRepository.CountAsync();
             
             _logger.LogInformation($"🌍✅ API : COUNT tags - SUCCESS");
             return Ok(count);

@@ -73,9 +73,43 @@ internal sealed class UserAlbumAttrSqlBuilder(
         }
     }
 
-    internal override Task ExecuteUpsert(InUserAlbumAttribute entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    /// <summary>
+    /// Executes an UPSERT on user album attributes using the (user_id, album_id) unique pair.
+    /// </summary>
+    /// <param name="entity">The entity to persist.</param>
+    /// <param name="connection">Opened PostgreSQL connection.</param>
+    /// <param name="transaction">Optional ambient transaction.</param>
+    /// <since>0.7.4</since>
+    internal override async Task ExecuteUpsert(InUserAlbumAttribute entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        throw new NotImplementedException();
+        var command = UpsertBuilder.Build(
+            table: "user_album_attrs",
+            insertProperties: new Dictionary<string, object?>
+            {
+                { UserAlbumAttrColumns.AlbumId, entity.AlbumId },
+                { UserAlbumAttrColumns.UserId, entity.UserId },
+                { UserAlbumAttrColumns.CreatedAt, DateTime.Now },
+                { UserAlbumAttrColumns.UpdatedAt, DateTime.Now },
+                { UserAlbumAttrColumns.CollectionType, entity.CollectionType },
+                { UserAlbumAttrColumns.DiscoveryDate, entity.DiscoveryDate },
+                { UserAlbumAttrColumns.Rating, entity.Rating },
+                { UserAlbumAttrColumns.Review, entity.Review },
+            },
+            conflictColumns: [UserAlbumAttrColumns.UserId, UserAlbumAttrColumns.AlbumId],
+            updateProperties: new Dictionary<string, object?>
+            {
+                { UserAlbumAttrColumns.UpdatedAt, DateTime.Now },
+                { UserAlbumAttrColumns.CollectionType, entity.CollectionType },
+                { UserAlbumAttrColumns.DiscoveryDate, entity.DiscoveryDate },
+                { UserAlbumAttrColumns.Rating, entity.Rating },
+                { UserAlbumAttrColumns.Review, entity.Review },
+            });
+
+        _logger.LogDebug(SqlHelper.InterpolateQuery(command.Query, command.Parameters));
+
+        await using var cmd = new NpgsqlCommand(command.Query, connection, transaction);
+        cmd.Parameters.AddRange(command.Parameters.ToArray());
+        await cmd.ExecuteNonQueryAsync();
     }
 
     internal override string BuildSelect(IJoinSpecification<InUserAlbumAttribute>? spec = null, bool distinct = false)

@@ -65,7 +65,7 @@ internal sealed class UserFavoriteAlbumRepository(
             .ToList();
     }
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync()
         => await connection.Count("user_fav_album");
 
     public async Task<long> SaveAsync(InUserFavoriteAlbum entity)

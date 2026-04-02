@@ -149,7 +149,7 @@ public sealed class SongController(ISongRepository songRepository,
 
         try
         {
-            var songs = await songRepository.FindAllAsync(
+            var songs = await songRepository.FindAsync(
                 filterExact, 
                 filterSimilitude,
                 filter, 
@@ -207,7 +207,7 @@ public sealed class SongController(ISongRepository songRepository,
         
         try
         {
-            var count = await songRepository.GetCountAsync();
+            var count = await songRepository.CountAsync();
             
             _logger.LogInformation($"🌍✅ API : COUNT songs - SUCCESS");
             return Ok(count);

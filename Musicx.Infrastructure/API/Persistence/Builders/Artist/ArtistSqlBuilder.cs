@@ -90,9 +90,19 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
         await cmd.ExecuteScalarAsync();
     }
 
-    internal override Task ExecuteUpsert(InArtist entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override async Task ExecuteUpsert(InArtist entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        throw new NotImplementedException();
+        if (0 == entity.Id)
+        {
+            var result = await ExecuteInsert(entity, connection, transaction);
+            if (result is long id)
+            {
+                entity.Id = id;
+            }
+            return;
+        }
+
+        await ExecuteUpdate(entity, connection, transaction);
     }
 
     internal override string BuildSelect(IJoinSpecification<InArtist>? spec = null, bool distinct = false)

@@ -103,9 +103,19 @@ internal sealed class RoleSqlBuilder(ILoggerProvider loggerProvider) : SqlBuilde
         }
     }
 
-    internal override Task ExecuteUpsert(InRole entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override async Task ExecuteUpsert(InRole entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        throw new NotImplementedException();
+        if (0 == entity.Id)
+        {
+            var result = await ExecuteInsert(entity, connection, transaction);
+            if (result is long id)
+            {
+                entity.Id = id;
+            }
+            return;
+        }
+
+        await ExecuteUpdate(entity, connection, transaction);
     }
 
     internal override string BuildSelect(IJoinSpecification<InRole>? querySpecification = null, bool distinct = false)

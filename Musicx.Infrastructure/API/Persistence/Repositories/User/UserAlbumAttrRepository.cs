@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
@@ -75,96 +76,44 @@ internal sealed class UserAlbumAttrRepository(
         return count is null ? 0 : Convert.ToInt64(count);
     }
 
-    public async Task<long> CountByAlbumIdAsync(long albumId)
-    {
-        await using var conn = (NpgsqlConnection)connection.CreateConnection();
-        await conn.OpenAsync();
-        
-        var sql = $"SELECT COUNT(*) FROM user_album_attrs WHERE {UserAlbumAttrColumns.AlbumId} = @albumId";
-        
-        await using var command = new NpgsqlCommand(sql, conn);
-        var parameters = new List<NpgsqlParameter>()
-        {
-            new("@albumId", albumId)
-        };
-        
-        command.Parameters.AddRange(parameters.ToArray());
-        
-        _logger.LogDebug(SqlHelper.InterpolateQuery(sql, parameters));
-
-        try
-        {
-            var result = await command.ExecuteScalarAsync();
-            return Convert.ToInt64(await command.ExecuteScalarAsync());
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("❌ Could not execute cound by album command for table user_album_attrs.");
-            return -1;
-        }
-    }
-
-    public async Task<long> CountByUserIdAsync(long userId, 
-        IJoinSpecification<InUserAlbumAttribute>? spec, long? artistId = null,
-        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null)
-    {
-        var query = new UserAlbumAttrFindQuery
-        {
-            UserId = userId,
-            ArtistId = artistId,
-            Search = new()
-            {
-                Exact = filterExact ?? false,
-                Similarity = filterSimilitude ?? 0.4
-            },
-            RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
-        };
-        
-        var (sql, parameters) = builder.BuildFilteredQuery(
-            query: query,
-            joinSpec: spec,
-            orderSpec: null,
-            pagingOptions: null,
-            countOnly: true);
-        
-        await using var conn = (NpgsqlConnection)connection.CreateConnection();
-        await conn.OpenAsync();
-        await using var command = new NpgsqlCommand(sql, conn);
-        
-        command.Parameters.AddRange(parameters.ToArray());
-        
-        _logger.LogDebug(SqlHelper.InterpolateQuery(sql, parameters));
-
-        try
-        {
-            var result = await command.ExecuteScalarAsync();
-            return result is null ? 0 : Convert.ToInt64(result);
-        }
-        catch (Exception)
-        {
-            _logger.LogError("❌ Could not execute count by user command for table user_album_attrs.");
-            return -1;
-        }
-    }
-
-    public async Task<IReadOnlyList<OutUserAlbumAttribute>> FindAsync(
-        UserAlbumAttrFindQuery query,
+    /// <summary>
+    /// Finds user album attributes with a typed query and returns the rows with the matching total.
+    /// </summary>
+    /// <param name="query">Typed query implementing <see cref="IFindQuery{T}"/>.</param>
+    /// <param name="joinSpec">Optional join specification.</param>
+    /// <param name="orderSpec">Optional order specification.</param>
+    /// <param name="pagingOptions">Optional paging options.</param>
+    /// <returns>A generic list containing the rows and the count for the same query.</returns>
+    /// <since>0.7.4</since>
+    public async Task<OutGenericList<OutUserAlbumAttribute>> FindAsync(
+        IFindQuery<InUserAlbumAttribute>? query,
         IJoinSpecification<InUserAlbumAttribute>? joinSpec = null,
         OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
         PagingOptions? pagingOptions = null)
     {
+        if (query is not UserAlbumAttrFindQuery typedQuery)
+        {
+            return new OutGenericList<OutUserAlbumAttribute>();
+        }
+        
         var (sql, parameters) = builder.BuildFilteredQuery(
-            query,
+            typedQuery,
             joinSpec,
             orderSpec,
             pagingOptions,
             countOnly: false);
         
-        var result = await connection.FetchListDynamicAsync(sql, parameters);
-        
-        return result
+        var result = (await connection.FetchListDynamicAsync(sql, parameters))
             .Select(x => x.FromDicoToUserAlbumAttr())
             .ToList();
+        
+        var total = await CountAsync(typedQuery, joinSpec);
+
+        return new OutGenericList<OutUserAlbumAttribute>
+        {
+            Items = result,
+            Total = total
+        };
     }
     
     public async Task<IReadOnlyList<OutUserGenreRating>> FindGenreRatingsByUserIdAsync(
@@ -239,6 +188,46 @@ internal sealed class UserAlbumAttrRepository(
             .FromDicoToUserAlbumAttr();
     }
     
+    /// <summary>
+    /// Counts user album attributes matching a typed query.
+    /// </summary>
+    /// <param name="findQuery">Typed query used to constrain the count.</param>
+    /// <param name="spec">Optional join specification.</param>
+    /// <returns>The number of rows matching the query.</returns>
+    /// <since>0.7.4</since>
+    public async Task<long> CountAsync(
+        IFindQuery<InUserAlbumAttribute>? findQuery = null,
+        IJoinSpecification<InUserAlbumAttribute>? spec = null)
+    {
+        var query = findQuery as UserAlbumAttrFindQuery ?? new UserAlbumAttrFindQuery();
+
+        var (sql, parameters) = builder.BuildFilteredQuery(
+            query: query,
+            joinSpec: spec,
+            orderSpec: null,
+            pagingOptions: null,
+            countOnly: true);
+
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        await using var command = new NpgsqlCommand(sql, conn);
+
+        command.Parameters.AddRange(parameters.ToArray());
+
+        _logger.LogDebug(SqlHelper.InterpolateQuery(sql, parameters));
+
+        try
+        {
+            var result = await command.ExecuteScalarAsync();
+            return result is null ? 0 : Convert.ToInt64(result);
+        }
+        catch (Exception)
+        {
+            _logger.LogError("❌ Could not execute count command for table user_album_attrs.");
+            return -1;
+        }
+    }
+    
     public async Task<long> SaveAsync(InUserAlbumAttribute entity)
     {
         await using var conn = (NpgsqlConnection)connection.CreateConnection();
@@ -248,17 +237,7 @@ internal sealed class UserAlbumAttrRepository(
         
         try
         {
-            var exist = await FindOneAlbumFromUserAsync(entity.UserId, entity.AlbumId);
-            
-            if (exist is null)
-            {
-                await builder.ExecuteInsert(entity, conn, transaction);
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-            
+            await builder.ExecuteUpsert(entity, conn, transaction);
             await transaction.CommitAsync();
         } 
         catch (Exception ex)

@@ -9,7 +9,8 @@ namespace Musicx.Application.Shared.Interfaces.Persistence;
 /// <summary>
 /// Base behavior for a repository.
 /// </summary>
-/// <typeparam name="T">A class inheriting from BaseEntity</typeparam>
+/// <typeparam name="TIn">An endpoint input class inheriting from BaseInputModel</typeparam>
+/// /// <typeparam name="TOut">An endpoint output class inheriting from BaseOutputModel</typeparam>
 /// <since>0.6.0</since>
 public interface IRepository<TIn, TOut>
     where TIn : BaseInputModel
@@ -43,40 +44,17 @@ public interface IRepository<TIn, TOut>
         IJoinSpecification<TIn>? joinSpecification = null
     )
         => throw new NotSupportedException($"{GetType().Name} does not implement find one by id queries for {typeof(TIn).Name}.");
-
-    /// <summary>
-    /// Retrieve all entities that matches filter criteria, or all entities if no filter is specified.
-    /// </summary>
-    /// <param name="filterExact">Use equality for the filter instead of a similarity algorithm</param>
-    /// <param name="filterSimilitude">The similarity rate for the algorithm to find similar results.</param>
-    /// <param name="filter">An expression that entities must match to be in the result.</param>
-    /// <param name="joinSpec"></param>
-    /// <param name="orderSpec"></param>
-    /// <param name="pagingOptions"></param>
-    /// <param name="skip">Offset when retrieving all rows, useful for pagination.</param>
-    /// <param name="take">Maximum number of rows taken, prevents response from being too large.</param>
-    /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
-    /// <returns>A collection of entities as <b>List</b>, empty if no entity has been found matching filter criteria.</returns>
-    /// <since>0.6.0</since>
-    Task<List<TOut>> FindAllAsync(
-        bool? filterExact = null,
-        double? filterSimilitude = 0.4,
-        string? filter = null,
-        IJoinSpecification<TIn>? joinSpec = null,
-        OrderSpecification<TIn>? orderSpec = null,
-        PagingOptions? pagingOptions = null)
-        => throw new NotSupportedException($"{GetType().Name} does not implement find all queries for {typeof(TIn).Name}.");
     
     /// <summary>
-    /// Retrieve all entities that matches a strongly typed query object.
+    /// Finds entities with a typed query and returns the items with the computed total.
     /// </summary>
-    /// <param name="findQuery">A query object implementing <see cref="IFindQuery{T}"/>.</param>
-    /// <param name="joinSpec"></param>
-    /// <param name="orderSpec"></param>
-    /// <param name="pagingOptions"></param>
-    /// <returns>A collection of entities as <b>List</b>, empty if no entity has been found matching filter criteria.</returns>
-    /// <since>0.6.8</since>
-    Task<List<TOut>> FindAllAsync(
+    /// <param name="findQuery">Typed query implementing <see cref="IFindQuery{T}"/>.</param>
+    /// <param name="joinSpec">Optional join specification.</param>
+    /// <param name="orderSpec">Optional order specification.</param>
+    /// <param name="pagingOptions">Optional paging options.</param>
+    /// <returns>A generic output list containing items and total count.</returns>
+    /// <since>0.7.4</since>
+    Task<OutGenericList<TOut>> FindAsync(
         IFindQuery<TIn>? findQuery,
         IJoinSpecification<TIn>? joinSpec = null,
         OrderSpecification<TIn>? orderSpec = null,
@@ -89,7 +67,6 @@ public interface IRepository<TIn, TOut>
     /// <param name="ids">A list of unique identifiers used to retrieve the entities.</param>
     /// <param name="joinSpec"></param>
     /// <param name="orderSpec"></param>
-    /// <param name="songQuerySpecification">Gives specific information to what relation objects should be attached.</param>
     /// <returns>A collection of entities as <b>List</b>, empty if no entity matches the IDs.</returns>
     /// <since>0.6.0</since>
     Task<List<TOut>> FindInAsync(
@@ -100,10 +77,12 @@ public interface IRepository<TIn, TOut>
         => throw new NotSupportedException($"{GetType().Name} does not implement find in array queries for {typeof(TIn).Name}.");
     
     /// <summary>
-    /// Get the number of entities in this table.
+    /// Counts entities matching a typed query.
     /// </summary>
-    /// <since>0.6.0</since>
-    Task<long> GetCountAsync()
+    /// <param name="findQuery">Typed query used to constrain the count.</param>
+    /// <returns>The number of rows matching the query.</returns>
+    /// <since>0.7.4</since>
+    Task<long> CountAsync(IFindQuery<TIn>? findQuery = null, IJoinSpecification<TIn>? spec = null)
         => throw new NotSupportedException($"{GetType().Name} does not implement global count commands for {typeof(TIn).Name}.");
     
     /// <summary>

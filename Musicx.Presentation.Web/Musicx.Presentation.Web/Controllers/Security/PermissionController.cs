@@ -103,7 +103,7 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
 
         try
         {
-            var albums = await permissionRepository.FindAllAsync(
+            var albums = await permissionRepository.FindAsync(
                 filterExact,
                 filterSimilitude,
                 filter,
@@ -158,7 +158,7 @@ public sealed class PermissionController(IPermissionRepository permissionReposit
         
         try
         {
-            var count = await permissionRepository.GetCountAsync();
+            var count = await permissionRepository.CountAsync();
             
             _logger.LogInformation($"🌍✅ API : COUNT permissions - SUCCESS");
             return Ok(count);

@@ -191,7 +191,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
 
         try
         {
-            var artists = await artistRepository.FindAllAsync(
+            var artists = await artistRepository.FindAsync(
                 filterExact,
                 filterSimilitude,
                 filter,
@@ -249,7 +249,7 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         
         try
         {
-            var count = await artistRepository.GetCountAsync();
+            var count = await artistRepository.CountAsync();
             
             _logger.LogInformation($"🌍✅ API : COUNT artists - SUCCESS");
             return Ok(count);

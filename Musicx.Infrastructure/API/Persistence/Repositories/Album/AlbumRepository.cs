@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -239,56 +240,36 @@ internal sealed class AlbumRepository(
             .ToList();
     }
 
-    public async Task<List<OutAlbum>> FindAllAsync(bool? filterExact = null, double? filterSimilitude = 0.4D,
-        string? filter = null,
+    public async Task<OutGenericList<OutAlbum>> FindAsync(
+        IFindQuery<InAlbum>? query,
         IJoinSpecification<InAlbum>? joinSpec = null,
         OrderSpecification<InAlbum>? orderSpec = null,
         PagingOptions? pagingOptions = null)
     {
-        var sql = builder.BuildSelect(joinSpec);
-
-        var parameters = new List<NpgsqlParameter>();
-
-        if (!string.IsNullOrWhiteSpace(filter))
+        if (query is not AlbumFindQuery typedQuery)
         {
-            builder.Filter(
-                sql: ref sql, 
-                column: $"al0.{AlbumColumns.Name}", 
-                filter: filter,
-                parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
-            );
+            return new OutGenericList<OutAlbum>();
         }
-        
-        sql += builder.BuildGroupBy(joinSpec);
 
-        if (orderSpec is not null)
-        {
-            sql += builder.BuildOrderBy(orderSpec);
-        }
-        else
-        {
-            if (!string.IsNullOrWhiteSpace(filter))
-            {
-                sql += $" ORDER BY similarity(al0.{AlbumColumns.Name}, @filter) DESC";
-            }
-            else
-            {
-                sql += $" ORDER BY al0.{AlbumColumns.Name}";
-            }
-        }
-        
-        sql +=  " OFFSET @skip LIMIT @take";
-        
-        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
-        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
+        var (sql, parameters) = builder.BuildFilteredQuery(
+            typedQuery,
+            joinSpec,
+            orderSpec,
+            pagingOptions,
+            countOnly: false
+        );
 
-        var result = await connection.FetchListDynamicAsync(sql, parameters);
-
-        return result
+        var result = (await connection.FetchListDynamicAsync(sql, parameters))
             .Select(x => x.FromDicoToAlbum())
             .ToList();
+
+        var total = await CountAsync(typedQuery, joinSpec);
+
+        return new OutGenericList<OutAlbum>
+        {
+            Items = result,
+            Total = total
+        };
     }
 
     public async Task<List<OutAlbum>> FindInAsync(IEnumerable<long> ids,
@@ -318,8 +299,37 @@ internal sealed class AlbumRepository(
             .ToList();
     }
 
-    public async Task<long> GetCountAsync()
-        => await connection.Count("albums");
+    public async Task<long> CountAsync(IFindQuery<InAlbum>? query = null,
+        IJoinSpecification<InAlbum>? spec = null)
+    {
+        var typedQuery = query as AlbumFindQuery ?? new AlbumFindQuery();
+        
+        var (sql, parameters) = builder.BuildFilteredQuery(
+            query: typedQuery,
+            joinSpec: spec,
+            orderSpec: null,
+            pagingOptions: null,
+            countOnly: true);
+        
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        await using var command = new NpgsqlCommand(sql, conn);
+
+        command.Parameters.AddRange(parameters.ToArray());
+
+        _logger.LogDebug(SqlHelper.InterpolateQuery(sql, parameters));
+
+        try
+        {
+            var result = await command.ExecuteScalarAsync();
+            return result is null ? 0 : Convert.ToInt64(result);
+        }
+        catch (Exception)
+        {
+            _logger.LogError("❌ Could not execute count command for table albums.");
+            return -1;
+        }
+    }
 
     public async Task<long> GetCountByGenreIdAsync(long genreId)
     {
@@ -362,23 +372,7 @@ internal sealed class AlbumRepository(
         
         try
         {
-            if (0 == entity.Id)
-            {
-                var result = await builder.ExecuteInsert(entity, conn, transaction);
-                if (result is long l)
-                {
-                    entity.Id = l;
-                }
-                else
-                {
-                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                }
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-            
+            await builder.ExecuteUpsert(entity, conn, transaction);
             await transaction.CommitAsync();
         } 
         catch (Exception ex)
@@ -403,23 +397,7 @@ internal sealed class AlbumRepository(
         {
             foreach (var entity in entities)
             {
-                if (0 == entity.Id)
-                {
-                    var result = await builder.ExecuteInsert(entity, conn, transaction);
-                    if (result is long l)
-                    {
-                        entity.Id = l;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                    }
-                }
-                else
-                {
-                    await builder.ExecuteUpdate(entity, conn, transaction);
-                }
-                
+                await builder.ExecuteUpsert(entity, conn, transaction);
                 idList.Add(entity.Id);
             }
             

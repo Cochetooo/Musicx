@@ -126,38 +126,13 @@ public sealed class UserAlbumAttrController(
             
             var userAlbumAttrs = await repository.FindAsync(query, joins, order, paging);
 
-            long totalCount;
-            if (query.UserId is not null)
-            {
-                totalCount = await repository.CountByUserIdAsync(
-                    query.UserId.Value,
-                    joins,
-                    query.ArtistId,
-                    query.Search?.Exact ?? filterExact,
-                    query.Search?.Similarity ?? filterSimilitude,
-                    filter
-                );
-            }
-            else if (query.AlbumId is not null)
-            {
-                totalCount = await repository.CountByAlbumIdAsync(query.AlbumId.Value);
-            }
-            else
-            {
-                totalCount = userAlbumAttrs.Count;
-            }
-
-            if (0 == userAlbumAttrs.Count)
+            if (0 == userAlbumAttrs.Items.Count)
             {
                 return NoContent();
             }
             
             _logger.LogInformation($"🌍✅ API : FIND user_album_attrs - SUCCESS");
-            return Ok(new OutGenericList<OutUserAlbumAttribute>
-            {
-                Items = userAlbumAttrs.ToList(),
-                Total = totalCount
-            });
+            return Ok(userAlbumAttrs);
         }
         catch (Exception ex)
         {
@@ -229,7 +204,10 @@ public sealed class UserAlbumAttrController(
 
         try
         {
-            var count = await repository.CountByAlbumIdAsync(albumId);
+            var count = await repository.CountAsync(new UserAlbumAttrFindQuery
+            {
+                AlbumId = albumId
+            });
 
             _logger.LogInformation($"🌍✅ API : COUNT user_album_attrs BY album {albumId} - SUCCESS");
             return Ok(count);
@@ -247,7 +225,10 @@ public sealed class UserAlbumAttrController(
 
         try
         {
-            var count = await repository.CountByUserIdAsync(userId);
+            var count = await repository.CountAsync(new UserAlbumAttrFindQuery
+            {
+                UserId = userId
+            });
 
             _logger.LogInformation($"🌍✅ API : COUNT user_album_attrs BY user {userId} - SUCCESS");
             return Ok(count);

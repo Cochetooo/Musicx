@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicx.Application.Api.Interfaces.Auth;
+using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Application.Shared.Enums;
@@ -7,6 +8,7 @@ using Musicx.Application.Web.Interfaces.Models.Auth;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Users;
 using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
@@ -17,6 +19,7 @@ namespace Musicx.Presentation.Web.Controllers.User;
 [ApiController]
 [Route("api/users")]
 public sealed class UserController(IUserRepository userRepository,
+    IUserDataViewBuilder userDataViewBuilder,
     IAuthService authService,
     IAvatarStorage avatarStorage,
     ILoggerProvider loggerProvider) : ControllerBase
@@ -106,6 +109,34 @@ public sealed class UserController(IUserRepository userRepository,
         }
     }
     
+    [HttpGet("{id}/data-view")]
+    public async Task<ActionResult<OutUserDataView>> FindDataView(
+        [FromRoute] long id,
+        [FromServices] IUserContext userContext,
+        [FromQuery] long? currentUserId = null)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND DATA VIEW users ({id})");
+
+        try
+        {
+            var effectiveCurrentUserId = currentUserId ?? userContext.CurrentUser?.Id;
+            var view = await userDataViewBuilder.BuildAsync(new UserDataViewQuery(id, effectiveCurrentUserId));
+
+            if (view is null)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND DATA VIEW users ({id}) - NOT FOUND");
+                return NoContent();
+            }
+
+            _logger.LogInformation($"🌍✅ API : FIND DATA VIEW users ({id}) - SUCCESS");
+            return Ok(view);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OutUser>>> Find(
         [FromQuery] bool filterExact = false,
@@ -119,7 +150,7 @@ public sealed class UserController(IUserRepository userRepository,
 
         try
         {
-            var albums = await userRepository.FindAllAsync(
+            var albums = await userRepository.FindAsync(
                 filterExact, 
                 filterSimilitude,
                 filter, 
@@ -177,7 +208,7 @@ public sealed class UserController(IUserRepository userRepository,
         
         try
         {
-            var count = await userRepository.GetCountAsync();
+            var count = await userRepository.CountAsync();
             
             _logger.LogInformation($"🌍✅ API : COUNT users - SUCCESS");
             return Ok(count);

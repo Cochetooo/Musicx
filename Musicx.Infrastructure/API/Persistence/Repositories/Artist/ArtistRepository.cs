@@ -97,8 +97,8 @@ internal sealed class ArtistRepository(
             .ToList();
     }
 
-    public async Task<List<OutArtist>> FindAllAsync(
-        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, 
+    public async Task<List<OutArtist>> FindAsync(
+        IFindQuery<InArtist>? query,
         IJoinSpecification<InArtist>? joinSpec = null,
         OrderSpecification<InArtist>? orderSpec = null,
         PagingOptions? pagingOptions = null)
@@ -107,15 +107,15 @@ internal sealed class ArtistRepository(
         
         var parameters = new List<NpgsqlParameter>();
 
-        if (!string.IsNullOrWhiteSpace(filter))
+        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
         {
             builder.Filter(
                 sql: ref sql, 
                 columns: [$"ar0.{ArtistColumns.Name}", $"ar0.{ArtistColumns.Alias}"], 
-                filter: filter,
+                filter: query.RawSearch.Value!,
                 parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
+                filterExact: query!.Search?.Exact ?? false, 
+                filterSimilitude: query!.Search?.Similarity ?? 0.4
             );
         }
 
@@ -125,7 +125,7 @@ internal sealed class ArtistRepository(
         }
         else
         {
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
             {
                 sql += $" ORDER BY similarity(ar0.{ArtistColumns.Name}, @filter) DESC";
             }
@@ -173,7 +173,8 @@ internal sealed class ArtistRepository(
             .ToList();
     }
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync(IFindQuery<InArtist>? query = null,
+        IJoinSpecification<InArtist>? spec = null)
         => await connection.Count("artists");
 
     public async Task<long> GetCountByGenreIdAsync(long genreId)
@@ -222,23 +223,7 @@ internal sealed class ArtistRepository(
 
         try
         {
-            if (0 == entity.Id)
-            {
-                var result = await builder.ExecuteInsert(entity, conn, transaction);
-                if (result is long l)
-                {
-                    entity.Id = l;
-                }
-                else
-                {
-                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                }
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-
+            await builder.ExecuteUpsert(entity, conn, transaction);
             await transaction.CommitAsync();
         }
         catch (Exception ex)
@@ -263,23 +248,7 @@ internal sealed class ArtistRepository(
         {
             foreach (var entity in entities)
             {
-                if (0 == entity.Id)
-                {
-                    var result = await builder.ExecuteInsert(entity, conn, transaction);
-                    if (result is long l)
-                    {
-                        entity.Id = l;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                    }
-                }
-                else
-                {
-                    await builder.ExecuteUpdate(entity, conn, transaction);
-                }
-                
+                await builder.ExecuteUpsert(entity, conn, transaction);
                 idList.Add(entity.Id);
             }
             

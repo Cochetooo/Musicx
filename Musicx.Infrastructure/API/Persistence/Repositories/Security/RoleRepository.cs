@@ -66,8 +66,8 @@ internal sealed class RoleRepository(
             .FromDicoToRole();
     }
 
-    public async Task<List<OutRole>> FindAllAsync(
-        bool? filterExact = false, double? filterSimilitude = 0.4, string? filter = null,
+    public async Task<List<OutRole>> FindAsync(
+        IFindQuery<InRole>? query,
         IJoinSpecification<InRole>? joinSpec = null,
         OrderSpecification<InRole>? orderSpec = null,
         PagingOptions? pagingOptions = null)
@@ -76,15 +76,15 @@ internal sealed class RoleRepository(
 
         var parameters = new List<NpgsqlParameter>();
 
-        if (!string.IsNullOrWhiteSpace(filter))
+        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
         {
             builder.Filter(
                 sql: ref sql, 
                 column: $"r0.{RoleColumns.Name}", 
-                filter: filter,
+                filter: query.RawSearch.Value!,
                 parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
+                filterExact: query!.Search?.Exact ?? false, 
+                filterSimilitude: query!.Search?.Similarity ?? 0.4
             );
         }
         
@@ -96,7 +96,7 @@ internal sealed class RoleRepository(
         }
         else
         {
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
             {
                 sql += $" ORDER BY similarity(r0.{RoleColumns.Name}, @filter) DESC";
             }
@@ -145,7 +145,8 @@ internal sealed class RoleRepository(
             .ToList();
     }
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync(IFindQuery<InRole>? query = null,
+        IJoinSpecification<InRole>? joinSpec = null)
         => await connection.Count("roles");
     
     public async Task<long> SaveAsync(InRole entity)
@@ -157,23 +158,7 @@ internal sealed class RoleRepository(
         
         try
         {
-            if (0 == entity.Id)
-            {
-                var result = await builder.ExecuteInsert(entity, conn, transaction);
-                if (result is long l)
-                {
-                    entity.Id = l;
-                }
-                else
-                {
-                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                }
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-            
+            await builder.ExecuteUpsert(entity, conn, transaction);
             await transaction.CommitAsync();
         } 
         catch (Exception ex)
@@ -198,23 +183,7 @@ internal sealed class RoleRepository(
         {
             foreach (var entity in entities)
             {
-                if (0 == entity.Id)
-                {
-                    var result = await builder.ExecuteInsert(entity, conn, transaction);
-                    if (result is long l)
-                    {
-                        entity.Id = l;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                    }
-                }
-                else
-                {
-                    await builder.ExecuteUpdate(entity, conn, transaction);
-                }
-                
+                await builder.ExecuteUpsert(entity, conn, transaction);
                 idList.Add(entity.Id);
             }
             

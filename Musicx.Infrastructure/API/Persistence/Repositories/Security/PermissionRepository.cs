@@ -66,8 +66,8 @@ internal sealed class PermissionRepository(
             .FromDicoToPermission();
     }
 
-    public async Task<List<OutPermission>> FindAllAsync(
-        bool? filterExact = null, double? filterSimilitude = null, string? filter = null,
+    public async Task<List<OutPermission>> FindAsync(
+        IFindQuery<InPermission>? query,
         IJoinSpecification<InPermission>? joinSpec = null,
         OrderSpecification<InPermission>? orderSpec = null,
         PagingOptions? pagingOptions = null)
@@ -76,15 +76,15 @@ internal sealed class PermissionRepository(
 
         var parameters = new List<NpgsqlParameter>();
 
-        if (!string.IsNullOrWhiteSpace(filter))
+        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
         {
             builder.Filter(
                 sql: ref sql, 
                 column: $"p0.{PermissionColumns.Name}", 
-                filter: filter,
+                filter: query.RawSearch.Value!,
                 parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
+                filterExact: query!.Search?.Exact ?? false, 
+                filterSimilitude: query!.Search?.Similarity ?? 0.4
             );
         }
         
@@ -96,7 +96,7 @@ internal sealed class PermissionRepository(
         }
         else
         {
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
             {
                 sql += $" ORDER BY similarity(p0.{PermissionColumns.Name}, @filter) DESC";
             }
@@ -145,7 +145,8 @@ internal sealed class PermissionRepository(
             .ToList();
     }
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync(IFindQuery<InPermission>? query = null,
+        IJoinSpecification<InPermission>? joinSpec = null)
         => await connection.Count("permissions");
     
     public async Task<long> SaveAsync(InPermission entity)
@@ -157,23 +158,7 @@ internal sealed class PermissionRepository(
         
         try
         {
-            if (0 == entity.Id)
-            {
-                var result = await builder.ExecuteInsert(entity, conn, transaction);
-                if (result is long l)
-                {
-                    entity.Id = l;
-                }
-                else
-                {
-                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                }
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-            
+            await builder.ExecuteUpsert(entity, conn, transaction);
             await transaction.CommitAsync();
         } 
         catch (Exception ex)
@@ -198,23 +183,7 @@ internal sealed class PermissionRepository(
         {
             foreach (var entity in entities)
             {
-                if (0 == entity.Id)
-                {
-                    var result = await builder.ExecuteInsert(entity, conn, transaction);
-                    if (result is long l)
-                    {
-                        entity.Id = l;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                    }
-                }
-                else
-                {
-                    await builder.ExecuteUpdate(entity, conn, transaction);
-                }
-                
+                await builder.ExecuteUpsert(entity, conn, transaction);
                 idList.Add(entity.Id);
             }
             

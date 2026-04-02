@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
@@ -6,6 +7,7 @@ using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Requests.Specifics;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Artist;
+using Musicx.Contracts.Dto.Responses.Specifics.Albums;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Presentation.Web.Contexts;
@@ -15,6 +17,7 @@ namespace Musicx.Presentation.Web.Controllers.Album;
 [ApiController]
 [Route("api/albums")]
 public sealed class AlbumController(IAlbumRepository albumRepository,
+    IAlbumDataViewBuilder albumDataViewBuilder,
     ILoggerProvider loggerProvider) : ControllerBase
 {
     private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(AlbumController));
@@ -187,6 +190,34 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
             return BadRequest(ex);
         }
     }
+    
+    [HttpGet("{id}/data-view")]
+    public async Task<ActionResult<OutAlbumDataView>> FindDataView(
+        [FromRoute] long id,
+        [FromServices] IUserContext userContext,
+        [FromQuery] long? userId = null)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND DATA VIEW albums ({id})");
+
+        try
+        {
+            var effectiveUserId = userId ?? userContext.CurrentUser?.Id;
+            var view = await albumDataViewBuilder.BuildAsync(new AlbumDataViewQuery(id, effectiveUserId));
+
+            if (view is null)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND DATA VIEW albums ({id}) - NOT FOUND");
+                return NoContent();
+            }
+
+            _logger.LogInformation($"🌍✅ API : FIND DATA VIEW albums ({id}) - SUCCESS");
+            return Ok(view);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
 
     [HttpGet("by-chart")]
     public async Task<ActionResult<OutAlbumList>> FindByChart([FromQuery] AlbumChartQuery query)
@@ -283,7 +314,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
 
         try
         {
-            var albums = await albumRepository.FindAllAsync(
+            var albums = await albumRepository.FindAsync(
                 filterExact,
                 filterSimilitude, 
                 filter,
@@ -341,7 +372,7 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
         
         try
         {
-            var count = await albumRepository.GetCountAsync();
+            var count = await albumRepository.CountAsync();
             
             _logger.LogInformation($"🌍✅ API : COUNT albums - SUCCESS");
             return Ok(count);

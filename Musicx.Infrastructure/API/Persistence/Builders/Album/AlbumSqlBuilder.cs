@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Musicx.Application.API.Persistence.Queries;
+using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Album;
@@ -113,9 +115,19 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         }
     }
 
-    internal override Task ExecuteUpsert(InAlbum entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override async Task ExecuteUpsert(InAlbum entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        throw new NotImplementedException();
+        if (0 == entity.Id)
+        {
+            var result = await ExecuteInsert(entity, connection, transaction);
+            if (result is long id)
+            {
+                entity.Id = id;
+            }
+            return;
+        }
+
+        await ExecuteUpdate(entity, connection, transaction);
     }
 
     internal override string BuildSelect(IJoinSpecification<InAlbum>? querySpecification = null, bool distinct = false)
@@ -208,6 +220,83 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         }
         
         return $" GROUP BY {string.Join(", ", groupings)}";
+    }
+
+    internal override (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
+        IFindQuery<InAlbum> query, 
+        IJoinSpecification<InAlbum>? joinSpec,
+        OrderSpecification<InAlbum>? orderSpec, 
+        PagingOptions? pagingOptions, 
+        bool countOnly)
+    {
+        if (query is not AlbumFindQuery typedQuery)
+        {
+            return (string.Empty, []);
+        }
+
+        var sql = countOnly
+            ? "SELECT COUNT(*) FROM albums al0 "
+            : BuildSelect(joinSpec);
+        
+        var parameters = new List<NpgsqlParameter>();
+        var clauses = new List<string>();
+        var joins = new HashSet<string>();
+        
+        void AddParam(string name, object? value) => parameters.Add(new NpgsqlParameter(name, value ?? DBNull.Value));
+
+        if (typedQuery.RawSearch is not null)
+        {
+            FilterBuilder.AppendAnyTextFilter(
+                typedQuery.RawSearch, 
+                [$"al0.{AlbumColumns.Name}"],
+                "search",
+                clauses,
+                parameters,
+                typedQuery.Search
+            );
+        }
+
+        sql += " ";
+        foreach (var join in joins)
+        {
+            if (!sql.Contains(join, StringComparison.Ordinal))
+            {
+                sql += join + " ";
+            }
+        }
+
+        if (clauses.Count > 0)
+        {
+            sql += " WHERE " + string.Join(" AND ", clauses);
+        }
+
+        if (countOnly)
+        {
+            return (sql, parameters);
+        }
+
+        if (orderSpec is not null)
+        {
+            sql += BuildOrderBy(orderSpec);
+        }
+        else
+        {
+            if (!string.IsNullOrWhiteSpace(typedQuery.RawSearch?.Value))
+            {
+                sql += $" ORDER BY similarity(al0.{AlbumColumns.Name}, @filter) DESC";
+            }
+            else
+            {
+                sql += $" ORDER BY al0.{AlbumColumns.Name}";
+            }
+        }
+        
+        sql += " OFFSET @skip LIMIT @take";
+        
+        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
+        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
+        
+        return (sql, parameters);
     }
 
     internal (string WhereClause, string OrderClause, List<NpgsqlParameter> Parameters)

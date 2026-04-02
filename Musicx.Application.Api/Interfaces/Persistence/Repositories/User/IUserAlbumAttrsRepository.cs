@@ -10,24 +10,9 @@ namespace Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 
 public interface IUserAlbumAttrsRepository : IRepository<InUserAlbumAttribute, OutUserAlbumAttribute>
 {
-    Task<long> CountByAlbumIdAsync(long albumId);
-    
-    Task<long> CountByUserIdAsync(long userId, 
-        IJoinSpecification<InUserAlbumAttribute>? spec = null,
-        long? artistId = null,
-        bool? filterExact = null,
-        double? filterSimilitude = 0.4,
-        string? filter = null);
-
     Task<long> CountGenreRatingsByUserIdAsync(long userId);
     
     Task DeleteAsync(long userId, long albumId);
-
-    Task<IReadOnlyList<OutUserAlbumAttribute>> FindAsync(
-        UserAlbumAttrFindQuery query,
-        IJoinSpecification<InUserAlbumAttribute>? spec = null,
-        OrderSpecification<InUserAlbumAttribute>? orderSpec = null,
-        PagingOptions? pagingOptions = null);
 
     Task<IReadOnlyList<OutUserGenreRating>> FindGenreRatingsByUserIdAsync(
         long userId,

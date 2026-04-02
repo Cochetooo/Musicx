@@ -106,7 +106,7 @@ internal sealed class UserRepository(
             .FromDicoToUserAuth();
     }
 
-    public async Task<List<OutUser>> FindAllAsync(
+    public async Task<List<OutUser>> FindAsync(
         bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
         IJoinSpecification<InUser>? joinSpec = null,
         OrderSpecification<InUser>? orderSpec = null,
@@ -185,7 +185,7 @@ internal sealed class UserRepository(
             .ToList();
     }
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync()
         => await connection.Count("users");
     
     public async Task<long> SaveAsync(InUser entity)

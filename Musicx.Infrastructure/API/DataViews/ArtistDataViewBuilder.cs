@@ -55,8 +55,7 @@ public sealed class ArtistDataViewBuilder(
             }
         );
         
-        Task<List<OutUserAlbumAttribute>> userAlbumAttrsTask = Task.FromResult<List<OutUserAlbumAttribute>>([]);
-        Task<long> userAlbumAttrsCountTask = Task.FromResult(0L);
+        Task<OutGenericList<OutUserAlbumAttribute>?> userAlbumAttrsTask = Task.FromResult<OutGenericList<OutUserAlbumAttribute>?>(null);
         Task<bool> isFollowingTask = Task.FromResult(false);
         
         if (query.UserId is not null)
@@ -68,13 +67,7 @@ public sealed class ArtistDataViewBuilder(
                     ArtistId = query.ArtistId
                 },
                 pagingOptions: new PagingOptions(100_000, 0)
-            ).ContinueWith(t => t.Result.ToList(), cancellationToken);
-
-            userAlbumAttrsCountTask = userAlbumAttrsRepository.CountByUserIdAsync(
-                query.UserId.Value,
-                null,
-                query.ArtistId
-            );
+            )!;
 
             isFollowingTask = userArtistAttrsRepository
                 .FindOneAsync(query.UserId.Value, query.ArtistId)
@@ -87,7 +80,6 @@ public sealed class ArtistDataViewBuilder(
             artistTask,
             albumsTask,
             userAlbumAttrsTask,
-            userAlbumAttrsCountTask,
             followersCountTask,
             isFollowingTask
         );
@@ -126,11 +118,7 @@ public sealed class ArtistDataViewBuilder(
 
         if (query.UserId is not null)
         {
-            userAlbumAttrsList = new OutGenericList<OutUserAlbumAttribute>
-            {
-                Items = await userAlbumAttrsTask,
-                Total = await userAlbumAttrsCountTask
-            };
+            userAlbumAttrsList = await userAlbumAttrsTask ?? new OutGenericList<OutUserAlbumAttribute>();
         }
 
         var result = new OutArtistDataView

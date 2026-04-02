@@ -87,9 +87,19 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
         }
     }
 
-    internal override Task ExecuteUpsert(InGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override async Task ExecuteUpsert(InGenre entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
     {
-        throw new NotImplementedException();
+        if (0 == entity.Id)
+        {
+            var result = await ExecuteInsert(entity, connection, transaction);
+            if (result is long id)
+            {
+                entity.Id = id;
+            }
+            return;
+        }
+
+        await ExecuteUpdate(entity, connection, transaction);
     }
 
     internal override string BuildSelect(IJoinSpecification<InGenre>? querySpecification = null, bool distinct = false)

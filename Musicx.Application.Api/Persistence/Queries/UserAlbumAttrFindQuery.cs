@@ -1,5 +1,5 @@
-using Musicx.Application.API.Persistence.Filtering;
 using Musicx.Application.Shared.Interfaces.Persistence;
+using Musicx.Application.Shared.Interfaces.Persistence.Filtering;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Enums;

@@ -1,5 +1,6 @@
 @page "/Album/{id}"
 @using Musicx.Application.Shared.Helpers
+@using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Application.Web.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.UseCases.Album
@@ -18,12 +19,15 @@
 
 @inject IFindOneByIdService<InAlbum, OutAlbum> UcGet
 @inject IFindAlbumByArtistService UcGetArtistAlbums
+@inject IFindAlbumDataViewService UcAlbumDataView
 @inject IFindSongByAlbumService UcFindSongs
 @inject IFindAlbumAttributesByAlbumService UcFindAlbumAttrs
 @inject IFindAlbumAttributesByAlbumUserService UcFindUserServiceAlbumAttr
 @inject ISaveService<InUserAlbumAttribute> UcSaveUserAttrib
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
+@inject ISnackbar Snackbar
+@inject ITranslationService T
 
 @if (null == _album)
 {
@@ -48,7 +52,7 @@ else
         <div class="album-hero" style="--hero-url: url('@_album.ArtworkUrl');">
             <div class="album-hero-content">
                 <div>
-                    <div class="cursor-pointer album-hero-image pa-2" 
+                    <div class="cursor-pointer album-hero-image pa-2"
                          style="position: relative; width: 100%;"
                          @onclick="() => _isArtworkRevealed = !_isArtworkRevealed">
                         <MudImage Src="@_album.ArtworkUrl"
@@ -71,7 +75,7 @@ else
                     @if (_previousAlbum is not null || _nextAlbum is not null)
                     {
                         <MudCardActions Class="justify-between">
-                            <MudStack Class="ma-2 pa-1 rounded glass-paper d-flex flex-column flex-md-row" 
+                            <MudStack Class="ma-2 pa-1 rounded glass-paper d-flex flex-column flex-md-row"
                                       Style="width: 100%;">
                                 @if (_previousAlbum is not null)
                                 {

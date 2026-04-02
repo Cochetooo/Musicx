@@ -59,7 +59,8 @@ internal sealed class AlbumGenreRepository(
             .FromDicoToAlbumGenre();
     }
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync(IFindQuery<InAlbumGenre>? query = null,
+        IJoinSpecification<InAlbumGenre>? joinSpec = null)
         => await connection.Count("album_genre");
 
     public async Task<long> SaveAsync(InAlbumGenre entity)

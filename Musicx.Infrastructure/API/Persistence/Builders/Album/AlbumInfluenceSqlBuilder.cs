@@ -56,10 +56,10 @@ internal sealed class AlbumInfluenceSqlBuilder(ILoggerProvider loggerProvider) :
         return null;
     }
     
-    internal override async Task<object?> ExecuteInsert(InAlbumInfluence entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override Task<object?> ExecuteInsert(InAlbumInfluence entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
         => throw new NotImplementedException();
 
-    internal override async Task ExecuteUpdate(InAlbumInfluence entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
+    internal override Task ExecuteUpdate(InAlbumInfluence entity, NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
         => throw new NotImplementedException();
 
     internal override string BuildSelect(IJoinSpecification<InAlbumInfluence>? querySpecification = null, bool distinct = false)

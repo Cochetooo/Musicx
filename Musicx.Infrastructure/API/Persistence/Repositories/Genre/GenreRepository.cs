@@ -67,8 +67,8 @@ internal sealed class GenreRepository(
             .FromDicoToGenre();
     }
 
-    public async Task<List<OutGenre>> FindAllAsync(
-        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null,
+    public async Task<List<OutGenre>> FindAsync(
+        IFindQuery<InGenre>? query,
         IJoinSpecification<InGenre>? joinSpec = null,
         OrderSpecification<InGenre>? orderSpec = null,
         PagingOptions? pagingOptions = null)
@@ -76,15 +76,15 @@ internal sealed class GenreRepository(
         var sql = builder.BuildSelect(joinSpec);
         var parameters = new List<NpgsqlParameter>();
 
-        if (!string.IsNullOrWhiteSpace(filter))
+        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
         {
             builder.Filter(
                 sql: ref sql, 
                 column: $"g0.{GenreColumns.CanonicalName}", 
-                filter: filter,
+                filter: query.RawSearch.Value!,
                 parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
+                filterExact: query!.Search?.Exact ?? false, 
+                filterSimilitude: query!.Search?.Similarity ?? 0.4
             );
         }
         
@@ -96,7 +96,7 @@ internal sealed class GenreRepository(
         }
         else
         {
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
             {
                 sql += $" ORDER BY similarity(g0.{GenreColumns.CanonicalName}, @filter) DESC";
             }
@@ -145,7 +145,8 @@ internal sealed class GenreRepository(
             .ToList();
     }
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync(IFindQuery<InGenre>? query = null,
+        IJoinSpecification<InGenre>? joinSpec = null)
         => await connection.Count("genres");
 
     public async Task<long> SaveAsync(InGenre entity)
@@ -157,23 +158,7 @@ internal sealed class GenreRepository(
         
         try
         {
-            if (0 == entity.Id)
-            {
-                var result = await builder.ExecuteInsert(entity, conn, transaction);
-                if (result is long l)
-                {
-                    entity.Id = l;
-                }
-                else
-                {
-                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                }
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-            
+            await builder.ExecuteUpsert(entity, conn, transaction);
             await transaction.CommitAsync();
         } 
         catch (Exception ex)
@@ -198,23 +183,7 @@ internal sealed class GenreRepository(
         {
             foreach (var entity in entities)
             {
-                if (0 == entity.Id)
-                {
-                    var result = await builder.ExecuteInsert(entity, conn, transaction);
-                    if (result is long l)
-                    {
-                        entity.Id = l;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                    }
-                }
-                else
-                {
-                    await builder.ExecuteUpdate(entity, conn, transaction);
-                }
-                
+                await builder.ExecuteUpsert(entity, conn, transaction);
                 idList.Add(entity.Id);
             }
             

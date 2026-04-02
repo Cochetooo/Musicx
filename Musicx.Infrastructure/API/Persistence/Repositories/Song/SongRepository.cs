@@ -67,8 +67,8 @@ internal sealed class SongRepository(
             .FromDicoToSong();
     }
 
-    public async Task<List<OutSong>> FindAllAsync(
-        bool? filterExact = false, double? filterSimilitude = 0.4, string? filter = null,
+    public async Task<List<OutSong>> FindAsync(
+        IFindQuery<InSong>? query,
         IJoinSpecification<InSong>? joinSpec = null,
         OrderSpecification<InSong>? orderSpec = null,
         PagingOptions? pagingOptions = null)
@@ -76,15 +76,15 @@ internal sealed class SongRepository(
         var sql = builder.BuildSelect(joinSpec);
         var parameters = new List<NpgsqlParameter>();
 
-        if (!string.IsNullOrWhiteSpace(filter))
+        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
         {
             builder.Filter(
                 sql: ref sql, 
                 column: $"s0.{SongColumns.Title}", 
-                filter: filter,
+                filter: query.RawSearch.Value!,
                 parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
+                filterExact: query!.Search?.Exact ?? false, 
+                filterSimilitude: query!.Search?.Similarity ?? 0.4
             );
         }
         
@@ -96,7 +96,7 @@ internal sealed class SongRepository(
         }
         else
         {
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
             {
                 sql += $" ORDER BY similarity(s0.{SongColumns.Title}, @filter) DESC";
             }
@@ -174,7 +174,8 @@ internal sealed class SongRepository(
             .ToList();
     }
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync(IFindQuery<InSong>? query = null,
+        IJoinSpecification<InSong>? joinSpec = null)
         => await connection.Count("songs");
 
     public async Task<long> SaveAsync(InSong entity)
@@ -186,23 +187,7 @@ internal sealed class SongRepository(
         
         try
         {
-            if (0 == entity.Id)
-            {
-                var result = await builder.ExecuteInsert(entity, conn, transaction);
-                if (result is long l)
-                {
-                    entity.Id = l;
-                }
-                else
-                {
-                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                }
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-            
+            await builder.ExecuteUpsert(entity, conn, transaction);
             await transaction.CommitAsync();
         } 
         catch (Exception ex)
@@ -227,23 +212,7 @@ internal sealed class SongRepository(
         {
             foreach (var entity in entities)
             {
-                if (0 == entity.Id)
-                {
-                    var result = await builder.ExecuteInsert(entity, conn, transaction);
-                    if (result is long l)
-                    {
-                        entity.Id = l;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                    }
-                }
-                else
-                {
-                    await builder.ExecuteUpdate(entity, conn, transaction);
-                }
-                
+                await builder.ExecuteUpsert(entity, conn, transaction);
                 idList.Add(entity.Id);
             }
             

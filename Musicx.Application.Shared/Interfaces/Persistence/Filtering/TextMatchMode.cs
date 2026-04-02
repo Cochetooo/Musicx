@@ -1,4 +1,4 @@
-﻿namespace Musicx.Application.API.Persistence.Filtering;
+﻿namespace Musicx.Application.Shared.Interfaces.Persistence.Filtering;
 
 public enum TextMatchMode
 {

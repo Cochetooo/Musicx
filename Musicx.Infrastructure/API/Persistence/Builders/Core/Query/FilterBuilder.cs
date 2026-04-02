@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Musicx.Application.API.Persistence.Filtering;
+using Musicx.Application.Shared.Interfaces.Persistence.Filtering;
 using Npgsql;
 
 namespace Musicx.Infrastructure.API.Persistence.Builders.Core.Query;

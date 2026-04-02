@@ -105,7 +105,7 @@ public sealed class RoleController(IRoleRepository roleRepository,
 
         try
         {
-            var albums = await roleRepository.FindAllAsync(
+            var albums = await roleRepository.FindAsync(
                 filterExact, 
                 filterSimilitude,
                 filter,
@@ -163,7 +163,7 @@ public sealed class RoleController(IRoleRepository roleRepository,
         
         try
         {
-            var count = await roleRepository.GetCountAsync();
+            var count = await roleRepository.CountAsync();
             
             _logger.LogInformation($"🌍✅ API : COUNT roles - SUCCESS");
             return Ok(count);

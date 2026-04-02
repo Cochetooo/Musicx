@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Logging;
 using Musicx.Application.Api.Interfaces.Persistence.Repositories.Tag;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -66,25 +67,30 @@ internal sealed class TagRepository(
             .FromDicoToTag();
     }
 
-    public async Task<List<OutTag>> FindAllAsync(
-        bool? filterExact = null, double? filterSimilitude = 0.4, string? filter = null, 
+    public async Task<OutGenericList<OutTag>> FindAsync(
+        IFindQuery<InTag>? query,
         IJoinSpecification<InTag>? joinSpec = null,
         OrderSpecification<InTag>? orderSpec = null,
         PagingOptions? pagingOptions = null)
     {
+        if (query is not TagFindQuery typedQuery)
+        {
+            return new OutGenericList<OutTag>();
+        }
+        
         var sql = builder.BuildSelect();
 
         var parameters = new List<NpgsqlParameter>();
 
-        if (!string.IsNullOrWhiteSpace(filter))
+        if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
         {
             builder.Filter(
                 sql: ref sql, 
                 column: $"t0.{TagColumns.Name}", 
-                filter: filter,
+                filter: query.RawSearch.Value!,
                 parameters: parameters, 
-                filterExact: filterExact, 
-                filterSimilitude: filterSimilitude
+                filterExact: query!.Search?.Exact ?? false, 
+                filterSimilitude: query!.Search?.Similarity ?? 0.4
             );
         }
         
@@ -96,7 +102,7 @@ internal sealed class TagRepository(
         }
         else
         {
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(query?.RawSearch?.Value))
             {
                 sql += $" ORDER BY similarity(t0.{TagColumns.Name}, @filter) DESC";
             }
@@ -145,7 +151,8 @@ internal sealed class TagRepository(
             .ToList();
     }
 
-    public async Task<long> GetCountAsync()
+    public async Task<long> CountAsync(IFindQuery<InTag>? query = null,
+        IJoinSpecification<InTag>? joinSpec = null)
         => await connection.Count("tags");
 
     public async Task<long> SaveAsync(InTag entity)
@@ -157,23 +164,7 @@ internal sealed class TagRepository(
         
         try
         {
-            if (0 == entity.Id)
-            {
-                var result = await builder.ExecuteInsert(entity, conn, transaction);
-                if (result is long l)
-                {
-                    entity.Id = l;
-                }
-                else
-                {
-                    _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                }
-            }
-            else
-            {
-                await builder.ExecuteUpdate(entity, conn, transaction);
-            }
-            
+            await builder.ExecuteUpsert(entity, conn, transaction);
             await transaction.CommitAsync();
         } 
         catch (Exception ex)
@@ -198,23 +189,7 @@ internal sealed class TagRepository(
         {
             foreach (var entity in entities)
             {
-                if (0 == entity.Id)
-                {
-                    var result = await builder.ExecuteInsert(entity, conn, transaction);
-                    if (result is long l)
-                    {
-                        entity.Id = l;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("⚠️ Result from Insert is not long: {result}", result?.ToString());
-                    }
-                }
-                else
-                {
-                    await builder.ExecuteUpdate(entity, conn, transaction);
-                }
-                
+                await builder.ExecuteUpsert(entity, conn, transaction);
                 idList.Add(entity.Id);
             }
             

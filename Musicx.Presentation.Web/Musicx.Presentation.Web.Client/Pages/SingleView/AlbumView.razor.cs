@@ -28,12 +28,6 @@ public partial class AlbumView
     private OutAlbum? _previousAlbum, _nextAlbum;
 
     private MudTable<OutUserAlbumAttribute> _albumRatingsTable = null!;
-
-    private OutGenericList<OutUserAlbumAttribute> _albumUserAttribs = new()
-    {
-        Items = [],
-        Total = 0
-    };
     
     private InUserAlbumAttribute _userAttribute = new();
  
@@ -52,102 +46,54 @@ public partial class AlbumView
     private async Task LoadAlbum()
     {
         _logger.LogInformation("🔄️ Loading Album Data...");
-        
-        if (string.IsNullOrWhiteSpace(Id))
+
+        if (!TryGetAlbumId(out var albumId))
         {
-            _logger.LogError("❌ Album ID is null or empty.");
-            return;
-        }
-        
-        if (!long.TryParse(Id, out var albumId))
-        {
+            Snackbar.Add(T["Web.AlbumView.InvalidAlbumIdFormat"], Severity.Warning);
             _logger.LogError("❌ Invalid Album ID format: {Id}", Id);
             return;
         }
 
-        _album = await UcGet.ExecuteAsync(albumId, joins: new AlbumJoinSpecification
+        var dataView = await UcAlbumDataView.ExecuteAsync(albumId, UserClientContext.CurrentUser?.Id);
+
+        if (dataView is null)
         {
-            IncludeArtist = true,
-            IncludePrimaryGenres = true,
-            IncludeInfluenceGenres = true,
-            IncludeStats = true
-        });
-        
-        if (_album is null)
-        {
-            _logger.LogWarning("❌ No album found for ID: {Id}", Id);
+            _logger.LogWarning("❌ No album data view found for ID: {Id}", Id);
+            Snackbar.Add(T["Web.AlbumView.NoAlbumFound"], Severity.Warning);
             return;
         }
 
-        _userAttribute = new();
-        
-        _logger.LogInformation($"✅ Album loaded: {_album.Name} ({_album.Id})");
-        await InvokeAsync(StateHasChanged);
-
-        _albumSongs = await UcFindSongs.ExecuteAsync(_album.Id, order: new SongOrderSpecification
+        _album = dataView.Album;
+        _albumSongs = dataView.Songs.ToList();
+        _previousAlbum = dataView.PreviousAlbum;
+        _nextAlbum = dataView.NextAlbum;
+        _userAttribute = dataView.CurrentUserAttribute?.ToRaw() ?? new InUserAlbumAttribute
         {
-            TrackNumber = 1,
-            Title = 2
-        });
-        _logger.LogInformation($"✅ Album Songs loaded: {_albumSongs.Count}");
+            AlbumId = albumId,
+            UserId = UserClientContext.CurrentUser?.Id ?? 0
+        };
+
+        _logger.LogInformation("✅ Album loaded from DataView: {Name} ({Id})", _album.Name, _album.Id);
         await InvokeAsync(StateHasChanged);
+    }
 
-        _previousAlbum = null;
-        _nextAlbum = null;
+    private bool TryGetAlbumId(out long albumId)
+    {
+        albumId = 0;
 
-        if (_album.Artist is not null)
+        if (string.IsNullOrWhiteSpace(Id))
         {
-            var response = await UcGetArtistAlbums.ExecuteAsync(_album.Artist.Id, order: new AlbumOrderSpecification
-            {
-                OriginalReleaseDate = 1,
-                Name = 2
-            });
-            var artistAlbums = response.Items;
-
-            var currentIndex = artistAlbums.FindIndex(a => a.Id == _album.Id);
-
-            if (currentIndex != -1)
-            {
-                if (currentIndex > 0)
-                {
-                    _previousAlbum = artistAlbums[currentIndex - 1];
-                }
-
-                if (currentIndex < artistAlbums.Count - 1)
-                {
-                    _nextAlbum = artistAlbums[currentIndex + 1];
-                }
-            }
-            
-            _logger.LogInformation("✅ Previous and Next albums loaded.");
-            await InvokeAsync(StateHasChanged);
+            _logger.LogError("❌ Album ID is null or empty.");
+            return false;
         }
 
-        // If a user is connected, we need to give a user_attribute object to the view
-        if (UserClientContext.CurrentUser is not null)
+        if (!long.TryParse(Id, out albumId))
         {
-            var existingAttr = await UcFindUserServiceAlbumAttr.ExecuteAsync(
-                UserClientContext.CurrentUser.Id,
-                _album.Id);
-
-            // If it exists, we give that to the view object.
-            if (existingAttr is not null)
-            {
-                _userAttribute = existingAttr.ToRaw();
-                _logger.LogInformation("ℹ️ User rating found.");
-            }
-            // If not, we just update the album and user ID to the already initialized object.
-            else
-            {
-                _userAttribute.AlbumId = albumId;
-                _userAttribute.UserId = UserClientContext.CurrentUser.Id;
-                _logger.LogInformation("ℹ️ No user rating.");
-            }
+            _logger.LogError("❌ Invalid Album ID format: {Id}", Id);
+            return false;
         }
-        
-        await InvokeAsync(StateHasChanged);
-        
-        await _albumRatingsTable.ReloadServerData();
+
+        return true;
     }
 
     private async Task<TableData<OutUserAlbumAttribute>> LoadUserAttrData(TableState state, CancellationToken token)
@@ -183,9 +129,10 @@ public partial class AlbumView
 
     private async Task EditTrackListShowModal()
     {
-        if (null == _album)
+        if (_album is null)
         {
             _logger.LogError("❌ Cannot edit tracklist: album is null.");
+            Snackbar.Add(T["Web.AlbumView.CannotEditTracklistAlbumNull"], Severity.Warning);
             return;
         }
 
@@ -202,29 +149,17 @@ public partial class AlbumView
 
     private async Task EditAlbumShowModal()
     {
-        if (null == _album)
+        if (_album?.Artist is null)
         {
-            _logger.LogError("❌ Cannot edit album: album is null.");
-            return;
-        }
-        
-        if (null == _album.Artist)
-        {
-            _logger.LogError("⚠️ Cannot edit album: artist is null.");
+            _logger.LogError("⚠️ Cannot edit album: album/artist is null.");
+            Snackbar.Add(T["Web.AlbumView.CannotEditAlbumNull"], Severity.Warning);
             return;
         }
         
         await _albumEditModal.Show(_album.Artist, _album);
     }
 
-    private async Task OnQuitModal()
-    {
-        await LoadAlbum();
-    }
-    
-    /**
-     * Persistence
-     */
+    private async Task OnQuitModal() => await LoadAlbum();
     
     private async Task ChangeDateDiscovery(DateTime? dateValue)
     {
@@ -232,6 +167,7 @@ public partial class AlbumView
             || !UserClientContext.Can("album.attr"))
         {
             _logger.LogInformation("❌ Could not change date of album.");
+            Snackbar.Add(T["Web.AlbumView.NotAllowedChangeDate"], Severity.Warning);
             return;
         }
         
@@ -244,6 +180,7 @@ public partial class AlbumView
         if (_album is null)
         {
             _logger.LogError("❌ Cannot open vote genre modal: album is null.");
+            Snackbar.Add(T["Web.AlbumView.CannotOpenVoteAlbumNull"], Severity.Warning);
             return;
         }
         
@@ -256,6 +193,7 @@ public partial class AlbumView
             || !UserClientContext.Can("album.rate"))
         {
             _logger.LogInformation("❌ Could not rate album.");
+            Snackbar.Add(T["Web.AlbumView.CannotRateAlbumNull"], Severity.Warning);
             return;
         }
         
@@ -272,21 +210,9 @@ public partial class AlbumView
         }
         
         await UcSaveUserAttrib.ExecuteAsync(_userAttribute);
-        
-        // Refresh only album for new rating
-        _album = await UcGet.ExecuteAsync(_album.Id, joins: new AlbumJoinSpecification
-        {
-            IncludeArtist = true,
-            IncludePrimaryGenres = true,
-            IncludeInfluenceGenres = true,
-            IncludeStats = true
-        });
-        await InvokeAsync(StateHasChanged);
-        
-        _albumUserAttribs = await UcFindAlbumAttrs.ExecuteAsync(_album!.Id);
-        _logger.LogInformation("✅ User attributes loaded.");
         await _albumRatingsTable.ReloadServerData();
-        
-        _logger.LogInformation("✅ Successfully saved user attributes.");
+
+        Snackbar.Add(T["Web.AlbumView.RatingSaved"], Severity.Success);
+        await LoadAlbum();
     }
 }
