@@ -196,6 +196,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(SqlBuilder<InUser>), typeof(UserSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InUserArtistAttribute>), typeof(UserArtistAttrSqlBuilder));
         services.AddScoped(typeof(SqlBuilder<InUserAlbumAttribute>), typeof(UserAlbumAttrSqlBuilder));
+        services.AddScoped(typeof(SqlBuilder<InUserSongAttribute>), typeof(UserSongAttrSqlBuilder));
 
         // Repositories
         services.AddScoped<ISongRepository, SongRepository>();
@@ -211,6 +212,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserArtistAttrsRepository, UserArtistAttrRepository>();
         services.AddScoped<IUserAlbumAttrsRepository, UserAlbumAttrRepository>();
+        services.AddScoped<IUserSongAttrsRepository, UserSongAttrRepository>();
         
         // Data Views / Cache abstractions
         services.AddScoped<IDataViewCacheProvider, NoOpDataViewCacheProvider>();

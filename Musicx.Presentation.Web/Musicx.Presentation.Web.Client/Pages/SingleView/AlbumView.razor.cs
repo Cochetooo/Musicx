@@ -5,6 +5,7 @@ using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Albums;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Infrastructure.API.Persistence.Specifications.Song;
@@ -16,6 +17,11 @@ namespace Musicx.Presentation.Web.Client.Pages.SingleView;
 
 public partial class AlbumView
 {
+    private sealed record RatingFactor(
+        string Label,
+        Func<InUserAlbumAttribute, short?> Getter,
+        Action<InUserAlbumAttribute, short?> Setter);
+    
     [Parameter] public string? Id { get; set; }
 
     private ILogger _logger = null!;
@@ -23,6 +29,7 @@ public partial class AlbumView
     private AlbumEditModal _albumEditModal = null!;
     private AlbumTrackListEditModal _trackListEditModal = null!;
     private AlbumGenreVoteModal _genreVoteModal = null!;
+    private AlbumSongGenreVoteModal _songGenreVoteModal = null!;
 
     private OutAlbum? _album;
     private List<OutSong> _albumSongs = [];
@@ -31,6 +38,20 @@ public partial class AlbumView
     private MudTable<OutUserAlbumAttribute> _albumRatingsTable = null!;
     
     private InUserAlbumAttribute _userAttribute = new();
+    private IReadOnlyList<OutUserSongAttribute> _userSongAttributes = [];
+    private bool _autoComputeAlbumRating;
+    private bool _hasAnyAlbumFactor;
+    private Dictionary<string, short> _albumFactorAverages = [];
+
+    private readonly List<RatingFactor> _albumFactors =
+    [
+        new("Production", x => x.ProductionRating, (x, v) => x.ProductionRating = v),
+        new("Lyrics", x => x.LyricsRating, (x, v) => x.LyricsRating = v),
+        new("Instrumentation", x => x.InstrumentationRating, (x, v) => x.InstrumentationRating = v),
+        new("Vocals", x => x.VocalsRating, (x, v) => x.VocalsRating = v),
+        new("Atmosphere", x => x.AtmosphereRating, (x, v) => x.AtmosphereRating = v),
+        new("Originality", x => x.OriginalityRating, (x, v) => x.OriginalityRating = v)
+    ];
  
     private bool _isArtworkRevealed;
     private bool _showDetailedView;
@@ -39,6 +60,7 @@ public partial class AlbumView
     {
         _logger = LoggerProvider.CreateLogger(nameof(AlbumView));
         _showDetailedView = !UserClientContext.CurrentUser?.PrefSimpleGenre ?? false;
+        _autoComputeAlbumRating = UserClientContext.CurrentUser?.PrefAutoComputeAdvancedRatings ?? false;
     }
     
     protected override async Task OnParametersSetAsync()
@@ -79,6 +101,8 @@ public partial class AlbumView
             AlbumId = albumId,
             UserId = UserClientContext.CurrentUser?.Id ?? 0
         };
+        _userSongAttributes = dataView.CurrentUserSongAttributes;
+        RefreshAlbumFactorView(dataView.Ratings?.Items ?? []);
 
         _logger.LogInformation("✅ Album loaded from DataView: {Name} ({Id})", _album.Name, _album.Id);
         await InvokeAsync(StateHasChanged);
@@ -193,6 +217,16 @@ public partial class AlbumView
         
         await _genreVoteModal.Show(_album);
     }
+    
+    private async Task OpenSongVoteModal()
+    {
+        if (_album is null)
+        {
+            return;
+        }
+
+        await _songGenreVoteModal.Show(_albumSongs, _userSongAttributes);
+    }
 
     private async Task Rate(int? ratingValue)
     {
@@ -206,6 +240,81 @@ public partial class AlbumView
         
         _userAttribute.Rating = (short?)ratingValue;
         await SaveUserAttr();
+    }
+    
+    private async Task OnAlbumFactorChanged(RatingFactor factor, short? value)
+    {
+        factor.Setter(_userAttribute, value);
+        _hasAnyAlbumFactor = GetAlbumFactorValues().Count > 0;
+
+        if (_autoComputeAlbumRating && HasAllAlbumFactors())
+        {
+            await ComputeAlbumRatingFromFactors();
+            return;
+        }
+
+        await SaveUserAttr();
+    }
+
+    private async Task OnAutoComputeAlbumRatingChanged(bool value)
+    {
+        _autoComputeAlbumRating = value;
+        if (_autoComputeAlbumRating && HasAllAlbumFactors())
+        {
+            await ComputeAlbumRatingFromFactors();
+            return;
+        }
+
+        await SaveUserAttr();
+    }
+
+    private async Task ComputeAlbumRatingFromFactors()
+    {
+        var values = GetAlbumFactorValues();
+        if (values.Count == 0)
+        {
+            return;
+        }
+
+        _userAttribute.Rating = (short)Math.Round(values.Select(v => (int)v).Average());
+        await SaveUserAttr();
+    }
+
+    private List<short> GetAlbumFactorValues()
+        => _albumFactors
+            .Select(x => x.Getter(_userAttribute))
+            .Where(v => v.HasValue)
+            .Select(v => v!.Value)
+            .ToList();
+
+    private bool HasAllAlbumFactors()
+        => _albumFactors.All(x => x.Getter(_userAttribute).HasValue);
+
+    private void RefreshAlbumFactorView(IReadOnlyCollection<OutUserAlbumAttribute> ratings)
+    {
+        _hasAnyAlbumFactor = GetAlbumFactorValues().Count > 0;
+        _albumFactorAverages = new Dictionary<string, short>();
+
+        var lookups = new Dictionary<string, IEnumerable<short?>>()
+        {
+            ["Production"] = ratings.Select(x => x.ProductionRating),
+            ["Lyrics"] = ratings.Select(x => x.LyricsRating),
+            ["Instrumentation"] = ratings.Select(x => x.InstrumentationRating),
+            ["Vocals"] = ratings.Select(x => x.VocalsRating),
+            ["Atmosphere"] = ratings.Select(x => x.AtmosphereRating),
+            ["Originality"] = ratings.Select(x => x.OriginalityRating)
+        };
+
+        foreach (var (name, values) in lookups)
+        {
+            var rated = values.Where(v => v.HasValue).Select(v => v!.Value).ToList();
+            if (rated.Count == 0)
+            {
+                continue;
+            }
+
+            _albumFactorAverages[name] = (short)Math.Round(rated.Select(v => (int)v).Average());
+        }
     }
 
     private async Task SaveUserAttr()

@@ -101,6 +101,9 @@
                 <MudSwitch @bind-Value="_user.PrefAutoFollow" Color="Color.Warning"
                            Label="Auto-follow artists with a good rating"
                            ThumbIcon="@Icons.Material.Filled.AutoAwesome"/>
+                <MudSwitch @bind-Value="_user.PrefAutoComputeAdvancedRatings" Color="Color.Success"
+                           Label="Auto-compute advanced ratings"
+                           ThumbIcon="@Icons.Material.Filled.AutoFixHigh"/>
             </MudStack>
             <MudText Typo="Typo.caption" Class="color-secondary">
                 When enabled, rating an album above @(RatingHelper.GetRatingFormatted(7000m, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)) automatically follows its artist.

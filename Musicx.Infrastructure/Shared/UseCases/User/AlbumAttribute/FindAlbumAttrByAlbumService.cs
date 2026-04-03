@@ -7,6 +7,7 @@ using Musicx.Application.Shared.Interfaces.UseCases.User.AlbumAttribute;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.Web.Helpers;
 
 namespace Musicx.Infrastructure.Shared.UseCases.User.AlbumAttribute;

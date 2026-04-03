@@ -7,6 +7,7 @@ using Musicx.Contracts.Dto.Requests.Specifics;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Application.Shared.Interfaces.Common;
 
@@ -60,6 +61,8 @@ public interface IApiClient
 
     Task<List<OutSong>> FindSongsByAlbumAsync(long albumId, IJoinSpecification<InSong>? joins = null, OrderSpecification<InSong>? order = null);
 
+    Task<OutUserSongAttribute?> FindSongAttributeByUserAsync(long userId, long songId);
+    
     Task<OutGenericList<OutArtist>> FindArtistsByGenreAsync(long genreId, PagingOptions? pagingOptions = null);
     
     #endregion

@@ -8,6 +8,7 @@ public sealed class InUser : BaseInputModel
     public string Email { get; set; } = string.Empty;
     public bool EmailConfirmed { get; set; }
     public string Name { get; set; } = string.Empty;
+    public bool PrefAutoComputeAdvancedRatings { get; set; }
     public bool PrefAutoFollow { get; set; } = true;
     public bool PrefBannerBlur { get; set; } = true;
     public bool PrefDarkMode { get; set; } = true;

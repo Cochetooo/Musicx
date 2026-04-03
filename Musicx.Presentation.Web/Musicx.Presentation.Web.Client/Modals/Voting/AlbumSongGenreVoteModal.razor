@@ -1,0 +1,120 @@
+﻿@using Musicx.Application.Shared.Interfaces.Common
+@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Contracts.Dto.Requests.Genre
+@using Musicx.Contracts.Dto.Requests.Song
+@using Musicx.Contracts.Dto.Requests.User
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Dto.Responses.Genre
+@using Musicx.Presentation.Web.Client.Components.Base
+@using Musicx.Presentation.Web.Client.Components.Ratings
+
+@inject IApiClient Api
+@inject IUserClientContext UserClientContext
+@inject ISnackbar Snackbar
+
+<MudDialog @ref="_modalRef" Class="pa-2" Style="min-width:min(1200px,95vw)">
+    <TitleContent>
+        <PanelTitle Text="Songs · Genre Votes & Ratings" />
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="2">
+            <MudSwitch Value="@_autoCompute"
+                       ValueChanged="OnAutoComputeChanged"
+                       T="bool"
+                       Color="Color.Success"
+                       Label="Auto-compute final rating when all factors are filled" />
+
+            @foreach (var row in _songRows.OrderBy(x => x.Song.DiscNumber).ThenBy(x => x.Song.TrackNumber))
+            {
+                <MudPaper Class="pa-3" Outlined>
+                    <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.subtitle1" Class="text-bold">@GetSongTitle(row.Song)</MudText>
+                        <EditableRatingBadge Editable
+                                            Size="Size.Small"
+                                            RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                            Value="@row.Attribute.Rating"
+                                            ValueChanged="@(value => OnSongRatingChanged(row, value))" />
+                    </MudStack>
+
+                    <MudGrid Class="mt-1">
+                        <MudItem xs="12" md="6">
+                            <MudText Typo="Typo.caption" Class="color-secondary">Primary genres</MudText>
+                            <MudAutocomplete T="OutGenre?"
+                                             Dense
+                                             Placeholder="Add a primary genre"
+                                             ToStringFunc="@(g => g?.CanonicalName ?? string.Empty)"
+                                             SearchFunc="SearchGenres"
+                                             Value="@row.SelectedPrimaryGenre"
+                                             ValueChanged="@(g => row.SelectedPrimaryGenre = g)" />
+                            <MudStack Row Wrap="Wrap.Wrap" Class="mt-1" Spacing="1">
+                                @foreach (var genre in row.PrimaryGenres)
+                                {
+                                    <MudChip OnClose="@(() => row.PrimaryGenres.Remove(genre))" T="string"
+                                             Color="Color.Primary" Variant="Variant.Outlined">
+                                        @GenreName(genre)
+                                    </MudChip>
+                                }
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => AddPrimaryGenre(row))" Disabled="@(row.SelectedPrimaryGenre is null)" />
+                            </MudStack>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudText Typo="Typo.caption" Class="color-secondary">Influence genres</MudText>
+                            <MudAutocomplete T="OutGenre?"
+                                             Dense
+                                             Placeholder="Add an influence"
+                                             ToStringFunc="@(g => g?.CanonicalName ?? string.Empty)"
+                                             SearchFunc="SearchGenres"
+                                             Value="@row.SelectedInfluenceGenre"
+                                             ValueChanged="@(g => row.SelectedInfluenceGenre = g)" />
+                            <MudStack Row Wrap="Wrap.Wrap" Class="mt-1" Spacing="1">
+                                @foreach (var genre in row.InfluenceGenres)
+                                {
+                                    <MudChip OnClose="@(() => row.InfluenceGenres.Remove(genre))" T="string" 
+                                             Color="Color.Secondary" Variant="Variant.Outlined">
+                                        @GenreName(genre)
+                                    </MudChip>
+                                }
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => AddInfluenceGenre(row))" Disabled="@(row.SelectedInfluenceGenre is null)" />
+                            </MudStack>
+                        </MudItem>
+                    </MudGrid>
+
+                    <MudExpansionPanels>
+                        <MudExpansionPanel Text="Advanced factors">
+                            <MudGrid>
+                                @foreach (var factor in _factors)
+                                {
+                                    <MudItem xs="12" sm="6" md="4">
+                                        <MudNumericField T="short?"
+                                                         Label="@factor.Label"
+                                                         Min="0"
+                                                         Max="10000"
+                                                         Step="100"
+                                                         Value="@factor.Getter(row.Attribute)"
+                                                         ValueChanged="@(v => OnFactorChanged(row, factor, v))"
+                                                         Immediate="true"
+                                                         Clearable />
+                                    </MudItem>
+                                }
+                            </MudGrid>
+
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Disabled="@(!CanCompute(row.Attribute))"
+                                       OnClick="@(() => ComputeFinal(row))">
+                                Calculate final rating
+                            </MudButton>
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
+                </MudPaper>
+            }
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Save">Save</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="Hide">Close</MudButton>
+    </DialogActions>
+</MudDialog>

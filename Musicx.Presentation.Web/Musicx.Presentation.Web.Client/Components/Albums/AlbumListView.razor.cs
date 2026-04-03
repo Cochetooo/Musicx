@@ -2,6 +2,7 @@
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Presentation.Web.Client.Components.Albums;

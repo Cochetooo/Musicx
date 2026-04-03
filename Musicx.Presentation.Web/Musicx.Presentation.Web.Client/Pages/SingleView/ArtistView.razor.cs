@@ -4,6 +4,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Contracts.Enums;
 using Musicx.Presentation.Web.Client.Modals.Admin.Albums;
 using Musicx.Presentation.Web.Client.Modals.Admin.Artists;

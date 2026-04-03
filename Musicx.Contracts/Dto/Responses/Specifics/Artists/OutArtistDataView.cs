@@ -1,5 +1,6 @@
 ﻿using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Contracts.Enums;
 
 namespace Musicx.Contracts.Dto.Responses.Specifics.Artists;

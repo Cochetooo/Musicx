@@ -8,6 +8,7 @@ using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
 using Musicx.Presentation.Web.Contexts;
 
@@ -300,6 +301,12 @@ public sealed class UserAlbumAttrController(
         try
         {
             if (userAlbumAttrDto.Rating == null
+                && userAlbumAttrDto.ProductionRating == null
+                && userAlbumAttrDto.LyricsRating == null
+                && userAlbumAttrDto.InstrumentationRating == null
+                && userAlbumAttrDto.VocalsRating == null
+                && userAlbumAttrDto.AtmosphereRating == null
+                && userAlbumAttrDto.OriginalityRating == null
                 && userAlbumAttrDto.DiscoveryDate == null
                 && userAlbumAttrDto.Review == null)
             {

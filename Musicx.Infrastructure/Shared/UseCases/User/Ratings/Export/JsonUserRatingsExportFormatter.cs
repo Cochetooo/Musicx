@@ -3,6 +3,7 @@ using System.Text.Json;
 using Musicx.Application.Shared.Interfaces.UseCases.User.Ratings;
 using Musicx.Application.Shared.Models.User.Ratings;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Infrastructure.Shared.UseCases.User.Ratings.Export;
 

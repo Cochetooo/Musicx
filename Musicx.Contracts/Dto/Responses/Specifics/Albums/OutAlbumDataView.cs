@@ -1,4 +1,5 @@
 ﻿using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Contracts.Dto.Responses.Specifics.Albums;
 
@@ -22,6 +23,9 @@ public sealed class OutAlbumDataView
 
     /// <summary>Current user attribute for this album, when available.</summary>
     public OutUserAlbumAttribute? CurrentUserAttribute { get; set; }
+    
+    /// <summary>Current user song attributes for this album tracks, when available.</summary>
+    public IReadOnlyList<OutUserSongAttribute> CurrentUserSongAttributes { get; set; } = [];
 
     /// <summary>Global ratings summary list (paged/limited by builder).</summary>
     public OutGenericList<OutUserAlbumAttribute> Ratings { get; set; } = new();

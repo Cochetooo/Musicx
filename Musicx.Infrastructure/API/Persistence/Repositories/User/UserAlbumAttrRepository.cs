@@ -8,6 +8,7 @@ using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
 using Musicx.Infrastructure.API.Persistence.Columns.Genre;

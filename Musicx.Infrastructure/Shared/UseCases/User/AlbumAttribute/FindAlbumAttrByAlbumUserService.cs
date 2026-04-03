@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Application.Shared.Interfaces.UseCases.User.AlbumAttribute;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Infrastructure.Shared.UseCases.User.AlbumAttribute;
 

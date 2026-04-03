@@ -3,6 +3,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests.User;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Columns.User;
 
@@ -20,6 +21,12 @@ public static class UserSongAttrMapper
         UpdatedAt = userSongAttr.SafeGet<DateTime>(UserSongAttrColumns.UpdatedAt),
         
         Rating = userSongAttr.SafeGet<short?>(UserSongAttrColumns.Rating),
+        ProductionRating = userSongAttr.SafeGet<short?>(UserSongAttrColumns.ProductionRating),
+        LyricsRating = userSongAttr.SafeGet<short?>(UserSongAttrColumns.LyricsRating),
+        InstrumentationRating = userSongAttr.SafeGet<short?>(UserSongAttrColumns.InstrumentationRating),
+        VocalsRating = userSongAttr.SafeGet<short?>(UserSongAttrColumns.VocalsRating),
+        AtmosphereRating = userSongAttr.SafeGet<short?>(UserSongAttrColumns.AtmosphereRating),
+        OriginalityRating = userSongAttr.SafeGet<short?>(UserSongAttrColumns.OriginalityRating),
     };
 
     public static InUserSongAttribute ToRaw(this OutUserSongAttribute userSongAttr) => new()
@@ -28,5 +35,11 @@ public static class UserSongAttrMapper
         SongId = userSongAttr.Song.Id,
         
         Rating = userSongAttr.Rating,
+        ProductionRating = userSongAttr.ProductionRating,
+        LyricsRating = userSongAttr.LyricsRating,
+        InstrumentationRating = userSongAttr.InstrumentationRating,
+        VocalsRating = userSongAttr.VocalsRating,
+        AtmosphereRating = userSongAttr.AtmosphereRating,
+        OriginalityRating = userSongAttr.OriginalityRating,
     };
 }

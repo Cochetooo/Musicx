@@ -14,6 +14,7 @@ using Musicx.Contracts.Dto.Requests.Specifics;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.Web.Helpers;
 
 namespace Musicx.Infrastructure.Shared.Clients;
@@ -174,6 +175,23 @@ public sealed class ApiClient(HttpClient httpClient, ILoggerFactory loggerFactor
         var endpoint = $"/api/songs/by-album/{albumId}?{QueryStringHelper.SetUseCaseParameters(joins, order)}";
         var response = await httpClient.GetStringAsync(endpoint);
         return JsonSerializer.Deserialize<List<OutSong>>(response, JsonHelper.OptionsDefault) ?? [];
+    }
+    
+    public async Task<OutUserSongAttribute?> FindSongAttributeByUserAsync(long userId, long songId)
+    {
+        var endpoint = $"/api/user-song-attrs/by-user/{userId}/{songId}";
+        _logger.LogInformation("🌍🏳️ GET {Endpoint}", endpoint);
+
+        try
+        {
+            var response = await httpClient.GetStringAsync(endpoint);
+            return JsonSerializer.Deserialize<OutUserSongAttribute>(response, JsonHelper.OptionsDefault);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "🌍⚠️ GET {Endpoint} failed", endpoint);
+            return null;
+        }
     }
 
     public async Task<OutGenericList<OutArtist>> FindArtistsByGenreAsync(long genreId, PagingOptions? pagingOptions = null)

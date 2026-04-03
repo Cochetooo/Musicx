@@ -8,6 +8,7 @@ using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Albums;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Infrastructure.API.Persistence.Specifications.Song;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
@@ -22,6 +23,7 @@ public sealed class AlbumDataViewBuilder(
     IAlbumRepository albumRepository,
     ISongRepository songRepository,
     IUserAlbumAttrsRepository userAlbumAttrsRepository,
+    IUserSongAttrsRepository userSongAttrsRepository,
     IDataViewCacheProvider cache,
     IDataViewCacheKeyFactory cacheKeyFactory) : IAlbumDataViewBuilder
 {
@@ -70,12 +72,15 @@ public sealed class AlbumDataViewBuilder(
             pagingOptions: new PagingOptions(100, 0));
 
         Task<OutUserAlbumAttribute?> currentUserAttrTask = Task.FromResult<OutUserAlbumAttribute?>(null);
+        Task<IReadOnlyList<OutUserSongAttribute>> currentUserSongAttrsTask = Task.FromResult<IReadOnlyList<OutUserSongAttribute>>([]);
+        
         if (query.UserId.HasValue)
         {
             currentUserAttrTask = userAlbumAttrsRepository.FindOneAlbumFromUserAsync(query.UserId.Value, album.Id);
+            currentUserSongAttrsTask = userSongAttrsRepository.FindByAlbumUserAsync(query.UserId.Value, album.Id);
         }
 
-        await Task.WhenAll(songsTask, artistAlbumsTask, ratingsTask, currentUserAttrTask);
+        await Task.WhenAll(songsTask, artistAlbumsTask, ratingsTask, currentUserAttrTask, currentUserSongAttrsTask);
 
         OutAlbum? previousAlbum = null;
         OutAlbum? nextAlbum = null;
@@ -95,6 +100,7 @@ public sealed class AlbumDataViewBuilder(
             PreviousAlbum = previousAlbum,
             NextAlbum = nextAlbum,
             CurrentUserAttribute = await currentUserAttrTask,
+            CurrentUserSongAttributes = await currentUserSongAttrsTask,
             Ratings = await ratingsTask
         };
 

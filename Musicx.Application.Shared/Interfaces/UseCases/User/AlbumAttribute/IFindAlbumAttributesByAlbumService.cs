@@ -3,6 +3,7 @@ using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Dto.Responses.User;
 
 namespace Musicx.Application.Shared.Interfaces.UseCases.User.AlbumAttribute;
 

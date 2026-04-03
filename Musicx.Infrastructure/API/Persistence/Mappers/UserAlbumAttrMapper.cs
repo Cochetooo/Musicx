@@ -3,6 +3,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Requests.User;
+using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Columns;
 using Musicx.Infrastructure.API.Persistence.Columns.User;
 
@@ -22,6 +23,12 @@ public static class UserAlbumAttrMapper
         CollectionType = userAlbumAttr.SafeGet<CollectionType?>(UserAlbumAttrColumns.CollectionType),
         DiscoveryDate = userAlbumAttr.SafeGet<DateTime?>(UserAlbumAttrColumns.DiscoveryDate),
         Rating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.Rating),
+        ProductionRating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.ProductionRating),
+        LyricsRating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.LyricsRating),
+        InstrumentationRating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.InstrumentationRating),
+        VocalsRating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.VocalsRating),
+        AtmosphereRating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.AtmosphereRating),
+        OriginalityRating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.OriginalityRating),
         Review = userAlbumAttr.SafeGet<string?>(UserAlbumAttrColumns.Review)
     };
 
@@ -33,6 +40,12 @@ public static class UserAlbumAttrMapper
         CollectionType = userAlbumAttr.CollectionType,
         DiscoveryDate = userAlbumAttr.DiscoveryDate,
         Rating = userAlbumAttr.Rating,
+        ProductionRating = userAlbumAttr.ProductionRating,
+        LyricsRating = userAlbumAttr.LyricsRating,
+        InstrumentationRating = userAlbumAttr.InstrumentationRating,
+        VocalsRating = userAlbumAttr.VocalsRating,
+        AtmosphereRating = userAlbumAttr.AtmosphereRating,
+        OriginalityRating = userAlbumAttr.OriginalityRating,
         Review = userAlbumAttr.Review
     };
 }
