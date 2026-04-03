@@ -4,6 +4,12 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
+using Musicx.Application.Shared.Models.Queries;
+using Musicx.Contracts.Dto.Requests.Album;
+using Musicx.Contracts.Dto.Requests.Artist;
+using Musicx.Contracts.Dto.Requests.Genre;
+using Musicx.Contracts.Dto.Requests.Song;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.User;
@@ -125,42 +131,37 @@ public partial class SearchOverlay : IAsyncDisposable
 
             var pagingOptions = new PagingOptions(_maxResults, 0);
             
-            _artistResults = (await UcListArtists.ExecuteAsync(
+            _artistResults = (await Api.FindAsync<InArtist, OutArtist>(
                 pagingOptions: pagingOptions,
-                filter: _value,
-                filterExact: _exactSearch
+                query: FindQuery<InArtist>.Create(filter: _value, exact: _exactSearch)
             )).Items;
 
-            _albumResults = (await UcListAlbums.ExecuteAsync(
+            _albumResults = (await Api.FindAsync<InAlbum, OutAlbum>(
                 pagingOptions: pagingOptions,
-                filter: _value,
-                filterExact: _exactSearch,
+                query: FindQuery<InAlbum>.Create(filter: _value, exact: _exactSearch),
                 joins: new AlbumJoinSpecification
                 {
                     IncludeArtist = true
                 }
             )).Items;
 
-            _genreResults = (await UcListGenres.ExecuteAsync(
+            _genreResults = (await Api.FindAsync<InGenre, OutGenre>(
                 pagingOptions: pagingOptions,
-                filter: _value,
-                filterExact: _exactSearch
+                query: FindQuery<InGenre>.Create(filter: _value, exact: _exactSearch)
             )).Items;
 
-            _songResults = (await UcListSongs.ExecuteAsync(
+            _songResults = (await Api.FindAsync<InSong, OutSong>(
                 pagingOptions: pagingOptions,
-                filter: _value,
-                filterExact: _exactSearch,
+                query: FindQuery<InSong>.Create(filter: _value, exact: _exactSearch),
                 joins: new SongJoinSpecification
                 {
                     IncludeAlbum = true
                 }
             )).Items;
 
-            _userResults = (await UcListUsers.ExecuteAsync(
+            _userResults = (await Api.FindAsync<InUser, OutUser>(
                 pagingOptions: pagingOptions,
-                filter: _value,
-                filterExact: _exactSearch
+                query: FindQuery<InUser>.Create(filter: _value, exact: _exactSearch)
             )).Items;
 
             if (_groupResults)

@@ -3,6 +3,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Album;
+using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Genres;
@@ -81,7 +82,7 @@ public partial class AlbumGenreVoteModal
         _logger = LoggerFactory.CreateLogger(nameof(AlbumGenreVoteModal));
         
         _availableGenres = 
-            (await UcListGenres.ExecuteAsync(pagingOptions: new PagingOptions(100_000, 0)))
+            (await Api.FindAsync<InGenre, OutGenre>(pagingOptions: new PagingOptions(100_000, 0)))
             .Items;
         
         foreach (var section in _sections)
@@ -321,8 +322,8 @@ public partial class AlbumGenreVoteModal
             })
             .ToList();
 
-        await UcVoteAlbumGenre.ExecuteAsync(primaryVotes);
-        await UcVoteAlbumInfluence.ExecuteAsync(influenceVotes);
+        await Api.SaveAllAsync(primaryVotes);
+        await Api.SaveAllAsync(influenceVotes);
 
         Snackbar.Add("Votes has been saved.", Severity.Success);
 

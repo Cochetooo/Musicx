@@ -128,7 +128,7 @@ public partial class MainLayout
         }
         
         var rawUser = UserClientContext.CurrentUser.ToRaw();
-        await UcSaveUser.ExecuteAsync(rawUser);
+        await Api.SaveAsync(rawUser);
     }
 
     private async Task ChangeRatingMode(RatingMode mode)

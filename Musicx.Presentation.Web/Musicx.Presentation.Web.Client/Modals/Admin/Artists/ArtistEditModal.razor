@@ -1,3 +1,4 @@
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Requests.Artist
@@ -6,8 +7,7 @@
 @using Musicx.Contracts.Enums
 
 @inject ILoggerFactory LoggerProvider
-@inject ISaveService<InArtist> UcSave 
-@inject IFindAllService<InArtist, OutArtist> UcListExistingArtists
+@inject IApiClient Api
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 

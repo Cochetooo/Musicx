@@ -1,6 +1,7 @@
 ﻿@page "/User/Edit"
 @using System.Globalization
 @using Musicx.Application.Shared.Helpers
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Application.Shared.Interfaces.UseCases.Security
 @using Musicx.Application.Shared.Interfaces.UseCases.User.Avatar
@@ -10,7 +11,7 @@
 @using Musicx.Presentation.Web.Client.Components.Base
 
 @inject IUserClientContext UserClientContext
-@inject ISaveService<InUser> UcSave
+@inject IApiClient Api
 @inject IAuthUserSavePasswordService UcSavePassword
 @inject ISaveAvatarService UcSaveAvatar
 @inject ISnackbar Snackbar

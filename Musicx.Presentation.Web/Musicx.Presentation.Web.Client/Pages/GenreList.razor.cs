@@ -1,5 +1,6 @@
 using Microsoft.JSInterop;
 using Musicx.Application.Shared.Enums;
+using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
@@ -26,7 +27,7 @@ public partial class GenreList
 
     private async Task Load()
     {
-        _genres = (await UcList.ExecuteAsync(
+        _genres = (await Api.FindAsync<InGenre, OutGenre>(
             pagingOptions: new PagingOptions(Take: 100_000, Skip: 0),
             joins: new GenreJoinSpecification
             {

@@ -6,6 +6,7 @@ using Musicx.Application.Shared.Helpers;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
+using Musicx.Contracts.Dto.Responses.Specifics.Genres;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
@@ -78,7 +79,13 @@ public partial class GenreView : IAsyncDisposable
             return;
         }
 
-        var dataView = await UcGenreDataView.ExecuteAsync(genreId, UserClientContext.CurrentUser?.Id);
+        var dataView = await Api.GetDataViewAsync<OutGenreDataView>(
+            "genres", 
+            genreId, 
+            new Dictionary<string, object?> {
+                { "userId", UserClientContext.CurrentUser?.Id }
+            }
+        );
 
         if (dataView is null)
         {
@@ -115,7 +122,7 @@ public partial class GenreView : IAsyncDisposable
             };;
         }
         
-        var response = await UcAlbumByGenre.ExecuteAsync(
+        var response = await Api.FindAlbumsByGenreAsync(
             genreId: _genre.Id,
             genreOptions: GenreOptions.PrimaryGenre,
             pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),

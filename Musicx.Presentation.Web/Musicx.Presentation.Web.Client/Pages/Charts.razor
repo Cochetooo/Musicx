@@ -1,10 +1,10 @@
 ﻿@page "/Charts"
-
-@using Musicx.Application.Shared.Interfaces.UseCases.Album
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Presentation.Web.Client.Components.Albums
+@using ChartType = Musicx.Contracts.Enums.ChartType
 
-@inject IFindAlbumByChartService UcAlbumChart
+@inject IApiClient Api
 @inject IUserClientContext UserClientContext
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-6">
@@ -36,11 +36,11 @@
                 <MudGrid Spacing="3">
 
                     <MudItem xs="12" md="4">
-                        <MudSelect T="Contracts.Enums.ChartType"
+                        <MudSelect T="ChartType"
                                    Label="Chart Type"
                                    Variant="Variant.Outlined"
                                    @bind-Value="_query.ChartType">
-                            @foreach (var chartType in Enum.GetValues<Contracts.Enums.ChartType>())
+                            @foreach (var chartType in Enum.GetValues<ChartType>())
                             {
                                 <MudSelectItem Value="chartType">
                                     @chartType

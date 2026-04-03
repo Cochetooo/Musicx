@@ -1,5 +1,6 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.ResponseCompression;
 using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Infrastructure;
 using Musicx.Presentation.Web.Client;
@@ -19,6 +20,13 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.EnableForHttps = true;
+    opts.Providers.Add<BrotliCompressionProvider>();
+    opts.Providers.Add<GzipCompressionProvider>();
+});
 
 builder.Services.AddLocalization();
 
@@ -93,10 +101,19 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 
 app.UseMiddleware<AuthenticationMiddleware>();
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers["Cache-Control"] = "public,max-age=31536000,immutable";
+    }
+});
+
 app.MapStaticAssets();
 app.MapControllers();
 
 app.UseHttpsRedirection();
+app.UseResponseCompression();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

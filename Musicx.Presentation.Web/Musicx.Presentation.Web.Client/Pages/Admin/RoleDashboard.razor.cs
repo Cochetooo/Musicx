@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
+using Musicx.Contracts.Dto.Requests.Security;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.Security;
@@ -43,14 +44,14 @@ public partial class RoleDashboard
         _logger.LogInformation("🔄️ RoleDashboard : UPDATE Data");
         
         _roles = 
-            (await UcList.ExecuteAsync(joins: new RoleJoinSpecification
+            (await Api.FindAsync<InRole, OutRole>(joins: new RoleJoinSpecification
             {
                 IncludePermissions = true
             }, pagingOptions: new PagingOptions(Take: 10_000, Skip: 0)))
             .Items;
         
         _permissions = 
-            (await UcListPermissions.ExecuteAsync(pagingOptions: new PagingOptions(Take: 10_000, Skip: 0)))
+            (await Api.FindAsync<InPermission, OutPermission>(pagingOptions: new PagingOptions(Take: 10_000, Skip: 0)))
             .Items;
 
         await InvokeAsync(StateHasChanged);
@@ -65,7 +66,7 @@ public partial class RoleDashboard
             return;
         }
         
-        await UcSave.ExecuteAsync(_selectedRole.ToRaw());
+        await Api.SaveAsync(_selectedRole.ToRaw());
         
         _isModified = false;
         await InvokeAsync(StateHasChanged);

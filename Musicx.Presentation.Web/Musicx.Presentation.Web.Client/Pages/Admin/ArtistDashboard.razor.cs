@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Infrastructure.API.Persistence.Specifications.Artist;
@@ -48,7 +49,7 @@ public partial class ArtistDashboard
     {
         _logger.LogInformation("🔄️ ArtistDashboard : UPDATE Data");
 
-        _artists = (await UcList.ExecuteAsync(
+        _artists = (await Api.FindAsync<InArtist, OutArtist>(
             order: new ArtistOrderSpecification
             {
                 Name = 1
@@ -77,7 +78,7 @@ public partial class ArtistDashboard
     {
         foreach (var artist in _selectedArtists)
         {
-            await UcDelete.ExecuteAsync(artist.Id);
+            await Api.DeleteAsync<InArtist>(artist.Id);
         }
         
         await HideDeleteModal();

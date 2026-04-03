@@ -1,12 +1,8 @@
 @page "/Genre/{id}"
 @using System.Globalization
 @using Musicx.Application.Shared.Helpers
-@using Musicx.Application.Shared.Interfaces.UseCases.Album
-@using Musicx.Application.Shared.Interfaces.UseCases.Genre
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Web.Interfaces.Models.Auth
-@using Musicx.Contracts.Dto.Requests.Genre
-@using Musicx.Contracts.Dto.Responses
-@using Musicx.Contracts.Dto.Responses.Genre
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Albums
 @using Musicx.Presentation.Web.Client.Components.Base
@@ -16,8 +12,7 @@
 
 @inject ILoggerFactory LoggerProvider
 @inject IJSRuntime JsRuntime
-@inject IFindAlbumByGenreService UcAlbumByGenre
-@inject IFindGenreDataViewService UcGenreDataView
+@inject IApiClient Api
 @inject IUserClientContext UserClientContext
 
 @if (_genre is null)

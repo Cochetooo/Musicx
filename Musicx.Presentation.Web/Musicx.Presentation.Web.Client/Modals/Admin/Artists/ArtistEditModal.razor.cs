@@ -7,6 +7,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
+using Musicx.Application.Shared.Models.Queries;
 using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Responses;
@@ -94,7 +95,7 @@ public partial class ArtistEditModal
     private async Task Save()
     {
         _artist.ArtworkUrl = _selectedArtworkUrl ?? _artist.ArtworkUrl;
-        var response = await UcSave.ExecuteAsync(_artist);
+        var response = await Api.SaveAsync(_artist);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -115,7 +116,7 @@ public partial class ArtistEditModal
         if (!string.IsNullOrWhiteSpace(persistedArtworkUrl) && persistedArtworkUrl != _artist.ArtworkUrl)
         {
             _artist.ArtworkUrl = persistedArtworkUrl;
-            var artworkSaveResponse = await UcSave.ExecuteAsync(_artist);
+            var artworkSaveResponse = await Api.SaveAsync(_artist);
             if (!artworkSaveResponse.IsSuccessStatusCode)
             {
                 Snackbar.Add("Artist saved but artwork could not be persisted locally.", Severity.Warning);
@@ -207,22 +208,13 @@ public partial class ArtistEditModal
             return;
         }
 
-        var artists = await UcListExistingArtists.ExecuteAsync(
-            pagingOptions: new PagingOptions(Take: 3, Skip: 0),
-            filter: _artist.Name,
-            filterExact: true);
+        var artists = await Api.FindAsync<InArtist, OutArtist>(
+            query: FindQuery<InArtist>.Create(filter: _artist.Name, exact: true),
+            pagingOptions: new PagingOptions(Take: 3, Skip: 0)
+        );
 
         _existingArtists.AddRange(artists.Items);
     }
-
-    /* private async Task<IEnumerable<string>> SearchRegion(string value)
-    {
-        if (string.IsNullOrWhiteSpace(_artist.CurrentCountry)) return [];
-
-        var url = $"https://secure.geonames.org/searchJSON?country={_artist.CurrentCountry}&featureCode=ADM1&maxRows=10&username=TON_USER&q={value}";
-        var json = await _http.GetFromJsonAsync<GeoNamesResponse>(url);
-        return json?.geonames.Select(g => g.name) ?? [];
-    } */
     
     private async Task<IEnumerable<string>>? SearchCountry(string? value, CancellationToken token)
     {

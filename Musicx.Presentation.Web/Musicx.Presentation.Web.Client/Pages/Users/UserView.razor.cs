@@ -5,10 +5,12 @@ using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
 using Musicx.Application.Shared.Models.User.Ratings;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
+using Musicx.Contracts.Dto.Responses.Specifics.Users;
 using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Specifications.User;
@@ -84,7 +86,14 @@ public partial class UserView : IAsyncDisposable
             return;
         }
 
-        var dataView = await UcUserDataView.ExecuteAsync(userId, UserClientContext.CurrentUser?.Id);
+        var dataView = await Api.GetDataViewAsync<OutUserDataView>(
+            "users", 
+            userId, 
+            new Dictionary<string, object?> {
+                { "currentUserId", UserClientContext.CurrentUser?.Id }
+            }
+        );
+        
         if (dataView is null)
         {
             _logger.LogError("❌ User DataView has not been found.");
@@ -185,7 +194,7 @@ public partial class UserView : IAsyncDisposable
 
         if (result is not null && result.Value)
         {
-            await UcDeleteAllRatings.ExecuteAsync(_user.Id);
+            await Api.DeleteAsync<InUserAlbumAttribute>(_user.Id);
             Snackbar.Add(T["Web.Common.Success"], Severity.Success);
             await Load();
         }

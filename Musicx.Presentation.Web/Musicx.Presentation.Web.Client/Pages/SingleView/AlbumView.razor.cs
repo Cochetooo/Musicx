@@ -3,6 +3,7 @@ using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Albums;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
@@ -54,7 +55,13 @@ public partial class AlbumView
             return;
         }
 
-        var dataView = await UcAlbumDataView.ExecuteAsync(albumId, UserClientContext.CurrentUser?.Id);
+        var dataView = await Api.GetDataViewAsync<OutAlbumDataView>(
+            "albums", 
+            albumId, 
+            new Dictionary<string, object?> {
+                { "userId", UserClientContext.CurrentUser?.Id }
+            }
+        );
 
         if (dataView is null)
         {
@@ -209,7 +216,7 @@ public partial class AlbumView
             return;
         }
         
-        await UcSaveUserAttrib.ExecuteAsync(_userAttribute);
+        await Api.SaveAsync(_userAttribute);
         await _albumRatingsTable.ReloadServerData();
 
         Snackbar.Add(T["Web.AlbumView.RatingSaved"], Severity.Success);

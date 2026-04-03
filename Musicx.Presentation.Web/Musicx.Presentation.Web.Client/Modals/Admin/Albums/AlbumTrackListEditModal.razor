@@ -1,3 +1,4 @@
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Requests.Song
@@ -5,7 +6,7 @@
 @using Musicx.Presentation.Web.Client.Helpers
 
 @inject ILoggerFactory LoggerProvider
-@inject ISaveAllService<InSong> UcSaveAll
+@inject IApiClient Api
 
 <MudDialog @ref="_modalRef">
     <TitleContent>

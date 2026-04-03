@@ -82,7 +82,7 @@ public partial class AlbumEditModal
         
         _album.ArtworkUrl = _selectedArtworkUrl ?? _album.ArtworkUrl;
         
-        var response = await UcSave.ExecuteAsync(_album);
+        var response = await Api.SaveAsync(_album);
         
         if (!response.IsSuccessStatusCode)
         {
@@ -102,7 +102,7 @@ public partial class AlbumEditModal
         if (!string.IsNullOrWhiteSpace(persistedArtworkUrl) && persistedArtworkUrl != _album.ArtworkUrl)
         {
             _album.ArtworkUrl = persistedArtworkUrl;
-            var artworkSaveResponse = await UcSave.ExecuteAsync(_album);
+            var artworkSaveResponse = await Api.SaveAsync(_album);
             if (!artworkSaveResponse.IsSuccessStatusCode)
             {
                 Snackbar.Add("Album saved but artwork could not be persisted locally.", Severity.Warning);

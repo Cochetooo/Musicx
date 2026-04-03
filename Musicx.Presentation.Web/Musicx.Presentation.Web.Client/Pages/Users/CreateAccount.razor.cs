@@ -22,7 +22,7 @@ public partial class CreateAccount
 
     private async Task Save()
     {
-        var response = await UcSave.ExecuteAsync(_user);
+        var response = await Api.SaveAsync(_user);
         
         if (response.IsSuccessStatusCode)
         {

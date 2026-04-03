@@ -1,14 +1,10 @@
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests.Genre
 @using Musicx.Contracts.Dto.Responses.Genre
 
 @inject ILoggerFactory LoggerFactory
-@inject IFindAllService<InGenre, OutGenre> UcFindAllGenres
-@inject IFindOneByIdService<InGenre, OutGenre> UcFindOneGenre
-@inject ISaveService<InGenre> UcSaveGenre
-@inject ISaveAllService<InGenreRelation> UcSaveRelations
-@inject ISaveAllService<InGenreFacet> UcSaveFacets
-@inject ISaveAllService<InGenreAlias> UcSaveAliases
+@inject IApiClient Api
 @inject ISnackbar Snackbar
 
 <MudDialog @ref="_modalRef" ContentStyle="overflow-x: hidden;">

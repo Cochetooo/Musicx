@@ -1,4 +1,5 @@
 ﻿@page "/Admin/RoleDashboard"
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests.Security
 @using Musicx.Contracts.Dto.Responses
@@ -6,10 +7,7 @@
 @using Musicx.Presentation.Web.Client.Layout.Auth
 
 @inject ILoggerFactory LoggerFactory
-@inject IFindAllService<InRole, OutRole> UcList
-@inject IFindAllService<InPermission, OutPermission> UcListPermissions
-@inject ISaveService<InRole> UcSave
-@inject IDeleteService<InRole> UcDelete
+@inject IApiClient Api
 @inject ISnackbar Snackbar
 
 <AuthorizeView Permission="admin.role.read">

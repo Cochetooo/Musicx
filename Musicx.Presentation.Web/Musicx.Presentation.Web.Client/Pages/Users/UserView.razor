@@ -2,6 +2,7 @@
 
 @using System.Globalization
 @using Musicx.Application.Shared.Helpers
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Application.Shared.Interfaces.UseCases.User
@@ -9,6 +10,7 @@
 @using Musicx.Application.Shared.Interfaces.UseCases.User.Ratings
 @using Musicx.Application.Shared.Models.User.Ratings
 @using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Application.Web.ViewModels.User.GenreRatings
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.User
@@ -16,16 +18,13 @@
 @using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Components.Ratings
-@using Musicx.Presentation.Web.Client.Features.Users.ViewModels.UserGenreRatings
 
 @inject ILoggerFactory LoggerFactory
-@inject IFindOneByIdService<InUser, OutUser> UcGet
+@inject IApiClient Api
 @inject IFindAlbumAttributesByUserService UcFindAlbumAttrs
 @inject IUserClientContext UserClientContext
 @inject IFindRatingDistribByUserService<OutAlbum> UcFindAlbumRatingDistrib
 @inject IFindUserGenreRatingsService UcFindUserGenreRatings
-@inject IFindUserDataViewService UcUserDataView
-@inject IDeleteService<InUserAlbumAttribute> UcDeleteAllRatings
 @inject IExportUserRatingsService UcExportRatings
 @inject IDialogService DialogService
 @inject IJSRuntime JS

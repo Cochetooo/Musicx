@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
+using Musicx.Application.Shared.Models.Queries;
+using Musicx.Contracts.Dto.Requests.Genre;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
@@ -51,7 +53,7 @@ public partial class GenreDashboard
     {
         _logger.LogInformation("🔄️ GenreDashboard : UPDATE Data");
 
-        _genres = (await UcList.ExecuteAsync(
+        _genres = (await Api.FindAsync<InGenre, OutGenre>(
             order: new GenreOrderSpecification
             {
                 CanonicalName = 1,
@@ -81,7 +83,7 @@ public partial class GenreDashboard
     {
         foreach (var genre in _selectedGenres)
         {
-            await UcDelete.ExecuteAsync(genre.Id);
+            await Api.DeleteAsync<InGenre>(genre.Id);
         }
         
         await HideDeleteModal();
@@ -119,9 +121,8 @@ public partial class GenreDashboard
 
     private async Task<GridData<OutGenre>> LoadGenresData(GridState<OutGenre> state)
     {
-        var response = await UcList.ExecuteAsync(
-            filterExact: true,
-            filter: _searchDataGrid,
+        var response = await Api.FindAsync<InGenre, OutGenre>(
+            query: FindQuery<InGenre>.Create(filter: _searchDataGrid, exact: true),
             pagingOptions: new PagingOptions(Take: state.PageSize, Skip: state.Page * state.PageSize),
             order: new GenreOrderSpecification
             {

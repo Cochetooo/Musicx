@@ -20,7 +20,7 @@ public partial class Charts
         _isLoading = true;
         await InvokeAsync(StateHasChanged);
         
-        _outAlbumList = await UcAlbumChart.ExecuteAsync(_query);
+        _outAlbumList = await Api.FindAlbumsByChartAsync(_query);
         
         _isLoading = false;
         await InvokeAsync(StateHasChanged);

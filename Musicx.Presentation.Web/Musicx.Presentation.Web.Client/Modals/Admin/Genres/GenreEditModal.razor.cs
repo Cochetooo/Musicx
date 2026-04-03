@@ -44,7 +44,7 @@ public partial class GenreEditModal
             return;
         }
         
-        var completeGenre = await UcFindOneGenre.ExecuteAsync(genre.Id, new GenreJoinSpecification
+        var completeGenre = await Api.FindByIdAsync<InGenre, OutGenre>(genre.Id, new GenreJoinSpecification
         {
             IncludeParents = true,
             IncludeRelations = true,
@@ -93,7 +93,7 @@ public partial class GenreEditModal
 
     private async Task SaveAsync()
     {
-        var result = await UcSaveGenre.ExecuteAsync(_state.Node);
+        var result = await Api.SaveAsync(_state.Node);
 
         if (!result.IsSuccessStatusCode)
         {
@@ -116,7 +116,7 @@ public partial class GenreEditModal
         // Set the new genre id to each relations.
         _state.Relations.ForEach(r => r.ToGenreId = genreId);
 
-        result = await UcSaveRelations.ExecuteAsync(_state.Relations);
+        result = await Api.SaveAllAsync(_state.Relations);
 
         if (!result.IsSuccessStatusCode)
         {
@@ -130,7 +130,7 @@ public partial class GenreEditModal
             FacetId = f.Id,
         }).ToList();
 
-        result = await UcSaveFacets.ExecuteAsync(facets);
+        result = await Api.SaveAllAsync(facets);
 
         if (!result.IsSuccessStatusCode)
         {
@@ -140,7 +140,7 @@ public partial class GenreEditModal
         // Set the new genre id to each aliases.
         _state.Aliases.ForEach(a => a.GenreId = genreId);
 
-        result = await UcSaveAliases.ExecuteAsync(_state.Aliases);
+        result = await Api.SaveAllAsync(_state.Aliases);
 
         if (!result.IsSuccessStatusCode)
         {
@@ -161,7 +161,7 @@ public partial class GenreEditModal
             return;
         }
         
-        var genres = await UcFindAllGenres.ExecuteAsync(
+        var genres = await Api.FindAsync<InGenre, OutGenre>(
             joins: new GenreJoinSpecification
             {
                 IncludeParents = true
@@ -189,7 +189,7 @@ public partial class GenreEditModal
             return genre.Children;
         }
         
-        var hydratedGenre = await UcFindOneGenre.ExecuteAsync(genre.Id, joins: new GenreJoinSpecification
+        var hydratedGenre = await Api.FindByIdAsync<InGenre, OutGenre>(genre.Id, joins: new GenreJoinSpecification
         {
             IncludeChildren = true
         });

@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using System.Globalization
 @using Musicx.Application.Shared.Helpers
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Application.Web.Interfaces.Models.Auth
@@ -9,11 +10,7 @@
 @using Musicx.Contracts.Dto.Responses.Artist
 @using Musicx.Contracts.Dto.Responses.Genre
 
-@inject IFindAllService<InAlbum, OutAlbum> UcGetLatestAlbums
-@inject ICountService<OutArtist> UcCountArtists
-@inject ICountService<OutAlbum> UcCountAlbums
-@inject ICountService<OutSong> UcCountSongs
-@inject ICountService<OutGenre> UcCountGenres
+@inject IApiClient Api
 @inject IUserClientContext UserClientContext
 @inject ITranslationService T
 

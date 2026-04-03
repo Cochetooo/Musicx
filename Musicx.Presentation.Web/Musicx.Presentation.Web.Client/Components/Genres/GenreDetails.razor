@@ -1,8 +1,9 @@
-﻿@using Musicx.Application.Shared.Interfaces.UseCases
+﻿@using Musicx.Application.Shared.Interfaces.Common
+@using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests.Album
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
-@inject IFindOneByIdService<InAlbum, OutAlbum> UcGetAlbum
+@inject IApiClient Api
 
 @if (_isLoading)
 {

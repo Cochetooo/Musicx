@@ -1,9 +1,10 @@
 ﻿@page "/User/Signup"
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Requests.User
 
-@inject ISaveService<InUser> UcSave
+@inject IApiClient Api
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation
 

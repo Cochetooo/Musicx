@@ -96,7 +96,7 @@ public partial class UserEditor
 
         var rawUser = _user.ToRaw();
 
-        await UcSave.ExecuteAsync(rawUser);
+        await Api.SaveAsync(rawUser);
         Snackbar.Add("User has been saved.", Severity.Success);
         
         Navigation.NavigateTo("/User/" + _user.Id);

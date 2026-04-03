@@ -33,7 +33,7 @@ public partial class AlbumTrackListEditModal
     private async Task Save()
     {
         EnsureSongData();
-        await UcSaveAll.ExecuteAsync(_songs);
+        await Api.SaveAllAsync(_songs);
         await OnSave.InvokeAsync();
 
         await Hide();

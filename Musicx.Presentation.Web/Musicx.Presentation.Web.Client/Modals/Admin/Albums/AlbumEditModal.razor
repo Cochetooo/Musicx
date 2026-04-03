@@ -1,9 +1,10 @@
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Requests.Album
 @using Musicx.Contracts.Enums
 @inject ILoggerFactory LoggerFactory
-@inject ISaveService<InAlbum> UcSave
+@inject IApiClient Api
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 

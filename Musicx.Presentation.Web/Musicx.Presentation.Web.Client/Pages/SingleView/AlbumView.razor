@@ -1,29 +1,21 @@
 @page "/Album/{id}"
 @using Musicx.Application.Shared.Helpers
+@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.Localization
-@using Musicx.Application.Shared.Interfaces.UseCases
-@using Musicx.Application.Shared.Interfaces.UseCases.Album
-@using Musicx.Application.Shared.Interfaces.UseCases.Song
 @using Musicx.Application.Shared.Interfaces.UseCases.User.AlbumAttribute
 @using Musicx.Application.Web.Interfaces.Models.Auth
-@using Musicx.Contracts.Dto.Requests.Album
-@using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.Base
+@using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Components.Ratings
 @using Musicx.Presentation.Web.Client.Components.Songs
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
-@using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Modals.Voting
 
-@inject IFindOneByIdService<InAlbum, OutAlbum> UcGet
-@inject IFindAlbumByArtistService UcGetArtistAlbums
-@inject IFindAlbumDataViewService UcAlbumDataView
-@inject IFindSongByAlbumService UcFindSongs
+@inject IApiClient Api
 @inject IFindAlbumAttributesByAlbumService UcFindAlbumAttrs
 @inject IFindAlbumAttributesByAlbumUserService UcFindUserServiceAlbumAttr
-@inject ISaveService<InUserAlbumAttribute> UcSaveUserAttrib
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
 @inject ISnackbar Snackbar

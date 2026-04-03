@@ -1,4 +1,0 @@
-<ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <FontFamily x:Key="PrimaryFont">avares://Musicx.Presentation.Desktop/Assets/Fonts/#Space Grotesk</FontFamily>
-</ResourceDictionary>

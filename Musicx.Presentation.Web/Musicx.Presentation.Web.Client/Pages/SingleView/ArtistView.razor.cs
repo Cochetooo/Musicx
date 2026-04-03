@@ -65,7 +65,13 @@ public partial class ArtistView
             return;
         }
         
-        var dataView = await UcArtistDataView.ExecuteAsync(artistId, UserClientContext.CurrentUser?.Id);
+        var dataView = await Api.GetDataViewAsync<OutArtistDataView>(
+            "artists", 
+            artistId, 
+            new Dictionary<string, object?> {
+                { "userId", UserClientContext.CurrentUser?.Id }
+            }
+        );
 
         if (dataView is null)
         {
@@ -188,7 +194,7 @@ public partial class ArtistView
         }
         else
         {
-            await UcSaveArtistAttr.ExecuteAsync(new InUserArtistAttribute
+            await Api.SaveAsync(new InUserArtistAttribute
             {
                 UserId = UserClientContext.CurrentUser.Id,
                 ArtistId = _artist.Id,

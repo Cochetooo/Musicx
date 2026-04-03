@@ -1,9 +1,5 @@
 @page "/Genres"
-@using Musicx.Application.Shared.Interfaces.UseCases
-@using Musicx.Contracts.Dto.Requests.Genre
-@using Musicx.Contracts.Dto.Responses
-@using Musicx.Contracts.Dto.Responses.Genre
-@using Musicx.Presentation.Web.Client.Components
+@using Musicx.Application.Shared.Interfaces.Common
 
-@inject IFindAllService<InGenre, OutGenre> UcList
+@inject IApiClient Api
 @inject ILoggerFactory LoggerProvider

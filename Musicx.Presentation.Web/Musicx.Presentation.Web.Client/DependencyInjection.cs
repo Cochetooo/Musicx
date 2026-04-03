@@ -1,8 +1,8 @@
 using MudBlazor;
 using MudBlazor.Services;
 using Musicx.Application.Web.Interfaces.Models.Auth;
+using Musicx.Application.Web.ViewModels.User.GenreRatings;
 using Musicx.Infrastructure;
-using Musicx.Presentation.Web.Client.Features.Users.ViewModels.UserGenreRatings;
 using Musicx.Presentation.Web.Client.Models.Auth;
 
 namespace Musicx.Presentation.Web.Client;
