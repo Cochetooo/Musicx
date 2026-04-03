@@ -1,57 +1,34 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Musicx.Presentation.Desktop.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:body="clr-namespace:Musicx.Presentation.Desktop.Views.Body"
-        xmlns:views="clr-namespace:Musicx.Presentation.Desktop.Views"
-        mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
         x:Class="Musicx.Presentation.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Background="{DynamicResource White}"
-        SystemDecorations="BorderOnly"
-        Width="1440" Height="900"
-        Icon="/Assets/Images/Logo/Logo500.png"
-        Title="Musicx.Presentation.Desktop">
-    
-    <Grid RowDefinitions="Auto,*,Auto" Background="Transparent">
-            <!-- Top bar -->
-            <views:MainTitleBarView Grid.Row="0" Margin="10" DataContext="{Binding MainTitleBarViewModel}" />
+        x:CompileBindings="False"
+        Width="1500"
+        Height="920"
+        MinWidth="1200"
+        MinHeight="760"
+        Title="{Binding AppTitle}"
+        Background="#070B14"
+        Icon="/Assets/Images/Logo/Logo500.png">
 
-            <!-- Main Content Area -->
-            <Grid Grid.Row="1" Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="150" MaxWidth="500" />
-                    <ColumnDefinition Width="4" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="4" />
-                    <ColumnDefinition Width="Auto" MaxWidth="500" />
-                </Grid.ColumnDefinitions>
-            
-                <!-- Sidebar Left -->
-                <Border Grid.Column="0" Styles="" MaxWidth="500" MinWidth="150" Padding="10" Background="{DynamicResource LighterBackground}" Margin="5,0" Classes="Card">
-                    <body:SidebarLeftView DataContext="{Binding SidebarLeftViewModel}"/>
+        <Grid RowDefinitions="Auto,*,Auto" Margin="12" RowSpacing="10">
+                <Border Grid.Row="0" Classes="PanelCard" Padding="14">
+                        <DockPanel>
+                                <TextBlock DockPanel.Dock="Left" Text="{Binding AppTitle}" Classes="DisplayTitle" Margin="0,0,16,0" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Button Content="{Binding ArtistNavLabel}" Command="{Binding NavigateArtistCommand}" />
+                                        <Button Content="{Binding AlbumNavLabel}" Command="{Binding NavigateAlbumCommand}" />
+                                        <Button Content="{Binding GenreNavLabel}" Command="{Binding NavigateGenreCommand}" />
+                                        <Button Content="{Binding UserNavLabel}" Command="{Binding NavigateUserCommand}" />
+                                        <Button Content="{Binding LibraryNavLabel}" Command="{Binding NavigateLibraryCommand}" />
+                                        <Button Content="{Binding SettingsNavLabel}" Command="{Binding NavigateSettingsCommand}" />
+                                </StackPanel>
+                        </DockPanel>
                 </Border>
-            
-                <GridSplitter Grid.Column="1" Margin="5,0" Width="4" Background="{DynamicResource LightGray}" ResizeDirection="Columns"/>
 
-                <!-- Main Content -->
-                <Border Grid.Column="2" Padding="10" Background="{DynamicResource LightBackground}" Margin="5,0" Classes="Card">
-                    <ContentControl Content="{Binding CurrentViewModel}"/>
-                </Border>
-            
-                <GridSplitter Grid.Column="3" Width="4" Background="{DynamicResource LightGray}" ResizeDirection="Columns" Margin="5,0" />
+                <ContentControl Grid.Row="1" Content="{Binding CurrentPage}" />
 
-                <!-- Sidebar Right -->
-                <Border Grid.Column="4" Padding="10" MaxWidth="500" Background="{DynamicResource LighterBackground}" Margin="5,0" Classes="Card">
-                    <body:SidebarRightView DataContext="{Binding SidebarRightViewModel}" />
-                </Border>
-            </Grid>
-
-            <!-- Bottom Audio Player -->
-            <Border Grid.Row="2" Padding="10" Background="Transparent" Margin="10" Classes="Card">
-                <body:BottomAudioPlayerView DataContext="{Binding BottomAudioPlayerViewModel}" />
-            </Border>
+                <ContentControl Grid.Row="2" Content="{Binding Player}" />
         </Grid>
-
 </Window>

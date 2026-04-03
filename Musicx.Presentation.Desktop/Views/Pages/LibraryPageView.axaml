@@ -1,0 +1,84 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Musicx.Presentation.Desktop.ViewModels.Pages"
+             x:Class="Musicx.Presentation.Desktop.Views.Pages.LibraryPageView"
+             x:DataType="vm:LibraryPageViewModel">
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10">
+        <Border Grid.Row="0" Classes="PanelCard" Padding="14">
+            <StackPanel Spacing="6">
+                <TextBlock Text="{Binding LibraryProfileLabel}" Classes="Heading" />
+                <TextBlock Text="{Binding ProfileName}" />
+                <TextBlock Text="{Binding FolderSummary}" Classes="Muted" TextWrapping="Wrap"/>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="{Binding ScanNowLabel}" Command="{Binding ImportCommand}" />
+                    <Button Content="{Binding RefreshLabel}" Command="{Binding RefreshCommand}" />
+                    <ComboBox Width="160"
+                              ItemsSource="{Binding DisplayModes}"
+                              SelectedItem="{Binding DisplayMode}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Classes="PanelCard" Padding="14">
+            <StackPanel Spacing="6">
+                <TextBlock Text="{Binding ImportProgressLabel}" Classes="Heading" />
+                <ProgressBar Minimum="0" Maximum="1" Value="{Binding ProgressRatio}" Height="8" />
+                <TextBlock Text="{Binding ProcessedFiles, StringFormat='Processed: {0}'}" Classes="Muted"/>
+                <TextBlock Text="{Binding ImportedFiles, StringFormat='Imported: {0}'}" Classes="Muted"/>
+                <TextBlock Text="{Binding FailedFiles, StringFormat='Failed: {0}'}" Classes="Muted"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Classes="PanelCard" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="Artists (local)" Classes="Heading" Margin="0,0,0,8"/>
+                    <ListBox ItemsSource="{Binding Artists}" />
+                </StackPanel>
+            </Border>
+
+            <GridSplitter Grid.Column="1" Background="#2E3A4A" Width="4"/>
+
+            <Border Grid.Column="2" Classes="PanelCard" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="Tracks / Albums" Classes="Heading" Margin="0,0,0,8"/>
+                    <DataGrid ItemsSource="{Binding Tracks}" AutoGenerateColumns="False" CanUserSortColumns="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="2*" />
+                            <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" Width="*" />
+                            <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="*" />
+                            <DataGridTextColumn Header="Format" Binding="{Binding Format}" Width="80" />
+                            <DataGridCheckBoxColumn Header="Matched API" Binding="{Binding IsMatchedWithApi}" Width="90" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <GridSplitter Grid.Column="3" Background="#2E3A4A" Width="4"/>
+
+            <Border Grid.Column="4" Classes="PanelCard" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="Queue / Import issues" Classes="Heading" Margin="0,0,0,8"/>
+                    <ListBox ItemsSource="{Binding FailedImports}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,6">
+                                    <TextBlock Text="{Binding FilePath}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding Reason}" Classes="Muted"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -9,7 +9,6 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Specifications.Song;
 using Musicx.Presentation.Web.Contexts;
-using SongJoinSpecification = Musicx.Application.Desktop.Specifications.SongJoinSpecification;
 
 namespace Musicx.Presentation.Web.Controllers.Song;
 

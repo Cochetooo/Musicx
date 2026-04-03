@@ -10,4 +10,10 @@
       <ProjectReference Include="..\Musicx.Contracts\Musicx.Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Interfaces\UseCases\Event\" />
+      <Folder Include="Interfaces\UseCases\Label\" />
+      <Folder Include="Interfaces\UseCases\Tag\" />
+    </ItemGroup>
+
 </Project>

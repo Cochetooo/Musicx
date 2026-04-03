@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Musicx.Contracts.Dto.Responses;
-using System.Timers;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using MudBlazor;
-using Musicx.Application.Desktop.Specifications;
 using Musicx.Application.Shared.Enums;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.User;
+using Musicx.Infrastructure.API.Persistence.Specifications.Album;
+using Musicx.Infrastructure.API.Persistence.Specifications.Song;
 
 namespace Musicx.Presentation.Web.Client.Modals.Searches;
 

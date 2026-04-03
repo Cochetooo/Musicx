@@ -4,7 +4,7 @@ using Microsoft.JSInterop;
 using MudBlazor;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Helpers;
-using Musicx.Application.Web.Interfaces.Models.User.Ratings;
+using Musicx.Application.Shared.Models.User.Ratings;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;

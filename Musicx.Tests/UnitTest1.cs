@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Musicx.Application.Desktop;
-using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
 using Musicx.Application.Shared.Interfaces.Common;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Genre;

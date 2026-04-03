@@ -1,5 +1,5 @@
 ﻿using Musicx.Application.Shared.Enums;
-using Musicx.Application.Web.Interfaces.UseCases.User.Ratings;
+using Musicx.Application.Shared.Interfaces.UseCases.User.Ratings;
 using Musicx.Application.Web.Mvvm;
 using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
 

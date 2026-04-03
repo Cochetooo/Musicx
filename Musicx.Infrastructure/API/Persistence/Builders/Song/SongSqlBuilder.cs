@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Musicx.Application.API.Persistence.Queries;
-using Musicx.Application.Desktop.Specifications;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests;
@@ -10,6 +9,7 @@ using Musicx.Infrastructure.API.Persistence.Columns.Artist;
 using Musicx.Infrastructure.API.Persistence.Columns.Genre;
 using Musicx.Infrastructure.API.Persistence.Columns.Song;
 using Musicx.Infrastructure.API.Persistence.Helpers;
+using Musicx.Infrastructure.API.Persistence.Specifications.Song;
 using Musicx.Infrastructure.Shared.Helpers;
 using Npgsql;
 

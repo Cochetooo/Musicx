@@ -9,19 +9,15 @@ using Musicx.Presentation.Desktop.ViewModels;
 
 namespace Musicx.Presentation.Desktop;
 
-public class ViewLocator(ILoggerProvider loggerProvider) : IDataTemplate
+public class ViewLocator : IDataTemplate
 {
-    private readonly ILogger _logger = loggerProvider.CreateLogger(nameof(ViewLocator));
-    
     public Control? Build(object? param)
     {
         if (param is null)
             return null;
 
         var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-        
-        _logger.LogDebug($"📒 View model {param.GetType().FullName!} is searching for view {name}");
-        
+
         var type = AppDomain.CurrentDomain
             .GetAssemblies()
             .Select(a => a.GetType(name))
@@ -29,11 +25,9 @@ public class ViewLocator(ILoggerProvider loggerProvider) : IDataTemplate
 
         if (type != null)
         {
-            _logger.LogInformation("✅ Found view : " + type.FullName);
             return (Control)Activator.CreateInstance(type)!;
         }
 
-        _logger.LogWarning("⚠️ View has not been found: " + name);
         return new TextBlock { Text = "Not Found: " + name };
     }
 

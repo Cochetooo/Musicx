@@ -1,0 +1,41 @@
+﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using Musicx.Application.Shared.Helpers;
+using Musicx.Application.Shared.Interfaces.UseCases.User.Ratings;
+using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Ratings;
+using Musicx.Infrastructure.Web.Helpers;
+
+namespace Musicx.Infrastructure.Shared.UseCases.User.Ratings;
+
+public sealed class FindRatingDistribByUserService<T> (
+    ILoggerFactory loggerFactory,
+    HttpClient httpClient) 
+    : IFindRatingDistribByUserService<T> where T : BaseOutputModel
+{
+    private readonly ILogger _logger = loggerFactory.CreateLogger(nameof(FindRatingDistribByUserService<T>));
+    
+    public async Task<OutUserRatingStats?> ExecuteAsync(long userId)
+    {
+        var modelName = typeof(T).Name.OutModelToEntity();
+        var endpoint = $"/api/user-{modelName[..^1]}-attrs/ratings-distrib/{userId}";
+        
+        _logger.LogInformation("🌍🏳️ GET " + endpoint);
+        
+        var response = await httpClient.GetStringAsync(endpoint);
+        var json = JsonSerializer.Deserialize<OutUserRatingStats>(response, JsonHelper.OptionsDefault);
+
+        if (null == json)
+        {
+            _logger.LogWarning($"🌍⚠️ GET {endpoint} - WARNING : Null response");
+            return null;
+        }
+        
+        _logger.LogInformation($"🌍✅ GET {endpoint} - SUCCESS");
+
+        return json;
+    }
+    
+    public OutUserRatingStats? Execute(long userId)
+        => throw new NotImplementedException();
+}

@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
-using Musicx.Application.Desktop.UseCases.LocalLibrary;
+using Musicx.Application.Desktop.UseCases.Library;
 
 namespace Musicx.Application.Desktop;
 
@@ -12,8 +11,10 @@ public static class DependencyInjection
     public static IServiceCollection AddMusicxDesktopApp(this IServiceCollection services)
     {
         // Non external framework dependant use cases
-        services.AddScoped<IImportLocalSongsClientService, UcImportLocalSongs>();
-        services.AddScoped<IPersistLocalSongsClientService, UcPersistLocalSongs>();
+        services.AddScoped<IGetOrCreateDefaultProfileUseCase, GetOrCreateDefaultProfileUseCase>();
+        services.AddScoped<IUpsertLibraryProfileUseCase, UpsertLibraryProfileUseCase>();
+        services.AddScoped<IImportLibraryUseCase, ImportLibraryUseCase>();
+        services.AddScoped<IGetLibrarySnapshotUseCase, GetLibrarySnapshotUseCase>();
         
         return services;
     }

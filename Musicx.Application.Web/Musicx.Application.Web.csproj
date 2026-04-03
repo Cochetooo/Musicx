@@ -10,10 +10,4 @@
       <ProjectReference Include="..\Musicx.Application.Shared\Musicx.Application.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Interfaces\UseCases\Event\" />
-      <Folder Include="Interfaces\UseCases\Label\" />
-      <Folder Include="Interfaces\UseCases\Tag\" />
-    </ItemGroup>
-
 </Project>

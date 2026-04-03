@@ -7,7 +7,6 @@ using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Infrastructure.API.Persistence.Specifications.Genre;
 using Musicx.Presentation.Web.Client.Modals.Admin.Genres;
 using Musicx.Presentation.Web.Client.Models;
-using GenreJoinSpecification = Musicx.Application.Desktop.Specifications.GenreJoinSpecification;
 
 namespace Musicx.Presentation.Web.Client.Pages.Admin;
 

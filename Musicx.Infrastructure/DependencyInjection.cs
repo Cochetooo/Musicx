@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+using System.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -6,25 +6,32 @@ using Musicx.Application.Api.Interfaces.Auth;
 using Musicx.Application.Api.Interfaces.Caching;
 using Musicx.Application.Api.Interfaces.DataViews;
 using Musicx.Application.Api.Interfaces.PatchNotes;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Artist;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Genre;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Security;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Song;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.Tag;
+using Musicx.Application.Api.Interfaces.Persistence.Repositories.User;
 using Musicx.Application.Api.Interfaces.Storage;
 using Musicx.Application.Api.Interfaces.Workers;
-using Musicx.Application.Desktop.Interfaces.Persistence;
-using Musicx.Application.Desktop.Interfaces.UseCases.LocalLibrary;
+using Musicx.Application.Desktop;
+using Musicx.Application.Desktop.Interfaces.Library;
 using Musicx.Application.Shared.Interfaces.Localization;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Application.Shared.Interfaces.Providers.ExternalMusicData;
+using Musicx.Application.Shared.Interfaces.UseCases;
+using Musicx.Application.Shared.Interfaces.UseCases.Album;
+using Musicx.Application.Shared.Interfaces.UseCases.Artist;
 using Musicx.Application.Shared.Interfaces.UseCases.ExternalMusicData;
-using Musicx.Application.Web.Interfaces.UseCases;
-using Musicx.Application.Web.Interfaces.UseCases.Album;
-using Musicx.Application.Web.Interfaces.UseCases.Artist;
-using Musicx.Application.Web.Interfaces.UseCases.Genre;
-using Musicx.Application.Web.Interfaces.UseCases.PatchNotes;
-using Musicx.Application.Web.Interfaces.UseCases.Security;
-using Musicx.Application.Web.Interfaces.UseCases.Song;
-using Musicx.Application.Web.Interfaces.UseCases.User;
-using Musicx.Application.Web.Interfaces.UseCases.User.AlbumAttribute;
-using Musicx.Application.Web.Interfaces.UseCases.User.Avatar;
-using Musicx.Application.Web.Interfaces.UseCases.User.Ratings;
+using Musicx.Application.Shared.Interfaces.UseCases.Genre;
+using Musicx.Application.Shared.Interfaces.UseCases.PatchNotes;
+using Musicx.Application.Shared.Interfaces.UseCases.Security;
+using Musicx.Application.Shared.Interfaces.UseCases.Song;
+using Musicx.Application.Shared.Interfaces.UseCases.User;
+using Musicx.Application.Shared.Interfaces.UseCases.User.AlbumAttribute;
+using Musicx.Application.Shared.Interfaces.UseCases.User.Avatar;
+using Musicx.Application.Shared.Interfaces.UseCases.User.Ratings;
 using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Requests.Event;
@@ -59,26 +66,24 @@ using Musicx.Infrastructure.API.Persistence.Repositories.Tag;
 using Musicx.Infrastructure.API.Persistence.Repositories.User;
 using Musicx.Infrastructure.API.Storage;
 using Musicx.Infrastructure.API.Workers;
-using Musicx.Infrastructure.Desktop.Persistence;
-using Musicx.Infrastructure.Desktop.Persistence.Caches;
-using Musicx.Infrastructure.Desktop.Persistence.Repositories;
-using Musicx.Infrastructure.Desktop.Services.LocalLibrary;
+using Musicx.Infrastructure.Desktop.Persistence.Sqlite;
+using Musicx.Infrastructure.Desktop.Services.Library;
 using Musicx.Infrastructure.Shared.Logging;
 using Musicx.Infrastructure.Shared.Providers.ExternalMusicData;
 using Musicx.Infrastructure.Shared.Services.Localization;
+using Musicx.Infrastructure.Shared.UseCases;
+using Musicx.Infrastructure.Shared.UseCases.Album;
+using Musicx.Infrastructure.Shared.UseCases.Artist;
 using Musicx.Infrastructure.Shared.UseCases.ExternalMusicData;
-using Musicx.Infrastructure.Web.UseCases;
-using Musicx.Infrastructure.Web.UseCases.Album;
-using Musicx.Infrastructure.Web.UseCases.Artist;
-using Musicx.Infrastructure.Web.UseCases.Genre;
-using Musicx.Infrastructure.Web.UseCases.PatchNotes;
-using Musicx.Infrastructure.Web.UseCases.Security;
-using Musicx.Infrastructure.Web.UseCases.Song;
-using Musicx.Infrastructure.Web.UseCases.User;
-using Musicx.Infrastructure.Web.UseCases.User.AlbumAttribute;
-using Musicx.Infrastructure.Web.UseCases.User.Avatar;
-using Musicx.Infrastructure.Web.UseCases.User.Ratings;
-using Musicx.Infrastructure.Web.UseCases.User.Ratings.Export;
+using Musicx.Infrastructure.Shared.UseCases.Genre;
+using Musicx.Infrastructure.Shared.UseCases.PatchNotes;
+using Musicx.Infrastructure.Shared.UseCases.Security;
+using Musicx.Infrastructure.Shared.UseCases.Song;
+using Musicx.Infrastructure.Shared.UseCases.User;
+using Musicx.Infrastructure.Shared.UseCases.User.AlbumAttribute;
+using Musicx.Infrastructure.Shared.UseCases.User.Avatar;
+using Musicx.Infrastructure.Shared.UseCases.User.Ratings;
+using Musicx.Infrastructure.Shared.UseCases.User.Ratings.Export;
 
 namespace Musicx.Infrastructure;
 
@@ -126,23 +131,60 @@ public static class DependencyInjection
     /// </summary>
     public static IServiceCollection AddMusicxDesktop(this IServiceCollection services)
     {
-        // Database
-        services.AddDbContext<DbContext, AppDbContext>();
+        services.AddMusicxDesktopApp();
+        services.AddMusicxLocalization(ServiceLifetime.Singleton);
+
+        services.AddSingleton(new HttpClient(new HttpClientHandler
+        {
+            UseCookies = true,
+            CookieContainer = new CookieContainer()
+        })
+        {
+            BaseAddress = new Uri(Environment.GetEnvironmentVariable("MUSICX_API_URL") ?? "http://localhost:7287")
+        });
+
+        services.AddSingleton<SqliteLibraryDatabase>();
+        services.AddSingleton<InMemoryImportProgressPublisher>();
+        services.AddScoped<IImportProgressPublisher>(sp => sp.GetRequiredService<InMemoryImportProgressPublisher>());
+
+        services.AddScoped<ILibraryProfileRepository, SqliteLibraryProfileRepository>();
+        services.AddScoped<ILocalLibraryRepository, SqliteLocalLibraryRepository>();
+        services.AddScoped<IAudioMetadataReader, AtlAudioMetadataReader>();
+        services.AddScoped<IEncyclopediaMatcher, WebApiEncyclopediaMatcher>();
         
-        // Caches
-        services.AddScoped<ISongCache, SongCache>();
-        services.AddScoped<IAlbumCache, AlbumCache>();
-        services.AddScoped<IArtistCache, ArtistCache>();
-        services.AddScoped<IReleaseCache, ReleaseCache>();
-        services.AddScoped<ILabelCache, LabelCache>();
-        services.AddScoped<IGenreCache, GenreCache>();
+        services.AddScoped(typeof(IFindOneByIdService<,>), typeof(FindOneByIdService<,>));
+        services.AddScoped(typeof(ISaveService<>), typeof(SaveService<>));
+        services.AddScoped(typeof(ISaveAllService<>), typeof(SaveAllService<>));
+        services.AddScoped(typeof(IDeleteService<>), typeof(DeleteService<>));
+        services.AddScoped(typeof(IFindAllService<,>), typeof(FindAllService<,>));
+        services.AddScoped(typeof(IFindInService<,>), typeof(FindInService<,>));
+        services.AddScoped(typeof(ICountService<>), typeof(CountService<>));
         
-        // Repositories
-        
-        services.AddScoped<IBatchImportRepository, BatchImportRepository>();
-        
-        // Use cases
-        services.AddScoped<IReadAudioFileClientService, UcReadAudioFile>();
+        services.AddScoped<IFindAlbumAttributesByAlbumService, FindAlbumAttrByAlbumService>();
+        services.AddScoped<IFindAlbumAttributesByUserService, FindAlbumAttrByUserService>();
+        services.AddScoped<IFindAlbumAttributesByAlbumUserService, FindAlbumAttrByAlbumUserService>();
+        services.AddScoped<IFindAlbumByArtistService, FindAlbumByArtistService>();
+        services.AddScoped<IFindAlbumByChartService, FindAlbumByChartService>();
+        services.AddScoped<IFindAlbumByGenreService, FindAlbumByGenreService>();
+        services.AddScoped<IFindAlbumDataViewService, FindAlbumDataViewService>();
+        services.AddScoped<IFindArtistDataViewService, FindArtistDataViewService>();
+        services.AddScoped<IFindArtistByGenreService, FindArtistByGenreService>();
+        services.AddScoped<IFindGenreDataViewService, FindGenreDataViewService>();
+        services.AddScoped<IFindSongByAlbumService, FindSongByAlbumService>();
+        services.AddScoped(typeof(IFindRatingDistribByUserService<>), typeof(FindRatingDistribByUserService<>));
+        services.AddScoped<IFindUserDataViewService, FindUserDataViewService>();
+        services.AddScoped<IFindUserYearlyRatingsService, FindUserYearlyRatingsService>();
+        services.AddScoped<IFindUserGenreRatingsService, FindUserGenreRatingsService>();
+        services.AddScoped<IExportUserRatingsService, ExportUserRatingsService>();
+        services.AddScoped<IUserRatingsExportFormatter, CsvUserRatingsExportFormatter>();
+        services.AddScoped<IUserRatingsExportFormatter, XlsxUserRatingsExportFormatter>();
+        services.AddScoped<IUserRatingsExportFormatter, JsonUserRatingsExportFormatter>();
+        services.AddScoped<ISaveAvatarService,SaveAvatarService>();
+
+        services.AddScoped<IPatchNotesService, PatchNotesService>();
+
+        services.AddScoped<IAuthUserSavePasswordService, AuthUserSavePasswordService>();
+        services.AddScoped<IAuthSignInService, AuthSignInService>();
         
         return services;
     }
@@ -181,19 +223,19 @@ public static class DependencyInjection
         services.AddScoped(typeof(SqlBuilder<InUserAlbumAttribute>), typeof(UserAlbumAttrSqlBuilder));
 
         // Repositories
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Song.ISongRepository, SongRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Album.IAlbumRepository, AlbumRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Album.IAlbumGenreRepository, AlbumGenreRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Album.IAlbumInfluenceRepository, AlbumInfluenceRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Artist.IArtistRepository, ArtistRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Genre.IGenreRepository, GenreRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Genre.IGenreRelationRepository, GenreRelationRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Security.IPermissionRepository, PermissionRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Security.IRoleRepository, RoleRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.Tag.ITagRepository, TagRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserRepository, UserRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserArtistAttrsRepository, UserArtistAttrRepository>();
-        services.AddScoped<Application.Api.Interfaces.Persistence.Repositories.User.IUserAlbumAttrsRepository, UserAlbumAttrRepository>();
+        services.AddScoped<ISongRepository, SongRepository>();
+        services.AddScoped<IAlbumRepository, AlbumRepository>();
+        services.AddScoped<IAlbumGenreRepository, AlbumGenreRepository>();
+        services.AddScoped<IAlbumInfluenceRepository, AlbumInfluenceRepository>();
+        services.AddScoped<IArtistRepository, ArtistRepository>();
+        services.AddScoped<IGenreRepository, GenreRepository>();
+        services.AddScoped<IGenreRelationRepository, GenreRelationRepository>();
+        services.AddScoped<IPermissionRepository, PermissionRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserArtistAttrsRepository, UserArtistAttrRepository>();
+        services.AddScoped<IUserAlbumAttrsRepository, UserAlbumAttrRepository>();
         
         // Data Views / Cache abstractions
         services.AddScoped<IDataViewCacheProvider, NoOpDataViewCacheProvider>();

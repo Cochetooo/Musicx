@@ -10,7 +10,6 @@
       <Folder Include="Api\Persistence\Repositories\" />
       <Folder Include="API\Persistence\Specifications\Tag\" />
       <Folder Include="API\Persistence\Sql\" />
-      <Folder Include="Desktop\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -24,6 +23,7 @@
       <PackageReference Include="AWSSDK.S3" Version="4.0.19.1" />
       <PackageReference Include="DocumentFormat.OpenXml" Version="3.4.1" />
       <PackageReference Include="log4net" Version="3.0.4" />
+      <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.14" />
       <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.12" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.12" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
