@@ -2721,3 +2721,17 @@ INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_desce
 INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (51, 749, 4);
 INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (102, 749, 2);
 INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (132, 749, 4);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (750, 750, 0);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (160, 750, 2);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (354, 750, 1);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (249, 750, 1);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (751, 751, 0);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (10, 751, 3);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (144, 751, 2);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (649, 751, 1);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (752, 752, 0);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (8, 752, 2);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (60, 752, 2);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (106, 752, 1);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (61, 752, 2);
+INSERT INTO public.genre_closure (genre_closure_ancestor_id, genre_closure_descendant_id, genre_closure_depth) VALUES (62, 752, 1);
