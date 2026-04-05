@@ -66,7 +66,7 @@
 .f-search-results-column, .f-search-filters-column { transition: all 180ms ease; }
 
 .nav-search-field {
-    max-width: 400px;
+    max-width: 600px;
     min-width: 220px;
     flex: 1;
 }

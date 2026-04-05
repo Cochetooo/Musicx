@@ -85,6 +85,25 @@
         <!-- Light/Dark Mode Switch -->
         <ThemeModeSwitch @bind-IsDarkMode="_isDarkMode" />
 
+        <MudMenu
+            Variant="Variant.Text"
+            Size="Size.Medium"
+            Dense
+            Color="Color.Inherit"
+            Icon="@Icons.Material.Filled.Translate">
+            
+            @foreach (var language in _languages)
+            {
+                <MudMenuItem OnClick="@(() => ChangeLanguage(language.Code))" 
+                             Disabled="@((UserClientContext.CurrentUser?.PrefLanguage ?? "en") == language.Code)">
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <Flag CountryName="@language.CountryName"/>
+                        <MudText>@language.Label</MudText>
+                    </MudStack>
+                </MudMenuItem>
+            }
+        </MudMenu>
+        
         <!-- Others Menu -->
         <MudMenu
             Variant="Variant.Text"
@@ -183,28 +202,6 @@
                             @foreach (var mode in _quickRatingModes)
                             {
                                 <MudSelectItem Value="@mode">@mode.ToDescriptionString()</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </ChildContent>
-                </MudMenuItem>
-                
-                <MudMenuItem Icon="@Icons.Material.Filled.Translate"
-                             IconColor="Color.Primary">
-                    <ChildContent>
-                        <MudSelect T="string"
-                                   Dense="true"
-                                   Label="@T["Web.Nav.Language"]"
-                                   Value="@(UserClientContext.CurrentUser?.PrefLanguage ?? "en")"
-                                   ValueChanged="@ChangeLanguage"
-                                   Variant="Variant.Outlined">
-                            @foreach (var language in _languages)
-                            {
-                                <MudSelectItem Value="@language.Code">
-                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                                        <Flag CountryName="@language.CountryName"/>
-                                        <MudText>@language.Label</MudText>
-                                    </MudStack>
-                                </MudSelectItem>
                             }
                         </MudSelect>
                     </ChildContent>
