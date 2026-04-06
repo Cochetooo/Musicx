@@ -147,31 +147,36 @@ else
 
                     <MudStack Spacing="1" AlignItems="AlignItems.Center"
                               Class="mx-2 mt-2 mb-5" Wrap="Wrap.Wrap"
-                              Justify="Justify.SpaceAround" Row>
+                              Justify="Justify.SpaceBetween" Row>
+              
+
                         @if (UserClientContext.CurrentUser is not null &&
                              UserClientContext.Can("album.attr"))
                         {
-                            <MudDatePicker Date="@_userAttribute.DiscoveryDate"
-                                           DateChanged="ChangeDateDiscovery"
-                                           Label="Discovery Date"
-                                           Class="mx-1"
-                                           Style="width: 170px;"
-                                           Variant="Variant.Outlined" />
+                            <MudStack Row>
+                                <MudDatePicker Date="@_userAttribute.DiscoveryDate"
+                                       DateChanged="ChangeDateDiscovery"
+                                       Label="Discovery Date"
+                                       Class="mx-1"
+                                       Style="width: 170px;"
+                                       Variant="Variant.Outlined" />
 
-                            <MudMenu Label="Add To Collection"
-                                     Variant="Variant.Filled"
-                                     StartIcon="@Icons.Material.Filled.Add"
-                                     Dense
-                                     Size="Size.Medium"
-                                     Class="mx-1"
-                                     Color="Color.Primary">
-                                @foreach (var collectionType in Enum.GetValues<CollectionType>())
-                                {
-                                    <MudMenuItem>@collectionType.ToDescriptionString()</MudMenuItem>
-                                }
-                            </MudMenu>
+                                <MudMenu Label="Collection"
+                                         Variant="Variant.Filled"
+                                         StartIcon="@Icons.Material.Filled.Add"
+                                         Dense
+                                         Size="Size.Medium"
+                                         Class="mx-1"
+                                         Color="Color.Primary">
+                                    @foreach (var collectionType in Enum.GetValues<CollectionType>())
+                                    {
+                                        <MudMenuItem>@collectionType.ToDescriptionString()</MudMenuItem>
+                                    }
+                                </MudMenu>
+                            </MudStack>
+
                         }
-                        
+
                         @if (DateTime.UtcNow >= (_album.OriginalReleaseDate ?? DateTime.MinValue) &&
                             UserClientContext.CurrentUser is not null &&
                             UserClientContext.Can("album.rate"))

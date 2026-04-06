@@ -185,7 +185,7 @@ else
                                     @T["Web.UserView.MostRatedReleaseYear"]
                                 </MudText>
                                 <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary">
-                                    @(_albumRatingDistrib?.MostRatedReleaseYear.ToString() ?? "-")
+                                    @(_albumRatingDistrib?.MostRatedReleaseYear?.ToString() ?? "-")
                                 </MudText>
                             </MudStack>
                         </MudListItem>

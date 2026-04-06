@@ -327,8 +327,7 @@ public partial class AlbumView
         
         await Api.SaveAsync(_userAttribute);
         await _albumRatingsTable.ReloadServerData();
-
-        Snackbar.Add(T["Web.AlbumView.RatingSaved"], Severity.Success);
+        
         await LoadAlbum();
     }
 }
