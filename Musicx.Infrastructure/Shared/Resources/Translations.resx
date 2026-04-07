@@ -203,6 +203,33 @@
     <data name="Web.AlbumView.AutoComputeRating" xml:space="preserve">
         <value>Auto-compute final rating when all factors are filled</value>
     </data>
+    <data name="Web.AlbumView.VoteGenres" xml:space="preserve">
+        <value>Vote genres</value>
+    </data>
+    <data name="Web.AlbumView.GenreSimple" xml:space="preserve">
+        <value>Simple</value>
+    </data>
+    <data name="Web.AlbumView.GenreDetailed" xml:space="preserve">
+        <value>Detailed</value>
+    </data>
+    <data name="Web.AlbumView.ReleasedOn" xml:space="preserve">
+        <value>Released {0}</value>
+    </data>
+    <data name="Web.AlbumView.RecordedRange" xml:space="preserve">
+        <value>Recorded {0} → {1}</value>
+    </data>
+    <data name="Web.AlbumView.ReleaseTypeValue" xml:space="preserve">
+        <value>Type: {0}</value>
+    </data>
+    <data name="Web.AlbumView.ToggleAdvancedFactors" xml:space="preserve">
+        <value>Show/hide rating factors</value>
+    </data>
+    <data name="Web.AlbumView.AutoComputeShort" xml:space="preserve">
+        <value>Auto-calc</value>
+    </data>
+    <data name="Web.AlbumView.WriteReview" xml:space="preserve">
+        <value>Write a review</value>
+    </data>
     <data name="Web.ArtistView.SeeOnWikipedia" xml:space="preserve">
         <value>See on Wikipedia</value>
     </data>

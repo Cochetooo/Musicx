@@ -78,7 +78,7 @@ public partial class AlbumEditModal
 
     private async Task Save()
     {
-        if (!await ValidateWikipediaUrlAsync())
+        if (!ValidateWikipediaUrl())
         {
             return;
         }
@@ -255,7 +255,7 @@ public partial class AlbumEditModal
         return _selectedArtworkUrl;
     }
     
-    private async Task<bool> ValidateWikipediaUrlAsync()
+    private bool ValidateWikipediaUrl()
     {
         if (string.IsNullOrWhiteSpace(_album.WikipediaUrl))
         {
@@ -284,13 +284,6 @@ public partial class AlbumEditModal
             if (string.IsNullOrWhiteSpace(pageTitle))
             {
                 Snackbar.Add("Wikipedia URL is invalid.", Severity.Warning);
-                return false;
-            }
-
-            var response = await Http.GetAsync($"https://en.wikipedia.org/api/rest_v1/page/summary/{Uri.EscapeDataString(pageTitle)}");
-            if (!response.IsSuccessStatusCode)
-            {
-                Snackbar.Add("Wikipedia page could not be verified.", Severity.Warning);
                 return false;
             }
         }

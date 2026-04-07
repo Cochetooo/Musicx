@@ -26,7 +26,8 @@
 }
 
 .album-hero .mud-card-actions .glass-paper,
-.album-hero .album-rating-mini-card {
+.album-hero .album-rating-mini-card,
+.album-hero .factor-card {
     background: rgba(15, 23, 42, 0.18);
     border-color: rgba(255, 255, 255, 0.08);
 }
@@ -73,7 +74,8 @@
     transform: translateY(0);
 }
 
-.album-rating-mini-card {
+.album-rating-mini-card,
+.factor-card {
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     padding: 0.65rem 0.8rem;
@@ -84,4 +86,14 @@
 :deep(.bg-main.animate-hover-up) {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
+}
+
+@keyframes mx-bounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(3px);
+    }
 }
