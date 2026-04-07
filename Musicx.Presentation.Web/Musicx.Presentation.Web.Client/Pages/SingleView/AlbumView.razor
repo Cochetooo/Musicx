@@ -113,7 +113,8 @@ else
                 </div>
                 
                 <div>
-                    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Class="mx-2 mt-2" Spacing="2">
+                    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" 
+                              Class="mx-2 mt-2 album-headline-row" Spacing="2">
                         <div>
                             <MudTooltip Inline="false" Text="@_album.Name" Delay="500">
                                 <ChildContent>
@@ -146,24 +147,25 @@ else
                             }
                         </div>
             
-                        <MudStack Class="album-header-right" AlignItems="AlignItems.Stretch" Justify="Justify.SpaceBetween" Spacing="2">
+                        <MudStack Class="album-header-right" AlignItems="AlignItems.End" Justify="Justify.SpaceBetween" Spacing="2">
                             @if (UserClientContext.Can("album.edit"))
                             {
                                 <MudMenu Dense Variant="Variant.Text" Color="Color.Inherit"
+                                         Class="admin-settings-menu"
                                          Icon="@Icons.Material.Filled.Settings">
                                     <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="@EditAlbumShowModal">@T["Web.AlbumView.EditAlbum"]</MudMenuItem>
                                     <MudMenuItem Icon="@Icons.Material.Filled.FormatListNumbered" OnClick="@EditTrackListShowModal">@T["Web.AlbumView.EditTracklist"]</MudMenuItem>
                                 </MudMenu>
                             }
 
-                            <MudStack Spacing="0" Class="album-meta-text" AlignItems="AlignItems.End">
+                            <MudStack Spacing="0" Class="album-meta-text" AlignItems="AlignItems.End" Justify="Justify.FlexEnd">
                                 @if (_album.OriginalReleaseDate is not null || _album.ReleaseType is not null)
                                 {
-                                    <MudText Typo="Typo.body2" Align="Align.Right" Class="text-extra-light">
-                                        Released
+                                    <MudText Typo="Typo.body2" Align="Align.Right" Class="text-extra-light album-meta-line">
+                                        @T["Web.AlbumView.ReleasedOn"]
                                         @if (_album.OriginalReleaseDate is not null)
                                         {
-                                            <span class="text-bold"> @_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")</span>
+                                            <span class="text-bold album-release-date">&nbsp;@_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")</span>
                                         }
                                         @if (_album.OriginalReleaseDate is not null && _album.ReleaseType is not null)
                                         {
@@ -178,15 +180,18 @@ else
 
                                 @if (_album.BeginRecordDate is not null || _album.EndRecordDate is not null)
                                 {
-                                    <MudText Typo="Typo.body2" Align="Align.Right" Class="text-extra-light">
-                                        Recorded from @(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?") to @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                                    <MudText Typo="Typo.body2" Align="Align.Right" Class="text-extra-light album-meta-line">
+                                        @T["Web.AlbumView.Recorded"] 
+                                        <span class="album-recorded-dates">
+                                            &nbsp;@(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?") — @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                                        </span>
                                     </MudText>
                                 }
 
                                 @if (_album.Releases?.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Label?.Name))?.Label?.Name is { } labelName)
                                 {
-                                    <MudText Typo="Typo.body2" Class="font-italic text-extra-light" Align="Align.Right">
-                                        @labelName
+                                    <MudText Typo="Typo.body2" Class="font-italic text-extra-light album-meta-line" Align="Align.Right">
+                                        @T["Web.AlbumView.Label"] <span class="album-recorded-dates">@labelName</span>
                                     </MudText>
                                 }
                             </MudStack>
@@ -196,7 +201,12 @@ else
                     <MudDivider Class="my-3"/>
                     
                     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
-                        <div>
+                        <div class="album-genres-block">
+                            @if (!_showDetailedView)
+                            {
+                                <MudText Typo="Typo.body1" Class="text-light mr-2">@T["Web.AlbumView.GenresLabel"]</MudText>
+                            }
+                            
                             <GenreDetails Size="Size.Medium" Descriptor="false" Album="@_album" @bind-DetailedView="@_showDetailedView"/>
                         </div>
 
@@ -205,7 +215,7 @@ else
                                        OnClick="@OpenVoteGenreModal"
                                        Variant="Variant.Filled"
                                        Size="Size.Medium"
-                                       Color="Color.Surface">
+                                       Color="Color.Primary">
                                 @T["Web.AlbumView.VoteGenres"]
                             </MudButton>
 
@@ -213,7 +223,7 @@ else
                                        OnClick="@(() => _showDetailedView = !_showDetailedView)"
                                        Variant="Variant.Filled"
                                        Size="Size.Medium"
-                                       Class="album-side-button text-bold"
+                                       Class="@($"album-side-button {(_showDetailedView ? "is-detailed" : "is-simple")}")"
                                        Color="Color.Surface">
                                 @(_showDetailedView ? T["Web.AlbumView.GenreDetailed"] : T["Web.AlbumView.GenreSimple"])
                             </MudButton>
@@ -226,20 +236,25 @@ else
                     {
                         if (DateTime.UtcNow >= (_album.OriginalReleaseDate ?? DateTime.MinValue))
                         {
-                            <MudStack Row AlignItems="AlignItems.Center" Spacing="0"
-                                      Justify="Justify.Center" Class="album-main-rating">
-                                <EditableRatingBadge Editable
-                                                     Size="Size.Large"
-                                                     RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
-                                                     Value="@_userAttribute.Rating"
-                                                     ValueChanged="@(v => Rate(v))" />
+                            <MudStack Justify="Justify.Center">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="0"
+                                          Justify="Justify.Center" Class="album-main-rating">
+                                    <EditableRatingBadge Editable
+                                                         Size="Size.Large"
+                                                         RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
+                                                         Value="@_userAttribute.Rating"
+                                                         ValueChanged="@(v => Rate(v))" />
                                 
-                                <MudTooltip Text="@T["Web.AlbumView.ToggleAdvancedFactors"]">
-                                    <MudIconButton Icon="@(_showAdvancedFactorEditor ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
-                                                   Color="Color.Inherit"
-                                                   Size="Size.Medium"
-                                                   OnClick="@(() => _showAdvancedFactorEditor = !_showAdvancedFactorEditor)" />
-                                </MudTooltip>
+                                    <MudTooltip Text="@T["Web.AlbumView.ToggleAdvancedFactors"]">
+                                        <MudIconButton Icon="@(_showAdvancedFactorEditor ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                                       Color="Color.Inherit"
+                                                       Size="Size.Medium"
+                                                       OnClick="@(() => _showAdvancedFactorEditor = !_showAdvancedFactorEditor)" />
+                                    </MudTooltip>
+                                </MudStack>
+                                <MudText Typo="Typo.caption" Align="Align.Center" Class="color-secondary mb-2">
+                                    @T["Web.AlbumView.YourRatingHint"]
+                                </MudText>
                             </MudStack>
                         }
                     }
@@ -259,13 +274,24 @@ else
                             }
                         </MudStack>
                         
-                        <MudButton Variant="Variant.Outlined"
-                                   Size="Size.Small"
-                                   Color="@(_autoComputeAlbumRating ? Color.Success : Color.Default)"
-                                   StartIcon="@(_autoComputeAlbumRating ? Icons.Material.Filled.AutoFixHigh : Icons.Material.Filled.AutoFixOff)"
-                                   OnClick="@(() => OnAutoComputeAlbumRatingChanged(!_autoComputeAlbumRating))">
-                            @T["Web.AlbumView.AutoComputeShort"]
-                        </MudButton>
+                        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="album-factors-actions mt-2">
+                            <MudSpacer />
+                            <MudButton Variant="Variant.Filled"
+                                       Size="Size.Small"
+                                       Color="Color.Primary"
+                                       Disabled="@(!_hasAnyAlbumFactor)"
+                                       OnClick="@ComputeAlbumRatingFromFactors">
+                                @T["Web.AlbumView.ComputeNow"]
+                            </MudButton>
+
+                            <MudSpacer />
+                            <MudSwitch T="bool"
+                                       Class="album-autocompute-switch"
+                                       Color="Color.Success"
+                                       Value="@_autoComputeAlbumRating"
+                                       ValueChanged="@OnAutoComputeAlbumRatingChanged"
+                                       Label="@T["Web.AlbumView.AutoComputeShort"]" />
+                        </MudStack>
                     }
                             
                     <MudDivider Class="my-3" />
@@ -329,7 +355,9 @@ else
                     <div style="width: 100%" class="pa-2">
                         <div class="album-rating-hover-card">
                             <div class="album-rating-hover-summary">
-                                <MudText Typo="Typo.subtitle1" Class="montserrat text-bold">🌐 Global</MudText>
+                                <MudText Typo="Typo.h5" Class="montserrat text-bold">
+                                    🌐 @T["Web.AlbumView.GlobalRatingLabel"]
+                                </MudText>
                                 
                                 <div>
                                     <DonutRating
@@ -338,8 +366,9 @@ else
                                         Size="DonutRatingSize.Large"/>
                                 </div>
 
-                                <MudText Typo="Typo.caption" Class="color-secondary mt-2">
-                                    @(_album.Stats?.Count ?? 0) ratings
+                                <MudText Typo="Typo.subtitle2" Align="Align.Center" 
+                                         Class="color-secondary mt-2 album-rating-count">
+                                    @(_album.Stats?.Count ?? 0) @T["Web.AlbumView.RatingsSuffix"]
                                 </MudText>
                             </div>
                             
@@ -373,7 +402,9 @@ else
 
                             <div class="album-rating-hover-details">
                                 <div class="album-rating-mini-card album-rating-donut-card">
-                                    <MudText Typo="Typo.subtitle2" Class="montserrat">⭐ Fan Rating</MudText>
+                                    <MudText Typo="Typo.h6" Class="montserrat">
+                                        ⭐ @T["Web.AlbumView.FanRatingLabel"]
+                                    </MudText>
                                     
                                     <div>
                                         <DonutRating Rating="@_album.Stats?.FanAverage"
@@ -381,11 +412,14 @@ else
                                                      Size="DonutRatingSize.Small"/>
                                     </div>
                                     
-                                    <MudText Typo="Typo.caption" Class="color-secondary">@(_album.Stats?.FanCount ?? 0) ratings</MudText>
+                                    <MudText Typo="Typo.subtitle2" Align="Align.Center"
+                                             Class="color-secondary album-rating-count">
+                                        @(_album.Stats?.FanCount ?? 0) @T["Web.AlbumView.RatingsSuffix"]
+                                    </MudText>
                                 </div>
 
                                 <div class="album-rating-mini-card album-rating-donut-card">
-                                    <MudText Typo="Typo.subtitle2" Class="montserrat">👤 Non-Fan Rating</MudText>
+                                    <MudText Typo="Typo.h6" Class="montserrat">👤 @T["Web.AlbumView.NonFanRatingLabel"]</MudText>
                                     
                                     <div>
                                         <DonutRating Rating="@_album.Stats?.NonFanAverage"
@@ -393,7 +427,10 @@ else
                                                      Size="DonutRatingSize.Small"/>
                                     </div>
                                     
-                                    <MudText Typo="Typo.caption" Class="color-secondary">@(_album.Stats?.NonFanCount ?? 0) ratings</MudText>
+                                    <MudText Typo="Typo.subtitle2" Align="Align.Center"
+                                             Class="color-secondary album-rating-count">
+                                        @(_album.Stats?.NonFanCount ?? 0) @T["Web.AlbumView.RatingsSuffix"]
+                                    </MudText>
                                 </div>
                             </div>
                         </div>

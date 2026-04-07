@@ -221,4 +221,82 @@
     <data name="Web.UserView.RatingsExportSuccess" xml:space="preserve">
         <value>Bewertungen erfolgreich exportiert.</value>
     </data>
+    <data name="Web.AlbumView.Released" xml:space="preserve">
+        <value>Veröffentlicht</value>
+    </data>
+    <data name="Web.AlbumView.Recorded" xml:space="preserve">
+        <value>Aufgenommen</value>
+    </data>
+    <data name="Web.AlbumView.Label" xml:space="preserve">
+        <value>Label</value>
+    </data>
+    <data name="Web.AlbumView.GenresLabel" xml:space="preserve">
+        <value>Genres</value>
+    </data>
+    <data name="Web.AlbumView.YourRatingHint" xml:space="preserve">
+        <value>Deine persönliche Bewertung</value>
+    </data>
+    <data name="Web.AlbumView.ComputeNow" xml:space="preserve">
+        <value>Berechnen</value>
+    </data>
+    <data name="Web.AlbumView.RatingsSuffix" xml:space="preserve">
+        <value>Bewertungen</value>
+    </data>
+    <data name="Web.AlbumView.GlobalRatingLabel" xml:space="preserve">
+        <value>Global</value>
+    </data>
+    <data name="Web.AlbumView.FanRatingLabel" xml:space="preserve">
+        <value>Fan-Bewertung</value>
+    </data>
+    <data name="Web.AlbumView.NonFanRatingLabel" xml:space="preserve">
+        <value>Nicht-Fan-Bewertung</value>
+    </data>
+    <data name="Web.AlbumView.AutoComputeRating" xml:space="preserve">
+        <value>Endbewertung automatisch berechnen, wenn alle Faktoren ausgefüllt sind</value>
+    </data>
+    <data name="Web.AlbumView.AutoComputeShort" xml:space="preserve">
+        <value>Auto-Berechnung</value>
+    </data>
+    <data name="Web.AlbumView.Collection" xml:space="preserve">
+        <value>Sammlung</value>
+    </data>
+    <data name="Web.AlbumView.DiscoveryDate" xml:space="preserve">
+        <value>Entdeckungsdatum</value>
+    </data>
+    <data name="Web.AlbumView.EditAlbum" xml:space="preserve">
+        <value>Albuminfos bearbeiten</value>
+    </data>
+    <data name="Web.AlbumView.EditTracklist" xml:space="preserve">
+        <value>Trackliste bearbeiten</value>
+    </data>
+    <data name="Web.AlbumView.GenreDetailed" xml:space="preserve">
+        <value>Detailliert</value>
+    </data>
+    <data name="Web.AlbumView.GenreSimple" xml:space="preserve">
+        <value>Einfach</value>
+    </data>
+    <data name="Web.AlbumView.RecordedRange" xml:space="preserve">
+        <value>Aufgenommen von {0} bis {1}</value>
+    </data>
+    <data name="Web.AlbumView.ReleaseTypeValue" xml:space="preserve">
+        <value>Typ: {0}</value>
+    </data>
+    <data name="Web.AlbumView.ReleasedOn" xml:space="preserve">
+        <value>Veröffentlicht am</value>
+    </data>
+    <data name="Web.AlbumView.SeeOnWikipedia" xml:space="preserve">
+        <value>Auf Wikipedia ansehen</value>
+    </data>
+    <data name="Web.AlbumView.Settings" xml:space="preserve">
+        <value>Einstellungen</value>
+    </data>
+    <data name="Web.AlbumView.ToggleAdvancedFactors" xml:space="preserve">
+        <value>Erweiterte Faktoren ein-/ausblenden</value>
+    </data>
+    <data name="Web.AlbumView.VoteGenres" xml:space="preserve">
+        <value>Genres bewerten</value>
+    </data>
+    <data name="Web.AlbumView.WriteReview" xml:space="preserve">
+        <value>Review schreiben</value>
+    </data>
 </root>

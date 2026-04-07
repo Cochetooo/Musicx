@@ -23,14 +23,41 @@
 
 .album-hero-content {
     grid-template-columns: 480px 1fr 320px;
+    align-items: stretch;
 }
 
 .album-header-right {
-    min-height: 135px;
+    min-height: 100%;
+    margin-left: auto;
+    width: 100%;
+    max-width: 340px;
 }
 
 .album-meta-text {
     text-align: right;
+    min-height: 100%;
+}
+
+.album-headline-row {
+    min-height: 175px;
+}
+
+.admin-settings-menu {
+    align-self: flex-end;
+}
+
+.album-meta-line {
+    font-size: 0.82rem;
+}
+
+.album-release-date {
+    font-size: 1.02rem;
+    font-weight: 800;
+}
+
+.album-recorded-dates {
+    font-weight: 300;
+    font-size: 0.82rem;
 }
 
 .album-hero .mud-card-actions .glass-paper,
@@ -91,7 +118,17 @@
 }
 
 .album-side-button {
+    color: color-mix(in srgb, var(--mx-hero-text-primary) 88%, white) !important;
+}
+
+.album-side-button.is-detailed {
     font-weight: 800;
+    background: color-mix(in srgb, var(--mud-palette-surface) 88%, var(--mud-palette-primary) 12%);
+}
+
+.album-side-button.is-simple {
+    font-weight: 500;
+    background: color-mix(in srgb, var(--mud-palette-surface) 94%, transparent);
 }
 
 .album-action-item {
@@ -102,6 +139,53 @@
 
 .album-action-control {
     min-height: 56px;
+}
+
+.album-factors-actions {
+    width: min(540px, 100%);
+    margin-inline: auto;
+}
+
+.album-autocompute-switch {
+    margin-left: auto;
+}
+
+.album-genres-block {
+    min-width: 0;
+}
+
+.album-rating-count {
+    width: 100%;
+}
+
+@media (max-width: 1700px) {
+    .album-hero-content {
+        grid-template-columns: 420px minmax(0, 1fr) 280px;
+    }
+}
+
+@media (max-width: 1400px) {
+    .album-hero-content {
+        grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    }
+
+    .album-hero-content > :last-child {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 900px) {
+    .album-hero-content {
+        grid-template-columns: 1fr;
+    }
+
+    .album-hero-content > :last-child {
+        grid-column: auto;
+    }
+
+    .album-header-right {
+        max-width: unset;
+    }
 }
 
 :deep(.bg-surface.animate-hover-up),

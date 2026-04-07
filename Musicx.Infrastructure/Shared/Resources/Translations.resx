@@ -213,7 +213,7 @@
         <value>Detailed</value>
     </data>
     <data name="Web.AlbumView.ReleasedOn" xml:space="preserve">
-        <value>Released {0}</value>
+        <value>Released</value>
     </data>
     <data name="Web.AlbumView.RecordedRange" xml:space="preserve">
         <value>Recorded {0} → {1}</value>
@@ -232,5 +232,32 @@
     </data>
     <data name="Web.ArtistView.SeeOnWikipedia" xml:space="preserve">
         <value>See on Wikipedia</value>
+    </data>
+    <data name="Web.AlbumView.Label" xml:space="preserve">
+        <value>Label</value>
+    </data>
+    <data name="Web.AlbumView.GenresLabel" xml:space="preserve">
+        <value>Genres</value>
+    </data>
+    <data name="Web.AlbumView.YourRatingHint" xml:space="preserve">
+        <value>Your personal rating</value>
+    </data>
+    <data name="Web.AlbumView.ComputeNow" xml:space="preserve">
+        <value>Calculate</value>
+    </data>
+    <data name="Web.AlbumView.RatingsSuffix" xml:space="preserve">
+        <value>ratings</value>
+    </data>
+    <data name="Web.AlbumView.GlobalRatingLabel" xml:space="preserve">
+        <value>Global</value>
+    </data>
+    <data name="Web.AlbumView.FanRatingLabel" xml:space="preserve">
+        <value>Fan Rating</value>
+    </data>
+    <data name="Web.AlbumView.NonFanRatingLabel" xml:space="preserve">
+        <value>Non-Fan Rating</value>
+    </data>
+    <data name="Web.AlbumView.Recorded" xml:space="preserve">
+        <value>Recorded</value>
     </data>
 </root>
