@@ -26,7 +26,8 @@ create table public.albums (
     album_simplified_genre_color    text,
     album_simplified_genre_name     text,
     album_total_duration            bigint,
-    album_track_total               integer
+    album_track_total               integer,
+    album_wikipedia_url             text
 );
 
 alter table public.albums owner to postgres;

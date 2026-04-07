@@ -28,4 +28,5 @@ public sealed class InAlbum : BaseInputModel
     public DateTime? OriginalReleaseDate { get; set; }
     public ReleaseType? ReleaseType { get; set; }
     public int? TrackTotal { get; set; }
+    public string? WikipediaUrl { get; set; }
 }

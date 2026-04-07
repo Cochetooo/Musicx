@@ -182,4 +182,28 @@
     <data name="Web.UserView.RatingsExportSuccess" xml:space="preserve">
         <value>Ratings exported successfully.</value>
     </data>
+    <data name="Web.AlbumView.DiscoveryDate" xml:space="preserve">
+        <value>Discovery Date</value>
+    </data>
+    <data name="Web.AlbumView.Collection" xml:space="preserve">
+        <value>Collection</value>
+    </data>
+    <data name="Web.AlbumView.SeeOnWikipedia" xml:space="preserve">
+        <value>See on Wikipedia</value>
+    </data>
+    <data name="Web.AlbumView.Settings" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="Web.AlbumView.EditAlbum" xml:space="preserve">
+        <value>Edit album info</value>
+    </data>
+    <data name="Web.AlbumView.EditTracklist" xml:space="preserve">
+        <value>Edit album track info</value>
+    </data>
+    <data name="Web.AlbumView.AutoComputeRating" xml:space="preserve">
+        <value>Auto-compute final rating when all factors are filled</value>
+    </data>
+    <data name="Web.ArtistView.SeeOnWikipedia" xml:space="preserve">
+        <value>See on Wikipedia</value>
+    </data>
 </root>

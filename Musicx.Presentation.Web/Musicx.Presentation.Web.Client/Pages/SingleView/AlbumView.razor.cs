@@ -6,6 +6,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Specifics.Albums;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Contracts.Dto.Responses.User;
+using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Infrastructure.API.Persistence.Specifications.Song;
@@ -42,6 +43,7 @@ public partial class AlbumView
     private bool _autoComputeAlbumRating;
     private bool _hasAnyAlbumFactor;
     private Dictionary<string, short> _albumFactorAverages = [];
+    private bool _showAdvancedFactorEditor;
 
     private readonly List<RatingFactor> _albumFactors =
     [
@@ -203,6 +205,18 @@ public partial class AlbumView
         }
         
         _userAttribute.DiscoveryDate = dateValue;
+        await SaveUserAttr();
+    }
+    
+    private async Task ChangeCollection(CollectionType collectionType)
+    {
+        if (UserClientContext.CurrentUser is null || !UserClientContext.Can("album.attr"))
+        {
+            Snackbar.Add(T["Web.AlbumView.NotAllowedChangeDate"], Severity.Warning);
+            return;
+        }
+
+        _userAttribute.CollectionType = collectionType;
         await SaveUserAttr();
     }
 

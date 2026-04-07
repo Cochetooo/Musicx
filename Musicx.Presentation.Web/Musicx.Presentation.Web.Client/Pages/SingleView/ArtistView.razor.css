@@ -70,6 +70,18 @@
     animation: artist-follow-pop 220ms ease;
 }
 
+.wiki-button {
+    background: #fff !important;
+    color: #111 !important;
+    border: 1px solid #000 !important;
+}
+
+.mud-theme-dark .wiki-button {
+    background: #111 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+
 @keyframes artist-follow-pop {
     0% { transform: scale(0.92); }
     60% { transform: scale(1.06); }

@@ -27,4 +27,5 @@ public static class AlbumColumns
     public const string SimplifiedGenreName = "album_simplified_genre_name";
     public const string TotalDuration = "album_total_duration";
     public const string TrackTotal = "album_track_total";
+    public const string WikipediaUrl = "album_wikipedia_url";
 }

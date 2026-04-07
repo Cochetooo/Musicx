@@ -25,6 +25,7 @@ public static class ArtistColumns
     public const string OriginCountry = "artist_origin_country";
     public const string OriginRegion = "artist_origin_region";
     public const string OriginTown = "artist_origin_town";
+    public const string WikipediaUrl = "artist_wikipedia_url";
     
     public const string Discriminator = "artist_discriminator";
     

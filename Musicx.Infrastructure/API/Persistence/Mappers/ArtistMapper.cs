@@ -48,6 +48,7 @@ public static class ArtistMapper
                 NonFanCount = artist.SafeGet<long>(ArtistRatingStatColumns.NonFanCount),
             }
             : null,
+        WikipediaUrl = artist.SafeGet<string?>(ArtistColumns.WikipediaUrl),
 
         Discriminator = artist.SafeGet<ArtistDiscriminator>(ArtistColumns.Discriminator),
 
@@ -75,6 +76,7 @@ public static class ArtistMapper
         OriginCountry = artist.OriginCountry,
         OriginRegion = artist.OriginRegion,
         OriginTown = artist.OriginTown,
+        WikipediaUrl = artist.WikipediaUrl,
 
         Discriminator = artist.Discriminator,
         

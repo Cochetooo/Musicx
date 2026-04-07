@@ -44,7 +44,8 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { AlbumColumns.Name, entity.Name },
                 { AlbumColumns.OriginalReleaseDate, entity.OriginalReleaseDate },
                 { AlbumColumns.ReleaseType, entity.ReleaseType },
-                { AlbumColumns.TrackTotal, entity.TrackTotal }
+                { AlbumColumns.TrackTotal, entity.TrackTotal },
+                { AlbumColumns.WikipediaUrl, entity.WikipediaUrl }
             }, AlbumColumns.Id);
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
@@ -90,7 +91,8 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 { AlbumColumns.Name, entity.Name },
                 { AlbumColumns.OriginalReleaseDate, entity.OriginalReleaseDate },
                 { AlbumColumns.ReleaseType, entity.ReleaseType },
-                { AlbumColumns.TrackTotal, entity.TrackTotal }
+                { AlbumColumns.TrackTotal, entity.TrackTotal },
+                { AlbumColumns.WikipediaUrl, entity.WikipediaUrl }
             },
             new Dictionary<string, object?>
             {

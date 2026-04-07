@@ -100,6 +100,15 @@
                                                   Label="English name"
                                                   Variant="Variant.Outlined" />
                                 </MudItem>
+                                <MudItem xs="12">
+                                    <MudTextField T="string?"
+                                                  Immediate
+                                                  @bind-Text="_album.WikipediaUrl"
+                                                  Label="Wikipedia URL"
+                                                  Placeholder="https://en.wikipedia.org/wiki/..."
+                                                  HelperText="Optional. Must be an existing Wikipedia page."
+                                                  Variant="Variant.Outlined" />
+                                </MudItem>
                             </MudGrid>
                         </MudStack>
                     </MudPaper>

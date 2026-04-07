@@ -110,6 +110,7 @@ public static class AlbumMapper
         SimplifiedGenreName = album.SafeGet<string?>(AlbumColumns.SimplifiedGenreName),
         TotalDuration = album.SafeGet<long?>(AlbumColumns.TotalDuration),
         TrackTotal = album.SafeGet<int?>(AlbumColumns.TrackTotal),
+        WikipediaUrl = album.SafeGet<string?>(AlbumColumns.WikipediaUrl),
     };
 
     public static InAlbum ToRaw(this OutAlbum album) => new()
@@ -133,6 +134,7 @@ public static class AlbumMapper
         Name = album.Name,
         OriginalReleaseDate = album.OriginalReleaseDate,
         ReleaseType = album.ReleaseType,
-        TrackTotal = album.TrackTotal
+        TrackTotal = album.TrackTotal,
+        WikipediaUrl = album.WikipediaUrl
     };
 }

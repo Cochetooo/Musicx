@@ -1,5 +1,6 @@
 @page "/Artist/{id}"
 @using Musicx.Application.Shared.Interfaces.Common
+@using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components
@@ -14,6 +15,7 @@
 @inject HttpClient Http
 @inject ILoggerFactory LoggerProvider
 @inject IUserClientContext UserClientContext
+@inject ITranslationService T
 
 @if (null == _artist)
 {
@@ -84,7 +86,21 @@ else
                                 StartIcon="@Icons.Material.Filled.EditNote">
                                 Edit Info
                             </MudButton>
-                            <MudButton Variant="Variant.Outlined" Color="Color.Primary">Share</MudButton>
+                            
+                            @if (!string.IsNullOrWhiteSpace(_artist.WikipediaUrl))
+                            {
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Dark"
+                                           Href="@_artist.WikipediaUrl"
+                                           Target="_blank"
+                                           Class="wiki-button">
+                                    @T["Web.ArtistView.SeeOnWikipedia"]
+                                </MudButton>
+                            }
+                            
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary">
+                                Share
+                            </MudButton>
                         </MudStack>
                     </div>
                 </div>

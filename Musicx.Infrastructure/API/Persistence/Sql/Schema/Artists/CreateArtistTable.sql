@@ -26,7 +26,10 @@ create table public.artists (
     artist_origin_country               text,
     artist_origin_region                text,
     artist_origin_town                  text,
+    artist_wikipedia_url                text,
+    
     artist_discriminator                varchar(8) not null,
+    
     artist_formation_date               timestamp without time zone,
     artist_split_date                   timestamp without time zone,
     artist_first_name                   text,

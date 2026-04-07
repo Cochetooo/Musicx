@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
@@ -77,6 +78,11 @@ public partial class AlbumEditModal
 
     private async Task Save()
     {
+        if (!await ValidateWikipediaUrlAsync())
+        {
+            return;
+        }
+        
         _album.BeginRecordDate = _recordingDates?.Start;
         _album.EndRecordDate = _recordingDates?.End;
         
@@ -247,6 +253,55 @@ public partial class AlbumEditModal
 
         _selectedArtworkUrl = (await importResponse.Content.ReadAsStringAsync()).Trim('"');
         return _selectedArtworkUrl;
+    }
+    
+    private async Task<bool> ValidateWikipediaUrlAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_album.WikipediaUrl))
+        {
+            _album.WikipediaUrl = null;
+            return true;
+        }
+
+        var normalized = _album.WikipediaUrl.Trim();
+        if (!Uri.TryCreate(normalized, UriKind.Absolute, out var uri)
+            || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+        {
+            Snackbar.Add("Wikipedia URL is invalid.", Severity.Warning);
+            return false;
+        }
+
+        if (!Regex.IsMatch(uri.Host, @"(^|\.)wikipedia\.org$", RegexOptions.IgnoreCase)
+            || !uri.AbsolutePath.Contains("/wiki/", StringComparison.OrdinalIgnoreCase))
+        {
+            Snackbar.Add("Only valid Wikipedia page URLs are accepted.", Severity.Warning);
+            return false;
+        }
+
+        try
+        {
+            var pageTitle = Uri.UnescapeDataString(uri.AbsolutePath[(uri.AbsolutePath.LastIndexOf("/wiki/", StringComparison.OrdinalIgnoreCase) + 6)..]);
+            if (string.IsNullOrWhiteSpace(pageTitle))
+            {
+                Snackbar.Add("Wikipedia URL is invalid.", Severity.Warning);
+                return false;
+            }
+
+            var response = await Http.GetAsync($"https://en.wikipedia.org/api/rest_v1/page/summary/{Uri.EscapeDataString(pageTitle)}");
+            if (!response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Wikipedia page could not be verified.", Severity.Warning);
+                return false;
+            }
+        }
+        catch
+        {
+            Snackbar.Add("Wikipedia page could not be verified.", Severity.Warning);
+            return false;
+        }
+
+        _album.WikipediaUrl = normalized;
+        return true;
     }
 
     private void Clean()

@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using ISO3166;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -67,6 +68,15 @@ public partial class ArtistEditModal
             .OrderBy(name => name));
     }
     
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_hydrateIdentityName)
+        {
+            _hydrateIdentityName = false;
+            await _nameTextEdit.SetTextAsync(_artist.Name);
+        }
+    }
+    
     public async Task Show(OutArtist? artist = null)
     {
         _isEditing = artist is not null;
@@ -94,6 +104,11 @@ public partial class ArtistEditModal
 
     private async Task Save()
     {
+        if (!await ValidateWikipediaUrlAsync())
+        {
+            return;
+        }
+        
         _artist.ArtworkUrl = _selectedArtworkUrl ?? _artist.ArtworkUrl;
         var response = await Api.SaveAsync(_artist);
 
@@ -314,12 +329,53 @@ public partial class ArtistEditModal
         => !string.IsNullOrWhiteSpace(artist.OriginCountry)
            || !string.IsNullOrWhiteSpace(artist.OriginRegion)
            || !string.IsNullOrWhiteSpace(artist.OriginTown);
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    
+    private async Task<bool> ValidateWikipediaUrlAsync()
     {
-        if (_hydrateIdentityName)
+        if (string.IsNullOrWhiteSpace(_artist.WikipediaUrl))
         {
-            _hydrateIdentityName = false;
-            await _nameTextEdit.SetTextAsync(_artist.Name);
+            _artist.WikipediaUrl = null;
+            return true;
         }
+
+        var normalized = _artist.WikipediaUrl.Trim();
+        if (!Uri.TryCreate(normalized, UriKind.Absolute, out var uri)
+            || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+        {
+            Snackbar.Add("Wikipedia URL is invalid.", Severity.Warning);
+            return false;
+        }
+
+        if (!Regex.IsMatch(uri.Host, @"(^|\.)wikipedia\.org$", RegexOptions.IgnoreCase)
+            || !uri.AbsolutePath.Contains("/wiki/", StringComparison.OrdinalIgnoreCase))
+        {
+            Snackbar.Add("Only valid Wikipedia page URLs are accepted.", Severity.Warning);
+            return false;
+        }
+
+        try
+        {
+            var pageTitle = Uri.UnescapeDataString(uri.AbsolutePath[(uri.AbsolutePath.LastIndexOf("/wiki/", StringComparison.OrdinalIgnoreCase) + 6)..]);
+            if (string.IsNullOrWhiteSpace(pageTitle))
+            {
+                Snackbar.Add("Wikipedia URL is invalid.", Severity.Warning);
+                return false;
+            }
+
+            var response = await Http.GetAsync($"https://en.wikipedia.org/api/rest_v1/page/summary/{Uri.EscapeDataString(pageTitle)}");
+            if (!response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Wikipedia page could not be verified.", Severity.Warning);
+                return false;
+            }
+        }
+        catch
+        {
+            Snackbar.Add("Wikipedia page could not be verified.", Severity.Warning);
+            return false;
+        }
+
+        _artist.WikipediaUrl = normalized;
+        return true;
     }
 }

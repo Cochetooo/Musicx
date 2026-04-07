@@ -33,4 +33,5 @@ public sealed class OutAlbum : BaseOutputModel
     public string? SimplifiedGenreName { get; set; }
     public long? TotalDuration { get; set; }
     public int? TrackTotal { get; set; }
+    public string? WikipediaUrl { get; set; }
 }

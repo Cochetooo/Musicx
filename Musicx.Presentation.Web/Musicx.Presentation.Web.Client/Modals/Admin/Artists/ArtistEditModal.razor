@@ -124,6 +124,13 @@
                                               MaxLength="2000"
                                               @bind-Text="_artist.Description"
                                               Variant="Variant.Outlined"/>
+                                
+                                <MudTextField T="string?"
+                                              Label="Wikipedia URL"
+                                              Placeholder="https://en.wikipedia.org/wiki/..."
+                                              HelperText="Optional. Must be an existing Wikipedia page."
+                                              @bind-Text="_artist.WikipediaUrl"
+                                              Variant="Variant.Outlined" />
                             </MudStack>
                         </MudPaper>
 

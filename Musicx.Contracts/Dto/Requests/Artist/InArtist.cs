@@ -23,6 +23,7 @@ public sealed class InArtist : BaseInputModel
     public string? OriginCountry { get; set; }
     public string? OriginRegion { get; set; }
     public string? OriginTown { get; set; }
+    public string? WikipediaUrl { get; set; }
     
     public DateTime? FormationDate { get; set; }
     public DateTime? SplitDate { get; set; }
