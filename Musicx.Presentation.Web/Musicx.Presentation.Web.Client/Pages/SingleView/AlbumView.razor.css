@@ -25,6 +25,14 @@
     grid-template-columns: 480px 1fr 320px;
 }
 
+.album-header-right {
+    min-height: 135px;
+}
+
+.album-meta-text {
+    text-align: right;
+}
+
 .album-hero .mud-card-actions .glass-paper,
 .album-hero .album-rating-mini-card,
 .album-hero .factor-card {
@@ -61,17 +69,7 @@
 .album-rating-hover-details {
     display: grid;
     gap: 0.75rem;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: max-height 0.22s ease, opacity 0.22s ease, transform 0.22s ease;
-}
-
-.album-rating-hover-card:hover .album-rating-hover-details {
-    max-height: 220px;
-    opacity: 1;
-    transform: translateY(0);
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
 }
 
 .album-rating-mini-card,
@@ -80,6 +78,30 @@
     border-radius: 12px;
     padding: 0.65rem 0.8rem;
     background: rgba(255, 255, 255, 0.04);
+}
+
+.album-rating-donut-card {
+    justify-items: center;
+}
+
+.album-main-rating {
+    padding: 0.35rem 0.6rem;
+    border-radius: 14px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+}
+
+.album-side-button {
+    font-weight: 800;
+}
+
+.album-action-item {
+    display: flex;
+    align-items: end;
+    min-height: 56px;
+}
+
+.album-action-control {
+    min-height: 56px;
 }
 
 :deep(.bg-surface.animate-hover-up),

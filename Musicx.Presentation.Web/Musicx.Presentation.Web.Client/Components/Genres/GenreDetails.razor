@@ -15,7 +15,7 @@ else
     {
         <Descriptor>
             <DescriptorLabel>
-                Genres
+                GENRES
             </DescriptorLabel>
             <DescriptorValue>
                 <div class="animation-flip-container">
@@ -46,7 +46,7 @@ else
             {
                 <Descriptor>
                     <DescriptorLabel>
-                        Influences
+                        INFLUENCES
                     </DescriptorLabel>
                     <DescriptorValue>
                         <div class="d-flex flex-wrap gap-1" style="align-items: center;">
@@ -63,7 +63,7 @@ else
             {
                 <Descriptor>
                     <DescriptorLabel>
-                        Scenes
+                        SCENES
                     </DescriptorLabel>
                     <DescriptorValue>
                         <div class="d-flex flex-wrap gap-1" style="align-items: center;">
@@ -80,7 +80,7 @@ else
             {
                 <Descriptor>
                     <DescriptorLabel>
-                        Movements
+                        MOVEMENTS
                     </DescriptorLabel>
                     <DescriptorValue>
                         <div class="d-flex flex-wrap gap-1" style="align-items: center;">
@@ -97,7 +97,7 @@ else
             {
                 <Descriptor>
                     <DescriptorLabel>
-                        Descriptors
+                        DESCRIPTORS
                     </DescriptorLabel>
                     <DescriptorValue>
                         <div class="d-flex flex-wrap gap-1" style="align-items: center;">
@@ -124,8 +124,8 @@ else
                 {
                     <div class="d-flex flex-wrap gap-1" style="align-items: center;">
                         <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
-                                 Label="true" Color="Color.Surface" Style="width: 150px;">
-                            Genres
+                                 Label="true" Color="Color.Inherit" Style="width: 150px;">
+                            GENRES
                         </MudChip>
                         
                         @foreach (var genre in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Subgenre 
@@ -144,8 +144,8 @@ else
             {
                 <div class="d-flex flex-wrap gap-1" style="align-items: center;">
                     <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
-                             Label="true" Color="Color.Dark" Style="width: 150px;">
-                        Influences
+                             Label="true" Color="Color.Surface" Style="width: 150px;">
+                        INFLUENCES
                     </MudChip>
                     
                     @foreach (var genre in Album.InfluenceGenres)
@@ -159,8 +159,8 @@ else
             {
                 <div class="d-flex flex-wrap gap-1" style="align-items: center;">
                     <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
-                             Label="true" Color="Color.Dark" Style="width: 150px;">
-                        Scene
+                             Label="true" Color="Color.Surface" Style="width: 150px;">
+                        SCENES
                     </MudChip>
                     
                     @foreach (var scene in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Scene))
@@ -174,8 +174,8 @@ else
             {
                 <div class="d-flex flex-wrap gap-1" style="align-items: center;">
                     <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
-                             Label="true" Color="Color.Dark" Style="width: 150px;">
-                        Movement
+                             Label="true" Color="Color.Surface" Style="width: 150px;">
+                        MOVEMENTS
                     </MudChip>
                     
                     @foreach (var movement in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Movement))
@@ -189,8 +189,8 @@ else
             {
                 <div class="d-flex flex-wrap gap-1" style="align-items: center;">
                     <MudChip Class="montserrat py-1 px-3 ma-1 genre-badge animate-hover-up" T="string" Size="@Size"
-                             Label="true" Color="Color.Dark" Style="width: 150px;">
-                        Descriptors
+                             Label="true" Color="Color.Surface" Style="width: 150px;">
+                        DESCRIPTORS
                     </MudChip>
                     
                     @foreach (var descriptor in Album.PrimaryGenres.Where(g => g.Genre.Type == GenreType.Descriptor))

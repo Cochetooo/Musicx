@@ -14,6 +14,10 @@
     font-weight: 300;
 }
 
+.text-extra-light {
+    font-weight: 200;
+}
+
 .text-bold {
     font-weight: bold;
 }
