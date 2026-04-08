@@ -1,0 +1,151 @@
+@using Musicx.Application.Shared.Interfaces.Common
+@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Contracts.Enums
+@using Musicx.Presentation.Web.Client.Components
+@using Musicx.Presentation.Web.Client.Components.Base
+@using Musicx.Presentation.Web.Client.Components.Genres
+@using Musicx.Presentation.Web.Client.Components.Ratings
+@using ChartType = Musicx.Contracts.Enums.ChartType
+@inject IApiClient Api
+@inject IUserClientContext UserClientContext
+
+<MudGrid Spacing="3">
+    <MudItem xs="12" md="8">
+        <MudPaper Class="pa-6 bg-surface glass-card" Elevation="0">
+            <PanelTitle Text="Top Artistes" Count="@_artists.Total.ToString()" />
+            <MudStack Spacing="2" Class="mt-3">
+                @foreach (var row in _artists.Items.Select((artist, index) => new { artist, index }))
+                {
+                    <MudPaper Class="pa-3 artist-chart-row" Elevation="0">
+                        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="3">
+                                <MudText Typo="Typo.h4" Class="text-extra-bold color-primary">#@(row.index + 1)</MudText>
+                                <MudImage Src="@row.artist.ArtworkUrl" Alt="@row.artist.Name" Width="84" Height="84"
+                                          Class="rounded-lg" />
+                                <MudStack Spacing="0">
+                                    <MudLink Href="@($"/Artist/{row.artist.Id}")"><MudText Typo="Typo.h6" Class="text-bold color-white">@row.artist.Name</MudText></MudLink>
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                        <Flag CountryName="@(row.artist.OriginCountry ?? row.artist.CurrentCountry ?? "US")" />
+                                        <MudText Typo="Typo.caption" Class="color-secondary">@(row.artist.OriginCountry ?? row.artist.CurrentCountry ?? "Unknown")</MudText>
+                                    </MudStack>
+                                    <MudStack Row Wrap="Wrap.Wrap" Spacing="1" Class="mt-1">
+                                        @foreach (var genre in GetDisplayGenres(row.artist).Take(5))
+                                        {
+                                            <GenreBadge Genre="genre" Clickable Size="Size.Small" />
+                                        }
+                                    </MudStack>
+                                </MudStack>
+                            </MudStack>
+
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                                <DonutRating Rating="@row.artist.Stats?.Average" 
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)" 
+                                             Size="DonutRatingSize.Small" />
+                                
+                                <DonutRating Rating="@row.artist.Stats?.FanAverage" 
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)" 
+                                             Size="DonutRatingSize.ExtraSmall" />
+                                
+                                <DonutRating Rating="@row.artist.Stats?.NonFanAverage" 
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)" 
+                                             Size="DonutRatingSize.ExtraSmall" />
+                            </MudStack>
+                        </MudStack>
+                    </MudPaper>
+                }
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <MudPaper Class="pa-4 bg-default glass-card chart-filter-col" Elevation="0">
+            <PanelTitle Text="Filter" />
+            <MudStack Spacing="2" Class="mt-2">
+                <MudTextField Label="Search" Variant="Variant.Outlined" @bind-Value="_queryText" />
+                <MudSelect T="ChartType" Dense Label="Chart Type" Variant="Variant.Outlined" @bind-Value="_chartType">
+                    @foreach (var chartType in Enum.GetValues<ChartType>())
+                    {
+                        <MudSelectItem Value="chartType">@chartType</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect T="ArtistDiscriminator" Dense Label="Artist Type" Variant="Variant.Outlined" @bind-Value="_discriminator">
+                    @foreach (var discriminator in Enum.GetValues<ArtistDiscriminator>())
+                    {
+                        <MudSelectItem Value="discriminator">@discriminator</MudSelectItem>
+                    }
+                </MudSelect>
+                
+                <MudTextField Label="Country" Variant="Variant.Outlined" @bind-Value="_query.Country" />
+
+                <MudGrid Spacing="1">
+                    <MudItem xs="6"><MudNumericField Label="Min Rating" Variant="Variant.Outlined" @bind-Value="_query.MinRating" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Max Rating" Variant="Variant.Outlined" @bind-Value="_query.MaxRating" /></MudItem>
+                </MudGrid>
+
+                <MudGrid Spacing="1">
+                    <MudItem xs="6"><MudNumericField Label="Min User Age" T="short?" Variant="Variant.Outlined" @bind-Value="_query.MinUserAge" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Max User Age" T="short?" Variant="Variant.Outlined" @bind-Value="_query.MaxUserAge" /></MudItem>
+                </MudGrid>
+
+                <MudText Typo="Typo.caption">Popularity Weight: @_query.PopularityWeight</MudText>
+                <MudSlider T="short" Min="1" Max="10" Step="1" ValueLabel="true" @bind-Value="_popularityWeight" />
+
+                <MudSelect T="long?" Dense="true" Label="Main Genre" Variant="Variant.Outlined" @bind-Value="_query.MainGenreId">
+                    <MudSelectItem Value="@((long?)null)">All</MudSelectItem>
+                    @foreach (var g in _mainGenres)
+                    {
+                        <MudSelectItem Value="@((long?)g.Id)">@g.CanonicalName</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudCheckBox T="bool" Label="Avancé" @bind-Value="_advanced" />
+                @if (_advanced)
+                {
+                    <MudText Typo="Typo.caption">Sous-genres / influences</MudText>
+                    <MudStack Row Wrap="Wrap.Wrap" Spacing="1">
+                        @foreach (var g in _influenceCandidates)
+                        {
+                            <button class="genre-choice-btn @(IsInfluenceSelected(g.Id) ? "is-on" : string.Empty)" @onclick="() => ToggleInfluence(g.Id)">
+                                <GenreBadge Genre="g" Size="Size.Small" />
+                            </button>
+                        }
+                    </MudStack>
+                }
+
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@LoadArtists" Disabled="_isLoading">Generate</MudButton>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+<style>
+.artist-chart-row {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.09);
+}
+
+.artist-chart-row::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,.22), rgba(255,255,255,0));
+    transition: width .2s ease;
+}
+
+.artist-chart-row:hover::before 
+{ 
+    width: 20%; 
+}
+
+.genre-choice-btn 
+{ 
+    background: transparent; border: none; padding: 0; 
+}
+
+.genre-choice-btn.is-on 
+{ 
+    filter: saturate(1.3); transform: translateY(-1px); 
+}
+</style>

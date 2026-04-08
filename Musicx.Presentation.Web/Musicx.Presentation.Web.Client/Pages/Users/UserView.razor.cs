@@ -100,10 +100,10 @@ public partial class UserView : IAsyncDisposable
             Snackbar.Add(T["Web.UserView.UserNotFound"], Severity.Warning);
             return;
         }
-
+        
         _user = dataView.User;
         _albumRatingDistrib = dataView.RatingStats;
-        _maxRatingDistribCount = _albumRatingDistrib?.RatingCounts.Values.Max() ?? 1;
+        _maxRatingDistribCount = _albumRatingDistrib?.RatingCounts.Values.DefaultIfEmpty(1).Max() ?? 1;
         _favAlbums = dataView.FavoriteAlbums.ToList();
 
         if (dataView.TopGenres.Count > 0)

@@ -104,20 +104,32 @@ internal sealed class ArtistRepository(
         OrderSpecification<InArtist>? orderSpec = null,
         PagingOptions? pagingOptions = null)
     {
-        if (query is not ArtistFindQuery typedQuery)
+        try
         {
-            return new OutGenericList<OutArtist>();
+            if (query is not ArtistFindQuery typedQuery)
+            {
+                return new OutGenericList<OutArtist>();
+            }
+
+            var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, orderSpec, pagingOptions, false);
+            var result = await connection.FetchListDynamicAsync(sql, parameters);
+            var total = await CountAsync(typedQuery, joinSpec);
+
+            return new OutGenericList<OutArtist>
+            {
+                Items = result.Select(x => x.FromDicoToArtist()).ToList(),
+                Total = total
+            };
         }
-        
-        var (sql, parameters) = builder.BuildFilteredQuery(typedQuery, joinSpec, orderSpec, pagingOptions, false);
-        var result = await connection.FetchListDynamicAsync(sql, parameters);
-        var total = await CountAsync(typedQuery, joinSpec);
-        
-        return new OutGenericList<OutArtist>
+        catch (Exception ex)
         {
-            Items = result.Select(x => x.FromDicoToArtist()).ToList(),
-            Total = total
-        };
+            _logger.LogError(ex, ex.Message);
+            return new OutGenericList<OutArtist>
+            {
+                Items = [],
+                Total = 0
+            };
+        }
     }
 
     public async Task<List<OutArtist>> FindInAsync(IEnumerable<long> ids,

@@ -221,6 +221,25 @@ public sealed class ApiClient(HttpClient httpClient, ILoggerFactory loggerFactor
             parts.Add($"filterExact={query.Search.Exact.ToString().ToLowerInvariant()}");
             parts.Add($"filterSimilitude={query.Search.Similarity.ToString(CultureInfo.InvariantCulture)}");
         }
+        
+        if (query.GetType().Name == "ArtistFindQuery")
+        {
+            object? Read(string name) => query.GetType().GetProperty(name)?.GetValue(query);
+
+            if (Read("MinRating") is decimal minRating) parts.Add($"minRating={minRating.ToString(CultureInfo.InvariantCulture)}");
+            if (Read("MaxRating") is decimal maxRating) parts.Add($"maxRating={maxRating.ToString(CultureInfo.InvariantCulture)}");
+            if (Read("MinUserAge") is short minUserAge) parts.Add($"minUserAge={minUserAge}");
+            if (Read("MaxUserAge") is short maxUserAge) parts.Add($"maxUserAge={maxUserAge}");
+            if (Read("PopularityWeight") is short popularityWeight) parts.Add($"popularityWeight={popularityWeight}");
+            if (Read("ChartType") is Enum chartType) parts.Add($"chartType={Convert.ToInt32(chartType)}");
+            if (Read("Discriminator") is Enum discriminator) parts.Add($"discriminator={Convert.ToInt32(discriminator)}");
+            if (Read("Country") is string country && !string.IsNullOrWhiteSpace(country)) parts.Add($"country={Uri.EscapeDataString(country)}");
+            if (Read("MainGenreId") is long mainGenreId) parts.Add($"mainGenreId={mainGenreId}");
+            if (Read("InfluenceGenreIds") is IEnumerable<long> influenceGenreIds)
+            {
+                parts.AddRange(influenceGenreIds.Select(id => $"influenceGenreIds={id}"));
+            }
+        }
 
         if (parts.Count == 0)
         {

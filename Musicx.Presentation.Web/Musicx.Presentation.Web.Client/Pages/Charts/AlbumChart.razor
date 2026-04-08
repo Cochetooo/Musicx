@@ -1,0 +1,72 @@
+@using Musicx.Application.Shared.Interfaces.Common
+@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Presentation.Web.Client.Components.Albums
+@using Musicx.Presentation.Web.Client.Components.Base
+@using ChartType = Musicx.Contracts.Enums.ChartType
+@inject IApiClient Api
+@inject IUserClientContext UserClientContext
+
+<MudGrid Spacing="3">
+    <MudItem xs="12" md="8">
+        <MudPaper Class="pa-6 bg-surface glass-card" Elevation="0">
+            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                <PanelTitle Text="Résultats" Count="@_outAlbumList.Total.ToString()" />
+                <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary">
+                    <MudButton OnClick="@(() => _viewMode = AlbumChartViewMode.Grid)" Variant="@(_viewMode == AlbumChartViewMode.Grid ? Variant.Filled : Variant.Outlined)">Grid</MudButton>
+                    <MudButton OnClick="@(() => _viewMode = AlbumChartViewMode.List)" Variant="@(_viewMode == AlbumChartViewMode.List ? Variant.Filled : Variant.Outlined)">List</MudButton>
+                </MudButtonGroup>
+            </MudStack>
+
+            @if (_viewMode == AlbumChartViewMode.Grid)
+            {
+                <AlbumGridView Albums="@_outAlbumList.Items" IsGrouped="false" RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" ShowRank ShowRating="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)" ShowRatingCount="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)" Zoom="1.7" />
+            }
+            else
+            {
+                <AlbumListView Albums="@_outAlbumList.Items" IsGrouped="false" ShowRank="_showRankOnList" RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" ShowRatings="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)" />
+            }
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <MudPaper Class="pa-4 bg-default glass-card chart-filter-col" Elevation="0">
+            <PanelTitle Text="Filtre" />
+            <MudStack Spacing="2" Class="mt-2">
+                <MudSelect T="ChartType" Dense="true" Label="Chart Type" Variant="Variant.Outlined" @bind-Value="_query.ChartType">
+                    @foreach (var chartType in Enum.GetValues<ChartType>())
+                    {
+                        <MudSelectItem Value="chartType">@chartType</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudTextField Label="Search" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.Name" />
+
+                <MudGrid Spacing="1">
+                    <MudItem xs="6"><MudNumericField Label="Min Age" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MinAge" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Max Age" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MaxAge" /></MudItem>
+                </MudGrid>
+
+                <MudText Typo="Typo.caption">Release Range</MudText>
+                <!-- <MudRangeSlider T="int" Min="1900" Max="@DateTime.UtcNow.Year" Step="1" ValueLabel="true" 
+                                @bind-Value="_releaseYearRange" @bind-UpperValue="@_upperReleaseYearRange" /> -->
+
+                <MudGrid Spacing="1">
+                    <MudItem xs="6"><MudNumericField Label="Min Rating" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MinRating" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Max Rating" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MaxRating" /></MudItem>
+                </MudGrid>
+
+                <MudGrid Spacing="1">
+                    <MudItem xs="6"><MudNumericField Label="Min Ratings" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MinNbRatings" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Max Ratings" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MaxNbRatings" /></MudItem>
+                </MudGrid>
+
+                <MudText Typo="Typo.caption">Popularity Weight: @_query.PopularityWeight</MudText>
+                <MudSlider T="short" Min="1" Max="10" Step="1" ValueLabel="true" @bind-Value="_query.PopularityWeight" />
+
+                <MudCheckBox T="bool" Label="Afficher le rang en mode liste" @bind-Value="_showRankOnList" />
+
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@_isLoading" OnClick="LoadChart">Generate</MudButton>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

@@ -1,0 +1,78 @@
+﻿@page "/Charts"
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="charts-page pa-6">
+    <MudCard Class="bg-main pa-8 mb-4 charts-hero" Elevation="0">
+        <MudText Typo="Typo.h1" Class="montserrat text-mega-bold">Charts</MudText>
+        <MudText Typo="Typo.body1" Class="color-secondary">Create your own albums, artists, genres or tracks rankings!</MudText>
+    </MudCard>
+
+    <div class="charts-tab-bar">
+        @foreach (var item in _tabs)
+        {
+            <button class="charts-tab-btn @(item.Tab == _activeTab ? "is-active" : string.Empty)"
+                    @onclick="() => SetTab(item.Tab)">
+                @item.Label
+            </button>
+        }
+    </div>
+
+    <div class="mt-6">
+        @switch (_activeTab)
+        {
+            case ChartsTab.TopAlbums:
+                <AlbumChart />
+                break;
+            case ChartsTab.TopArtists:
+                <ArtistChart />
+                break;
+            case ChartsTab.TopGenres:
+                <GenreChart />
+                break;
+            case ChartsTab.TopSongs:
+                <SongChart />
+                break;
+        }
+    </div>
+</MudContainer>
+
+<style>
+    .charts-page {
+        position: relative;
+    }
+
+    .charts-hero {
+        border-radius: 20px;
+    }
+
+    .charts-tab-bar {
+        position: sticky;
+        top: 72px;
+        z-index: 40;
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        background: rgba(10, 10, 10, 0.5);
+        backdrop-filter: blur(8px);
+        padding: 0.8rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+    }
+
+    .charts-tab-btn {
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        font-weight: 800;
+        font-size: 1.05rem;
+        padding: 0.75rem 1.1rem;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+
+    .charts-tab-btn:hover,
+    .charts-tab-btn.is-active {
+        border-color: var(--mud-palette-primary);
+        background: color-mix(in srgb, var(--mud-palette-primary) 25%, transparent);
+        transform: translateY(-1px);
+    }
+</style>

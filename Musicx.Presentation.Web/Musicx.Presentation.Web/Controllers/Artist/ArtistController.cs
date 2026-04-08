@@ -10,6 +10,7 @@ using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Artists;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
+using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Specifications.Artist;
 using Musicx.Presentation.Web.Contexts;
 
@@ -184,6 +185,17 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
+        [FromQuery] decimal? minRating = null,
+        [FromQuery] decimal? maxRating = null,
+        [FromQuery] short? minUserAge = null,
+        [FromQuery] short? maxUserAge = null,
+        [FromQuery] short? popularityWeight = null,
+        [FromQuery] ChartType? chartType = null,
+        [FromQuery] ArtistDiscriminator? discriminator = null,
+        [FromQuery] string? country = null,
+        [FromQuery] long? mainGenreId = null,
+        [FromQuery] long[]? primaryGenreIds = null,
+        [FromQuery] long[]? influenceGenreIds = null,
         [FromQuery] ArtistJoinSpecification? joins = null,
         [FromQuery] ArtistOrderSpecification? order = null,
         [FromQuery] PagingOptions? paging = null)
@@ -196,7 +208,17 @@ public sealed class ArtistController(IArtistRepository artistRepository,
                 new ArtistFindQuery
                 {
                     Search = new() { Exact = filterExact, Similarity = filterSimilitude },
-                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter),
+                    MinRating = minRating,
+                    MaxRating = maxRating,
+                    MinUserAge = minUserAge,
+                    MaxUserAge = maxUserAge,
+                    PopularityWeight = popularityWeight,
+                    ChartType = chartType,
+                    Discriminator = discriminator,
+                    Country = country,
+                    MainGenreId = mainGenreId,
+                    InfluenceGenreIds = influenceGenreIds
                 },
                 joins,
                 order,

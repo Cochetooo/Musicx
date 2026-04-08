@@ -15,16 +15,27 @@
             <MudDivider Class="mb-3"/>
         }
 
-        @foreach (var album in group.Value)
+        @{
+            var rankedAlbums = group.Value.Select((album, index) => new { album, index });
+        }
+
+        @foreach (var rankedAlbum in rankedAlbums)
         {
+            var album = rankedAlbum.album;
             <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="py-1 animate-swipe-right">
                 <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                    @if (ShowRank)
+                    {
+                        <MudText Typo="Typo.h5" Class="text-extra-bold color-primary mr-2" Style="min-width: 44px;">
+                            #@(rankedAlbum.index + 1)
+                        </MudText>
+                    }
                     <MudImage Src="@album.ArtworkUrl" Width="@((int)(Zoom * 48))" Height="@((int)(Zoom * 48))"
                               @key="album.ArtworkUrl"
                               Class="rounded-lg mr-3" Elevation="8"/>
                     <MudStack Spacing="1">
                         <MudLink Href="@($"/Album/{album.Id}")">
-                            <MudText Typo="Typo.body1" Class="@("color-primary" 
+                            <MudText Typo="Typo.body1" Class="@("color-primary"
                                                               + (album.Stats is { Average: > 7200, Count: >= 10 } ? " text-extra-bold" : string.Empty))">
                                 @album.Name
                                 @if (album.EnglishName is not null)

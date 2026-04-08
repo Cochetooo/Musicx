@@ -3,6 +3,7 @@ using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
 using Musicx.Application.Shared.Interfaces.Persistence;
 using Musicx.Contracts.Dto.Requests.Artist;
+using Musicx.Contracts.Enums;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
 using Musicx.Infrastructure.API.Persistence.Columns.Artist;
 using Musicx.Infrastructure.API.Persistence.Columns.User;
@@ -213,7 +214,30 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
     }
 
     internal override string BuildGroupBy(IJoinSpecification<InArtist>? spec = null)
-        => $" GROUP BY ar0.{ArtistColumns.Id}";
+    {
+        if (spec is not ArtistJoinSpecification typedSpec)
+        {
+            return $" GROUP BY ar0.{ArtistColumns.Id}";
+        }
+
+        var groupings = new List<string>
+        {
+            $"ar0.{ArtistColumns.Id}"
+        };
+
+        if (typedSpec.IncludeStats)
+        {
+            groupings.Add($"arst0.{ArtistRatingStatColumns.ArtistId}");
+            groupings.Add($"arst0.{ArtistRatingStatColumns.Average}");
+            groupings.Add($"arst0.{ArtistRatingStatColumns.Count}");
+            groupings.Add($"arst0.{ArtistRatingStatColumns.FanAverage}");
+            groupings.Add($"arst0.{ArtistRatingStatColumns.FanCount}");
+            groupings.Add($"arst0.{ArtistRatingStatColumns.NonFanAverage}");
+            groupings.Add($"arst0.{ArtistRatingStatColumns.NonFanCount}");
+        }
+        
+        return $" GROUP BY {string.Join(", ", groupings)}";
+    }
     
     internal override (string Sql, List<NpgsqlParameter> Parameters) BuildFilteredQuery(
         IFindQuery<InArtist> query,
@@ -227,13 +251,121 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
             return (string.Empty, []);
         }
 
-        return BuildDefaultFilteredQuery(
-            typedQuery,
-            joinSpec,
-            orderSpec,
-            pagingOptions,
-            countOnly,
-            [$"ar0.{ArtistColumns.Name}", $"ar0.{ArtistColumns.Alias}"],
-            $"ar0.{ArtistColumns.Name}");
+        var sql = countOnly
+            ? "SELECT COUNT(*) FROM artists ar0 "
+            : BuildSelect(joinSpec);
+
+        var parameters = new List<NpgsqlParameter>();
+        var where = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(typedQuery.RawSearch?.Value))
+        {
+            Filter(ref sql, 
+                [$"ar0.{ArtistColumns.Name}", 
+                    $"ar0.{ArtistColumns.Alias}"], 
+                typedQuery.RawSearch.Value ?? string.Empty, 
+                parameters, 
+                typedQuery.Search?.Exact ?? false, 
+                typedQuery.Search?.Similarity ?? 0.4
+            );
+        }
+
+        if (typedQuery.MinRating is not null)
+        {
+            where.Add($"COALESCE(arst0.{ArtistRatingStatColumns.Average},0) >= @minRating");
+            parameters.Add(new("@minRating", typedQuery.MinRating));
+        }
+
+        if (typedQuery.MaxRating is not null)
+        {
+            where.Add($"COALESCE(arst0.{ArtistRatingStatColumns.Average},0) <= @maxRating"); 
+            parameters.Add(new("@maxRating", typedQuery.MaxRating));
+        }
+
+        if (typedQuery.MinUserAge is not null)
+        {
+            where.Add("EXISTS (SELECT 1 FROM user_album_attrs uaa_age JOIN users u_age ON u_age.user_id = uaa_age.user_album_attr_user_id JOIN albums al_age ON al_age.album_id = uaa_age.user_album_attr_album_id WHERE al_age.album_artist_id = ar0.artist_id AND DATE_PART('year', age(now(), u_age.user_birth_date)) >= @minUserAge)"); 
+            parameters.Add(new("@minUserAge", typedQuery.MinUserAge));
+        }
+
+        if (typedQuery.MaxUserAge is not null)
+        {
+            where.Add("EXISTS (SELECT 1 FROM user_album_attrs uaa_age2 JOIN users u_age2 ON u_age2.user_id = uaa_age2.user_album_attr_user_id JOIN albums al_age2 ON al_age2.album_id = uaa_age2.user_album_attr_album_id WHERE al_age2.album_artist_id = ar0.artist_id AND DATE_PART('year', age(now(), u_age2.user_birth_date)) <= @maxUserAge)"); 
+            parameters.Add(new("@maxUserAge", typedQuery.MaxUserAge));
+        }
+
+        if (typedQuery.Discriminator is not null)
+        {
+            where.Add($"ar0.{ArtistColumns.Discriminator} = @disc"); 
+            parameters.Add(new("@disc", typedQuery.Discriminator.ToString()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(typedQuery.Country))
+        {
+            where.Add($"(ar0.{ArtistColumns.OriginCountry} ILIKE @country OR ar0.{ArtistColumns.CurrentCountry} ILIKE @country)"); 
+            parameters.Add(new("@country", typedQuery.Country));
+        }
+
+        if (typedQuery.MainGenreId is not null)
+        {
+            where.Add("EXISTS (SELECT 1 FROM jsonb_array_elements(COALESCE(ar0.artist_calculated_genre_counts,'[]')::jsonb) ge JOIN genre_closure gc ON gc.genre_closure_descendant_id = (ge->>'genreId')::bigint WHERE gc.genre_closure_ancestor_id = @mainGenreId)"); 
+            parameters.Add(new("@mainGenreId", typedQuery.MainGenreId));
+        }
+        
+        if (typedQuery.PrimaryGenreIds is { Length: > 0 })
+        {
+            where.Add("EXISTS (SELECT 1 FROM jsonb_array_elements(COALESCE(ar0.artist_calculated_genre_counts,'[]')::jsonb) sge WHERE (sge->>'genreId')::bigint = ANY(@primaryGenreIds))"); 
+            parameters.Add(new("@influenceGenreIds", typedQuery.InfluenceGenreIds));
+        }
+
+        if (typedQuery.InfluenceGenreIds is { Length: > 0 })
+        {
+            where.Add("EXISTS (SELECT 1 FROM jsonb_array_elements(COALESCE(ar0.artist_calculated_influence_counts,'[]')::jsonb) ie WHERE (ie->>'genreId')::bigint = ANY(@influenceGenreIds))"); 
+            parameters.Add(new("@influenceGenreIds", typedQuery.InfluenceGenreIds));
+        }
+        
+        if (where.Count > 0)
+        {
+            sql += (sql.Contains(" WHERE ") ? " AND " : " WHERE ") + string.Join(" AND ", where);
+        }
+        
+        //sql += BuildGroupBy(joinSpec);
+
+        if (countOnly)
+        {
+            return ($"SELECT COUNT(*) FROM ({sql}) q0", parameters);
+        }
+
+        if (typedQuery.ChartType is not null)
+        {
+            sql += typedQuery.ChartType switch
+            {
+                ChartType.Bottom => $" ORDER BY COALESCE(arst0.{ArtistRatingStatColumns.Average},0) ASC, COALESCE(arst0.{ArtistRatingStatColumns.Count},0) DESC",
+                ChartType.Popular => $" ORDER BY COALESCE(arst0.{ArtistRatingStatColumns.Count},0) DESC, COALESCE(arst0.{ArtistRatingStatColumns.Average},0) DESC",
+                ChartType.Esoteric => $" ORDER BY (COALESCE(arst0.{ArtistRatingStatColumns.Average},0) - (COALESCE(arst0.{ArtistRatingStatColumns.Count},0) * 0.01 * @popWeight)) DESC",
+                _ => $" ORDER BY ((COALESCE(arst0.{ArtistRatingStatColumns.Average},0) * (11-@popWeight)) + (LEAST(COALESCE(arst0.{ArtistRatingStatColumns.Count},0),500) * @popWeight)) DESC"
+            };
+            
+            parameters.Add(new NpgsqlParameter("@popWeight", typedQuery.PopularityWeight ?? 5));
+        }
+        else
+        {
+            if (orderSpec is not null)
+            {
+                sql += BuildOrderBy(orderSpec);
+            }
+            else
+            {
+                sql += !string.IsNullOrWhiteSpace(query.RawSearch?.Value)
+                    ? $" ORDER BY similarity(ar0.{ArtistColumns.Name}, @filter) DESC"
+                    : $" ORDER BY ar0.{ArtistColumns.Name}";
+            }
+        }
+        
+        sql += " OFFSET @skip LIMIT @take";
+        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
+        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
+
+        return (sql, parameters);
     }
 }
