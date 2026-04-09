@@ -260,4 +260,6 @@
     <data name="Web.AlbumView.WriteReview" xml:space="preserve">
         <value>Scrivi una recensione</value>
     </data>
+    <data name="Web.Search.NoArtistFoundPrompt" xml:space="preserve"><value>Nessun artista trovato per questa ricerca. Vuoi crearne uno?</value></data>
+    <data name="Web.Search.CreateNew" xml:space="preserve"><value>Crea nuovo</value></data>
 </root>

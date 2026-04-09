@@ -618,6 +618,15 @@ namespace Musicx.Infrastructure.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create new.
+        /// </summary>
+        internal static string Web_Search_CreateNew {
+            get {
+                return ResourceManager.GetString("Web.Search.CreateNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type something to display results....
         /// </summary>
         internal static string Web_Search_EmptyHint {
@@ -632,6 +641,15 @@ namespace Musicx.Infrastructure.Shared.Resources {
         internal static string Web_Search_Loading {
             get {
                 return ResourceManager.GetString("Web.Search.Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No artist found for this query. Do you want to create one?.
+        /// </summary>
+        internal static string Web_Search_NoArtistFoundPrompt {
+            get {
+                return ResourceManager.GetString("Web.Search.NoArtistFoundPrompt", resourceCulture);
             }
         }
         

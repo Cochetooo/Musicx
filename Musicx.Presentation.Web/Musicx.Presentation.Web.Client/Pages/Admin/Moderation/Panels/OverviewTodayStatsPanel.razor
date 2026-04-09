@@ -1,0 +1,17 @@
+@using Musicx.Presentation.Web.Client.Components.Base
+<MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
+    <PanelTitle Text="Today's Creations" />
+    <MudGrid Class="mt-2">
+        <MudItem xs="6"><MudText Typo="Typo.subtitle2">Users</MudText><MudText Typo="Typo.h5">@Users</MudText></MudItem>
+        <MudItem xs="6"><MudText Typo="Typo.subtitle2">Artists</MudText><MudText Typo="Typo.h5">@Artists</MudText></MudItem>
+        <MudItem xs="6"><MudText Typo="Typo.subtitle2">Albums</MudText><MudText Typo="Typo.h5">@Albums</MudText></MudItem>
+        <MudItem xs="6"><MudText Typo="Typo.subtitle2">Genres</MudText><MudText Typo="Typo.h5">@Genres</MudText></MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    [Parameter] public int Users { get; set; }
+    [Parameter] public int Artists { get; set; }
+    [Parameter] public int Albums { get; set; }
+    [Parameter] public int Genres { get; set; }
+}

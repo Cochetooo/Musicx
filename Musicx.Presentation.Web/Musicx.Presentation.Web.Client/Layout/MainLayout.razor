@@ -84,6 +84,20 @@
         
         <!-- Light/Dark Mode Switch -->
         <ThemeModeSwitch @bind-IsDarkMode="_isDarkMode" />
+        
+        <MudMenu Icon="@Icons.Material.Filled.StarRate"
+                 Size="Size.Medium"
+                 Dense
+                 Color="Color.Inherit"
+                 Variant="Variant.Text">
+            @foreach (var mode in _quickRatingModes)
+            {
+                <MudMenuItem OnClick="@(() => ChangeRatingMode(mode))"
+                             Disabled="@((UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen) == mode)">
+                    @mode.ToDescriptionString()
+                </MudMenuItem>
+            }
+        </MudMenu>
 
         <MudMenu
             Variant="Variant.Text"
@@ -148,23 +162,10 @@
             {
                 if (UserClientContext.Can("admin.dashboard.read"))
                 {
-                    <!-- Admin > Artist Dashboard -->
-                    <MudMenuItem Href="/Admin/ArtistDashboard"
-                                 Icon="@Icons.Material.Filled.Person"
+                    <MudMenuItem Href="/Admin/ModerationDashboard"
+                                 Icon="@Icons.Material.Filled.AdminPanelSettings"
                                  IconColor="Color.Primary"
-                                 Label="Artist Dashboard"/>
-
-                    <!-- Admin > Genre Dashboard -->
-                    <MudMenuItem Href="/Admin/GenreDashboard"
-                                 Icon="@Icons.Material.Filled.Piano"
-                                 IconColor="Color.Primary"
-                                 Label="Genre Dashboard"/>
-
-                    <!-- Admin > Role Dashboard -->
-                    <MudMenuItem Href="/Admin/RoleDashboard"
-                                 Icon="@Icons.Material.Filled.PersonPin"
-                                 IconColor="Color.Primary"
-                                 Label="Role Dashboard"/>
+                                 Label="Moderation Dashboard"/>
 
                     <MudDivider/>
                 }
@@ -173,39 +174,6 @@
                              Icon="@Icons.Material.Filled.Logout"
                              IconColor="Color.Primary"
                              Label="@T["Web.Nav.SignOut"]"/>
-                
-                <MudDivider />
-                
-                <MudMenuItem Icon="@Icons.Material.Filled.Visibility"
-                             IconColor="Color.Primary">
-                    <ChildContent>
-                        <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Style="width: 100%;">
-                            <MudText>@T["Web.Nav.ShowRatings"]</MudText>
-                            <MudSpacer/>
-                            <MudSwitch T="bool"
-                                       Value="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
-                                       ValueChanged="ToggleRatings"
-                                       Color="Color.Primary"/>
-                        </MudStack>
-                    </ChildContent>
-                </MudMenuItem>
-                
-                <MudMenuItem Icon="@Icons.Material.Filled.StarRate"
-                             IconColor="Color.Primary">
-                    <ChildContent>
-                        <MudSelect T="RatingMode"
-                                   Dense="true"
-                                   Label="@T["Web.Nav.RatingMode"]"
-                                   Value="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)"
-                                   ValueChanged="ChangeRatingMode"
-                                   Variant="Variant.Outlined">
-                            @foreach (var mode in _quickRatingModes)
-                            {
-                                <MudSelectItem Value="@mode">@mode.ToDescriptionString()</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </ChildContent>
-                </MudMenuItem>
             }
             
             <MudMenuItem

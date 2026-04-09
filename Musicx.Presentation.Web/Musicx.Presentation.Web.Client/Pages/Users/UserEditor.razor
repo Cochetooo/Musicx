@@ -34,7 +34,7 @@
         }
         else
         {
-            <MudTabs Rounded="true" PanelClass="pa-4" Elevation="1">
+            <MudTabs Rounded="true" TabPanelsClass="pa-4" Elevation="1">
                 <MudTabPanel Text="@T["Web.UserEditor.TabProfile"]" Icon="@Icons.Material.Filled.Person">
                     <MudStack Spacing="4">
                         <MudPaper Class="pa-4 user-profile-header" Elevation="0">
@@ -161,10 +161,14 @@
                                     <MudText Typo="Typo.h6">@T["Web.UserEditor.Display"]</MudText>
                                     <MudDivider Class="my-2" />
                                     <MudStack Spacing="2">
-                                        <MudSwitch @bind-Value="_user.PrefDarkMode" Color="Color.Primary" Label="@T["Web.UserEditor.DarkMode"]" ThumbIcon="@Icons.Material.Filled.DarkMode" />
-                                        <MudSwitch @bind-Value="_user.PrefSimpleGenre" Color="Color.Secondary" Label="@T["Web.UserEditor.SimpleGenreDisplay"]" />
-                                        <MudSwitch @bind-Value="_user.PrefHighGraphics" Color="Color.Tertiary" Label="@T["Web.UserEditor.HighGraphics"]" />
-                                        <MudText Typo="Typo.caption" Class="color-secondary">@T["Web.UserEditor.HighGraphicsHint"]</MudText>
+                                        <MudSwitchM3 @bind-Value="_user.PrefDarkMode" Color="Color.Secondary" 
+                                                     Label="@T["Web.UserEditor.DarkMode"]" ThumbIcon="@Icons.Material.Filled.DarkMode" />
+                                        
+                                        <MudSwitchM3 @bind-Value="_user.PrefSimpleGenre" Color="Color.Secondary" 
+                                                     Label="@T["Web.UserEditor.SimpleGenreDisplay"]" />
+                                        
+                                        <MudSwitchM3 @bind-Value="_user.PrefHighGraphics" Color="Color.Secondary" 
+                                                     Label="@T["Web.UserEditor.HighGraphics"]" />
                                     </MudStack>
                                 </section>
 
@@ -172,12 +176,14 @@
                                     <MudText Typo="Typo.h6">@T["Web.UserEditor.Ratings"]</MudText>
                                     <MudDivider Class="my-2" />
                                     <MudStack Spacing="2">
-                                        <MudSwitch @bind-Value="_user.PrefShowRatings" Color="Color.Tertiary" Label="@T["Web.UserEditor.ShowRatings"]" />
-                                        <MudSwitch @bind-Value="_user.PrefAutoFollow" Color="Color.Warning" Label="@T["Web.UserEditor.AutoFollow"]" ThumbIcon="@Icons.Material.Filled.AutoAwesome" />
-                                        <MudSwitch @bind-Value="_user.PrefAutoComputeAdvancedRatings" Color="Color.Success" Label="@T["Web.UserEditor.AutoComputeAdvancedRatings"]" ThumbIcon="@Icons.Material.Filled.AutoFixHigh" />
-                                        <MudText Typo="Typo.caption" Class="color-secondary">
-                                            @T.Get("Web.UserEditor.AutoFollowHint", RatingHelper.GetRatingFormatted(7000m, UserClientContext.CurrentUser?.PrefRatingMode ?? 0))
-                                        </MudText>
+                                        <MudSwitchM3 @bind-Value="_user.PrefShowRatings" Color="Color.Secondary" 
+                                                   Label="@T["Web.UserEditor.ShowRatings"]" />
+                                        
+                                        <MudSwitchM3 @bind-Value="_user.PrefAutoFollow" Color="Color.Secondary" 
+                                                   Label="@T["Web.UserEditor.AutoFollow"]" ThumbIcon="@Icons.Material.Filled.AutoAwesome" />
+                                        
+                                        <MudSwitchM3 @bind-Value="_user.PrefAutoComputeAdvancedRatings" Color="Color.Secondary" 
+                                                   Label="@T["Web.UserEditor.AutoComputeAdvancedRatings"]" ThumbIcon="@Icons.Material.Filled.AutoFixHigh" />
 
                                         <MudText Typo="Typo.subtitle1" Class="mt-3">@T["Web.UserEditor.RatingMode"]</MudText>
                                         <MudStack Row="true" Wrap="Wrap.Wrap" Justify="Justify.Center" Spacing="2" Class="rating-mode-group">

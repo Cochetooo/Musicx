@@ -109,6 +109,11 @@ public partial class ArtistEditModal
             return;
         }
         
+        if (!_isEditing && !UserClientContext.Can("user.artist.auto_create"))
+        {
+            _artist.IsVisible = false;
+        }
+        
         _artist.ArtworkUrl = _selectedArtworkUrl ?? _artist.ArtworkUrl;
         var response = await Api.SaveAsync(_artist);
 

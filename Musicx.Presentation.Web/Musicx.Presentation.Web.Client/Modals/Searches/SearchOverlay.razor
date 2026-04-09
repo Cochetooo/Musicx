@@ -1,6 +1,7 @@
 ﻿@using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Application.Shared.Interfaces.UseCases
+@using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Contracts.Dto.Requests.Album
 @using Musicx.Contracts.Dto.Requests.Artist
 @using Musicx.Contracts.Dto.Requests.Genre
@@ -11,11 +12,13 @@
 @using Musicx.Contracts.Dto.Responses.Genre
 @using Musicx.Contracts.Dto.Responses.User
 @using Musicx.Presentation.Web.Client.Components
+@using Musicx.Presentation.Web.Client.Modals.Admin.Artists
 @using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Internal
 @inject IJSRuntime JS
 @inject IApiClient Api
 @inject NavigationManager Navigation
 @inject ITranslationService T
+@inject IUserClientContext UserClientContext
 
 <HeadContent>
     <link rel="stylesheet" href="Css/Features/Search/search-overlay.css" />
@@ -100,6 +103,18 @@
                                 </div>
                             }
                         </div>
+                        
+                        @if (_artistResults.Count == 0
+                            && !_isLoading
+                             && UserClientContext.Can("admin.artist.read"))
+                        {
+                            <MudAlert Severity="Severity.Info" Class="mt-3">
+                                @T["Web.Search.NoArtistFoundPrompt"]
+                                <MudLink Href="#" OnClick="@OpenArtistCreation" Underline="Underline.Always">
+                                    @T["Web.Search.CreateNew"]
+                                </MudLink>
+                            </MudAlert>
+                        }
                     }
                     else
                     {
@@ -191,3 +206,5 @@
         </MudPaper>
     </div>
 </div>
+
+<ArtistEditModal @ref="_artistEditModal" />

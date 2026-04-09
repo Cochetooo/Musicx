@@ -1,0 +1,25 @@
+@using Musicx.Contracts.Dto.Responses.Artist
+@using Musicx.Presentation.Web.Client.Components.Base
+<MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
+    <PanelTitle Text="Pending Artists" Count="@PendingArtists.Count.ToString()" />
+    <MudList T="RenderFragment" Dense>
+        @foreach (var artist in PendingArtists)
+        {
+            <MudListItem>
+                <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width:100%">
+                    <MudText>@artist.Name</MudText>
+                    <MudStack Row>
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() => OnReject.InvokeAsync(artist))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Success" OnClick="@(() => OnAccept.InvokeAsync(artist))" />
+                    </MudStack>
+                </MudStack>
+            </MudListItem>
+        }
+    </MudList>
+</MudPaper>
+
+@code {
+    [Parameter] public IReadOnlyList<OutArtist> PendingArtists { get; set; } = [];
+    [Parameter] public EventCallback<OutArtist> OnAccept { get; set; }
+    [Parameter] public EventCallback<OutArtist> OnReject { get; set; }
+}

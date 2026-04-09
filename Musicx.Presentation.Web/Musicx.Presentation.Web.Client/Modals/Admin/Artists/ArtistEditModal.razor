@@ -1,5 +1,6 @@
 @using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Shared.Interfaces.UseCases
+@using Musicx.Application.Web.Interfaces.Models.Auth
 @using Musicx.Contracts.Dto.Requests
 @using Musicx.Contracts.Dto.Requests.Artist
 @using Musicx.Contracts.Dto.Responses
@@ -10,6 +11,7 @@
 @inject IApiClient Api
 @inject HttpClient Http
 @inject ISnackbar Snackbar
+@inject IUserClientContext UserClientContext
 
 <MudDialog @ref="_modalRef" Class="artist-modal pa-2">
     <TitleContent>

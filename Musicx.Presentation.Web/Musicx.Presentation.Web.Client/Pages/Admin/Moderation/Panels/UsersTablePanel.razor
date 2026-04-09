@@ -1,0 +1,37 @@
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Contracts.Dto.Responses.User
+@using Musicx.Presentation.Web.Client.Components.Base
+<MudTable T="OutUser" ServerData="@ServerData" Dense Hover Elevation="0" Class="pa-4 bg-surface animate-hover-up">
+    <ToolBarContent>
+        <PanelTitle Text="Users" Count="@Total.ToString()" />
+        <MudSpacer />
+        <MudTextField Value="@Search" ValueChanged="@SearchChanged" Placeholder="Search users" Variant="Variant.Outlined" Immediate/>
+    </ToolBarContent>
+    <HeaderContent><MudTh>User</MudTh><MudTh>Email</MudTh><MudTh>Roles</MudTh></HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Email</MudTd>
+        <MudTd>
+            <MudStack Row Wrap="Wrap.Wrap" Spacing="1">
+                @foreach (var role in Roles)
+                {
+                    var hasRole = context.Roles?.Any(r => r.Id == role.Id) ?? false;
+                    <MudChip T="string" Color="@(hasRole ? Color.Success : Color.Default)" OnClose="@(() => OnRoleToggled.InvokeAsync((context, role, hasRole)))" CloseIcon="@Icons.Material.Filled.SwapHoriz" Variant="Variant.Outlined">
+                        @role.Name
+                    </MudChip>
+                }
+            </MudStack>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent><MudTablePager/></PagerContent>
+</MudTable>
+
+@code {
+    [Parameter] public List<OutUser> Users { get; set; } = [];
+    [Parameter] public int Total { get; set; }
+    [Parameter] public List<OutRole> Roles { get; set; } = [];
+    [Parameter] public string Search { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string?> SearchChanged { get; set; }
+    [Parameter] public EventCallback<(OutUser User, OutRole Role, bool IsAssigned)> OnRoleToggled { get; set; }
+    [Parameter, EditorRequired] public Func<TableState, CancellationToken, Task<TableData<OutUser>>> ServerData { get; set; } = null!;
+}

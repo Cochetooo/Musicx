@@ -1,0 +1,25 @@
+@using Musicx.Contracts.Dto.Responses.Genre
+@using Musicx.Presentation.Web.Client.Components.Base
+<MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
+    <PanelTitle Text="Pending Genres" Count="@PendingGenres.Count.ToString()" />
+    <MudList T="RenderFragment" Dense>
+        @foreach (var genre in PendingGenres)
+        {
+            <MudListItem>
+                <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width:100%">
+                    <MudText>@genre.CanonicalName</MudText>
+                    <MudStack Row>
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() => OnReject.InvokeAsync(genre))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Success" OnClick="@(() => OnAccept.InvokeAsync(genre))" />
+                    </MudStack>
+                </MudStack>
+            </MudListItem>
+        }
+    </MudList>
+</MudPaper>
+
+@code {
+    [Parameter] public IReadOnlyList<OutGenre> PendingGenres { get; set; } = [];
+    [Parameter] public EventCallback<OutGenre> OnAccept { get; set; }
+    [Parameter] public EventCallback<OutGenre> OnReject { get; set; }
+}

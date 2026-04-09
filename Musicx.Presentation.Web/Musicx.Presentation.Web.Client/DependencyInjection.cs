@@ -1,5 +1,6 @@
 using MudBlazor;
 using MudBlazor.Services;
+using MudExtensions.Services;
 using Musicx.Application.Web.Interfaces.Models.Auth;
 using Musicx.Application.Web.ViewModels.User.GenreRatings;
 using Musicx.Infrastructure;
@@ -19,7 +20,8 @@ public static class DependencyInjection
             config.SnackbarConfiguration.VisibleStateDuration = 6000;
             config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
         });
-
+        services.AddMudExtensions();
+        
         services.AddScoped<IUserClientContext, UserClientContext>();
         services.AddScoped<UserGenreRatingsViewModel>();
         services.AddMusicxLocalization(ServiceLifetime.Scoped);

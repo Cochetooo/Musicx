@@ -406,4 +406,6 @@
     <data name="Web.UserView.OriginCountry" xml:space="preserve">
         <value>Country of origin</value>
     </data>
+    <data name="Web.Search.NoArtistFoundPrompt" xml:space="preserve"><value>No artist found for this query. Do you want to create one?</value></data>
+    <data name="Web.Search.CreateNew" xml:space="preserve"><value>Create new</value></data>
 </root>

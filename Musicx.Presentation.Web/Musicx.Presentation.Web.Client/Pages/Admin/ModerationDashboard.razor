@@ -1,0 +1,170 @@
+@page "/Admin/ModerationDashboard"
+
+@using Musicx.Application.Shared.Interfaces.Common
+@using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Presentation.Web.Client.Layout.Admin
+@using Musicx.Presentation.Web.Client.Layout.Auth
+@using Musicx.Presentation.Web.Client.Modals.Admin.Artists
+@using Musicx.Presentation.Web.Client.Modals.Admin.Genres
+@using Musicx.Presentation.Web.Client.Pages.Admin.Moderation.Panels
+@inject IApiClient Api
+@inject IUserClientContext UserClientContext
+@inject ISnackbar Snackbar
+
+<AuthorizeView Permission="admin.dashboard.read">
+    <ChildContent>
+        <MudGrid>
+            <MudItem xs="12" md="3" lg="2">
+                <MudPaper Class="pa-3 moderation-nav" Elevation="0">
+                    <MudNavMenu Dense>
+                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Overview))" Active="@(_section == ModerationSection.Overview)">
+                            Overview
+                        </MudNavLink>
+                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Artists))" Active="@(_section == ModerationSection.Artists)">
+                            Artists
+                        </MudNavLink>
+                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Albums))" Active="@(_section == ModerationSection.Albums)">
+                            Albums
+                        </MudNavLink>
+                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Genres))" Active="@(_section == ModerationSection.Genres)">
+                            Genres
+                        </MudNavLink>
+
+                        @if (IsAdmin)
+                        {
+                            <MudNavGroup Title="Users" Expanded="true">
+                                <MudNavLink OnClick="@(() => SetSection(ModerationSection.Users))" Active="@(_section == ModerationSection.Users)">
+                                    User List
+                                </MudNavLink>
+                                <MudNavLink OnClick="@(() => SetSection(ModerationSection.RolesPermissions))" Active="@(_section == ModerationSection.RolesPermissions)">
+                                    Roles & Permissions
+                                </MudNavLink>
+                            </MudNavGroup>
+                        }
+                    </MudNavMenu>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="9" lg="10">
+                @switch (_section)
+                {
+                    case ModerationSection.Overview:
+                        <DashboardLayout Title="Moderation Overview" Subtitle="Today at a glance for moderators.">
+                            <HeroStats>
+                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">Users today: @_usersToday</MudChip>
+                                <MudChip T="string" Color="Color.Info" Variant="Variant.Filled">Artists today: @_artistsToday</MudChip>
+                                <MudChip T="string" Color="Color.Warning" Variant="Variant.Filled">Albums today: @_albumsToday</MudChip>
+                                <MudChip T="string" Color="Color.Success" Variant="Variant.Filled">Genres today: @_genresToday</MudChip>
+                            </HeroStats>
+                            <ChildContent>
+                                <MudGrid>
+                                    <MudItem xs="12" lg="6">
+                                        <OverviewTodayStatsPanel Users="@_usersToday" Artists="@_artistsToday" Albums="@_albumsToday" Genres="@_genresToday"/>
+                                    </MudItem>
+                                    <MudItem xs="12" lg="6">
+                                        <VisibilityDonutPanel ArtistsVisible="@_artistsVisible" ArtistsHidden="@_artistsHidden" GenresVisible="@_genresVisible" GenresHidden="@_genresHidden" OnArtistsClick="@(() => SetSection(ModerationSection.Artists))" OnGenresClick="@(() => SetSection(ModerationSection.Genres))"/>
+                                    </MudItem>
+                                </MudGrid>
+                            </ChildContent>
+                        </DashboardLayout>
+                        break;
+                    case ModerationSection.Artists:
+                        <DashboardLayout Title="Artist Moderation" Subtitle="Review and validate artist records.">
+                            <HeroStats>
+                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">Total: @_artists.Count</MudChip>
+                                <MudChip T="string" Color="Color.Success" Variant="Variant.Filled">Visible: @_artistsVisible</MudChip>
+                                <MudChip T="string" Color="Color.Error" Variant="Variant.Filled">Pending: @_artistsHidden</MudChip>
+                            </HeroStats>
+                            <ChildContent>
+                                <MudGrid>
+                                    <MudItem xs="12" lg="7">
+                                        <ArtistVisibilitySummaryPanel Total="@_artists.Count" Visible="@_artistsVisible" Hidden="@_artistsHidden"/>
+                                    </MudItem>
+                                    <MudItem xs="12" lg="5">
+                                        <ArtistCreationStatsPanel Today="@_artistsToday" ThisWeek="@_artistsWeek" ThisMonth="@_artistsMonth" ThisYear="@_artistsYear"/>
+                                    </MudItem>
+                                    <MudItem xs="12" lg="8">
+                                        <ArtistTablePanel ServerData="@LoadArtists" Search="@_artistSearch" SearchChanged="@(v => _artistSearch = v)"/>
+                                    </MudItem>
+                                    <MudItem xs="12" lg="4">
+                                        <ArtistPendingPanel PendingArtists="@PendingArtists" OnAccept="@ApproveArtist" OnReject="@RejectArtist"/>
+                                    </MudItem>
+                                </MudGrid>
+                            </ChildContent>
+                        </DashboardLayout>
+                        break;
+                    case ModerationSection.Albums:
+                        <DashboardLayout Title="Album Moderation" Subtitle="Track visibility and quality of album submissions.">
+                            <MudGrid>
+                                <MudItem xs="12" lg="4"><AlbumSummaryPanel Total="@_albums.Count" Visible="@_albumsVisible" Hidden="@_albumsHidden"/></MudItem>
+                                <MudItem xs="12" lg="8"><AlbumTablePanel ServerData="@LoadAlbums" Search="@_albumSearch" SearchChanged="@(v => _albumSearch = v)"/></MudItem>
+                            </MudGrid>
+                        </DashboardLayout>
+                        break;
+                    case ModerationSection.Genres:
+                        <DashboardLayout Title="Genre Moderation" Subtitle="Review and validate genre taxonomy.">
+                            <HeroStats>
+                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">Total: @_genres.Count</MudChip>
+                                <MudChip T="string" Color="Color.Success" Variant="Variant.Filled">Visible: @_genresVisible</MudChip>
+                                <MudChip T="string" Color="Color.Error" Variant="Variant.Filled">Pending: @_genresHidden</MudChip>
+                            </HeroStats>
+                            <ChildContent>
+                                <MudGrid>
+                                    <MudItem xs="12" lg="7">
+                                        <GenreVisibilitySummaryPanel Total="@_genres.Count" Visible="@_genresVisible" Hidden="@_genresHidden"/>
+                                    </MudItem>
+                                    <MudItem xs="12" lg="5">
+                                        <GenreCreationStatsPanel Today="@_genresToday" ThisWeek="@_genresWeek" ThisMonth="@_genresMonth" ThisYear="@_genresYear"/>
+                                    </MudItem>
+                                    <MudItem xs="12" lg="8">
+                                        <GenreTablePanel ServerData="@LoadGenres" Search="@_genreSearch" SearchChanged="@(v => _genreSearch = v)"/>
+                                    </MudItem>
+                                    <MudItem xs="12" lg="4">
+                                        <GenrePendingPanel PendingGenres="@PendingGenres" OnAccept="@ApproveGenre" OnReject="@RejectGenre"/>
+                                    </MudItem>
+                                </MudGrid>
+                            </ChildContent>
+                        </DashboardLayout>
+                        break;
+                    case ModerationSection.Users:
+                        <DashboardLayout Title="User Moderation" Subtitle="Manage users and role assignment.">
+                            <MudGrid>
+                                <MudItem xs="12" lg="4"><UsersSummaryPanel Total="@_users.Count" Today="@_usersToday"/></MudItem>
+                                <MudItem xs="12" lg="8"><UsersTablePanel Users="@_pagedUsers" Total="@_usersTotal" Roles="@_roles" Search="@_userSearch" SearchChanged="@(v => _userSearch = v)" OnRoleToggled="@ToggleUserRole" ServerData="@LoadUsers"/></MudItem>
+                            </MudGrid>
+                        </DashboardLayout>
+                        break;
+                    case ModerationSection.RolesPermissions:
+                        <DashboardLayout Title="Roles & Permissions" Subtitle="Admin-only security configuration.">
+                            <RolesPermissionsPanel Roles="@_roles" Permissions="@_permissions" OnAddRole="@AddRole" OnAddPermission="@AddPermission" OnSaveRole="@SaveRole"/>
+                        </DashboardLayout>
+                        break;
+                }
+            </MudItem>
+        </MudGrid>
+
+        <ArtistEditModal @ref="_artistEditModal" OnSave="LoadData" />
+        <GenreEditModal @ref="_genreEditModal" OnSave="LoadData" />
+    </ChildContent>
+</AuthorizeView>
+
+<style>
+    .moderation-nav {
+        background: linear-gradient(180deg, rgba(20,20,28,.95) 0%, rgba(14,14,20,.85) 100%);
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,.08);
+        position: sticky;
+        top: 90px;
+    }
+
+    .moderation-nav .mud-nav-link {
+        border-radius: 12px;
+        margin-bottom: 4px;
+        color: #f5f7ff;
+    }
+
+    .moderation-nav .mud-nav-link.active,
+    .moderation-nav .mud-nav-link:hover {
+        background: rgba(96, 116, 255, .22);
+    }
+</style>

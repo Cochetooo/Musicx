@@ -15,6 +15,7 @@ using Musicx.Contracts.Dto.Responses.Genre;
 using Musicx.Contracts.Dto.Responses.User;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
 using Musicx.Infrastructure.API.Persistence.Specifications.Song;
+using Musicx.Presentation.Web.Client.Modals.Admin.Artists;
 
 namespace Musicx.Presentation.Web.Client.Modals.Searches;
 
@@ -45,6 +46,7 @@ public partial class SearchOverlay : IAsyncDisposable
     private bool _exactSearch;
 
     private IJSObjectReference? _searchOverlayModule;
+    private ArtistEditModal _artistEditModal = null!;
 
     public async Task OpenFromNavAsync(string sourceSelector)
     {
@@ -238,6 +240,11 @@ public partial class SearchOverlay : IAsyncDisposable
         await Close();
         _value = "";
         Navigation.NavigateTo($"/{item.Category}/{item.Id}");
+    }
+    
+    private async Task OpenArtistCreation(MouseEventArgs _)
+    {
+        await _artistEditModal.Show();
     }
     
     public async ValueTask DisposeAsync()

@@ -1,0 +1,16 @@
+@using Musicx.Presentation.Web.Client.Components.Base
+<MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
+    <PanelTitle Text="Album Visibility" />
+    <MudList T="string" Dense>
+        <MudListItem>Total: @Total</MudListItem>
+        <MudListItem>Visible: @Visible</MudListItem>
+        <MudListItem>Hidden: @Hidden</MudListItem>
+    </MudList>
+</MudPaper>
+
+@code 
+{
+    [Parameter] public int Total { get; set; } 
+    [Parameter] public int Visible { get; set; } 
+    [Parameter] public int Hidden { get; set; }
+}

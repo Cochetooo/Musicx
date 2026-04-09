@@ -1,0 +1,36 @@
+@using Musicx.Presentation.Web.Client.Components.Base
+<MudStack Spacing="4" Class="moderation-layout">
+    <MudPaper Class="pa-5 bg-main moderation-hero" Elevation="0">
+        <MudStack Spacing="2">
+            <MudText Typo="Typo.overline" Class="text-uppercase color-secondary text-light">Moderation Center</MudText>
+            <PanelTitle Text="@Title" />
+            @if (!string.IsNullOrWhiteSpace(Subtitle))
+            {
+                <MudText Typo="Typo.body1" Class="color-secondary">@Subtitle</MudText>
+            }
+
+            @if (HeroStats is not null)
+            {
+                <MudStack Row Wrap="Wrap.Wrap" Spacing="2" Class="pt-2">
+                    @HeroStats
+                </MudStack>
+            }
+        </MudStack>
+    </MudPaper>
+
+    @ChildContent
+</MudStack>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public RenderFragment? HeroStats { get; set; }
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = null!;
+}
+
+<style>
+    .moderation-hero {
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 22px;
+    }
+</style>

@@ -1,0 +1,14 @@
+@using Musicx.Presentation.Web.Client.Components.Base
+<MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
+    <PanelTitle Text="Users" />
+    <MudList T="string" Dense>
+        <MudListItem>Total users: @Total</MudListItem>
+        <MudListItem>Created today: @Today</MudListItem>
+    </MudList>
+</MudPaper>
+
+@code 
+{
+    [Parameter] public int Total { get; set; } 
+    [Parameter] public int Today { get; set; }
+}

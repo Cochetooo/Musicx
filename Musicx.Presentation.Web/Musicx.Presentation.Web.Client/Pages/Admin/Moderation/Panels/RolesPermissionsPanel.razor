@@ -1,0 +1,73 @@
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Presentation.Web.Client.Components.Base
+<MudGrid>
+    <MudItem xs="12" lg="3">
+        <MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
+            <PanelTitle Text="Roles" />
+            <MudTextField @bind-Value="_newRole" Label="New role" Variant="Variant.Outlined" Class="mt-2"/>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Class="mt-2" OnClick="@(() => OnAddRole.InvokeAsync(_newRole))">Add role</MudButton>
+            <MudList T="OutRole" Dense Class="mt-3">
+                @foreach (var role in Roles)
+                {
+                    <MudListItem OnClick="@(() => _selectedRole = role)">@role.Name</MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" lg="6">
+        <MudPaper Class="pa-4 bg-main animate-hover-up" Elevation="0">
+            <PanelTitle Text="Role permissions" Count="@(_selectedRole?.Name ?? "Select one")" />
+            @if (_selectedRole is not null)
+            {
+                <MudStack Spacing="1" Class="mt-2">
+                    @foreach (var permission in Permissions)
+                    {
+                        var assigned = _selectedRole.Permissions?.Any(x => x.Id == permission.Id) ?? false;
+                        <MudCheckBox T="bool" Value="@assigned" ValueChanged="@(v => TogglePermission(permission, v))" Label="@permission.Name" />
+                    }
+                </MudStack>
+                <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@(() => OnSaveRole.InvokeAsync(_selectedRole))">Save</MudButton>
+            }
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" lg="3">
+        <MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
+            <PanelTitle Text="Permissions" Count="@Permissions.Count.ToString()" />
+            <MudTextField @bind-Value="_newPermission" Label="New permission" Variant="Variant.Outlined" Class="mt-2"/>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Class="mt-2" OnClick="@(() => OnAddPermission.InvokeAsync(_newPermission))">Add permission</MudButton>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private string _newRole = string.Empty;
+    private string _newPermission = string.Empty;
+    private OutRole? _selectedRole;
+
+    [Parameter] public List<OutRole> Roles { get; set; } = [];
+    [Parameter] public List<OutPermission> Permissions { get; set; } = [];
+    [Parameter] public EventCallback<string> OnAddRole { get; set; }
+    [Parameter] public EventCallback<string> OnAddPermission { get; set; }
+    [Parameter] public EventCallback<OutRole> OnSaveRole { get; set; }
+
+    private void TogglePermission(OutPermission permission, bool assigned)
+    {
+        if (_selectedRole is null)
+        {
+            return;
+        }
+
+        _selectedRole.Permissions ??= [];
+        var exists = _selectedRole.Permissions.Any(x => x.Id == permission.Id);
+        if (assigned && !exists)
+        {
+            _selectedRole.Permissions.Add(permission);
+        }
+
+        if (!assigned && exists)
+        {
+            var toDelete = _selectedRole.Permissions.First(x => x.Id == permission.Id);
+            _selectedRole.Permissions.Remove(toDelete);
+        }
+    }
+}

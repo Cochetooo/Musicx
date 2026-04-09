@@ -1,0 +1,18 @@
+@using Musicx.Contracts.Dto.Responses
+@using Musicx.Presentation.Web.Client.Components.Base
+<MudTable T="OutAlbum" ServerData="@ServerData" Dense Hover Elevation="0" Class="pa-4 bg-surface animate-hover-up">
+    <ToolBarContent>
+        <PanelTitle Text="Albums" />
+        <MudSpacer />
+        <MudTextField Value="@Search" ValueChanged="@SearchChanged" Placeholder="Search albums" Variant="Variant.Outlined" Immediate/>
+    </ToolBarContent>
+    <HeaderContent><MudTh>Name</MudTh><MudTh>Artist</MudTh><MudTh>Visible</MudTh><MudTh>Created</MudTh></HeaderContent>
+    <RowTemplate><MudTd>@context.Name</MudTd><MudTd>@(context.Artist?.Name ?? "-")</MudTd><MudTd>@(context.IsVisible ? "Yes" : "No")</MudTd><MudTd>@context.CreatedAt.ToString("yyyy-MM-dd")</MudTd></RowTemplate>
+    <PagerContent><MudTablePager/></PagerContent>
+</MudTable>
+
+@code {
+    [Parameter, EditorRequired] public Func<TableState, CancellationToken, Task<TableData<OutAlbum>>> ServerData { get; set; } = null!;
+    [Parameter] public string Search { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string?> SearchChanged { get; set; }
+}

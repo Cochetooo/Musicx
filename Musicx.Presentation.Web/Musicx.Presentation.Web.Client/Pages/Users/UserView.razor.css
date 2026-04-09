@@ -3,7 +3,7 @@
 }
 
 .user-hero-content {
-    grid-template-columns: 256px 1fr 360px;
+    grid-template-columns: 256px 1fr 420px;
 }
 
 :deep(.user-hero),

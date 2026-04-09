@@ -56,28 +56,26 @@ else
                 </div>
                 
                 <div>
-                    <MudText Typo="Typo.h2" Class="montserrat mb-2 text-bold user-name clamped-text-2 animate-text">
+                    <MudText Typo="Typo.h2" Class="montserrat mb-2 text-mega-bold user-name clamped-text-2 animate-text">
                         @_user.Name
                     </MudText>
                     
-                    <MudText Typo="Typo.body2" Class="text-light color-secondary text-shadow mb-2">
-                        @if (UserAge is not null)
+                    <MudStack Row Spacing="2" Class="mb-2">
+                        @if (!string.IsNullOrWhiteSpace(_user.OriginCountry))
                         {
-                            @T.Get("Web.UserView.AgeYearsOld", UserAge) <text> ⸱ </text>
+                            <Flag CountryName="@_user.OriginCountry"/>
                         }
-                        
-                        @T.Get("Web.UserView.JoinedAgo", DurationHelper.FormatYearMonthDayDuration(_user.CreatedAt, DateTime.Now))
-                    </MudText>
-                    
-                    @if (!string.IsNullOrWhiteSpace(_user.OriginCountry))
-                    {
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
-                            <Flag CountryName="@_user.OriginCountry" />
-                            <MudText Typo="Typo.caption" Class="color-secondary text-light">
-                                @T["Web.UserView.OriginCountry"]: @_user.OriginCountry
-                            </MudText>
-                        </MudStack>
-                    }
+
+                        <MudText Typo="Typo.body2" Class="text-light color-secondary text-shadow">
+                            @if (UserAge is not null)
+                            {
+                                @T.Get("Web.UserView.AgeYearsOld", UserAge)
+                                <text> ⸱ </text>
+                            }
+
+                            @T.Get("Web.UserView.JoinedAgo", DurationHelper.FormatYearMonthDayDuration(_user.CreatedAt, DateTime.Now))
+                        </MudText>
+                    </MudStack>
                     
                     <MudText Typo="Typo.body2" Class="text-light color-primary text-shadow mb-4 user-bio">
                         @_user.Biography
