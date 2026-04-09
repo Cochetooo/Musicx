@@ -14,6 +14,7 @@
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.User
+@using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Albums
 @using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Genres
@@ -68,8 +69,17 @@ else
                         @T.Get("Web.UserView.JoinedAgo", DurationHelper.FormatYearMonthDayDuration(_user.CreatedAt, DateTime.Now))
                     </MudText>
                     
+                    @if (!string.IsNullOrWhiteSpace(_user.OriginCountry))
+                    {
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+                            <Flag CountryName="@_user.OriginCountry" />
+                            <MudText Typo="Typo.caption" Class="color-secondary text-light">
+                                @T["Web.UserView.OriginCountry"]: @_user.OriginCountry
+                            </MudText>
+                        </MudStack>
+                    }
                     
-                    <MudText Typo="Typo.body2" Class="text-light color-primary text-shadow mb-4">
+                    <MudText Typo="Typo.body2" Class="text-light color-primary text-shadow mb-4 user-bio">
                         @_user.Biography
                     </MudText>
                     
@@ -500,5 +510,9 @@ else
         padding: 2px 8px;
         border-radius: 999px;
         background: rgba(255,255,255,0.05);
+    }
+
+    .user-bio {
+        white-space: pre-line;
     }
 </style>

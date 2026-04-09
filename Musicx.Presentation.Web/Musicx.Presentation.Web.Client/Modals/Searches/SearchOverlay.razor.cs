@@ -204,6 +204,7 @@ public partial class SearchOverlay : IAsyncDisposable
                     {
                         Id = a.Id,
                         Category = "User",
+                        Country = a.OriginCountry,
                         Image = a.PictureUrl,
                         Icon = GetIconForCategory("User"),
                         Subtitle = a.BirthDate?.ToString("dd-MM-yyyy") ?? "",

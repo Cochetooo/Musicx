@@ -15,12 +15,14 @@ public static class UserColumns
     public const string GoogleId = "user_google_id";
     public const string LastFmUsername = "user_lastfm_username";
     public const string Name = "user_name";
+    public const string OriginCountry = "user_origin_country";
     public const string PasswordHash = "user_password_hash";
     public const string PasswordSalt = "user_password_salt";
     public const string PrefAutoComputeAdvancedRatings = "user_pref_auto_compute_advanced_ratings";
     public const string PrefAutoFollow = "user_pref_auto_follow";
     public const string PrefBannerBlur = "user_pref_banner_blur";
     public const string PrefDarkMode = "user_pref_dark_mode";
+    public const string PrefHighGraphics = "user_pref_high_graphics";
     public const string PrefLanguage = "user_pref_language";
     public const string PrefRatingMode = "user_pref_rating_mode";
     public const string PrefShowRatings = "user_pref_show_ratings";

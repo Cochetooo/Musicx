@@ -88,8 +88,7 @@ public static class DependencyInjection
     public static IServiceCollection AddMusicxLocalization(this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
-        var descriptor = new ServiceDescriptor(typeof(ITranslationService), typeof(ResxTranslationService), lifetime);
-        services.Add(descriptor);
+        services.AddScoped<ITranslationService, ResxTranslationService>();
 
         return services;
     }

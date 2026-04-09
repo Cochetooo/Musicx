@@ -2,13 +2,13 @@
 using System.Globalization;
 using System.Resources;
 using Musicx.Application.Shared.Interfaces.Localization;
+using Musicx.Infrastructure.Shared.Resources;
 
 namespace Musicx.Infrastructure.Shared.Services.Localization;
 
 public sealed class ResxTranslationService : ITranslationService
 {
-    private readonly ResourceManager _resourceManager = new("Musicx.Infrastructure.Shared.Resources.Translations",
-        typeof(ResxTranslationService).Assembly);
+    private readonly ResourceManager _resourceManager = Translations.ResourceManager;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

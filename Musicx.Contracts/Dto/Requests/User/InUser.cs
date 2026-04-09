@@ -12,6 +12,7 @@ public sealed class InUser : BaseInputModel
     public bool PrefAutoFollow { get; set; } = true;
     public bool PrefBannerBlur { get; set; } = true;
     public bool PrefDarkMode { get; set; } = true;
+    public bool PrefHighGraphics { get; set; } = true;
     public string PrefLanguage { get; set; } = "en";
     public RatingMode PrefRatingMode { get; set; } = RatingMode.OutOfTen;
     public bool PrefShowRatings { get; set; } = true;
@@ -26,6 +27,7 @@ public sealed class InUser : BaseInputModel
     public DateTime? BirthDate { get; set; }
     public string? GoogleId { get; set; }
     public string? LastFmUsername { get; set; }
+    public string? OriginCountry { get; set; }
     public string? Password { get; set; }
     public string? PasswordHash { get; set; }
     public string? PasswordSalt { get; set; }

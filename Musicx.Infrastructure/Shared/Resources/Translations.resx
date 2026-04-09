@@ -1,20 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
     <resheader name="resmimetype">
         <value>text/microsoft-resx</value>
     </resheader>
     <resheader name="version">
-        <value>2.0</value>
+        <value>1.3</value>
     </resheader>
     <resheader name="reader">
-        <value>
-            System.Resources.ResXResourceReader, System.Windows.Forms, ...
-        </value>
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <resheader name="writer">
-        <value>
-            System.Resources.ResXResourceWriter, System.Windows.Forms, ...
-        </value>
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
 
     <data name="Web.Nav.Charts" xml:space="preserve"><value>Charts</value></data>
@@ -28,16 +30,16 @@
     <data name="Web.Nav.SignIn" xml:space="preserve"><value>Sign in</value></data>
     <data name="Web.Nav.SignOut" xml:space="preserve"><value>Sign out</value></data>
     <data name="Web.Nav.Version" xml:space="preserve"><value>Version {0}</value></data>
-    
+
     <data name="Web.Home.Welcome" xml:space="preserve"><value>Welcome to</value></data>
     <data name="Web.Home.Stats" xml:space="preserve"><value>{0} artists, {1} albums, {2} songs &amp; {3} genres</value></data>
     <data name="Web.Home.DiscoverArtists" xml:space="preserve"><value>🎶 Discover new artists</value></data>
     <data name="Web.Home.ExploreAlbums" xml:space="preserve"><value>💿 Explore trending albums</value></data>
     <data name="Web.Home.UniqueGenres" xml:space="preserve"><value>🎧 Dive into unique genres</value></data>
     <data name="Web.Home.LatestReleases" xml:space="preserve"><value>Latest releases</value></data>
-    
+
     <data name="Web.Common.Ratings" xml:space="preserve"><value>ratings</value></data>
-    
+
     <data name="Web.Search.Placeholder" xml:space="preserve"><value>Search anything...</value></data>
     <data name="Web.Search.Loading" xml:space="preserve"><value>Loading...</value></data>
     <data name="Web.Search.EmptyHint" xml:space="preserve"><value>Type something to display results...</value></data>
@@ -259,5 +261,149 @@
     </data>
     <data name="Web.AlbumView.Recorded" xml:space="preserve">
         <value>Recorded</value>
+    </data>
+    <data name="Web.UserEditor.Title" xml:space="preserve">
+        <value>Edit Profile</value>
+    </data>
+    <data name="Web.UserEditor.SignInRequired" xml:space="preserve">
+        <value>Please sign in to edit your profile.</value>
+    </data>
+    <data name="Web.UserEditor.TabProfile" xml:space="preserve">
+        <value>Profile</value>
+    </data>
+    <data name="Web.UserEditor.TabSettings" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="Web.UserEditor.UploadAvatar" xml:space="preserve">
+        <value>Upload avatar</value>
+    </data>
+    <data name="Web.UserEditor.Username" xml:space="preserve">
+        <value>Username</value>
+    </data>
+    <data name="Web.UserEditor.CountryOrigin" xml:space="preserve">
+        <value>Country of origin</value>
+    </data>
+    <data name="Web.UserEditor.CountrySearchPlaceholder" xml:space="preserve">
+        <value>Search country...</value>
+    </data>
+    <data name="Web.UserEditor.Email" xml:space="preserve">
+        <value>Email</value>
+    </data>
+    <data name="Web.UserEditor.BirthDateLocked" xml:space="preserve">
+        <value>Cannot edit birth date</value>
+    </data>
+    <data name="Web.UserEditor.BirthDate" xml:space="preserve">
+        <value>Birth date</value>
+    </data>
+    <data name="Web.UserEditor.Bio" xml:space="preserve">
+        <value>Bio</value>
+    </data>
+    <data name="Web.UserEditor.SaveProfile" xml:space="preserve">
+        <value>Save profile</value>
+    </data>
+    <data name="Web.UserEditor.ChangePassword" xml:space="preserve">
+        <value>Change Password</value>
+    </data>
+    <data name="Web.UserEditor.NewPassword" xml:space="preserve">
+        <value>New password</value>
+    </data>
+    <data name="Web.UserEditor.ConfirmPassword" xml:space="preserve">
+        <value>Confirm password</value>
+    </data>
+    <data name="Web.UserEditor.SavePassword" xml:space="preserve">
+        <value>Save password</value>
+    </data>
+    <data name="Web.UserEditor.SignOut" xml:space="preserve">
+        <value>Sign out</value>
+    </data>
+    <data name="Web.UserEditor.DeleteAccount" xml:space="preserve">
+        <value>Delete account</value>
+    </data>
+    <data name="Web.UserEditor.Display" xml:space="preserve">
+        <value>Display</value>
+    </data>
+    <data name="Web.UserEditor.Ratings" xml:space="preserve">
+        <value>Ratings</value>
+    </data>
+    <data name="Web.UserEditor.Language" xml:space="preserve">
+        <value>Language</value>
+    </data>
+    <data name="Web.UserEditor.Connections" xml:space="preserve">
+        <value>Connections</value>
+    </data>
+    <data name="Web.UserEditor.DarkMode" xml:space="preserve">
+        <value>Dark Mode</value>
+    </data>
+    <data name="Web.UserEditor.SimpleGenreDisplay" xml:space="preserve">
+        <value>Simple Album Genre Display</value>
+    </data>
+    <data name="Web.UserEditor.HighGraphics" xml:space="preserve">
+        <value>High graphics (animations)</value>
+    </data>
+    <data name="Web.UserEditor.HighGraphicsHint" xml:space="preserve">
+        <value>Disable this for a lighter UI without animations/transitions.</value>
+    </data>
+    <data name="Web.UserEditor.ShowRatings" xml:space="preserve">
+        <value>Show Ratings</value>
+    </data>
+    <data name="Web.UserEditor.AutoFollow" xml:space="preserve">
+        <value>Auto-follow artists with a good rating</value>
+    </data>
+    <data name="Web.UserEditor.AutoComputeAdvancedRatings" xml:space="preserve">
+        <value>Auto-compute advanced ratings</value>
+    </data>
+    <data name="Web.UserEditor.AutoFollowHint" xml:space="preserve">
+        <value>When enabled, rating an album above {0} automatically follows its artist.</value>
+    </data>
+    <data name="Web.UserEditor.RatingMode" xml:space="preserve">
+        <value>Rating Display Mode</value>
+    </data>
+    <data name="Web.UserEditor.PreferredLanguage" xml:space="preserve">
+        <value>Preferred language</value>
+    </data>
+    <data name="Web.UserEditor.ConnectGoogle" xml:space="preserve">
+        <value>Connect Google</value>
+    </data>
+    <data name="Web.UserEditor.ConnectLastFm" xml:space="preserve">
+        <value>Connect LastFM</value>
+    </data>
+    <data name="Web.UserEditor.CreatedAt" xml:space="preserve">
+        <value>Account created on {0}</value>
+    </data>
+    <data name="Web.UserEditor.SaveSettings" xml:space="preserve">
+        <value>Save settings</value>
+    </data>
+    <data name="Web.UserEditor.DeleteWarning" xml:space="preserve">
+        <value>Deleting your account cannot be undone. Do you really want to continue?</value>
+    </data>
+    <data name="Web.UserEditor.AccountDeleted" xml:space="preserve">
+        <value>Your account has been deleted.</value>
+    </data>
+    <data name="Web.UserEditor.PasswordSaved" xml:space="preserve">
+        <value>User password has been saved.</value>
+    </data>
+    <data name="Web.UserEditor.UserSaved" xml:space="preserve">
+        <value>User has been saved.</value>
+    </data>
+    <data name="Web.UserEditor.Errors.NoUser" xml:space="preserve">
+        <value>User is null, cannot edit profile.</value>
+    </data>
+    <data name="Web.UserEditor.Errors.PasswordMismatch" xml:space="preserve">
+        <value>Password and confirm password are not the same!</value>
+    </data>
+    <data name="Web.UserEditor.Category.display" xml:space="preserve">
+        <value>Display</value>
+    </data>
+    <data name="Web.UserEditor.Category.ratings" xml:space="preserve">
+        <value>Ratings</value>
+    </data>
+    <data name="Web.UserEditor.Category.language" xml:space="preserve">
+        <value>Language</value>
+    </data>
+    <data name="Web.UserEditor.Category.connections" xml:space="preserve">
+        <value>Connections</value>
+    </data>
+    <data name="Web.UserView.OriginCountry" xml:space="preserve">
+        <value>Country of origin</value>
     </data>
 </root>

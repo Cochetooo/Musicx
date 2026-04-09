@@ -2,6 +2,7 @@
 @using System.Globalization
 @using Musicx.Application.Shared.Helpers
 @using Musicx.Application.Shared.Interfaces.Common
+@using Musicx.Application.Shared.Interfaces.Localization
 @using Musicx.Application.Shared.Interfaces.UseCases
 @using Musicx.Application.Shared.Interfaces.UseCases.Security
 @using Musicx.Application.Shared.Interfaces.UseCases.User.Avatar
@@ -12,179 +13,306 @@
 
 @inject IUserClientContext UserClientContext
 @inject IApiClient Api
+@inject HttpClient Http
 @inject IAuthUserSavePasswordService UcSavePassword
 @inject ISaveAvatarService UcSaveAvatar
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ITranslationService T
+@inject IJSRuntime JS
 
-<MudContainer MaxWidth="MaxWidth.Large" Class="mt-6 bg-main pa-6 animate-hover-up">
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-6 bg-main pa-6 user-editor-shell">
     <MudStack Spacing="4">
-        <PanelTitle Text="Edit Profile" />
+        <PanelTitle Text="@T["Web.UserEditor.Title"]" />
 
         @if (_user is null)
         {
             <MudAlert Severity="Severity.Warning">
-                Please sign in to edit your profile.
+                @T["Web.UserEditor.SignInRequired"]
             </MudAlert>
         }
         else
         {
-            <!-- Avatar -->
-            <MudStack Row Spacing="4" AlignItems="AlignItems.Center">
-                <MudAvatar Size="Size.Large">
-                    <MudImage Src="@_user.PictureUrl"/>
-                </MudAvatar>
+            <MudTabs Rounded="true" PanelClass="pa-4" Elevation="1">
+                <MudTabPanel Text="@T["Web.UserEditor.TabProfile"]" Icon="@Icons.Material.Filled.Person">
+                    <MudStack Spacing="4">
+                        <MudPaper Class="pa-4 user-profile-header" Elevation="0">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Wrap="Wrap.Wrap">
+                                <MudAvatar Size="Size.Large" Class="user-profile-avatar">
+                                    <MudImage Src="@_user.PictureUrl" />
+                                </MudAvatar>
 
-                <MudFileUpload T="IBrowserFile"
-                               OnFilesChanged="OnAvatarSelected">
-                    <CustomContent>
-                        <MudFab Color="Color.Primary"
-                                Size="Size.Small"
-                                OnClick="@context.OpenFilePickerAsync"
-                                StartIcon="@Icons.Material.Filled.Image"
-                                Label="Upload avatar"/>
-                    </CustomContent>
-                </MudFileUpload>
-            </MudStack>
+                                <MudStack Spacing="1" Class="flex-grow-1">
+                                    <MudLink Href="@($"/User/{_user.Id}")" Underline="Underline.Hover" Typo="Typo.h4" Class="text-bold">
+                                        @_user.Name
+                                    </MudLink>
+                                    <MudText Typo="Typo.body2" Class="color-secondary">
+                                        @_user.Email
+                                    </MudText>
+                                </MudStack>
 
-            <!-- Bio -->
-            <MudTextField T="string"
-                          Label="Bio"
-                          Lines="5"
-                          Variant="Variant.Outlined"
-                          @bind-Value="_user.Biography"/>
+                                <MudFileUpload T="IBrowserFile" OnFilesChanged="OnAvatarSelected">
+                                    <CustomContent>
+                                        <MudFab Color="Color.Primary"
+                                                Size="Size.Small"
+                                                OnClick="@context.OpenFilePickerAsync"
+                                                StartIcon="@Icons.Material.Filled.Image"
+                                                Label="@T["Web.UserEditor.UploadAvatar"]" />
+                                    </CustomContent>
+                                </MudFileUpload>
+                            </MudStack>
+                        </MudPaper>
 
-            <!-- Email + birthdate -->
-            <MudGrid>
-                <MudItem xs="12" md="6">
-                    <MudTextField T="string" Label="Email"
-                                  ReadOnly
-                                  Value="@_user.Email"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@(_user.EmailConfirmed ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Warning)"/>
-                </MudItem>
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                <MudTextField T="string"
+                                              Label="@T["Web.UserEditor.Username"]"
+                                              Variant="Variant.Outlined"
+                                              @bind-Value="_user.Name" />
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudAutocomplete T="string"
+                                                 Label="@T["Web.UserEditor.CountryOrigin"]"
+                                                 Placeholder="@T["Web.UserEditor.CountrySearchPlaceholder"]"
+                                                 SearchFunc="@SearchCountry"
+                                                 Variant="Variant.Outlined"
+                                                 @bind-Value="_user.OriginCountry" />
+                            </MudItem>
+                        </MudGrid>
 
-                <MudItem xs="12" md="6">
-                    <MudTooltip Text="Cannot edit birth date">
-                        <MudTextField T="string" Label="Birth date"
-                                      Disabled="true"
-                                      Value="@_user.BirthDate?.ToString("dd MMM yyyy")"/>
-                    </MudTooltip>
-                </MudItem>
-            </MudGrid>
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                <MudTextField T="string" Label="@T["Web.UserEditor.Email"]"
+                                              ReadOnly
+                                              Value="@_user.Email"
+                                              Variant="Variant.Outlined"
+                                              Adornment="Adornment.End"
+                                              AdornmentIcon="@(_user.EmailConfirmed ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Warning)" />
+                            </MudItem>
 
-            <!-- Password -->
-            <MudDivider/>
-            <MudText Typo="Typo.h6">Change Password</MudText>
+                            <MudItem xs="12" md="6">
+                                <MudTooltip Text="@T["Web.UserEditor.BirthDateLocked"]">
+                                    <MudTextField T="string" Label="@T["Web.UserEditor.BirthDate"]"
+                                                  Disabled="true"
+                                                  Variant="Variant.Outlined"
+                                                  Value="@_user.BirthDate?.ToString("dd MMM yyyy")" />
+                                </MudTooltip>
+                            </MudItem>
+                        </MudGrid>
 
-            <MudGrid>
-                <MudItem xs="12" md="6">
-                    <MudTextField T="string" Label="New password" InputType="InputType.Password" @bind-Value="_newPassword"/>
-                </MudItem>
-                <MudItem xs="12" md="6">
-                    <MudTextField T="string" Label="Confirm password" InputType="InputType.Password" @bind-Value="_confirmPassword"/>
-                </MudItem>
-            </MudGrid>
+                        <MudTextField T="string"
+                                      Label="@T["Web.UserEditor.Bio"]"
+                                      Lines="7"
+                                      Variant="Variant.Outlined"
+                                      @bind-Value="_user.Biography" />
 
-            <!-- Preferences -->
-            <MudDivider/>
-            <MudText Typo="Typo.h6">Preferences</MudText>
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Save" StartIcon="@Icons.Material.Filled.Save">
+                            @T["Web.UserEditor.SaveProfile"]
+                        </MudButton>
 
-            <MudStack Row Spacing="4" Wrap="Wrap.Wrap">
-                <MudSwitch @bind-Value="_user.PrefDarkMode" Color="Color.Primary"
-                           Label="Dark Mode"
-                           ThumbIcon="@Icons.Material.Filled.DarkMode"/>
-                <MudSwitch @bind-Value="_user.PrefSimpleGenre" Color="Color.Secondary"
-                           Label="Simple Album Genre Display"/>
-                <MudSwitch @bind-Value="_user.PrefShowRatings" Color="Color.Tertiary"
-                           Label="Show Ratings"/>
-                <MudSwitch @bind-Value="_user.PrefAutoFollow" Color="Color.Warning"
-                           Label="Auto-follow artists with a good rating"
-                           ThumbIcon="@Icons.Material.Filled.AutoAwesome"/>
-                <MudSwitch @bind-Value="_user.PrefAutoComputeAdvancedRatings" Color="Color.Success"
-                           Label="Auto-compute advanced ratings"
-                           ThumbIcon="@Icons.Material.Filled.AutoFixHigh"/>
-            </MudStack>
-            <MudText Typo="Typo.caption" Class="color-secondary">
-                When enabled, rating an album above @(RatingHelper.GetRatingFormatted(7000m, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)) automatically follows its artist.
-            </MudText>
-            
-            <MudDivider/>
-            
-            <!-- Language -->
-            <MudText Typo="Typo.h6">Language</MudText>
-            <MudSelect T="string"
-                       Label="Preferred language"
-                       Variant="Variant.Outlined"
-                       @bind-Value="_user.PrefLanguage">
-                @foreach (var language in Languages)
-                {
-                    <MudSelectItem Value="@language.Code">
-                        <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                            <Flag CountryName="@language.CountryName" />
-                            <MudText>@language.Label</MudText>
+                        <MudDivider />
+
+                        <MudStack Spacing="2">
+                            <MudText Typo="Typo.h6">@T["Web.UserEditor.ChangePassword"]</MudText>
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField T="string" Label="@T["Web.UserEditor.NewPassword"]" InputType="InputType.Password" Variant="Variant.Outlined" @bind-Value="_newPassword" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField T="string" Label="@T["Web.UserEditor.ConfirmPassword"]" InputType="InputType.Password" Variant="Variant.Outlined" @bind-Value="_confirmPassword" />
+                                </MudItem>
+                            </MudGrid>
+                            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="@SavePassword">
+                                @T["Web.UserEditor.SavePassword"]
+                            </MudButton>
                         </MudStack>
-                    </MudSelectItem>
-                }
-            </MudSelect>
+                        
+                        <MudDivider />
+                        <MudStack Row="true" Spacing="2" Justify="Justify.FlexEnd" Wrap="Wrap.Wrap">
+                            <MudButton Color="Color.Warning" Variant="Variant.Outlined" OnClick="@SignOut">
+                                @T["Web.UserEditor.SignOut"]
+                            </MudButton>
+                            <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="@DeleteAccount">
+                                @T["Web.UserEditor.DeleteAccount"]
+                            </MudButton>
+                        </MudStack>
+                    </MudStack>
+                </MudTabPanel>
 
-            <!-- Rating mode -->
-            <MudDivider/>
-            <MudText Typo="Typo.h6">Rating Display Mode</MudText>
+                <MudTabPanel Text="@T["Web.UserEditor.TabSettings"]" Icon="@Icons.Material.Filled.Tune">
+                    <MudGrid Class="settings-grid">
+                        <MudItem xs="12" md="3">
+                            <MudPaper Class="pa-2 settings-nav" Elevation="0">
+                                @foreach (var category in SettingsCategories)
+                                {
+                                    <MudButton FullWidth="true"
+                                               Variant="Variant.Text"
+                                               Class="GetCategoryButtonClass(category)"
+                                               OnClick="@(() => ScrollToSettingsCategory(category))">
+                                        @GetCategoryLabel(category)
+                                    </MudButton>
+                                }
+                            </MudPaper>
+                        </MudItem>
+                        <MudItem xs="12" md="9">
+                            <MudPaper Id="settings-scroll-container" Class="pa-4 settings-content" Elevation="0">
+                                <section id="display" class="settings-section">
+                                    <MudText Typo="Typo.h6">@T["Web.UserEditor.Display"]</MudText>
+                                    <MudDivider Class="my-2" />
+                                    <MudStack Spacing="2">
+                                        <MudSwitch @bind-Value="_user.PrefDarkMode" Color="Color.Primary" Label="@T["Web.UserEditor.DarkMode"]" ThumbIcon="@Icons.Material.Filled.DarkMode" />
+                                        <MudSwitch @bind-Value="_user.PrefSimpleGenre" Color="Color.Secondary" Label="@T["Web.UserEditor.SimpleGenreDisplay"]" />
+                                        <MudSwitch @bind-Value="_user.PrefHighGraphics" Color="Color.Tertiary" Label="@T["Web.UserEditor.HighGraphics"]" />
+                                        <MudText Typo="Typo.caption" Class="color-secondary">@T["Web.UserEditor.HighGraphicsHint"]</MudText>
+                                    </MudStack>
+                                </section>
 
-            <MudStack Row Wrap="Wrap.Wrap" Justify="Justify.Center" Spacing="2" Class="rating-mode-group">
-                @foreach (var mode in RatingModes)
-                {
-                    <MudButton Variant="@(_user.PrefRatingMode == mode.Item1 ? Variant.Filled : Variant.Outlined)"
-                               Color="Color.Secondary"
-                               StartIcon="@mode.Item2"
-                               Style="min-width: 180px"
-                               OnClick="@(() => SetRatingMode(mode.Item1))">
-                        @mode.Item1.ToDescriptionString()
+                                <section id="ratings" class="settings-section">
+                                    <MudText Typo="Typo.h6">@T["Web.UserEditor.Ratings"]</MudText>
+                                    <MudDivider Class="my-2" />
+                                    <MudStack Spacing="2">
+                                        <MudSwitch @bind-Value="_user.PrefShowRatings" Color="Color.Tertiary" Label="@T["Web.UserEditor.ShowRatings"]" />
+                                        <MudSwitch @bind-Value="_user.PrefAutoFollow" Color="Color.Warning" Label="@T["Web.UserEditor.AutoFollow"]" ThumbIcon="@Icons.Material.Filled.AutoAwesome" />
+                                        <MudSwitch @bind-Value="_user.PrefAutoComputeAdvancedRatings" Color="Color.Success" Label="@T["Web.UserEditor.AutoComputeAdvancedRatings"]" ThumbIcon="@Icons.Material.Filled.AutoFixHigh" />
+                                        <MudText Typo="Typo.caption" Class="color-secondary">
+                                            @T.Get("Web.UserEditor.AutoFollowHint", RatingHelper.GetRatingFormatted(7000m, UserClientContext.CurrentUser?.PrefRatingMode ?? 0))
+                                        </MudText>
+
+                                        <MudText Typo="Typo.subtitle1" Class="mt-3">@T["Web.UserEditor.RatingMode"]</MudText>
+                                        <MudStack Row="true" Wrap="Wrap.Wrap" Justify="Justify.Center" Spacing="2" Class="rating-mode-group">
+                                            @foreach (var mode in RatingModes)
+                                            {
+                                                <MudButton Variant="@(_user.PrefRatingMode == mode.Item1 ? Variant.Filled : Variant.Outlined)"
+                                                           Color="Color.Secondary"
+                                                           StartIcon="@mode.Item2"
+                                                           Style="min-width: 180px"
+                                                           OnClick="@(() => SetRatingMode(mode.Item1))">
+                                                    @mode.Item1.ToDescriptionString()
+                                                </MudButton>
+                                            }
+                                        </MudStack>
+                                    </MudStack>
+                                </section>
+
+                                <section id="language" class="settings-section">
+                                    <MudText Typo="Typo.h6">@T["Web.UserEditor.Language"]</MudText>
+                                    <MudDivider Class="my-2" />
+                                    <MudSelect T="string"
+                                               Label="@T["Web.UserEditor.PreferredLanguage"]"
+                                               Variant="Variant.Outlined"
+                                               @bind-Value="_user.PrefLanguage">
+                                        @foreach (var language in Languages)
+                                        {
+                                            <MudSelectItem Value="@language.Code">
+                                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                                    <Flag CountryName="@language.CountryName" />
+                                                    <MudText>@language.Label</MudText>
+                                                </MudStack>
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </section>
+
+                                <section id="connections" class="settings-section">
+                                    <MudText Typo="Typo.h6">@T["Web.UserEditor.Connections"]</MudText>
+                                    <MudDivider Class="my-2" />
+                                    <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap">
+                                        @if (_user.GoogleId is null)
+                                        {
+                                            <MudButton StartIcon="@Icons.Material.Filled.AccountCircle" Color="Color.Error">
+                                                @T["Web.UserEditor.ConnectGoogle"]
+                                            </MudButton>
+                                        }
+
+                                        @if (_user.LastFmUsername is null)
+                                        {
+                                            <MudButton StartIcon="@Icons.Material.Filled.MusicNote" Color="Color.Warning">
+                                                @T["Web.UserEditor.ConnectLastFm"]
+                                            </MudButton>
+                                        }
+                                    </MudStack>
+                                    <MudText Typo="Typo.caption" Class="color-secondary mt-2">
+                                        @T.Get("Web.UserEditor.CreatedAt", _user.CreatedAt.ToString("ddd dd MMM yyyy 'at' HH:mm:ss", CultureInfo.InvariantCulture))
+                                    </MudText>
+                                </section>
+                            </MudPaper>
+                        </MudItem>
+                    </MudGrid>
+
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Save" StartIcon="@Icons.Material.Filled.Save" Class="mt-4">
+                        @T["Web.UserEditor.SaveSettings"]
                     </MudButton>
-                }
-            </MudStack>
-
-            <!-- Connected accounts -->
-            <MudDivider/>
-            <MudStack Row Spacing="4">
-                @if (_user.GoogleId is null)
-                {
-                    <MudButton StartIcon="@Icons.Material.Filled.AccountCircle"
-                               Color="Color.Error">
-                        Connect Google
-                    </MudButton>
-                }
-
-                @if (_user.LastFmUsername is null)
-                {
-                    <MudButton StartIcon="@Icons.Material.Filled.MusicNote"
-                               Color="Color.Warning">
-                        Connect LastFM
-                    </MudButton>
-                }
-            </MudStack>
-
-            <MudText Typo="Typo.caption" Class="color-secondary">
-                Account created on @_user.CreatedAt.ToString("ddd dd MMM yyyy 'at' HH:mm:ss", CultureInfo.InvariantCulture)
-            </MudText>
-
-            <MudDivider/>
-
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Save">
-                Save Changes
-            </MudButton>
+                </MudTabPanel>
+            </MudTabs>
         }
     </MudStack>
 </MudContainer>
 
 <style>
-    .rating-mode-group .mud-button-root {
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    .user-editor-shell {
+        border-radius: 16px;
     }
-    
+
+    .user-profile-header {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+    }
+
+    .user-profile-avatar {
+        width: 112px;
+        height: 112px;
+    }
+
+    .settings-grid {
+        min-height: 62vh;
+    }
+
+    .settings-nav {
+        position: sticky;
+        top: 88px;
+        align-self: flex-start;
+        height: fit-content;
+        max-height: calc(100vh - 110px);
+        overflow-y: auto;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .settings-nav-button {
+        justify-content: flex-start;
+        text-transform: none;
+        font-weight: 500;
+    }
+
+    .settings-nav-button.is-active {
+        font-weight: 800;
+    }
+
+    .settings-content {
+        max-height: 62vh;
+        overflow-y: auto;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .settings-section {
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .settings-section:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+    }
+
+    .rating-mode-group .mud-button-root {
+        transition: transform var(--mx-motion-fast, 0.15s) var(--mx-ease-standard, ease), box-shadow var(--mx-motion-fast, 0.15s) var(--mx-ease-standard, ease);
+    }
+
     .rating-mode-group .mud-button-root:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
     }
 </style>

@@ -1,0 +1,31 @@
+﻿:root {
+    --mx-motion-fast: 0.15s;
+    --mx-motion-medium: 0.25s;
+    --mx-motion-slow: 0.4s;
+    --mx-ease-standard: ease;
+    --mx-ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.motion-transition-standard {
+    transition-duration: var(--mx-motion-medium);
+    transition-timing-function: var(--mx-ease-standard);
+}
+
+.motion-transition-fast {
+    transition-duration: var(--mx-motion-fast);
+    transition-timing-function: var(--mx-ease-standard);
+}
+
+.motion-transition-slow {
+    transition-duration: var(--mx-motion-slow);
+    transition-timing-function: var(--mx-ease-emphasized);
+}
+
+.graphics-low *,
+.graphics-low *::before,
+.graphics-low *::after {
+    animation: none !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+}

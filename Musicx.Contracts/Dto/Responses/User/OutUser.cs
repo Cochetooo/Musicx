@@ -14,11 +14,13 @@ public sealed class OutUser : BaseOutputModel
     public string? GoogleId { get; set; }
     public string? LastFmUsername { get; set; }
     public string Name { get; set; } = string.Empty;
+    public string? OriginCountry { get; set; }
     public string? PictureUrl { get; set; }
     public bool PrefAutoComputeAdvancedRatings { get; set; }
     public bool PrefAutoFollow { get; set; }
     public bool PrefBannerBlur { get; set; }
     public bool PrefDarkMode { get; set; }
+    public bool PrefHighGraphics { get; set; }
     public string PrefLanguage { get; set; } = "en";
     public RatingMode PrefRatingMode { get; set; }
     public bool PrefShowRatings { get; set; }
