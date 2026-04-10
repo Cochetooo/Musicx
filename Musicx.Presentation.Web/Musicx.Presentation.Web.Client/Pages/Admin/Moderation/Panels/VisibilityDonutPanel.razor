@@ -1,16 +1,16 @@
 @using Musicx.Presentation.Web.Client.Components.Base
 <MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
     <PanelTitle Text="Visibility Ratio" />
-    <MudGrid Class="mt-2">
+    <MudGrid Class="mt-2" Spacing="2">
         <MudItem xs="12" md="6">
             <MudText Class="mb-2">Artists</MudText>
-            @* <MudChart ChartType="ChartType.Donut" InputData="@ArtistData" InputLabels="@Labels" Width="100%" Height="220px"/> *@
-            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@OnArtistsClick" FullWidth>Open Artist View</MudButton>
+            <MudChart ChartType="ChartType.Donut" T="int" ChartSeries="@([_artistSeries])" ChartLabels="@Labels" Width="100%" Height="220px" />
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@OnArtistsClick" FullWidth Class="mt-2">Open Artist View</MudButton>
         </MudItem>
         <MudItem xs="12" md="6">
             <MudText Class="mb-2">Genres</MudText>
-            @* <MudChart ChartType="ChartType.Donut" InputData="@GenreData" InputLabels="@Labels" Width="100%" Height="220px"/> *@
-            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@OnGenresClick" FullWidth>Open Genre View</MudButton>
+            <MudChart ChartType="ChartType.Donut" T="int" ChartSeries="@([_genreSeries])" ChartLabels="@Labels" Width="100%" Height="220px" />
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@OnGenresClick" FullWidth Class="mt-2">Open Genre View</MudButton>
         </MudItem>
     </MudGrid>
 </MudPaper>
@@ -23,7 +23,15 @@
     [Parameter] public EventCallback OnArtistsClick { get; set; }
     [Parameter] public EventCallback OnGenresClick { get; set; }
 
-    private double[] ArtistData => [ArtistsVisible, ArtistsHidden];
-    private double[] GenreData => [GenresVisible, GenresHidden];
+    private int[] _artistSeries = [];
+    private int[] _genreSeries = [];
+    
     private string[] Labels => ["Visible", "Hidden"];
+
+    protected override void OnInitialized()
+    {
+        _artistSeries = [ArtistsVisible, ArtistsHidden];
+        _genreSeries = [GenresVisible, GenresHidden];
+    }
+
 }

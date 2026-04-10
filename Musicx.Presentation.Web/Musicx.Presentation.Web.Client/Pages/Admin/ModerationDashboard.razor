@@ -10,12 +10,15 @@
 @inject IApiClient Api
 @inject IUserClientContext UserClientContext
 @inject ISnackbar Snackbar
+@inject ILoggerFactory LoggerFactory
 
 <AuthorizeView Permission="admin.dashboard.read">
     <ChildContent>
-        <MudGrid>
-            <MudItem xs="12" md="3" lg="2">
+        <div class="moderation-shell">
+            <aside class="moderation-sidebar">
                 <MudPaper Class="pa-3 moderation-nav" Elevation="0">
+                    <MudText Typo="Typo.h5" Class="moderation-nav-title">Moderation Dashboard</MudText>
+                    
                     <MudNavMenu Dense>
                         <MudNavLink OnClick="@(() => SetSection(ModerationSection.Overview))" Active="@(_section == ModerationSection.Overview)">
                             Overview
@@ -43,9 +46,9 @@
                         }
                     </MudNavMenu>
                 </MudPaper>
-            </MudItem>
+            </aside>
 
-            <MudItem xs="12" md="9" lg="10">
+            <section class="moderation-content">
                 @switch (_section)
                 {
                     case ModerationSection.Overview:
@@ -57,7 +60,7 @@
                                 <MudChip T="string" Color="Color.Success" Variant="Variant.Filled">Genres today: @_genresToday</MudChip>
                             </HeroStats>
                             <ChildContent>
-                                <MudGrid>
+                                <MudGrid Spacing="2">
                                     <MudItem xs="12" lg="6">
                                         <OverviewTodayStatsPanel Users="@_usersToday" Artists="@_artistsToday" Albums="@_albumsToday" Genres="@_genresToday"/>
                                     </MudItem>
@@ -71,17 +74,17 @@
                     case ModerationSection.Artists:
                         <DashboardLayout Title="Artist Moderation" Subtitle="Review and validate artist records.">
                             <HeroStats>
-                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">Total: @_artists.Count</MudChip>
+                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">Total: @_artistsTotal</MudChip>
                                 <MudChip T="string" Color="Color.Success" Variant="Variant.Filled">Visible: @_artistsVisible</MudChip>
                                 <MudChip T="string" Color="Color.Error" Variant="Variant.Filled">Pending: @_artistsHidden</MudChip>
                             </HeroStats>
                             <ChildContent>
-                                <MudGrid>
-                                    <MudItem xs="12" lg="7">
-                                        <ArtistVisibilitySummaryPanel Total="@_artists.Count" Visible="@_artistsVisible" Hidden="@_artistsHidden"/>
-                                    </MudItem>
+                                <MudGrid Spacing="2">
                                     <MudItem xs="12" lg="5">
                                         <ArtistCreationStatsPanel Today="@_artistsToday" ThisWeek="@_artistsWeek" ThisMonth="@_artistsMonth" ThisYear="@_artistsYear"/>
+                                    </MudItem>
+                                    <MudItem xs="12" lg="7">
+                                        <ArtistVisibilitySummaryPanel Pending="@_artistsHidden" HiddenRatio="@_artistHiddenRatio" RecentPending="@PendingArtists.Count" />
                                     </MudItem>
                                     <MudItem xs="12" lg="8">
                                         <ArtistTablePanel ServerData="@LoadArtists" Search="@_artistSearch" SearchChanged="@(v => _artistSearch = v)"/>
@@ -95,8 +98,8 @@
                         break;
                     case ModerationSection.Albums:
                         <DashboardLayout Title="Album Moderation" Subtitle="Track visibility and quality of album submissions.">
-                            <MudGrid>
-                                <MudItem xs="12" lg="4"><AlbumSummaryPanel Total="@_albums.Count" Visible="@_albumsVisible" Hidden="@_albumsHidden"/></MudItem>
+                            <MudGrid Spacing="2">
+                                <MudItem xs="12" lg="4"><AlbumSummaryPanel Total="@_albumsTotal" Visible="@_albumsVisible" Hidden="@_albumsHidden"/></MudItem>
                                 <MudItem xs="12" lg="8"><AlbumTablePanel ServerData="@LoadAlbums" Search="@_albumSearch" SearchChanged="@(v => _albumSearch = v)"/></MudItem>
                             </MudGrid>
                         </DashboardLayout>
@@ -104,17 +107,17 @@
                     case ModerationSection.Genres:
                         <DashboardLayout Title="Genre Moderation" Subtitle="Review and validate genre taxonomy.">
                             <HeroStats>
-                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">Total: @_genres.Count</MudChip>
+                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">Total: @_genresTotal</MudChip>
                                 <MudChip T="string" Color="Color.Success" Variant="Variant.Filled">Visible: @_genresVisible</MudChip>
                                 <MudChip T="string" Color="Color.Error" Variant="Variant.Filled">Pending: @_genresHidden</MudChip>
                             </HeroStats>
                             <ChildContent>
-                                <MudGrid>
-                                    <MudItem xs="12" lg="7">
-                                        <GenreVisibilitySummaryPanel Total="@_genres.Count" Visible="@_genresVisible" Hidden="@_genresHidden"/>
-                                    </MudItem>
+                                <MudGrid Spacing="2">
                                     <MudItem xs="12" lg="5">
                                         <GenreCreationStatsPanel Today="@_genresToday" ThisWeek="@_genresWeek" ThisMonth="@_genresMonth" ThisYear="@_genresYear"/>
+                                    </MudItem>
+                                    <MudItem xs="12" lg="7">
+                                        <GenreVisibilitySummaryPanel Pending="@_genresHidden" HiddenRatio="@_genreHiddenRatio" RecentPending="@PendingGenres.Count"/>
                                     </MudItem>
                                     <MudItem xs="12" lg="8">
                                         <GenreTablePanel ServerData="@LoadGenres" Search="@_genreSearch" SearchChanged="@(v => _genreSearch = v)"/>
@@ -128,8 +131,8 @@
                         break;
                     case ModerationSection.Users:
                         <DashboardLayout Title="User Moderation" Subtitle="Manage users and role assignment.">
-                            <MudGrid>
-                                <MudItem xs="12" lg="4"><UsersSummaryPanel Total="@_users.Count" Today="@_usersToday"/></MudItem>
+                            <MudGrid Spacing="2">
+                                <MudItem xs="12" lg="4"><UsersSummaryPanel Total="@_usersTotal" Today="@_usersToday"/></MudItem>
                                 <MudItem xs="12" lg="8"><UsersTablePanel Users="@_pagedUsers" Total="@_usersTotal" Roles="@_roles" Search="@_userSearch" SearchChanged="@(v => _userSearch = v)" OnRoleToggled="@ToggleUserRole" ServerData="@LoadUsers"/></MudItem>
                             </MudGrid>
                         </DashboardLayout>
@@ -140,21 +143,47 @@
                         </DashboardLayout>
                         break;
                 }
-            </MudItem>
-        </MudGrid>
+            </section>
+        </div>
 
-        <ArtistEditModal @ref="_artistEditModal" OnSave="LoadData" />
-        <GenreEditModal @ref="_genreEditModal" OnSave="LoadData" />
+        <ArtistEditModal @ref="_artistEditModal" OnSave="HandlePanelEditSaved" />
+        <GenreEditModal @ref="_genreEditModal" OnSave="HandlePanelEditSaved" />
     </ChildContent>
 </AuthorizeView>
 
 <style>
+    .moderation-shell {
+        display: flex;
+        align-items: stretch;
+        gap: 14px;
+        min-height: calc(100vh - 92px);
+        margin-left: -16px;
+    }
+
+    .moderation-sidebar {
+        width: 250px;
+        flex: 0 0 250px;
+    }
+
+    .moderation-content {
+        flex: 1;
+        min-width: 0;
+    }
+    
     .moderation-nav {
         background: linear-gradient(180deg, rgba(20,20,28,.95) 0%, rgba(14,14,20,.85) 100%);
-        border-radius: 18px;
+        border-radius: 0;
         border: 1px solid rgba(255,255,255,.08);
+        border-left: none;
+        min-height: calc(100vh - 96px);
         position: sticky;
-        top: 90px;
+        top: 88px;
+    }
+
+    .moderation-nav-title {
+        font-weight: 900;
+        font-size: 1.35rem;
+        margin-bottom: 12px;
     }
 
     .moderation-nav .mud-nav-link {
@@ -163,8 +192,40 @@
         color: #f5f7ff;
     }
 
-    .moderation-nav .mud-nav-link.active,
+    .moderation-nav .mud-nav-link.active {
+        background: rgba(190, 190, 190, .35);
+        color: #f5f5f5;
+    }
+    
     .moderation-nav .mud-nav-link:hover {
         background: rgba(96, 116, 255, .22);
+    }
+
+    .moderation-content .bg-surface {
+        border-radius: 22px;
+    }
+
+    .moderation-content .mud-grid-item {
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+
+    @@media (max-width: 959px) {
+        .moderation-shell {
+            margin-left: 0;
+            flex-direction: column;
+        }
+
+        .moderation-sidebar {
+            width: 100%;
+            flex-basis: auto;
+        }
+
+        .moderation-nav {
+            border-radius: 18px;
+            border-left: 1px solid rgba(255,255,255,.08);
+            min-height: auto;
+            top: 76px;
+        }
     }
 </style>

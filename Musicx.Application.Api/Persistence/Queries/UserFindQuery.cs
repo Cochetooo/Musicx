@@ -8,4 +8,7 @@ public record UserFindQuery : IFindQuery<InUser>
 {
     public TextSearchFilterOptions? Search { get; set; }
     public TextFilter? RawSearch { get; set; }
+    
+    public DateTime? CreatedAtFrom { get; set; }
+    public DateTime? CreatedAtTo { get; set; }
 }

@@ -144,6 +144,8 @@ public sealed class UserController(IUserRepository userRepository,
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
+        [FromQuery] DateTime? createdAtFrom = null,
+        [FromQuery] DateTime? createdAtTo = null,
         [FromQuery] UserJoinSpecification? joins = null,
         [FromQuery] UserOrderSpecification? order = null,
         [FromQuery] PagingOptions? paging = null)
@@ -156,7 +158,9 @@ public sealed class UserController(IUserRepository userRepository,
                 new UserFindQuery
                 {
                     Search = new() { Exact = filterExact, Similarity = filterSimilitude },
-                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter),
+                    CreatedAtFrom = createdAtFrom,
+                    CreatedAtTo = createdAtTo
                 },
                 joins,
                 order,
@@ -206,13 +210,24 @@ public sealed class UserController(IUserRepository userRepository,
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<long>> GetCount()
+    public async Task<ActionResult<long>> GetCount(
+        [FromQuery] bool filterExact = false,
+        [FromQuery] double filterSimilitude = 0.4,
+        [FromQuery] string filter = "",
+        [FromQuery] DateTime? createdAtFrom = null,
+        [FromQuery] DateTime? createdAtTo = null)
     {
         _logger.LogInformation($"🌍🏳️ API : COUNT users");
         
         try
         {
-            var count = await userRepository.CountAsync();
+            var count = await userRepository.CountAsync(new UserFindQuery
+            {
+                Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter),
+                CreatedAtFrom = createdAtFrom,
+                CreatedAtTo = createdAtTo
+            });
             
             _logger.LogInformation($"🌍✅ API : COUNT users - SUCCESS");
             return Ok(count);

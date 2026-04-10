@@ -300,6 +300,9 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
+        [FromQuery] DateTime? createdAtFrom = null,
+        [FromQuery] DateTime? createdAtTo = null,
+        [FromQuery] bool? isVisible = null,
         [FromQuery] AlbumJoinSpecification? joins = null,
         [FromQuery] AlbumOrderSpecification? order = null,
         [FromQuery] PagingOptions? paging = null)
@@ -319,7 +322,10 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
                 new AlbumFindQuery
                 {
                     Search = new() { Exact = filterExact, Similarity = filterSimilitude },
-                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter),
+                    CreatedAtFrom = createdAtFrom,
+                    CreatedAtTo = createdAtTo,
+                    IsVisible = isVisible
                 },
                 joins,
                 order,
@@ -369,13 +375,26 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<long>> GetCount()
+    public async Task<ActionResult<long>> GetCount(
+        [FromQuery] bool filterExact = false,
+        [FromQuery] double filterSimilitude = 0.4,
+        [FromQuery] string filter = "",
+        [FromQuery] DateTime? createdAtFrom = null,
+        [FromQuery] DateTime? createdAtTo = null,
+        [FromQuery] bool? isVisible = null)
     {
         _logger.LogInformation($"🌍🏳️ API : COUNT albums");
         
         try
         {
-            var count = await albumRepository.CountAsync();
+            var count = await albumRepository.CountAsync(new AlbumFindQuery
+            {
+                Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter),
+                CreatedAtFrom = createdAtFrom,
+                CreatedAtTo = createdAtTo,
+                IsVisible = isVisible
+            });
             
             _logger.LogInformation($"🌍✅ API : COUNT albums - SUCCESS");
             return Ok(count);

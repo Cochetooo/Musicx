@@ -305,6 +305,24 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
             where.Add($"(ar0.{ArtistColumns.OriginCountry} ILIKE @country OR ar0.{ArtistColumns.CurrentCountry} ILIKE @country)"); 
             parameters.Add(new("@country", typedQuery.Country));
         }
+        
+        if (typedQuery.CreatedAtFrom is not null)
+        {
+            where.Add($"ar0.{ArtistColumns.CreatedAt} >= @createdAtFrom");
+            parameters.Add(new("@createdAtFrom", typedQuery.CreatedAtFrom));
+        }
+
+        if (typedQuery.CreatedAtTo is not null)
+        {
+            where.Add($"ar0.{ArtistColumns.CreatedAt} <= @createdAtTo");
+            parameters.Add(new("@createdAtTo", typedQuery.CreatedAtTo));
+        }
+
+        if (typedQuery.IsVisible is not null)
+        {
+            where.Add($"ar0.{ArtistColumns.IsVisible} = @isVisible");
+            parameters.Add(new("@isVisible", typedQuery.IsVisible));
+        }
 
         if (typedQuery.MainGenreId is not null)
         {
@@ -333,7 +351,7 @@ internal sealed class ArtistSqlBuilder(ILoggerProvider loggerProvider) : SqlBuil
 
         if (countOnly)
         {
-            return ($"SELECT COUNT(*) FROM ({sql}) q0", parameters);
+            return (sql, parameters);
         }
 
         if (typedQuery.ChartType is not null)

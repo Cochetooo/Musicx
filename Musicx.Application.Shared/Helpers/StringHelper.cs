@@ -39,4 +39,14 @@ public static class StringHelper
     
     public static string SplitCamelCase(this string input) =>
         Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
+    
+    public static string ToCamelCase(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || char.IsLower(value[0]))
+        {
+            return value;
+        }
+
+        return char.ToLowerInvariant(value[0]) + value[1..];
+    }
 }

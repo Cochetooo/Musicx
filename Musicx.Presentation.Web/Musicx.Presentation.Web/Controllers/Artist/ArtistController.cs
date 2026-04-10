@@ -196,6 +196,9 @@ public sealed class ArtistController(IArtistRepository artistRepository,
         [FromQuery] long? mainGenreId = null,
         [FromQuery] long[]? primaryGenreIds = null,
         [FromQuery] long[]? influenceGenreIds = null,
+        [FromQuery] DateTime? createdAtFrom = null,
+        [FromQuery] DateTime? createdAtTo = null,
+        [FromQuery] bool? isVisible = null,
         [FromQuery] ArtistJoinSpecification? joins = null,
         [FromQuery] ArtistOrderSpecification? order = null,
         [FromQuery] PagingOptions? paging = null)
@@ -218,7 +221,11 @@ public sealed class ArtistController(IArtistRepository artistRepository,
                     Discriminator = discriminator,
                     Country = country,
                     MainGenreId = mainGenreId,
-                    InfluenceGenreIds = influenceGenreIds
+                    PrimaryGenreIds = primaryGenreIds,
+                    InfluenceGenreIds = influenceGenreIds,
+                    CreatedAtFrom = createdAtFrom,
+                    CreatedAtTo = createdAtTo,
+                    IsVisible = isVisible
                 },
                 joins,
                 order,
@@ -268,13 +275,48 @@ public sealed class ArtistController(IArtistRepository artistRepository,
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<long>> GetCount()
+    public async Task<ActionResult<long>> GetCount(
+        [FromQuery] bool filterExact = false,
+        [FromQuery] double filterSimilitude = 0.4,
+        [FromQuery] string filter = "",
+        [FromQuery] decimal? minRating = null,
+        [FromQuery] decimal? maxRating = null,
+        [FromQuery] short? minUserAge = null,
+        [FromQuery] short? maxUserAge = null,
+        [FromQuery] short? popularityWeight = null,
+        [FromQuery] ChartType? chartType = null,
+        [FromQuery] ArtistDiscriminator? discriminator = null,
+        [FromQuery] string? country = null,
+        [FromQuery] long? mainGenreId = null,
+        [FromQuery] long[]? primaryGenreIds = null,
+        [FromQuery] long[]? influenceGenreIds = null,
+        [FromQuery] DateTime? createdAtFrom = null,
+        [FromQuery] DateTime? createdAtTo = null,
+        [FromQuery] bool? isVisible = null)
     {
         _logger.LogInformation($"🌍🏳️ API : COUNT artists");
         
         try
         {
-            var count = await artistRepository.CountAsync();
+            var count = await artistRepository.CountAsync(new ArtistFindQuery
+            {
+                Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter),
+                MinRating = minRating,
+                MaxRating = maxRating,
+                MinUserAge = minUserAge,
+                MaxUserAge = maxUserAge,
+                PopularityWeight = popularityWeight,
+                ChartType = chartType,
+                Discriminator = discriminator,
+                Country = country,
+                MainGenreId = mainGenreId,
+                PrimaryGenreIds = primaryGenreIds,
+                InfluenceGenreIds = influenceGenreIds,
+                CreatedAtFrom = createdAtFrom,
+                CreatedAtTo = createdAtTo,
+                IsVisible = isVisible
+            });
             
             _logger.LogInformation($"🌍✅ API : COUNT artists - SUCCESS");
             return Ok(count);

@@ -131,6 +131,9 @@ public sealed class GenreController(IGenreRepository genreRepository,
         [FromQuery] bool filterExact = false,
         [FromQuery] double filterSimilitude = 0.4,
         [FromQuery] string filter = "",
+        [FromQuery] DateTime? createdAtFrom = null,
+        [FromQuery] DateTime? createdAtTo = null,
+        [FromQuery] bool? isVisible = null,
         [FromQuery] GenreJoinSpecification? joins = null,
         [FromQuery] GenreOrderSpecification? order = null,
         [FromQuery] PagingOptions? paging = null)
@@ -143,7 +146,10 @@ public sealed class GenreController(IGenreRepository genreRepository,
                 new GenreFindQuery
                 {
                     Search = new() { Exact = filterExact, Similarity = filterSimilitude },
-                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter)
+                    RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter),
+                    CreatedAtFrom = createdAtFrom,
+                    CreatedAtTo = createdAtTo,
+                    IsVisible = isVisible
                 },
                 joins,
                 order,
@@ -193,13 +199,26 @@ public sealed class GenreController(IGenreRepository genreRepository,
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<long>> GetCount()
+    public async Task<ActionResult<long>> GetCount(
+        [FromQuery] bool filterExact = false,
+        [FromQuery] double filterSimilitude = 0.4,
+        [FromQuery] string filter = "",
+        [FromQuery] DateTime? createdAtFrom = null,
+        [FromQuery] DateTime? createdAtTo = null,
+        [FromQuery] bool? isVisible = null)
     {
         _logger.LogInformation($"🌍🏳️ API : COUNT genres");
         
         try
         {
-            var count = await genreRepository.CountAsync();
+            var count = await genreRepository.CountAsync(new GenreFindQuery
+            {
+                Search = new() { Exact = filterExact, Similarity = filterSimilitude },
+                RawSearch = string.IsNullOrWhiteSpace(filter) ? null : new(filter),
+                CreatedAtFrom = createdAtFrom,
+                CreatedAtTo = createdAtTo,
+                IsVisible = isVisible
+            });
             
             _logger.LogInformation($"🌍✅ API : COUNT genres - SUCCESS");
             return Ok(count);

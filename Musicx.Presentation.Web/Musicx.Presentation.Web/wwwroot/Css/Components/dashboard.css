@@ -1,0 +1,11 @@
+﻿.pending-list-dense .mud-list-item {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.pending-name {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

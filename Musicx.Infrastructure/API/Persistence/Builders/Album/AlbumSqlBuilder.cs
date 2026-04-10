@@ -257,6 +257,24 @@ internal sealed class AlbumSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
                 typedQuery.Search
             );
         }
+        
+        if (typedQuery.CreatedAtFrom is not null)
+        {
+            clauses.Add($"al0.{AlbumColumns.CreatedAt} >= @createdAtFrom");
+            AddParam("@createdAtFrom", typedQuery.CreatedAtFrom);
+        }
+
+        if (typedQuery.CreatedAtTo is not null)
+        {
+            clauses.Add($"al0.{AlbumColumns.CreatedAt} <= @createdAtTo");
+            AddParam("@createdAtTo", typedQuery.CreatedAtTo);
+        }
+
+        if (typedQuery.IsVisible is not null)
+        {
+            clauses.Add($"al0.{AlbumColumns.IsVisible} = @isVisible");
+            AddParam("@isVisible", typedQuery.IsVisible);
+        }
 
         sql += " ";
         foreach (var join in joins)

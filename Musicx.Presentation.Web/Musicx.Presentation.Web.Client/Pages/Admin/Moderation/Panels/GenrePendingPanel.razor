@@ -2,15 +2,15 @@
 @using Musicx.Presentation.Web.Client.Components.Base
 <MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
     <PanelTitle Text="Pending Genres" Count="@PendingGenres.Count.ToString()" />
-    <MudList T="RenderFragment" Dense>
+    <MudList T="RenderFragment" Dense Class="pending-list-dense">
         @foreach (var genre in PendingGenres)
         {
-            <MudListItem>
+            <MudListItem Class="pending-list-item">
                 <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width:100%">
-                    <MudText>@genre.CanonicalName</MudText>
-                    <MudStack Row>
-                        <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() => OnReject.InvokeAsync(genre))" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Success" OnClick="@(() => OnAccept.InvokeAsync(genre))" />
+                    <MudText Class="text-truncate pending-name">@genre.CanonicalName</MudText>
+                    <MudStack Row Spacing="0">
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" Size="Size.Small" OnClick="@(() => OnReject.InvokeAsync(genre))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Small" OnClick="@(() => OnAccept.InvokeAsync(genre))" />
                     </MudStack>
                 </MudStack>
             </MudListItem>

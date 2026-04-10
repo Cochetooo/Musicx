@@ -163,13 +163,67 @@ internal sealed class GenreSqlBuilder(ILoggerProvider loggerProvider) : SqlBuild
             return (string.Empty, []);
         }
 
-        return BuildDefaultFilteredQuery(
-            typedQuery,
-            joinSpec,
-            orderSpec,
-            pagingOptions,
-            countOnly,
-            [$"g0.{GenreColumns.CanonicalName}"],
-            $"g0.{GenreColumns.CanonicalName}");
+        var sql = BuildSelect(joinSpec);
+        var parameters = new List<NpgsqlParameter>();
+
+        if (typedQuery.RawSearch is not null)
+        {
+            Filter(
+                ref sql,
+                [$"g0.{GenreColumns.CanonicalName}"],
+                typedQuery.RawSearch.Value ?? string.Empty,
+                parameters,
+                typedQuery.Search?.Exact ?? false,
+                typedQuery.Search?.Similarity ?? 0.4);
+        }
+
+        var where = new List<string>();
+
+        if (typedQuery.CreatedAtFrom is not null)
+        {
+            where.Add($"g0.{GenreColumns.CreatedAt} >= @createdAtFrom");
+            parameters.Add(new NpgsqlParameter("@createdAtFrom", typedQuery.CreatedAtFrom));
+        }
+
+        if (typedQuery.CreatedAtTo is not null)
+        {
+            where.Add($"g0.{GenreColumns.CreatedAt} <= @createdAtTo");
+            parameters.Add(new NpgsqlParameter("@createdAtTo", typedQuery.CreatedAtTo));
+        }
+
+        if (typedQuery.IsVisible is not null)
+        {
+            where.Add($"g0.{GenreColumns.IsVisible} = @isVisible");
+            parameters.Add(new NpgsqlParameter("@isVisible", typedQuery.IsVisible));
+        }
+
+        if (where.Count > 0)
+        {
+            sql += (sql.Contains(" WHERE ", StringComparison.Ordinal) ? " AND " : " WHERE ") + string.Join(" AND ", where);
+        }
+
+        sql += BuildGroupBy(joinSpec);
+
+        if (countOnly)
+        {
+            return ($"SELECT COUNT(*) FROM ({sql}) q0", parameters);
+        }
+
+        if (orderSpec is not null)
+        {
+            sql += BuildOrderBy(orderSpec);
+        }
+        else
+        {
+            sql += !string.IsNullOrWhiteSpace(typedQuery.RawSearch?.Value)
+                ? $" ORDER BY similarity(g0.{GenreColumns.CanonicalName}, @filter) DESC"
+                : $" ORDER BY g0.{GenreColumns.CanonicalName}";
+        }
+
+        sql += " OFFSET @skip LIMIT @take";
+        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
+        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
+
+        return (sql, parameters);
     }
 }

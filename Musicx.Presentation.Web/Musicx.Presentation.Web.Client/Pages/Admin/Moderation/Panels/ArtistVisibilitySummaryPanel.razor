@@ -1,16 +1,16 @@
 @using Musicx.Presentation.Web.Client.Components.Base
-<MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
-    <PanelTitle Text="Artist Visibility" />
-    <MudStack Row Spacing="3" Class="mt-3">
-        <MudChip T="string" Color="Color.Primary">Total: @Total</MudChip>
-        <MudChip T="string" Color="Color.Success">Visible: @Visible</MudChip>
-        <MudChip T="string" Color="Color.Error">Hidden: @Hidden</MudChip>
+<MudPaper Class="pa-3 bg-surface animate-hover-up" Elevation="0">
+    <PanelTitle Text="Artist Moderation Health" />
+    <MudStack Spacing="1" Class="mt-2">
+        <MudText Typo="Typo.body2">Pending artists: <b>@Pending</b></MudText>
+        <MudText Typo="Typo.body2">Pending ratio: <b>@HiddenRatio%</b></MudText>
+        <MudText Typo="Typo.body2">Pending list size (latest): <b>@RecentPending</b></MudText>
     </MudStack>
 </MudPaper>
 
 @code 
 {
-    [Parameter] public int Total { get; set; } 
-    [Parameter] public int Visible { get; set; } 
-    [Parameter] public int Hidden { get; set; }
+    [Parameter] public int Pending { get; set; }
+    [Parameter] public int HiddenRatio { get; set; }
+    [Parameter] public int RecentPending { get; set; }
 }

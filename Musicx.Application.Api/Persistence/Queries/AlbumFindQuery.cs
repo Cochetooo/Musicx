@@ -8,4 +8,8 @@ public record AlbumFindQuery : IFindQuery<InAlbum>
 {
     public TextSearchFilterOptions? Search { get; set; }
     public TextFilter? RawSearch { get; set; }
+    
+    public DateTime? CreatedAtFrom { get; set; }
+    public DateTime? CreatedAtTo { get; set; }
+    public bool? IsVisible { get; set; }
 }

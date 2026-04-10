@@ -1,5 +1,7 @@
 using MudBlazor;
+using Musicx.Application.API.Persistence.Queries;
 using Musicx.Application.Shared.Enums;
+using Musicx.Application.Shared.Interfaces.Persistence.Filtering;
 using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Requests.Genre;
@@ -24,18 +26,25 @@ public partial class ModerationDashboard
 {
     private enum ModerationSection { Overview, Artists, Albums, Genres, Users, RolesPermissions }
 
+    private ILogger _logger = null!;
+
     private ModerationSection _section = ModerationSection.Overview;
 
     private ArtistEditModal _artistEditModal = null!;
     private GenreEditModal _genreEditModal = null!;
-
-    private List<OutArtist> _artists = [];
-    private List<OutGenre> _genres = [];
-    private List<OutAlbum> _albums = [];
-    private List<OutUser> _users = [];
+    
     private List<OutRole> _roles = [];
     private List<OutPermission> _permissions = [];
+    
+    private bool _overviewLoaded;
+    private bool _artistsLoaded;
+    private bool _genresLoaded;
+    private bool _albumsLoaded;
+    private bool _usersLoaded;
+    private bool _rolesLoaded;
 
+    private List<OutArtist> _pendingArtists = [];
+    private List<OutGenre> _pendingGenres = [];
     private List<OutUser> _pagedUsers = [];
     private int _usersTotal;
 
@@ -50,6 +59,7 @@ public partial class ModerationDashboard
     private int _artistsYear;
     private int _artistsVisible;
     private int _artistsHidden;
+    private int _artistsTotal;
 
     private int _genresToday;
     private int _genresWeek;
@@ -57,27 +67,30 @@ public partial class ModerationDashboard
     private int _genresYear;
     private int _genresVisible;
     private int _genresHidden;
+    private int _genresTotal;
 
     private int _albumsToday;
     private int _albumsVisible;
     private int _albumsHidden;
+    private int _albumsTotal;
 
     private int _usersToday;
+    private int _usersCount;
+    
+    private int _totalPendingItems;
+    private int _artistHiddenRatio;
+    private int _genreHiddenRatio;
 
     private bool IsAdmin => UserClientContext.Roles.Any(r => r.Name.Equals("Admin", StringComparison.OrdinalIgnoreCase))
                             || UserClientContext.Can("admin.role.read");
 
-    private IReadOnlyList<OutArtist> PendingArtists => _artists
-        .Where(x => !x.IsVisible)
-        .OrderByDescending(x => x.CreatedAt)
-        .Take(25)
-        .ToList();
+    private IReadOnlyList<OutArtist> PendingArtists => _pendingArtists;
+    private IReadOnlyList<OutGenre> PendingGenres => _pendingGenres;
 
-    private IReadOnlyList<OutGenre> PendingGenres => _genres
-        .Where(x => !x.IsVisible)
-        .OrderByDescending(x => x.CreatedAt)
-        .Take(25)
-        .ToList();
+    protected override void OnInitialized()
+    {
+        _logger = LoggerFactory.CreateLogger(typeof(ModerationDashboard));
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -86,34 +99,209 @@ public partial class ModerationDashboard
             return;
         }
 
-        await LoadData();
+        await EnsureSectionLoaded(_section);
         await InvokeAsync(StateHasChanged);
     }
 
-    private void SetSection(ModerationSection section) => _section = section;
-
-    private async Task LoadData()
+    private void SetSection(ModerationSection section)
     {
-        var artistsTask = Api.FindAsync<InArtist, OutArtist>(pagingOptions: new PagingOptions(10_000, 0), order: new ArtistOrderSpecification { CreatedAt = -1 });
-        var genresTask = Api.FindAsync<InGenre, OutGenre>(pagingOptions: new PagingOptions(10_000, 0), order: new GenreOrderSpecification { CreatedAt = -1 });
-        var albumsTask = Api.FindAsync<InAlbum, OutAlbum>(pagingOptions: new PagingOptions(10_000, 0), order: new AlbumOrderSpecification { CreatedAt = -1 }, joins: new AlbumJoinSpecification { IncludeArtist = true });
-        var usersTask = Api.FindAsync<InUser, OutUser>(pagingOptions: new PagingOptions(10_000, 0), order: new UserOrderSpecification { CreatedAt = -1 }, joins: new UserJoinSpecification { IncludeRoles = true });
+        _section = section;
+        _ = InvokeAsync(async () =>
+        {
+            await EnsureSectionLoaded(section);
+            StateHasChanged();
+        });
+    }
+
+    private async Task EnsureSectionLoaded(ModerationSection section)
+    {
+        switch (section)
+        {
+            case ModerationSection.Overview:
+                await LoadOverviewData(force: false);
+                break;
+            case ModerationSection.Artists:
+                await LoadArtistsSectionData(force: false);
+                break;
+            case ModerationSection.Albums:
+                await LoadAlbumsSectionData(force: false);
+                break;
+            case ModerationSection.Genres:
+                await LoadGenresSectionData(force: false);
+                break;
+            case ModerationSection.Users:
+                await LoadUsersSectionData(force: false);
+                if (IsAdmin)
+                {
+                    await LoadRolesAndPermissions(force: false);
+                }
+
+                break;
+            case ModerationSection.RolesPermissions:
+                await LoadRolesAndPermissions(force: false);
+                break;
+        }
+    }
+
+    private async Task HandlePanelEditSaved()
+    {
+        await RefreshCurrentSection(force: true);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task RefreshCurrentSection(bool force = true)
+    {
+        switch (_section)
+        {
+            case ModerationSection.Overview:
+                await LoadOverviewData(force);
+                break;
+            case ModerationSection.Artists:
+                await LoadArtistsSectionData(force);
+                break;
+            case ModerationSection.Albums:
+                await LoadAlbumsSectionData(force);
+                break;
+            case ModerationSection.Genres:
+                await LoadGenresSectionData(force);
+                break;
+            case ModerationSection.Users:
+                await LoadUsersSectionData(force);
+                if (IsAdmin)
+                {
+                    await LoadRolesAndPermissions(force);
+                }
+
+                break;
+            case ModerationSection.RolesPermissions:
+                await LoadRolesAndPermissions(force);
+                break;
+        }
+    }
+
+    private async Task LoadOverviewData(bool force)
+    {
+        if (!force && _overviewLoaded)
+        {
+            return;
+        }
+        
+        await LoadAllStats();
+        await LoadPendingLists();
+
+        _overviewLoaded = true;
+    }
+    
+    private async Task LoadArtistsSectionData(bool force)
+    {
+        if (!force && _artistsLoaded)
+        {
+            return;
+        }
+
+        await LoadArtistStats();
+        _pendingArtists = (await Api.FindAsync<InArtist, OutArtist>(
+            query: new ArtistFindQuery { IsVisible = false },
+            pagingOptions: new PagingOptions(25, 0),
+            order: new ArtistOrderSpecification { CreatedAt = -1 })).Items;
+
+        _artistsLoaded = true;
+    }
+
+    private async Task LoadGenresSectionData(bool force)
+    {
+        if (!force && _genresLoaded)
+        {
+            return;
+        }
+
+        await LoadGenreStats();
+        _pendingGenres = (await Api.FindAsync<InGenre, OutGenre>(
+            query: new GenreFindQuery { IsVisible = false },
+            pagingOptions: new PagingOptions(25, 0),
+            order: new GenreOrderSpecification { CreatedAt = -1 })).Items;
+        _genresLoaded = true;
+    }
+
+    private async Task LoadAlbumsSectionData(bool force)
+    {
+        if (!force && _albumsLoaded)
+        {
+            return;
+        }
+
+        await LoadAlbumStats();
+        _albumsLoaded = true;
+    }
+    
+    private async Task LoadUsersSectionData(bool force)
+    {
+        if (!force && _usersLoaded)
+        {
+            return;
+        }
+
+        await LoadUserStats();
+        _usersLoaded = true;
+    }
+    
+    private async Task LoadRolesAndPermissions(bool force)
+    {
+        if (!force && _rolesLoaded)
+        {
+            return;
+        }
+
         var rolesTask = Api.FindAsync<InRole, OutRole>(pagingOptions: new PagingOptions(10_000, 0), joins: new RoleJoinSpecification { IncludePermissions = true });
         var permissionsTask = Api.FindAsync<InPermission, OutPermission>(pagingOptions: new PagingOptions(10_000, 0));
 
-        await Task.WhenAll(artistsTask, genresTask, albumsTask, usersTask, rolesTask, permissionsTask);
+        await Task.WhenAll(rolesTask, permissionsTask);
 
-        _artists = artistsTask.Result.Items;
-        _genres = genresTask.Result.Items;
-        _albums = albumsTask.Result.Items;
-        _users = usersTask.Result.Items;
         _roles = rolesTask.Result.Items;
         _permissions = permissionsTask.Result.Items;
-
-        ComputeStats();
+        _rolesLoaded = true;
+    }
+    
+    private async Task LoadAllStats()
+    {
+        await Task.WhenAll(
+            LoadArtistStats(),
+            LoadGenreStats(),
+            LoadAlbumStats(),
+            LoadUserStats());
+        
+        ComputeGlobalStats();
     }
 
-    private void ComputeStats()
+    private async Task LoadArtistStats()
+    {
+        var now = DateTime.UtcNow;
+        var today = now.Date;
+        var weekStart = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+        var monthStart = new DateTime(now.Year, now.Month, 1);
+        var yearStart = new DateTime(now.Year, 1, 1);
+        
+        var totalTask = Api.CountAsync<InArtist, OutArtist>();
+        var visibleTask = Api.CountAsync<InArtist, OutArtist>(new ArtistFindQuery { IsVisible = true });
+        var hiddenTask = Api.CountAsync<InArtist, OutArtist>(new ArtistFindQuery { IsVisible = false });
+        var todayTask = Api.CountAsync<InArtist, OutArtist>(new ArtistFindQuery { CreatedAtFrom = today });
+        var weekTask = Api.CountAsync<InArtist, OutArtist>(new ArtistFindQuery { CreatedAtFrom = weekStart });
+        var monthTask = Api.CountAsync<InArtist, OutArtist>(new ArtistFindQuery { CreatedAtFrom = monthStart });
+        var yearTask = Api.CountAsync<InArtist, OutArtist>(new ArtistFindQuery { CreatedAtFrom = yearStart });
+
+        await Task.WhenAll(totalTask, visibleTask, hiddenTask, todayTask, weekTask, monthTask, yearTask);
+
+        _artistsTotal = (int)totalTask.Result;
+        _artistsVisible = (int)visibleTask.Result;
+        _artistsHidden = (int)hiddenTask.Result;
+        _artistsToday = (int)todayTask.Result;
+        _artistsWeek = (int)weekTask.Result;
+        _artistsMonth = (int)monthTask.Result;
+        _artistsYear = (int)yearTask.Result;
+        _artistHiddenRatio = _artistsTotal > 0 ? (int)Math.Round((double)_artistsHidden * 100 / _artistsTotal) : 0;
+    }
+    
+    private async Task LoadGenreStats()
     {
         var now = DateTime.UtcNow;
         var today = now.Date;
@@ -121,92 +309,168 @@ public partial class ModerationDashboard
         var monthStart = new DateTime(now.Year, now.Month, 1);
         var yearStart = new DateTime(now.Year, 1, 1);
 
-        _artistsToday = _artists.Count(a => a.CreatedAt >= today);
-        _artistsWeek = _artists.Count(a => a.CreatedAt >= weekStart);
-        _artistsMonth = _artists.Count(a => a.CreatedAt >= monthStart);
-        _artistsYear = _artists.Count(a => a.CreatedAt >= yearStart);
-        _artistsVisible = _artists.Count(a => a.IsVisible);
-        _artistsHidden = _artists.Count - _artistsVisible;
+        var totalTask = Api.CountAsync<InGenre, OutGenre>();
+        var visibleTask = Api.CountAsync<InGenre, OutGenre>(new GenreFindQuery { IsVisible = true });
+        var hiddenTask = Api.CountAsync<InGenre, OutGenre>(new GenreFindQuery { IsVisible = false });
+        var todayTask = Api.CountAsync<InGenre, OutGenre>(new GenreFindQuery { CreatedAtFrom = today });
+        var weekTask = Api.CountAsync<InGenre, OutGenre>(new GenreFindQuery { CreatedAtFrom = weekStart });
+        var monthTask = Api.CountAsync<InGenre, OutGenre>(new GenreFindQuery { CreatedAtFrom = monthStart });
+        var yearTask = Api.CountAsync<InGenre, OutGenre>(new GenreFindQuery { CreatedAtFrom = yearStart });
 
-        _genresToday = _genres.Count(g => g.CreatedAt >= today);
-        _genresWeek = _genres.Count(g => g.CreatedAt >= weekStart);
-        _genresMonth = _genres.Count(g => g.CreatedAt >= monthStart);
-        _genresYear = _genres.Count(g => g.CreatedAt >= yearStart);
-        _genresVisible = _genres.Count(g => g.IsVisible);
-        _genresHidden = _genres.Count - _genresVisible;
+        await Task.WhenAll(totalTask, visibleTask, hiddenTask, todayTask, weekTask, monthTask, yearTask);
 
-        _albumsToday = _albums.Count(a => a.CreatedAt >= today);
-        _albumsVisible = _albums.Count(a => a.IsVisible);
-        _albumsHidden = _albums.Count - _albumsVisible;
+        _genresTotal = (int)totalTask.Result;
+        _genresVisible = (int)visibleTask.Result;
+        _genresHidden = (int)hiddenTask.Result;
+        _genresToday = (int)todayTask.Result;
+        _genresWeek = (int)weekTask.Result;
+        _genresMonth = (int)monthTask.Result;
+        _genresYear = (int)yearTask.Result;
+        _genreHiddenRatio = _genresTotal > 0 ? (int)Math.Round((double)_genresHidden * 100 / _genresTotal) : 0;
+    }
+    
+    private async Task LoadAlbumStats()
+    {
+        var today = DateTime.UtcNow.Date;
 
-        _usersToday = _users.Count(a => a.CreatedAt >= today);
+        var totalTask = Api.CountAsync<InAlbum, OutAlbum>();
+        var visibleTask = Api.CountAsync<InAlbum, OutAlbum>(new AlbumFindQuery { IsVisible = true });
+        var hiddenTask = Api.CountAsync<InAlbum, OutAlbum>(new AlbumFindQuery { IsVisible = false });
+        var todayTask = Api.CountAsync<InAlbum, OutAlbum>(new AlbumFindQuery { CreatedAtFrom = today });
+
+        await Task.WhenAll(totalTask, visibleTask, hiddenTask, todayTask);
+
+        _albumsTotal = (int)totalTask.Result;
+        _albumsVisible = (int)visibleTask.Result;
+        _albumsHidden = (int)hiddenTask.Result;
+        _albumsToday = (int)todayTask.Result;
+    }
+
+    private async Task LoadUserStats()
+    {
+        var today = DateTime.UtcNow.Date;
+
+        var totalTask = Api.CountAsync<InUser, OutUser>();
+        var todayTask = Api.CountAsync<InUser, OutUser>(new UserFindQuery { CreatedAtFrom = today });
+
+        await Task.WhenAll(totalTask, todayTask);
+
+        _usersCount = (int)totalTask.Result;
+        _usersToday = (int)todayTask.Result;
+    }
+    
+    private async Task LoadPendingLists()
+    {
+        var artistsPendingTask = Api.FindAsync<InArtist, OutArtist>(
+            query: new ArtistFindQuery { IsVisible = false },
+            pagingOptions: new PagingOptions(25, 0),
+            order: new ArtistOrderSpecification { CreatedAt = -1 });
+
+        var genresPendingTask = Api.FindAsync<InGenre, OutGenre>(
+            query: new GenreFindQuery { IsVisible = false },
+            pagingOptions: new PagingOptions(25, 0),
+            order: new GenreOrderSpecification { CreatedAt = -1 });
+
+        await Task.WhenAll(artistsPendingTask, genresPendingTask);
+
+        _pendingArtists = artistsPendingTask.Result.Items;
+        _pendingGenres = genresPendingTask.Result.Items;
+    }
+
+    private void ComputeGlobalStats()
+    {
+        _totalPendingItems = _artistsHidden + _genresHidden + _albumsHidden;
     }
 
     private async Task<TableData<OutArtist>> LoadArtists(TableState state, CancellationToken token)
     {
-        await Task.Delay(1, token);
-        var query = _artists.AsEnumerable();
-        if (!string.IsNullOrWhiteSpace(_artistSearch))
-        {
-            query = query.Where(a => a.Name.Contains(_artistSearch, StringComparison.OrdinalIgnoreCase));
-        }
+        await EnsureSectionLoaded(ModerationSection.Artists);
 
-        var rows = query.OrderByDescending(a => a.CreatedAt).ToList();
+        var query = new ArtistFindQuery
+        {   
+            RawSearch = string.IsNullOrWhiteSpace(_artistSearch) ? null : new TextFilter(_artistSearch)
+        };
+        
+        var response = await Api.FindAsync<InArtist, OutArtist>(
+            query: query,
+            pagingOptions: new PagingOptions(state.PageSize, state.Page * state.PageSize),
+            order: new ArtistOrderSpecification { CreatedAt = -1 });
+
+        token.ThrowIfCancellationRequested();
+        
         return new TableData<OutArtist>
         {
-            TotalItems = rows.Count,
-            Items = rows.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList()
+            TotalItems = (int)response.Total,
+            Items = response.Items
         };
     }
 
     private async Task<TableData<OutGenre>> LoadGenres(TableState state, CancellationToken token)
     {
-        await Task.Delay(1, token);
-        var query = _genres.AsEnumerable();
-        if (!string.IsNullOrWhiteSpace(_genreSearch))
-        {
-            query = query.Where(g => g.CanonicalName.Contains(_genreSearch, StringComparison.OrdinalIgnoreCase));
-        }
+        await EnsureSectionLoaded(ModerationSection.Genres);
 
-        var rows = query.OrderByDescending(g => g.CreatedAt).ToList();
+        var query = new GenreFindQuery
+        {
+            RawSearch = string.IsNullOrWhiteSpace(_genreSearch) ? null : new TextFilter(_genreSearch)
+        };
+
+        var response = await Api.FindAsync<InGenre, OutGenre>(
+            query: query,
+            pagingOptions: new PagingOptions(state.PageSize, state.Page * state.PageSize),
+            order: new GenreOrderSpecification { CreatedAt = -1 });
+
+        token.ThrowIfCancellationRequested();
+        
         return new TableData<OutGenre>
         {
-            TotalItems = rows.Count,
-            Items = rows.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList()
+            TotalItems = (int)response.Total,
+            Items = response.Items
         };
     }
 
     private async Task<TableData<OutAlbum>> LoadAlbums(TableState state, CancellationToken token)
     {
-        await Task.Delay(1, token);
-        var query = _albums.AsEnumerable();
-        if (!string.IsNullOrWhiteSpace(_albumSearch))
-        {
-            query = query.Where(a => a.Name.Contains(_albumSearch, StringComparison.OrdinalIgnoreCase));
-        }
+        await EnsureSectionLoaded(ModerationSection.Albums);
 
-        var rows = query.OrderByDescending(a => a.CreatedAt).ToList();
+        var query = new AlbumFindQuery
+        {
+            RawSearch = string.IsNullOrWhiteSpace(_albumSearch) ? null : new TextFilter(_albumSearch)
+        };
+        
+        var response = await Api.FindAsync<InAlbum, OutAlbum>(
+            query: query,
+            pagingOptions: new PagingOptions(state.PageSize, state.Page * state.PageSize),
+            order: new AlbumOrderSpecification { CreatedAt = -1 },
+            joins: new AlbumJoinSpecification { IncludeArtist = true });
+
+        token.ThrowIfCancellationRequested();
+        
         return new TableData<OutAlbum>
         {
-            TotalItems = rows.Count,
-            Items = rows.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList()
+            TotalItems = (int)response.Total,
+            Items = response.Items
         };
     }
 
     private async Task<TableData<OutUser>> LoadUsers(TableState state, CancellationToken token)
     {
-        await Task.Delay(1, token);
-        var query = _users.AsEnumerable();
-        if (!string.IsNullOrWhiteSpace(_userSearch))
-        {
-            query = query.Where(u =>
-                u.Name.Contains(_userSearch, StringComparison.OrdinalIgnoreCase)
-                || u.Email.Contains(_userSearch, StringComparison.OrdinalIgnoreCase));
-        }
+        await EnsureSectionLoaded(ModerationSection.Users);
 
-        var rows = query.OrderByDescending(u => u.CreatedAt).ToList();
-        _usersTotal = rows.Count;
-        _pagedUsers = rows.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList();
+        var query = new UserFindQuery
+        {
+            RawSearch = string.IsNullOrWhiteSpace(_userSearch) ? null : new TextFilter(_userSearch)
+        };
+        
+        var response = await Api.FindAsync<InUser, OutUser>(
+            query: query,
+            pagingOptions: new PagingOptions(state.PageSize, state.Page * state.PageSize),
+            order: new UserOrderSpecification { CreatedAt = -1 },
+            joins: new UserJoinSpecification { IncludeRoles = true });
+
+        token.ThrowIfCancellationRequested();
+        
+        _usersTotal = (int)response.Total;
+        _pagedUsers = response.Items;
 
         return new TableData<OutUser>
         {
@@ -220,13 +484,17 @@ public partial class ModerationDashboard
         var raw = artist.ToRaw();
         raw.IsVisible = true;
         await Api.SaveAsync(raw);
-        await LoadData();
+        await LoadArtistsSectionData(force: true);
+        await LoadOverviewData(force: true);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task RejectArtist(OutArtist artist)
     {
         await Api.DeleteAsync<InArtist>(artist.Id);
-        await LoadData();
+        await LoadArtistsSectionData(force: true);
+        await LoadOverviewData(force: true);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task ApproveGenre(OutGenre genre)
@@ -234,13 +502,17 @@ public partial class ModerationDashboard
         var raw = genre.ToRaw();
         raw.IsVisible = true;
         await Api.SaveAsync(raw);
-        await LoadData();
+        await LoadGenresSectionData(force: true);
+        await LoadOverviewData(force: true);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task RejectGenre(OutGenre genre)
     {
         await Api.DeleteAsync<InGenre>(genre.Id);
-        await LoadData();
+        await LoadGenresSectionData(force: true);
+        await LoadOverviewData(force: true);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task ToggleUserRole((OutUser User, OutRole Role, bool IsAssigned) payload)
@@ -265,27 +537,39 @@ public partial class ModerationDashboard
         }
 
         Snackbar.Add("User roles updated.", Severity.Success);
-        await LoadData();
+        await LoadUsersSectionData(force: true);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task AddRole(string roleName)
     {
-        if (string.IsNullOrWhiteSpace(roleName)) return;
+        if (string.IsNullOrWhiteSpace(roleName))
+        {
+            return;
+        }
+        
         await Api.SaveAsync(new InRole { Name = roleName.Trim(), PermissionIds = [] });
-        await LoadData();
+        await LoadRolesAndPermissions(force: true);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task AddPermission(string permissionName)
     {
-        if (string.IsNullOrWhiteSpace(permissionName)) return;
+        if (string.IsNullOrWhiteSpace(permissionName))
+        {
+            return;
+        }
+        
         await Api.SaveAsync(new InPermission { Name = permissionName.Trim() });
-        await LoadData();
+        await LoadRolesAndPermissions(force: true);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task SaveRole(OutRole role)
     {
         await Api.SaveAsync(role.ToRaw());
         Snackbar.Add($"Saved role: {role.Name}", Severity.Success);
-        await LoadData();
+        await LoadRolesAndPermissions(force: true);
+        await InvokeAsync(StateHasChanged);
     }
 }

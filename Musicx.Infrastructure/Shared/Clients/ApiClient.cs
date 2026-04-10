@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
@@ -221,24 +222,29 @@ public sealed class ApiClient(HttpClient httpClient, ILoggerFactory loggerFactor
             parts.Add($"filterExact={query.Search.Exact.ToString().ToLowerInvariant()}");
             parts.Add($"filterSimilitude={query.Search.Similarity.ToString(CultureInfo.InvariantCulture)}");
         }
-        
-        if (query.GetType().Name == "ArtistFindQuery")
-        {
-            object? Read(string name) => query.GetType().GetProperty(name)?.GetValue(query);
 
-            if (Read("MinRating") is decimal minRating) parts.Add($"minRating={minRating.ToString(CultureInfo.InvariantCulture)}");
-            if (Read("MaxRating") is decimal maxRating) parts.Add($"maxRating={maxRating.ToString(CultureInfo.InvariantCulture)}");
-            if (Read("MinUserAge") is short minUserAge) parts.Add($"minUserAge={minUserAge}");
-            if (Read("MaxUserAge") is short maxUserAge) parts.Add($"maxUserAge={maxUserAge}");
-            if (Read("PopularityWeight") is short popularityWeight) parts.Add($"popularityWeight={popularityWeight}");
-            if (Read("ChartType") is Enum chartType) parts.Add($"chartType={Convert.ToInt32(chartType)}");
-            if (Read("Discriminator") is Enum discriminator) parts.Add($"discriminator={Convert.ToInt32(discriminator)}");
-            if (Read("Country") is string country && !string.IsNullOrWhiteSpace(country)) parts.Add($"country={Uri.EscapeDataString(country)}");
-            if (Read("MainGenreId") is long mainGenreId) parts.Add($"mainGenreId={mainGenreId}");
-            if (Read("InfluenceGenreIds") is IEnumerable<long> influenceGenreIds)
+        var ignoredPropertyNames = new HashSet<string>(StringComparer.Ordinal)
+        {
+            nameof(IFindQuery<TIn>.RawSearch),
+            nameof(IFindQuery<TIn>.Search)
+        };
+
+        var properties = query.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+        foreach (var property in properties)
+        {
+            if (ignoredPropertyNames.Contains(property.Name))
             {
-                parts.AddRange(influenceGenreIds.Select(id => $"influenceGenreIds={id}"));
+                continue;
             }
+
+            var value = property.GetValue(query);
+            if (value is null)
+            {
+                continue;
+            }
+
+            var parameterName = StringHelper.ToCamelCase(property.Name);
+            AppendQueryValue(parts, parameterName, value);
         }
 
         if (parts.Count == 0)
@@ -248,4 +254,53 @@ public sealed class ApiClient(HttpClient httpClient, ILoggerFactory loggerFactor
 
         return endpoint + separator + string.Join("&", parts);
     }
+    
+    private static void AppendQueryValue(List<string> parts, string parameterName, object value)
+    {
+        if (value is string stringValue)
+        {
+            if (!string.IsNullOrWhiteSpace(stringValue))
+            {
+                parts.Add($"{parameterName}={Uri.EscapeDataString(stringValue)}");
+            }
+
+            return;
+        }
+
+        if (value is IEnumerable enumerableValue and not byte[])
+        {
+            foreach (var item in enumerableValue)
+            {
+                if (item is null)
+                {
+                    continue;
+                }
+
+                var serialized = SerializeQueryValue(item);
+                if (!string.IsNullOrWhiteSpace(serialized))
+                {
+                    parts.Add($"{parameterName}={Uri.EscapeDataString(serialized)}");
+                }
+            }
+
+            return;
+        }
+
+        var scalarValue = SerializeQueryValue(value);
+        if (!string.IsNullOrWhiteSpace(scalarValue))
+        {
+            parts.Add($"{parameterName}={Uri.EscapeDataString(scalarValue)}");
+        }
+    }
+
+    private static string SerializeQueryValue(object value)
+        => value switch
+        {
+            DateTime dateTime => dateTime.ToString("O", CultureInfo.InvariantCulture),
+            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("O", CultureInfo.InvariantCulture),
+            bool boolValue => boolValue.ToString().ToLowerInvariant(),
+            Enum enumValue => Convert.ToInt32(enumValue, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+            IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+            _ => Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty
+        };
 }

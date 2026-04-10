@@ -167,11 +167,19 @@ internal sealed class ArtistRepository(
         await using var conn = (NpgsqlConnection)connection.CreateConnection();
         await conn.OpenAsync();
         await using var command = new NpgsqlCommand(sql, conn);
+        
         command.Parameters.AddRange(parameters.ToArray());
         
-        var result = await command.ExecuteScalarAsync();
-        
-        return result is null ? 0 : Convert.ToInt64(result);
+        try
+        {
+            var result = await command.ExecuteScalarAsync();
+            return result is null ? 0 : Convert.ToInt64(result);
+        }
+        catch (Exception)
+        {
+            _logger.LogError("❌ Could not execute count command for table artists.");
+            return -1;
+        }
     }
 
     public async Task<long> GetCountByGenreIdAsync(long genreId)

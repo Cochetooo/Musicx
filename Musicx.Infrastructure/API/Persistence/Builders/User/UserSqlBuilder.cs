@@ -129,9 +129,18 @@ internal sealed class UserSqlBuilder(
             await cmd.ExecuteNonQueryAsync();
         }
         
+        const string deleteRolesSql = "DELETE FROM user_role WHERE user_role_user_id = @userId";
+        _logger.LogDebug(deleteRolesSql + $" -- @userId={entity.Id}");
+
+        await using (var cmd = new NpgsqlCommand(deleteRolesSql, connection, transaction))
+        {
+            cmd.Parameters.AddWithValue("@userId", entity.Id);
+            await cmd.ExecuteNonQueryAsync();
+        }
+        
         if (null != entity.RoleIds)
         {
-            foreach (var role in entity.RoleIds)
+            foreach (var role in entity.RoleIds.Distinct())
             {
                 var roleSql = InsertBuilder.Build("user_role",
                     new Dictionary<string, object?>
@@ -211,13 +220,61 @@ internal sealed class UserSqlBuilder(
             return (string.Empty, []);
         }
 
-        return BuildDefaultFilteredQuery(
-            typedQuery,
-            joinSpec,
-            orderSpec,
-            pagingOptions,
-            countOnly,
-            [$"u0.{UserColumns.Name}"],
-            $"u0.{UserColumns.Name}");
+        var sql = BuildSelect(joinSpec);
+        var parameters = new List<NpgsqlParameter>();
+
+        if (typedQuery.RawSearch is not null)
+        {
+            Filter(
+                ref sql,
+                [$"u0.{UserColumns.Name}", $"u0.{UserColumns.Email}"],
+                typedQuery.RawSearch.Value ?? string.Empty,
+                parameters,
+                typedQuery.Search?.Exact ?? false,
+                typedQuery.Search?.Similarity ?? 0.4);
+        }
+
+        var where = new List<string>();
+
+        if (typedQuery.CreatedAtFrom is not null)
+        {
+            where.Add($"u0.{UserColumns.CreatedAt} >= @createdAtFrom");
+            parameters.Add(new NpgsqlParameter("@createdAtFrom", typedQuery.CreatedAtFrom));
+        }
+
+        if (typedQuery.CreatedAtTo is not null)
+        {
+            where.Add($"u0.{UserColumns.CreatedAt} <= @createdAtTo");
+            parameters.Add(new NpgsqlParameter("@createdAtTo", typedQuery.CreatedAtTo));
+        }
+
+        if (where.Count > 0)
+        {
+            sql += (sql.Contains(" WHERE ", StringComparison.Ordinal) ? " AND " : " WHERE ") + string.Join(" AND ", where);
+        }
+
+        sql += BuildGroupBy(joinSpec);
+
+        if (countOnly)
+        {
+            return ($"SELECT COUNT(*) FROM ({sql}) q0", parameters);
+        }
+
+        if (orderSpec is not null)
+        {
+            sql += BuildOrderBy(orderSpec);
+        }
+        else
+        {
+            sql += !string.IsNullOrWhiteSpace(typedQuery.RawSearch?.Value)
+                ? $" ORDER BY similarity(u0.{UserColumns.Name}, @filter) DESC"
+                : $" ORDER BY u0.{UserColumns.Name}";
+        }
+
+        sql += " OFFSET @skip LIMIT @take";
+        parameters.Add(new NpgsqlParameter("@skip", pagingOptions?.Skip ?? 0));
+        parameters.Add(new NpgsqlParameter("@take", pagingOptions?.Take ?? 200));
+
+        return (sql, parameters);
     }
 }

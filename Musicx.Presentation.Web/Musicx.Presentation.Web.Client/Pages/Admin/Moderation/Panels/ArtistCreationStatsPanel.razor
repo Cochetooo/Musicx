@@ -1,12 +1,12 @@
 @using Musicx.Presentation.Web.Client.Components.Base
 <MudPaper Class="pa-4 bg-surface animate-hover-up" Elevation="0">
     <PanelTitle Text="Artist Creation Pace" />
-    <MudList T="string" Dense>
-        <MudListItem>Today: @Today</MudListItem>
-        <MudListItem>This week: @ThisWeek</MudListItem>
-        <MudListItem>This month: @ThisMonth</MudListItem>
-        <MudListItem>This year: @ThisYear</MudListItem>
-    </MudList>
+    <MudStack Spacing="0" Class="mt-2">
+        <MudText Typo="Typo.body2">Today: <b>@Today</b></MudText>
+        <MudText Typo="Typo.body2">This week: <b>@ThisWeek</b></MudText>
+        <MudText Typo="Typo.body2">This month: <b>@ThisMonth</b></MudText>
+        <MudText Typo="Typo.body2">This year: <b>@ThisYear</b></MudText>
+    </MudStack>
 </MudPaper>
 
 @code 
