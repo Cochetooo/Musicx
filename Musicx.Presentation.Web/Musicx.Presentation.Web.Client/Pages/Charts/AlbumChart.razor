@@ -39,11 +39,11 @@
                     }
                 </MudSelect>
 
-                <MudTextField Label="Search" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.Name" />
+                <MudTextField Label="Search" Variant="Variant.Outlined" @bind-Value="_query.Name" />
 
                 <MudGrid Spacing="1">
-                    <MudItem xs="6"><MudNumericField Label="Min Age" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MinAge" /></MudItem>
-                    <MudItem xs="6"><MudNumericField Label="Max Age" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MaxAge" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Min Age" Variant="Variant.Outlined" @bind-Value="_query.MinAge" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Max Age" Variant="Variant.Outlined" @bind-Value="_query.MaxAge" /></MudItem>
                 </MudGrid>
 
                 <MudText Typo="Typo.caption">Release Range</MudText>
@@ -51,13 +51,13 @@
                                 @bind-Value="_releaseYearRange" @bind-UpperValue="@_upperReleaseYearRange" /> -->
 
                 <MudGrid Spacing="1">
-                    <MudItem xs="6"><MudNumericField Label="Min Rating" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MinRating" /></MudItem>
-                    <MudItem xs="6"><MudNumericField Label="Max Rating" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MaxRating" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Min Rating" Variant="Variant.Outlined" @bind-Value="_query.MinRating" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Max Rating" Variant="Variant.Outlined" @bind-Value="_query.MaxRating" /></MudItem>
                 </MudGrid>
 
                 <MudGrid Spacing="1">
-                    <MudItem xs="6"><MudNumericField Label="Min Ratings" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MinNbRatings" /></MudItem>
-                    <MudItem xs="6"><MudNumericField Label="Max Ratings" Dense="true" Variant="Variant.Outlined" @bind-Value="_query.MaxNbRatings" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Min Ratings" Variant="Variant.Outlined" @bind-Value="_query.MinNbRatings" /></MudItem>
+                    <MudItem xs="6"><MudNumericField Label="Max Ratings" Variant="Variant.Outlined" @bind-Value="_query.MaxNbRatings" /></MudItem>
                 </MudGrid>
 
                 <MudText Typo="Typo.caption">Popularity Weight: @_query.PopularityWeight</MudText>
@@ -65,7 +65,7 @@
 
                 <MudCheckBox T="bool" Label="Afficher le rang en mode liste" @bind-Value="_showRankOnList" />
 
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@_isLoading" OnClick="LoadChart">Generate</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@_isLoading" OnClick="@LoadChart">Generate</MudButton>
             </MudStack>
         </MudPaper>
     </MudItem>

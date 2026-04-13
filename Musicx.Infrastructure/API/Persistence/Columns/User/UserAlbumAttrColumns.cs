@@ -18,4 +18,6 @@ public static class UserAlbumAttrColumns
     public const string AtmosphereRating = "user_album_attrs_atmosphere_rating";
     public const string OriginalityRating = "user_album_attrs_originality_rating";
     public const string Review = "user_album_attrs_review";
+    public const string ReviewPostedAt = "user_album_attrs_review_posted_at";
+    public const string ReviewSourceId = "user_album_attrs_review_source_id";
 }

@@ -308,7 +308,10 @@ public sealed class UserAlbumAttrController(
                 && userAlbumAttrDto.AtmosphereRating == null
                 && userAlbumAttrDto.OriginalityRating == null
                 && userAlbumAttrDto.DiscoveryDate == null
-                && userAlbumAttrDto.Review == null)
+                && userAlbumAttrDto.Review == null
+                && userAlbumAttrDto.ReviewPostedAt == null
+                && userAlbumAttrDto.ReviewSourceId == null
+                && userAlbumAttrDto.CollectionType == null)
             {
                 await repository.DeleteAsync(userAlbumAttrDto.UserId, userAlbumAttrDto.AlbumId);
             }

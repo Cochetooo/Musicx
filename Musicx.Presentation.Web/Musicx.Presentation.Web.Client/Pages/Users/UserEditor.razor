@@ -10,6 +10,8 @@
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Presentation.Web.Client.Components
 @using Musicx.Presentation.Web.Client.Components.Base
+@using Musicx.Presentation.Web.Client.Components.Fields
+@using Musicx.Presentation.Web.Client.Helpers
 
 @inject IUserClientContext UserClientContext
 @inject IApiClient Api
@@ -101,11 +103,15 @@
                             </MudItem>
                         </MudGrid>
 
-                        <MudTextField T="string"
-                                      Label="@T["Web.UserEditor.Bio"]"
-                                      Lines="7"
-                                      Variant="Variant.Outlined"
-                                      @bind-Value="_user.Biography" />
+                        <MarkdownEditor Label="@T["Web.UserEditor.Bio"]"
+                                        Lines="7"
+                                        Value="@_user.Biography"
+                                        ValueChanged="@(value => _user.Biography = value)" />
+
+                        <MudPaper Class="pa-3">
+                            <MudText Typo="Typo.subtitle2" Class="mb-2">Preview</MudText>
+                            <div class="markdown-body">@MarkdownRenderer.Render(_user.Biography)</div>
+                        </MudPaper>
 
                         <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Save" StartIcon="@Icons.Material.Filled.Save">
                             @T["Web.UserEditor.SaveProfile"]
@@ -156,7 +162,7 @@
                             </MudPaper>
                         </MudItem>
                         <MudItem xs="12" md="9">
-                            <MudPaper Id="settings-scroll-container" Class="pa-4 settings-content" Elevation="0">
+                            <MudPaper Class="pa-4 settings-content" Elevation="0">
                                 <section id="display" class="settings-section">
                                     <MudText Typo="Typo.h6">@T["Web.UserEditor.Display"]</MudText>
                                     <MudDivider Class="my-2" />

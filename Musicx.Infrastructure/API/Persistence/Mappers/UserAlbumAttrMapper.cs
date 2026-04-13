@@ -29,7 +29,15 @@ public static class UserAlbumAttrMapper
         VocalsRating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.VocalsRating),
         AtmosphereRating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.AtmosphereRating),
         OriginalityRating = userAlbumAttr.SafeGet<short?>(UserAlbumAttrColumns.OriginalityRating),
-        Review = userAlbumAttr.SafeGet<string?>(UserAlbumAttrColumns.Review)
+        Review = userAlbumAttr.SafeGet<string?>(UserAlbumAttrColumns.Review),
+        ReviewPostedAt = userAlbumAttr.SafeGet<DateTime?>(UserAlbumAttrColumns.ReviewPostedAt),
+        ReviewSource = userAlbumAttr.SafeGet<long?>(ReviewSourceColumns.Id) is null ? null : new OutReviewSource
+        {
+            Id = userAlbumAttr.SafeGet<long>(ReviewSourceColumns.Id),
+            Name = userAlbumAttr.SafeGet<string>(ReviewSourceColumns.Name) ?? string.Empty,
+            Url = userAlbumAttr.SafeGet<string>(ReviewSourceColumns.Url) ?? string.Empty,
+            Color = userAlbumAttr.SafeGet<string>(ReviewSourceColumns.Color) ?? string.Empty
+        }
     };
 
     public static InUserAlbumAttribute ToRaw(this OutUserAlbumAttribute userAlbumAttr) => new()
@@ -46,6 +54,8 @@ public static class UserAlbumAttrMapper
         VocalsRating = userAlbumAttr.VocalsRating,
         AtmosphereRating = userAlbumAttr.AtmosphereRating,
         OriginalityRating = userAlbumAttr.OriginalityRating,
-        Review = userAlbumAttr.Review
+        Review = userAlbumAttr.Review,
+        ReviewPostedAt = userAlbumAttr.ReviewPostedAt,
+        ReviewSourceId = userAlbumAttr.ReviewSource?.Id
     };
 }

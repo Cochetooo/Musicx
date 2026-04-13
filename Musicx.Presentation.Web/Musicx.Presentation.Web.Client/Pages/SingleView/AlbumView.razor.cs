@@ -44,6 +44,8 @@ public partial class AlbumView
     private bool _hasAnyAlbumFactor;
     private Dictionary<string, short> _albumFactorAverages = [];
     private bool _showAdvancedFactorEditor;
+    private bool _showReviewEditor;
+    private List<OutUserAlbumAttribute> _albumReviews = [];
 
     private readonly List<RatingFactor> _albumFactors =
     [
@@ -105,6 +107,7 @@ public partial class AlbumView
         };
         _userSongAttributes = dataView.CurrentUserSongAttributes;
         RefreshAlbumFactorView(dataView.Ratings?.Items ?? []);
+        await LoadReviews(albumId);
 
         _logger.LogInformation("✅ Album loaded from DataView: {Name} ({Id})", _album.Name, _album.Id);
         await InvokeAsync(StateHasChanged);
@@ -158,6 +161,28 @@ public partial class AlbumView
             TotalItems = (int)response.Total,
             Items = response.Items
         };
+    }
+    
+    private async Task LoadReviews(long albumId)
+    {
+        var response = await UcFindAlbumAttrs.ExecuteAsync(
+            albumId,
+            order: new UserAlbumAttrOrderSpecification { CreatedAt = -1 },
+            pagingOptions: new PagingOptions(Take: 200, Skip: 0));
+        
+        // @TODO Endpoint review count instead of that
+
+        _albumReviews = response.Items
+            .Where(x => !string.IsNullOrWhiteSpace(x.Review))
+            .OrderByDescending(x => x.ReviewPostedAt ?? x.UpdatedAt)
+            .ToList();
+    }
+
+    private async Task SaveReview()
+    {
+        _userAttribute.ReviewPostedAt = string.IsNullOrWhiteSpace(_userAttribute.Review) ? null : DateTime.UtcNow;
+        await SaveUserAttr();
+        _showReviewEditor = false;
     }
 
     private async Task EditTrackListShowModal()

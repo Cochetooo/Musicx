@@ -19,6 +19,8 @@ create table public.user_album_attrs (
     user_album_attrs_collection_type             integer,
     user_album_attrs_discovery_date              timestamp without time zone,
     user_album_attrs_review                      text,
+    user_album_attrs_review_posted_at            timestamp without time zone,
+    user_album_attrs_review_source_id            bigint references public.review_sources(review_source_id) on delete set null,
     primary key (user_album_attrs_user_id, user_album_attrs_album_id)
 );
 

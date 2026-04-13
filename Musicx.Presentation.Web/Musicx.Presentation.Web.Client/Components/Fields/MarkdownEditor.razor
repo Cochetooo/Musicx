@@ -1,0 +1,15 @@
+﻿<MudStack Spacing="2">
+    <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1" AlignItems="AlignItems.Center">
+        <MudTooltip Text="Bold"><MudIconButton Icon="@Icons.Material.Filled.FormatBold" OnClick="@InsertBold"/></MudTooltip>
+        <MudTooltip Text="Italic"><MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="@InsertItalic"/></MudTooltip>
+        <MudTooltip Text="Title"><MudIconButton Icon="@Icons.Material.Filled.Title" OnClick="@InsertHeading"/></MudTooltip>
+        <MudTooltip Text="Paragraph"><MudIconButton Icon="@Icons.Material.Filled.Subject" OnClick="@InsertParagraph"/></MudTooltip>
+        <MudTooltip Text="List"><MudIconButton Icon="@Icons.Material.Filled.FormatListBulleted" OnClick="@InsertList"/></MudTooltip>
+        <MudTooltip Text="Divider"><MudIconButton Icon="@Icons.Material.Filled.HorizontalRule" OnClick="@InsertDivider"/></MudTooltip>
+
+        <MudColorPicker Value="@_selectedColor" ValueChanged="@OnColorChanged" PickerVariant="PickerVariant.Inline" ShowAlpha="false" ShowToolbar="false"/>
+        <MudButton Variant="Variant.Outlined" Size="Size.Small" StartIcon="@Icons.Material.Filled.Palette" OnClick="@InsertColorSpan">Couleur</MudButton>
+    </MudStack>
+
+    <MudTextField T="string" Label="@Label" Variant="Variant.Outlined" Lines="@Lines" Value="@Value" ValueChanged="OnValueChanged"/>
+</MudStack>

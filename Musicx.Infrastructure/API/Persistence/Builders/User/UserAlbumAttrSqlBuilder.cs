@@ -39,6 +39,8 @@ internal sealed class UserAlbumAttrSqlBuilder(
                 { UserAlbumAttrColumns.ProductionRating, entity.ProductionRating },
                 { UserAlbumAttrColumns.VocalsRating, entity.VocalsRating },
                 { UserAlbumAttrColumns.Review, entity.Review },
+                { UserAlbumAttrColumns.ReviewPostedAt, entity.ReviewPostedAt },
+                { UserAlbumAttrColumns.ReviewSourceId, entity.ReviewSourceId },
             });
         
         _logger.LogDebug(SqlHelper.InterpolateQuery(createCommandSql.Query, createCommandSql.Parameters));
@@ -68,6 +70,8 @@ internal sealed class UserAlbumAttrSqlBuilder(
                 { UserAlbumAttrColumns.ProductionRating, entity.ProductionRating },
                 { UserAlbumAttrColumns.VocalsRating, entity.VocalsRating },
                 { UserAlbumAttrColumns.Review, entity.Review },
+                { UserAlbumAttrColumns.ReviewPostedAt, entity.ReviewPostedAt },
+                { UserAlbumAttrColumns.ReviewSourceId, entity.ReviewSourceId },
             },
             new Dictionary<string, object?>
             {
@@ -112,6 +116,8 @@ internal sealed class UserAlbumAttrSqlBuilder(
                 { UserAlbumAttrColumns.ProductionRating, entity.ProductionRating },
                 { UserAlbumAttrColumns.VocalsRating, entity.VocalsRating },
                 { UserAlbumAttrColumns.Review, entity.Review },
+                { UserAlbumAttrColumns.ReviewPostedAt, entity.ReviewPostedAt },
+                { UserAlbumAttrColumns.ReviewSourceId, entity.ReviewSourceId },
             },
             conflictColumns: [UserAlbumAttrColumns.UserId, UserAlbumAttrColumns.AlbumId],
             updateProperties: new Dictionary<string, object?>
@@ -127,6 +133,8 @@ internal sealed class UserAlbumAttrSqlBuilder(
                 { UserAlbumAttrColumns.ProductionRating, entity.ProductionRating },
                 { UserAlbumAttrColumns.VocalsRating, entity.VocalsRating },
                 { UserAlbumAttrColumns.Review, entity.Review },
+                { UserAlbumAttrColumns.ReviewPostedAt, entity.ReviewPostedAt },
+                { UserAlbumAttrColumns.ReviewSourceId, entity.ReviewSourceId },
             });
 
         _logger.LogDebug(SqlHelper.InterpolateQuery(command.Query, command.Parameters));
@@ -141,19 +149,22 @@ internal sealed class UserAlbumAttrSqlBuilder(
         if (spec is not UserAlbumAttrJoinSpecification specUserAlbumAttr)
         {
             return distinct
-                ? "SELECT DISTINCT uaa0.*, u0.*, al0.* FROM user_album_attrs uaa0 " +
-                  $"JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id} " +
-                  $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} "
+                ? "SELECT DISTINCT uaa0.*, u0.*, al0.*, rs0.* FROM user_album_attrs uaa0 " +
+                    $"JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id} " +
+                    $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} " +
+                    $"LEFT JOIN review_sources rs0 ON uaa0.{UserAlbumAttrColumns.ReviewSourceId} = rs0.{ReviewSourceColumns.Id} "
                 : "SELECT uaa0.*, u0.*, al0.* FROM user_album_attrs uaa0 " +
-                  $"JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id} " +
-                  $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} ";
+                    $"JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id} " +
+                    $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} " +
+                    $"LEFT JOIN review_sources rs0 ON uaa0.{UserAlbumAttrColumns.ReviewSourceId} = rs0.{ReviewSourceColumns.Id} ";
         }
 
-        var selects = new List<string> { "uaa0.*", "u0.*", "al0.*" };
+        var selects = new List<string> { "uaa0.*", "u0.*", "al0.*", "rs0.*" };
         var joins = new List<string>
         {
             $"JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id}",
-            $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id}"
+            $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id}",
+            $"LEFT JOIN review_sources rs0 ON uaa0.{UserAlbumAttrColumns.ReviewSourceId} = rs0.{ReviewSourceColumns.Id}"
         };
 
         if (specUserAlbumAttr.IncludeAlbumArtists)
@@ -190,6 +201,7 @@ internal sealed class UserAlbumAttrSqlBuilder(
         {
             sql += $"JOIN users u0 ON uaa0.{UserAlbumAttrColumns.UserId} = u0.{UserColumns.Id} ";
             sql += $"JOIN albums al0 ON uaa0.{UserAlbumAttrColumns.AlbumId} = al0.{AlbumColumns.Id} ";
+            sql += $"LEFT JOIN review_sources rs0 ON uaa0.{UserAlbumAttrColumns.ReviewSourceId} = rs0.{ReviewSourceColumns.Id} ";
         }
         
         var parameters = new List<NpgsqlParameter>();

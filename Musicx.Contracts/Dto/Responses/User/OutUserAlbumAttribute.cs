@@ -17,4 +17,6 @@ public sealed class OutUserAlbumAttribute : BaseOutputModel
     public short? AtmosphereRating { get; set; }
     public short? OriginalityRating { get; set; }
     public string? Review { get; set; }
+    public DateTime? ReviewPostedAt { get; set; }
+    public OutReviewSource? ReviewSource { get; set; }
 }

@@ -19,6 +19,7 @@
 @using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Components.Ratings
+@using Musicx.Presentation.Web.Client.Helpers
 
 @inject ILoggerFactory LoggerFactory
 @inject IApiClient Api
@@ -77,9 +78,9 @@ else
                         </MudText>
                     </MudStack>
                     
-                    <MudText Typo="Typo.body2" Class="text-light color-primary text-shadow mb-4 user-bio">
-                        @_user.Biography
-                    </MudText>
+                    <div class="text-light color-primary text-shadow mb-4 user-bio markdown-body">
+                        @MarkdownRenderer.Render(_user.Biography)
+                    </div>
                     
                     @if (_user.Id == UserClientContext.CurrentUser?.Id)
                     {

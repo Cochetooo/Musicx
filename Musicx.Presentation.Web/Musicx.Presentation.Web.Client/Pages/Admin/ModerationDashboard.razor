@@ -20,26 +20,26 @@
                     <MudText Typo="Typo.h5" Class="moderation-nav-title">Moderation Dashboard</MudText>
                     
                     <MudNavMenu Dense>
-                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Overview))" Active="@(_section == ModerationSection.Overview)">
+                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Overview))" Disabled="@(_section == ModerationSection.Overview)">
                             Overview
                         </MudNavLink>
-                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Artists))" Active="@(_section == ModerationSection.Artists)">
+                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Artists))" Disabled="@(_section == ModerationSection.Artists)">
                             Artists
                         </MudNavLink>
-                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Albums))" Active="@(_section == ModerationSection.Albums)">
+                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Albums))" Disabled="@(_section == ModerationSection.Albums)">
                             Albums
                         </MudNavLink>
-                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Genres))" Active="@(_section == ModerationSection.Genres)">
+                        <MudNavLink OnClick="@(() => SetSection(ModerationSection.Genres))" Disabled="@(_section == ModerationSection.Genres)">
                             Genres
                         </MudNavLink>
 
                         @if (IsAdmin)
                         {
                             <MudNavGroup Title="Users" Expanded="true">
-                                <MudNavLink OnClick="@(() => SetSection(ModerationSection.Users))" Active="@(_section == ModerationSection.Users)">
+                                <MudNavLink OnClick="@(() => SetSection(ModerationSection.Users))" Disabled="@(_section == ModerationSection.Users)">
                                     User List
                                 </MudNavLink>
-                                <MudNavLink OnClick="@(() => SetSection(ModerationSection.RolesPermissions))" Active="@(_section == ModerationSection.RolesPermissions)">
+                                <MudNavLink OnClick="@(() => SetSection(ModerationSection.RolesPermissions))" Disabled="@(_section == ModerationSection.RolesPermissions)">
                                     Roles & Permissions
                                 </MudNavLink>
                             </MudNavGroup>

@@ -8,9 +8,11 @@
 @using Musicx.Contracts.Dto.Responses.User
 @using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.Base
+@using Musicx.Presentation.Web.Client.Components.Fields
 @using Musicx.Presentation.Web.Client.Components.Genres
 @using Musicx.Presentation.Web.Client.Components.Ratings
 @using Musicx.Presentation.Web.Client.Components.Songs
+@using Musicx.Presentation.Web.Client.Helpers
 @using Musicx.Presentation.Web.Client.Modals.Admin.Albums
 @using Musicx.Presentation.Web.Client.Modals.Voting
 
@@ -297,7 +299,7 @@ else
                     <MudDivider Class="my-3" />
                     
                     <MudStack Row Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" 
-                                      Wrap="Wrap.Wrap">
+                              Wrap="Wrap.Wrap">
                         @if (UserClientContext.CurrentUser is not null && UserClientContext.Can("album.attr"))
                         {
                             <div class="album-action-item">
@@ -331,7 +333,8 @@ else
                                        Size="Size.Medium"
                                        Color="Color.Primary"
                                        Class="album-action-control"
-                                       StartIcon="@Icons.Material.Filled.NoteAdd">
+                                       StartIcon="@Icons.Material.Filled.NoteAdd"
+                                       OnClick="@(()=>_showReviewEditor = !_showReviewEditor)">
                                 @T["Web.AlbumView.WriteReview"]
                             </MudButton>
                         }
@@ -348,6 +351,20 @@ else
                             </MudButton>
                         }
                     </MudStack>
+                    
+                    @if (_showReviewEditor && UserClientContext.CurrentUser is not null)
+                    {
+                        <MudPaper Class="mt-3 pa-3">
+                            <MarkdownEditor Label="Review"
+                                            Lines="8"
+                                            Value="@_userAttribute.Review"
+                                            ValueChanged="@(value => _userAttribute.Review = value)" />
+                            <MudStack Row Spacing="2" Class="mt-2">
+                                <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="SaveReview">Publish</MudButton>
+                                <MudButton Color="Color.Default" Variant="Variant.Outlined" OnClick="@(()=>_showReviewEditor=false)">Close</MudButton>
+                            </MudStack>
+                        </MudPaper>
+                    }
                 </div>
                 
                 @if (UserClientContext.CurrentUser?.PrefShowRatings ?? true)
@@ -522,24 +539,51 @@ else
         
         <!-- Reviews -->
         <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-            <PanelTitle Text="📝 Reviews" />
+            <PanelTitle Text="📝 Reviews" Count="@_albumReviews.Count.ToString()" />
             <MudDivider Class="my-3"/>
 
-            <MudList T="RenderFragment">
-                <MudListItem>
-                    <MudText Class="text-bold">User123</MudText>
-                    <MudText Typo="Typo.caption" Class="text-color-disabled">01/01/2023</MudText>
-                    <MudText Typo="Typo.body2">Contenu de la review…</MudText>
-                </MudListItem>
-            </MudList>
-
-            <MudDivider Class="my-2"/>
-
-            <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="pa-3">
-                <MudText Typo="Typo.h5" Class="text-bold">Staff Review</MudText>
-                <MudText Typo="Typo.caption" Class="text-color-disabled">Staff · 02/01/2023</MudText>
-                <MudText Typo="Typo.body1">Critique officielle mise en valeur…</MudText>
-            </MudAlert>
+            @if (_albumReviews.Count == 0)
+            {
+                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">No review published at the moment.</MudAlert>
+            }
+            else
+            {
+                <MudStack Spacing="2">
+                    @foreach (var review in _albumReviews)
+                    {
+                        <MudPaper Class="pa-3 bg-default" Elevation="4">
+                            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudStack Row Spacing="2" AlignItems="AlignItems.Center">
+                                    <MudAvatar Size="Size.Medium">
+                                        <MudImage Src="@review.User.PictureUrl" Alt="@review.User.Name"/>
+                                    </MudAvatar>
+                                    <MudText Typo="Typo.h5" Class="text-bold">@review.User.Name</MudText>
+                                    @if (review.ReviewSource is not null)
+                                    {
+                                        <MudChip Size="Size.Small" T="RenderFragment" Style="@($"background:{review.ReviewSource.Color};color:white;")">
+                                            <MudLink Href="@review.ReviewSource.Url" Target="_blank" Class="text-white">@review.ReviewSource.Name</MudLink>
+                                        </MudChip>
+                                    }
+                                </MudStack>
+                                
+                                <MudStack Row Spacing="2" AlignItems="AlignItems.Center">                                    
+                                    <MudText Typo="Typo.caption" Class="text-color-disabled">
+                                        @((review.ReviewPostedAt ?? review.UpdatedAt).ToString("dd/MM/yyyy"))
+                                    </MudText>
+                                    
+                                    <DonutRating Rating="@review.Rating" 
+                                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)"
+                                                 Size="DonutRatingSize.ExtraSmall" />
+                                </MudStack>
+                            </MudStack>
+                            
+                            <MudDivider Class="my-2" />
+                            
+                            <div class="markdown-body mt-2">@MarkdownRenderer.Render(review.Review)</div>
+                        </MudPaper>
+                    }
+                </MudStack>
+            }
         </MudPaper>
         
         <MudGrid>
