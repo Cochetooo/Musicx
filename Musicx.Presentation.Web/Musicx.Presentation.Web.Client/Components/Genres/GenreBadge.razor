@@ -7,7 +7,11 @@
 {
     <MudLink Href="@($"/Genre/{Genre.Id}")" @attributes="AdditionalAttributes" Style="text-decoration:none;">
         <span class="@GetBadgeClass()" style="@GetBadgeStyle()">
-            <MudIcon Icon="@GetGenreIcon()" Size="Size.Small" Class="mr-1" />
+            @if (ShowIcon)
+            {
+                <MudIcon Icon="@GetGenreIcon()" Size="Size.Small" Class="mr-1"/>
+            }
+            
             <span class="artist-genre-name">@(Genre.ShortName ?? Genre.CanonicalName)</span>
         </span>
     </MudLink>
@@ -15,15 +19,20 @@
 else
 {
     <span class="@GetBadgeClass()" style="@GetBadgeStyle()" @attributes="AdditionalAttributes">
-        <MudIcon Icon="@GetGenreIcon()" Size="Size.Small" Class="mr-1" />
+        @if (ShowIcon)
+        {
+            <MudIcon Icon="@GetGenreIcon()" Size="Size.Small" Class="mr-1"/>
+        }
+        
         <span class="artist-genre-name">@(Genre.ShortName ?? Genre.CanonicalName)</span>
+        
         @if (Closable)
         {
             <MudIconButton Icon="@Icons.Material.Filled.Close"
                            Size="Size.Small"
                            Class="ml-1"
                            OnClick="@OnClose"
-                           Color="Color.Inherit" />
+                           Color="Color.Inherit"/>
         }
     </span>
 }
@@ -37,6 +46,7 @@ else
     [Parameter] public bool Influence { get; set; }
     [Parameter] public bool Closable { get; set; }
     [Parameter] public bool Clickable { get; set; }
+    [Parameter] public bool ShowIcon { get; set; } = true;
     [Parameter] public Size Size { get; set; } = Size.Medium;
     [Parameter] public EventCallback OnClose { get; set; }
 

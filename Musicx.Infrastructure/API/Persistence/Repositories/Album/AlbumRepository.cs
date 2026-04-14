@@ -12,6 +12,7 @@ using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 using Musicx.Infrastructure.API.Persistence.Builders;
 using Musicx.Infrastructure.API.Persistence.Builders.Album;
 using Musicx.Infrastructure.API.Persistence.Columns.Album;
+using Musicx.Infrastructure.API.Persistence.Columns.Artist;
 using Musicx.Infrastructure.API.Persistence.Connection;
 using Musicx.Infrastructure.API.Persistence.Mappers;
 using Musicx.Infrastructure.API.Persistence.Specifications.Album;
@@ -238,6 +239,55 @@ internal sealed class AlbumRepository(
         return result
             .Select(x => x.FromDicoToAlbum())
             .ToList();
+    }
+    
+    public async Task<OutGenericList<OutAlbum>> FindSimilarAsync(
+        long albumId,
+        OrderSpecification<InAlbum>? orderSpec = null,
+        PagingOptions? pagingOptions = null)
+    {
+        var sql = $"""
+                   SELECT al0.*, ar0.*, alst0.*, sc.similarity_score
+                   FROM get_similar_albums(@albumId) sc
+                   INNER JOIN albums al0 ON al0.{AlbumColumns.Id} = sc.album_id
+                   LEFT JOIN artists ar0 ON ar0.{ArtistColumns.Id} = al0.{AlbumColumns.ArtistId}
+                   LEFT JOIN album_rating_stats alst0 ON alst0.{AlbumRatingStatColumns.AlbumId} = al0.{AlbumColumns.Id}
+                   """;
+
+        if (orderSpec is not null)
+        {
+            sql += builder.BuildOrderBy(orderSpec);
+        }
+        else
+        {
+            sql += $" ORDER BY sc.similarity_score DESC, al0.{AlbumColumns.Name}";
+        }
+
+        sql += " OFFSET @skip LIMIT @take;";
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@albumId", albumId),
+            new("@skip", pagingOptions?.Skip ?? 0),
+            new("@take", pagingOptions?.Take ?? 6)
+        };
+
+        var items = (await connection.FetchListDynamicAsync(sql, parameters))
+            .Select(x => x.FromDicoToAlbum())
+            .ToList();
+
+        const string countSql = "SELECT COUNT(*) FROM get_similar_albums(@albumId);";
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        await using var command = new NpgsqlCommand(countSql, conn);
+        command.Parameters.Add(new NpgsqlParameter("@albumId", albumId));
+        var count = await command.ExecuteScalarAsync();
+
+        return new OutGenericList<OutAlbum>
+        {
+            Items = items,
+            Total = count is null ? 0 : Convert.ToInt64(count)
+        };
     }
 
     public async Task<OutGenericList<OutAlbum>> FindAsync(

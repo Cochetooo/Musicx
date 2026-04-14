@@ -170,6 +170,59 @@ internal sealed class UserAlbumAttrRepository(
             })
             .ToList();
     }
+    
+    public async Task<OutGenericList<OutUserAlbumAttribute>> FindReviewsByAlbumIdAsync(
+        long albumId,
+        PagingOptions? pagingOptions = null)
+    {
+        var sql = $"""
+                   SELECT uaa0.*, us0.*, al0.*, ars0.*
+                   FROM user_album_attrs uaa0
+                   INNER JOIN users us0
+                       ON us0.{UserColumns.Id} = uaa0.{UserAlbumAttrColumns.UserId}
+                   INNER JOIN albums al0
+                       ON al0.{AlbumColumns.Id} = uaa0.{UserAlbumAttrColumns.AlbumId}
+                   LEFT JOIN review_sources ars0
+                       ON ars0.review_source_id = uaa0.{UserAlbumAttrColumns.ReviewSourceId}
+                   WHERE uaa0.{UserAlbumAttrColumns.AlbumId} = @albumId
+                       AND uaa0.{UserAlbumAttrColumns.Review} IS NOT NULL
+                       AND btrim(uaa0.{UserAlbumAttrColumns.Review}) <> ''
+                   ORDER BY COALESCE(uaa0.{UserAlbumAttrColumns.ReviewPostedAt}, uaa0.{UserAlbumAttrColumns.UpdatedAt}) DESC
+                   OFFSET @skip LIMIT @take
+                   """;
+
+        var countSql = $"""
+                        SELECT COUNT(*)
+                        FROM user_album_attrs uaa0
+                        WHERE uaa0.{UserAlbumAttrColumns.AlbumId} = @albumId
+                            AND uaa0.{UserAlbumAttrColumns.Review} IS NOT NULL
+                            AND btrim(uaa0.{UserAlbumAttrColumns.Review}) <> ''
+                        """;
+
+        var parameters = new List<NpgsqlParameter>
+        {
+            new("@albumId", albumId),
+            new("@skip", pagingOptions?.Skip ?? 0),
+            new("@take", pagingOptions?.Take ?? 5)
+        };
+
+        var items = (await connection.FetchListDynamicAsync(sql, parameters))
+            .Select(x => x.FromDicoToUserAlbumAttr())
+            .ToList();
+
+        await using var conn = (NpgsqlConnection)connection.CreateConnection();
+        await conn.OpenAsync();
+        await using var command = new NpgsqlCommand(countSql, conn);
+        command.Parameters.Add(new NpgsqlParameter("@albumId", albumId));
+
+        var count = await command.ExecuteScalarAsync();
+
+        return new OutGenericList<OutUserAlbumAttribute>
+        {
+            Items = items,
+            Total = count is null ? 0 : Convert.ToInt64(count)
+        };
+    }
 
     public async Task<OutUserAlbumAttribute?> FindOneAlbumFromUserAsync(long userId, long albumId)
     {

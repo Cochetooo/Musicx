@@ -295,6 +295,33 @@ public sealed class AlbumController(IAlbumRepository albumRepository,
         }
     }
     
+    [HttpGet("{id}/similar")]
+    public async Task<ActionResult<OutGenericList<OutAlbum>>> FindSimilarAlbums(
+        [FromRoute] long id,
+        [FromQuery] AlbumOrderSpecification? order = null,
+        [FromQuery] PagingOptions? paging = null)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND SIMILAR albums ({id})");
+
+        try
+        {
+            var result = await albumRepository.FindSimilarAsync(id, order, paging);
+
+            if (0 == result.Total)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND SIMILAR albums ({id}) - NOT FOUND");
+                return NoContent();
+            }
+
+            _logger.LogInformation($"🌍✅ API : FIND SIMILAR albums ({id}) - SUCCESS");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
     [HttpGet]
     public async Task<ActionResult<OutGenericList<OutAlbum>>> Find(
         [FromQuery] bool filterExact = false,

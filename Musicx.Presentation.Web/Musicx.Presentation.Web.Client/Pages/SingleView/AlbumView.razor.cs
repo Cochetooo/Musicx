@@ -46,6 +46,10 @@ public partial class AlbumView
     private bool _showAdvancedFactorEditor;
     private bool _showReviewEditor;
     private List<OutUserAlbumAttribute> _albumReviews = [];
+    private long _albumReviewsTotal;
+    private int _reviewsPage = 1;
+    private const int ReviewPageSize = 5;
+    private List<OutAlbum> _similarAlbums = [];
 
     private readonly List<RatingFactor> _albumFactors =
     [
@@ -106,8 +110,9 @@ public partial class AlbumView
             UserId = UserClientContext.CurrentUser?.Id ?? 0
         };
         _userSongAttributes = dataView.CurrentUserSongAttributes;
+        _similarAlbums = dataView.SimilarAlbums.ToList();
         RefreshAlbumFactorView(dataView.Ratings?.Items ?? []);
-        await LoadReviews(albumId);
+        await LoadReviews(albumId, 1);
 
         _logger.LogInformation("✅ Album loaded from DataView: {Name} ({Id})", _album.Name, _album.Id);
         await InvokeAsync(StateHasChanged);
@@ -163,19 +168,28 @@ public partial class AlbumView
         };
     }
     
-    private async Task LoadReviews(long albumId)
+    private async Task LoadReviews(long albumId, int page)
     {
-        var response = await UcFindAlbumAttrs.ExecuteAsync(
+        var currentPage = page < 1 ? 1 : page;
+        var response = await Api.FindAlbumReviewsAsync(
             albumId,
-            order: new UserAlbumAttrOrderSpecification { CreatedAt = -1 },
-            pagingOptions: new PagingOptions(Take: 200, Skip: 0));
-        
-        // @TODO Endpoint review count instead of that
+            pagingOptions: new PagingOptions(
+                Take: ReviewPageSize,
+                Skip: (currentPage - 1) * ReviewPageSize));
 
-        _albumReviews = response.Items
-            .Where(x => !string.IsNullOrWhiteSpace(x.Review))
-            .OrderByDescending(x => x.ReviewPostedAt ?? x.UpdatedAt)
-            .ToList();
+        _reviewsPage = currentPage;
+        _albumReviews = response.Items.ToList();
+        _albumReviewsTotal = response.Total;
+    }
+    
+    private async Task OnReviewsPageChanged(int page)
+    {
+        if (_album is null)
+        {
+            return;
+        }
+
+        await LoadReviews(_album.Id, page);
     }
 
     private async Task SaveReview()

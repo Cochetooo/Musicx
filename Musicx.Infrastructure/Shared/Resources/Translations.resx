@@ -121,6 +121,18 @@
     <data name="Web.UserView.AverageRating" xml:space="preserve">
         <value>Average rating</value>
     </data>
+    <data name="Web.AlbumView.ReviewsTitle" xml:space="preserve">
+        <value>Reviews</value>
+    </data>
+    <data name="Web.AlbumView.NoReviewPublished" xml:space="preserve">
+        <value>No review published at the moment.</value>
+    </data>
+    <data name="Web.AlbumView.SimilarReleasesTitle" xml:space="preserve">
+        <value>Similar Releases</value>
+    </data>
+    <data name="Web.AlbumView.NoSimilarReleases" xml:space="preserve">
+        <value>No similar release found.</value>
+    </data>
     <data name="Web.UserView.RatingStandardDeviation" xml:space="preserve">
         <value>Rating standard deviation</value>
     </data>

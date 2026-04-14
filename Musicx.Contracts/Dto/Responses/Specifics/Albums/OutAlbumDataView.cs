@@ -29,4 +29,7 @@ public sealed class OutAlbumDataView
 
     /// <summary>Global ratings summary list (paged/limited by builder).</summary>
     public OutGenericList<OutUserAlbumAttribute> Ratings { get; set; } = new();
+    
+    /// <summary>Similar albums computed server-side for the view.</summary>
+    public IReadOnlyList<OutAlbum> SimilarAlbums { get; set; } = [];
 }

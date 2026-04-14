@@ -262,4 +262,16 @@
     </data>
     <data name="Web.Search.NoArtistFoundPrompt" xml:space="preserve"><value>Aucun artiste trouvé pour cette recherche. Voulez-vous en créer un ?</value></data>
     <data name="Web.Search.CreateNew" xml:space="preserve"><value>Créer un nouveau</value></data>
+    <data name="Web.AlbumView.ReviewsTitle" xml:space="preserve">
+        <value>Reviews</value>
+    </data>
+    <data name="Web.AlbumView.NoReviewPublished" xml:space="preserve">
+        <value>Aucune review publiée pour le moment.</value>
+    </data>
+    <data name="Web.AlbumView.SimilarReleasesTitle" xml:space="preserve">
+        <value>Sorties similaires</value>
+    </data>
+    <data name="Web.AlbumView.NoSimilarReleases" xml:space="preserve">
+        <value>Aucune sortie similaire trouvée.</value>
+    </data>
 </root>

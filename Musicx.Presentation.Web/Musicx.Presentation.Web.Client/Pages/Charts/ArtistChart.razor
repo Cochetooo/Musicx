@@ -31,7 +31,7 @@
                                     <MudStack Row Wrap="Wrap.Wrap" Spacing="1" Class="mt-1">
                                         @foreach (var genre in GetDisplayGenres(row.artist).Take(5))
                                         {
-                                            <GenreBadge Genre="genre" Clickable Size="Size.Small" />
+                                            <GenreBadge Genre="genre" ShowIcon="false" Clickable Size="Size.Small" />
                                         }
                                     </MudStack>
                                 </MudStack>

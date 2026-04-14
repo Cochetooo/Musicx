@@ -278,6 +278,7 @@ Responsibilities:
     - **INFO** with leading emoji for readability;
     - **DEBUG** with explicit action details.
 - Ensure exceptions can be caught and handled in services/endpoints.
+- Make SQL procedures if the statement takes more than 10 lines to avoid repository flood.
 
 ### 8.8 UX Feedback and Errors
 

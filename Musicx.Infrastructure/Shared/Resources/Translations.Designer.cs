@@ -213,6 +213,24 @@ namespace Musicx.Infrastructure.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No review published at the moment..
+        /// </summary>
+        internal static string Web_AlbumView_NoReviewPublished {
+            get {
+                return ResourceManager.GetString("Web.AlbumView.NoReviewPublished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No similar release found..
+        /// </summary>
+        internal static string Web_AlbumView_NoSimilarReleases {
+            get {
+                return ResourceManager.GetString("Web.AlbumView.NoSimilarReleases", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ratings.
         /// </summary>
         internal static string Web_AlbumView_RatingsSuffix {
@@ -258,6 +276,15 @@ namespace Musicx.Infrastructure.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reviews.
+        /// </summary>
+        internal static string Web_AlbumView_ReviewsTitle {
+            get {
+                return ResourceManager.GetString("Web.AlbumView.ReviewsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to See on Wikipedia.
         /// </summary>
         internal static string Web_AlbumView_SeeOnWikipedia {
@@ -272,6 +299,15 @@ namespace Musicx.Infrastructure.Shared.Resources {
         internal static string Web_AlbumView_Settings {
             get {
                 return ResourceManager.GetString("Web.AlbumView.Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Similar Releases.
+        /// </summary>
+        internal static string Web_AlbumView_SimilarReleasesTitle {
+            get {
+                return ResourceManager.GetString("Web.AlbumView.SimilarReleasesTitle", resourceCulture);
             }
         }
         

@@ -70,6 +70,16 @@ public sealed class AlbumDataViewBuilder(
             new UserAlbumAttrFindQuery { AlbumId = album.Id },
             orderSpec: new UserAlbumAttrOrderSpecification { CreatedAt = -1, UserName = 2, Rating = 3 },
             pagingOptions: new PagingOptions(100, 0));
+        
+        Task<OutGenericList<OutAlbum>> similarAlbumsTask = albumRepository.FindSimilarAsync(
+            album.Id,
+            orderSpec: new AlbumOrderSpecification
+            {
+                RatingCount = -1,
+                RatingAverage = -2,
+                OriginalReleaseDate = -3
+            },
+            pagingOptions: new PagingOptions(6, 0));
 
         Task<OutUserAlbumAttribute?> currentUserAttrTask = Task.FromResult<OutUserAlbumAttribute?>(null);
         Task<IReadOnlyList<OutUserSongAttribute>> currentUserSongAttrsTask = Task.FromResult<IReadOnlyList<OutUserSongAttribute>>([]);
@@ -80,7 +90,13 @@ public sealed class AlbumDataViewBuilder(
             currentUserSongAttrsTask = userSongAttrsRepository.FindByAlbumUserAsync(query.UserId.Value, album.Id);
         }
 
-        await Task.WhenAll(songsTask, artistAlbumsTask, ratingsTask, currentUserAttrTask, currentUserSongAttrsTask);
+        await Task.WhenAll(
+            songsTask,
+            artistAlbumsTask,
+            ratingsTask,
+            similarAlbumsTask,
+            currentUserAttrTask,
+            currentUserSongAttrsTask);
 
         OutAlbum? previousAlbum = null;
         OutAlbum? nextAlbum = null;
@@ -101,7 +117,8 @@ public sealed class AlbumDataViewBuilder(
             NextAlbum = nextAlbum,
             CurrentUserAttribute = await currentUserAttrTask,
             CurrentUserSongAttributes = await currentUserSongAttrsTask,
-            Ratings = await ratingsTask
+            Ratings = await ratingsTask,
+            SimilarAlbums = (await similarAlbumsTask).Items
         };
 
         await cache.SetAsync(cacheKey, result, TimeSpan.FromMinutes(5), cancellationToken);

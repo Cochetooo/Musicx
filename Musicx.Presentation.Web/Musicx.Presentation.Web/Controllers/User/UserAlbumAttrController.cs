@@ -219,6 +219,32 @@ public sealed class UserAlbumAttrController(
         }
     }
     
+    [HttpGet("reviews/by-album/{albumId}")]
+    public async Task<ActionResult<OutGenericList<OutUserAlbumAttribute>>> FindReviewsByAlbumId(
+        [FromRoute] long albumId,
+        [FromQuery] PagingOptions? paging = null)
+    {
+        _logger.LogInformation($"🌍🏳️ API : FIND REVIEWS user_album_attrs BY album {albumId}");
+
+        try
+        {
+            var reviews = await repository.FindReviewsByAlbumIdAsync(albumId, paging);
+
+            if (0 == reviews.Total)
+            {
+                _logger.LogInformation($"🌍❔ API : FIND REVIEWS user_album_attrs BY album {albumId} - NOT FOUND");
+                return NoContent();
+            }
+
+            _logger.LogInformation($"🌍✅ API : FIND REVIEWS user_album_attrs BY album {albumId} - SUCCESS");
+            return Ok(reviews);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+        }
+    }
+    
     [HttpGet("count-by-user/{userId}")]
     public async Task<IActionResult> GetCountByUserId([FromRoute] long userId)
     {

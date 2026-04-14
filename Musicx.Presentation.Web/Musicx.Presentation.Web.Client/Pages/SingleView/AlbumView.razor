@@ -478,12 +478,12 @@ else
                 
                 <!-- Reviews -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="📝 Reviews" Count="@_albumReviews.Count.ToString()"/>
+                    <PanelTitle Text="@($"📝 {T["Web.AlbumView.ReviewsTitle"]}")" Count="@_albumReviewsTotal.ToString()"/>
                     <MudDivider Class="my-3"/>
 
                     @if (_albumReviews.Count == 0)
                     {
-                        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">No review published at the moment.</MudAlert>
+                        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">@T["Web.AlbumView.NoReviewPublished"]</MudAlert>
                     }
                     else
                     {
@@ -522,6 +522,19 @@ else
                                 </MudPaper>
                             }
                         </MudStack>
+                        
+                        @if (_albumReviewsTotal > ReviewPageSize)
+                        {
+                            <MudStack Class="mt-3" AlignItems="AlignItems.Center">
+                                <MudPagination Count="@((int)Math.Ceiling(_albumReviewsTotal / (double)ReviewPageSize))"
+                                               Selected="@_reviewsPage"
+                                               SelectedChanged="@OnReviewsPageChanged"
+                                               BoundaryCount="1"
+                                               MiddleCount="2"
+                                               Color="Color.Primary"
+                                               Variant="Variant.Outlined" />
+                            </MudStack>
+                        }
                     }
                 </MudPaper>
 
@@ -660,7 +673,38 @@ else
                 
                 <!-- Similar Releases -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="🔗 Similar Releases" />
+                    <PanelTitle Text="@($"🔗 {T["Web.AlbumView.SimilarReleasesTitle"]}")" />
+                    <MudDivider Class="my-3" />
+                    @if (_similarAlbums.Count == 0)
+                    {
+                        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">@T["Web.AlbumView.NoSimilarReleases"]</MudAlert>
+                    }
+                    else
+                    {
+                        <MudGrid Spacing="2">
+                            @foreach (var similarAlbum in _similarAlbums)
+                            {
+                                <MudItem xs="12" md="6">
+                                    <MudLink Href="@($"/Album/{similarAlbum.Id}")" Underline="Underline.None" Class="similar-album-link">
+                                        <MudPaper Class="pa-2 rounded-lg bg-default">
+                                            <MudImage Src="@similarAlbum.ArtworkUrl"
+                                                      @key="similarAlbum.ArtworkUrl"
+                                                      Elevation="2"
+                                                      Class="rounded-lg"
+                                                      ObjectFit="ObjectFit.Cover"
+                                                      Style="width: 100%; aspect-ratio: 1 / 1;" />
+                                            <MudText Typo="Typo.subtitle2" Class="mt-2 text-bold">
+                                                @similarAlbum.Name
+                                            </MudText>
+                                            <MudText Typo="Typo.caption" Class="color-secondary text-light">
+                                                @(similarAlbum.ArtistAlias ?? similarAlbum.Artist?.Name ?? string.Empty)
+                                            </MudText>
+                                        </MudPaper>
+                                    </MudLink>
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    }
                 </MudPaper>
             </MudItem>
         </MudGrid>
@@ -700,6 +744,10 @@ else
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .similar-album-link {
+        display: block;
     }
     
     .tracklist-table {

@@ -12,6 +12,7 @@ using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Requests.Artist;
 using Musicx.Contracts.Dto.Requests.Song;
 using Musicx.Contracts.Dto.Requests.Specifics;
+using Musicx.Contracts.Dto.Requests.User;
 using Musicx.Contracts.Dto.Responses;
 using Musicx.Contracts.Dto.Responses.Artist;
 using Musicx.Contracts.Dto.Responses.Specifics.Lists;
@@ -200,6 +201,47 @@ public sealed class ApiClient(HttpClient httpClient, ILoggerFactory loggerFactor
         var endpoint = $"/api/artists/by-genre/{genreId}?{QueryStringHelper.SetUseCaseParameters<InArtist>(pagingOptions: pagingOptions)}";
         var response = await httpClient.GetStringAsync(endpoint);
         return JsonSerializer.Deserialize<OutGenericList<OutArtist>>(response, JsonHelper.OptionsDefault) ?? new OutGenericList<OutArtist> { Items = [], Total = 0 };
+    }
+    
+    public async Task<OutGenericList<OutUserAlbumAttribute>> FindAlbumReviewsAsync(
+        long albumId,
+        PagingOptions? pagingOptions = null)
+    {
+        var endpoint = $"/api/user-album-attrs/reviews/by-album/{albumId}?{QueryStringHelper.SetUseCaseParameters<InUserAlbumAttribute>(pagingOptions: pagingOptions)}";
+        _logger.LogInformation("🌍🏳️ GET {Endpoint}", endpoint);
+
+        try
+        {
+            var response = await httpClient.GetStringAsync(endpoint);
+            return JsonSerializer.Deserialize<OutGenericList<OutUserAlbumAttribute>>(response, JsonHelper.OptionsDefault) ??
+                   new OutGenericList<OutUserAlbumAttribute> { Items = [], Total = 0 };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "🌍⚠️ GET {Endpoint} failed", endpoint);
+            return new OutGenericList<OutUserAlbumAttribute> { Items = [], Total = 0 };
+        }
+    }
+
+    public async Task<OutGenericList<OutAlbum>> FindSimilarAlbumsAsync(
+        long albumId,
+        OrderSpecification<InAlbum>? order = null,
+        PagingOptions? pagingOptions = null)
+    {
+        var endpoint = $"/api/albums/{albumId}/similar?{QueryStringHelper.SetUseCaseParameters<InAlbum>(orderSpec: order, pagingOptions: pagingOptions)}";
+        _logger.LogInformation("🌍🏳️ GET {Endpoint}", endpoint);
+
+        try
+        {
+            var response = await httpClient.GetStringAsync(endpoint);
+            return JsonSerializer.Deserialize<OutGenericList<OutAlbum>>(response, JsonHelper.OptionsDefault) ??
+                   new OutGenericList<OutAlbum> { Items = [], Total = 0 };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "🌍⚠️ GET {Endpoint} failed", endpoint);
+            return new OutGenericList<OutAlbum> { Items = [], Total = 0 };
+        }
     }
 
     private static string AppendFindQuery<TIn>(string endpoint, IFindQuery<TIn>? query) where TIn : BaseInputModel

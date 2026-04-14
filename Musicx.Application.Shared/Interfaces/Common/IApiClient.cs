@@ -65,5 +65,12 @@ public interface IApiClient
     
     Task<OutGenericList<OutArtist>> FindArtistsByGenreAsync(long genreId, PagingOptions? pagingOptions = null);
     
+    Task<OutGenericList<OutUserAlbumAttribute>> FindAlbumReviewsAsync(long albumId, PagingOptions? pagingOptions = null);
+
+    Task<OutGenericList<OutAlbum>> FindSimilarAlbumsAsync(
+        long albumId,
+        OrderSpecification<InAlbum>? order = null,
+        PagingOptions? pagingOptions = null);
+    
     #endregion
 }

@@ -4,6 +4,7 @@ using Musicx.Contracts.Dto.Requests;
 using Musicx.Contracts.Dto.Requests.Album;
 using Musicx.Contracts.Dto.Requests.Specifics;
 using Musicx.Contracts.Dto.Responses;
+using Musicx.Contracts.Dto.Responses.Specifics.Lists;
 
 namespace Musicx.Application.Api.Interfaces.Persistence.Repositories.Album;
 
@@ -96,4 +97,17 @@ public interface IAlbumRepository : IRepository<InAlbum, OutAlbum>
     /// <since>0.6.7</since>
     Task<List<OutAlbum>> FindByChart(
         AlbumChartQuery query);
+    
+    /// <summary>
+    /// Finds similar albums for a given album identifier.
+    /// </summary>
+    /// <param name="albumId">Source album identifier.</param>
+    /// <param name="orderSpec">Optional ordering specification.</param>
+    /// <param name="pagingOptions">Optional paging options.</param>
+    /// <returns>A paged list of similar albums.</returns>
+    /// <since>0.7.6</since>
+    Task<OutGenericList<OutAlbum>> FindSimilarAsync(
+        long albumId,
+        OrderSpecification<InAlbum>? orderSpec = null,
+        PagingOptions? pagingOptions = null);
 }
