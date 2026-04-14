@@ -102,6 +102,8 @@
                                 </MudTooltip>
                             </MudItem>
                         </MudGrid>
+                        
+                        <MudDivider Class="my-3" />
 
                         <MarkdownEditor Label="@T["Web.UserEditor.Bio"]"
                                         Lines="7"
@@ -117,7 +119,7 @@
                             @T["Web.UserEditor.SaveProfile"]
                         </MudButton>
 
-                        <MudDivider />
+                        <MudDivider Class="my-3" />
 
                         <MudStack Spacing="2">
                             <MudText Typo="Typo.h6">@T["Web.UserEditor.ChangePassword"]</MudText>
@@ -154,11 +156,15 @@
                                 {
                                     <MudButton FullWidth="true"
                                                Variant="Variant.Text"
-                                               Class="GetCategoryButtonClass(category)"
+                                               Class="@GetCategoryButtonClass(category)"
                                                OnClick="@(() => ScrollToSettingsCategory(category))">
                                         @GetCategoryLabel(category)
                                     </MudButton>
                                 }
+                                
+                                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Save" StartIcon="@Icons.Material.Filled.Save" Class="mt-3">
+                                    @T["Web.UserEditor.SaveSettings"]
+                                </MudButton>
                             </MudPaper>
                         </MudItem>
                         <MudItem xs="12" md="9">
@@ -168,7 +174,8 @@
                                     <MudDivider Class="my-2" />
                                     <MudStack Spacing="2">
                                         <MudSwitchM3 @bind-Value="_user.PrefDarkMode" Color="Color.Secondary" 
-                                                     Label="@T["Web.UserEditor.DarkMode"]" ThumbIcon="@Icons.Material.Filled.DarkMode" />
+                                                     Label="@T["Web.UserEditor.DarkMode"]" ThumbIcon="@Icons.Material.Filled.DarkMode"
+                                                     ThumbOffIcon="@Icons.Material.Filled.LightMode" />
                                         
                                         <MudSwitchM3 @bind-Value="_user.PrefSimpleGenre" Color="Color.Secondary" 
                                                      Label="@T["Web.UserEditor.SimpleGenreDisplay"]" />
@@ -183,13 +190,13 @@
                                     <MudDivider Class="my-2" />
                                     <MudStack Spacing="2">
                                         <MudSwitchM3 @bind-Value="_user.PrefShowRatings" Color="Color.Secondary" 
-                                                   Label="@T["Web.UserEditor.ShowRatings"]" />
+                                                   Label="@T["Web.UserEditor.ShowRatings"]" ThumbIcon="@Icons.Material.Filled.Check" />
                                         
                                         <MudSwitchM3 @bind-Value="_user.PrefAutoFollow" Color="Color.Secondary" 
                                                    Label="@T["Web.UserEditor.AutoFollow"]" ThumbIcon="@Icons.Material.Filled.AutoAwesome" />
                                         
                                         <MudSwitchM3 @bind-Value="_user.PrefAutoComputeAdvancedRatings" Color="Color.Secondary" 
-                                                   Label="@T["Web.UserEditor.AutoComputeAdvancedRatings"]" ThumbIcon="@Icons.Material.Filled.AutoFixHigh" />
+                                                   Label="@T["Web.UserEditor.AutoComputeAdvancedRatings"]" ThumbIcon="@Icons.Material.Filled.AutoAwesome" />
 
                                         <MudText Typo="Typo.subtitle1" Class="mt-3">@T["Web.UserEditor.RatingMode"]</MudText>
                                         <MudStack Row="true" Wrap="Wrap.Wrap" Justify="Justify.Center" Spacing="2" Class="rating-mode-group">
@@ -251,10 +258,6 @@
                             </MudPaper>
                         </MudItem>
                     </MudGrid>
-
-                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Save" StartIcon="@Icons.Material.Filled.Save" Class="mt-4">
-                        @T["Web.UserEditor.SaveSettings"]
-                    </MudButton>
                 </MudTabPanel>
             </MudTabs>
         }
@@ -285,7 +288,7 @@
         top: 88px;
         align-self: flex-start;
         height: fit-content;
-        max-height: calc(100vh - 110px);
+        max-height: calc(100vh - 200px);
         overflow-y: auto;
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -302,7 +305,6 @@
     }
 
     .settings-content {
-        max-height: 62vh;
         overflow-y: auto;
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.08);

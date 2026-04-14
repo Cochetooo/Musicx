@@ -5,6 +5,7 @@
 @using Musicx.Contracts.Dto.Requests.User
 @using Musicx.Contracts.Dto.Responses
 @using Musicx.Contracts.Dto.Responses.Genre
+@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.Base
 @using Musicx.Presentation.Web.Client.Components.Ratings
 
@@ -32,7 +33,7 @@
                         <MudText Typo="Typo.subtitle1" Class="text-bold">@GetSongTitle(row.Song)</MudText>
                         <EditableRatingBadge Editable
                                             Size="Size.Small"
-                                            RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                            RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)"
                                             Value="@row.Attribute.Rating"
                                             ValueChanged="@(value => OnSongRatingChanged(row, value))" />
                     </MudStack>

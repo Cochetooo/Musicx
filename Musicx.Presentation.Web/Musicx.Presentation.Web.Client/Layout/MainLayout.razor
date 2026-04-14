@@ -93,7 +93,7 @@
             @foreach (var mode in _quickRatingModes)
             {
                 <MudMenuItem OnClick="@(() => ChangeRatingMode(mode))"
-                             Disabled="@((UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen) == mode)">
+                             Disabled="@((UserClientContext.CurrentUser?.PrefRatingMode) == mode)">
                     @mode.ToDescriptionString()
                 </MudMenuItem>
             }

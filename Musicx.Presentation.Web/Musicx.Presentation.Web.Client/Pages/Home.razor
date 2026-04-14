@@ -63,7 +63,7 @@
                         {
                             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
                                 <MudChip T="string" Size="Size.Small" Class="text-bold" Style="@($"background-color:{RatingHelper.GetColorForRating(album.Stats?.Average)};color:white")">
-                                    @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                    @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode)
                                 </MudChip>
                                 <MudText Typo="Typo.caption" Class="color-secondary">
                                     @((album.Stats?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)) @T["Web.Common.Ratings"]

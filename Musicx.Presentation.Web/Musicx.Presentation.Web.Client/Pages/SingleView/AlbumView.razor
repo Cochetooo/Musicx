@@ -206,20 +206,23 @@ else
                         <div class="album-genres-block">
                             @if (!_showDetailedView)
                             {
-                                <MudText Typo="Typo.body1" Class="text-light mr-2">@T["Web.AlbumView.GenresLabel"]</MudText>
+                                <MudText Typo="Typo.body1" Class="text-light text-italic mb-1">@T["Web.AlbumView.GenresLabel"]</MudText>
                             }
                             
                             <GenreDetails Size="Size.Medium" Descriptor="false" Album="@_album" @bind-DetailedView="@_showDetailedView"/>
                         </div>
 
                         <MudStack Spacing="2">
-                            <MudButton EndIcon="@Icons.Material.Filled.DoneAll"
-                                       OnClick="@OpenVoteGenreModal"
-                                       Variant="Variant.Filled"
-                                       Size="Size.Medium"
-                                       Color="Color.Primary">
-                                @T["Web.AlbumView.VoteGenres"]
-                            </MudButton>
+                            @if (UserClientContext.CurrentUser is not null)
+                            {
+                                <MudButton EndIcon="@Icons.Material.Filled.DoneAll"
+                                           OnClick="@OpenVoteGenreModal"
+                                           Variant="Variant.Filled"
+                                           Size="Size.Medium"
+                                           Color="Color.Primary">
+                                    @T["Web.AlbumView.VoteGenres"]
+                                </MudButton>
+                            }
 
                             <MudButton EndIcon="@Icons.Material.Filled.Brush"
                                        OnClick="@(() => _showDetailedView = !_showDetailedView)"
@@ -259,44 +262,44 @@ else
                                 </MudText>
                             </MudStack>
                         }
-                    }
-                    
-                    @if (_showAdvancedFactorEditor && UserClientContext.CurrentUser is not null && UserClientContext.Can("album.rate"))
-                    {
-                        <MudStack Row Justify="Justify.Center" Wrap="Wrap.Wrap" Spacing="2" Class="mx-2 my-3" Style="width: 100%">
-                            @foreach (var factor in _albumFactors)
-                            {
-                                <MudStack AlignItems="AlignItems.Center">
-                                    <EditableRatingBadge Editable
-                                                         RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
-                                                         Value="@factor.Getter(_userAttribute)"
-                                                         ValueChanged="@(v => OnAlbumFactorChanged(factor, (short?)v))" />
-                                    <MudText Typo="Typo.caption" Class="text-light color-secondary">@factor.Label</MudText>
-                                </MudStack>
-                            }
-                        </MudStack>
                         
-                        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="album-factors-actions mt-2">
-                            <MudSpacer />
-                            <MudButton Variant="Variant.Filled"
-                                       Size="Size.Small"
-                                       Color="Color.Primary"
-                                       Disabled="@(!_hasAnyAlbumFactor)"
-                                       OnClick="@ComputeAlbumRatingFromFactors">
-                                @T["Web.AlbumView.ComputeNow"]
-                            </MudButton>
-
-                            <MudSpacer />
-                            <MudSwitch T="bool"
-                                       Class="album-autocompute-switch"
-                                       Color="Color.Success"
-                                       Value="@_autoComputeAlbumRating"
-                                       ValueChanged="@OnAutoComputeAlbumRatingChanged"
-                                       Label="@T["Web.AlbumView.AutoComputeShort"]" />
-                        </MudStack>
-                    }
+                        if (_showAdvancedFactorEditor)
+                        {
+                            <MudStack Row Justify="Justify.Center" Wrap="Wrap.Wrap" Spacing="2" Class="mx-2 my-3" Style="width: 100%">
+                                @foreach (var factor in _albumFactors)
+                                {
+                                    <MudStack AlignItems="AlignItems.Center">
+                                        <EditableRatingBadge Editable
+                                                             RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
+                                                             Value="@factor.Getter(_userAttribute)"
+                                                             ValueChanged="@(v => OnAlbumFactorChanged(factor, (short?)v))" />
+                                        <MudText Typo="Typo.caption" Class="text-light color-secondary">@factor.Label</MudText>
+                                    </MudStack>
+                                }
+                            </MudStack>
                             
-                    <MudDivider Class="my-3" />
+                            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="album-factors-actions mt-2">
+                                <MudSpacer />
+                                <MudButton Variant="Variant.Filled"
+                                           Size="Size.Small"
+                                           Color="Color.Primary"
+                                           Disabled="@(!_hasAnyAlbumFactor)"
+                                           OnClick="@ComputeAlbumRatingFromFactors">
+                                    @T["Web.AlbumView.ComputeNow"]
+                                </MudButton>
+
+                                <MudSpacer />
+                                <MudSwitch T="bool"
+                                           Class="album-autocompute-switch"
+                                           Color="Color.Success"
+                                           Value="@_autoComputeAlbumRating"
+                                           ValueChanged="@OnAutoComputeAlbumRatingChanged"
+                                           Label="@T["Web.AlbumView.AutoComputeShort"]" />
+                            </MudStack>
+                        }
+                        
+                        <MudDivider Class="my-3" />
+                    }
                     
                     <MudStack Row Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" 
                               Wrap="Wrap.Wrap">
@@ -304,7 +307,6 @@ else
                         {
                             <div class="album-action-item">
                                 <MudDatePicker Date="@_userAttribute.DiscoveryDate"
-                                               T="DateTime?"
                                                DateChanged="ChangeDateDiscovery"
                                                Label="@T["Web.AlbumView.DiscoveryDate"]"
                                                Style="width: 200px;"
@@ -360,7 +362,7 @@ else
                                             Value="@_userAttribute.Review"
                                             ValueChanged="@(value => _userAttribute.Review = value)" />
                             <MudStack Row Spacing="2" Class="mt-2">
-                                <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="SaveReview">Publish</MudButton>
+                                <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="@SaveReview">Publish</MudButton>
                                 <MudButton Color="Color.Default" Variant="Variant.Outlined" OnClick="@(()=>_showReviewEditor=false)">Close</MudButton>
                             </MudStack>
                         </MudPaper>
@@ -372,14 +374,14 @@ else
                     <div style="width: 100%" class="pa-2">
                         <div class="album-rating-hover-card">
                             <div class="album-rating-hover-summary">
-                                <MudText Typo="Typo.h5" Class="montserrat text-bold">
+                                <MudText Typo="Typo.h5" Class="montserrat">
                                     🌐 @T["Web.AlbumView.GlobalRatingLabel"]
                                 </MudText>
                                 
                                 <div>
                                     <DonutRating
                                         Rating="@_album.Stats?.Average"
-                                        RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                        RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"
                                         Size="DonutRatingSize.Large"/>
                                 </div>
 
@@ -403,7 +405,7 @@ else
                                                         @factor.Key
                                                     </MudText>
                                                     <MudText Typo="Typo.body2" Class="text-bold color-primary">
-                                                        @RatingHelper.GetRatingFormatted(factor.Value, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                                        @RatingHelper.GetRatingFormatted(factor.Value, UserClientContext.CurrentUser?.PrefRatingMode)
                                                     </MudText>
                                                 </MudStack>
                                                 <MudProgressLinear Value="@(factor.Value / 100.0)"
@@ -425,7 +427,7 @@ else
                                     
                                     <div>
                                         <DonutRating Rating="@_album.Stats?.FanAverage"
-                                                     RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                                     RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"
                                                      Size="DonutRatingSize.Small"/>
                                     </div>
                                     
@@ -440,7 +442,7 @@ else
                                     
                                     <div>
                                         <DonutRating Rating="@_album.Stats?.NonFanAverage"
-                                                     RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                                     RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"
                                                      Size="DonutRatingSize.Small"/>
                                     </div>
                                     
@@ -457,70 +459,9 @@ else
         </div>
         
         <MudGrid Spacing="2">
-            <MudItem xs="12" md="5">
-                <!-- Track List -->
+            <MudItem xs="12" md="8">
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="🎵 Tracks" />
-                    <MudDivider Class="my-3"/>
-                    <MudButton StartIcon="@Icons.Material.Filled.HowToVote"
-                               Variant="Variant.Outlined"
-                               Size="Size.Small"
-                               Class="mb-2"
-                               OnClick="@OpenSongVoteModal">
-                        Vote genres & rate songs
-                    </MudButton>
-                    <MudTable ReadOnly
-                              Items="@_albumSongs"
-                              Elevation="0"
-                              CustomHeader="@true" CustomFooter="@true"
-                              Dense
-                              Class="my-3 tracklist-table" Style="width: 100%">
-                        <HeaderContent>
-                            <MudTHeadRow>
-                                <MudTh>#</MudTh>
-                                <MudTh>Title</MudTh>
-                                <MudTh>Duration</MudTh>
-                            </MudTHeadRow>
-                        </HeaderContent>
-
-                        <RowTemplate>
-                            <MudTd Style="width: 40px;" DataLabel="#" Class="track-no">
-                                @if (_album.DiscTotal is null || _album.DiscTotal < 2)
-                                {
-                                    @context.TrackNumber
-                                }
-                                else
-                                {
-                                    @($"{context.DiscNumber}.{context.TrackNumber}")
-                                }
-                            </MudTd>
-                            <MudTd DataLabel="Title" Class="track-title">
-                                <SongTitleStylized Song="@context"/>
-                            </MudTd>
-                            <MudTd DataLabel="Duration" Style="width: 80px;" Class="track-duration">@context.Duration.FormatDuration()</MudTd>
-                        </RowTemplate>
-
-                        <FooterContent>
-                            <MudTFootRow>
-                                <MudTd colspan="3">
-                                    Total Duration: @_album.TotalDuration.FormatDuration()
-                                </MudTd>
-                            </MudTFootRow>
-                        </FooterContent>
-                    </MudTable>
-                </MudPaper>
-            </MudItem>
-            
-            <MudItem xs="12" md="3">
-                <!-- Credit -->
-                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="📒 Credits" />
-                </MudPaper>
-            </MudItem>
-            
-            <MudItem xs="12" md="4">
-                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="💽 Releases" />
+                    <PanelTitle Text="💽 Releases"/>
                     <MudDivider Class="my-3"/>
 
                     <!-- Issues -->
@@ -534,72 +475,61 @@ else
                         }
                     </MudList>
                 </MudPaper>
-            </MudItem>
-        </MudGrid>
-        
-        <!-- Reviews -->
-        <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-            <PanelTitle Text="📝 Reviews" Count="@_albumReviews.Count.ToString()" />
-            <MudDivider Class="my-3"/>
-
-            @if (_albumReviews.Count == 0)
-            {
-                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">No review published at the moment.</MudAlert>
-            }
-            else
-            {
-                <MudStack Spacing="2">
-                    @foreach (var review in _albumReviews)
-                    {
-                        <MudPaper Class="pa-3 bg-default" Elevation="4">
-                            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                                <MudStack Row Spacing="2" AlignItems="AlignItems.Center">
-                                    <MudAvatar Size="Size.Medium">
-                                        <MudImage Src="@review.User.PictureUrl" Alt="@review.User.Name"/>
-                                    </MudAvatar>
-                                    <MudText Typo="Typo.h5" Class="text-bold">@review.User.Name</MudText>
-                                    @if (review.ReviewSource is not null)
-                                    {
-                                        <MudChip Size="Size.Small" T="RenderFragment" Style="@($"background:{review.ReviewSource.Color};color:white;")">
-                                            <MudLink Href="@review.ReviewSource.Url" Target="_blank" Class="text-white">@review.ReviewSource.Name</MudLink>
-                                        </MudChip>
-                                    }
-                                </MudStack>
-                                
-                                <MudStack Row Spacing="2" AlignItems="AlignItems.Center">                                    
-                                    <MudText Typo="Typo.caption" Class="text-color-disabled">
-                                        @((review.ReviewPostedAt ?? review.UpdatedAt).ToString("dd/MM/yyyy"))
-                                    </MudText>
-                                    
-                                    <DonutRating Rating="@review.Rating" 
-                                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)"
-                                                 Size="DonutRatingSize.ExtraSmall" />
-                                </MudStack>
-                            </MudStack>
-                            
-                            <MudDivider Class="my-2" />
-                            
-                            <div class="markdown-body mt-2">@MarkdownRenderer.Render(review.Review)</div>
-                        </MudPaper>
-                    }
-                </MudStack>
-            }
-        </MudPaper>
-        
-        <MudGrid>
-            <MudItem xs="12" md="4">
-                <!-- Suggestions -->
+                
+                <!-- Reviews -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="🔗 Similar Releases" />
+                    <PanelTitle Text="📝 Reviews" Count="@_albumReviews.Count.ToString()"/>
+                    <MudDivider Class="my-3"/>
+
+                    @if (_albumReviews.Count == 0)
+                    {
+                        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">No review published at the moment.</MudAlert>
+                    }
+                    else
+                    {
+                        <MudStack Spacing="2">
+                            @foreach (var review in _albumReviews)
+                            {
+                                <MudPaper Class="pa-3 bg-default" Elevation="4">
+                                    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                        <MudStack Row Spacing="2" AlignItems="AlignItems.Center">
+                                            <MudAvatar Size="Size.Medium">
+                                                <MudImage Src="@review.User.PictureUrl" Alt="@review.User.Name"/>
+                                            </MudAvatar>
+                                            <MudText Typo="Typo.h5" Class="text-bold">@review.User.Name</MudText>
+                                            @if (review.ReviewSource is not null)
+                                            {
+                                                <MudChip Size="Size.Small" T="RenderFragment" Style="@($"background:{review.ReviewSource.Color};color:white;")">
+                                                    <MudLink Href="@review.ReviewSource.Url" Target="_blank" Class="text-white">@review.ReviewSource.Name</MudLink>
+                                                </MudChip>
+                                            }
+                                        </MudStack>
+
+                                        <MudStack Row Spacing="2" AlignItems="AlignItems.Center">
+                                            <MudText Typo="Typo.caption" Class="text-color-disabled">
+                                                @((review.ReviewPostedAt ?? review.UpdatedAt).ToString("dd/MM/yyyy"))
+                                            </MudText>
+
+                                            <DonutRating Rating="@review.Rating"
+                                                         RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"
+                                                         Size="DonutRatingSize.ExtraSmall"/>
+                                        </MudStack>
+                                    </MudStack>
+
+                                    <MudDivider Class="my-2"/>
+
+                                    <div class="markdown-body mt-2">@MarkdownRenderer.Render(review.Review)</div>
+                                </MudPaper>
+                            }
+                        </MudStack>
+                    }
                 </MudPaper>
-            </MudItem>
-            
-            <MudItem xs="12" md="8">
+
                 <!-- Ratings et collections -->
                 <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
-                    <PanelTitle Text="🔢 Ratings" />
+                    <PanelTitle Text="🔢 Ratings"/>
                     <MudDivider Class="my-3"/>
-                    
+
                     <MudTable @ref="_albumRatingsTable"
                               Striped Bordered="false"
                               Dense
@@ -639,7 +569,7 @@ else
                             <MudTd DataLabel="Rating" Class="rating-col">
                                 <MudText Typo="Typo.h5" Class="color-primary text-bold rating-text"
                                          Style="width: fit-content;">
-                                    @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                    @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode)
                                 </MudText>
                             </MudTd>
                             <MudTd DataLabel="Name">
@@ -662,6 +592,75 @@ else
                             <MudTablePager/>
                         </PagerContent>
                     </MudTable>
+                </MudPaper>
+            </MudItem>
+            
+            <MudItem xs="12" md="4">
+                <!-- Track List -->
+                <MudPaper Class="mt-4 pa-3 bg-main animate-hover-up">
+                    <PanelTitle Text="🎵 Tracks"/>
+                    <MudDivider Class="my-3"/>
+                    @if (UserClientContext.CurrentUser is not null && UserClientContext.Can("album.rate"))
+                    {
+                        <MudButton StartIcon="@Icons.Material.Filled.HowToVote"
+                                   Variant="Variant.Outlined"
+                                   Size="Size.Small"
+                                   Class="mb-2"
+                                   OnClick="@OpenSongVoteModal">
+                            Vote genres & rate songs
+                        </MudButton>
+                    }
+                    <MudTable ReadOnly
+                              Items="@_albumSongs"
+                              Elevation="0"
+                              CustomHeader="@true" CustomFooter="@true"
+                              Dense
+                              Class="my-3 tracklist-table" Style="width: 100%">
+                        <HeaderContent>
+                            <MudTHeadRow>
+                                <MudTh Class="color-secondary text-light">#</MudTh>
+                                <MudTh Class="color-secondary text-light">Title</MudTh>
+                                <MudTh Class="color-secondary text-light">Duration</MudTh>
+                            </MudTHeadRow>
+                        </HeaderContent>
+
+                        <RowTemplate>
+                            <MudTd Style="width: 30px;" DataLabel="#" Class="track-no color-secondary">
+                                @if (_album.DiscTotal is null || _album.DiscTotal < 2)
+                                {
+                                    @context.TrackNumber
+                                }
+                                else
+                                {
+                                    @($"{context.DiscNumber}.{context.TrackNumber}")
+                                }
+                            </MudTd>
+                            <MudTd DataLabel="Title" Class="track-title">
+                                <SongTitleStylized Song="@context"/>
+                            </MudTd>
+                            <MudTd DataLabel="Duration" Style="width: 80px;" Class="track-duration">
+                                @context.Duration.FormatDuration()
+                            </MudTd>
+                        </RowTemplate>
+
+                        <FooterContent>
+                            <MudTFootRow>
+                                <MudTd colspan="3" Class="text-light color-secondary">
+                                    Total Duration: <span class="text-bold color-primary">@_album.TotalDuration.FormatDuration()</span>
+                                </MudTd>
+                            </MudTFootRow>
+                        </FooterContent>
+                    </MudTable>
+                </MudPaper>
+                
+                <!-- Credit -->
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                    <PanelTitle Text="📒 Credits"/>
+                </MudPaper>
+                
+                <!-- Similar Releases -->
+                <MudPaper Class="mt-4 pa-3 bg-surface animate-hover-up">
+                    <PanelTitle Text="🔗 Similar Releases" />
                 </MudPaper>
             </MudItem>
         </MudGrid>
@@ -702,10 +701,13 @@ else
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    
+    .tracklist-table {
+        background: transparent;
+    }
 
     .tracklist-table .track-no {
         font-weight: 600;
-        opacity: .7;
     }
 
     .tracklist-table .track-title {

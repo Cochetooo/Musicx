@@ -1,6 +1,5 @@
 ﻿@using System.Globalization
 @using Musicx.Application.Shared.Helpers
-@using Musicx.Contracts.Enums
 
 <div class="donut-rating" style="--donut-size:@_donutSize; --progress-color:@_ratingColor; --track-color:@_trackColor;">
     <svg class="donut-rating-svg" viewBox="0 0 100 100" role="img" aria-label="Album rating @Rating">
@@ -19,17 +18,18 @@
                 style="@($"--progress-length:{_circumference}; --progress-offset:{_dashOffset};")" />
         
         @{
+            RatingMode ??= Contracts.Enums.RatingMode.OutOfTen;
             var ratingText = RatingHelper.GetRatingFormatted(
                 Rating,
-                RatingMode
+                RatingMode.Value
             );
 
             string? top = null;
             string? bottom = null;
 
-            if (RatingMode.IsNumeric())
+            if (RatingMode.Value.IsNumeric())
             {
-                ratingText += " / " + RatingMode.GetDenominator();
+                ratingText += " / " + RatingMode.Value.GetDenominator();
             }
 
             if (ratingText.Contains("/"))
@@ -69,7 +69,8 @@
                       dominant-baseline="middle"
                       text-anchor="middle"
                       font-size="@(size)"
-                      font-weight="@(RatingMode == RatingMode.TierList || RatingMode == RatingMode.TierListDetailed ? 800 : 500)">
+                      font-weight="@(RatingMode.Value == Contracts.Enums.RatingMode.TierList 
+                                || RatingMode.Value == Contracts.Enums.RatingMode.TierListDetailed ? 800 : 500)">
                     @ratingText
                 </text>
             </text>

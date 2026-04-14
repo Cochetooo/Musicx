@@ -74,7 +74,7 @@
                                 <EditableRatingBadge
                                     Editable="@false"
                                     Size="Size.Small"
-                                    RatingMode="RatingMode"
+                                    RatingMode="@(RatingMode ?? Contracts.Enums.RatingMode.OutOfTen)"
                                     Value="@rating"/>
                             }
                         }

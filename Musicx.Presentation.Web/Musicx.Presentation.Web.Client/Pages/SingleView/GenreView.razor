@@ -69,7 +69,7 @@ else
                     @if (UserClientContext.CurrentUser?.PrefShowRatings ?? true)
                     {
                         <DonutRating Rating="@_albumsAvgRating" 
-                                     RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" 
+                                     RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode )" 
                                      Size="DonutRatingSize.Medium"/>
                     }
                 </MudStack>
@@ -98,7 +98,7 @@ else
                         {
                             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
                                 <MudChip T="string" Size="Size.Small" Class="text-bold" Style="@($"background-color:{RatingHelper.GetColorForRating(album.Stats?.Average)};color:white")">
-                                    @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                    @RatingHelper.GetRatingFormatted(album.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode)
                                 </MudChip>
                                 <MudText Typo="Typo.caption" Class="color-secondary">@((album.Stats?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)) ratings</MudText>
                             </MudStack>
@@ -218,7 +218,7 @@ else
                             {
                                 <MudTd DataLabel="Rating">
                                     <MudChip T="string" Class="text-bold" Label="true" Style="@($"background-color:{RatingHelper.GetColorForRating(context.Stats?.Average)};color:white")">
-                                        @RatingHelper.GetRatingFormatted(context.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                        @RatingHelper.GetRatingFormatted(context.Stats?.Average, UserClientContext.CurrentUser?.PrefRatingMode)
                                     </MudChip>
                                 </MudTd>
                             }
@@ -246,7 +246,7 @@ else
                                                 <Flag CountryName="@item.Artist.CurrentCountry"/>
                                                 @if (UserClientContext.CurrentUser?.PrefShowRatings ?? true)
                                                 {
-                                                    <span>@RatingHelper.GetRatingFormatted(item.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) · @item.RatingsCount ratings</span>
+                                                    <span>@RatingHelper.GetRatingFormatted(item.Rating, UserClientContext.CurrentUser?.PrefRatingMode) · @item.RatingsCount ratings</span>
                                                 }
                                             </MudText>
                                         </MudStack>

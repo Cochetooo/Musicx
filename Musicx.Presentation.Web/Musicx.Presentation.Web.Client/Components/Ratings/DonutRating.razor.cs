@@ -16,7 +16,7 @@ public enum DonutRatingSize
 public partial class DonutRating
 {
     [Parameter] public DonutRatingSize Size { get; set; } = DonutRatingSize.Medium;
-    [Parameter] public RatingMode RatingMode { get; set; }
+    [Parameter] public RatingMode? RatingMode { get; set; }
     [Parameter, EditorRequired] public decimal? Rating { get; set; }
 
     private string _donutSize = string.Empty;

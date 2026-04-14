@@ -1,5 +1,6 @@
 @using Musicx.Application.Shared.Interfaces.Common
 @using Musicx.Application.Web.Interfaces.Models.Auth
+@using Musicx.Contracts.Enums
 @using Musicx.Presentation.Web.Client.Components.Albums
 @using Musicx.Presentation.Web.Client.Components.Base
 @using ChartType = Musicx.Contracts.Enums.ChartType
@@ -19,11 +20,11 @@
 
             @if (_viewMode == AlbumChartViewMode.Grid)
             {
-                <AlbumGridView Albums="@_outAlbumList.Items" IsGrouped="false" RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" ShowRank ShowRating="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)" ShowRatingCount="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)" Zoom="1.7" />
+                <AlbumGridView Albums="@_outAlbumList.Items" IsGrouped="false" RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)" ShowRank ShowRating="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)" ShowRatingCount="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)" Zoom="1.7" />
             }
             else
             {
-                <AlbumListView Albums="@_outAlbumList.Items" IsGrouped="false" ShowRank="_showRankOnList" RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)" ShowRatings="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)" />
+                <AlbumListView Albums="@_outAlbumList.Items" IsGrouped="false" ShowRank="_showRankOnList" RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ??  RatingMode.OutOfTen)" ShowRatings="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)" />
             }
         </MudPaper>
     </MudItem>

@@ -112,7 +112,7 @@ else
                             <MudText Typo="Typo.subtitle1" Class="montserrat text-bold">🌐 Global</MudText>
                             <div>
                                 <DonutRating Rating="@_artistRatingSummary.Average"
-                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"
                                              Size="DonutRatingSize.Medium"/>
                             </div>
                             <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.Count ratings</MudText>
@@ -122,7 +122,7 @@ else
                                 <MudText Typo="Typo.subtitle2" Class="montserrat">⭐ Fan Rating</MudText>
                                 <div>
                                     <DonutRating Rating="@_artistRatingSummary.FanAverage"
-                                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"
                                                  Size="DonutRatingSize.Small"/>
                                 </div>
                                 <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.FanCount ratings</MudText>
@@ -131,7 +131,7 @@ else
                                 <MudText Typo="Typo.subtitle2" Class="montserrat">👤 Non-Fan Rating</MudText>
                                 <div>
                                     <DonutRating Rating="@_artistRatingSummary.NonFanAverage"
-                                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                                 RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"
                                                  Size="DonutRatingSize.Small"/>
                                 </div>
                                 <MudText Typo="Typo.caption" Class="color-secondary">@_artistRatingSummary.NonFanCount ratings</MudText>
@@ -161,14 +161,14 @@ else
                     {
                         <AlbumListView Albums="@_filteredAlbums" Zoom="@_zoomLevel"
                                        UserRatings="@_userAttrs"
-                                       RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                       RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"
                                        ShowRatings="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
                                        IsGrouped="@_groupByType"/>
                     }
                     else if (_viewMode == ReleasesViewMode.Grid)
                     {
                         <AlbumGridView Albums="@_filteredAlbums" Zoom="@_zoomLevel"
-                                       RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"
+                                       RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"
                                        ShowRating="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
                                        ShowRatingCount="@(UserClientContext.CurrentUser?.PrefShowRatings ?? true)"
                                        IsGrouped="@_groupByType"/>

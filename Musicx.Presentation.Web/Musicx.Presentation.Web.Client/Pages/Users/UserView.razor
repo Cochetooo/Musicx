@@ -141,7 +141,7 @@ else
                                          Typo="Typo.caption"
                                          Style="min-width: 80px;">
                                     <span style="font-weight: 300;" class="color-secondary montserrat">
-                                        <!-- @RatingHelper.GetRatingFormatted(ratingCount.Key - 9, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) - @RatingHelper.GetRatingFormatted(ratingCount.Key, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) -->
+                                        <!-- @RatingHelper.GetRatingFormatted(ratingCount.Key - 9, UserClientContext.CurrentUser?.PrefRatingMode) - @RatingHelper.GetRatingFormatted(ratingCount.Key, UserClientContext.CurrentUser?.PrefRatingMode ?? 0) -->
                                         @(ratingCount.Key - 9) - @ratingCount.Key
                                     </span>
                                     <span style="font-weight: 500; font-size: 0.925em; margin-left: 4px;" class="montserrat">
@@ -172,7 +172,7 @@ else
                                 </MudText>
                                 <DonutRating Rating="@_albumRatingDistrib?.AverageRating"
                                              Size="DonutRatingSize.ExtraSmall"
-                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? 0)"/>
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)"/>
                             </MudStack>
                         </MudListItem>
                                                 
@@ -183,7 +183,7 @@ else
                                 </MudText>
                                 <MudText Typo="Typo.body1" Class="text-bold montserrat color-primary" Style="min-width: 50px;">
                                     ± @RatingHelper.GetRatingFormatted(_albumRatingDistrib?.RatingStandardDev, 
-                                          UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                          UserClientContext.CurrentUser?.PrefRatingMode)
                                 </MudText>
                             </MudStack>
                         </MudListItem>
@@ -268,7 +268,7 @@ else
                         <MudTd DataLabel="Rating" Class="rating-col">
                             <MudText Typo="Typo.h5" Class="color-primary text-bold rating-text"
                                      Style="width: fit-content;">
-                                @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode ?? 0)
+                                @RatingHelper.GetRatingFormatted(context.Rating, UserClientContext.CurrentUser?.PrefRatingMode)
                             </MudText>
                         </MudTd>
                         

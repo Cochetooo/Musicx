@@ -9,7 +9,7 @@ public partial class AlbumGridView
     [Parameter] public IEnumerable<OutAlbum> Albums { get; set; } = [];
     [Parameter] public double Zoom { get; set; } = 1.0;
     [Parameter] public bool IsGrouped { get; set; } = true;
-    [Parameter] public RatingMode RatingMode { get; set; }
+    [Parameter] public RatingMode? RatingMode { get; set; }
     [Parameter] public bool ShowRank { get; set; }
     [Parameter] public bool ShowRating { get; set; }
     [Parameter] public bool ShowRatingCount { get; set; }

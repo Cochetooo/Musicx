@@ -39,15 +39,15 @@
 
                             <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                                 <DonutRating Rating="@row.artist.Stats?.Average" 
-                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)" 
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)" 
                                              Size="DonutRatingSize.Small" />
                                 
                                 <DonutRating Rating="@row.artist.Stats?.FanAverage" 
-                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)" 
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)" 
                                              Size="DonutRatingSize.ExtraSmall" />
                                 
                                 <DonutRating Rating="@row.artist.Stats?.NonFanAverage" 
-                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode ?? RatingMode.OutOfTen)" 
+                                             RatingMode="@(UserClientContext.CurrentUser?.PrefRatingMode)" 
                                              Size="DonutRatingSize.ExtraSmall" />
                             </MudStack>
                         </MudStack>

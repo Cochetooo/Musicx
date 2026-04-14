@@ -20,12 +20,14 @@ public static class RatingHelper
         (10000.0m, UiColorPalette.Rating.Masterpiece)
     };
     
-    public static string GetRatingFormatted(decimal? rating, RatingMode ratingMode)
+    public static string GetRatingFormatted(decimal? rating, RatingMode? ratingMode)
     {
         if (!rating.HasValue)
         {
             return "-";
         }
+
+        ratingMode ??= RatingMode.OutOfTen;
 
         var r = rating.Value;
         
