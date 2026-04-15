@@ -115,89 +115,96 @@ else
                 </div>
                 
                 <div>
-                    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" 
-                              Class="mx-2 mt-2 album-headline-row" Spacing="2">
-                        <div>
-                            <MudTooltip Inline="false" Text="@_album.Name" Delay="500">
-                                <ChildContent>
-                                    <h1 class="album-title animate-text clamped-text-2">
-                                        @_album.Name
-                                    </h1>
-                                </ChildContent>
-                            </MudTooltip>
+                    <MudStack Class="mx-2 mt-2 album-headline-row" Spacing="2">
+                        <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Spacing="2">
+                            <div class="album-title-block">
+                                <MudTooltip Inline="false" Text="@_album.Name" Delay="500">
+                                    <ChildContent>
+                                        <h1 class="album-title animate-text clamped-text-2">
+                                            @_album.Name
+                                        </h1>
+                                    </ChildContent>
+                                </MudTooltip>
 
-                            @if (_album.EnglishName is not null)
-                            {
-                                <MudText Typo="Typo.h5" Class="montserrat text-bold color-muted">
-                                    [@_album.EnglishName]
-                                </MudText>
-                            }
-                                
-                            @if (_album.Artist is not null)
-                            {
-                                <MudLink Typo="Typo.h6" Class="ml-2 montserrat color-secondary text-shadow"
-                                         Href="@($"/Artist/{_album.Artist.Id}")">
-                                    @if (_album.ArtistAlias is not null)
-                                    {
-                                        @_album.ArtistAlias
-                                    }
-                                    else
-                                    {
-                                        @_album.Artist.Name
-                                    }
-                                </MudLink>
-                            }
-                        </div>
-            
-                        <MudStack Class="album-header-right" AlignItems="AlignItems.End" Justify="Justify.SpaceBetween" Spacing="2">
-                            @if (UserClientContext.Can("album.edit"))
-                            {
-                                <MudMenu Dense Variant="Variant.Text" Color="Color.Inherit"
-                                         Class="admin-settings-menu"
-                                         Icon="@Icons.Material.Filled.Settings">
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="@EditAlbumShowModal">@T["Web.AlbumView.EditAlbum"]</MudMenuItem>
-                                    <MudMenuItem Icon="@Icons.Material.Filled.FormatListNumbered" OnClick="@EditTrackListShowModal">@T["Web.AlbumView.EditTracklist"]</MudMenuItem>
-                                </MudMenu>
-                            }
-
-                            <MudStack Spacing="0" Class="album-meta-text" AlignItems="AlignItems.End" Justify="Justify.FlexEnd">
-                                @if (_album.OriginalReleaseDate is not null || _album.ReleaseType is not null)
+                                @if (_album.EnglishName is not null)
                                 {
-                                    <MudText Typo="Typo.body2" Align="Align.Right" Class="text-extra-light album-meta-line">
-                                        @T["Web.AlbumView.ReleasedOn"]
-                                        @if (_album.OriginalReleaseDate is not null)
-                                        {
-                                            <span class="text-bold album-release-date">&nbsp;@_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")</span>
-                                        }
-                                        @if (_album.OriginalReleaseDate is not null && _album.ReleaseType is not null)
-                                        {
-                                            <span> ⸱ </span>
-                                        }
-                                        @if (_album.ReleaseType is not null)
-                                        {
-                                            <span class="text-light">@_album.ReleaseType.ToDescriptionString()</span>
-                                        }
+                                    <MudText Typo="Typo.h5" Class="montserrat text-bold color-muted">
+                                        [@_album.EnglishName]
                                     </MudText>
                                 }
-
-                                @if (_album.BeginRecordDate is not null || _album.EndRecordDate is not null)
+                                    
+                                @if (_album.Artist is not null)
                                 {
-                                    <MudText Typo="Typo.body2" Align="Align.Right" Class="text-extra-light album-meta-line">
-                                        @T["Web.AlbumView.Recorded"] 
-                                        <span class="album-recorded-dates">
-                                            &nbsp;@(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?") — @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
-                                        </span>
-                                    </MudText>
+                                    <MudLink Typo="Typo.h6" Class="ml-2 montserrat color-secondary text-shadow"
+                                             Href="@($"/Artist/{_album.Artist.Id}")">
+                                        @if (_album.ArtistAlias is not null)
+                                        {
+                                            @_album.ArtistAlias
+                                        }
+                                        else
+                                        {
+                                            @_album.Artist.Name
+                                        }
+                                    </MudLink>
                                 }
-
-                                @if (_album.Releases?.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Label?.Name))?.Label?.Name is { } labelName)
+                            </div>
+                            
+                            <MudStack Class="album-header-right" AlignItems="AlignItems.End" Justify="Justify.FlexStart" Spacing="2">
+                                @if (UserClientContext.Can("album.edit"))
                                 {
-                                    <MudText Typo="Typo.body2" Class="font-italic text-extra-light album-meta-line" Align="Align.Right">
-                                        @T["Web.AlbumView.Label"] <span class="album-recorded-dates">@labelName</span>
-                                    </MudText>
+                                    <MudMenu Dense Variant="Variant.Text" Color="Color.Inherit"
+                                             Class="admin-settings-menu"
+                                             Icon="@Icons.Material.Filled.Settings">
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="@EditAlbumShowModal">@T["Web.AlbumView.EditAlbum"]</MudMenuItem>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.FormatListNumbered" OnClick="@EditTrackListShowModal">@T["Web.AlbumView.EditTracklist"]</MudMenuItem>
+                                    </MudMenu>
                                 }
                             </MudStack>
                         </MudStack>
+                        
+                        <MudPaper Class="album-meta-strip" Elevation="0">
+                            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Wrap="Wrap.Wrap" Class="album-meta-grid">
+                                <MudStack Spacing="0" Class="album-meta-text album-meta-left" AlignItems="AlignItems.Start" Justify="Justify.FlexEnd">
+                                    @if (_album.OriginalReleaseDate is not null || _album.ReleaseType is not null)
+                                    {
+                                        <MudText Typo="Typo.body2" Align="Align.Left" Class="text-extra-light album-meta-line">
+                                            @T["Web.AlbumView.ReleasedOn"]
+                                            @if (_album.OriginalReleaseDate is not null)
+                                            {
+                                                <span class="text-bold album-release-date">&nbsp;@_album.OriginalReleaseDate.Value.ToString("dd/MM/yyyy")</span>
+                                            }
+                                            @if (_album.OriginalReleaseDate is not null && _album.ReleaseType is not null)
+                                            {
+                                                <span> ⸱ </span>
+                                            }
+                                            @if (_album.ReleaseType is not null)
+                                            {
+                                                <span class="text-light">@_album.ReleaseType.ToDescriptionString()</span>
+                                            }
+                                        </MudText>
+                                    }
+                                </MudStack>
+
+                                <MudStack Spacing="0" Class="album-meta-text album-meta-right" AlignItems="AlignItems.End" Justify="Justify.FlexEnd">
+                                    @if (_album.BeginRecordDate is not null || _album.EndRecordDate is not null)
+                                    {
+                                        <MudText Typo="Typo.body2" Align="Align.Right" Class="text-extra-light album-meta-line">
+                                            @T["Web.AlbumView.Recorded"] 
+                                            <span class="album-recorded-dates">
+                                                &nbsp;@(_album.BeginRecordDate?.ToString("dd/MM/yyyy") ?? "?") — @(_album.EndRecordDate?.ToString("dd/MM/yyyy") ?? "?")
+                                            </span>
+                                        </MudText>
+                                    }
+
+                                    @if (_album.Releases?.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Label?.Name))?.Label?.Name is { } labelName)
+                                    {
+                                        <MudText Typo="Typo.body2" Class="font-italic text-extra-light album-meta-line" Align="Align.Right">
+                                            @T["Web.AlbumView.Label"] <span class="album-recorded-dates">@labelName</span>
+                                        </MudText>
+                                    }
+                                </MudStack>
+                            </MudStack>
+                        </MudPaper>
                     </MudStack>
                     
                     <MudDivider Class="my-3"/>
@@ -241,23 +248,26 @@ else
                     {
                         if (DateTime.UtcNow >= (_album.OriginalReleaseDate ?? DateTime.MinValue))
                         {
-                            <MudStack Justify="Justify.Center">
-                                <MudStack Row AlignItems="AlignItems.Center" Spacing="0"
-                                          Justify="Justify.Center" Class="album-main-rating">
-                                    <EditableRatingBadge Editable
-                                                         Size="Size.Large"
-                                                         RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
-                                                         Value="@_userAttribute.Rating"
-                                                         ValueChanged="@(v => Rate(v))" />
-                                
-                                    <MudTooltip Text="@T["Web.AlbumView.ToggleAdvancedFactors"]">
-                                        <MudIconButton Icon="@(_showAdvancedFactorEditor ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
-                                                       Color="Color.Inherit"
-                                                       Size="Size.Medium"
-                                                       OnClick="@(() => _showAdvancedFactorEditor = !_showAdvancedFactorEditor)" />
-                                    </MudTooltip>
-                                </MudStack>
-                                <MudText Typo="Typo.caption" Align="Align.Center" Class="color-secondary mb-2">
+                            <MudStack Justify="Justify.Center" Spacing="1">
+                                <div class="album-main-rating-center">
+                                    <div class="album-main-rating">
+                                        <EditableRatingBadge Editable
+                                                             Size="Size.Large"
+                                                             RatingMode="@UserClientContext.CurrentUser.PrefRatingMode"
+                                                             Value="@_userAttribute.Rating"
+                                                             ValueChanged="@(v => Rate(v))" />
+
+                                        <div class="album-main-rating-expand">
+                                            <MudTooltip Text="@T["Web.AlbumView.ToggleAdvancedFactors"]">
+                                                <MudIconButton Icon="@(_showAdvancedFactorEditor ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                                               Color="Color.Inherit"
+                                                               Size="Size.Medium"
+                                                               OnClick="@(() => _showAdvancedFactorEditor = !_showAdvancedFactorEditor)" />
+                                            </MudTooltip>
+                                        </div>
+                                    </div>
+                                </div>
+                                <MudText Typo="Typo.caption" Align="Align.Center" Class="color-secondary mb-1 album-rating-hint">
                                     @T["Web.AlbumView.YourRatingHint"]
                                 </MudText>
                             </MudStack>
@@ -301,7 +311,7 @@ else
                         <MudDivider Class="my-3" />
                     }
                     
-                    <MudStack Row Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" 
+                    <MudStack Row Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceAround" 
                               Wrap="Wrap.Wrap">
                         @if (UserClientContext.CurrentUser is not null && UserClientContext.Can("album.attr"))
                         {
@@ -345,11 +355,13 @@ else
                         {
                             <MudButton Variant="Variant.Filled"
                                        Color="Color.Dark"
-                                       StartIcon="@Icons.Material.Filled.TravelExplore"
+                                       AriaLabel="@T["Web.AlbumView.SeeOnWikipedia"]"
                                        Href="@_album.WikipediaUrl"
                                        Target="_blank"
                                        Class="wiki-button album-action-control">
-                                @T["Web.AlbumView.SeeOnWikipedia"]
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg"
+                                     alt="@T["Web.AlbumView.SeeOnWikipedia"]"
+                                     class="wiki-logo" />
                             </MudButton>
                         }
                     </MudStack>
@@ -371,10 +383,10 @@ else
                 
                 @if (UserClientContext.CurrentUser?.PrefShowRatings ?? true)
                 {
-                    <div style="width: 100%" class="pa-2">
+                    <div style="width: 100%" class="pa-2 album-rating-column">
                         <div class="album-rating-hover-card">
                             <div class="album-rating-hover-summary">
-                                <MudText Typo="Typo.h5" Class="montserrat">
+                                <MudText Typo="Typo.h5" Class="montserrat text-bold">
                                     🌐 @T["Web.AlbumView.GlobalRatingLabel"]
                                 </MudText>
                                 
@@ -421,7 +433,7 @@ else
 
                             <div class="album-rating-hover-details">
                                 <div class="album-rating-mini-card album-rating-donut-card">
-                                    <MudText Typo="Typo.h6" Class="montserrat">
+                                    <MudText Typo="Typo.subtitle2" Class="montserrat album-rating-subtitle">
                                         ⭐ @T["Web.AlbumView.FanRatingLabel"]
                                     </MudText>
                                     
@@ -438,7 +450,9 @@ else
                                 </div>
 
                                 <div class="album-rating-mini-card album-rating-donut-card">
-                                    <MudText Typo="Typo.h6" Class="montserrat">👤 @T["Web.AlbumView.NonFanRatingLabel"]</MudText>
+                                    <MudText Typo="Typo.subtitle2" Class="montserrat album-rating-subtitle">
+                                        👤 @T["Web.AlbumView.NonFanRatingLabel"]
+                                    </MudText>
                                     
                                     <div>
                                         <DonutRating Rating="@_album.Stats?.NonFanAverage"
@@ -608,7 +622,7 @@ else
                 </MudPaper>
             </MudItem>
             
-            <MudItem xs="12" md="4">
+            <MudItem xs="12" md="4" Class="album-side-panel-sticky">
                 <!-- Track List -->
                 <MudPaper Class="mt-4 pa-3 bg-main animate-hover-up">
                     <PanelTitle Text="🎵 Tracks"/>
@@ -730,12 +744,25 @@ else
         background: #fff !important;
         color: #111 !important;
         border: 1px solid #000 !important;
+        min-width: 42px;
+        width: 42px;
+        padding: 0 !important;
     }
 
     .mud-theme-dark .wiki-button {
         background: #111 !important;
         color: #fff !important;
         border: 1px solid #fff !important;
+    }
+
+    .wiki-logo {
+        width: 20px;
+        height: 20px;
+        display: block;
+    }
+
+    .album-rating-hint {
+        margin-top: 0.15rem;
     }
 
     .neighbor-album-text {
@@ -765,5 +792,288 @@ else
     .tracklist-table .track-duration {
         font-size: .85rem;
         color: var(--mud-palette-text-secondary);
+    }
+
+    .album-hero {
+        min-height: 420px;
+        --mx-hero-overlay-top: rgba(255, 255, 255, 0.14);
+        --mx-hero-overlay-bottom: rgba(15, 23, 42, 0.40);
+        --mx-hero-panel-bg: rgba(15, 23, 42, 0.20);
+        --mx-hero-panel-border: rgba(255, 255, 255, 0.08);
+    }
+
+    .album-hero::before {
+        filter: blur(24px) saturate(0.92) brightness(0.52);
+    }
+
+    .mud-theme-dark .album-hero {
+        --mx-hero-overlay-top: rgba(17, 24, 39, 0.42);
+        --mx-hero-overlay-bottom: rgba(0, 0, 0, 0.58);
+        --mx-hero-panel-bg: rgba(15, 23, 42, 0.24);
+        --mx-hero-panel-border: rgba(255, 255, 255, 0.12);
+    }
+
+    .mud-theme-dark .album-hero::before {
+        filter: blur(24px) saturate(0.9) brightness(0.4);
+    }
+
+    .album-hero-content {
+        grid-template-columns: minmax(300px, 440px) minmax(0, 1fr) minmax(220px, 260px);
+        align-items: stretch;
+        gap: 0.6rem;
+    }
+
+    .album-header-right {
+        margin-left: auto;
+        width: auto;
+        max-width: unset;
+    }
+
+    .album-meta-text {
+        text-align: left;
+    }
+
+    .album-headline-row {
+        min-height: 210px;
+        justify-content: space-between;
+    }
+
+    .album-title-block {
+        min-width: 0;
+        max-width: min(720px, 100%);
+    }
+
+    .album-meta-strip {
+        margin-top: auto;
+        background: linear-gradient(120deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.18));
+        border: 1px solid var(--mx-hero-panel-border);
+        border-radius: 12px;
+        padding: 0.5rem 0.85rem;
+    }
+
+    .album-meta-grid {
+        row-gap: 0.2rem;
+        column-gap: 1rem;
+    }
+
+    .album-meta-left {
+        text-align: left;
+    }
+
+    .album-meta-right {
+        text-align: right;
+        margin-left: auto;
+    }
+
+    .admin-settings-menu {
+        align-self: flex-end;
+    }
+
+    .album-meta-line {
+        font-size: 0.82rem;
+    }
+
+    .album-release-date {
+        font-size: 1.02rem;
+        font-weight: 800;
+    }
+
+    .album-recorded-dates {
+        font-weight: 300;
+        font-size: 0.82rem;
+    }
+
+    .album-hero .mud-card-actions .glass-paper,
+    .album-hero .album-rating-mini-card,
+    .album-hero .factor-card {
+        background: rgba(15, 23, 42, 0.18);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .album-hero .mud-button-root.mud-button-text,
+    .album-hero .mud-button-root.mud-button-outlined {
+        color: var(--mx-hero-text-primary);
+        border-color: color-mix(in srgb, var(--mx-hero-text-primary) 18%, transparent);
+    }
+
+    .album-hero .editable-rating-input {
+        min-width: 120px;
+    }
+
+    .album-hero .editable-rating-input .mud-input-slot,
+    .album-hero .editable-rating-input input,
+    .album-hero .editable-rating-input .mud-input-adornment {
+        color: var(--mx-hero-text-primary) !important;
+    }
+
+    .album-rating-hover-card {
+        display: grid;
+        gap: 0.85rem;
+    }
+
+    .album-rating-hover-summary {
+        justify-items: center;
+        width: 100%;
+    }
+
+    .album-rating-hover-details {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+    }
+
+    .album-rating-mini-card,
+    .factor-card {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        padding: 0.65rem 0.8rem;
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    .album-rating-donut-card {
+        justify-items: center;
+    }
+
+    .album-main-rating {
+        position: relative;
+        width: fit-content;
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .album-main-rating-center {
+        display: flex;
+        justify-content: center;
+    }
+
+    .album-main-rating-expand {
+        position: absolute;
+        left: calc(100% + 4px);
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .album-side-button {
+        color: color-mix(in srgb, var(--mx-hero-text-primary) 88%, white) !important;
+    }
+
+    .album-side-button.is-detailed {
+        font-weight: 800;
+        background: color-mix(in srgb, var(--mud-palette-surface) 88%, var(--mud-palette-primary) 12%);
+    }
+
+    .album-side-button.is-simple {
+        font-weight: 500;
+        background: color-mix(in srgb, var(--mud-palette-surface) 94%, transparent);
+    }
+
+    .album-action-item {
+        display: flex;
+        align-items: end;
+        min-height: 56px;
+    }
+
+    .album-action-control {
+        min-height: 56px;
+    }
+
+    .album-factors-actions {
+        width: min(540px, 100%);
+        margin-inline: auto;
+    }
+
+    .album-autocompute-switch {
+        margin-left: auto;
+    }
+
+    .album-genres-block {
+        min-width: 0;
+    }
+
+    .album-rating-count {
+        width: 100%;
+    }
+
+    .album-rating-column {
+        max-width: 260px;
+        margin-left: auto;
+    }
+
+    .album-rating-subtitle {
+        font-size: 0.86rem;
+        font-weight: 500;
+    }
+
+    .album-side-panel-sticky {
+        position: sticky;
+        top: 70px;
+        align-self: start;
+    }
+
+    @@media (max-width: 1700px) {
+    .album-hero-content {
+        grid-template-columns: minmax(280px, 380px) minmax(0, 1fr) minmax(220px, 250px);
+    }
+    }
+
+    @@media (max-width: 1400px) {
+    .album-hero-content {
+        grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    }
+
+    .album-hero-content > :last-child {
+        grid-column: span 2;
+    }
+    }
+
+    @@media (max-width: 900px) {
+    .album-hero-content {
+        grid-template-columns: 1fr;
+    }
+
+    .album-hero-content > :last-child {
+        grid-column: auto;
+    }
+
+    .album-header-right {
+        max-width: unset;
+    }
+
+    .album-meta-strip {
+        padding: 0.55rem 0.65rem;
+    }
+
+    .album-meta-right {
+        margin-left: 0;
+        text-align: left;
+    }
+
+    .album-main-rating-expand {
+        left: calc(100% + 2px);
+    }
+
+    .album-rating-column {
+        margin-left: 0;
+        max-width: unset;
+    }
+
+    .album-side-panel-sticky {
+        position: static;
+    }
+    }
+
+    :deep(.bg-surface.animate-hover-up),
+    :deep(.bg-main.animate-hover-up) {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+    }
+
+    @@keyframes mx-bounce {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(3px);
+        }
     }
 </style>
