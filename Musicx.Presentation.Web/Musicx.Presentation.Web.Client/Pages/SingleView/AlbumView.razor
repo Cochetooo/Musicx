@@ -684,8 +684,8 @@ else
                         <MudGrid Spacing="2">
                             @foreach (var similarAlbum in _similarAlbums)
                             {
-                                <MudItem xs="12" md="6">
-                                    <MudLink Href="@($"/Album/{similarAlbum.Id}")" Underline="Underline.None" Class="similar-album-link">
+                                <MudItem xs="12" md="4">
+                                    <MudLink Href="@($"/Album/{similarAlbum.Id}")" Underline="Underline.None" Class="similar-album-link animate-hover-scale">
                                         <MudPaper Class="pa-2 rounded-lg bg-default">
                                             <MudImage Src="@similarAlbum.ArtworkUrl"
                                                       @key="similarAlbum.ArtworkUrl"

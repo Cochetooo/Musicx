@@ -27,12 +27,17 @@
     animation: fadeIn 350ms ease forwards;
 }
 
-.animate-hover-up {
+.animate-hover-up,
+.animate-hover-scale {
     transition: transform 0.3s ease-in-out;
 }
 
 .animate-hover-up:hover {
     transform: translateY(-5px);
+}
+
+.animate-hover-scale:hover {
+    transform: scale(1.08);
 }
 
 .animate-pop-bounce {
